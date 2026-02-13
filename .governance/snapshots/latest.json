@@ -1,0 +1,12 @@
+{
+  ".governance\\INTENT.md": "956dba2f37eac74ac68642222f273b9a",
+  "scripts\\convert_ecapa.py": "9bca31f4e680d245a73568bba1e27cc4",
+  "scripts\\convert_opus_mt.py": "dabaa7f5e58af5bb174c941edcf081b3",
+  "scripts\\steward.py": "40c391f875ae15fc38e60dacc67e8750",
+  ".governance\\prompts\\INTENT_CAPTURE.md": "86c010f16e1447d09c73e061af739393",
+  ".governance\\prompts\\REPAIR.md": "652183daa740d119f37de5950b6aa30a",
+  ".governance\\prompts\\STEWARD_CHECK.md": "34ac2a7dc8c35ef454d42d78ce34ac8b",
+  ".governance\\prompts\\STEWARD_SYSTEM.md": "da4a061b7dfaa7aa2372838b4e4c26e4",
+  ".governance\\reports\\drift_latest.md": "87e977775bf2f659b58ad69d66cbabfe",
+  ".governance\\snapshots\\latest.json": "22bc5899e0cb2b9aa32ba55fb441d1ff"
+}
