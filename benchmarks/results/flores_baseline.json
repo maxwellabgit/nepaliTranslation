@@ -1,0 +1,177 @@
+{
+  "created_at": "2026-07-19T19:40:15.609980+00:00",
+  "data_source": "cached:FLORES-101/dev (eng/npi/hin)",
+  "eval_n": 50,
+  "requested_n": 50,
+  "device": "cuda",
+  "models": {
+    "indic_en": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\experiments\\models\\it2_indic_en_merged",
+    "en_indic": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\experiments\\models\\it2_en_indic_merged",
+    "en_indic_loaded": true
+  },
+  "metrics": {
+    "primary": "chrF++ (sacrebleu corpus_chrf word_order=2)",
+    "secondary": "BLEU (sacrebleu)"
+  },
+  "primary": {
+    "ne-en": {
+      "direction": "ne-en",
+      "src": "npi_Deva",
+      "tgt": "eng_Latn",
+      "model": "indic_en",
+      "bleu": 39.76,
+      "chrf": 63.79,
+      "chrf_plus_plus": 63.79,
+      "n": 50,
+      "latency_s": 18.9,
+      "latency_ms_per_sent": 378.0,
+      "examples": [
+        {
+          "src": "सोमबारका दिन, स्ट्यानफोर्ड युनिभर्सिटी स्कुल अफ मेडिसिनका वैज्ञानिकहरूले एक नयाँ डायग्नोस्टिक उपकरणको आविष्कारको घोषणा गरे जसले कोषहरूलाई प्रकारका आधारमा क्रमबद्ध गर्न सक्दछः एउटा सानो प्रिन्ट गर्न सकिने चिप जुन मानक ईंकजेट प्रिन्टरहरू प्रयोग गरेर सम्भवतः लगभग एक अमेरिकी सेन्टको लागतमा निर्माण गर्न सकिन्छ।",
+          "ref": "On Monday, scientists from the Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a tiny printable chip that can be manufactured using standard inkjet printers for possibly about one U.S. cent each.",
+          "hyp": "On Monday, scientists at Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a small printable chip that can be manufactured using standard inkjet printers, possibly at a cost of about one US cent."
+        },
+        {
+          "src": "धनी देशहरूको तुलनामा कम आय भएका देशहरूमा क्यान्सर, क्षयरोग, एचआईभी र मलेरियाको पहिचान लगाउन सक्छ भनेर स्तन क्यान्सर जस्ता रोगहरूबाट बाँच्ने दर आधा हुने प्रमुख अन्वेषकहरूको भनाइ छ।",
+          "ref": "Lead researchers say this may bring early detection of cancer, tuberculosis, HIV and malaria to patients in low-income countries, where the survival rates for illnesses such as breast cancer can be half those of richer countries.",
+          "hyp": "Leading researchers say that low-income countries can detect cancer, tuberculosis, HIV, and malaria compared to rich countries, which can halve the survival rate from diseases such as breast cancer."
+        },
+        {
+          "src": "JAS 39C ग्रिपेन स्थानीय समयअनुसार बिहान 9:30 बजे (0230 UTC) रनवेमा दुर्घटनाग्रस्त हुँदै विस्फोट हुन पुगेको थियो र जसले गर्दा विमानस्थलले व्यावसायिक उडानहरू बन्द गरेको थियो।",
+          "ref": "The JAS 39C Gripen crashed onto a runway at around 9:30 am local time (0230 UTC) and exploded, closing the airport to commercial flights.",
+          "hyp": "The JAS 39C Gripen crashed into the runway at\\ 1.30 am local time (0230 UTC), causing the airport to suspend commercial flights."
+        },
+        {
+          "src": "पाइलटलाई स्क्वाड्रोन नेता डिलोक्रिट पट्टावीको रूपमा पहिचान गरियो।",
+          "ref": "The pilot was identified as Squadron Leader Dilokrit Pattavee.",
+          "hyp": "The pilot was identified as Squadron Leader Delocrit Pattavi."
+        },
+        {
+          "src": "स्थानीय मिडियाले प्रतिक्रियाको क्रममा विमानस्थलको अग्नि नियन्त्रक सवारी पल्टिएको सूचना दियो।",
+          "ref": "Local media reports an airport fire vehicle rolled over while responding.",
+          "hyp": "Local media reported that the airport's fire brigade vehicle overturned during the response."
+        }
+      ]
+    },
+    "en-ne": {
+      "direction": "en-ne",
+      "src": "eng_Latn",
+      "tgt": "npi_Deva",
+      "model": "en_indic",
+      "bleu": 36.35,
+      "chrf": 51.87,
+      "chrf_plus_plus": 51.87,
+      "n": 50,
+      "latency_s": 23.8,
+      "latency_ms_per_sent": 475.9,
+      "examples": [
+        {
+          "src": "On Monday, scientists from the Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a tiny printable chip that can be manufactured using standard inkjet printers for possibly about one U.S. cent each.",
+          "ref": "सोमबारका दिन, स्ट्यानफोर्ड युनिभर्सिटी स्कुल अफ मेडिसिनका वैज्ञानिकहरूले एक नयाँ डायग्नोस्टिक उपकरणको आविष्कारको घोषणा गरे जसले कोषहरूलाई प्रकारका आधारमा क्रमबद्ध गर्न सक्दछः एउटा सानो प्रिन्ट गर्न सकिने चिप जुन मानक ईंकजेट प्रिन्टरहरू प्रयोग गरेर सम्भवतः लगभग एक अमेरिकी सेन्टको लागतमा निर्माण गर्न सकिन्छ।",
+          "hyp": "सोमबार, स्ट्यानफोर्ड युनिभर्सिटी स्कूल अफ मेडिसिनका वैज्ञानिकहरूले नयाँ निदान उपकरणको आविष्कारको घोषणा गरे जसले कोशिकाहरूलाई प्रकारअनुसार क्रमबद्ध गर्न सक्छः एउटा सानो छाप्न सकिने चिप जुन मानक इंकजेट प्रिन्टरहरू प्रयोग गरेर सम्भवतः एक अमेरिकी प्रतिशतका लागि निर्माण गर्न सकिन्छ।"
+        },
+        {
+          "src": "Lead researchers say this may bring early detection of cancer, tuberculosis, HIV and malaria to patients in low-income countries, where the survival rates for illnesses such as breast cancer can be half those of richer countries.",
+          "ref": "धनी देशहरूको तुलनामा कम आय भएका देशहरूमा क्यान्सर, क्षयरोग, एचआईभी र मलेरियाको पहिचान लगाउन सक्छ भनेर स्तन क्यान्सर जस्ता रोगहरूबाट बाँच्ने दर आधा हुने प्रमुख अन्वेषकहरूको भनाइ छ।",
+          "hyp": "प्रमुख शोधकर्ताहरू भन्छन् कि यसले कम आय भएका देशहरूमा क्यान्सर, क्षयरोग, एचआइभी र मलेरियाको प्रारम्भिक पत्ता लगाउन सक्छ, जहाँ स्तन क्यान्सर जस्ता रोगहरूका लागि बाँच्ने दर धनी देशहरूको आधा हुन सक्छ।"
+        },
+        {
+          "src": "The JAS 39C Gripen crashed onto a runway at around 9:30 am local time (0230 UTC) and exploded, closing the airport to commercial flights.",
+          "ref": "JAS 39C ग्रिपेन स्थानीय समयअनुसार बिहान 9:30 बजे (0230 UTC) रनवेमा दुर्घटनाग्रस्त हुँदै विस्फोट हुन पुगेको थियो र जसले गर्दा विमानस्थलले व्यावसायिक उडानहरू बन्द गरेको थियो।",
+          "hyp": "जेएएस 39सी ग्रिपेन स्थानीय समयअनुसार बिहान 9ः30 बजे (0230 युटिसी) रनवेमा दुर्घटनाग्रस्त भयो र विस्फोट भयो, जसले विमानस्थललाई व्यावसायिक उडानहरूका लागि बन्द गऱ्यो।"
+        },
+        {
+          "src": "The pilot was identified as Squadron Leader Dilokrit Pattavee.",
+          "ref": "पाइलटलाई स्क्वाड्रोन नेता डिलोक्रिट पट्टावीको रूपमा पहिचान गरियो।",
+          "hyp": "पायलटको पहिचान स्क्वाड्रन लिडर दिलोक्रित पट्टावीका रूपमा गरिएको थियो।"
+        },
+        {
+          "src": "Local media reports an airport fire vehicle rolled over while responding.",
+          "ref": "स्थानीय मिडियाले प्रतिक्रियाको क्रममा विमानस्थलको अग्नि नियन्त्रक सवारी पल्टिएको सूचना दियो।",
+          "hyp": "स्थानीय मिडियाले प्रतिक्रिया दिँदै एयरपोर्ट फायर गाडी पल्टिएको रिपोर्ट गरेको छ।"
+        }
+      ]
+    },
+    "hi-en": {
+      "direction": "hi-en",
+      "src": "hin_Deva",
+      "tgt": "eng_Latn",
+      "model": "indic_en",
+      "bleu": 40.33,
+      "chrf": 62.94,
+      "chrf_plus_plus": 62.94,
+      "n": 50,
+      "latency_s": 17.08,
+      "latency_ms_per_sent": 341.5,
+      "examples": [
+        {
+          "src": "सोमवार को, स्टैनफ़ोर्ड यूनिवर्सिटी स्कूल ऑफ़ मेडिसिन के वैज्ञानिकों ने एक नए डायग्नोस्टिक उपकरण के आविष्कार की घोषणा की जो कोशिकाओं को उनके प्रकार के आधार पर छाँट सकता है: एक छोटी प्रिंट करने योग्य चिप जिसे स्टैण्डर्ड इंकजेट प्रिंटर का उपयोग करके लगभग एक अमेरिकी सेंट के लिए निर्मित किया जा सकता है.",
+          "ref": "On Monday, scientists from the Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a tiny printable chip that can be manufactured using standard inkjet printers for possibly about one U.S. cent each.",
+          "hyp": "On Monday, scientists at Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by their type: a small printable chip that can be manufactured using a standard inkjet printer for about one American cent."
+        },
+        {
+          "src": "शोधकर्ताओं ने कहा है कि यह अल्प आय वाले देशों में कैंसर, टीवी, एचआईवी और मलेरिया के रोगियों की आसानी से पहचान करेगा, जहाँ अमीर देशों की तुलना में स्तन कैंसर जैसी बीमारी में जीवित रहने की दर आधी हो सकती है.",
+          "ref": "Lead researchers say this may bring early detection of cancer, tuberculosis, HIV and malaria to patients in low-income countries, where the survival rates for illnesses such as breast cancer can be half those of richer countries.",
+          "hyp": "Researchers have said that this will make it easier to identify cancer, TV, HIV, and malaria patients in low-income countries, where survival rates for a disease like breast cancer may be half as high as in rich countries."
+        },
+        {
+          "src": "स्थानीय समय (0230 UTC) के मुताबिक करीब 9:30 बजे JAS 39C Gripen रनवे पर धमाके के साथ दुर्घटनाग्रस्त हो गया, जिसकी वजह से वाणिज्यिक उड़ानों के लिए हवाई अड्डे को बंद कर दिया गया.",
+          "ref": "The JAS 39C Gripen crashed onto a runway at around 9:30 am local time (0230 UTC) and exploded, closing the airport to commercial flights.",
+          "hyp": "At around 1: 30 local time (0230 UTC), the JAS 39C Gripen crashed with a blast on the runway, causing the airport to be closed to commercial flights."
+        },
+        {
+          "src": "पायलट की पहचान स्क्वाड्रन लीडर दिलोकृत पटावी के रूप में की गई.",
+          "ref": "The pilot was identified as Squadron Leader Dilokrit Pattavee.",
+          "hyp": "The pilot was identified as Squadron Leader Dilokrit Patawi."
+        },
+        {
+          "src": "स्थानीय मीडिया ने बताया है कि कार्रवाई करने के दौरान एयरपोर्ट का अग्निशामक वाहन लुढ़क गया था.",
+          "ref": "Local media reports an airport fire vehicle rolled over while responding.",
+          "hyp": "Local media have reported that the airport fire brigade vehicle rolled over during the operation."
+        }
+      ]
+    },
+    "en-hi": {
+      "direction": "en-hi",
+      "src": "eng_Latn",
+      "tgt": "hin_Deva",
+      "model": "en_indic",
+      "bleu": 39.23,
+      "chrf": 55.47,
+      "chrf_plus_plus": 55.47,
+      "n": 50,
+      "latency_s": 18.49,
+      "latency_ms_per_sent": 369.7,
+      "examples": [
+        {
+          "src": "On Monday, scientists from the Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a tiny printable chip that can be manufactured using standard inkjet printers for possibly about one U.S. cent each.",
+          "ref": "सोमवार को, स्टैनफ़ोर्ड यूनिवर्सिटी स्कूल ऑफ़ मेडिसिन के वैज्ञानिकों ने एक नए डायग्नोस्टिक उपकरण के आविष्कार की घोषणा की जो कोशिकाओं को उनके प्रकार के आधार पर छाँट सकता है: एक छोटी प्रिंट करने योग्य चिप जिसे स्टैण्डर्ड इंकजेट प्रिंटर का उपयोग करके लगभग एक अमेरिकी सेंट के लिए निर्मित किया जा सकता है.",
+          "hyp": "सोमवार को, स्टैनफोर्ड यूनिवर्सिटी स्कूल ऑफ मेडिसिन के वैज्ञानिकों ने एक नए नैदानिक उपकरण के आविष्कार की घोषणा की जो कोशिकाओं को प्रकार के अनुसार क्रमबद्ध कर सकता हैः एक छोटी छापने योग्य चिप जिसे संभवतः लगभग एक अमेरिकी प्रतिशत के लिए मानक इंकजेट प्रिंटर का उपयोग करके निर्मित किया जा सकता है।"
+        },
+        {
+          "src": "Lead researchers say this may bring early detection of cancer, tuberculosis, HIV and malaria to patients in low-income countries, where the survival rates for illnesses such as breast cancer can be half those of richer countries.",
+          "ref": "शोधकर्ताओं ने कहा है कि यह अल्प आय वाले देशों में कैंसर, टीवी, एचआईवी और मलेरिया के रोगियों की आसानी से पहचान करेगा, जहाँ अमीर देशों की तुलना में स्तन कैंसर जैसी बीमारी में जीवित रहने की दर आधी हो सकती है.",
+          "hyp": "प्रमुख शोधकर्ताओं का कहना है कि इससे कम आय वाले देशों में कैंसर, तपेदिक, एच. आई. वी. और मलेरिया का जल्द पता चल सकता है, जहां स्तन कैंसर जैसी बीमारियों के लिए जीवित रहने की दर अमीर देशों की तुलना में आधी हो सकती है।"
+        },
+        {
+          "src": "The JAS 39C Gripen crashed onto a runway at around 9:30 am local time (0230 UTC) and exploded, closing the airport to commercial flights.",
+          "ref": "स्थानीय समय (0230 UTC) के मुताबिक करीब 9:30 बजे JAS 39C Gripen रनवे पर धमाके के साथ दुर्घटनाग्रस्त हो गया, जिसकी वजह से वाणिज्यिक उड़ानों के लिए हवाई अड्डे को बंद कर दिया गया.",
+          "hyp": "जे. ए. एस. 39सी ग्रिपेन स्थानीय समयानुसार सुबह लगभग 9.30 बजे (0230 यू. टी. सी.) रनवे पर दुर्घटनाग्रस्त हो गया और विस्फोट हो गया, जिससे हवाई अड्डा वाणिज्यिक उड़ानों के लिए बंद हो गया।"
+        },
+        {
+          "src": "The pilot was identified as Squadron Leader Dilokrit Pattavee.",
+          "ref": "पायलट की पहचान स्क्वाड्रन लीडर दिलोकृत पटावी के रूप में की गई.",
+          "hyp": "पायलट की पहचान स्क्वाड्रन लीडर दिलोक्रित पट्टावी के रूप में की गई थी।"
+        },
+        {
+          "src": "Local media reports an airport fire vehicle rolled over while responding.",
+          "ref": "स्थानीय मीडिया ने बताया है कि कार्रवाई करने के दौरान एयरपोर्ट का अग्निशामक वाहन लुढ़क गया था.",
+          "hyp": "स्थानीय मीडिया ने बताया कि हवाई अड्डे पर आग बुझाने वाली एक गाड़ी पलट गई।"
+        }
+      ]
+    }
+  },
+  "secondary": null,
+  "failures": [],
+  "honorific_probe": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\benchmarks\\honorific_probe.json"
+}

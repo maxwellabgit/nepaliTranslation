@@ -1,0 +1,100 @@
+{
+  "description": "Hand-written EN probes for future formal (तपाईं-style) vs informal (तिमी-style) Nepali register switching.",
+  "notes": [
+    "formal ≈ respectful address (tapāī̃ / hajur register)",
+    "informal ≈ peer/familiar address (timī / tã register)",
+    "Expected surface forms are illustrative; gold MT may vary. Use for qualitative / classifier checks, not BLEU."
+  ],
+  "items": [
+    {
+      "id": "f01",
+      "register": "formal",
+      "en": "Could you please tell me where the station is?",
+      "expected_markers": ["तपाईं", "कृपया"]
+    },
+    {
+      "id": "f02",
+      "register": "formal",
+      "en": "Sir, would you like some tea?",
+      "expected_markers": ["तपाईं", "हजुर"]
+    },
+    {
+      "id": "f03",
+      "register": "formal",
+      "en": "I respectfully request that you review this document.",
+      "expected_markers": ["तपाईं", "कृपया"]
+    },
+    {
+      "id": "f04",
+      "register": "formal",
+      "en": "May I ask how you are feeling today?",
+      "expected_markers": ["तपाईं"]
+    },
+    {
+      "id": "f05",
+      "register": "formal",
+      "en": "Please wait here until the doctor arrives.",
+      "expected_markers": ["कृपया", "तपाईं"]
+    },
+    {
+      "id": "f06",
+      "register": "formal",
+      "en": "Would you be able to help me with this form?",
+      "expected_markers": ["तपाईं"]
+    },
+    {
+      "id": "f07",
+      "register": "formal",
+      "en": "Thank you for your kind assistance.",
+      "expected_markers": ["तपाईंको", "धन्यवाद"]
+    },
+    {
+      "id": "f08",
+      "register": "formal",
+      "en": "Where do you work, if I may ask?",
+      "expected_markers": ["तपाईं"]
+    },
+    {
+      "id": "i01",
+      "register": "informal",
+      "en": "Hey, where are you going?",
+      "expected_markers": ["तिमी", "तँ"]
+    },
+    {
+      "id": "i02",
+      "register": "informal",
+      "en": "Come on, hurry up!",
+      "expected_markers": ["तिमी", "तँ"]
+    },
+    {
+      "id": "i03",
+      "register": "informal",
+      "en": "Did you eat yet?",
+      "expected_markers": ["तिमीले", "खाइस्"]
+    },
+    {
+      "id": "i04",
+      "register": "informal",
+      "en": "Call me when you get home.",
+      "expected_markers": ["तिमी", "फोन गर्"]
+    },
+    {
+      "id": "i05",
+      "register": "informal",
+      "en": "Why didn't you tell me earlier?",
+      "expected_markers": ["तिमीले", "तँले"]
+    },
+    {
+      "id": "i06",
+      "register": "informal",
+      "en": "Let's hang out this evening.",
+      "expected_markers": ["हामी", "तिमी"]
+    },
+    {
+      "id": "i07",
+      "register": "informal",
+      "en": "You look tired, bro.",
+      "expected_markers": ["तिमी", "थाकेको"]
+    }
+  ]
+}
