@@ -7,6 +7,7 @@ import {
   formatNepaliScript,
   looksLikeRomanNepali,
 } from './romanize';
+import { splitSentences } from './sentences';
 
 export type Direction = 'en-ne' | 'ne-en';
 export type Formality = 'formal' | 'informal';
@@ -54,8 +55,23 @@ const PHRASES: [string, string][] = [
   ['i need help', 'मलाई मद्दत चाहियो'],
   ['how are you', 'तपाईंलाई कस्तो छ'],
   ["how are you?", 'तपाईंलाई कस्तो छ?'],
+  ['what are you doing', 'तपाईं के गर्दै हुनुहुन्छ'],
+  ['what are you doing?', 'तपाईं के गर्दै हुनुहुन्छ?'],
+  ['what are you doing today', 'तपाईं आज के गर्दै हुनुहुन्छ'],
+  ['what are you doing today?', 'तपाईं आज के गर्दै हुनुहुन्छ?'],
+  ['what are you doing right now', 'तपाईं अहिले के गर्दै हुनुहुन्छ'],
   ['i am fine', 'म ठिक छु'],
   ["i'm fine", 'म ठिक छु'],
+  ["i'm good", 'म ठिक छु'],
+  ['where are you', 'तपाईं कहाँ हुनुहुन्छ'],
+  ['where are you?', 'तपाईं कहाँ हुनुहुन्छ?'],
+  ['where are you from', 'तपाईं कहाँबाट हुनुहुन्छ'],
+  ['where are you from?', 'तपाईं कहाँबाट हुनुहुन्छ?'],
+  ['nice to see you', 'तपाईंलाई भेटेर खुशी लाग्यो'],
+  ['see you later', 'पछि भेटौंला'],
+  ['see you', 'भेटौंला'],
+  ['welcome', 'स्वागत छ'],
+  ['good to meet you', 'तपाईंलाई भेटेर खुशी लाग्यो'],
   ['good morning', 'शुभ प्रभात'],
   ['good afternoon', 'शुभ दिउँसो'],
   ['good evening', 'शुभ सन्ध्या'],
@@ -214,6 +230,7 @@ const EN_WORDS: Record<string, string> = {
   do: 'गर्नु',
   does: 'गर्छ',
   did: 'गर्यो',
+  doing: 'गर्दै',
   not: 'होइन',
   and: 'र',
   or: 'वा',
@@ -384,8 +401,37 @@ function norm(s: string): string {
     .replace(/\s+/g, ' ');
 }
 
+/** Roman Nepali → English (common traveler spellings). */
+const ROMAN_NE_PHRASES: [string, string][] = [
+  ['namaste', 'hello'],
+  ['namaskar', 'hello'],
+  ['dhanyabad', 'thank you'],
+  ['dhanyavaad', 'thank you'],
+  ['kripya', 'please'],
+  ['kripaya', 'please'],
+  ['maaf garnuhos', 'sorry'],
+  ['hoina', 'no'],
+  ['ho', 'yes'],
+  ['thik cha', 'ok'],
+  ['thik chha', 'ok'],
+  ['kasto cha', 'how are you'],
+  ['tapai lai kasto cha', 'how are you'],
+  ['timi lai kasto cha', 'how are you'],
+  ['ma thik chu', 'i am fine'],
+  ['ma thik chhu', 'i am fine'],
+  ['mero nam', 'my name is'],
+  ['tapai ko nam ke ho', "what's your name"],
+  ['swagat cha', 'welcome'],
+  ['bida', 'goodbye'],
+];
+
 function phraseLookup(text: string, direction: Direction): string | null {
   const n = norm(text);
+  if (direction === 'ne-en') {
+    for (const [roman, en] of ROMAN_NE_PHRASES) {
+      if (norm(roman) === n) return en;
+    }
+  }
   for (const [en, ne] of PHRASES) {
     if (direction === 'en-ne' && norm(en) === n) return ne;
     if (direction === 'ne-en' && norm(ne) === n) return en;
@@ -477,6 +523,36 @@ export function translateOnDevice(
   return {
     text: out,
     method: hit ? 'phrase' : 'lexicon',
+    direction,
+  };
+}
+
+/**
+ * Translate complete sentences separately (matches IndicTrans2 sentence unit),
+ * then join. Remainder without terminal punctuation is still translated once.
+ */
+export function translateBySentences(
+  text: string,
+  preferred: Direction,
+  opts: TranslateOptions = {},
+): TranslateResult {
+  const { complete, remainder } = splitSentences(text);
+  const parts = remainder ? [...complete, remainder] : complete;
+  if (parts.length <= 1) {
+    return translateOnDevice(text, preferred, opts);
+  }
+  let direction = preferred;
+  const out: string[] = [];
+  let method: TranslateResult['method'] = 'phrase';
+  for (const part of parts) {
+    const r = translateOnDevice(part, direction, opts);
+    direction = r.direction;
+    if (r.method === 'lexicon') method = 'lexicon';
+    if (r.text.trim()) out.push(r.text.trim());
+  }
+  return {
+    text: out.join(' '),
+    method,
     direction,
   };
 }

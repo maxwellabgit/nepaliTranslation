@@ -13,6 +13,17 @@ Private holdout for product quality decisions. **~100 base + premium word-choice
 
 **v1 languages:** English ↔ Nepali only. NPHC 2021: Nepali is the largest mother tongue (~44.9%) and the national lingua franca; Maithili / Bhojpuri / Tharu are later expansions.
 
+## In-app human review (current)
+
+1. Pack: `python benchmarks/pack_gold_for_app.py` → `mobile/assets/gold/review_pack.json`
+2. In the app: top-right **▣** → password `1234` → mark **Correct** or edit + **Save & complete**
+3. **Sentence-level:** multi-sentence rows are flagged (IT2 FT unit = one sentence; model max 256 positions, FT truncates ~96). Prefer **Split into N pairs** when both sides align, or trim to one sentence.
+4. Export JSON → `python benchmarks/apply_app_reviews.py export.json` (writes `human_gold` + `__sN` split children)
+5. After **all** benchmark classes are reviewed, open training-data review.
+6. Provenance / dataset trust ladder: pack `dataset_catalog` + `training/ARCHITECTURE.md`.
+
+Settled model for FT + edge: **IndicTrans2 dist-200M (MIT)**.
+
 ## Layout
 
 ```

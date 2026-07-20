@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-07-20T19:21:46.651178+00:00",
+  "model_family": "IndicTrans2-dist-200M",
+  "license": "MIT",
+  "commercial_ship": true,
+  "systems": [
+    {
+      "system": "phrasebook",
+      "overall_chrf": 0.1139,
+      "seconds": 0.0,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.1573,
+          "tapai_rate": 0.0296,
+          "timi_rate": 0.0
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.1468,
+          "tapai_rate": 0.0,
+          "timi_rate": 0.0292
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.1502,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.0,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    },
+    {
+      "system": "it2_base",
+      "overall_chrf": 0.5083,
+      "seconds": 122.8,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.6721,
+          "tapai_rate": 0.2074,
+          "timi_rate": 0.0
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.5849,
+          "tapai_rate": 0.2044,
+          "timi_rate": 0.0
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.6988,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.0742,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    },
+    {
+      "system": "it2_ft",
+      "overall_chrf": 0.51,
+      "seconds": 238.9,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.6309,
+          "tapai_rate": 0.0593,
+          "timi_rate": 0.1481
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.5991,
+          "tapai_rate": 0.0657,
+          "timi_rate": 0.146
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.6908,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.1162,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    },
+    {
+      "system": "it2_ft_notags",
+      "overall_chrf": 0.5082,
+      "seconds": 238.0,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.6304,
+          "tapai_rate": 0.0741,
+          "timi_rate": 0.1259
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.5925,
+          "tapai_rate": 0.073,
+          "timi_rate": 0.1241
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.6908,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.1162,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    }
+  ]
+}

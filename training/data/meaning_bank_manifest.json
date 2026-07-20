@@ -1,0 +1,43 @@
+{
+  "meanings_n": 1422,
+  "train_ex": 4918,
+  "val_ex": 258,
+  "max_train_ex_cap": 10000,
+  "by_surface": {
+    "core_grammar": 350,
+    "pronouns_honorifics": 100,
+    "questions_requests": 180,
+    "travel": 120,
+    "health": 72,
+    "shopping": 100,
+    "government": 120,
+    "family": 54,
+    "numbers_money": 100,
+    "code_switch_names": 5,
+    "asr_noise": 1,
+    "conversation_long": 220
+  },
+  "schema": [
+    "meaning_id",
+    "english",
+    "ne_formal",
+    "ne_informal",
+    "roman_formal",
+    "roman_informal"
+  ],
+  "control_tokens": {
+    "product": [
+      "<en><ne><formal>",
+      "<en><ne><informal>",
+      "<ne><en>"
+    ],
+    "model": [
+      "<formal>",
+      "<informal>",
+      "(direction via en-indic / indic-en checkpoint)"
+    ],
+    "note": "IndicTrans2 tokenizer treats <en> as a language tag; runtime maps product → model prefixes."
+  },
+  "architecture": "one_mt_devanagari_canonical_plus_roman_layers",
+  "bank_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\meaning_bank.jsonl"
+}

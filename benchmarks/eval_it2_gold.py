@@ -24,6 +24,8 @@ BASE_EN_NE = REPO / "training" / "artifacts" / "it2_en_indic_merged"
 BASE_NE_EN = REPO / "training" / "artifacts" / "it2_indic_en_merged"
 FT_EN_NE = REPO / "training" / "artifacts" / "it2_en_indic_gold_ft"
 FT_NE_EN = REPO / "training" / "artifacts" / "it2_indic_en_gold_ft"
+MEANINGS_EN_NE = REPO / "training" / "artifacts" / "it2_meanings_en_ne_lora"
+MEANINGS_NE_EN = REPO / "training" / "artifacts" / "it2_meanings_ne_en_lora"
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -60,7 +62,15 @@ def chr_f(pred: str, ref: str, n: int = 3) -> float:
     return 2 * prec * rec / (prec + rec)
 
 
-def make_it2(en_ne_dir: Path, ne_en_dir: Path, use_formality_prefix: bool):
+def make_it2(
+    en_ne_dir: Path,
+    ne_en_dir: Path,
+    use_formality_prefix: bool,
+    tok_en_ne_dir: Path | None = None,
+    tok_ne_en_dir: Path | None = None,
+    adapter_en_ne: Path | None = None,
+    adapter_ne_en: Path | None = None,
+):
     import torch
     from IndicTransToolkit import IndicProcessor
     from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
@@ -68,16 +78,27 @@ def make_it2(en_ne_dir: Path, ne_en_dir: Path, use_formality_prefix: bool):
     ip = IndicProcessor(inference=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     models = {}
-    for direction, path in [("en-ne", en_ne_dir), ("ne-en", ne_en_dir)]:
+    for direction, path, tok_path, adapter in [
+        ("en-ne", en_ne_dir, tok_en_ne_dir or en_ne_dir, adapter_en_ne),
+        ("ne-en", ne_en_dir, tok_ne_en_dir or ne_en_dir, adapter_ne_en),
+    ]:
         if not path.exists():
             print("missing", path, flush=True)
             continue
-        tok = AutoTokenizer.from_pretrained(str(path), trust_remote_code=True)
+        # Always load tokenizer from the clean base — FT folders break custom kwargs.
+        tok = AutoTokenizer.from_pretrained(str(tok_path), trust_remote_code=True)
         model = AutoModelForSeq2SeqLM.from_pretrained(
             str(path),
             trust_remote_code=True,
             torch_dtype=torch.float16 if device == "cuda" else torch.float32,
-        ).to(device)
+        )
+        if adapter and adapter.exists():
+            from peft import PeftModel
+
+            # IndicTrans2 merge_and_unload corrupts weights; keep LoRA attached.
+            model = PeftModel.from_pretrained(model, str(adapter))
+            print(f"loaded LoRA adapter {adapter}", flush=True)
+        model = model.to(device)
         model.eval()
         models[direction] = (tok, model)
 
@@ -111,6 +132,14 @@ def make_it2(en_ne_dir: Path, ne_en_dir: Path, use_formality_prefix: bool):
             return dec[0] if dec else ""
 
     return translate
+
+
+def latest_adapter(ft_dir: Path) -> Path | None:
+    preferred = ft_dir / "adapter" / "adapter_config.json"
+    if preferred.exists():
+        return preferred.parent
+    adapters = sorted(ft_dir.rglob("adapter_config.json"))
+    return adapters[-1].parent if adapters else None
 
 
 def score(name: str, fn) -> dict:
@@ -175,15 +204,58 @@ def main() -> int:
                 score("it2_base", make_it2(BASE_EN_NE, BASE_NE_EN, use_formality_prefix=False))
             )
         elif name == "it2_ft":
-            if not FT_EN_NE.exists() or not FT_NE_EN.exists():
-                print("FT checkpoints missing — skip", flush=True)
+            ad_en = latest_adapter(FT_EN_NE)
+            ad_ne = latest_adapter(FT_NE_EN)
+            if not ad_en or not ad_ne:
+                print("FT adapters missing — skip", flush=True)
                 continue
             results["systems"].append(
-                score("it2_ft", make_it2(FT_EN_NE, FT_NE_EN, use_formality_prefix=True))
+                score(
+                    "it2_ft",
+                    make_it2(
+                        BASE_EN_NE,
+                        BASE_NE_EN,
+                        use_formality_prefix=True,
+                        adapter_en_ne=ad_en,
+                        adapter_ne_en=ad_ne,
+                    ),
+                )
             )
         elif name == "it2_ft_notags":
+            ad_en = latest_adapter(FT_EN_NE)
+            ad_ne = latest_adapter(FT_NE_EN)
+            if not ad_en or not ad_ne:
+                print("FT adapters missing — skip", flush=True)
+                continue
             results["systems"].append(
-                score("it2_ft_notags", make_it2(FT_EN_NE, FT_NE_EN, use_formality_prefix=False))
+                score(
+                    "it2_ft_notags",
+                    make_it2(
+                        BASE_EN_NE,
+                        BASE_NE_EN,
+                        use_formality_prefix=False,
+                        adapter_en_ne=ad_en,
+                        adapter_ne_en=ad_ne,
+                    ),
+                )
+            )
+        elif name == "it2_meanings":
+            ad_en = latest_adapter(MEANINGS_EN_NE)
+            ad_ne = latest_adapter(MEANINGS_NE_EN)
+            if not ad_en or not ad_ne:
+                print("meaning-bank adapters missing — skip", flush=True)
+                continue
+            results["systems"].append(
+                score(
+                    "it2_meanings",
+                    make_it2(
+                        BASE_EN_NE,
+                        BASE_NE_EN,
+                        use_formality_prefix=True,
+                        adapter_en_ne=ad_en,
+                        adapter_ne_en=ad_ne,
+                    ),
+                )
             )
 
     OUT.mkdir(parents=True, exist_ok=True)

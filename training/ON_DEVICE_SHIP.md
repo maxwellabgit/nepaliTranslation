@@ -53,3 +53,16 @@ npx eas-cli build --platform all --profile production
 | p95 latency (20 tok) | <1.5s mid-range phone |
 | Peak RAM | <700 MB |
 | Crash rate | 0 on smoke suite |
+
+## Serving: our fine-tune on edge compute
+
+See full write-up in `training/ARCHITECTURE.md`. Summary: IndicTrans2 dist-200M MIT LoRA, served on-device/edge — not a third-party MT API.
+
+`PeftModel.merge_and_unload()` **corrupts** IndicTrans2 generation (empty / `" "` loops). Keep adapters and load:
+
+```python
+base = AutoModelForSeq2SeqLM.from_pretrained(BASE, trust_remote_code=True)
+model = PeftModel.from_pretrained(base, ADAPTER_DIR)
+```
+
+Ship ONNX from the **base** dist-200M first (strong on gold), then fuse adapters only with a verified export path — never ship a broken merged safetensors folder.

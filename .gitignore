@@ -19,6 +19,13 @@ benchmarks/__pycache__/
 # Fine-tuned / merged model weights (multi-GB; keep scripts + small data in git)
 training/artifacts/
 
+# Large harvested / scraped corpora (rebuild from scripts)
+training/data/raw/
+
+# Transient bench logs
+benchmarks/results/*.log
+benchmarks/results/*.err.log
+
 # Node / mobile (root safety)
 node_modules/
 .expo/

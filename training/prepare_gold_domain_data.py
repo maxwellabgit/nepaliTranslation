@@ -11,9 +11,13 @@ import hashlib
 import json
 import random
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from training.sentence_split import expand_pair_to_sentences  # noqa: E402
+
 TRAIN_IN = Path(__file__).resolve().parent / "data" / "train_en_ne.jsonl"
 OUT_DIR = Path(__file__).resolve().parent / "data"
 GOLD_BLOCK = ROOT / "benchmarks" / "data" / "gold_train_blocklist.json"
@@ -158,7 +162,8 @@ def ok_pair(en: str, ne: str, blocked: set[str]) -> bool:
     en, ne = en.strip(), ne.strip()
     if len(en) < 6 or len(ne) < 6:
         return False
-    if len(en) > 120 or len(ne) > 140:
+    # Sentence-level FT: keep short (IT2 FT truncates ~96 tokens; model max 256).
+    if len(en) > 160 or len(ne) > 180:
         return False
     if norm(en) in blocked or norm(ne) in blocked:
         return False
@@ -178,20 +183,22 @@ def add(
     source: str,
     formality: str = "neutral",
 ) -> None:
-    if not ok_pair(en, ne, blocked):
-        return
-    key = hashlib.sha1(f"{norm(en)}|{norm(ne)}|{formality}".encode()).hexdigest()[:16]
-    if key in seen:
-        return
-    seen.add(key)
-    rows.append(
-        {
-            "eng_Latn": en.strip(),
-            "npi_Deva": ne.strip(),
-            "source": source,
-            "formality": formality,
-        }
-    )
+    for e, n in expand_pair_to_sentences(en, ne):
+        if not ok_pair(e, n, blocked):
+            continue
+        key = hashlib.sha1(f"{norm(e)}|{norm(n)}|{formality}".encode()).hexdigest()[:16]
+        if key in seen:
+            continue
+        seen.add(key)
+        rows.append(
+            {
+                "eng_Latn": e.strip(),
+                "npi_Deva": n.strip(),
+                "source": source,
+                "formality": formality,
+                "unit": "sentence",
+            }
+        )
 
 
 def main() -> None:
@@ -236,6 +243,30 @@ def main() -> None:
             ne = str(r.get("tgt") or r.get("npi_Deva") or "")
             add(rows, seen, blocked, en, ne, "bpcc_daily", "neutral")
         print(f"after bpcc={len(rows)}", flush=True)
+
+    # 3b) Global Voices journalism (doc-aligned) + law/gov UI seeds if present
+    for extra_name, src_tag in (
+        ("train_global_voices_en_ne.jsonl", "global_voices"),
+        ("train_law_gov_en_ne.jsonl", "law_gov_ui"),
+        ("train_user_conversation_seeds.jsonl", "user_conv_seed"),
+    ):
+        extra_path = OUT_DIR / extra_name
+        if not extra_path.exists():
+            continue
+        n0 = len(rows)
+        for line in extra_path.open(encoding="utf-8"):
+            r = json.loads(line)
+            formality = r.get("formality") or "neutral"
+            add(
+                rows,
+                seen,
+                blocked,
+                r.get("eng_Latn", ""),
+                r.get("npi_Deva", ""),
+                src_tag,
+                formality if formality in ("formal", "informal", "neutral") else "neutral",
+            )
+        print(f"after {src_tag}={len(rows)} (+{len(rows)-n0})", flush=True)
 
     # 4) Formal/informal expansion for short formal rows
     extra: list[dict] = []

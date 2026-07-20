@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-07-20T20:59:03.579258+00:00",
+  "model_family": "IndicTrans2-dist-200M",
+  "license": "MIT",
+  "commercial_ship": true,
+  "systems": [
+    {
+      "system": "it2_base",
+      "overall_chrf": 0.5083,
+      "seconds": 85.5,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.6721,
+          "tapai_rate": 0.2074,
+          "timi_rate": 0.0
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.5849,
+          "tapai_rate": 0.2044,
+          "timi_rate": 0.0
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.6988,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.0742,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    },
+    {
+      "system": "it2_meanings",
+      "overall_chrf": 0.4913,
+      "seconds": 213.4,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.6043,
+          "tapai_rate": 0.1111,
+          "timi_rate": 0.1037
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.5815,
+          "tapai_rate": 0.1095,
+          "timi_rate": 0.1022
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.702,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.0744,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    }
+  ]
+}

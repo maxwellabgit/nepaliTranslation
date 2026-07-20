@@ -4,11 +4,12 @@ import { StatusBar } from 'expo-status-bar';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
+import { GoldReviewScreen } from './src/screens/GoldReviewScreen';
 import type { HistoryItem } from './src/storage/phrasebook';
 import { colors } from './src/theme';
 
 type Mode = 'auto' | 'conversation';
-type Overlay = 'history' | null;
+type Overlay = 'history' | 'gold' | null;
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('auto');
@@ -33,17 +34,27 @@ export default function App() {
     );
   }
 
+  if (overlay === 'gold') {
+    return (
+      <SafeAreaView style={styles.root}>
+        <StatusBar style="dark" />
+        <GoldReviewScreen onClose={() => setOverlay(null)} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.root}>
       <StatusBar style="dark" />
       <View style={styles.body}>
         {mode === 'conversation' ? (
-          <ConversationScreen />
+          <ConversationScreen onOpenGoldReview={() => setOverlay('gold')} />
         ) : (
           <HomeScreen
             key={seedKey}
             seed={seed}
             onOpenHistory={() => setOverlay('history')}
+            onOpenGoldReview={() => setOverlay('gold')}
           />
         )}
       </View>

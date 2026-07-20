@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-07-20T20:38:23.810047+00:00",
+  "global_voices": {
+    "path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\train_global_voices_en_ne.jsonl",
+    "n": 1000,
+    "stats": {
+      "n_link_groups": 158,
+      "n_articles_with_pairs": 156,
+      "n_selected": 1000,
+      "skipped": {
+        "length_filter": 295,
+        "non_1to1": 1010,
+        "title_only": 1,
+        "parse_error": 2
+      },
+      "translators": [
+        "Bijoy",
+        "Deb Tamrakar",
+        "Dilli Rai",
+        "Jeevan Karki",
+        "Rahita Pachhai",
+        "Sanjib Chaudhary",
+        "Suban Dawadi"
+      ]
+    },
+    "attribution": "Global Voices volunteer translators (TRANSLATOR field); OPUS 2018Q4 packaging",
+    "verification": "cesAlign fromDoc↔toDoc article pairs + 1-1 sentence links only"
+  },
+  "law_government": {
+    "path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\train_law_gov_en_ne.jsonl",
+    "n": 60,
+    "live_harvest": "blocked_403",
+    "csv_ingest": {
+      "path": "c:\\Users\\maxwe\\Downloads\\nepali_translation_gold_candidates.csv",
+      "n_rows": 200,
+      "columns_ok": true,
+      "by_domain": {
+        "government_ui": 50,
+        "common_conversation": 150
+      },
+      "issues_sample": [],
+      "n_issues": 0,
+      "structure_verdict": "ok_for_train_with_provenance",
+      "notes": "government_ui rows: provenance_uncertain — Law Commission live site returned 403/404 from this environment; do not treat as scraped official text. common_conversation rows: assistant_curated user_project_seed — fine as FT seed after gold-blocklist scrub; still mark native_review_required."
+    },
+    "source_url": "https://lawcommission.gov.np/",
+    "wayback_prose": "appended_provisional_paragraph_pairs"
+  },
+  "next_step": "Merge into prepare_gold_domain_data.py sources or concat into train_gold_domain after sentence_split + gold blocklist."
+}

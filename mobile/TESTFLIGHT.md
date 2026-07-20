@@ -2,12 +2,18 @@
 
 Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight. No server URL or tunnel configuration is required.
 
-**Current release:** app version **1.4.1** (Auto + Conversation, Formal/देवनागरी light switches, Pass flow).
+**Current release:** app version **1.4.2** — Auto + Conversation, Formal/देवनागरी switches, sentence-aware translate, Gold Review (▣, password `1234`).
 
 ## Build & submit
 
 ```powershell
 cd mobile
+npx eas build --platform ios --profile production --auto-submit
+```
+
+Or stepwise:
+
+```powershell
 npx eas build --platform ios --profile production
 npx eas submit --platform ios --latest
 ```
@@ -18,7 +24,7 @@ Apple processing usually takes **5–15 minutes** after submit succeeds.
 
 1. Open **TestFlight** → pull to refresh **NepTranslate**
 2. Tap **Update** (or install if new)
-3. Confirm the build version in the app status line
+3. Confirm **v1.4.2** on the Auto screen footer (`v1.4.2 (N) · offline`)
 
 If stuck on an old build: delete the app → reinstall from TestFlight.
 
@@ -31,6 +37,8 @@ iOS rejects IPAs missing required `Info.plist` usage descriptions (e.g. micropho
 ## What to verify
 
 - **Normal** — type and speak; EN↔NE auto-detect
-- **Conversation** — Handoff + Speak; large latest translation
+- **Conversation** — continuous speak; sentences translate as you finish them; Pass flushes remainder
 - **Formal / Informal** — Nepali register when English is the source
-- **Offline** — airplane mode after models are on device; translate still works
+- **Devanagari / Roman** — script toggle on Nepali output
+- **Gold Review** — ▣ top-right → password `1234` → Correct / edit / Export
+- **Offline** — airplane mode; phrasebook translate still works

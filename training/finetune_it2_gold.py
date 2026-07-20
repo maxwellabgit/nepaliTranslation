@@ -187,27 +187,11 @@ def train_one(
         trainer = Seq2SeqTrainer(**kw, tokenizer=tok)
     trainer.train()
 
-    merged = model.merge_and_unload()
-    merged.save_pretrained(str(out_dir))
-    tok.save_pretrained(str(out_dir))
-    for name in (
-        "configuration_indictrans.py",
-        "modeling_indictrans.py",
-        "tokenization_indictrans.py",
-        "dict.SRC.json",
-        "dict.TGT.json",
-        "model.SRC",
-        "model.TGT",
-        "generation_config.json",
-        "special_tokens_map.json",
-        "tokenizer_config.json",
-        "config.json",
-    ):
-        src = model_dir / name
-        if src.exists():
-            dst = out_dir / name
-            if not dst.exists() or name.endswith(".py"):
-                dst.write_bytes(src.read_bytes())
+    # Save LoRA adapters only. IndicTrans2 merge_and_unload corrupts generation.
+    adapter_dir = out_dir / "adapter"
+    adapter_dir.mkdir(parents=True, exist_ok=True)
+    model.save_pretrained(str(adapter_dir))
+    tok.save_pretrained(str(adapter_dir))
 
     meta = {
         "direction": direction,
@@ -219,9 +203,11 @@ def train_one(
         "train_n": len(train_rows),
         "val_n": len(val_rows),
         "lr": args.lr,
+        "adapter_dir": str(adapter_dir),
+        "note": "Load with PeftModel.from_pretrained(base, adapter_dir). Do not merge_and_unload.",
     }
     (out_dir / "ft_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
-    print(f"[it2-gold] saved {out_dir}", flush=True)
+    print(f"[it2-gold] saved adapter {adapter_dir}", flush=True)
 
 
 def main() -> int:

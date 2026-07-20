@@ -19,6 +19,7 @@ import {
   type Formality,
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
+import { takeNewCompleteSentences } from '../mt/sentences';
 import { colors } from '../theme';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 
@@ -35,10 +36,15 @@ type Turn = {
 const MAX_RETRY = 5;
 
 /**
- * Conversational mode: pass the phone between English and Nepali speakers.
- * Longer continuous listening; Pass finalizes + flips side. Last 5 bubbles retryable.
+ * Conversational mode: continuous listen → translate each natural sentence
+ * (IndicTrans2 is sentence-level; max positions 256, FT truncates ~96).
+ * Pass flushes remainder and flips side.
  */
-export function ConversationScreen() {
+export function ConversationScreen({
+  onOpenGoldReview,
+}: {
+  onOpenGoldReview?: () => void;
+}) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [side, setSide] = useState<Side>('en');
   const [listening, setListening] = useState(false);
@@ -48,40 +54,99 @@ export function ConversationScreen() {
   const [devaOn, setDevaOn] = useState(true);
   const pendingSide = useRef<Side>('en');
   const interimRef = useRef('');
+  const emittedCountRef = useRef(0);
   const scrollRef = useRef<ScrollView>(null);
   const passingRef = useRef(false);
   const prefsLoadedRef = useRef(false);
+  const listeningRef = useRef(false);
+  const formalityRef = useRef<Formality>('formal');
+  const scriptRef = useRef<NepaliScript>('deva');
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
+  formalityRef.current = formality;
+  scriptRef.current = script;
 
-  const commitUtterance = useCallback(
-    (text: string, from: Side) => {
-      const t = text.trim();
-      if (!t) return null;
-      const direction = from === 'en' ? 'en-ne' : 'ne-en';
-      // Always store Devanagari for NE output so script toggle can reformat.
-      const result = translateOnDevice(t, direction, {
-        formality,
-        script: 'deva',
-      });
-      const turn: Turn = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        from,
-        original: t,
-        translatedDevaOrEn: result.text,
-      };
-      setTurns((prev) => [...prev, turn]);
+  const commitSentence = useCallback((text: string, from: Side, speakAloud: boolean) => {
+    const t = text.trim();
+    if (!t) return null;
+    const direction = from === 'en' ? 'en-ne' : 'ne-en';
+    const result = translateOnDevice(t, direction, {
+      formality: formalityRef.current,
+      script: 'deva',
+    });
+    const turn: Turn = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      from,
+      original: t,
+      translatedDevaOrEn: result.text,
+    };
+    setTurns((prev) => [...prev, turn]);
+    if (speakAloud) {
       const speakText =
-        from === 'en' ? formatNepaliScript(result.text, script) : result.text;
+        from === 'en'
+          ? formatNepaliScript(result.text, scriptRef.current)
+          : result.text;
       Speech.stop();
       Speech.speak(speakText, {
         language: from === 'en' ? 'ne-NP' : 'en-US',
         rate: 0.95,
       });
-      return turn;
+    }
+    return turn;
+  }, []);
+
+  const ingestTranscript = useCallback(
+    (text: string, from: Side, speakNew: boolean) => {
+      const trimmed = text.trim();
+      interimRef.current = trimmed;
+      const { newSentences, nextEmittedCount, remainder } = takeNewCompleteSentences(
+        trimmed,
+        emittedCountRef.current,
+      );
+      for (const sent of newSentences) {
+        commitSentence(sent, from, speakNew);
+      }
+      emittedCountRef.current = nextEmittedCount;
+      setInterim(remainder);
     },
-    [formality, script],
+    [commitSentence],
+  );
+
+  const flushRemainder = useCallback(
+    (from: Side, speakAloud: boolean) => {
+      const full = interimRef.current.trim();
+      if (full) {
+        const drained = takeNewCompleteSentences(full, emittedCountRef.current);
+        for (const sent of drained.newSentences) {
+          commitSentence(sent, from, false);
+        }
+        const leftover = drained.remainder.trim();
+        if (leftover) {
+          commitSentence(leftover, from, speakAloud);
+        } else if (speakAloud) {
+          setTurns((prev) => {
+            const last = [...prev].reverse().find((t) => t.from === from);
+            if (last) {
+              const speakText =
+                from === 'en'
+                  ? formatNepaliScript(last.translatedDevaOrEn, scriptRef.current)
+                  : last.translatedDevaOrEn;
+              Speech.stop();
+              Speech.speak(speakText, {
+                language: from === 'en' ? 'ne-NP' : 'en-US',
+                rate: 0.95,
+              });
+            }
+            return prev;
+          });
+        }
+      }
+      interimRef.current = '';
+      setInterim('');
+      emittedCountRef.current = 0;
+    },
+    [commitSentence],
   );
 
   useEffect(() => {
@@ -100,33 +165,32 @@ export function ConversationScreen() {
   useSpeechRecognitionEvent('result', (event) => {
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
     if (!text) return;
-    interimRef.current = text;
-    setInterim(text);
-    // In conversation we keep listening until Pass — only update interim.
-    // Some platforms still send isFinal mid-stream; ignore commit until Pass.
+    // Live sentence chunks while listening — no TTS (avoids fighting the mic).
+    ingestTranscript(text, pendingSide.current, false);
   });
 
   useSpeechRecognitionEvent('error', () => {
     if (!passingRef.current) {
+      listeningRef.current = false;
       setListening(false);
     }
   });
 
   useSpeechRecognitionEvent('end', () => {
-    // If continuous session ends unexpectedly while still "listening", restart
-    // unless we are in Pass flow.
     if (passingRef.current) return;
-    if (!listening) return;
-    // Attempt soft restart for long batches
+    if (!listeningRef.current) return;
     void (async () => {
       try {
+        await new Promise((r) => setTimeout(r, 120));
+        if (!listeningRef.current || passingRef.current) return;
         ExpoSpeechRecognitionModule.start({
           lang: pendingSide.current === 'en' ? 'en-US' : 'ne-NP',
           interimResults: true,
           continuous: true,
-          requiresOnDeviceRecognition: true,
+          requiresOnDeviceRecognition: false,
         });
       } catch {
+        listeningRef.current = false;
         setListening(false);
       }
     })();
@@ -136,30 +200,46 @@ export function ConversationScreen() {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [turns, interim, side]);
 
-  const stopListening = () => {
+  const hardStopRecognition = () => {
     try {
-      ExpoSpeechRecognitionModule.stop();
+      const mod = ExpoSpeechRecognitionModule as {
+        abort?: () => void;
+        stop?: () => void;
+      };
+      if (typeof mod.abort === 'function') mod.abort();
+      else if (typeof mod.stop === 'function') mod.stop();
     } catch {
       /* ignore */
     }
+  };
+
+  const stopListening = () => {
+    hardStopRecognition();
+    listeningRef.current = false;
     setListening(false);
   };
 
   const startListening = async () => {
     try {
+      hardStopRecognition();
+      await new Promise((r) => setTimeout(r, 180));
+
       const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
       if (!perm.granted) return;
       pendingSide.current = side;
       interimRef.current = '';
+      emittedCountRef.current = 0;
       setInterim('');
+      listeningRef.current = true;
       setListening(true);
       ExpoSpeechRecognitionModule.start({
         lang: side === 'en' ? 'en-US' : 'ne-NP',
         interimResults: true,
         continuous: true,
-        requiresOnDeviceRecognition: true,
+        requiresOnDeviceRecognition: false,
       });
     } catch {
+      listeningRef.current = false;
       setListening(false);
     }
   };
@@ -169,26 +249,22 @@ export function ConversationScreen() {
     passingRef.current = true;
     setPendingTranslate(true);
     const from = side;
-    const spoken = (interimRef.current || interim).trim();
 
     stopListening();
 
     try {
-      if (spoken) {
-        // Allow a brief moment for final STT flush
-        await new Promise((r) => setTimeout(r, 350));
-        const finalText = (interimRef.current || spoken).trim();
-        if (finalText) {
-          commitUtterance(finalText, from);
-        }
-        setInterim('');
-        interimRef.current = '';
-      }
+      await new Promise((r) => setTimeout(r, 280));
+      flushRemainder(from, true);
       setSide(from === 'en' ? 'ne' : 'en');
     } finally {
       setPendingTranslate(false);
       passingRef.current = false;
     }
+  };
+
+  const onStopSpeak = () => {
+    stopListening();
+    // Keep remainder visible; user can Pass to flush+flip or Speak again.
   };
 
   const retryTurn = (turn: Turn) => {
@@ -203,9 +279,7 @@ export function ConversationScreen() {
       ),
     );
     const speakText =
-      turn.from === 'en'
-        ? formatNepaliScript(result.text, script)
-        : result.text;
+      turn.from === 'en' ? formatNepaliScript(result.text, script) : result.text;
     Speech.stop();
     Speech.speak(speakText, {
       language: turn.from === 'en' ? 'ne-NP' : 'en-US',
@@ -213,51 +287,64 @@ export function ConversationScreen() {
     });
   };
 
-  const displayForViewer = (turn: Turn): { big: string; small: string } => {
-    // Viewer is current `side`. Show the translation INTO the viewer's language large.
+  const displayForViewer = (turn: Turn) => {
     if (side === 'en') {
-      // English viewer: Nepali→EN turns show English big; EN→NE show Nepali small + EN source?
-      // Product: "enlarged translated text" for the listener.
-      if (turn.from === 'ne') {
-        return { big: turn.translatedDevaOrEn, small: turn.original };
+      if (turn.from === 'en') {
+        return {
+          big: formatNepaliScript(turn.translatedDevaOrEn, script),
+          small: turn.original,
+        };
       }
-      // English spoke → Nepali translation for Nepali person; English viewer sees own line smaller
+      return { big: turn.translatedDevaOrEn, small: turn.original };
+    }
+    if (turn.from === 'ne') {
       return {
-        big: formatNepaliScript(turn.translatedDevaOrEn, script),
-        small: turn.original,
+        big: turn.translatedDevaOrEn,
+        small:
+          script === 'roman' && /[\u0900-\u097F]/.test(turn.original)
+            ? turn.original
+            : turn.original,
       };
     }
-    // Nepali viewer
-    if (turn.from === 'en') {
-      return {
-        big: formatNepaliScript(turn.translatedDevaOrEn, script),
-        small: turn.original,
-      };
-    }
-    return { big: turn.translatedDevaOrEn, small: turn.original };
+    return {
+      big: formatNepaliScript(turn.translatedDevaOrEn, script),
+      small: turn.original,
+    };
   };
 
   const recent = turns.slice(-MAX_RETRY);
   const passLabel = side === 'en' ? 'Pass' : 'पास';
   const speakHint =
     side === 'en'
-      ? 'Hold the phone · speak English'
-      : 'फोन समात्नुहोस् · नेपाली बोल्नुहोस्';
+      ? 'Sentences translate as you speak · Pass when done'
+      : 'वाक्य सकिएपछि अनुवाद · सकिएपछि पास';
   const sideTitle = side === 'en' ? 'English side' : 'नेपाली पक्ष';
 
   return (
     <View style={[styles.root, side === 'ne' && styles.rootNe]}>
       <View style={styles.topBar}>
         <Text style={styles.title}>{sideTitle}</Text>
-        <Pressable
-          onPress={() => setTurns([])}
-          hitSlop={10}
-          style={styles.clearBtn}
-        >
-          <Text style={styles.clearText}>
-            {side === 'en' ? 'Clear' : 'मेटाउनुहोस्'}
-          </Text>
-        </Pressable>
+        <View style={styles.topRight}>
+          {onOpenGoldReview ? (
+            <Pressable onPress={onOpenGoldReview} hitSlop={10} style={styles.clearBtn}>
+              <Text style={styles.reviewGlyph}>▣</Text>
+            </Pressable>
+          ) : null}
+          <Pressable
+            onPress={() => {
+              setTurns([]);
+              interimRef.current = '';
+              emittedCountRef.current = 0;
+              setInterim('');
+            }}
+            hitSlop={10}
+            style={styles.clearBtn}
+          >
+            <Text style={styles.clearText}>
+              {side === 'en' ? 'Clear' : 'मेटाउनुहोस्'}
+            </Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.switches}>
@@ -293,8 +380,8 @@ export function ConversationScreen() {
             </Text>
             <Text style={styles.emptyBody}>
               {side === 'en'
-                ? 'Speak, then tap Pass when finished. The other person sees your message translated — then they speak and Pass back.'
-                : 'बोल्नुहोस्, सकिएपछि पास थिच्नुहोस्। अर्को व्यक्तिलाई अनुवाद देखिन्छ — अनि उनीहरू बोल्छन् र फेरि पास गर्छन्।'}
+                ? 'Keep talking — each sentence translates as you finish it. Tap Pass to hand the phone over.'
+                : 'बोलिरहनुहोस् — वाक्य सकिएपछि अनुवाद हुन्छ। पास थिचेर फोन दिनुहोस्।'}
             </Text>
           </View>
         ) : null}
@@ -360,7 +447,7 @@ export function ConversationScreen() {
           <View style={[styles.bubbleRow, styles.rowEnd]}>
             <View style={[styles.bubble, styles.bubbleInterim]}>
               <Text style={styles.bubbleSmall}>
-                {side === 'en' ? 'Listening…' : 'सुन्दै…'}
+                {side === 'en' ? 'Listening… (open sentence)' : 'सुन्दै… (अधुरो वाक्य)'}
               </Text>
               <Text style={styles.bubbleBig}>{interim}</Text>
             </View>
@@ -382,7 +469,7 @@ export function ConversationScreen() {
         <View style={styles.actionRow}>
           <Pressable
             style={[styles.speakBtn, listening && styles.speakBtnHot]}
-            onPress={() => (listening ? stopListening() : void startListening())}
+            onPress={() => (listening ? onStopSpeak() : void startListening())}
             disabled={pendingTranslate}
             accessibilityRole="button"
             accessibilityLabel={
@@ -449,6 +536,8 @@ const styles = StyleSheet.create({
   },
   clearBtn: { padding: 8 },
   clearText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  topRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  reviewGlyph: { fontSize: 16, fontWeight: '700', color: colors.textSecondary },
   switches: {
     alignItems: 'center',
     gap: 8,
