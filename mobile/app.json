@@ -16,7 +16,7 @@
         "NSPhotoLibraryUsageDescription": "NepTranslate does not need your photo library for translation. This description is required because included iOS frameworks reference photo-library APIs; NepTranslate will not access your photos unless you explicitly choose to share an image in a future update.",
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "6"
+      "buildNumber": "7"
     },
     "android": {
       "package": "com.neptranslate.app",

@@ -24,7 +24,7 @@ Apple processing usually takes **5–15 minutes** after submit succeeds.
 
 1. Open **TestFlight** → pull to refresh **NepTranslate**
 2. Tap **Update** (or install if new)
-3. Confirm **v1.4.2** on the Auto screen footer (`v1.4.2 (N) · offline`)
+3. Confirm **v1.4.2** on the Auto screen footer (`v1.4.2 (7) · offline`)
 
 If stuck on an old build: delete the app → reinstall from TestFlight.
 
