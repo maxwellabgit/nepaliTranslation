@@ -36,6 +36,10 @@
         "ascAppId": "6792574384",
         "appleTeamId": "BSQ5SYHX54",
         "bundleIdentifier": "com.neptranslate.app"
+      },
+      "android": {
+        "applicationId": "com.neptranslate.app",
+        "track": "internal"
       }
     }
   }

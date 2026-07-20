@@ -98,3 +98,36 @@
 {"id": "ne_en_roman-098", "reference": "I go to school", "deva": "म स्कूल जान्छु"}
 {"id": "ne_en_roman-099", "reference": "Where do you work?", "deva": "तपाईं कहाँ काम गर्नुहुन्छ?"}
 {"id": "ne_en_roman-100", "reference": "I want tea", "deva": "मलाई चिया चाहियो"}
+{"id": "ne_en_roman-101", "reference": "I am feeling dizzy.", "deva": "मलाई चक्कर आइरहेको छ", "tier": "premium_word_choice", "note": "roman medical"}
+{"id": "ne_en_roman-102", "reference": "The visa has expired.", "deva": "भिसाको म्याद सकियो", "tier": "premium_word_choice", "note": "expired"}
+{"id": "ne_en_roman-103", "reference": "What problem are you having?", "deva": "तपाईंलाई के समस्या छ?", "tier": "premium_word_choice", "note": "formal q"}
+{"id": "ne_en_roman-104", "reference": "Take this medicine after food.", "deva": "यो औषधि खानापछि खानुहोस्", "tier": "premium_word_choice", "note": "instruction"}
+{"id": "ne_en_roman-105", "reference": "I need small change.", "deva": "मलाई सानो पैसा चाहियो", "tier": "premium_word_choice", "note": "change"}
+{"id": "ne_en_roman-106", "reference": "The weather is not good today.", "deva": "आज मौसम ठिक छैन", "tier": "premium_word_choice", "note": "weather"}
+{"id": "ne_en_roman-107", "reference": "I will call you.", "deva": "म तपाईंलाई फोन गर्छु", "tier": "premium_word_choice", "note": "call"}
+{"id": "ne_en_roman-108", "reference": "How far is this place?", "deva": "यो ठाउँ कति टाढा छ?", "tier": "premium_word_choice", "note": "distance"}
+{"id": "ne_en_roman-109", "reference": "I need help.", "deva": "मलाई सहयोग चाहियो", "tier": "premium_word_choice", "note": "help"}
+{"id": "ne_en_roman-110", "reference": "Do you understand Nepali?", "deva": "तपाईं नेपाली बुझ्नुहुन्छ?", "tier": "premium_word_choice", "note": "keep के in chat roman"}
+{"id": "ne_en_roman-111", "reference": "My stomach hurts.", "deva": "मेरो पेट दुख्यो", "tier": "premium_word_choice", "note": "stomach"}
+{"id": "ne_en_roman-112", "reference": "I missed the bus.", "deva": "बस छुट्यो", "tier": "premium_word_choice", "note": "missed"}
+{"id": "ne_en_roman-113", "reference": "How much does this cost?", "deva": "यो कति पर्छ?", "tier": "premium_word_choice", "note": "cost"}
+{"id": "ne_en_roman-114", "reference": "I want to pay the fare.", "deva": "म भाडा तिर्न चाहन्छु", "tier": "premium_word_choice", "note": "fare"}
+{"id": "ne_en_roman-115", "reference": "Is there Wi‑Fi here?", "deva": "यहाँ वाइफाइ छ?", "tier": "premium_word_choice", "note": "wifi"}
+{"id": "ne_en_roman-116", "reference": "I need water.", "deva": "मलाई पानी चाहियो", "tier": "premium_word_choice", "note": "water"}
+{"id": "ne_en_roman-117", "reference": "Is breakfast included?", "deva": "बिहानको खाजा समावेश छ?", "tier": "premium_word_choice", "note": "breakfast"}
+{"id": "ne_en_roman-118", "reference": "Thank you for your help.", "deva": "धन्यवाद तपाईंको मद्दतको लागि", "tier": "premium_word_choice", "note": "thanks"}
+{"id": "ne_en_roman-119", "reference": "I feel cold.", "deva": "मलाई चिसो महसुस भइरहेको छ।", "tier": "premium_word_choice", "note": "temp roman"}
+{"id": "ne_en_roman-120", "reference": "I have a cold.", "deva": "मलाई रुघा लागेको छ।", "tier": "premium_word_choice", "note": "illness roman"}
+{"id": "ne_en_roman-121", "reference": "I need a blood test.", "deva": "मलाई रगतको जाँच गर्नुपर्छ।", "tier": "premium_word_choice", "note": "chat roman clinic"}
+{"id": "ne_en_roman-122", "reference": "Does this card work here?", "deva": "यो कार्डले यहाँ काम गर्छ?", "tier": "premium_word_choice", "note": "payment roman"}
+{"id": "ne_en_roman-123", "reference": "We have reached the hotel.", "deva": "हामी होटलमा पुग्यौं।", "tier": "premium_word_choice", "note": "arrival text"}
+{"id": "ne_en_roman-124", "reference": "I do not like salty food.", "deva": "मलाई नुनिलो खाना मन पर्दैन।", "tier": "premium_word_choice", "note": "dining preference"}
+{"id": "ne_en_roman-125", "reference": "Please do not use too much oil.", "deva": "कृपया धेरै तेल नहाल्नुहोस्।", "tier": "premium_word_choice", "note": "waiter request"}
+{"id": "ne_en_roman-126", "reference": "I am thinking of Dad.", "deva": "म बुबालाई सम्झिरहेको छु।", "tier": "premium_word_choice", "note": "family chat"}
+{"id": "ne_en_roman-127", "reference": "This is my first time in Nepal.", "deva": "नेपालमा पहिलो पटक आएको हुँ।", "tier": "premium_word_choice", "note": "tourist intro"}
+{"id": "ne_en_roman-128", "reference": "My passport is at the hotel.", "deva": "मेरो पासपोर्ट होटलमा छ।", "tier": "premium_word_choice", "note": "travel roman"}
+{"id": "ne_en_roman-129", "reference": "Our flight is delayed.", "deva": "हाम्रो उडान ढिला भयो।", "tier": "premium_word_choice", "note": "family update"}
+{"id": "ne_en_roman-130", "reference": "Do you speak English?", "deva": "के तपाईं अङ्ग्रेजी बोल्नुहुन्छ?", "tier": "premium_word_choice", "note": "staff query"}
+{"id": "ne_en_roman-131", "reference": "Which way to the ward?", "deva": "बिरामी कक्ष कुन तर्फ हो?", "tier": "premium_word_choice", "note": "hospital"}
+{"id": "ne_en_roman-132", "reference": "I'm out of cash.", "deva": "पैसा सकियो।", "tier": "premium_word_choice", "note": "colloquial money roman"}
+{"id": "ne_en_roman-133", "reference": "I lost my way.", "deva": "बाटो बिराएँ", "tier": "premium_word_choice", "note": "restored roman idiom within prune budget"}

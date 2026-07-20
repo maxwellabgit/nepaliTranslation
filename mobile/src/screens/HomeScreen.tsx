@@ -15,12 +15,16 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
+import { LightSwitch } from '../components/LightSwitch';
 import {
   detectDirection,
+  formatNepaliScript,
   translateOnDevice,
   type Formality,
+  type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { addHistory, isStarred, toggleStar, type HistoryItem } from '../storage/phrasebook';
+import { loadPrefs, savePrefs } from '../storage/prefs';
 import { colors } from '../theme';
 
 type Props = {
@@ -28,24 +32,34 @@ type Props = {
   onOpenHistory: () => void;
 };
 
+/**
+ * Auto mode: type or speak with equal prominence. Auto-detect EN ↔ NE.
+ * Formal switch ON = formal. Devanagari switch ON = Devanagari (else Roman).
+ */
 export function HomeScreen({ seed, onOpenHistory }: Props) {
-  const [formality, setFormality] = useState<Formality>('formal');
+  const [formalOn, setFormalOn] = useState(true);
+  const [devaOn, setDevaOn] = useState(true);
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
   const [listening, setListening] = useState(false);
   const [starred, setStarred] = useState(false);
-  const [focused, setFocused] = useState(false);
+  const [inputMode, setInputMode] = useState<'text' | 'speak'>('text');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const idleHistoryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestIdRef = useRef(0);
+  const prefsLoadedRef = useRef(false);
   const preferredRef = useRef<'en-ne' | 'ne-en'>(
     seed?.sourceLang === 'ne' ? 'ne-en' : 'en-ne',
   );
+
+  const formality: Formality = formalOn ? 'formal' : 'informal';
+  const script: NepaliScript = devaOn ? 'deva' : 'roman';
 
   const direction = detectDirection(input.trim() || 'x', preferredRef.current);
   const sourceLang = direction === 'en-ne' ? 'en' : 'ne';
   const targetLang = direction === 'en-ne' ? 'ne' : 'en';
   const sourceName = direction === 'en-ne' ? 'English' : 'Nepali';
   const targetName = direction === 'en-ne' ? 'Nepali' : 'English';
-  const showFormality = direction === 'en-ne' || !input.trim();
 
   useSpeechRecognitionEvent('result', (event) => {
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
@@ -53,7 +67,7 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
     setInput(text);
     if (event.isFinal) {
       setListening(false);
-      applyTranslate(text);
+      commitTranslate(text);
     }
   });
   useSpeechRecognitionEvent('error', () => setListening(false));
@@ -63,44 +77,108 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
     void ExpoSpeechRecognitionModule.requestPermissionsAsync().catch(() => {});
   }, []);
 
-  const applyTranslate = useCallback(
+  useEffect(() => {
+    void loadPrefs().then((prefs) => {
+      setFormalOn(prefs.formalOn);
+      setDevaOn(prefs.devaOn);
+      prefsLoadedRef.current = true;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!prefsLoadedRef.current) return;
+    void savePrefs({ formalOn, devaOn });
+  }, [formalOn, devaOn]);
+
+  const previewTranslate = useCallback(
     (raw: string) => {
       const t = raw.trim();
       if (!t) {
         setOutput('');
         return;
       }
-      const result = translateOnDevice(t, preferredRef.current, formality);
+      const result = translateOnDevice(t, preferredRef.current, {
+        formality,
+        script,
+      });
       preferredRef.current = result.direction;
       setOutput(result.text);
-      const sl = result.direction === 'en-ne' ? 'en' : 'ne';
-      const tl = result.direction === 'en-ne' ? 'ne' : 'en';
+    },
+    [formality, script],
+  );
+
+  const saveHistoryFor = useCallback(
+    (t: string, translation: string, direction: 'en-ne' | 'ne-en') => {
+      const sl = direction === 'en-ne' ? 'en' : 'ne';
+      const tl = direction === 'en-ne' ? 'ne' : 'en';
       void addHistory({
         source: t,
-        translation: result.text,
+        translation,
         sourceLang: sl,
         targetLang: tl,
       });
-      void isStarred(t, result.text, sl).then(setStarred);
+      void isStarred(t, translation, sl).then(setStarred);
     },
-    [formality],
+    [],
+  );
+
+  const commitTranslate = useCallback(
+    (raw: string) => {
+      const t = raw.trim();
+      if (!t) {
+        setOutput('');
+        return;
+      }
+      const result = translateOnDevice(t, preferredRef.current, {
+        formality,
+        script,
+      });
+      preferredRef.current = result.direction;
+      setOutput(result.text);
+      saveHistoryFor(t, result.text, result.direction);
+    },
+    [formality, script, saveHistoryFor],
   );
 
   useEffect(() => {
+    requestIdRef.current += 1;
+    const requestId = requestIdRef.current;
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => applyTranslate(input), 200);
+    debounceRef.current = setTimeout(() => {
+      if (requestId !== requestIdRef.current) return;
+      previewTranslate(input);
+    }, 200);
+
+    if (idleHistoryRef.current) clearTimeout(idleHistoryRef.current);
+    idleHistoryRef.current = setTimeout(() => {
+      if (requestId !== requestIdRef.current) return;
+      const t = input.trim();
+      if (!t) return;
+      const result = translateOnDevice(t, preferredRef.current, {
+        formality,
+        script,
+      });
+      saveHistoryFor(t, result.text, result.direction);
+    }, 1500);
+
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (idleHistoryRef.current) clearTimeout(idleHistoryRef.current);
     };
-  }, [input, formality, applyTranslate]);
+  }, [input, formality, script, previewTranslate, saveHistoryFor]);
 
   const paste = async () => {
     const clip = await Clipboard.getStringAsync();
-    if (clip?.trim()) setInput(clip.trim());
+    if (clip?.trim()) {
+      setInputMode('text');
+      setInput(clip.trim());
+    }
   };
 
   const startVoice = async () => {
     Keyboard.dismiss();
+    setInputMode('speak');
     if (listening) {
       try {
         ExpoSpeechRecognitionModule.stop();
@@ -115,8 +193,6 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
       if (!perm.granted) return;
       setListening(true);
       setOutput('');
-      // Prefer English mic first; auto-detect after transcript. Nepali STT
-      // improves when on-device Whisper is wired — for now try last direction.
       const lang = preferredRef.current === 'ne-en' ? 'ne-NP' : 'en-US';
       ExpoSpeechRecognitionModule.start({
         lang,
@@ -147,13 +223,22 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
     );
   };
 
-  const showResult = Boolean(input.trim() && output);
+  const displayOutput =
+    targetLang === 'ne' ? formatNepaliScript(output, script) : output;
+  const showResult = Boolean(input.trim() && displayOutput);
+  const historyLabel = direction === 'ne-en' ? 'इतिहास' : 'History';
 
   return (
     <View style={styles.root}>
       <View style={styles.header}>
-        <Pressable onPress={onOpenHistory} hitSlop={12} style={styles.headerBtn}>
-          <Text style={styles.starIcon}>☆</Text>
+        <Pressable
+          onPress={onOpenHistory}
+          hitSlop={12}
+          style={styles.headerBtn}
+          accessibilityRole="button"
+          accessibilityLabel={historyLabel}
+        >
+          <Text style={styles.historyLabel}>{historyLabel}</Text>
         </Pressable>
         <View style={styles.brandBlock}>
           <Image
@@ -161,11 +246,63 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
             style={styles.brandMark}
           />
           <Text style={styles.brand}>NepTranslate</Text>
-          <View style={styles.offlinePill}>
-            <Text style={styles.offlinePillText}>Offline · v1.4.0</Text>
-          </View>
+          <Text style={styles.modeTag}>Auto · offline</Text>
         </View>
         <View style={styles.headerBtn} />
+      </View>
+
+      <View style={styles.switches}>
+        <LightSwitch
+          value={formalOn}
+          onValueChange={setFormalOn}
+          offLabel="Informal"
+          onLabel="Formal"
+          accessibilityLabel="Formal or informal Nepali register"
+        />
+        <LightSwitch
+          value={devaOn}
+          onValueChange={setDevaOn}
+          offLabel="Roman"
+          onLabel="देवनागरी"
+          accessibilityLabel="Devanagari or Roman Nepali script"
+        />
+      </View>
+
+      <View style={styles.modePick}>
+        <Pressable
+          style={[styles.modeCard, inputMode === 'text' && styles.modeCardOn]}
+          onPress={() => setInputMode('text')}
+        >
+          <Text style={styles.modeGlyph}>Aa</Text>
+          <Text style={[styles.modeTitle, inputMode === 'text' && styles.modeTitleOn]}>
+            Type
+          </Text>
+          <Text style={styles.modeSub}>Auto-detect language</Text>
+        </Pressable>
+        <Pressable
+          style={[
+            styles.modeCard,
+            styles.modeCardSpeak,
+            (inputMode === 'speak' || listening) && styles.modeCardSpeakOn,
+          ]}
+          onPress={startVoice}
+          accessibilityRole="button"
+          accessibilityLabel={listening ? 'Stop listening' : 'Speak to translate'}
+        >
+          <Text style={styles.modeGlyphSpeak}>{listening ? '■' : '🎤'}</Text>
+          <Text
+            style={[
+              styles.modeTitle,
+              styles.modeTitleSpeak,
+              (inputMode === 'speak' || listening) && styles.modeTitleSpeakOn,
+            ]}
+          >
+            {listening ? 'Listening…' : 'Speak'}
+          </Text>
+          <Text style={[styles.modeSub, styles.modeSubSpeak]}>
+            Same as typing — just say it
+          </Text>
+        </Pressable>
       </View>
 
       <ScrollView
@@ -173,27 +310,28 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={[styles.card, focused && styles.cardFocused]}>
-          <View style={styles.cardTop}>
-            <Text style={styles.inputLang}>
-              {input.trim() ? sourceName : 'English or Nepali'}
-            </Text>
-            <TextInput
-              style={styles.input}
-              value={input}
-              onChangeText={setInput}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              placeholder="Type or tap the mic…"
-              placeholderTextColor={colors.textPlaceholder}
-              multiline
-              textAlignVertical="top"
-              autoCorrect
-            />
-          </View>
+        <View style={styles.card}>
+          <Text style={styles.inputLang}>
+            {input.trim() ? sourceName : 'English or Nepali'}
+          </Text>
+          <TextInput
+            style={styles.input}
+            value={input}
+            onChangeText={(t) => {
+              setInputMode('text');
+              setInput(t);
+            }}
+            onFocus={() => setInputMode('text')}
+            onBlur={() => commitTranslate(input)}
+            onSubmitEditing={() => commitTranslate(input)}
+            placeholder="Type here, or tap Speak above…"
+            placeholderTextColor={colors.textPlaceholder}
+            multiline
+            textAlignVertical="top"
+            autoCorrect
+          />
           {!input ? (
             <Pressable style={styles.pasteBtn} onPress={paste}>
-              <Text style={styles.pasteIcon}>⧉</Text>
               <Text style={styles.pasteText}>Paste</Text>
             </Pressable>
           ) : (
@@ -201,28 +339,26 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
               <Text style={styles.clear}>✕</Text>
             </Pressable>
           )}
-          {input.trim() ? (
-            <Pressable onPress={() => speak(input, sourceLang)} style={styles.speakRow}>
-              <Text style={styles.speakGlyph}>🔊</Text>
-            </Pressable>
-          ) : null}
         </View>
 
         {showResult ? (
           <View style={styles.resultCard}>
             <Text style={styles.resultLang}>{targetName}</Text>
             <Text
-              style={[styles.resultText, targetLang === 'ne' && styles.resultNe]}
+              style={[
+                styles.resultText,
+                targetLang === 'ne' && script === 'deva' && styles.resultNe,
+              ]}
               selectable
             >
-              {output}
+              {displayOutput}
             </Text>
             <View style={styles.resultActions}>
-              <Pressable onPress={() => speak(output, targetLang)} hitSlop={8}>
+              <Pressable onPress={() => speak(displayOutput, targetLang)} hitSlop={8}>
                 <Text style={styles.actionIcon}>🔊</Text>
               </Pressable>
               <Pressable
-                onPress={() => Clipboard.setStringAsync(output)}
+                onPress={() => Clipboard.setStringAsync(displayOutput)}
                 hitSlop={8}
               >
                 <Text style={styles.actionIcon}>⧉</Text>
@@ -236,53 +372,6 @@ export function HomeScreen({ seed, onOpenHistory }: Props) {
           </View>
         ) : null}
       </ScrollView>
-
-      {showFormality ? (
-        <View style={styles.formalityRow}>
-          <Text style={styles.formalityLabel}>Nepali tone</Text>
-          <Pressable
-            style={[styles.formChip, formality === 'formal' && styles.formChipOn]}
-            onPress={() => setFormality('formal')}
-          >
-            <Text
-              style={[
-                styles.formChipText,
-                formality === 'formal' && styles.formChipTextOn,
-              ]}
-            >
-              Formal
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.formChip,
-              formality === 'informal' && styles.formChipOn,
-            ]}
-            onPress={() => setFormality('informal')}
-          >
-            <Text
-              style={[
-                styles.formChipText,
-                formality === 'informal' && styles.formChipTextOn,
-              ]}
-            >
-              Informal
-            </Text>
-          </Pressable>
-        </View>
-      ) : null}
-
-      <View style={styles.micRow}>
-        <Pressable
-          style={[styles.micBtn, listening && styles.micBtnHot]}
-          onPress={startVoice}
-        >
-          <Text style={styles.micGlyph}>{listening ? '■' : '🎤'}</Text>
-        </Pressable>
-        <Text style={styles.micHint}>
-          {listening ? 'Listening… tap to stop' : 'Speak English or Nepali'}
-        </Text>
-      </View>
     </View>
   );
 }
@@ -294,7 +383,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingTop: 4,
-    paddingBottom: 8,
+    paddingBottom: 4,
   },
   headerBtn: {
     width: 48,
@@ -302,141 +391,133 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  starIcon: { fontSize: 26, color: colors.text },
-  brandBlock: { flex: 1, alignItems: 'center', gap: 4 },
-  brandMark: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    marginBottom: 2,
+  historyLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.text,
   },
+  brandBlock: { flex: 1, alignItems: 'center', gap: 2 },
+  brandMark: { width: 36, height: 36, borderRadius: 9 },
   brand: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     letterSpacing: -0.4,
     color: colors.crimson,
   },
-  offlinePill: {
-    marginTop: 2,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
-    borderRadius: 12,
-    backgroundColor: colors.divider,
+  modeTag: { fontSize: 11, color: colors.textSecondary, fontWeight: '600' },
+  switches: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 10,
+    alignItems: 'center',
   },
-  offlinePillText: { fontSize: 11, color: colors.textSecondary, fontWeight: '500' },
+  modePick: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+  },
+  modeCard: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.divider,
+    minHeight: 112,
+    justifyContent: 'center',
+  },
+  modeCardOn: {
+    borderColor: colors.crimson,
+    backgroundColor: '#FFF5F6',
+  },
+  modeCardSpeak: {
+    borderColor: colors.forestSoft,
+  },
+  modeCardSpeakOn: {
+    borderColor: colors.forest,
+    backgroundColor: colors.forestSoft,
+  },
+  modeGlyph: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: colors.text,
+    marginBottom: 6,
+  },
+  modeGlyphSpeak: { fontSize: 28, marginBottom: 4 },
+  modeTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.textSecondary,
+  },
+  modeTitleOn: { color: colors.crimson },
+  modeTitleSpeak: { color: colors.forest },
+  modeTitleSpeakOn: { color: colors.forest },
+  modeSub: {
+    marginTop: 4,
+    fontSize: 11,
+    color: colors.textSecondary,
+    textAlign: 'center',
+  },
+  modeSubSpeak: { color: colors.forest },
   scroll: { flex: 1 },
-  scrollContent: { paddingHorizontal: 16, paddingBottom: 12 },
+  scrollContent: { paddingHorizontal: 16, paddingBottom: 16 },
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 28,
-    padding: 20,
-    minHeight: 200,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
+    borderRadius: 24,
+    padding: 18,
+    minHeight: 140,
   },
-  cardFocused: { minHeight: 260 },
-  cardTop: { gap: 8 },
   inputLang: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
-    letterSpacing: 0.3,
+    letterSpacing: 0.4,
     color: colors.textSecondary,
     textTransform: 'uppercase',
+    marginBottom: 8,
   },
   input: {
-    fontSize: 28,
-    lineHeight: 36,
+    fontSize: 24,
+    lineHeight: 32,
     color: colors.text,
-    minHeight: 100,
+    minHeight: 72,
     padding: 0,
-    fontWeight: '400',
   },
   pasteBtn: {
     alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    marginTop: 10,
     backgroundColor: colors.pasteBg,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 20,
-    marginTop: 12,
+    borderRadius: 16,
   },
-  pasteIcon: { fontSize: 14, color: colors.blue },
   pasteText: { fontSize: 14, color: colors.blue, fontWeight: '600' },
   clear: { fontSize: 18, color: colors.textSecondary, marginTop: 8 },
-  speakRow: { marginTop: 16 },
-  speakGlyph: { fontSize: 22, color: colors.textSecondary },
   resultCard: {
     backgroundColor: colors.surface,
-    borderRadius: 28,
-    padding: 20,
+    borderRadius: 24,
+    padding: 18,
     marginTop: 12,
   },
   resultLang: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: colors.crimson,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
     marginBottom: 8,
   },
-  resultText: { fontSize: 26, lineHeight: 36, color: colors.text },
-  resultNe: { fontSize: 28, lineHeight: 40 },
+  resultText: { fontSize: 24, lineHeight: 34, color: colors.text, fontWeight: '600' },
+  resultNe: { fontSize: 26, lineHeight: 38 },
   resultActions: {
     flexDirection: 'row',
     gap: 22,
-    marginTop: 16,
+    marginTop: 14,
     paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.divider,
   },
   actionIcon: { fontSize: 22, color: colors.textSecondary },
-  formalityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingBottom: 8,
-    paddingHorizontal: 16,
-  },
-  formalityLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textSecondary,
-    marginRight: 4,
-  },
-  formChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    backgroundColor: colors.surface,
-  },
-  formChipOn: {
-    backgroundColor: colors.crimson,
-    borderColor: colors.crimson,
-  },
-  formChipText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
-  formChipTextOn: { color: '#fff' },
-  micRow: {
-    alignItems: 'center',
-    paddingBottom: 10,
-    gap: 6,
-  },
-  micBtn: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    backgroundColor: colors.crimson,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  micBtnHot: { backgroundColor: colors.danger },
-  micGlyph: { fontSize: 26, color: '#fff' },
-  micHint: { fontSize: 12, color: colors.textSecondary, fontWeight: '500' },
 });

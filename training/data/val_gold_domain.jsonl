@@ -1,0 +1,1234 @@
+{"eng_Latn": "An image viewer and browser for GNOME.", "npi_Deva": "जिनोमका लागि एउटा छवि दर्शक र ब्राउजर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Invalid ZIP file", "npi_Deva": "अवैध जिप फाइल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Incorrect username or password. Letters must be typed in the correct case.", "npi_Deva": "गलत प्रयोगकर्ता नाम वा पासवर्ड । अक्षरहरूलाई उचित केसमा टाइप गर्न जरुरि हुन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cannot delete folder in offline mode.", "npi_Deva": "अफलाइन मोडमा फोल्डर मेट्न सकिँदैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Takoradi", "npi_Deva": "टाकोराडि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s wishes to receive the latest task information.", "npi_Deva": "%s नविन कार्य सूचना प्राप्त गर्ने इच्छा गर्दछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Number of spots", "npi_Deva": "स्थानको नम्बर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Limit feed archive size to:", "npi_Deva": "यसमा फिड सङ्ग्रह साइज सिमित पार्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "My Turn", "npi_Deva": "मेरो पालो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show API Documentation", "npi_Deva": "मिसिलिकरण ब्राउजर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Convert the image to 16 bit gamma-corrected integer", "npi_Deva": "छविलाई अनुक्रमण गरिएको रङहरूमा बदल्नुहोस्image-convert-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "SELinux context:", "npi_Deva": "सेलिनक्स प्रसङ्ग:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Perhaps your .Xauthority file is not set up correctly.", "npi_Deva": "सम्भवत: तिम्रो Xauthority फाइल राम्रोसंगसेट गरिएको छैन ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "B_lue threshold:", "npi_Deva": "नीलो थ्रेसहोल्ड:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Column:", "npi_Deva": "स्तम्भ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No network devices have been found", "npi_Deva": "संजाल साधन फेला परेको छैन।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Copyright © 1995-%s Spencer Kimball, Peter Mattis and the GIMP Development Team", "npi_Deva": "प्रतिलिपिअधिकार © १९९५-२००७ स्पेनसर किमबल, पिटर म्याटिस र गिम्प विकासकर्ता समूह", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Configure _X Server...", "npi_Deva": "लग-इन प्रबन्धक कन्फिगर गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Highlight critical path in Task view", "npi_Deva": "तर्कपूर्ण बाटोलाई कार्य दृश्यमा हाइलाइट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The document \"%1\" has been modified. Reloading will lose all changes. Are you sure?", "npi_Deva": "कागजात \"% 1\" परिमार्जन गरिएको छ । रिलोडिङले सबै परिवर्तनहरू हराउनेछ । तिमी निश्चित हुनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Key click & volume:", "npi_Deva": "कुञ्जी क्लिक भोल्युम:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Contact Map View", "npi_Deva": "सम्पर्क सूची", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Edit Bookmarks…", "npi_Deva": "पुस्तकचिनोहरू सम्पादन गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reparametrize Threshold:", "npi_Deva": "अन्तर थ्रेसहोल्ड:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Zacatecas", "npi_Deva": "जाकाटेकलुकाbrazil. kgm", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Yury Lebedev", "npi_Deva": "युरी लेबेडेभ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Alphabetically", "npi_Deva": "वर्णानुक्रम अनुसार", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Error saving messages to: %s: %s", "npi_Deva": "यसमा सन्देशहरू बचत गर्दा त्रुटि: %s: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A dropping funnel can be used to drop precise amounts of fluid. The dropping speed can be controlled with a valve.", "npi_Deva": "थोपा खसाल्ने सोलीलाई तरलको उचित मात्रा खसाल्न प्रयोग गर्न सकिन्छ । तपाईँले भल्वबाट थोपा खसाल्ने गति नियन्त्रण गर्न सक्नुहुन्छ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Protect Sheet", "npi_Deva": "पाना सुरक्षा गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Move ~a onto the queen of diamonds.", "npi_Deva": "ईँटको मिस्सी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reply to the mailing list, or to all recipients", "npi_Deva": "चयन गरिएको सन्देशको पत्राचार सूचीलाई जवाफ रचना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Close Terminal", "npi_Deva": "टर्मिनल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Shahrivar", "npi_Deva": "शाह्रिभर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Timeout connecting to server.", "npi_Deva": "टाइमआउट सर्भरमा जडान गर्दै ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Music folder:", "npi_Deva": "सङ्गीत फोल्डर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Other encoding:", "npi_Deva": "अन्य सङ्केतन:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Follow", "npi_Deva": "अनुगमन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Downloading file %1...", "npi_Deva": "% 1 फाइल डाउनलोड गर्दैछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rename icons inline", "npi_Deva": "तपाईँले यहाँ डेस्कटप% 1 को नाम प्रविष्ट गर्न सक्नुहुन्छ", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Show the \"sign file\" service menu.", "npi_Deva": "\"साइन फाइल\" सेवा मेनु देखाउनुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Click-Drag to change the shape of the curve", "npi_Deva": "वक्ररेखाको आकार परिवर्तन गर्न तान्नुहोस् क्लिक गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Netscape Messenger", "npi_Deva": "नेटस्केप मेसेन्जरName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Preview URL:", "npi_Deva": "URL पूर्वावलोकन:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Move contact to", "npi_Deva": "यसमा सम्पर्क सार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Audio Skipped", "npi_Deva": "अडियो फड्किएको", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add Profile", "npi_Deva": "प्रोफाइल थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Call to gdl_dock_object_dock in a dock object %p (object type is %s) which hasn't implemented this method", "npi_Deva": "डक वस्तु %p(वस्तु प्रकार %s हो) भित्र gdl_dock_object_dock मा बोलाउनुहोस् जसले यो तरिका कार्यान्वयन गरेको छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Magic output:", "npi_Deva": "जादू निर्गत:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Intersect the text layer's outline with the current selection", "npi_Deva": "हालको चयनसँग पाठ तहको रूपरेखा प्रतिच्छेद गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The calendar is not marked for offline usage.", "npi_Deva": "अफलाइन प्रयोगका लागि पात्रो चिन्ह लगाएको छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Scale stroke width", "npi_Deva": "स्ट्रोक चौडाई मापन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Edge Label Switch Router", "npi_Deva": "छेउ लेबुल स्विच राउटर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Commonly-used used audio bitrates", "npi_Deva": "साझा रूपमा प्रयोग गरिएको अडियो बिट्रेटहरू प्रयोग गरियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "by Receiver", "npi_Deva": "प्रापक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You are delegating a recurring event. What would you like to delegate?", "npi_Deva": "तपाईँले पुनरावृत्तिक घटनालाई प्रत्यायोजन गरिरहनु भएको छ । तपाईँ के प्रत्यायोजन गर्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Schema specifies type list but doesn't specify the type of the list elements", "npi_Deva": "स्किमाले प्रकार सूची निर्दिष्ट गर्दछ तर सूची तत्वहरूको प्रकार निर्दिष्ट गर्दैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select the first of the two vectors of which you want to construct the difference...", "npi_Deva": "तिमीले फरक रचना गर्न चाहनुभएको दुई भेक्टरको पहिलो चयन गर...", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Restore original permissions of items enclosed in '%s'", "npi_Deva": "संलग्न गरिएका फाइलहरूमा अनुमतिहरू लागू गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Configure \"Out of Office\" Replies", "npi_Deva": "नेमस्पेस पुन: प्राप्ती गर्दैछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Make sure that the samba package is installed properly on your system.", "npi_Deva": "तपाईँको प्रणालीमा साम्बा प्याकेज उचित तरीकाले स्थापना गरिएको छ भन्ने यकीन गर्नुहोस् ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Creation of the revocation certificate failed...", "npi_Deva": "खारेजी प्रमाणपत्रको सिर्जना असफल...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Tool to switch between windows", "npi_Deva": "सञ्झ्यालहरू बीचमा स्विच गर्ने उपकरण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Edit video when connected", "npi_Deva": "जडान भएपछि भिडियो सम्पादन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show _Menubar", "npi_Deva": "मेनुपट्टी देखाउनुहोस्view-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rename the selected calendar", "npi_Deva": "चयन गरिएको फोल्डरको पुन: नामकरण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Automatically refresh channels interval", "npi_Deva": "च्यानल अवधि स्वत: ताजा पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are you sure you wish to remove the bookmark folder \"%1\"?", "npi_Deva": "तपाईँ पुस्तकचिनो फोल्डर हटाउन निश्चित हुनुहुन्छ \"% 1\"?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "CSV Export Filter for KSpread", "npi_Deva": "केडीई स्प्रेडका लागि CSV निर्यात फिल्टरName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "IO to subprocess/file failed", "npi_Deva": "सहायक प्रक्रिया/फाइलमा IO असफल भयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select existing area", "npi_Deva": "अवस्थित क्षेत्र चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sequence Number", "npi_Deva": "नोइज घटाउने सक्षम पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select the bottommost layer", "npi_Deva": "सबभन्दा तल्लो तह चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "screensaver already running in this session", "npi_Deva": "यस सत्रमा पहिले नै स्क्रिनसेभर चलिरहेको थियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Light source Z direction in XYZ space", "npi_Deva": "XYZ स्थानमा प्रकाश स्रोत Z दिशा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Indexed filters", "npi_Deva": "अनुक्रमित फिल्टरहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "superscript n", "npi_Deva": "टाउकोमा n", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/Rainy_River", "npi_Deva": "अमेरिका/रेनी रिभर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Export options:", "npi_Deva": "विकल्प निर्यात गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Import & Mozilla Bookmarks...", "npi_Deva": "मोजिला पुस्तकचिनो आयात गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The color profile of your (primary) monitor.", "npi_Deva": "तिम्रो (प्राथमिक) मोनिटरको रङ प्रोफाइल", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Convert audiofile to tmpfile", "npi_Deva": "अडियो फाइललाई टेम्प फाइलमा परिवर्तन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cottesmore", "npi_Deva": "क्ल्यारिमोर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Please enter the email address.", "npi_Deva": "कृपया इमेल ठेगाना प्रविष्ट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "CapsLock key changes layout.", "npi_Deva": "CapsLock कुञ्जीले सजावट परिवर्तन गर्दछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sintra", "npi_Deva": "सिन्ट्रा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Amount of blue light in the color.", "npi_Deva": "रङमा नीलो प्रकाशको मात्रा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Restoring Evolution Data", "npi_Deva": "इभोल्युसन पुन: सुरुआत गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Inline", "npi_Deva": "इनलाइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Peawanuck", "npi_Deva": "पिवानुक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Input Slot", "npi_Deva": "आगत स्लट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The number of minutes of inactivity before the session is considered idle.", "npi_Deva": "सत्रलाई निष्प्रयोजन ठान्नु पहिले निस्क्रियता मिनेटको सङ्ख्या ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Pixelize filter", "npi_Deva": "फिल्टर पिक्सेलाइज गर्नुहोस्Name", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Custom servers", "npi_Deva": "पसन्द सर्भरहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Diagram tree...", "npi_Deva": "चित्र ट्रि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Rotate Colors...", "npi_Deva": "रङ सम्पादन गर्नुहोस्...filters-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A-M_BAR_Malayalam", "npi_Deva": "मल्यालम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether the toolbar item is visible when the toolbar is in a vertical orientation.", "npi_Deva": "जब औजारबार उर्ध्वतलीय अभिमुखीकरणमा हुन्छ तब औजारबारो एकाइ दृश्यात्मक हुन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create a new channel with last used values", "npi_Deva": "अन्तिम प्रयोग गरिएको मानहरूसँग नयाँ च्यानल सिर्जना गर्नुहोस्channels-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Wickede", "npi_Deva": "विक्केद", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Borderaverage", "npi_Deva": "किनार औसत", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Color Balance", "npi_Deva": "रङ सन्तुलन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Brought to you by:", "npi_Deva": "यसद्धारा प्रायोजित:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Toggle whether Messier objects are drawn in the sky map.", "npi_Deva": "आकाश मानचित्रमा मेसियर वस्तुहरू कोरिन्छन् या कोरिँदैन टगल गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Failed upgrading Mail settings or folders.", "npi_Deva": "मेल सेटिङ वा फोल्डरहरू स्थरवृद्धी गर्दा असफल भयो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Agrinio", "npi_Deva": "एग्रिनियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show _visual effects when an audio file is played", "npi_Deva": "अडियो फाइल बजाउँदा दृश्यात्मक प्रभावहरू देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Thisted", "npi_Deva": "थिस्टेड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "New Directory", "npi_Deva": "डाइरेक्टरी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remember", "npi_Deva": "सम्झनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Multiple Logins Found - User Switcher", "npi_Deva": "बहुविध लगइनहरू फेला पार्यो - प्रयोगकर्ता स्विचर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Live Scrolling", "npi_Deva": "जिवन्त स्क्रोल हुँदैछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Multi Purpose Tray", "npi_Deva": "बहुँ उदेश्यको ट्रे", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Choose the files to play", "npi_Deva": "गन्तव्य फोल्डर चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "File Already Exists", "npi_Deva": "फाइल पहिलानै अवस्थित छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Standard Headers", "npi_Deva": "मानक हेडर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Meta-information for a book", "npi_Deva": "पुस्तकका बारेमा मेटा-सूचना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "View as Test", "npi_Deva": "परीक्षणको रूपमा हेर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cannot write PID file %s: possibly out of diskspace. Error: %s", "npi_Deva": "PID फाइल %s लेख्न सकिँदैन, सम्भवत डिस्क खाली स्थानबाट बाहिर छ। त्रुटि:%s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Restore Previous Cursor Position", "npi_Deva": "अघिल्लो कर्सर स्थिति पुन: भण्डारण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hydaburg", "npi_Deva": "ह्याडाबर्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%1 centipascals", "npi_Deva": "मापन गर्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "This CD could not be queried: %s", "npi_Deva": "यो सीडी क्वेरी गर्न सकेन: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "the GdkScreen for the renderer", "npi_Deva": "रेण्डरकर्ताका लागि जिडिके स्क्रिन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Apply & & Update", "npi_Deva": "लागू गर्नुहोस् र अद्यावधिक गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Convert End Of Line characters to DOS EOL (CRLF)", "npi_Deva": "लाइन क्यारेक्टर अन्त्यलाई DOS EOL (CRLF) मा रूपान्तरण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Real number", "npi_Deva": "वास्तविक नम्बर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Load at Startup", "npi_Deva": "सुरुवातमा लोड गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Text Beside Icons", "npi_Deva": "पाठ वरिपरि प्रतिमा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Profiling Options", "npi_Deva": "प्रोफाइल कार्यहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The height of the main window.", "npi_Deva": "मुख्य सञ्झ्यालको उचाइ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Inheritance type:", "npi_Deva": "वंशानुक्रम प्रकार:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are you sure you want to delete this memo?", "npi_Deva": "तिमी यो मेमो मेट्न निश्चित हुनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "mounting %1 on %2", "npi_Deva": "%2 मा %1 माउन्ट गर्दैछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The fixed width", "npi_Deva": "निश्चित गरिएको चौडाइ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Back up complete", "npi_Deva": "जगेडा पूरा गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Preview Size", "npi_Deva": "साइज पूर्वावलोकन गर्नुहोस्dockable-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Madison", "npi_Deva": "म्याडिसन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Marseille", "npi_Deva": "मार्सिल्लेस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Error saving icon", "npi_Deva": "प्रतिमा बचत गर्दा त्रुटि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Only on This Workspace", "npi_Deva": "सधैँ यो कार्यस्थानमा मात्र", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Configure Input Actions settings", "npi_Deva": "हटकुञ्जी सेटिङ कन्फिगर गर्नुहोस्Name", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A pointer to another location in the current document or an external document", "npi_Deva": "बाह्य कागजात वा हालको कागजातमा अन्य स्थानलाई एउटा सूचक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Primary Author", "npi_Deva": "प्राथमिक लेखक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Edit Area _Info...", "npi_Deva": "क्षेत्र सूचना सम्पादन गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select the filetype you want to change.", "npi_Deva": "तिमीले परिवर्तन गर्न चाहेको टायल प्रकार चयन गर ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Vantaa", "npi_Deva": "भान्टा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Follow symbolic links", "npi_Deva": "साङ्केतिक लिङ्क", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Wenatchee", "npi_Deva": "वेनाट्ची", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have selected %d files", "npi_Deva": "तिमीले %d फाइलहरु चयन गर्नुभएको छ", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Could not save to autosave file &quot;{0}quot;.", "npi_Deva": "&quot; स्वत बचत हुने फाइल बचत गर्न सकेन{0}quot;.", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Data...", "npi_Deva": "प्रकारद्वारा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Error 0x%04x: Unknown error.", "npi_Deva": "त्रुटि 0x%04x: अज्ञात त्रुटि ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Los Angeles", "npi_Deva": "लस एन्जलस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sat_uration:", "npi_Deva": "अतितृप्त:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delete %1", "npi_Deva": "% 1 मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The dragged file does not appear to be a valid image.", "npi_Deva": "तानिएको फाइल एउटा वैध छवि जस्तो देखा पर्दैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "TV Tome", "npi_Deva": "टीभी टोमQuery", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set framerate in frames/sec", "npi_Deva": "फ्रेमहरू/सेकेण्डमा फ्रेम दर सेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Norwich", "npi_Deva": "नोर्विच", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Gadu-Gadu Work Id 1", "npi_Deva": "Gadu-Gadu कार्य आइडी १", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "What is this? %1", "npi_Deva": "पूरा भयो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "High Contrast Inverse", "npi_Deva": "उच्च व्यतिरेक विपरीत", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "quarter pel", "npi_Deva": "चौथाई पेल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Pack Window to the Right", "npi_Deva": "दाँयामा सञ्झ्याल प्याक गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The selected source contains no colors.", "npi_Deva": "चयन गरिएको स्रोतमा रङ समावेश छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are you sure you want to remove the package \"%s\" from the project?", "npi_Deva": "तिमी साँच्चिकै परियोजनाबाट निम्न हटाउन चाहनुहुन्छ ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Error reading connections", "npi_Deva": "रिजोल्युसन पढ्दा त्रुटि: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Can not set date.", "npi_Deva": "मिति सेट गर्न सकिँदैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group number:", "npi_Deva": "समूह नम्बर:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cisco - 7507", "npi_Deva": "सिस्को - ७५०७Stencils", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Height:", "npi_Deva": "वजन = %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Use IDLE command", "npi_Deva": "IDLE आदेश प्रयोग गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Server port", "npi_Deva": "सर्भर पोर्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Burning Transparency", "npi_Deva": "बल्ने पारदर्शीता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Drag-and-drop plugin for the Konqueror Popup Menu.", "npi_Deva": "कन्क्वेरर पपअप मेनुका लागि प्लगइनComment", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have received a special message From: %s [%s] %s", "npi_Deva": "तपाईँले विशेष सन्देश प्राप्त गर्नुभयो बाट: %s [%s] %s", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Would you like the infrared remote control software to start automatically when you begin KDE?", "npi_Deva": "केडीई सुरु गरेको बेलामा तपाईँले अवरक्त टाढाको नियन्त्रण सफ्टवेयर स्वचालित रूपमा सुरु गर्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Mascara", "npi_Deva": "पेस्कारा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Upper limit year", "npi_Deva": "माथिल्लो सिमा वर्ष", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "PNM image loader does not support this PNM subformat", "npi_Deva": "PNM छवि लोडरले यो PNM उपढाँचा समर्थन गर्दैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "'%s': No image data type specified", "npi_Deva": "'%s': छविको डेटाको प्रकार निर्दिष्ट गरिएको छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Team name:", "npi_Deva": "समूह नाम:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Current word", "npi_Deva": "हालको शब्द", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recompose an image that was previously decomposed", "npi_Deva": "पहिला रचना बन्द गरिएको एउटा छविलाई फेरि रचना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Toggle ^Rejected", "npi_Deva": "टगल अस्वीकृत", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "H_TTP proxy:", "npi_Deva": "HTTP प्रोक्सी:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Current _Status", "npi_Deva": "हालको वस्तुस्थितिtab-style", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Welcome to the GNOME Desktop", "npi_Deva": "जिनोम डेस्कटपमा स्वागत छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are you sure you want to sign the '%s' user ID?", "npi_Deva": "के तिमी विश्वस्त हुनुहुन्छ कि तिमी '%s' प्रयोगकर्ता आइडि हस्ताक्षर गर्न चाहनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Window to Desktop 4", "npi_Deva": "डेस्कटप १ मा सञ्झ्याल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Overwrite _all images", "npi_Deva": "सबै छविहरूलाई अधिलेखन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Manage your system tasks", "npi_Deva": "तपाईँको प्रणालीका कार्यहरू व्यवस्थापन गर्नुहोस्", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Delete selected", "npi_Deva": "चयन गरिएको मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Convert to Black & White", "npi_Deva": "कालो र सेतोमा रूपान्तरण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Y align", "npi_Deva": "वाई पंक्तिबद्ध", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Invalid OASIS OpenDocument file. No tag found inside office: body.", "npi_Deva": "अवैध OASIS खुल्ला कागजात फाइल । कार्यालय: मुख्य भाग भित्र ट्याग फेला परेन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Zimbabwean Dollar", "npi_Deva": "जिम्बावेName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Camera Model", "npi_Deva": "क्यामेरा मोडेल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Malformed external-body part", "npi_Deva": "विकृत बाह्य-मुख्य भाग।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Home Phone", "npi_Deva": "घरको फोन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If set, Organize files will ignore The in artist names.", "npi_Deva": "यदि सेट भयो भने, सङ्गठित फाइलहरूले कलाकार नामहरूमा उपेक्षा गर्नेछ या छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Search Direction:", "npi_Deva": "खोजी दिशा:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to unmount the selected volume. The volume is in use by one or more programs.", "npi_Deva": "चयन गरिएको भोल्युमलाई अनमाउन्ट गर्न अक्षम छ । सायद भोल्युम एक वा बढी कार्यक्रमद्धारा प्रयोग गरिएको छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kunming", "npi_Deva": "कुनमिङ्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Toolbar folder:", "npi_Deva": "उपकरणपट्टी फोल्डर:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Let web pages specify their own _fonts", "npi_Deva": "वेब पृष्ठलाई त्यसको फन्ट आफै निर्दिष्ट गर्न दिनुहोस्।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Configuration prefix where GNOME was installed", "npi_Deva": "समायोजन पूर्वसर्ग जहाँ जीनोम जडान गरिएको छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rewind to the game start", "npi_Deva": "खेल सुरु गर्न रिवाइन्ड गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Driver Name:", "npi_Deva": "नोड प्रकार:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Object type '%s' cannot be requested in this context", "npi_Deva": "वस्तु प्रकार '%s' यो प्रसङ्गमा अनुरोध गर्न सकिँदैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s Continue (y/n)?", "npi_Deva": "%s जारी राख्नुहुन्छ (हो/होइन)?", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "System Configuration", "npi_Deva": "प्रणाली कन्फिगरेसन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Monitor Resolution", "npi_Deva": "रिजोल्युसन अनुगमन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Import failed. %1 %2 You can click \"Back\" button and try again.", "npi_Deva": "आयात असफल ।% 1% 2 तपाईँले \"पछाडि\" बटन क्लिक गरेर पुन: प्रयास गर्न सक्नुहुन्छ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Rio Grande do Norte", "npi_Deva": "विमानस्थल डेल नोर्टे", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Goes to next table.", "npi_Deva": "पछिल्लो तालिकामा जान्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No connection named '%s' found", "npi_Deva": "'%s' परिभाषित परिमिति नामाकरण गरीएको छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Search for keys containing:", "npi_Deva": ": समावेश भएका कुञ्जीहरूका लागि खोजी गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Date end", "npi_Deva": "समय समाप्त", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dodoma", "npi_Deva": "डोडोमा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Constant bitrate", "npi_Deva": "अचल बिटरेट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "MoH server (Music on Hold)", "npi_Deva": "MoH सर्भर (सङ्गित होल्डमा)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group properties", "npi_Deva": "समूह गुण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Deleting files from archive", "npi_Deva": "सङ्ग्रहबाट फाइलहरू मेट्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The name or email of this contact already exists in this folder. Would you like to add it anyway?", "npi_Deva": "यो सम्पर्कको नाम वा इमेल यो फोल्डरमा पहिला नै अवस्थित छ । तिमी जसरी पनि यसलाई थप्न चाहनुहुन्छ ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Private dir:", "npi_Deva": "निजी डाइरेक्टरी:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Ewald Arnold", "npi_Deva": "इवाल्ड अर्नोल्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "slider", "npi_Deva": "स्लाईडर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Device target crosshair", "npi_Deva": "यन्त्र लक्षित क्रसहेयर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sequence number (custom start + step)", "npi_Deva": "श्रृङ्खला नम्बर थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Use the normal text size", "npi_Deva": "सामान्य पाठ साइज प्रयोग गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to start process dirmngr. Please check your installation.", "npi_Deva": "% 1 प्रक्रिया सुरु गर्न असमर्थ । कृपया तिम्रो स्थापना जाँच गर ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "The standard feed list is corrupted (no valid OPML). Could not create a backup! >", "npi_Deva": "मानक फिड सूची बिग्रिएको छ (OPML वैध छैन) । जगेडा सिर्जना गरिएको थियो:% 1", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enable this option to show golden sections.", "npi_Deva": "गोल्डेन खण्ड देखाउन यो विकल्प सक्षम पार्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create an arrow object", "npi_Deva": "एउटा बाँण वस्तु सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whistler", "npi_Deva": "ह्विस्टलर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "macron", "npi_Deva": "म्याक्रोन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Import palette", "npi_Deva": "रङदानी आयात गर्नुहोस्palettes-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Manley Hot Springs", "npi_Deva": "म्यानले हट स्प्रिङ्ग्स", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If enabled, gnome-session will save the session automatically.", "npi_Deva": "सक्षम भएमा, जिनोम सत्रले सत्र अन्त्य हुनुभन्दा पहिला प्रयोगकर्तालाई प्रोत्साहन दिन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Draw focus", "npi_Deva": "फोकस कोर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cathedral Point", "npi_Deva": "क्याथेड्रल पोइन्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have inserted a blank disc.", "npi_Deva": "तिमीले खाली डिस्क घुसाउनु भएको छ ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "L*a*b* (16-bit integer/ channel, unmanaged)", "npi_Deva": "एल* ए* बी * (१६- बीट इन्टिजर/ च्यानल)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove Window From Top", "npi_Deva": "सञ्झ्याललाई माथिबाट हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to load image-loading module: %s: %s", "npi_Deva": "छवि-लोडिङ मोड्युल लोड गर्न असफल: %s: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Root login disallowed on display '%s'", "npi_Deva": "'%s' प्रदर्शनमा रुट लगइन मान्य छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Play DVD", "npi_Deva": "DVD बजाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sign Message?", "npi_Deva": "सन्देशमा चिन्ह लगाउनुहुन्छ? to sign", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s: cannot open display %s", "npi_Deva": "%s: प्रदर्शन %s खोल्न सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Africa/ Ceuta", "npi_Deva": "अफ्रिका/ क्योटा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Amundsen-Scott South Pole Station (New Zealand Time)", "npi_Deva": "एमुन्डसेन-स्कट साउथ पोल स्टेसन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Modify personal network connections", "npi_Deva": "नयाँ भीपीएन जडान थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add Palette", "npi_Deva": "रङ्गदानी थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Duplicate Current Layout Make a copy of the current layout.", "npi_Deva": "हालको सजावट नक्कल प्रति बनाउनुहोस् हालको सजावटको एउटा प्रतिलिपि गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Icon Theme", "npi_Deva": "प्रतिमा विषयवस्तु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Brescia", "npi_Deva": "ब्रेस्किया/घेडि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Your Answer", "npi_Deva": "तिम्रो उत्तर", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Goes to next line.", "npi_Deva": "अगाडिको पङ्तिमा जान्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Thumbnails", "npi_Deva": "थम्बनेलहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "System UIDs", "npi_Deva": "प्रणाली UIDs", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Open Folder in _Windows", "npi_Deva": "सञ्झ्यालहरूमा फोल्डर खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "LavenderBlush1", "npi_Deva": "ल्याभेन्डर ब्लस१color", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Poster", "npi_Deva": "पोस्टर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Send Image...", "npi_Deva": "छवि पठाउनुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Preview of package installation", "npi_Deva": "प्याकेज स्थापनाको पूर्वावलोकन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Free Swap", "npi_Deva": "डिस्क बफर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Other actions", "npi_Deva": "कार्यहरु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Bahamas", "npi_Deva": "बहामास", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Version Control", "npi_Deva": "संस्करण नियन्त्रण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Polish Male", "npi_Deva": "वाच्य फाइल - ह्याडिफिक्स प्लगइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Play second", "npi_Deva": "ध्वनि प्ले गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Print system to use (lpd, cups)", "npi_Deva": "प्रयोगका लागि मुद्रण प्रणाली (एलपिडि, कप्स)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Look at %1", "npi_Deva": "% 1 मा हेर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Autumnal equinox:", "npi_Deva": "शरद विषुव:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "XDMCP Login Window Preferences", "npi_Deva": "XDMCP लगइन सञ्झ्याल प्राथमिकता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Printer Corrected", "npi_Deva": "मुद्रक सुधार गरियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Specify the output file instead of standard output", "npi_Deva": "मानक निर्गतको सट्टामा निर्गत फाइल निर्दिष्ट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Toggle ^Approved", "npi_Deva": "टगल ^प्रमाणित भयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Number r1", "npi_Deva": "सङ्ख्या", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "File '%s' is not a valid save file.", "npi_Deva": "फाइल '%s' वैध बचत फाइल होइन।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Go to the next visited location", "npi_Deva": "पछि हेरिएको स्थानमा जानुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Circle (15)", "npi_Deva": "वृत्त (१५)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unicode Character Reference", "npi_Deva": "युनिकोड क्यारेक्टर सन्दर्भ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Font style", "npi_Deva": "वर्णको शैली", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select Sound File", "npi_Deva": "ध्वनि फाइल चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Surčin", "npi_Deva": "सुरसिन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "partially installed", "npi_Deva": "आंशिक स्थापना भयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Line must be at least 1", "npi_Deva": "यो कागजातमा त्यति धेरै रेखा छैनन्Language", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Overwrite File?", "npi_Deva": "फाइल अधिलेखन गर्नुहुन्छ?", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save Scope", "npi_Deva": "स्क्रिप्ट बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Open the error console", "npi_Deva": "त्रुटि कन्सोल खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "failed to connect to the phone.", "npi_Deva": "तपाईँ हाल अहिले तार भएको सञ्जालमा जडान हुनुभयो ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Failed to move temporary file \"%s\" to final location \"%s\": %s", "npi_Deva": "\"%s\" अस्थायी फाइल \"%s\" अन्तिम स्थानमा सार्न असफल भयो: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Europe/ Paris", "npi_Deva": "यूरोप/ पेरिस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Undefined High Standard Low", "npi_Deva": "अपरिभाषित उच्च मानक न्यून", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Datatype & name:", "npi_Deva": "डेटा प्रकार नाम:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Merge With...", "npi_Deva": "यससँग गाभ्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unknown error saving screenshot to disk", "npi_Deva": "डिस्कमा सक्रिनसट बचत गर्दा अज्ञात त्रुटि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Metropolitano Private", "npi_Deva": "मेट्रोपोलिट्यानो प्राइभेट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Liberia", "npi_Deva": "लाइबेरियाName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select pre motion estimation compare function", "npi_Deva": "चाल अनुमानका लागि अल्गोरिदम चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Failed to load file \"%s\": %s", "npi_Deva": "\"%s\" फाइल लोड गर्न असफल भयो: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s: No sessions directory specified.", "npi_Deva": "%s: कुनै सत्रको डाइरेक्टरी निर्दिष्ट गरिएको छैन।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Framerate in frames/sec.", "npi_Deva": "फ्रेमहरू/सेकेण्डमा फ्रेमदर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Undo your last move", "npi_Deva": "अन्तिम चाललाई पूर्व स्थितिमा फर्काउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Charset:", "npi_Deva": "चारसेट:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set a left border to the selected area", "npi_Deva": "चयन गरएका क्षेत्रमा बायाँ किनारा सेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Replace", "npi_Deva": "दोहोर्याउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "To-do Conduit for KPilot", "npi_Deva": "केडीई पाइलटका लागि 'गर्नु पर्ने' कन्ड्युट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Airbrush", "npi_Deva": "एयरब्रुस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "E_xposure mode", "npi_Deva": "एक्सपोजर मोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!", "npi_Deva": "%s: XDMCP अक्षम भयो र कुनै स्थिर सर्भर परिभाषित गरिएको छैन। यसमा %s थप्दा: %d लाई कन्फिगरेसन अनुमति दिन्छ !", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "GtkEntry", "npi_Deva": "Gtk प्रविष्टि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Orientation of the docking item", "npi_Deva": "डक गरिरहेको वस्तुको अभिमुखिकरण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Use default co_lor", "npi_Deva": "पूर्व निर्धारित रङ्ग प्रयोग गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cypriot Syllabary", "npi_Deva": "साइरिवट वर्णमाला", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Entity name '%-.*s' is not known", "npi_Deva": "अस्तित्व नाम '%s' ज्ञात होइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Point (%1, %2)", "npi_Deva": "बिन्दु (% 1,% 2)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have reached your limit for the number of contacts allowed", "npi_Deva": "तपाईँको अनुमति प्राप्त सम्पर्कहरुको संख्याका लागि आफ्नो सिमा बढेको छ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "The GtkActionGroup this GtkAction is associated with, or NULL (for internal use).", "npi_Deva": "जीटीके कार्य समूह यो जीटीके कार्यसँग सम्बन्धित छ वा शून्यसँग( आन्तरिक प्रयोगका लागि मात्र)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Clear all items from the recent documents list", "npi_Deva": "हालका कागजातको सूचीबाट सबै सामाग्री खाली गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Users NOT in Group", "npi_Deva": "प्रयोगकर्ता समूहमा छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Column 2", "npi_Deva": "स्तम्भ २", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Status & desc", "npi_Deva": "वस्तुस्थिति र वर्णन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to save file. Please check if you have permission to write to the directory.", "npi_Deva": "फाइल बचत गर्न असफल । कृपया तपाईँलाई डाइरेक्टरीमा लेख्न अनुमति भए नभएको जाँच गर्नुहोस् ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Account Search", "npi_Deva": "खाता खोजी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Greater Than", "npi_Deva": "यसमा सिर्जित", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Last. fm Profile", "npi_Deva": "last. fm प्रोफाइल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "GroupWise Work Screen Name 3", "npi_Deva": "समूहगत कार्य पर्दा नाम ३", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%1 is not a valid Atom feed.", "npi_Deva": "वैध mp3 फाइल होइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "New Brunswick", "npi_Deva": "न्यू ब्रुन्सविकcanada. kgm", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Fill with Foreground Color", "npi_Deva": "अग्रभूमी रङसँग भर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Table Wizard", "npi_Deva": "तालिका विजार्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Use \"I'm not sure\" flags", "npi_Deva": "\"म निश्चित छैन\" झण्डा प्रयोग गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The receptivity's color", "npi_Deva": "ग्रहणताको रङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Fade planet trails to background color?", "npi_Deva": "पृष्ठभूमि रङमा ग्रह खोजहरू फेड गर्नुहुन्छ?", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Change your Face", "npi_Deva": "तपाईँको मोहडा परिवर्तन गर्नुहोस्", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "User cancelled operation", "npi_Deva": "प्रयोगकर्ताले सञ्चालन रद्द गर्‍‌यो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Format Properties", "npi_Deva": "गुण ढाँचाबद्ध गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Speak and braille a previous chat room message.", "npi_Deva": "पूर्व गफगाफ कोठा सन्देश बताउ र ब्रेलमा देखाउ buddy", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Loading Image Plugins", "npi_Deva": "छवि प्लगइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Integer under %d", "npi_Deva": "%d तल इन्टिजर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Login failed, but the GroupWise server did not report an error", "npi_Deva": "लगइन असफल भयो, तर समूहगत सर्भरले एउटा पनि त्रुटि प्रतिवेदन गरेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Password confirmation is not correct", "npi_Deva": "प्रवेशचिन्हको पुष्टिकरण ठीक छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add Page", "npi_Deva": "सम्बन्धित थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "apply filter to all selected layers", "npi_Deva": "सबै चयन गरिएका तहहरूमा फिल्टर लागू गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Orbital mode", "npi_Deva": "कक्ष मोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stream or download on request", "npi_Deva": "अनुरोधमा प्रवाह र डाउनलोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Left Ctrl key changes group.", "npi_Deva": "बाँया Ctrl कुञ्जीले समूह परिवर्तन गर्दछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cisco - Telecommuter house/ router", "npi_Deva": "सिस्को - टेलिकमुटर घर/ राउटरStencils", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mailer", "npi_Deva": "मेल पठाउने", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You do not have the permissions necessary to open the file.", "npi_Deva": "यो फाइल खोल्न तिमीसँग आवश्यक अनुमतिहरू छैनन् ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Edit Script...", "npi_Deva": "स्क्रिप्ट सम्पादन गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Optimistic", "npi_Deva": "आशावादी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Image Smoothing", "npi_Deva": "छवि महीन पार्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enter recipient fax properties.", "npi_Deva": "प्रापक फ्याक्स विशेषता प्रविष्ट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The URL %1 does not exist on your system.", "npi_Deva": "यूआरएल% 1 तिम्रो प्रणालीमा अवस्थित छैन ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "gnome-pilot applet", "npi_Deva": "जिनोम-पाइलोट एप्लेट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether or not the Salut account has been created on the first Empathy run.", "npi_Deva": "पहिलो इम्प्याथी सञ्चालनमा सलुट खाता सिर्जना गरिएको छ या छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Not Kyrgyzstan", "npi_Deva": "किर्गिजस्तानasia. kgm", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select the vector to translate by...", "npi_Deva": "यसद्वारा अनुवाद गर्ने भेक्टर चयन गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Coordinate expression has an operator \"%s\" where an operand was expected", "npi_Deva": "संयोजन अभिव्यक्तिमा अपेक्षित अपरेन्डको साटोमा सञ्चालनकर्ता \"%s\" छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Security Alert", "npi_Deva": "सुरक्षा सावधानी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Duplicate Tab", "npi_Deva": "नक्कली ट्याबComment", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Uninstall Scheme", "npi_Deva": "शैली योजना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Date header:", "npi_Deva": "तालिका हेडर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Priority", "npi_Deva": "(न्यून प्राथमिकता)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& KMail", "npi_Deva": "केडीई मेल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unknown criteria '%s'", "npi_Deva": "1 अज्ञात परिमिति '%s'", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sibiti", "npi_Deva": "सिबिटि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "1 (Landscape)", "npi_Deva": "१ (ल्यान्डस्केप)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Selected Pixels only", "npi_Deva": "चयन गरिएका पिक्सेल मात्र", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Detaching the process...", "npi_Deva": "प्रक्रिया अलग गर्दैछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No more unvisited links.", "npi_Deva": "अरू नहेरिएका लिङ्कहरू छैनन् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Decreases the speech rate.", "npi_Deva": "वाचनको गति कम गर्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mirabel", "npi_Deva": "मिरेबल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The size of login images", "npi_Deva": "लगइन छविको साइज", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Personal File Sharing Preferences", "npi_Deva": "फाइल साझेदारी प्राथमिकता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Table", "npi_Deva": "तालिका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Option \"%s\" requires specifying the command to run on the rest of the command line", "npi_Deva": "विकल्प \"%s\" लाई बाँकी आदेश लाइनमा चल्नलाई निर्दिष्ट गर्ने आदेश आवश्यक हुन्छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "blob cylinder", "npi_Deva": "ब्लब सिलिन्डर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Jersey City", "npi_Deva": "ट्राभेर्स शहर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Simon Hausmann", "npi_Deva": "साइमोन हसम्यान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "GUI Submenu", "npi_Deva": "GUI सहायकमेनु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reset Script Actions...", "npi_Deva": "खोजी विकल्प रिसेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Zoom in/out by:", "npi_Deva": "यसद्धारा जूम बढाउनुहोस्/जूम घटाउनुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select this option if your camera is connected to your computer using a serial cable.", "npi_Deva": "यदि तपाईँको कम्प्युटर सिरियल तार प्रयोग गरेर जडान गरेको छ भने यो विकल्प चयन गर्नुहोस् ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Are you sure you want to delete this contact?", "npi_Deva": "तिमी यी सम्पर्कहरू मेट्न निश्चित हनुहुन्छ ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Show the current image in fullscreen mode", "npi_Deva": "पूरा पर्दा मोडमा चलिरहेको", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Access by untrusted page to %1 denied.", "npi_Deva": "अविश्वासिलो पृष्ठबाट% 1 मा पहुँच अस्वीकार गरियो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Forget this high score", "npi_Deva": "उच्च प्राप्ताङ्क मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "hex data", "npi_Deva": "हेक्स डेटा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Type of object to map to", "npi_Deva": "...मा मानचित्रमान वस्तुको प्रकार", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "server", "npi_Deva": "कहिल्यै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cadillac", "npi_Deva": "क्याडिल्याक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Import Outlook messages from PST file", "npi_Deva": "पाइनबाट फाइल आयात गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Error: Unable to process extension", "npi_Deva": "त्रुटि: प्रकृया विस्तार गर्न अक्षम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Search in all object types", "npi_Deva": "सबै वस्तु प्रकारहरुमा खोजी गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create a new diagram", "npi_Deva": "प्रतिउत्तर ID", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Solid Configuration Module", "npi_Deva": "ठोस कन्फिगरेसन मोड्युल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hide _Attachment Bar", "npi_Deva": "संलग्न पट्टी लुकाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Parsing a message part failed: %s", "npi_Deva": "एउटा सन्देश भाग पद वर्णन गर्न असफल: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The default editor based on GtkSourceView", "npi_Deva": "Gtk स्रोत दृश्यमा आधारित वैकल्पिक सम्पादक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mount failed: permission denied", "npi_Deva": "माउन्ट असफल: अनुमति निषेध", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Encryption key password", "npi_Deva": "गुप्तिकरण कुञ्जी प्रबन्धक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Smart scrolling", "npi_Deva": "छरितो स्क्रोलिङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cursor Big LW", "npi_Deva": "ठूलो कर्सर LW", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The field's value must be unique, but a record with this value already exists.", "npi_Deva": "फाँटको मान अद्धितिय हुनुपर्दछ, तर यो मान संगको एउटा रेकर्ड पहिल्यै अवस्थित छ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mailbox 7 (Face-Down)", "npi_Deva": "पत्रमञ्जूषा ७ (फेस- डाउन)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "File Open _Dialog", "npi_Deva": "फाइल खुल्ला संवाद", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Tajikistan", "npi_Deva": "ताजिक्स्तान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "adjust the state of the listed packages, where ACTION is one of:", "npi_Deva": "सूचिकृत प्याकेजहरुको स्थिति समायोजन गर्नुहोस्, जहाँ कार्य एउटाको:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Next Daylight Savings Time change (UTC):", "npi_Deva": "पछिल्लो दिवाकलोक बचत समय परिवर्तन (यूटीसी):", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "a:parameter of the logistic distribution", "npi_Deva": "आकार:वितरणको आकार परामिति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Global Render Properties dialog already open", "npi_Deva": "विश्वव्यापी सजावट गुण संवाद पहिले नै खोलिएको छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove this %1", "npi_Deva": "यो% 1 हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Big Smile", "npi_Deva": "मुस्कान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Yellow/Blue:", "npi_Deva": "पहेंलो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Solid Noise", "npi_Deva": "ठोस हल्ला", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Beziergon", "npi_Deva": "बेजिरगन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Return Notification", "npi_Deva": "फिर्ता सूचना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Memory clear", "npi_Deva": "स्मृति पुन: स्मरण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Jump button", "npi_Deva": "जम्प बटन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Redo the undone move", "npi_Deva": "पुर्वावस्थामा फर्काउने चाललाई रिडू गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create collaboration diagram", "npi_Deva": "सहकार्य रेखाचित्र", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Erding", "npi_Deva": "अर्डिङ्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Santa Fe", "npi_Deva": "सान्टा फे", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recognize", "npi_Deva": "पहिचान गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Shadow darkness", "npi_Deva": "छायाँ अध्यारोपन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Database provider does not support distributed transactions", "npi_Deva": "प्रदायक %s इम्प्लिमेन्ट द्रष्टव्य कार्य गर्न सक्दैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delete profile “%s”?", "npi_Deva": "\"%s\" प्रोफाइल मेट्नुहन्छ ?", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Package `%s' does not contain any files (!)", "npi_Deva": "प्याकेज `%s' ले कुनै पनि फाइल समाहित गर्दैन (!)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KDE Scanning", "npi_Deva": "केडीई स्क्यानिङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Opens a CVS working folder in the main window", "npi_Deva": "मूख्य सञ्झ्यालमा CVS कार्य फोल्डर खोल्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Northern Africa", "npi_Deva": "उत्तर अफ्रिका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "HP-GL/ 2 Options", "npi_Deva": "HP- GL/ 2 विकल्प", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%.2f inHg", "npi_Deva": "%.2f inएचजि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show _Related Relationships", "npi_Deva": "सम्बन्धित सम्बन्ध देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stepper Spacing", "npi_Deva": "तहगत खालीस्थान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Tile set:", "npi_Deva": "टायल सेट:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "New Create a new icon, either from a template or by specifying the size", "npi_Deva": "नयाँ या त टेम्प्लेटबाट वा साइज निर्दिष्ट गरेर, नयाँ प्रतिमा सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Draw Neptune in the sky map?", "npi_Deva": "वरुण ग्रहको आकाश मानचित्रमा कोर्नुहुन्छ?", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "number:number of interpolated data points", "npi_Deva": "n:परीक्षाहरूको सङ्ख्याहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether the combo box grabs focus when it is clicked with the mouse", "npi_Deva": "या माउसले क्लिक गर्दा कम्बो बाकसले केन्द्र प्राप्त गर्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set Paragraph Style", "npi_Deva": "अनुच्छेद शैली सेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Contact list _properties", "npi_Deva": "मेरो नजिकका सम्पर्कहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Varying (No Change)", "npi_Deva": "बदल्नु (परिवर्तन गरिएको छैन)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "ftp URL", "npi_Deva": "एफटीपी यूआरएलName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Jordan", "npi_Deva": "जोर्डन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remote debugging", "npi_Deva": "सङ्केत फोल्डिङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Exit and fix by hand", "npi_Deva": "हातैले अन्त्य र निश्चित गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recurrence: every %1 %2", "npi_Deva": "पुनरावृत्ति: प्रत्येक% 1% 2", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dependency Editor (List)", "npi_Deva": "निर्भरता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Play using:", "npi_Deva": "प्रयोग गरेर बजाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show grid Toggles the grid in the icon edit grid on/ off", "npi_Deva": "ग्रिड देखाउनुहोस् प्रतिमा सम्पादन ग्रिड खूल्ला/ बन्दमा ग्रिड टगल गर्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Evolution Restore", "npi_Deva": "इभोल्युसन पूर्वावस्थामा ल्याउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Fatal parse error in gradient file '%s': File is corrupt in line %d.", "npi_Deva": "ग्रडिएन्ट फाइल '%s' मा पद वर्णन गर्दा घातक त्रुटि: फाइल %d लाइनमा बिग्रिएको छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Interlace", "npi_Deva": "इन्टरलेस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Child X Displacement", "npi_Deva": "एक्स शाखा स्थानान्तर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "location of appointment", "npi_Deva": "भेटघाटको स्थान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kate Python Browser Plugin", "npi_Deva": "केट पाइथोन ब्राउजर प्लगइनComment", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/ Mendoza", "npi_Deva": "अमेरिका/ मेन्दोजा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "St. Vincent and the Grenadines", "npi_Deva": "सेन्ट भिसेन्ट र ग्रेनाडाइन्सName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Anjuta", "npi_Deva": "अन्जुता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stop the current operation", "npi_Deva": "हालको मेल सञ्चालन रद्द गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Attribute \"%s\" is invalid on element in this context", "npi_Deva": "यो प्रसंगमा \"%s\" विशेषता उस्तैतत्वमा अवैध छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Failure shutting down configuration server: %s", "npi_Deva": "कन्फिग सर्भर बन्द गर्न असफल: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Implicit Plot", "npi_Deva": "अन्तरनिर्हित प्लोट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Moderate sleet", "npi_Deva": "मध्यम हिँउ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Can't get Legendre symbols complex numbers", "npi_Deva": "लेजेन्ड्रे सङ्केतको जटिल सङ्ख्याहरू प्राप्त गर्न सकिँदैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save Input Device Settings _Now", "npi_Deva": "अहिले नै आगत यन्त्र सेटिङ बचत गर्नुहोस्।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "XFlame", "npi_Deva": "एक्स फ्लेमName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mark all messages as read", "npi_Deva": "सबै सन्देशहरूलाई पढिएको रूपमा चिनो लगाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Class Attributes", "npi_Deva": "वर्ग विशेषताहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The application '%s' wants to access the password for '' in the default keyring.", "npi_Deva": "अनुप्रयोग '%s' ले पूर्वनिर्धारित किरिङमा '' का लागि पासवर्ड पहुँच प्राप्त गर्न चाहन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are you sure you want to remove the %1 action?", "npi_Deva": "तपाईँ% 1 कार्य हटाउन निश्चित हुनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Save _Title", "npi_Deva": "द्रष्टव्य शीर्षक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Duplicate", "npi_Deva": "नक्कल प्रति बनाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Location Bar Enter a web address or search term.", "npi_Deva": "स्थानपट्टी वेब ठेगाना वा खोजी शब्द प्रविष्ट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dan Leinir Turthra Jensen", "npi_Deva": "डन लेइनिर ट्रुथरा जेन्सेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Some client removed itself from the GConf server when it hadn't been added.", "npi_Deva": "GConf सर्भरबाट केही क्लाइन्टले आफै हट्दछ जब यो थप गरिएको हुँदैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enter the File name. The extension will be added according to the type.", "npi_Deva": "फाइल नाम प्रविष्ट गर्नुहोस् । विस्तार प्रकारका रूपमा थपिन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "New Contact List", "npi_Deva": "नयाँ सम्पर्क सूची", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create New Tag in \"%1\"", "npi_Deva": "\"% 1\" मा नयाँ ट्याग सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Checkerboard...", "npi_Deva": "जाँचबोर्ड...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Didn't understand XML node inside an XML list node", "npi_Deva": "XML नोड भित्र XML सूची नोड बुझिएन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "N-Z_BAR_Spanish (Guatemala)", "npi_Deva": "स्पेनिस(मेक्सिको)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Matrix", "npi_Deva": "म्यट्रिक्स", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Created on", "npi_Deva": "यसमा सिर्जित", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "There are no Easter Eggs in this program.", "npi_Deva": "त्यहाँ यो कार्यक्रममा कुनै इस्टर एगहरू छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Pixelize", "npi_Deva": "पिक्सेल बनाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have used both \"createdb\" and \"dropdb\" startup options.", "npi_Deva": "तिमीले दुवै \"createdb\" र \"dropdb\" सुरुआत विकल्प प्रयोग गर्नुभयो ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "_Show cursor offset in statusbar as:", "npi_Deva": "यस रूपमा वस्तुस्थितिपट्टीमा कर्सर अफसेट देखाउनुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You can use wildcard matching and \";\" for separating multiple names", "npi_Deva": "तपाईँ बहुविध नामहरू छुट्याउनका लागि मिल्दो वाइल्डकार्ड र \";\" प्रयोग गर्न सक्नुहुन्छ", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Sorry, but emblem keywords can only contain letters, spaces and numbers.", "npi_Deva": "माफ गर्नुहोस्, तर चिन्ह शब्दकुञ्जीहरूले अक्षरहरू, खाली स्थानहरू र सङ्ख्याहरू मात्र समाविष्ट गर्न सक्दछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group name is empty", "npi_Deva": "समूहको नाम खाली छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "New Search Folder", "npi_Deva": "नयाँ खोजी फोल्डर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to parse '%s' ('%s')", "npi_Deva": "पद वर्णन '%s'गर्न असमर्थ किनभने '%s'", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The number of characters that must be typed before Evolution will attempt to autocomplete.", "npi_Deva": "क्यारेक्टरको सङ्ख्या जुन इभोल्युसनले स्वत: सम्पन्न गर्न प्रयत्न गर्नु भन्दा पहिला टाइप गर्नु पर्दछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Main:", "npi_Deva": "मुख्य:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cannot move items to trash, do you want to delete them immediately?", "npi_Deva": "रद्दीटोकरीमा वस्तुहरू सार्न सकिँदैन, तिमी तीनिहरूलाई तुरुन्तै मेट्न चाहनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Naval Auxiliary Landing Field", "npi_Deva": "नाभाल अक्जुलरी ल्यान्डिङ फिल्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Zoom when window is resized", "npi_Deva": "सञ्झ्याल रिसाइज गर्दा जूम गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cedar City", "npi_Deva": "सेडार शहर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s requests your presence at the following meeting:", "npi_Deva": "%sले तलाको बैठकमा तिम्रो उपस्थितिका लागि अनुरोध गर्दछ:", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Next & Week", "npi_Deva": "गएको हप्ता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "FloralWhite", "npi_Deva": "स्वेतपुष्पcolor", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "request was canceled", "npi_Deva": "अनुरोध रद्द गरियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Pacific/Efate", "npi_Deva": "प्यासिफिक/इफेट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Binary", "npi_Deva": "द्वि- रेखात्मक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select a (48*48) png of size < 700bytes", "npi_Deva": "साइजको एउटा (४८*४८) पीएनजी < ७०० बाइट चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Default Zoom", "npi_Deva": "पूर्वानिर्धारित जूम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Open a recently used document", "npi_Deva": "अवस्थित रहेको कागजात खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "String was not found!", "npi_Deva": "स्ट्रिङ फेला परेन !", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Current changes:", "npi_Deva": "हालका परिवर्तन:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The sky vector may not be a null vector.", "npi_Deva": "स्काई भेक्टर शून्य भेक्टर हुन सक्दैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enable component", "npi_Deva": "सम्मिलित एचटीएमएल अवयव", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Circuit - Vertical Inductor", "npi_Deva": "परिपथ - ठाडो इन्डक्टरStencils", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sa_ve Search As...", "npi_Deva": "यस रूपमा खोजी बचत गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Redo the undone move", "npi_Deva": "समापन नभएका चालललाई रिडू गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "File location:", "npi_Deva": "फाइल स्थान:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "I trust signatures from '%s' on other keys", "npi_Deva": "म अन्य कुञ्जीमा '%s' बाट हस्ताक्षरहरूलाई विश्वास गर्छु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Asahikawa", "npi_Deva": "असाहिकावा अब", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Archive name:", "npi_Deva": "क्रम सङ्ख्या", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Scroll by:", "npi_Deva": "यसद्धारा स्क्रोल गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Keep Aligned", "npi_Deva": "पङ्क्तिबद्व राख्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "all the connections will be closed.", "npi_Deva": "जडान बन्द भयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Traditional", "npi_Deva": "परम्परागत", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select the entire page", "npi_Deva": "पूरै पृष्ठ चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Bad address", "npi_Deva": "%s: गलत ठेगाना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Icon has zero height", "npi_Deva": "प्रतिमासँग शून्य उचाइ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Thiruvananthapuram", "npi_Deva": "थिरुभानानथापुरामதிருச்சிராப்பள்ளி", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You are also permitted to see my private items.", "npi_Deva": "प्रत्यायोजनले व्यक्तिगत वस्तुहरु देख्न सक्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "quality_BAR_Low", "npi_Deva": "गुणस्तर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Custom Title", "npi_Deva": "अनुकूल शीर्षक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you wish to save your changes?", "npi_Deva": "तपाईँका परिवर्तनहरू बचत गर्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Calculate and analyze project schedules", "npi_Deva": "परियोजना तालिका गणना र विश्लेषण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Open Brush as Image", "npi_Deva": "छविको रूपमा ब्रुस खोल्नुहोस्brushes-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "GParted Details", "npi_Deva": "विवरण बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Edit...", "npi_Deva": "सम्पादन गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Import From Mozilla", "npi_Deva": "मोजिलाबाट आयात गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delete the selected folder", "npi_Deva": "चयन गरिएका फोल्डरहरू मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No value found for key %s", "npi_Deva": "कुञ्जीका लागि सेट गर्न कुनै मान छैन: `%s'", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Odd First", "npi_Deva": "बिजोड फ्रेमहरू पहिले", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Daylight Saving Time inactive", "npi_Deva": "दिवाकलोक बचत समय निश्क्रिय", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "BAHTTEXT(number)", "npi_Deva": "सङ्ख्या", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Marking improvements", "npi_Deva": "सुधार चिन्ह गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Night scene", "npi_Deva": "रातको दृश्य", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%1 already exists. Do you want to overwrite it?", "npi_Deva": "% 1 पहिल्यै अवस्थित छ । तपाईँ यसलाई अधिलेखन गर्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "You do not have the permissions necessary to change the group of “%s”.", "npi_Deva": "\"%s\" को समूह परिवर्तन गर्न तिमीसँग आवश्यक अनुमतिहरू छैनन् ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "_Next Message", "npi_Deva": "पछिल्लो सन्देश", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Deleting \"%s\" failed: %s.", "npi_Deva": "\"%s\" मेट्न असफल: %s.", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Image Statusbar Format", "npi_Deva": "छविको स्थितिपट्टी ढाँचा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Translators", "npi_Deva": "अनुवादकहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "VCR Navigator...", "npi_Deva": "भि सि आर नेभिगेटर...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Disable MMX", "npi_Deva": "एम एम एक्स अक्षम पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Update", "npi_Deva": "अद्यावधिक गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Editor", "npi_Deva": "सम्पादक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No Content", "npi_Deva": "नुनो मनटेइरो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Zoom 1:1", "npi_Deva": "जुम १:१", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/Nipigon", "npi_Deva": "अमेरिका/निपिगोन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sierra Leone", "npi_Deva": "सियरालिओन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delete all existing archived alarms (from the default archived alarm calendar only).", "npi_Deva": "अवस्थित सबै सङ्ग्रहित संसूचक मेट्नुहोस् (पूर्वनिर्धारित सङ्ग्रहित संसूचक संसाधनबाट मात्र)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mixed Letters", "npi_Deva": "मिश्रित गरिएको अक्षर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are you sure you want to open {0} messages at once?", "npi_Deva": "तिमी {0} सन्देशहरू एकै पटक खोल्न निश्चित हुनुहुन्छ ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Only backup changed bases", "npi_Deva": "जगेडा परिवर्तित आधारहरू मात्र", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Message postponed.", "npi_Deva": "सन्देश पछिलाई सारियो।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Attachment List", "npi_Deva": "संलग्र फाइल सूची", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "--- separator ---", "npi_Deva": "--- विभाजक ---", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Burlington", "npi_Deva": "बर्लिङ्गटन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save _All", "npi_Deva": "सबै बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Adding album cover to collection", "npi_Deva": "सङ्कलनमा एल्बम आवरण थप्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hidden", "npi_Deva": "लुकेको", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KOrganizer Reminder Client", "npi_Deva": "केडीई आयोजक रिमाइन्डर क्लाइन्टGenericName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enable/disable real time preview of changes", "npi_Deva": "परिवर्तनहरूको ठीक समय पूर्वावलोकन गर्न सक्षम/अक्षम पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reiser4 Linux Volume", "npi_Deva": "रेईजर४ लिनक्स भोल्युम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Loading GroupWise resource %1", "npi_Deva": "समूहगत ठेगाना पुस्तिका पढ्न असफल भयो:% 1", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Used By", "npi_Deva": "स्ट्रिम पोर्ट (दशमलब)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Adjust Row Heights", "npi_Deva": "पङ्क्ति उचाइहरू समायोजन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Refresh palettes", "npi_Deva": "रङदानीहरू ताजा पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delay between slides:", "npi_Deva": "स्लाइड बीचमा विलम्ब गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Copy Palette _Location", "npi_Deva": "रङदानी स्थान प्रतिलिपि बनाउनुहोस्palettes-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to open the memo list '%s' for creating events and meetings", "npi_Deva": "घटनाहरू र बैठकहरू सिर्जना गर्न '%s' मेमो सूची खोल्न अक्षम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Check whether this vector is equal to another vector", "npi_Deva": "यो भेक्टर अन्य भेक्टरसँग बराबर छ की छैन जाँच गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recent Messages", "npi_Deva": "हालको सन्देशहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "San Bernardino", "npi_Deva": "सान फर्नान्डो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Logarithm of x base 2", "npi_Deva": "एक्स आधार २ को लघुगणक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Changed format of no-backup databases.", "npi_Deva": "जगेडा नगरेको डाटाबेसको परिवर्तित ढाँचा ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Blend mode", "npi_Deva": "मिसाउने मोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stop KPilot's system tray application on exit", "npi_Deva": "केडीई पाइलट प्रणाली कन्ड्युट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Widget name", "npi_Deva": "औजार नाम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create a new memo from the selected message", "npi_Deva": "चयन गरिएको सन्देशको प्रेषकलाई जवाफ रचना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Default setting in the alarm edit dialog for \"confirm alarm acknowledgement\".", "npi_Deva": "\"संसूचन स्वीकार यकीन गर्न\" का लागि संसूचन सम्पादन संवादको पूर्वनिर्धारित सेटिङ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stephan Kulow", "npi_Deva": "स्टेफान कुलो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The ID of a GtkSourceView Style Scheme used to color the text.", "npi_Deva": "Gtk स्रित दृश्य शैली योजनाको आईडी पाठ रङ लगाउन प्रयोग गरिन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Auto Detect Camera", "npi_Deva": "स्वत: पत्ता क्यामेरा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Elements of cybernetic circuits", "npi_Deva": "साइबरनेटिक्स सर्किटहरूको तत्वहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group Editor", "npi_Deva": "समूह सम्पादक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show help options", "npi_Deva": "मद्दत विकल्पहरू देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "gFTP Warning: Skipping line %d in bookmarks file: %s", "npi_Deva": "जीएफटीपी चेतावनी: पुस्तकचिनो फाइलमा लाइन %d फड्काइदै: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Delete tag…", "npi_Deva": "डेटा मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Destination/Prefix", "npi_Deva": "गन्तब्य/उपसर्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mark the selected messages as unimportant", "npi_Deva": "चयन गरिएका सन्देशहरूलाई महत्वहीन चिनो लगाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reduce the image window to the size of the image display", "npi_Deva": "छवि सञ्झ्याललाई छवि प्रदर्शनको साइजमा घटाउनुहोस्view-action", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Key echo set to word and sentence.", "npi_Deva": "कुञ्जी प्रतिध्वनि शब्द र वाक्य कायम गरियो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Send", "npi_Deva": "पठाउँनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cannot rename folder: %s: No such folder", "npi_Deva": "फोल्डर पुन:नामाकरण गर्न सकिँदैन: %s: त्यस प्रकारको फोल्डर छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Check that you have permission to delete the pattern.", "npi_Deva": "बाँन्की मेट्न तिमीसँग अनुमति भएको जाँच गर ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Open a new Configuration Editor window editing system default settings", "npi_Deva": "प्रणाली पूर्वनिर्धारित सेटिङ सम्पादन गर्दा एउटा नयाँ कन्फिगरेसन सम्पादक खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you want to replace it?", "npi_Deva": "के तपाईं यसलाई बदल्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Reynosa", "npi_Deva": "रेनोसा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Lock spin time:", "npi_Deva": "बन्द स्पिन समय:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Adjust how much the hue should be changed randomly", "npi_Deva": "मान समायोजन गर्नुहोस् कि ह्यु कतिसम्म अनियमित तरिकाले परिवर्तन हुनुपर्दछ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have not saved your work. Do you want to save it now?", "npi_Deva": "तपाईँले आफ्नो काम बचत गर्नुभएको छैन । के तपाईँले अहिले बचत गर्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Cordless Optical Mouse", "npi_Deva": "तार नभएको अप्टिकल माउस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Font & Color Schemas", "npi_Deva": "फन्ट र रङ स्कीमा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "VLAN connection %d", "npi_Deva": "भीपीएन जडान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Click to view the image", "npi_Deva": "छवि सार्न सकेन:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Goes to next landmark.", "npi_Deva": "अघिल्लो कित्तामा जान्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Wow, what a strong personality!", "npi_Deva": "वाह, क्या प्रबल व्यक्तित्व!", "source": "in22_conv", "formality": "neutral"}
+{"eng_Latn": "Save OCR Result Text", "npi_Deva": "ओसीआर नतिजा पाठ बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Webster City", "npi_Deva": "वेब्स्टर शहर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dynamic Dialog Editor", "npi_Deva": "गतिशील संवाद सम्पादकComment", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Icons: %s", "npi_Deva": "प्रतिमा: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "- Create and modify an archive", "npi_Deva": "एउटा सङ्ग्रह सिर्जना गर्नुहोस् र परिमार्जन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "And look how he in turn is standing up and encouraging them as they march forward.", "npi_Deva": "अनि हेर उहाँ कसरी उभिनुभएको छ र उनीहरू अघि बढ्दा प्रोत्साहन दिँदै हुनुहुन्छ।", "source": "in22_conv", "formality": "neutral"}
+{"eng_Latn": "Bitrate:", "npi_Deva": "बिट दर:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kilwa Masoko", "npi_Deva": "किल्वा मासोका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A4, 600x600 DPI", "npi_Deva": "A4, ६००x६०० डीपीआई", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether menus may display an icon next to a menu entry.", "npi_Deva": "मेनुले पछिल्लो मेनु प्रविष्टिमा प्रतिमा प्रदर्शन गर्न सक्छ या सक्दैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Default Bottom Margin", "npi_Deva": "पूर्वनिर्धारित तल्लो सीमान्त", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Redmond", "npi_Deva": "रेडमन्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Generate website", "npi_Deva": "वेबसाइट विकास गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reference to remote file", "npi_Deva": "रेफरेन्स टु रिमोट फाईल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "XMDCP: Incorrect XDMCP version!", "npi_Deva": "%s: गलत XDMCP संस्करण !", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Manage plug-ins", "npi_Deva": "प्लगइनहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KFileReplace & Handbook", "npi_Deva": "केडीई फाइल बदल्ने हातेपुस्तक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Shut Down Anyway", "npi_Deva": "जसरी पनि लगइन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/Aruba", "npi_Deva": "अमेरिकारिका/एरुबा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You are about to rename the following files. Are you sure you want to continue?", "npi_Deva": "तिमी निम्न फाइल पुन: नामकरण गर्दै हुनुहुन्छ । तिमी जारी राख्न निश्चित हुनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Current-match color", "npi_Deva": "हालको-मिल्दो रङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Recur on the", "npi_Deva": "यसमा दोहोरिने", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Document title", "npi_Deva": "कागजात शिर्षक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The current color", "npi_Deva": "विद्यमान रङ्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Custom Canvas Definition", "npi_Deva": "समायोजन तह...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Calendar on Scalix Server via KMail", "npi_Deva": "केडीई मेल मार्फत IMAP सर्भरमा क्यालेन्डरName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set as default folder", "npi_Deva": "डाउनलोड पुन: निरन्तरता गरियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show process 'CPU time' column on startup", "npi_Deva": "सुरुआतमा प्रक्रिया 'CPU time' स्तम्भ देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Addition and subtraction memory game", "npi_Deva": "जोड र घटाऊ स्मृति खेल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have chosen %s for this session", "npi_Deva": "तिमीले यो सत्रका लागि %s चयन गर्नु भएको छ", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "%s: there was no source for UID '%s' stored in GConf.", "npi_Deva": "%s: त्यहाँ जिकन्फमा भण्डार गरिएको `%s' युआइडिको लागि कुनै स्रोत थिएन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Left or Top color when drawing gradients, or the solid color.", "npi_Deva": "ग्रेडिएन्ट, वा ठोस रङ कोर्दा बाँया वा माथिको रङ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "View and edit the XML tree of the document", "npi_Deva": "कागजातको XML ट्रि हेर्नुहोस् र सम्पादन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "chartreuse2", "npi_Deva": "चार्टरयुज२color", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The program on your computer which provides access to the %1 protocol could not obtain the memory required to continue.", "npi_Deva": "तपाईँको कम्प्युटरको% 1 प्रोटोकलमा पहुँच उपलब्ध गराउने कार्यक्रम जारी राख्ने आवश्यक स्मृति प्राप्त गर्न सकेन ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "LDIF Address Book", "npi_Deva": "LDIF ठेगाना पुस्तिका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Name '%s' does not exist", "npi_Deva": "नाम '%s' पानामा छैन '%s'", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "two of clubs", "npi_Deva": "चिडीको दुक्का", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Never Allow", "npi_Deva": "कहिल्यै पनि अनुमति नदिनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Width of selection", "npi_Deva": "चयनको चौडाई", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "preferred", "npi_Deva": "प्राथमिकताहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set Point 1", "npi_Deva": "% 1 मुद्रण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Other type", "npi_Deva": "अन्य प्रकार", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Bangui", "npi_Deva": "ब्याङ्गुइ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Delete Dictionary", "npi_Deva": "शब्दकोश मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Speak multicase strings as wor_ds", "npi_Deva": "बहू वर्ण संवेदन सिल पदावलीलाई शब्द जस्तै गरी बताउ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Morrisville", "npi_Deva": "मोर्रिसभिल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Table (wml)", "npi_Deva": "तालिका (wml)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove the chapter from the list", "npi_Deva": "प्लेसूचीबाट फाइल हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Column width in pixels:", "npi_Deva": "स्तम्भ चौडाइ (प्वाइंट):", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Confirm Frame Density Change", "npi_Deva": "फ्रेम घनत्व परिवर्तन यकिन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cannot save calendar data", "npi_Deva": "पात्रो डेटा बचत गर्न सक्दैन: विकृत युआरआइ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Choose Project", "npi_Deva": "परियोजना छनोट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Conflict:", "npi_Deva": "द्वन्द:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A floating point value (greater 0)", "npi_Deva": "उत्प्लावन बिन्दु मान (जस्तै: १. ३, ०. ३४३, २५३)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Weekday:", "npi_Deva": "हप्तादिन:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Font of the axis labels", "npi_Deva": "अक्ष लेबुलको फन्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add Password Keyring", "npi_Deva": "बचत गरिएका पासवर्ड वा लगइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cisco - CallManager", "npi_Deva": "सिस्को - कल प्रबन्धकStencils", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select an entire column", "npi_Deva": "एउटा पूरा स्तम्भ चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sync Categories:", "npi_Deva": "कोटिहरू समक्रमण गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/Grand_Turk", "npi_Deva": "अमेरिका/ग्राण्ड तुर्क", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Polygons", "npi_Deva": "बहुँभुजName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Background color is set", "npi_Deva": "पृष्ठभूमि रङ सेट गरिएको छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "ConfigureNotifications", "npi_Deva": "यस रूपमा बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show position", "npi_Deva": "स्थान देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Start time is wrong", "npi_Deva": "सुरुआत समय त्रुटि छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Server does not use any supported authentication method", "npi_Deva": "सर्भरले कुनै पनि समर्थित प्रमाणीकरण विधी प्रयोग गर्दैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A-M_BAR_Catalan", "npi_Deva": "कातालान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove the four of hearts.", "npi_Deva": "पानाको चौका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Asia/ Kuching", "npi_Deva": "एशिया/ कुचिङ्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save as:", "npi_Deva": "यस रूपमा बचत गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Downloading packages", "npi_Deva": "प्याकेजहरू डाउनलोड गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s: error: can't open file `%s'", "npi_Deva": "%s: त्रुटि:फाइल`%s' खोल्न सक्दैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Check for Leaks", "npi_Deva": "चुहावटका लागि जाँच्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Monitor the current weather conditions, and forecasts", "npi_Deva": "हालको मौसम अवस्था अनुगमन गर्दछ, र पूर्वानुमान गर्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select file", "npi_Deva": "पहिले केही फाइलहरू चयन गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%1, %2 not defined", "npi_Deva": "% 1,% 2 परिभाषित छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Encompass", "npi_Deva": "घेर्नु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Page Set_up", "npi_Deva": "मुद्रण सेटअप...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "File dialog to open an existing URL", "npi_Deva": "एउटा अवस्थित यूआरएल खोल्न फाइल संवाद", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mail Serializer", "npi_Deva": "पत्र मलानकर्ताComment", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enable shuffle playback order", "npi_Deva": "प्लेब्याक भोल्युम बढाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "To move to items, use either the arrow keys or type ahead searching.", "npi_Deva": "सामाग्रीमा सर्न, या त वाण कुञ्जी अथवा अगाडि खोजी टङ्कण गर्नु होस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create a new proxy profile", "npi_Deva": "एउटा नयाँ भेटघाट सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Output levels:", "npi_Deva": "निर्गत तहहरू:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Receive Action:", "npi_Deva": "कार्य प्राप्त गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create a new layer when applying filter", "npi_Deva": "फिल्टर लागू गर्दा नयाँ छवि सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Povray Output", "npi_Deva": "पोभरे निर्गत", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Import selected keys to local key ring", "npi_Deva": "चयन गरिएका कुञ्जीहरूलाई स्थानीय किरिङमा आयात गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Java policy:", "npi_Deva": "जाभा नीति:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "On 20 October 1874, Dayanand arrived in Bombay.", "npi_Deva": "२० अक्टोबर १८७४ का दिन दयानन्द बम्बई आइपुगे।", "source": "bpcc_daily", "formality": "neutral"}
+{"eng_Latn": "Anjuta Status", "npi_Deva": "अन्जुता वस्तुस्थिति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Yugoslavia", "npi_Deva": "केप भर्दे", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "download status_BAR_Unknown", "npi_Deva": "डाऊनलोड स्थिति अज्ञात_BAR_", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Ahmadabad", "npi_Deva": "अहमदाबादइलाहाबाद", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KWeather", "npi_Deva": "केडीई मौसम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kontact handles your e-mail, address book, calendar, to-do list and more.", "npi_Deva": "सम्पर्कले तपाईँको इमेल, ठेगाना पुस्तिका, क्यालेन्डर, गर्नुपर्ने सूची र अरू धेरै ह्यान्डल गर्दछ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Use wider lines", "npi_Deva": "चौडा रेखाहरू प्रयोग गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Bitrate:", "npi_Deva": "बिटरेट:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Error: Unable to print help file.", "npi_Deva": "त्रुटि: मद्दत फाइल मुद्रण गर्न असमर्थ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delete selected tracker.", "npi_Deva": "चयन गरिएका ट्र्याकरद्वारा ट्र्याक गरिएका सबै चाल खाली गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save Tool Options _Now", "npi_Deva": "अहिले उपकरण विकल्पहरू बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Port Hedland", "npi_Deva": "पोर्ट हेडल्यान्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "This calendar will be removed permanently.", "npi_Deva": "यो पात्रो स्थायी रूपले हटाइनेछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Initial Configuration - KMouth", "npi_Deva": "सुरुआत कन्फिगरेसन - केडीई माउथ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mombasa", "npi_Deva": "मोम्बासा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stop Operation", "npi_Deva": "सञ्चालन रोक्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "UADescription (Firefox 3.0 on current)", "npi_Deva": "UA वर्णन (हालमा फायरफक्स २. 0) Name", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Look at your position, then switch back to invisible mode to continue your moves", "npi_Deva": "तपाईँको स्थिति हेर्नुहोस्, त्यसपछि तपाईँको चाल जारी राख्न अदृश्य मोडमा पछाडि स्विच गर्नुहोस्", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Kalkar", "npi_Deva": "काल्कार", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Move ~a onto the jack of diamonds.", "npi_Deva": "इँटको गुलाम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Internal Storage", "npi_Deva": "दायाँ/ तल बाँणName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Personalize Kopete's Behavior", "npi_Deva": "कोपेटको व्यवहारलाई अस्तित्व दिनुहोस्Name", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Yamagata", "npi_Deva": "यामागाटा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Custom Connection", "npi_Deva": "जडानहरूको सूची", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Replay Any Level", "npi_Deva": "कुनै स्तर खेल्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "wireless hardware: is not enabled", "npi_Deva": "वायरलेस: सक्षम पारिएको छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The following are secret key pairs: %1 They will not be deleted.", "npi_Deva": "निम्न गुप्त कुञ्जी जोडी हुन:% 1 तिनीहरू मेटिने छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sheet name cannot be empty.", "npi_Deva": "पाना नाम खाली गर्न सकिँदैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Please ask your system administrator to start it.", "npi_Deva": "कृपया तिम्रो प्रणाली प्रशासकलाई सुरु गर्न भन्नुहोस् ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "To _Pattern...", "npi_Deva": "बाँन्कीमा...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Please try a different file extension like .png or .jpg.", "npi_Deva": "कृपया एउटा फरक फाइल विस्तार प्रयास गर्नुहोस् जस्तै .png or .jpg ।The PNG-Format (*.png)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Presentation monitor:", "npi_Deva": "प्रस्तुतिकरण कलम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Callback to be issued when property editor object data is to be freed", "npi_Deva": "गुण सम्पादक वस्तु डेटा खाली गरिँदा जारी गरिनुपर्ने कलब्याक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have multiple tabs open in this window, are you sure you want to quit?", "npi_Deva": "तपाईँसँग यो सञ्झ्यालमा खोलिएको बहुविध ट्याबहरू छ, तपाईँ यसलाई अन्त्य गर्न चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Example sentence", "npi_Deva": "उदाहरण वाक्य", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Preview!", "npi_Deva": "पूर्वावलोकन !", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Customize...", "npi_Deva": "अनुकूलन गर्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unclassified", "npi_Deva": "साइन नगरिएको", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Portlaoise", "npi_Deva": "पोर्तेला", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Find files", "npi_Deva": "अनुक्रमणिका फाइल:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Build Date", "npi_Deva": "निर्माण मिति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Invalid referenced table name '%s'", "npi_Deva": "अवैध फाँट नामल '%s'", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "OpenOffice.org Math document", "npi_Deva": "ओपन अफिस.ओ आर जि म्याथ कागजात", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Imperatriz", "npi_Deva": "ईम्पेराट्रिज", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Lansing", "npi_Deva": "लान्सिङ्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Wrong password.", "npi_Deva": "पासवर्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No Rating assigned", "npi_Deva": "हालै मानाङ्कन गरेको ट्याग छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Office Applications", "npi_Deva": "कार्यालय अनुप्रयोग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Start replace", "npi_Deva": "बदल्न सुरु गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Heading 4", "npi_Deva": "POD हेडिङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enable VFS file monitoring", "npi_Deva": "VFS फाइल अनुगमन सक्षम पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Speak results during _find", "npi_Deva": "खोजी गर्दा नतिजा बताउ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Frames:", "npi_Deva": "फ्रेमहरू:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Technical administrator", "npi_Deva": "प्राविधिक प्रशासक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/ Maceio", "npi_Deva": "अमेरिका/ मसेइयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you want to save the message for later or discard it?", "npi_Deva": "के तिमी यो सन्देश पछिका लागि बचत गर्न चाहनुहुन्छ वा यसलाई परित्याग गर्न चाहनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "(autonumber)", "npi_Deva": "(स्वचालित नम्बर)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Directory properties", "npi_Deva": "परियोजना गुण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Paraparaumu", "npi_Deva": "पारापाराउमु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Open in & This Window", "npi_Deva": "यो सञ्झ्यालमा खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Failed to write TIFF data", "npi_Deva": "TIFF छवि खोल्न असफल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Press the Shift key while clicking the spin buttons to adjust the time by a larger step (6 hours / 5 minutes).", "npi_Deva": "बृहत चरण अनुरूप समय समायोजन गर्न स्पिन बटन क्लिक गरेको बेलामा Shift key थिच्नुहोस् (६ घण्टा / ५ मिनेट) ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "To check if you successfully guessed the ball positions, click here!", "npi_Deva": "यदि तपाईँले समाप्त गरेको ठानेमा: तपाईँले बल स्थिति सफलतापूर्वक अनुमान गरेको भएमा जाँच गर्न \"समाधान\" मा क्लिक गर्नुहोस्!", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Sweden", "npi_Deva": "स्विडेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Start a new game.", "npi_Deva": "नयाँ खेल सुरु गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether Undo operation is possible", "npi_Deva": "पूर्वस्थितिमा फर्काउने कार्य सम्भव छ या छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Combolcha", "npi_Deva": "कम्बल्च", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Declination of focus position", "npi_Deva": "फोकस स्थितिको विचलन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Run the strong pseudoprime test base b on n", "npi_Deva": "बि मा एन आधारित बलियो सिउटो अभाज्य हुँदैन, सञ्चालन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Messina", "npi_Deva": "मेस्सिना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Mirror Vertically", "npi_Deva": "ठाडो रुपमा मास्क देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Port Alexander", "npi_Deva": "पोर्ट एलेक्सजेन्डर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If checked, use a file or a color as background.", "npi_Deva": "यदि जाँच गरियो भने, खगोलीय भूमध्य रेखा आकाशे नक्सामा कोरिनेछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Access a network share or resource", "npi_Deva": "सञ्जाल साझेदार वा संसाधन पहुँच गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Read metadata from each file to database", "npi_Deva": "डाटाबेसमा प्रत्येक फाइलबाट मेटाडेटा पढ्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "(Deprecated) List of custom headers and whether they are enabled.", "npi_Deva": "अनुकूल हेडरहरूको सूची र जहाँ सम्म तिनीहरू सक्षम पारिएका छन् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reset the query buffer (or load file into query buffer)", "npi_Deva": "बाह्य सम्पादकसँग क्वेरी बफर (वा फाइल) सम्पादन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The file could not be loaded. It may be in an invalid format", "npi_Deva": "फाइल लोड गर्न सकिएन । यो एउटा अवैध ढाँचामा हुन सक्छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Local color scheme index file could not be opened. Scheme cannot be recorded.", "npi_Deva": "स्थानीय रङ योजना अनुक्रमणिका फाइल खोल्न सकेन । योजना रेकर्ड गर्न सकिएन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hide Rulers", "npi_Deva": "रुलर लुकाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Must specify a key or keys to get", "npi_Deva": "कुञ्जी वा कुञ्जीहरू प्राप्त गर्नका लागि निर्दिष्ट गर्नुपर्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sfax El-Maou", "npi_Deva": "स्फ्याक्स El-माउ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KPresenter PNG Export Filter", "npi_Deva": "केडीई प्रस्तुतकर्ता पीएनजी निर्यात फिल्टरName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Fort Ritchie", "npi_Deva": "फोर्ट रिट्चि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "change fullscreen mode", "npi_Deva": "पूरा पर्दा मोड परिवर्तन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A network error has occurred. The request has failed.", "npi_Deva": "सञ्जाल त्रुटि उत्पन्न भयो । अनुरोध असफल भएको छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Violin", "npi_Deva": "भ्वाइलिन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Release mouse to set color.", "npi_Deva": "रङ सेट गर्न निष्काशन माउस ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Find the strawberry by clicking on the blue fields", "npi_Deva": "नीलो फाँटहरूमा क्लिक गरेर स्ट्रवेरी फेला पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Key Servers", "npi_Deva": "कुञ्जी सर्भरValidity", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Shifting", "npi_Deva": "सिफ्ट गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cabiness Field", "npi_Deva": "क्याबिनेस फाँट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group columns %s", "npi_Deva": "स्तम्भहरू समूहबद्ध गर्नुहोस् %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "merge selected layers with the layer below and clip to bg-layer", "npi_Deva": "चयन गरिएका तहहरू गाभ्नुहोस् र पृष्ठभूमि-तहमा क्लीप गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_New entry", "npi_Deva": "नया प्रविष्टि", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Drag and drop is not supported.", "npi_Deva": "'तान्नुहोस्' र 'छोड्नुहोस्' समर्थित छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Use this command to show or hide the view's statusbar", "npi_Deva": "दृश्यको स्थितिपट्टी देखाउन वा लुकाउन यो आदेश प्रयोग गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Main vertical angle:", "npi_Deva": "ठाडो तरिकाले घुमाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "North Mountain", "npi_Deva": "उत्तर पहाड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select Fields in Input File", "npi_Deva": "आगत फाइलमा फिल्ड चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No_rmal (Deflate)", "npi_Deva": "सामान्य (डिफ्लेट)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Apply Layer Masks", "npi_Deva": "तह मास्क लागू गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set this option to show the filename below the image thumbnail.", "npi_Deva": "छवि थम्बनेल तल फाइल नाम देखाउन यो विकल्प सेट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Florence", "npi_Deva": "फ्लोरेन्स", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Authentication has failed. Please supply the correct password.", "npi_Deva": "प्रमाणीकरण असफल भएको छ । कृपया ठीक पासवर्ड दिनुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Envelope A2", "npi_Deva": "खाम A2", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Send Account", "npi_Deva": "स्रोत खाता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Branches to delete:", "npi_Deva": "%s मेट्न असफल भयो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Your accentuation was wrong.", "npi_Deva": "तपाईँको प्रबलन गलत छ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Cecil Field Airport", "npi_Deva": "सेसिल फिल्ड विमानस्थल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save glade file as...", "npi_Deva": "यस रूपमा ग्लेड फाइल बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Replace (case insensitive)", "npi_Deva": "मिति र समय थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Selects the color of liquid elements", "npi_Deva": "तरल तत्वको रङ चयन गर्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Please choose your video input device:", "npi_Deva": "कृपया भिडियो आगत यन्त्र रोज्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dundas", "npi_Deva": "मुन्डाNuuk", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Londonderry", "npi_Deva": "लन्डनडेर्री", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unwatch", "npi_Deva": "निगरानी हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Filename conversion failed: %s", "npi_Deva": "डाय संस्करण %s, %s %s कम्पाईल गरियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "columns", "npi_Deva": "स्तम्भ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Max height", "npi_Deva": "अधिकतम गती", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you want to search the Internet for %1?", "npi_Deva": "तिमी% 1 का लागि इन्टरनेट खोजी गर्न चाहनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "instance &lt;instancegt;: Set the instance to be used on this class", "npi_Deva": "instance &lt;instancegt;: यो वर्गमा प्रयोग गर्नका लागि दृष्टान्त सेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Expire passwords in the cache", "npi_Deva": "क्यास मा पासवर्डहरु समाप्त भयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Short edge; bottom of canonical page", "npi_Deva": "छोटो किनारा; क्यानोनिकल पृष्ठको तलतिर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cell %s", "npi_Deva": "कक्ष %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Show score as a percentage", "npi_Deva": "प्रतिशतको रूपमा प्राप्ताङ्क देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "White Background, 640 x 480", "npi_Deva": "सेतो पृष्ठभूमि, ६४० x ४८०Comment", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Go to the previous visited page", "npi_Deva": "पहिले गएकै स्थानमा जाऊ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Delete Relation", "npi_Deva": "सम्बन्ध मेट्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You will not hear what %1 says and shouts.", "npi_Deva": "तिमीले% 1 ले बोलेको र कराएको सुन्नुहुने छैन ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Create stars and polygons", "npi_Deva": "ताराहरू र बहुभुजहरू सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove Buddy", "npi_Deva": "साथी हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Interpolate Image", "npi_Deva": "चित्र बेढंग संग भित्र हाल्नु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Strip trailling spaces on file save", "npi_Deva": "फाइल बचतमा छाप पर्ने गरी खाली ठाउँ बनाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Curve Bend", "npi_Deva": "वक्र मोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kill parent process if Cancel button is pressed", "npi_Deva": "यदि 'रद्द गर्नुहोस्' बटन थिचियो भने प्रमूल प्रक्रिया नष्ट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "New image width in percent (%).", "npi_Deva": "यहाँ काँटछाँटका लागि चयन चौडाइ सेट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Warning: You are about to execute a remote shell script on your machine.", "npi_Deva": "चेतावनी: तपाईँ आफ्नो मेशिनमा टाढाको शेल स्क्रिप्ट कार्यान्वयन गर्दै हुनुहुन्छ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "_7 significant places", "npi_Deva": "७ महत्वपूर्ण स्थानहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Linked Offset", "npi_Deva": "लिङ्क गरिएको अफसेट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Custom date format", "npi_Deva": "अनुकूल मिति ढाँचा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Page %1", "npi_Deva": "% 1 पृष्ठ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rotation around origin in R^3 about the y-axis", "npi_Deva": "वाई-अक्षका बारेमा आर^३ वरिपरि परिक्रम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Collecting information from the crash…", "npi_Deva": "क्र्यासबाट सूचना सङ्कलन गर्दैछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Birthday:", "npi_Deva": "जन्म दिन:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Format & Arrowheads...", "npi_Deva": "ठाडो केन्द्र पङ्क्तिबद्व गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reverse landscape", "npi_Deva": "ल्यान्डस्केप", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Money Format", "npi_Deva": "मुद्रा ढाँचा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You cannot rename a folder in a News store.", "npi_Deva": "तिमीले समाचारहरू भण्डार भित्र एउटा फोल्डरको पुन नामाकरण गर्न सक्नु हुन्न ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Configuration of GnuPG System options", "npi_Deva": "LDAP डाइरेक्टरी कार्यको कन्फिगरेसनName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Africa, Southern", "npi_Deva": "दक्षिण अफ्रिकाName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "About Solitaire", "npi_Deva": "फ्रीसेल सोलिटेइरका बारेमा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cancel", "npi_Deva": "रद्द गर्नुहोस्ानल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do Not Use", "npi_Deva": "प्रयोग नगर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Generate Policy", "npi_Deva": "नीति उत्पन्न गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rhinelander", "npi_Deva": "राइनल्यान्डर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Double Fan Wipe Effect", "npi_Deva": "छवि प्रभाव:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "WARNING: Are you sure?", "npi_Deva": "चेतावनी: तपाईँ निश्चित हुनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Log out", "npi_Deva": "बाहिर जानुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Updating available packages info, using %s.", "npi_Deva": "%s प्रयोग गर्दै, उपलब्ध प्याकेज सूचनाहरू अद्यावधिक गर्दै ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Continue Encoding...", "npi_Deva": "सङ्केतन जारी राख्नुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create a comic-book style logo by outlining and filling with a gradient", "npi_Deva": "ग्रेडियन्टद्वारा रुपरेखा बनाएर र भरेर कमिक-पुस्तक शैली चिन्ह सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Letter 8 1/ 2 x 11 in", "npi_Deva": "चिठ्ठी ८ १/ २ x ११ इन्च", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hyakuri Ab", "npi_Deva": "ह्याकुरी Ab", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Thrust", "npi_Deva": "धकेल्नु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Insert the current date into the selected cell(s)", "npi_Deva": "चयन गरिएको कक्ष(हरू)मा हालको मिति घुसाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Could not open file '%1 ': %2", "npi_Deva": "'% 1':% 2 फाइल खोल्न सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Remove a Pattern...", "npi_Deva": "बाँन्की हटाउनुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Move ~a onto the eight of hearts.", "npi_Deva": "पानाको अठ्ठा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unsupported brush format", "npi_Deva": "असमर्थित ब्रुस ढाँचा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Saint George's", "npi_Deva": "सेन्ट. जर्ज", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Allahabad", "npi_Deva": "अहमदाबादਅੰਮ੍ਰਿਤਸਰ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Ivor Hewitt", "npi_Deva": "आईभोर हेविट्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "This plugin allows you to print out a yearly calendar.", "npi_Deva": "यो प्लगइनले तपाईँलाई वार्षिक क्यालेन्डर मुद्रण गर्न अनुमति दिन्छ । Name", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Calcium", "npi_Deva": "क्याल्क", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Collecting images info", "npi_Deva": "छवि सूचना सङ्कलन गर्दैछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Accountsview Options", "npi_Deva": "खातादृश्य विकल्प", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Advanced Settings", "npi_Deva": "स्वर सेटिङहरू:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Neddy Harbour", "npi_Deva": "बर्नार्ड हार्बोर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Print page header", "npi_Deva": "पृष्ठ हेडर थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Broken UTF-8 File Opened", "npi_Deva": "विच्छेद UTF- 8 फाइल खोलियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Search Results", "npi_Deva": "खोजी नतिजा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Create Archive", "npi_Deva": "सङ्ग्रह सिर्जना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Display name:", "npi_Deva": "नाम प्रदर्शन गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Creating diffraction pattern", "npi_Deva": "डिफ्र्याक्सन बाँन्कीहरू सिर्जना गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Python byte code", "npi_Deva": "पाईथन बाईट कोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Nuiqsut", "npi_Deva": "न्यूक्स्क्विट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "When setting a pair you must specify a primitive car-type and cdr-type", "npi_Deva": "जोडा सेटिङ गरेको बेला तिमीले प्रारम्भिक car-प्रकार र cdr-प्रकार निश्चित गर्नु पर्दछ", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Are you sure you want to remove the selected todo item?", "npi_Deva": "तिमी चयन गरिएका गर्नुपर्ने कार्य साँच्चिकै हटाउन चाहनुहुन्छ ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Toggle display of the \"view\" toolbar.", "npi_Deva": "\"दृश्य\" उपकरणपट्टीको प्रदर्शन टगल गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Audio rewindkeyboard label", "npi_Deva": "रिवाइन्ड गर्नुहोस्keyboard label", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Destination", "npi_Deva": "गन्तव्य:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "File system:", "npi_Deva": "फाइल प्रणाली:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Double buffer", "npi_Deva": "दोहोरो बफर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Couldn't display help", "npi_Deva": "मद्दत प्रदर्शन गर्न सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "With this combo box you decide which language should be associated with the new dictionary.", "npi_Deva": "यो कम्बो बाकसमा तपाईँले नयाँ शब्दकोशमा हुने भाषा निर्णय गर्न सक्नुहुन्छ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "_Save Image As...", "npi_Deva": "_चित्र संग्रह गर...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Font", "npi_Deva": "शीर्षक B", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Disk Usage Analyzer", "npi_Deva": "डिस्क प्रयोग विश्लेषक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove unused definitions (such as gradients or clipping paths) from the &lt;defsgt; of the document", "npi_Deva": "कागजातको &lt;defsgt; बाट प्रयोग नगरिएको परिभाषाहरू हटाउनुहोस् (जस्तै ग्राडिएन्ट वा क्लिपिङ् बाटोहरू)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Spiral1", "npi_Deva": "स्पाइरल१", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Switch to data view", "npi_Deva": "डेटा दृश्यमा स्विच गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "French", "npi_Deva": "फ्रेन्चName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "OrangeRed", "npi_Deva": "गाढा पहेँलोcolor", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "This specifies the password hashing method. The most secure is SSHA.", "npi_Deva": "यसले पासवर्ड परिमार्जन बिधि निर्दिष्ट गर्छ । सबैभन्दा सुरक्षित SSHA छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Release tag:", "npi_Deva": "निष्कासन ट्याग:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "This response is not from a current attendee. Add the sender as an attendee?", "npi_Deva": "यो प्रतिक्रिया हालको सहभागीबाट आएको होइन । प्रेषकलाई सहभागीको रूपमा थप्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Disable UI customization", "npi_Deva": "UI अनुकूलन अक्षम पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Install (%s)", "npi_Deva": "स्थापना (%s)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Invalid source type", "npi_Deva": "%s: अवैध स्रोत ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Start hidden", "npi_Deva": "लुकेका सुरु गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Fill:", "npi_Deva": "भर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "View options", "npi_Deva": "प्रतिमाहरूको रूपमा हेर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The data type for %1 could not be determined. Please select one of the following data types", "npi_Deva": "% 1 का लागि डेटा प्रकार निर्धारण गर्न सकेन । कृपया निम्न मध्येको कुनै डेटा प्रकार चयन गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Balsa: %s (readonly)", "npi_Deva": "बाल्सा: %s (पढ्ने मात्र)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Opens the print dialog to print the current document", "npi_Deva": "हालको कागजात मुद्रण गर्न मुद्रण संवाद खोल्दछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add Ac_tion", "npi_Deva": "अपवाद थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Go to the console tab", "npi_Deva": "कन्सोल ट्याबमा जानुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Java Code Generation", "npi_Deva": "जाभा कोड सिर्जना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Print Range", "npi_Deva": "मुद्रण दायरा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Flip vertically", "npi_Deva": "ठाडो गरी फ्लिप गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Some of your contacts may not be available until Evolution is restarted.", "npi_Deva": "{0} का लागि तपाईँको सम्पर्कहरू इभोल्युसन पुन: सुरु नभएसम्म उपलब्ध हुने छैन ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Generate Optimal Palette", "npi_Deva": "योग्य रङदानी उत्पन्न गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Expire passwords in the cache", "npi_Deva": "क्यासमा म्याद समाप्त भएका पासवर्डहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Expand as necessary", "npi_Deva": "आवश्यकता अनुसार विस्तार गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Domain name:", "npi_Deva": "डोमेन नाम:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Default Capture Device Preference", "npi_Deva": "यन्त्र प्राथमिकता", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Selected:", "npi_Deva": "चयन गरिएको:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group Name", "npi_Deva": "समूह नाम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If you choose to remove the theme, it will be permanently lost.", "npi_Deva": "यदि तपाईँले विषयवस्तु हटाउन रोज्नुहुन्छ भने, यो सधैका लागि हराउनेछ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Show an object", "npi_Deva": "एउटा वस्तु देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Remove Duplicates", "npi_Deva": "नक्कलहरू हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "grab focus", "npi_Deva": "ग्र्याब फोकस गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "P_arty Mode", "npi_Deva": "पार्टी मोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reset all settings to default values.", "npi_Deva": "सबै फिल्टर परिमितिहरूलाई तिनीहरूको पूर्वनिर्धारित मानमा रिसेट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Redo last undone action", "npi_Deva": "अन्तिममा पूर्वस्थितिमा फर्काइएको कार्यलाई रिडु गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you want to remove database connection \"%1\" from the list of available connections?", "npi_Deva": "तपाईँले उपलब्ध जडानको सूचीबाट \"% 1\" डाटाबेस जडान हटाउन चाहनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Kodiak", "npi_Deva": "कोडियाक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KDE News Reader", "npi_Deva": "केडीई समाचार वाचक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "South Carolina", "npi_Deva": "दक्षिण अफ्रिका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Control whether row headers are shown.", "npi_Deva": "पङ्क्ति स्तम्भ देखिएमा नियन्त्रण गर्नुहोस्।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Spread", "npi_Deva": "फैलाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Are unlinked", "npi_Deva": "तिनिहरू बाट लिङ्क हटाइयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Left Margin", "npi_Deva": "बायाँ सीमान्त", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Propagate certain colors to neighboring pixels", "npi_Deva": "छिमेकि पिक्सेलमा निश्चित रङहरू फिजाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Normal key colors:", "npi_Deva": "सामान्य कुञ्जी रङ:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Custom Pattern", "npi_Deva": "अनुकूल बान्की", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Turn sticky keys and slow keys off after a certain period of inactivity.", "npi_Deva": "निस्क्रियताको निश्चित समय पछाडि बिचलन टाँसिने कुञ्जी र सुस्त कुञ्जी बन्द गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Business category", "npi_Deva": "व्यवसायिक कोटी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Checking...", "npi_Deva": "जाँच गरिदैँछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Ctrl: snap angle", "npi_Deva": "Ctrl: स्न्याप कोण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Copy _Disk", "npi_Deva": "डिस्क प्रतिलिपि बनाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dongsha", "npi_Deva": "डोङ्गसा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KFormula1.3 Import Filter", "npi_Deva": "के सुत्र १. ३आयात फिल्टर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Insert constant...", "npi_Deva": "अचल घुसाउनुहोस्...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "An Assorted Collection of Polygons, Beziergons and other Miscellaneous Geometric Shapes", "npi_Deva": "बहुभुज,बेजिरगन र अन्य विविध ज्यामितिय रूपहरूको छुट्टाछुट्टै क्रमबद्व गरिएको सङ्ग्रह", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Could not send message", "npi_Deva": "सन्देश पठाउन सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cisco - Telecommuter house", "npi_Deva": "सिस्को - टेलिकमुटर घरStencils", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A data-aware form widget", "npi_Deva": "डेटा- सचेत फारम विजेट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "America/ Winnipeg", "npi_Deva": "अमेरिका/ विन्निपेग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Split the currently active view horizontally into two views.", "npi_Deva": "हालको सक्रिय दृश्य तेर्सो गरी दुई दृश्यमा विभाजन गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "superscript 7", "npi_Deva": "सुपरस्क्रिप्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select Game", "npi_Deva": "खेल चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "XPS Documents", "npi_Deva": "पि डि यफ कागजातहरु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s plug-In could not open image", "npi_Deva": "%s प्लगइनले छवि खोल्न सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "CVS: Diff file/directory", "npi_Deva": "सीभीएस (CVS): डिफ फाइल/डाइरेक्टरी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Tooltip markup", "npi_Deva": "औजारटिप", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether the plugin has menus or toolbars", "npi_Deva": "प्लगइनमा मेनु वा उपकरणपट्टी छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Place scrollbars within the scrolled window's bevel", "npi_Deva": "स्क्रोलयबार र स्क्रोल भएको बिन्डोको बीचमा पिक्सलहरुको संख्या", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Goes to the last live region which made an announcement.", "npi_Deva": "घोषणा गरेको अन्तिम जीवन्त क्षेत्रमा जान्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you really want to delete '%1'?", "npi_Deva": "तिमी साँच्चिकै '% 1' मेट्न चाहनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Actions", "npi_Deva": "कार्य:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Text Buffer", "npi_Deva": "अस्थायी स्मृति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "First Point", "npi_Deva": "पहिलो बिन्दु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Spiritwood", "npi_Deva": "स्पारवुड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stylesheet location:", "npi_Deva": "शैलीपाना स्थान:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Authentication to %1 failed", "npi_Deva": "% 1 मा प्रमाणीकरण असफल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Stroke:", "npi_Deva": "वस्तु अनुवाद गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show colors as percentages", "npi_Deva": "प्रतिशतको रूपमा रङ देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cookie Management Quick Help", "npi_Deva": "कुकी व्यवस्थापन शीघ्र मद्दत", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "URL to display", "npi_Deva": "प्रदर्शन गर्न यूआरएल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Noise magnitude:", "npi_Deva": "हल्ला गुरुत्व:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show this window's menubar", "npi_Deva": "यो सञ्झ्यालको मेनुपट्टी देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "unable to open temp control directory", "npi_Deva": "अस्थायी नियन्त्रण डाइरेक्टरी खोल्न अक्षम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Voice, Lossless", "npi_Deva": "आवाज, नोक्सानरहित", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unspecified Binary Data", "npi_Deva": "निर्दिष्ट नगरिएका बाइनरी डेटा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Expand all threads in the current folder", "npi_Deva": "हालको फोल्डरका सबै थ्रेड विस्तार गर्नुहोस्View - >", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Check to make the object insensitive (not selectable by mouse)", "npi_Deva": "वस्तुलाई (माउस द्धारा चयन नगरिकन) असंवेदनशिल बनाउन जाँच गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Simplify selected paths (remove extra nodes)", "npi_Deva": "चयन गरिएको बाटोहरू सरलिकृत गर्नुहोस् (अतिरिक्त नोडहरू हटाउनुहोस्)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Please select an image for this contact", "npi_Deva": "कृपया यो सम्पर्कका लागि एउटा छवि चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The file %s doesn't exist, please check if gnome-nettool is correctly installed", "npi_Deva": "फाइल %s अवस्थित छैन, कृपया जिनोम नेट उपकरण ठीक तरिकाले स्थापना भएको जाँच गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Could not save the file. Perhaps the disk is full, or you do not have write permission to the file.", "npi_Deva": "फाइल बचत गर्न सकेन । सम्भवत: चक्का भरिएको, वा तिमीलाई फाइलमा लेख्ने अनुमति नभएको हुन सक्छ ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Unknown workbook '%s'", "npi_Deva": "अज्ञात कार्यपुस्तिका '%s'", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "An unknown application wants to access the password for '' in the default keyring.", "npi_Deva": "अज्ञात अनुप्रयोगले पूर्वनिर्धारित किरिङमा '' का लागि पासवर्ड पहुँच गर्न चाहन्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Data sets in columns", "npi_Deva": "स्तम्भ घुसाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "< minLength >", "npi_Deva": "न्यूनतम लम्बाइ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Alpha parameter", "npi_Deva": "परिमिति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Your score has made the top ten.", "npi_Deva": "तिम्रो प्राप्ताङ्क मुख्य दशमा परेको छ ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "_Update...", "npi_Deva": "अद्यावधिक गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unmount the volume associated with this folder", "npi_Deva": "खुला फोल्डरसँग सम्बन्धित भोल्युम अनमाउन्ट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "I think I have seen him in my History and Civics book.", "npi_Deva": "मलाई लाग्छ मैले उनलाई मेरो इतिहासको पुस्तकमा देखेकी छु।", "source": "in22_conv", "formality": "neutral"}
+{"eng_Latn": "Correct checksum, file is ok.", "npi_Deva": "चेकसम सुधार गर्नुहोस्, फाइल ठीक छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Maple Lake", "npi_Deva": "म्यापल लेक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Date and Time Functions", "npi_Deva": "मिति र समय प्रकार्य", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sort Type", "npi_Deva": "छाँयाको प्रकार", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Allows you to import a module into a repository", "npi_Deva": "तिमीलाई भण्डारमा मोड्युल आयात गर्न अनुमति दिन्छ", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "_Allow local system administrator login", "npi_Deva": "स्थानीय प्रणाली प्रशासकलाई लगइन गर्न अनुमति दिनुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add text to a layout, such as an explanation or a warning. The text will be the same for every record viewed.", "npi_Deva": "सजावटमा पाठ थप्नुहोस्, जस्तै एउटा व्याख्या वा चेतावनी । हरेक हेरिएको रेकर्डका लागि पाठ एउटै हुनेछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "This is an XFig file, not a Cabri figure.", "npi_Deva": "यो काब्री तस्वीर नभएर एक्स फिग फाइल हो ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Show File Browser", "npi_Deva": "फाइल ब्राउजर देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Gaussian Blur...", "npi_Deva": "गाउसियन अस्पष्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Adds any fields in the range box to the left to the sort criteria or allows selection of fields from a menu.", "npi_Deva": "क्रमबद्ध मापदण्डको बायाँतिर दायरा बाकसमा कुनै फाँटहरू थप्छ अथवा मेनुबाट फाँटको चयनमा अनुमति दिन्छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Break interval lasts:", "npi_Deva": "विच्छेदन अन्तराल अन्त्य हुन्छ:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No address book IDs given.", "npi_Deva": "ठेगाना पुस्तिका आईडी दिइएको छैन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "2.125x2.75in, 54x70mm (Diskette)", "npi_Deva": "२. १२५x२. ७५ इन्च, ५४x७०mm (डिस्केट)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Path does not exist", "npi_Deva": "सर्टकट %s अवस्थित छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Macro entry step", "npi_Deva": "म्याक्रो प्रविष्टि चरण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Fan Out Top", "npi_Deva": "तेर्सो खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Could not remove bookmark", "npi_Deva": "पुस्तकचिनो हटाउन सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Baja California", "npi_Deva": "क्यालिफोर्निया", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "IMAP command failed: %s", "npi_Deva": "IMAP आदेश असफल भयो: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Display '%s' cannot be opened by Xnest", "npi_Deva": "प्रदर्शन '%s' लाई Xnestले खोल्न सकेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "By Sender", "npi_Deva": "प्रेषक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "No \"%s\" attribute on element", "npi_Deva": "तत्वमा \"x\" गुण छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A style using alphablending", "npi_Deva": "अल्फाब्लेन्डिङ प्रयोग गरिरहेको शैलीName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Height 1:", "npi_Deva": "उचाइ १:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Embedded Konsole Toolbar and session names", "npi_Deva": "सम्मिलित कन्सोल उपकरणपट्टी र सत्र नाम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Copy gradient file location to clipboard", "npi_Deva": "ग्रेडियन्ट फाइल स्थान क्लिपबोर्डमा प्रतिलिपि बनाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "points", "npi_Deva": "अङ्क छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Device Index", "npi_Deva": "मद्दत अनुक्रमणिकाName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Insufficient memory to open JPEG 2000 file", "npi_Deva": "TIFF फाइल खोल्न अपर्याप्त स्मृति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Target file is not a regular file", "npi_Deva": "नियमित फाइल होइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Makoua", "npi_Deva": "माकोउवा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save Kalzium's Table In", "npi_Deva": "काल्जियम तालिका भित्र बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "CRITBINOM:right-tailed critical value of the binomial distribution", "npi_Deva": "R.QBINOM:द्विपद वितरणको संभाव्य क्वान्टाइल कार्य।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Frame target", "npi_Deva": "फ्रेम लक्ष्य", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Python Sample Plugin", "npi_Deva": "पाइथोन नमूना प्लगइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Move ~a onto the eight of diamonds.", "npi_Deva": "ईँटको अठ्ठा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select object(s) to paste size to.", "npi_Deva": "यसमा साइज टाँस्न वस्तु(हरू) चयन गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Icon View Model", "npi_Deva": "प्रतिमा दृष्य नमुना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "String Format", "npi_Deva": "स्ट्रिङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "An application wants to change the password for the '%s' keyring. Choose the new password you want to use for it.", "npi_Deva": "अज्ञात अनुप्रयोगले '%s' किरिङका लागि पासवर्ड परिवर्तन गर्न चाहन् । तपाईँले यसका लागि प्र्रयोग गर्न चाहेको पासवर्ड रोज्नु पर्दछt.", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Welcome to Four Wins", "npi_Deva": "चार विजेता खेलमा स्वागत छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Skip forward", "npi_Deva": "अगाडि फड्काउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Select a template to base the new alarm on.", "npi_Deva": "नयाँ संसूचकमा आधारलाई टेम्प्लेट चयन गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s the Fish Says:", "npi_Deva": "माछाले %s भन्छ:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "You have specified a folder.", "npi_Deva": "तिमीले फोल्डर निर्दिष्ट गर्नुभएको छ ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Space style", "npi_Deva": "खालीस्थानको शैली", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The photo is too large The recommended size for a photo on your key is %d x %d pixels.", "npi_Deva": "यो फोटो अति ठूलो छ तिम्रो कुञ्जीमा फोटोका लागि सिफारिस गरिएको साइज %d x %d पिक्सेल हो ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Make sure the username and password are correct and try again.", "npi_Deva": "एक्सचेन्ज सर्भरमा प्रमाणिकरण गर्न सकेन । प्रयोगकर्ता नाम र पासवर्ड सही भएको निश्चित गर्नुहोस् र फेरि प्रयास गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Run in terminal", "npi_Deva": "टर्मिनलमा चलाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Preview the message to be printed", "npi_Deva": "मुद्रित गर्नका लागि सन्देशको पूर्वावलोकन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "P_assword", "npi_Deva": "प्रवेशचिह्न", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Group shapes", "npi_Deva": "समतल मार्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Flood fill Fill adjoining pixels with the same color with the current color", "npi_Deva": "जलमग्न भराई हालको रङसँग उस्तै रङमा जोडिएको पिक्सेल भर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Memofile Conduit for KPilot", "npi_Deva": "केडीई पाइलटका लागि मेमोफाइल कन्ड्युट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Lyrics not found", "npi_Deva": "कुनै रचनाहरू फेला परेन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Pointer to remote data (%s)", "npi_Deva": "(%s) टाढाको डेटाका लागि सूचक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Finishing freehand", "npi_Deva": "फ्रिह्यान्ड समाप्त गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Constants...", "npi_Deva": "अचल...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "DevHelp Website", "npi_Deva": "विकासकर्ता मद्दत समर्थनDevhelp", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enter the new name of the activity:", "npi_Deva": "क्रियाकलापको नयाँ नाम प्रविष्ट गर्नुहोस्:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Goes right one cell.", "npi_Deva": "दायाँ एक कक्षमा जान्छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "About to delete selected files", "npi_Deva": "चयन गरेको फाइल मेट्ने बारेमा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unable to minimize the upgrade set", "npi_Deva": "स्तर वृद्धि सेटलाई न्यूनतम गर्न असक्षम भयो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Calverton / Grumman", "npi_Deva": "क्याल्भेर्टन / ग्रूमान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "LMorph", "npi_Deva": "Lमोर्फ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "User Defined Color Schemes", "npi_Deva": "रङ योजना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The Islamic historians Sirhindi and Bihamadkhani provide a detailed account of this period.", "npi_Deva": "इस्लामिक इतिहासकारहरू सिरहिन्दी अनि बिहामदखानीले यस अवधिको विस्तृत विवरण दिन्छन्।", "source": "bpcc_daily", "formality": "neutral"}
+{"eng_Latn": "R_e-Show Last", "npi_Deva": "अन्तिमको पुन: देखाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Open the dynamics selection dialog", "npi_Deva": "फन्ट चयन गर्ने संवाद खोल्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Implicit class", "npi_Deva": "अस्पष्ट कक्ष", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Dithering", "npi_Deva": "हल्लाउँदै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Double", "npi_Deva": "डबल गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Which Lecture File Would You Like to Edit?", "npi_Deva": "कुन व्याख्यान फाइल तिमी सम्पादन गर्न चाहनुहुन्छ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "myTurn", "npi_Deva": "मेरो पालो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Debug Manager plugin.", "npi_Deva": "त्रुटिमोचक प्रवन्धक प्लगइन ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kisarazu Ab", "npi_Deva": "किसाराजु Ab", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Move the current document to a new window", "npi_Deva": "हालको कागजात नयाँ सञ्झ्यालमा सार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s: Server priority couldn't be set to %d: %s", "npi_Deva": "%s: सर्भरको प्राथमिकताहरू %d मा सेट हुन सक्दैन: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Expression", "npi_Deva": "नियमित अभिव्यक्ति", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Tab pack type", "npi_Deva": "ट्याब थन्क्याउने प्रकार", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Folder", "npi_Deva": "फोल्डर% 1", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hide a Bézier Quadratic", "npi_Deva": "चतुर्भुज लुकाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unexpected server response from head: %s", "npi_Deva": "शिर्षबाट अनपेक्षित सर्भर प्रतिक्रिया: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remove the twos", "npi_Deva": "दुक्कालाई हटाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Invitation", "npi_Deva": "निमन्त्रणा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Wander speed", "npi_Deva": "घुमाईको गती", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Created project view...", "npi_Deva": "सिर्जित परियोजना दृश्य...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Deal a card from the deck", "npi_Deva": "थाकबाट एउटा तास बाँड्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Reset the device connection.", "npi_Deva": "यन्त्र जडान रिसेट गर्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Grant All", "npi_Deva": "सबै स्वीकार गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Northwest Territories", "npi_Deva": "उत्तरपूर्वि भूभाग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The Evolution tasks have quit unexpectedly.", "npi_Deva": "इभोल्युसन कार्यहरू अनपेक्षित रूपले अन्त्य भएको छ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "FluidBalls", "npi_Deva": "फ्युड बलName", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Header 1 (section)", "npi_Deva": "हेडर १ (सेक्सन)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Could not connect with command \"%s\": %s", "npi_Deva": "\"%s\" आदेशसँग जडान गर्न सकेन: %s.", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "X login on %1", "npi_Deva": "% 1 मा एक्स लगइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "US Letter", "npi_Deva": "यूएस अक्षर", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hyperbolic mode", "npi_Deva": "हाइपरबोलिक मोड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s has declined the following assigned task:", "npi_Deva": "%s ले तल मानाङ्कन गरिएको कार्य घटाएको छ:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Inserts a new row above the current row", "npi_Deva": "हालको पङ्क्ति माथिको नयाँ पङ्क्ति घुसाउदछ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "My first fractal", "npi_Deva": "मेरो पहिलो आंशीक", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recent documents", "npi_Deva": "हालको कागजातहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "A simple and easy to use desktop note-taking application.", "npi_Deva": "एउटा सरल र प्रयोग गर्नको लागि सजिलो डेस्कटप द्रष्टव्य-प्रापक अनुप्रयोग ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Northern Mariana Islands", "npi_Deva": "उत्तर अफ्रिका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "R_everse", "npi_Deva": "उल्टाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Construct a vector from this point", "npi_Deva": "यो बिन्दुबाट भेक्टर रचना गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& 1 %1 - > %2 In Order", "npi_Deva": "1% 1 - >% 2 क्रममा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Si_mple threading", "npi_Deva": "साधारण थ्रेडिङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Chinese Traditional (Big5-HK_SCS)", "npi_Deva": "चाइनिज परंपरागत (Big-HK_SCS)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Feather radius for smoothing the alpha channel", "npi_Deva": "अल्फा च्यानललाई मिहिन पार्नका लागि अर्धव्यासलाई फिदर गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rotate Physically", "npi_Deva": "छविहरू भौतिक रूपमा घुमाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Disable all external thumbnailers", "npi_Deva": "संपूर्ण बाह्य हस्तचालकलाई निश्क्रिय पार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "San Joaquín", "npi_Deva": "सान जोक्विनSan José", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Login name.", "npi_Deva": "लगइन नाम ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "evolution address book", "npi_Deva": "इभोल्युसन ठेगाना पुस्तिका", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Cannot interact with application having its group leader with XID %lu: the application cannot be found", "npi_Deva": "XID %lu समूह प्रमूख भएको अनुप्रोगयोगसँग अन्तरक्रिया गर्न सकिँदैन: अनुप्रयोग फेला पार्न सकिँनेछैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recovering autosaved diagrams", "npi_Deva": "स्वत: बचत गरिएका चित्रहरू पुन:प्राप्त गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Icon Change", "npi_Deva": "% 1 परिवर्तन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Recalculation:", "npi_Deva": "पुन: गणना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sets the seconds after which the screen saver is started.", "npi_Deva": "स्क्रिन सेभर कति सेकेन्ड पछाडि सुरु हुने सेट गर्दछ ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Could not delete the folder", "npi_Deva": "फोल्डर \"%s\" मेट्न सकेन: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Choose calendar file", "npi_Deva": "एउटा फाइल चयन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Level 1 of the selected game is:", "npi_Deva": "चयन गरिएको खेलको स्तर १:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Hide menubar by default", "npi_Deva": "पूर्वनिर्धारित मोनुवार लुकाउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Boothville Heliport", "npi_Deva": "बूथभिल हेलिपोर्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Allow Unfocused Range Selections", "npi_Deva": "फोकस नगरिएको दायरा चयन अनुमति दिनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Get the i-j minor of a matrix", "npi_Deva": "म्याट्रिक्सको आई-जे माईनर प्राप्त गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Paper Colour (Red Component)", "npi_Deva": "कागज रङ (रातो अवयव)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rational Bézier Curve by its Control Points", "npi_Deva": "नौ बिन्दुद्वारा क्युबिक वक्र", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Variable names must be valid identifiers", "npi_Deva": "चल '%s' ले सुरुआत बिहिन प्रयोग गर्यो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Applet %s added to top panel", "npi_Deva": "%s एप्लेट माथिका प्यानलमा थपियो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%1 has invited you for a %2 point match", "npi_Deva": "% 1 ले तपाईँलाई% 2 बिन्दु खेलका लागि आमन्त्रण गरेको छ", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Alturas", "npi_Deva": "एल्टुरस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Keep Aspect Ratio", "npi_Deva": "आकार अनुपात राख्नुहोस् ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Converting %1 to lossless file format...", "npi_Deva": "% 1 लाई नोक्सानरहित ढाँचाको फाइलमा रूपान्तरण गर्दैछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Server address", "npi_Deva": "सर्भर ठेगाना", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The number of blocks which can fit in the progress bar area in activity mode (Deprecated)", "npi_Deva": "प्रगतिबार क्षेत्रसँग क्रियाकलाप मोढमा जडान हुने खण्डहरूको संख्या (असहमत)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Warning: Validation of breakpoint %1 failed.", "npi_Deva": "चेतावनी: विच्छेद बिन्दु% 1 को प्रमाणीकरण असफल ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Set Pass_word…", "npi_Deva": "पासवर्ड", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Forward Search", "npi_Deva": "लिङ्क फर्वार्ड गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Color of constellation names", "npi_Deva": "तारामण्डल नामहरूको रङ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "State: %s", "npi_Deva": "वस्तुस्थिति: %s", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Value in X", "npi_Deva": "मान सेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "goldenrod4", "npi_Deva": "गोल्डेन रड४color", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "The four arithmetic operations. Combine several arithmetic operations.", "npi_Deva": "चार गणितिय सञ्चालनहरू। बिभिन्न गणितिय सञ्चालनहरू समिश्रण गर्नुहोस्।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Other Envelope", "npi_Deva": "अन्य खाम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Add a bookmark to the selected directory", "npi_Deva": "चयन गरिएको डाइरेक्टरीमा एउटा पुस्तकचिनो थप्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Tabligbo", "npi_Deva": "टाब्लिग्बो", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Sudoku unable to save game.", "npi_Deva": "खेल बचत गर्न असफल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "IMAP connection has been severed. Reconnecting...", "npi_Deva": "IMAP जडान विभाजित भयो। पुन: जडान हुँदैछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Upload Project", "npi_Deva": "उपकरणपट्टी निर्माण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Copy Text", "npi_Deva": "पाठ उच्चारण गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do not care about cartridges, each line in all colours", "npi_Deva": "कार्ट्रिड्जहरुको बारेमा वास्ता नगर्नुहोस्, प्रति लाइनमा सबै रङहरू", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_PDA ID:", "npi_Deva": "पीडीए आईडी:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_People who have signed this key:", "npi_Deva": "यो कुञ्जीमा हस्ताक्षर गर्ने व्यक्ति:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Kangshan", "npi_Deva": "काङ्गसान", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Exit, neither video nor audio track was selected", "npi_Deva": "निस्कनुहोस्, न भिडियो नत अडियो ट्रयाक चयन गरिएको छ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Game rewrite for KDE4. Current maintainer.", "npi_Deva": "केडीई४ का लागि पुन: लेखिएको खेल । हालको मर्मतकर्ता ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Button 4 (often wheel up)", "npi_Deva": "बटन ४ (पटकपटक अघि बढाउनु)", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Antofagasta", "npi_Deva": "एन्टोफागास्टा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Embedded object", "npi_Deva": "सम्मिलित वस्तु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If selected, you will be notified if you view a page that has both encrypted and non-encrypted parts.", "npi_Deva": "यदि चयन गरिएमा, तपाईँले गुप्तीकरण र गुप्तीकरण नगरिएका दुबै भागहरू भएको पृष्ठहरू देख्नुभएमा तपाईँ सूचीत हुनुहुनेछ ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Load Image Map", "npi_Deva": "छवि मानचित्र लोड गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%s wrote:", "npi_Deva": "%s लेखियो:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "There is one similar message.", "npi_Deva": "त्यहाँ एउटा समान सन्देश छ।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Display the telescope position on the sky map", "npi_Deva": "आकाशे नक्सामा टेलिस्कोप स्थिति प्रदर्शन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "KDE Archiving tool", "npi_Deva": "KDE सङ्ग्रहण उपकरण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Nueva Gerona, Isla De Pinos", "npi_Deva": "न्यूभा गेरोना, इस्ला De पिनोस", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If the toggle action should be active in or not", "npi_Deva": "टगल बटन दबाउनु पर्ने हो कि होइन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Autocomplete", "npi_Deva": "स्वत: समाप्त", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Rule is valid for:", "npi_Deva": "यसका लागि नियम वैध हुन्छ:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Creator application of the calendar", "npi_Deva": "क्यालेन्डरको सर्जक अनुप्रयोग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Jendouba", "npi_Deva": "जेनडोउबा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Jacksonville", "npi_Deva": "ज्याकसनभिल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you want to delete the applet from your configuration?", "npi_Deva": "तिमी कन्फिगरेसनबाट एप्लेट मेट्न चाहनुहुन्छ ?", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Do you want to resend the meeting?", "npi_Deva": "तपाईँ यो बैठकलाई मेट्न निश्चित हुनुहुन्छ?", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Look up words in a dictionary", "npi_Deva": "शब्दकोशमा शब्द खोज्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "%1 already exists.", "npi_Deva": "'% 1' नामकरण गरिएको समूह पहिल्यै अवस्थित छ!", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Updating objects", "npi_Deva": "वस्तुहरू अद्यावधिक गर्दै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Repeat the sequence", "npi_Deva": "अनुक्रम दोहोर्याउनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "High Capacity Color Cartridge", "npi_Deva": "उच्च क्षमता रङ कार्ट्रिड्ज", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Enter the path to your htdig indexer program here.", "npi_Deva": "यहाँ तिम्रो htdig सूचक कार्यक्रममा मार्ग प्रविष्ट गर ।", "source": "register_expand", "formality": "informal"}
+{"eng_Latn": "Color Exchange", "npi_Deva": "रङ साटासाट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Light source Z position in XYZ space", "npi_Deva": "XYZ स्थानमा प्रकाश स्रोत Z अवस्थामा", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "wireless: is not enabled", "npi_Deva": "वायरलेस: सक्षम पारिएको छैन", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Search for text", "npi_Deva": "पाठका लागि खोजी गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Remote login disabled Same as Local", "npi_Deva": "दुर लगइन अक्षम पारियो स्थानीय जस्तै", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Practice addition, subtraction, multiplication and division.", "npi_Deva": "अभ्यास योगफल, घटाउ, गुणन र भागफल।", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Watch folders for changes", "npi_Deva": "परिवर्तनका लागि फोल्डरहरू हेर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Paste as New", "npi_Deva": "नयाँको रूपमा टाँस्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Save as SUNRAS", "npi_Deva": "SUNRAS को रूपम बचत गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Set Current Page as Home Page", "npi_Deva": "गृह पृष्ठको रूपमा हाल पृष्ठ सेट गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Seahorse Project Homepage", "npi_Deva": "सिहर्स परियोजना गृहपृष्ठ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Rayong", "npi_Deva": "रेयोङ्ग", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "User authentication required for wireless network '%s'...", "npi_Deva": "ताररहित सञ्जाल '%s' का लागि %s यन्त्र तयार गरिँदैछ...", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Single Instance", "npi_Deva": "एकल दृष्टान्त", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Unknown paper size", "npi_Deva": "अज्ञात संस्करण", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "If you close without saving, changes from the past %li minutes will be discarded.", "npi_Deva": "यदि तपाईँले बचत नगरिकन बन्द गर्नुभयो भने, पहिलेको %li मिनेटको परिवर्तनहरू खारेज गरिन्छ।", "source": "opus100", "formality": "formal"}
+{"eng_Latn": "Frerich Raabe", "npi_Deva": "फ्रेरिच राबे", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Transformation Mask...", "npi_Deva": "सामान्य कार्यक्रम", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "& Quanta Homepage", "npi_Deva": "क्वान्टा गृहपृष्ठ", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Resize/Move the selected partition", "npi_Deva": "चयन गरिएको विभाजन रिसाइज गर्नुहोस्/सार्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "_Merge...", "npi_Deva": "गाभ्नुहोस्..", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Shymkent", "npi_Deva": "साइमकेन्ट", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Modify Document Type", "npi_Deva": "कागजात शिर्षक सम्पादन गर्नुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "ON: keep proportions at scaling. (this may result in black borders)OFF: allow changes of image proportions at scaling", "npi_Deva": "खुल्ला: अनुपातहरू मापनमा राख्नुहोस्। (यसको नतिजा कालो किनाराहरूमा पर्न सक्छ)बन्द: छवि अनुपातहरूको परिवर्तनहरू मापनमा अनुमति दिनुहोस्", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Local mail file %s", "npi_Deva": "स्थानीय पत्र %s फाइल", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Make/ Model:", "npi_Deva": "निर्माण/ नमुना:", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Embedded Terminal", "npi_Deva": "सम्मिलित वस्तु", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "GConf key '%s' set to integer '%s'", "npi_Deva": "इन्टिजर '%s' मा सेट भएको '%s' जिकन्फ कुञ्जी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Bavaria", "npi_Deva": "बाभारिया", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Workgroup 5000", "npi_Deva": "कार्यसमूह ५०००", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Shimmering water", "npi_Deva": "कञ्चन पानी", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Ma_ximum cutoff:", "npi_Deva": "(अधिकतम):", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Revocation Certificate", "npi_Deva": "खारेजी प्रमाणपत्र", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Do you want to activate Slow Keys?", "npi_Deva": "के तपाई सुस्त किहरु सक्रिय बनाउन चहानुहुन्छ?", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Whether to always encrypt to default key", "npi_Deva": "पूर्वनिर्धारित कुञ्जीमा सधै गुप्तिकरण गर्ने या नगर्ने", "source": "opus100", "formality": "neutral"}
+{"eng_Latn": "Can't publish discovery information on the network.", "npi_Deva": "सञ्जालमा आविष्कार जानकारी प्रकाशन गर्न सक्दैन ।Shared keys of %s", "source": "opus100", "formality": "neutral"}

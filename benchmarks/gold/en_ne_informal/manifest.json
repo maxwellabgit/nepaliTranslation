@@ -1,7 +1,8 @@
 {
   "class": "en_ne_informal",
-  "n_target": 100,
-  "n_filled": 100,
+  "n_target": 137,
+  "n_filled": 137,
+  "n_premium": 37,
   "items": [
     {
       "id": "en_ne_informal-001",
@@ -402,6 +403,154 @@
     {
       "id": "en_ne_informal-100",
       "status": "reviewed"
+    },
+    {
+      "id": "en_ne_informal-101",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-102",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-103",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-104",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-105",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-106",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-107",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-108",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-109",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-110",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-111",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-112",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-113",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-114",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-115",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-116",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-117",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-118",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-119",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-120",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-121",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-122",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-123",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-124",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-125",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-126",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-127",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-128",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-129",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-130",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-131",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-132",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-133",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-134",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-135",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-136",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-137",
+      "status": "premium_reviewed"
     }
   ]
 }

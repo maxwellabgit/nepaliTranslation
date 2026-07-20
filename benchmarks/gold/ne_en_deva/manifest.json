@@ -1,7 +1,8 @@
 {
   "class": "ne_en_deva",
-  "n_target": 100,
-  "n_filled": 100,
+  "n_target": 132,
+  "n_filled": 132,
+  "n_premium": 32,
   "items": [
     {
       "id": "ne_en_deva-001",
@@ -402,6 +403,134 @@
     {
       "id": "ne_en_deva-100",
       "status": "reviewed"
+    },
+    {
+      "id": "ne_en_deva-101",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-102",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-103",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-104",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-105",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-106",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-107",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-108",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-109",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-110",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-111",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-112",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-113",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-114",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-115",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-116",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-117",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-118",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-119",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-120",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-121",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-122",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-123",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-124",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-125",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-126",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-127",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-128",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-129",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-130",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-131",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-132",
+      "status": "premium_reviewed"
     }
   ]
 }

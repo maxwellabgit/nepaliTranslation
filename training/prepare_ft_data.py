@@ -28,6 +28,7 @@ os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 REPO = Path(__file__).resolve().parents[1]
 OUT_DIR = Path(__file__).resolve().parent / "data"
 BENCH_QUALITY = REPO / "benchmarks" / "data" / "ne_quality_bench.json"
+GOLD_BLOCK = REPO / "benchmarks" / "data" / "gold_train_blocklist.json"
 
 DEVANAGARI = re.compile(r"[\u0900-\u097F]")
 LATIN = re.compile(r"[A-Za-z]")
@@ -71,14 +72,37 @@ def _ok(en: str, ne: str) -> bool:
 
 def load_bench_blocklist() -> set[str]:
     blocked: set[str] = set()
-    if not BENCH_QUALITY.exists():
-        return blocked
-    data = json.loads(BENCH_QUALITY.read_text(encoding="utf-8"))
-    for p in data.get("pairs") or []:
-        if p.get("eng_Latn"):
-            blocked.add(_norm(p["eng_Latn"]))
-        if p.get("npi_Deva"):
-            blocked.add(_norm(p["npi_Deva"]))
+    if BENCH_QUALITY.exists():
+        data = json.loads(BENCH_QUALITY.read_text(encoding="utf-8"))
+        for p in data.get("pairs") or []:
+            if p.get("eng_Latn"):
+                blocked.add(_norm(p["eng_Latn"]))
+            if p.get("npi_Deva"):
+                blocked.add(_norm(p["npi_Deva"]))
+    # Private gold holdout — never train on these strings
+    if GOLD_BLOCK.exists():
+        g = json.loads(GOLD_BLOCK.read_text(encoding="utf-8"))
+        for s in g.get("sources") or []:
+            blocked.add(_norm(s))
+        for s in g.get("references") or []:
+            blocked.add(_norm(s))
+    # Also scan gold jsonl directly
+    gold_root = REPO / "benchmarks" / "gold"
+    if gold_root.exists():
+        for cls_dir in gold_root.iterdir():
+            if not cls_dir.is_dir():
+                continue
+            for name in ("sources.jsonl", "references.jsonl"):
+                path = cls_dir / name
+                if not path.exists():
+                    continue
+                for line in path.read_text(encoding="utf-8").splitlines():
+                    if not line.strip():
+                        continue
+                    row = json.loads(line)
+                    for key in ("source", "reference", "deva"):
+                        if row.get(key):
+                            blocked.add(_norm(str(row[key])))
     return blocked
 
 
@@ -120,41 +144,43 @@ def from_opus100(max_n: int, blocked: set[str]) -> list[dict[str, str]]:
 def from_bpcc_seed(max_n: int, blocked: set[str]) -> list[dict[str, str]]:
     from datasets import load_dataset
 
-    print("[ft-data] BPCC seed npi_Deva…", flush=True)
+    print("[ft-data] BPCC daily + seed npi_Deva…", flush=True)
     rows: list[dict[str, str]] = []
     seen: set[str] = set()
-    try:
-        ds = load_dataset("ai4bharat/BPCC", "bpcc-seed-v2", split="npi_Deva")
-    except Exception as e:
-        print(f"[ft-data] BPCC unavailable: {e}", flush=True)
-        return rows
-    for row in ds:
-        # typical columns: src / tgt or eng_Latn / npi_Deva
-        en = str(
-            row.get("eng_Latn")
-            or row.get("en")
-            or row.get("src")
-            or row.get("english")
-            or ""
-        )
-        ne = str(
-            row.get("npi_Deva")
-            or row.get("ne")
-            or row.get("tgt")
-            or row.get("indic")
-            or row.get("text")
-            or ""
-        )
-        # some BPCC seed rows are TSV-like single fields
-        if not en and "translation" in row:
-            tr = row["translation"]
-            if isinstance(tr, dict):
-                en = str(tr.get("en") or tr.get("eng_Latn") or "")
-                ne = str(tr.get("ne") or tr.get("npi_Deva") or "")
-        add_pair(rows, seen, blocked, en, ne, "bpcc_seed")
+    for cfg in ("daily", "bpcc-seed-v2"):
+        try:
+            ds = load_dataset("ai4bharat/BPCC", cfg, split="npi_Deva")
+        except Exception as e:
+            print(f"[ft-data] BPCC {cfg} unavailable: {e}", flush=True)
+            continue
+        before = len(rows)
+        for row in ds:
+            en = str(
+                row.get("eng_Latn")
+                or row.get("en")
+                or row.get("src")
+                or row.get("english")
+                or ""
+            )
+            ne = str(
+                row.get("npi_Deva")
+                or row.get("ne")
+                or row.get("tgt")
+                or row.get("indic")
+                or row.get("text")
+                or ""
+            )
+            if not en and "translation" in row:
+                tr = row["translation"]
+                if isinstance(tr, dict):
+                    en = str(tr.get("en") or tr.get("eng_Latn") or "")
+                    ne = str(tr.get("ne") or tr.get("npi_Deva") or "")
+            add_pair(rows, seen, blocked, en, ne, f"bpcc_{cfg}")
+            if len(rows) >= max_n:
+                break
+        print(f"[ft-data] BPCC {cfg} +{len(rows)-before} total={len(rows)}", flush=True)
         if len(rows) >= max_n:
             break
-    print(f"[ft-data] bpcc kept={len(rows)} cols_sample={list(ds[0].keys()) if len(ds) else []}", flush=True)
     return rows
 
 

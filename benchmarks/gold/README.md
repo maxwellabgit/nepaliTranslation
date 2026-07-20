@@ -1,6 +1,6 @@
 # Gold standard eval (EN ↔ NE)
 
-Private holdout for product quality decisions. **~100 curated samples per class**, high quality / low quantity.
+Private holdout for product quality decisions. **~100 base + premium word-choice slice per class** (see manifests for exact `n_filled` / `n_premium`).
 
 ## Why these classes
 
@@ -24,16 +24,18 @@ benchmarks/gold/
   ne_en_roman/...   # sources include roman + optional deva normalization
 ```
 
-Each class has **100 reviewed samples** (`status: reviewed`). Regenerate with `python benchmarks/fill_gold.py`.
+Base rows: `status: reviewed`. Premium slice: `tier: premium_word_choice`.  
+Expand/prune: `python benchmarks/expand_gold_premium.py`, `python benchmarks/prune_expand_premium.py`.  
+Source research: `benchmarks/PREMIUM_SOURCES.md`.
 
 ## Curation recipe
 
 1. Prefer **hand-authored / work-for-hire** references for commercial clarity.
-2. Seed from **IN22-Conv** (`ai4bharat/IN22-Conv`, CC-BY-4.0) for conversational EN↔NE — then rewrite register pairs with native speakers.
-3. **Do not** treat FLORES alone as conversational gold; use only as optional prompt seed if re-translated.
+2. Seed from **IN22-Conv** / **FLORES+ `npi_Deva`** / **BPCC daily** (HF token in `benchmarks/.env`) — then **rewrite** for register; never paste verbatim into gold.
+3. **Do not** treat FLORES alone as conversational gold; eval-integrity terms forbid training on it.
 4. Formal/informal: same English intent, different Nepali pronouns **and** verbs. Reject mixed register (तिमी + गर्नुहोस्).
-5. Roman: native speakers produce natural Roman from Devanagari NE→EN items; do not gold-label raw YouTube roman text.
-6. Two reviewers; freeze when n=100 filled; never train on this set.
+5. Roman: WhatsApp-style chat roman, not ISO transliteration; pair with Devanagari.
+6. Adversarial prune worst **2–5%** of premium (calques, dual-sense refs, semantic dups); never train on this set.
 
 ## Datasets that do **not** replace this gold set
 

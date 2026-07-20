@@ -98,3 +98,38 @@
 {"id": "en_ne_formal-098", "source": "Is parking available?", "status": "reviewed"}
 {"id": "en_ne_formal-099", "source": "No smoking.", "status": "reviewed"}
 {"id": "en_ne_formal-100", "source": "Please be careful.", "status": "reviewed"}
+{"id": "en_ne_formal-101", "source": "Could you please look at this document?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "request+honorific verb"}
+{"id": "en_ne_formal-102", "source": "What would you like to eat?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "want→खानुहुन्छ not चाहनुहुन्छ alone"}
+{"id": "en_ne_formal-103", "source": "I will pick you up at the airport.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "pick up→लिन आउनु"}
+{"id": "en_ne_formal-104", "source": "Please make yourself comfortable.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "idiom"}
+{"id": "en_ne_formal-105", "source": "How long have you been waiting?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "progressive honorific"}
+{"id": "en_ne_formal-106", "source": "Do you have any allergies?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "have allergy→लाई ... छ"}
+{"id": "en_ne_formal-107", "source": "The doctor will see you shortly.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "see patient"}
+{"id": "en_ne_formal-108", "source": "Please take a seat.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "not सिट लिनुहोस्"}
+{"id": "en_ne_formal-109", "source": "Can you show me the way to the temple?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "way/path"}
+{"id": "en_ne_formal-110", "source": "I appreciate your help.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "appreciate→धन्यवाद phrasing"}
+{"id": "en_ne_formal-111", "source": "Are you feeling better today?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "feeling"}
+{"id": "en_ne_formal-112", "source": "Please fill out this form.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "fill form"}
+{"id": "en_ne_formal-113", "source": "Where should I pay?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "pay location"}
+{"id": "en_ne_formal-114", "source": "I need to renew my visa.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "renew"}
+{"id": "en_ne_formal-115", "source": "Is this medicine available over the counter?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "OTC"}
+{"id": "en_ne_formal-116", "source": "Please speak a little louder.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "louder"}
+{"id": "en_ne_formal-117", "source": "I am looking for a room with a view.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "view"}
+{"id": "en_ne_formal-118", "source": "What time does the bus leave?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "leave/depart"}
+{"id": "en_ne_formal-119", "source": "Please wake me up at six.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "wake up"}
+{"id": "en_ne_formal-120", "source": "Do you accept credit cards?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "accept cards"}
+{"id": "en_ne_formal-121", "source": "Could you write that down for me?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "write down"}
+{"id": "en_ne_formal-122", "source": "How much do I owe you?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "owe"}
+{"id": "en_ne_formal-123", "source": "Please take care of yourself.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "take care"}
+{"id": "en_ne_formal-124", "source": "Could you tell me where the nearest health center is?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "clinic directions + honorific request"}
+{"id": "en_ne_formal-125", "source": "Do you know if there is an ATM nearby?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "ATM lookup"}
+{"id": "en_ne_formal-126", "source": "Can you tell me how to get to the old city from here?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "travel directions"}
+{"id": "en_ne_formal-127", "source": "I have landed safely; I will call you soon.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family call to elder"}
+{"id": "en_ne_formal-128", "source": "Could we see the menu, please?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hotel dining request"}
+{"id": "en_ne_formal-129", "source": "I have been coughing for three days.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "clinic symptom report"}
+{"id": "en_ne_formal-130", "source": "I tried to withdraw money but the transaction failed.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "ATM failure"}
+{"id": "en_ne_formal-131", "source": "Which stop should I get off at for the museum?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "transit directions"}
+{"id": "en_ne_formal-132", "source": "Please let Grandma know I am doing well.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family relay — not म ठिक छु as fine reply calque"}
+{"id": "en_ne_formal-133", "source": "Is lunch included in the room rate?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hotel meal plan"}
+{"id": "en_ne_formal-134", "source": "Where is the nearest pharmacy?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "pharmacy location distinct from I need a pharmacy"}
+{"id": "en_ne_formal-135", "source": "That was delicious.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "past dining feedback"}

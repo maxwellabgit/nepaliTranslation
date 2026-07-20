@@ -1,47 +1,44 @@
-# Fine-tune IndicTrans2 for on-device iOS
+# Fine-tune for on-device EN ↔ NE (commercial)
 
-LoRA fine-tune English ↔ Nepali (Devanagari) checkpoints for export to **ONNX** and bundling in the Expo app (`mobile/assets/models/`). Training runs on a dev GPU machine; inference is **on iPhone only** — no `serve.py`, PC backend, or cloud API in the product path.
-
-## Data
+## Active job (gold-domain IndicTrans2)
 
 ```powershell
-$env:HF_HUB_DISABLE_XET = "1"
-python training/prepare_ft_data.py --opus-max 80000 --nllb-max 30000
-# optional extra NLLB:
-python training/append_nllb.py
+# 1) Download MIT bases (HF gate for BOTH directions)
+python training/download_it2.py
+
+# 2) Conversational train set (gold blocked)
+python training/prepare_gold_domain_data.py
+
+# 3) LoRA FT both directions
+python training/finetune_it2_gold.py --directions en-ne,ne-en --max-train 18000 --epochs 2
+
+# 4) Gold eval
+python benchmarks/eval_it2_gold.py --systems phrasebook,it2_base,it2_ft,it2_ft_notags --tag it2_gold_post
 ```
 
-- **Train:** OPUS-100 `en-ne` (+ NLLB HQ `npi_Deva` when available)
-- **Held out of train:** gold-standard eval under `benchmarks/gold/` (and legacy `benchmarks/data/ne_quality_bench.json` blocklist)
+- Orchestrator: `python training/run_it2_gold_job.py`
+- Continue NE→EN: `python training/continue_it2_ne_en.py`
 
-BPCC seed is gated on Hugging Face (needs `huggingface-cli login`).
+Outputs (MIT, shippable):
 
-## Train (LoRA → merged checkpoints)
+- `training/artifacts/it2_en_indic_gold_ft/`
+- `training/artifacts/it2_indic_en_gold_ft/`
 
-```powershell
-$env:HF_HUB_DISABLE_XET = "1"
-python training/finetune_lora.py --directions en-ne,ne-en --max-train 30000 --epochs 1
-```
+On-device export: [`ON_DEVICE_SHIP.md`](ON_DEVICE_SHIP.md)
 
-Outputs (dev machine):
+## Why IndicTrans2 dist-200M
 
-- `training/artifacts/it2_en_indic_ne_ft/` — EN→NE
-- `training/artifacts/it2_indic_en_ne_ft/` — NE→EN
+| Criterion | Choice |
+|-----------|--------|
+| License | **MIT** — commercial iOS/Android OK |
+| Size | ~200M — ONNX INT8 fits phones |
+| Quality | Best open Indic MT with Nepali |
+| Gate | Accept **en-indic** and **indic-en** on HF |
 
-## Export to mobile
+Do **not** ship NLLB (CC-BY-NC). Research adapters live under `nllb600m_*`.
 
-1. Export each merged checkpoint to ONNX (see [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md)).
-2. Copy ONNX graphs + tokenizers into `mobile/assets/models/`.
-3. Rebuild iOS via EAS; verify on device in airplane mode.
+## Data rules
 
-## Eval gate
-
-**Primary:** gold standard per class — [`benchmarks/gold/`](../benchmarks/gold/).
-
-**Secondary:** corpus regression during training:
-
-```powershell
-python benchmarks/run_ne_quality_bench.py
-```
-
-Ship a new on-device model only when gold (and agreed secondary) baselines are met or beaten.
+- Never train on `benchmarks/gold/` (blocklist + scrub)
+- Short conversational pairs + register expand + roman NE→EN views
+- Freeze checksums: `python benchmarks/freeze_gold_holdout.py`

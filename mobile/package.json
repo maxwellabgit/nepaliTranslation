@@ -1,6 +1,6 @@
 {
   "name": "neptranslate",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "index.ts",
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -25,7 +25,10 @@
     "web": "expo start --web",
     "eas:configure": "eas build:configure",
     "build:ios": "eas build --platform ios --profile production",
-    "submit:ios": "eas submit --platform ios --latest"
+    "build:android": "eas build --platform android --profile production",
+    "build:all": "eas build --platform all --profile production",
+    "submit:ios": "eas submit --platform ios --latest",
+    "submit:android": "eas submit --platform android --latest"
   },
   "private": true
 }

@@ -98,3 +98,38 @@
 {"id": "en_ne_formal-098", "reference": "के पार्किङ छ?"}
 {"id": "en_ne_formal-099", "reference": "धुम्रपान निषेध।"}
 {"id": "en_ne_formal-100", "reference": "कृपया सावधान रहनुहोस्।"}
+{"id": "en_ne_formal-101", "reference": "के तपाईंले यो कागजात हेर्नुहुन्छ?", "tier": "premium_word_choice", "note": "request+honorific verb"}
+{"id": "en_ne_formal-102", "reference": "तपाईं के खान चाहनुहुन्छ?", "tier": "premium_word_choice", "note": "volition not habitual खानुहुन्छ"}
+{"id": "en_ne_formal-103", "reference": "म तपाईंलाई विमानस्थलमा लिन आउँछु।", "tier": "premium_word_choice", "note": "pick up→लिन आउनु"}
+{"id": "en_ne_formal-104", "reference": "कृपया आराम गर्नुहोस्।", "tier": "premium_word_choice", "note": "idiom"}
+{"id": "en_ne_formal-105", "reference": "तपाईं कति बेरदेखि पर्खिरहनुभएको छ?", "tier": "premium_word_choice", "note": "progressive honorific"}
+{"id": "en_ne_formal-106", "reference": "तपाईंलाई कुनै एलर्जी छ?", "tier": "premium_word_choice", "note": "have allergy→लाई ... छ"}
+{"id": "en_ne_formal-107", "reference": "डाक्टरले चाँडै तपाईंलाई भेट्नुहुन्छ।", "tier": "premium_word_choice", "note": "see patient"}
+{"id": "en_ne_formal-108", "reference": "कृपया बस्नुहोस्।", "tier": "premium_word_choice", "note": "not सिट लिनुहोस्"}
+{"id": "en_ne_formal-109", "reference": "के तपाईं मन्दिर जाने बाटो देखाउन सक्नुहुन्छ?", "tier": "premium_word_choice", "note": "way/path"}
+{"id": "en_ne_formal-110", "reference": "तपाईंको सहयोगको लागि धन्यवाद।", "tier": "premium_word_choice", "note": "appreciate→धन्यवाद phrasing"}
+{"id": "en_ne_formal-111", "reference": "आज तपाईंलाई राम्रो महसुस भएको छ?", "tier": "premium_word_choice", "note": "feeling"}
+{"id": "en_ne_formal-112", "reference": "कृपया यो फारम भर्नुहोस्।", "tier": "premium_word_choice", "note": "fill form"}
+{"id": "en_ne_formal-113", "reference": "म कहाँ तिर्ने?", "tier": "premium_word_choice", "note": "pay location"}
+{"id": "en_ne_formal-114", "reference": "मलाई भिसा नवीकरण गर्नुपर्छ।", "tier": "premium_word_choice", "note": "renew"}
+{"id": "en_ne_formal-115", "reference": "के यो औषधि सिधै किन्न पाइन्छ?", "tier": "premium_word_choice", "note": "OTC"}
+{"id": "en_ne_formal-116", "reference": "कृपया अलिकति ठूलो स्वरमा बोल्नुहोस्।", "tier": "premium_word_choice", "note": "louder"}
+{"id": "en_ne_formal-117", "reference": "म राम्रो भ्यू भएको कोठा खोज्दै छु।", "tier": "premium_word_choice", "note": "hotel Nepali भ्यू not calque दृश्य भएको alone"}
+{"id": "en_ne_formal-118", "reference": "बस कति बजे जान्छ?", "tier": "premium_word_choice", "note": "leave/depart"}
+{"id": "en_ne_formal-119", "reference": "कृपया मलाई छ बजे उठाउनुहोस्।", "tier": "premium_word_choice", "note": "wake up"}
+{"id": "en_ne_formal-120", "reference": "के तपाईं क्रेडिट कार्ड स्वीकार गर्नुहुन्छ?", "tier": "premium_word_choice", "note": "accept cards"}
+{"id": "en_ne_formal-121", "reference": "के तपाईं मलाई त्यो लेखेर दिन सक्नुहुन्छ?", "tier": "premium_word_choice", "note": "write down"}
+{"id": "en_ne_formal-122", "reference": "मैले तपाईंलाई कति तिर्नुपर्छ?", "tier": "premium_word_choice", "note": "owe"}
+{"id": "en_ne_formal-123", "reference": "कृपया आफ्नो ख्याल राख्नुहोस्।", "tier": "premium_word_choice", "note": "take care"}
+{"id": "en_ne_formal-124", "reference": "के तपाईं मलाई नजिकैको स्वास्थ्य केन्द्र कहाँ छ भनेर भन्न सक्नुहुन्छ?", "tier": "premium_word_choice", "note": "clinic directions + honorific request"}
+{"id": "en_ne_formal-125", "reference": "के तपाईंलाई थाहा छ, नजिकै कुनै एटीएम छ?", "tier": "premium_word_choice", "note": "ATM lookup"}
+{"id": "en_ne_formal-126", "reference": "के तपाईं मलाई यहाँबाट पुरानो शहर जाने बाटो बताउन सक्नुहुन्छ?", "tier": "premium_word_choice", "note": "travel directions"}
+{"id": "en_ne_formal-127", "reference": "म सुरक्षित ओर्लिएँ, चाँडै तपाईंलाई फोन गर्नेछु।", "tier": "premium_word_choice", "note": "family call to elder"}
+{"id": "en_ne_formal-128", "reference": "कृपया हामीलाई मेनु देखाउन सक्नुहुन्छ?", "tier": "premium_word_choice", "note": "hotel dining request"}
+{"id": "en_ne_formal-129", "reference": "म तीन दिनदेखि खोकी लागिरहेको छु।", "tier": "premium_word_choice", "note": "clinic symptom report"}
+{"id": "en_ne_formal-130", "reference": "मैले पैसा झिक्न खोजें, तर कारोबार असफल भयो।", "tier": "premium_word_choice", "note": "ATM failure"}
+{"id": "en_ne_formal-131", "reference": "संग्रहालय जान कुन बिसौनीमा ओर्लिनुपर्छ?", "tier": "premium_word_choice", "note": "transit directions"}
+{"id": "en_ne_formal-132", "reference": "कृपया हजुरआमालाई म ठिकै छु भनेर भन्नुहोस्।", "tier": "premium_word_choice", "note": "family relay — not म ठिक छु as fine reply calque"}
+{"id": "en_ne_formal-133", "reference": "के कोठाको भाडामा दिउँसोको खाना समावेश छ?", "tier": "premium_word_choice", "note": "hotel meal plan"}
+{"id": "en_ne_formal-134", "reference": "नजिकको औषधि पसल कहाँ छ?", "tier": "premium_word_choice", "note": "pharmacy location distinct from I need a pharmacy"}
+{"id": "en_ne_formal-135", "reference": "मिठो थियो।", "tier": "premium_word_choice", "note": "past dining feedback"}

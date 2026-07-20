@@ -98,3 +98,36 @@
 {"id": "ne_en_roman-098", "source": "ma school janchu", "deva": "म स्कूल जान्छु", "script": "roman", "status": "reviewed"}
 {"id": "ne_en_roman-099", "source": "tapai kaha kam garnuhunchha?", "deva": "तपाईं कहाँ काम गर्नुहुन्छ?", "script": "roman", "status": "reviewed"}
 {"id": "ne_en_roman-100", "source": "malai chai chahiyo", "deva": "मलाई चिया चाहियो", "script": "roman", "status": "reviewed"}
+{"id": "ne_en_roman-101", "source": "malai chakkar aairaheko cha", "deva": "मलाई चक्कर आइरहेको छ", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "roman medical"}
+{"id": "ne_en_roman-102", "source": "visa ko myaad sakiyo", "deva": "भिसाको म्याद सकियो", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "expired"}
+{"id": "ne_en_roman-103", "source": "tapai lai ke samasya cha?", "deva": "तपाईंलाई के समस्या छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "formal q"}
+{"id": "ne_en_roman-104", "source": "yo ausadhi khanapachi khanuhos", "deva": "यो औषधि खानापछि खानुहोस्", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "instruction"}
+{"id": "ne_en_roman-105", "source": "malai sano paisa chahiyo", "deva": "मलाई सानो पैसा चाहियो", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "change"}
+{"id": "ne_en_roman-106", "source": "aja mausam thik chaina", "deva": "आज मौसम ठिक छैन", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "weather"}
+{"id": "ne_en_roman-107", "source": "ma tapai lai phone garchu", "deva": "म तपाईंलाई फोन गर्छु", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "call"}
+{"id": "ne_en_roman-108", "source": "yo thau kati tadha cha?", "deva": "यो ठाउँ कति टाढा छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "distance"}
+{"id": "ne_en_roman-109", "source": "malai sahayog chahiyo", "deva": "मलाई सहयोग चाहियो", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "help"}
+{"id": "ne_en_roman-110", "source": "ke tapai nepali bujhnuhunchha?", "deva": "तपाईं नेपाली बुझ्नुहुन्छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "keep के in chat roman"}
+{"id": "ne_en_roman-111", "source": "mero pet dukhyo", "deva": "मेरो पेट दुख्यो", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "stomach"}
+{"id": "ne_en_roman-112", "source": "bus chutyo", "deva": "बस छुट्यो", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "missed"}
+{"id": "ne_en_roman-113", "source": "yo kati parcha?", "deva": "यो कति पर्छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "cost"}
+{"id": "ne_en_roman-114", "source": "ma bhada tirna chahanchu", "deva": "म भाडा तिर्न चाहन्छु", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "fare"}
+{"id": "ne_en_roman-115", "source": "yaha wifi cha?", "deva": "यहाँ वाइफाइ छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "wifi"}
+{"id": "ne_en_roman-116", "source": "malai pani chahiyo", "deva": "मलाई पानी चाहियो", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "water"}
+{"id": "ne_en_roman-117", "source": "bihanko khaja samavesh cha?", "deva": "बिहानको खाजा समावेश छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "breakfast"}
+{"id": "ne_en_roman-118", "source": "dhanyabad tapai ko madat ko lagi", "deva": "धन्यवाद तपाईंको मद्दतको लागि", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "thanks"}
+{"id": "ne_en_roman-119", "source": "malai chiso mahasus bhairaheko cha", "deva": "मलाई चिसो महसुस भइरहेको छ।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "temp roman"}
+{"id": "ne_en_roman-120", "source": "malai rugha lageko cha", "deva": "मलाई रुघा लागेको छ।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "illness roman"}
+{"id": "ne_en_roman-121", "source": "malai ragatko janch garnuparcha", "deva": "मलाई रगतको जाँच गर्नुपर्छ।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "chat roman clinic"}
+{"id": "ne_en_roman-122", "source": "yo card le yaha kaam garcha?", "deva": "यो कार्डले यहाँ काम गर्छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "payment roman"}
+{"id": "ne_en_roman-123", "source": "hami hotel ma pugyau", "deva": "हामी होटलमा पुग्यौं।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "arrival text"}
+{"id": "ne_en_roman-124", "source": "malai nunilo khana man pardaina", "deva": "मलाई नुनिलो खाना मन पर्दैन।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "dining preference"}
+{"id": "ne_en_roman-125", "source": "kripya dherai tel nahalnuhos", "deva": "कृपया धेरै तेल नहाल्नुहोस्।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "waiter request"}
+{"id": "ne_en_roman-126", "source": "ma baba lai samjiraheko chu", "deva": "म बुबालाई सम्झिरहेको छु।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family chat"}
+{"id": "ne_en_roman-127", "source": "nepal ma pahilo patak aayeko hu", "deva": "नेपालमा पहिलो पटक आएको हुँ।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "tourist intro"}
+{"id": "ne_en_roman-128", "source": "mero passport hotel ma cha", "deva": "मेरो पासपोर्ट होटलमा छ।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "travel roman"}
+{"id": "ne_en_roman-129", "source": "hamro udan dhila bhayo", "deva": "हाम्रो उडान ढिला भयो।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family update"}
+{"id": "ne_en_roman-130", "source": "ke tapai angreji bolnuhunchha?", "deva": "के तपाईं अङ्ग्रेजी बोल्नुहुन्छ?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "staff query"}
+{"id": "ne_en_roman-131", "source": "birami kakshya kun tarfa ho?", "deva": "बिरामी कक्ष कुन तर्फ हो?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hospital"}
+{"id": "ne_en_roman-132", "source": "paisa sakiyo", "deva": "पैसा सकियो।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "colloquial money roman"}
+{"id": "ne_en_roman-133", "source": "bato biraye", "deva": "बाटो बिराएँ", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "restored roman idiom within prune budget"}

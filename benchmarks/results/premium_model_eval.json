@@ -1,0 +1,429 @@
+{
+  "generated_at": "2026-07-20T16:26:18.637873+00:00",
+  "gold_sizes": {
+    "en_ne_formal": {
+      "n": 124,
+      "premium": 24
+    },
+    "en_ne_informal": {
+      "n": 124,
+      "premium": 24
+    },
+    "ne_en_deva": {
+      "n": 120,
+      "premium": 20
+    },
+    "ne_en_roman": {
+      "n": 120,
+      "premium": 20
+    }
+  },
+  "systems": [
+    {
+      "system": "phrasebook",
+      "overall_chrf": 0.11305523803289402,
+      "overall_n": 488,
+      "classes": {
+        "en_ne_formal": {
+          "n": 124,
+          "chrf_mean": 0.15512333965844402,
+          "token_f1_mean": 0.1586021505376344,
+          "exact_match": 0.016129032258064516,
+          "norm_exact": 0.1532258064516129,
+          "formal_marker_rate": 0.2,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "Hello",
+              "ref": "नमस्ते",
+              "pred": "नमस्ते",
+              "chrf": 1.0
+            },
+            {
+              "source": "How are you?",
+              "ref": "तपाईंलाई कस्तो छ?",
+              "pred": "तपाईंलाई कस्तो छ",
+              "chrf": 1.0
+            },
+            {
+              "source": "What is your name?",
+              "ref": "तपाईंको नाम के हो?",
+              "pred": "तपाईंको नाम के हो",
+              "chrf": 1.0
+            }
+          ]
+        },
+        "en_ne_informal": {
+          "n": 124,
+          "chrf_mean": 0.14607809693892906,
+          "token_f1_mean": 0.15053763440860216,
+          "exact_match": 0.008064516129032258,
+          "norm_exact": 0.12903225806451613,
+          "formal_marker_rate": null,
+          "informal_ok_rate": 1.0,
+          "samples": [
+            {
+              "source": "Hello",
+              "ref": "नमस्ते",
+              "pred": "नमस्ते",
+              "chrf": 1.0
+            },
+            {
+              "source": "How are you?",
+              "ref": "तिमीलाई कस्तो छ?",
+              "pred": "तिमीलाई कस्तो छ",
+              "chrf": 1.0
+            },
+            {
+              "source": "What is your name?",
+              "ref": "तिम्रो नाम के हो?",
+              "pred": "तिमीको नाम के हो",
+              "chrf": 0.636
+            }
+          ]
+        },
+        "ne_en_deva": {
+          "n": 120,
+          "chrf_mean": 0.14851648351648353,
+          "token_f1_mean": 0.14569444444444443,
+          "exact_match": 0.0,
+          "norm_exact": 0.13333333333333333,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "नमस्ते",
+              "ref": "Hello",
+              "pred": "hi",
+              "chrf": 0.0
+            },
+            {
+              "source": "तपाईंलाई कस्तो छ?",
+              "ref": "How are you?",
+              "pred": "how are you",
+              "chrf": 1.0
+            },
+            {
+              "source": "धन्यवाद",
+              "ref": "Thank you",
+              "pred": "thanks",
+              "chrf": 0.6
+            }
+          ]
+        },
+        "ne_en_roman": {
+          "n": 120,
+          "chrf_mean": 0.0,
+          "token_f1_mean": 0.0,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": []
+        }
+      }
+    },
+    {
+      "system": "google_gtx",
+      "overall_chrf": 0.5305149280808082,
+      "overall_n": 488,
+      "classes": {
+        "en_ne_formal": {
+          "n": 124,
+          "chrf_mean": 0.6877733473895189,
+          "token_f1_mean": 0.6991701398959463,
+          "exact_match": 0.3225806451612903,
+          "norm_exact": 0.3225806451612903,
+          "formal_marker_rate": 0.06451612903225806,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "Hello",
+              "ref": "नमस्ते",
+              "pred": "नमस्ते",
+              "chrf": 1.0
+            },
+            {
+              "source": "How are you?",
+              "ref": "तपाईंलाई कस्तो छ?",
+              "pred": "कस्तो छ ?",
+              "chrf": 0.5
+            },
+            {
+              "source": "What is your name?",
+              "ref": "तपाईंको नाम के हो?",
+              "pred": "तिम्रो नाम के हो?",
+              "chrf": 0.522
+            }
+          ]
+        },
+        "en_ne_informal": {
+          "n": 124,
+          "chrf_mean": 0.6132592465600334,
+          "token_f1_mean": 0.630767798509734,
+          "exact_match": 0.20967741935483872,
+          "norm_exact": 0.20967741935483872,
+          "formal_marker_rate": null,
+          "informal_ok_rate": 0.9354838709677419,
+          "samples": [
+            {
+              "source": "Hello",
+              "ref": "नमस्ते",
+              "pred": "नमस्ते",
+              "chrf": 1.0
+            },
+            {
+              "source": "How are you?",
+              "ref": "तिमीलाई कस्तो छ?",
+              "pred": "कस्तो छ ?",
+              "chrf": 0.533
+            },
+            {
+              "source": "What is your name?",
+              "ref": "तिम्रो नाम के हो?",
+              "pred": "तिम्रो नाम के हो?",
+              "chrf": 1.0
+            }
+          ]
+        },
+        "ne_en_deva": {
+          "n": 120,
+          "chrf_mean": 0.7428536318877785,
+          "token_f1_mean": 0.7578781866281866,
+          "exact_match": 0.3,
+          "norm_exact": 0.44166666666666665,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "नमस्ते",
+              "ref": "Hello",
+              "pred": "hi",
+              "chrf": 0.0
+            },
+            {
+              "source": "तपाईंलाई कस्तो छ?",
+              "ref": "How are you?",
+              "pred": "how are you",
+              "chrf": 1.0
+            },
+            {
+              "source": "मेरो नाम राम हो।",
+              "ref": "My name is Ram.",
+              "pred": "My name is Ram.",
+              "chrf": 1.0
+            }
+          ]
+        },
+        "ne_en_roman": {
+          "n": 120,
+          "chrf_mean": 0.07017339522630443,
+          "token_f1_mean": 0.0634397546897547,
+          "exact_match": 0.008333333333333333,
+          "norm_exact": 0.008333333333333333,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "namaste",
+              "ref": "Hello",
+              "pred": "namaste",
+              "chrf": 0.0
+            },
+            {
+              "source": "tapai lai kasto cha?",
+              "ref": "How are you?",
+              "pred": "tapai lai kasto cha?",
+              "chrf": 0.0
+            },
+            {
+              "source": "mero naam Ram ho",
+              "ref": "My name is Ram",
+              "pred": "mero naam Ram ho",
+              "chrf": 0.1
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "premium_only": {
+    "phrasebook": {
+      "system": "phrasebook_premium",
+      "overall_chrf": 0.0,
+      "overall_n": 88,
+      "classes": {
+        "en_ne_formal": {
+          "n": 24,
+          "chrf_mean": 0.0,
+          "token_f1_mean": 0.0,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": []
+        },
+        "en_ne_informal": {
+          "n": 24,
+          "chrf_mean": 0.0,
+          "token_f1_mean": 0.0,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": []
+        },
+        "ne_en_deva": {
+          "n": 20,
+          "chrf_mean": 0.0,
+          "token_f1_mean": 0.0,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": []
+        },
+        "ne_en_roman": {
+          "n": 20,
+          "chrf_mean": 0.0,
+          "token_f1_mean": 0.0,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": []
+        }
+      }
+    },
+    "google_gtx": {
+      "system": "google_gtx_premium",
+      "overall_chrf": 0.4579212528116161,
+      "overall_n": 88,
+      "classes": {
+        "en_ne_formal": {
+          "n": 24,
+          "chrf_mean": 0.5973349950717772,
+          "token_f1_mean": 0.5473482535982536,
+          "exact_match": 0.125,
+          "norm_exact": 0.125,
+          "formal_marker_rate": 0.125,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "Could you please look at this document?",
+              "ref": "के तपाईंले यो कागजात हेर्नुहुन्छ?",
+              "pred": "कृपया यो कागजात हेर्न सक्नुहुन्छ?",
+              "chrf": 0.654
+            },
+            {
+              "source": "What would you like to eat?",
+              "ref": "तपाईं के खानुहुन्छ?",
+              "pred": "तपाईं के खान चाहनुहुन्छ?",
+              "chrf": 0.813
+            },
+            {
+              "source": "I will pick you up at the airport.",
+              "ref": "म तपाईंलाई विमानस्थलमा लिन आउँछु।",
+              "pred": "म तिमीलाई एयरपोर्टमा उठाउनेछु।",
+              "chrf": 0.04
+            }
+          ]
+        },
+        "en_ne_informal": {
+          "n": 24,
+          "chrf_mean": 0.489877885961149,
+          "token_f1_mean": 0.4911313223813224,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": 0.875,
+          "samples": [
+            {
+              "source": "Could you please look at this document?",
+              "ref": "के तिमीले यो कागजात हेर्छौ?",
+              "pred": "कृपया यो कागजात हेर्न सक्नुहुन्छ?",
+              "chrf": 0.435
+            },
+            {
+              "source": "What would you like to eat?",
+              "ref": "तिमी के खान्छौ?",
+              "pred": "तपाईं के खान चाहनुहुन्छ?",
+              "chrf": 0.286
+            },
+            {
+              "source": "I will pick you up at the airport.",
+              "ref": "म तिमीलाई विमानस्थलमा लिन आउँछु।",
+              "pred": "म तिमीलाई एयरपोर्टमा उठाउनेछु।",
+              "chrf": 0.245
+            }
+          ]
+        },
+        "ne_en_deva": {
+          "n": 20,
+          "chrf_mean": 0.6800104649440092,
+          "token_f1_mean": 0.6918650793650793,
+          "exact_match": 0.3,
+          "norm_exact": 0.3,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "तपाईंलाई के समस्या छ?",
+              "ref": "What problem are you having?",
+              "pred": "What's your problem?",
+              "chrf": 0.444
+            },
+            {
+              "source": "मलाई चक्कर आइरहेको छ।",
+              "ref": "I am feeling dizzy.",
+              "pred": "I feel dizzy.",
+              "chrf": 0.476
+            },
+            {
+              "source": "यो औषधि खानापछि खानुहोस्।",
+              "ref": "Take this medicine after food.",
+              "pred": "Take this medicine after meals.",
+              "chrf": 0.809
+            }
+          ]
+        },
+        "ne_en_roman": {
+          "n": 20,
+          "chrf_mean": 0.03018759018759019,
+          "token_f1_mean": 0.04345238095238095,
+          "exact_match": 0.0,
+          "norm_exact": 0.0,
+          "formal_marker_rate": null,
+          "informal_ok_rate": null,
+          "samples": [
+            {
+              "source": "malai chakkar aairaheko cha",
+              "ref": "I am feeling dizzy.",
+              "pred": "malai chakkar aairaheko cha",
+              "chrf": 0.0
+            },
+            {
+              "source": "bato biraye",
+              "ref": "I lost my way.",
+              "pred": "bato biraye",
+              "chrf": 0.0
+            },
+            {
+              "source": "visa ko myaad sakiyo",
+              "ref": "The visa has expired.",
+              "pred": "visa ko myaad sakiyo",
+              "chrf": 0.133
+            }
+          ]
+        }
+      }
+    }
+  },
+  "research_shortlist_not_run": [
+    "ai4bharat/indictrans2-en-indic-1B (MIT, gated — needs valid HF token)",
+    "ai4bharat/indictrans2-indic-en-1B",
+    "GPT-4o / Claude register oracles (API)",
+    "Azure Translator + tone (API)",
+    "DeepL ne (API)"
+  ]
+}

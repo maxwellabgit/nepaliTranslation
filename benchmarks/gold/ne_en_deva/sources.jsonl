@@ -98,3 +98,35 @@
 {"id": "ne_en_deva-098", "source": "पानी पर्दै छ।", "status": "reviewed", "script": "deva"}
 {"id": "ne_en_deva-099", "source": "म स्कूल जान्छु।", "status": "reviewed", "script": "deva"}
 {"id": "ne_en_deva-100", "source": "तपाईं कहाँ काम गर्नुहुन्छ?", "status": "reviewed", "script": "deva"}
+{"id": "ne_en_deva-101", "source": "तपाईंलाई के समस्या छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "medical open"}
+{"id": "ne_en_deva-102", "source": "मलाई चक्कर आइरहेको छ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "dizzy not spinning head calque"}
+{"id": "ne_en_deva-103", "source": "यो औषधि खानापछि खानुहोस्।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "after meals"}
+{"id": "ne_en_deva-104", "source": "भिसाको म्याद सकियो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "expired"}
+{"id": "ne_en_deva-105", "source": "बाटो बिराएँ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "idiom"}
+{"id": "ne_en_deva-106", "source": "मलाई सानो पैसा चाहियो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "change"}
+{"id": "ne_en_deva-107", "source": "आज मौसम ठिक छैन।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "weather"}
+{"id": "ne_en_deva-108", "source": "म तपाईंलाई फोन गर्छु।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "call"}
+{"id": "ne_en_deva-109", "source": "यो ठाउँ कति टाढा छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "distance"}
+{"id": "ne_en_deva-110", "source": "मलाई सहयोग चाहियो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "help"}
+{"id": "ne_en_deva-111", "source": "के तपाईं नेपाली बुझ्नुहुन्छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "understand"}
+{"id": "ne_en_deva-112", "source": "मेरो पेट दुख्यो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "stomach ache"}
+{"id": "ne_en_deva-113", "source": "बस छुट्यो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "missed bus"}
+{"id": "ne_en_deva-114", "source": "यो कति पर्छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "cost"}
+{"id": "ne_en_deva-115", "source": "म भाडा तिर्न चाहन्छु।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "fare"}
+{"id": "ne_en_deva-116", "source": "के यहाँ वाइफाइ छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "wifi"}
+{"id": "ne_en_deva-117", "source": "मलाई पानी चाहियो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "need water"}
+{"id": "ne_en_deva-118", "source": "बिहानको खाजा समावेश छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "breakfast included"}
+{"id": "ne_en_deva-119", "source": "मलाई चिसो महसुस भइरहेको छ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "temperature sense only"}
+{"id": "ne_en_deva-120", "source": "मलाई रुघा लागेको छ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "illness sense only"}
+{"id": "ne_en_deva-121", "source": "मलाई रगतको जाँच गर्नुपर्छ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "clinic lab work"}
+{"id": "ne_en_deva-122", "source": "यो कार्डले यहाँ काम गर्छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "payment not चल्नु calque"}
+{"id": "ne_en_deva-123", "source": "हामी होटलमा पुग्यौं।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "travel arrival"}
+{"id": "ne_en_deva-124", "source": "मलाई नुनिलो खाना मन पर्दैन।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "dining preference"}
+{"id": "ne_en_deva-125", "source": "कृपया धेरै तेल नहाल्नुहोस्।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "dining instruction"}
+{"id": "ne_en_deva-126", "source": "म बुबालाई सम्झिरहेको छु।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family phone call"}
+{"id": "ne_en_deva-127", "source": "नेपालमा पहिलो पटक आएको हुँ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "tourist context"}
+{"id": "ne_en_deva-128", "source": "मेरो पासपोर्ट होटलमा छ।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "travel documents"}
+{"id": "ne_en_deva-129", "source": "हाम्रो उडान ढिला भयो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "airport family update"}
+{"id": "ne_en_deva-130", "source": "के तपाईं अङ्ग्रेजी बोल्नुहुन्छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "staff query"}
+{"id": "ne_en_deva-131", "source": "बिरामी कक्ष कुन तर्फ हो?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hospital direction"}
+{"id": "ne_en_deva-132", "source": "पैसा सकियो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "colloquial money"}

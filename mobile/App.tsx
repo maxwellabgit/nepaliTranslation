@@ -7,11 +7,11 @@ import { HistoryScreen } from './src/screens/HistoryScreen';
 import type { HistoryItem } from './src/storage/phrasebook';
 import { colors } from './src/theme';
 
-type Mode = 'normal' | 'conversation';
+type Mode = 'auto' | 'conversation';
 type Overlay = 'history' | null;
 
 export default function App() {
-  const [mode, setMode] = useState<Mode>('normal');
+  const [mode, setMode] = useState<Mode>('auto');
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
@@ -25,7 +25,7 @@ export default function App() {
           onSelect={(item) => {
             setSeed(item);
             setSeedKey((k) => k + 1);
-            setMode('normal');
+            setMode('auto');
             setOverlay(null);
           }}
         />
@@ -50,13 +50,13 @@ export default function App() {
 
       <View style={styles.tabBar}>
         <Pressable
-          style={[styles.tab, mode === 'normal' && styles.tabOn]}
-          onPress={() => setMode('normal')}
+          style={[styles.tab, mode === 'auto' && styles.tabOn]}
+          onPress={() => setMode('auto')}
         >
-          <Text style={[styles.tabLabel, mode === 'normal' && styles.tabLabelOn]}>
-            Normal
+          <Text style={[styles.tabLabel, mode === 'auto' && styles.tabLabelOn]}>
+            Auto
           </Text>
-          <Text style={[styles.tabHint, mode === 'normal' && styles.tabHintOn]}>
+          <Text style={[styles.tabHint, mode === 'auto' && styles.tabHintOn]}>
             Type or speak
           </Text>
         </Pressable>
@@ -72,7 +72,7 @@ export default function App() {
           <Text
             style={[styles.tabHint, mode === 'conversation' && styles.tabHintOn]}
           >
-            Face to face
+            Pass the phone
           </Text>
         </Pressable>
       </View>

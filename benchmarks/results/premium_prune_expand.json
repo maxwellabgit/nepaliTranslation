@@ -1,0 +1,30 @@
+{
+  "premium_before": 88,
+  "premium_killed_net": 4,
+  "premium_kill_pct": 4.5,
+  "rewrites": 5,
+  "split_chiso_added": 4,
+  "fleet2_unique_adds_approx": 49,
+  "premium_after": 137,
+  "class_totals": {
+    "en_ne_formal": {"total": 135, "premium": 35},
+    "en_ne_informal": {"total": 137, "premium": 37},
+    "ne_en_deva": {"total": 132, "premium": 32},
+    "ne_en_roman": {"total": 133, "premium": 33}
+  },
+  "kill_sources_final": {
+    "ne_en_deva": ["के तपाईं कार्ड चल्नुहुन्छ?", "मलाई चिसो लाग्यो।"],
+    "ne_en_roman": ["malai chiso lagyo"],
+    "en_ne_formal": ["I lost my way."]
+  },
+  "restored_within_budget": {
+    "en_ne_informal": ["I lost my way."],
+    "ne_en_roman": ["bato biraye"]
+  },
+  "hf_seeds_cached": [
+    "benchmarks/data/flores_plus_npi_eng_dev.jsonl",
+    "benchmarks/data/in22_conv_npi_slim.jsonl",
+    "benchmarks/data/bpcc_daily_npi_sample.jsonl"
+  ],
+  "hf_user": "maxwellbHF"
+}

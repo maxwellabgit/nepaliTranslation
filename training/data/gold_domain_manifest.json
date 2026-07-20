@@ -1,0 +1,17 @@
+{
+  "train_n": 39908,
+  "val_n": 1234,
+  "roman_n": 8000,
+  "sources": {
+    "opus100": 40000,
+    "register_expand": 983,
+    "in22_conv": 98,
+    "bpcc_daily": 57,
+    "in22_informal": 2,
+    "in22_formal": 2
+  },
+  "blocklist": 756,
+  "train_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\train_gold_domain.jsonl",
+  "val_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\val_gold_domain.jsonl",
+  "roman_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\train_roman_ne_en.jsonl"
+}

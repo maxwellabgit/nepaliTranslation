@@ -22,18 +22,13 @@ Models ship bundled under `mobile/assets/models/` or download on first launch. S
 
 | Mode | Use |
 |------|-----|
-| **Normal** | Everyday translate. Type or tap the mic. Language is auto-detected (Nepali or English); output is the other language. |
-| **Conversation** | Face-to-face. **Handoff** switches whose turn / source language; **Speak** records and translates. Latest translation is large; older turns scroll up like chat. |
+| **Auto** | Type or speak (equal UI). Language auto-detected; output is the other language. |
+| **Conversation** | Pass the phone. Speak → **Pass** (English) / **पास** (Nepali). Longer listening; last 5 bubbles can **Retry**. |
 
-Switch modes with the bottom **Normal** / **Conversation** tabs.
+### Toggles (light switches)
 
-### Register (English → Nepali)
-
-**Formal / Informal** toggles Nepali output register (`तपाईं` vs `तिमी` style, with verb agreement as models allow). Available in Normal and Conversation when the output language is Nepali.
-
-### Script
-
-Nepali input may be **Devanagari** or **Romanized** where supported. Roman input is normalized before translation when needed.
+- **Formal** — switch **ON** = formal Nepali (`तपाईं`); off = informal (`तिमी`).
+- **देवनागरी** — switch **ON** = Devanagari; off = Roman Nepali. Always on Auto; on Conversation when the Nepali side holds the phone.
 
 ---
 

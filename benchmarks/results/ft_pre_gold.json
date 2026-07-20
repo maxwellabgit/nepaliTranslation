@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-07-20T16:53:49.383706+00:00",
+  "base_model": "facebook/nllb-200-distilled-600M",
+  "adapter": null,
+  "systems": [
+    {
+      "system": "phrasebook",
+      "overall_chrf": 0.1027,
+      "seconds": 0.0,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.1425,
+          "tapai_rate": 0.0296,
+          "timi_rate": 0.0
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.1322,
+          "tapai_rate": 0.0,
+          "timi_rate": 0.0292
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.135,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.0,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    },
+    {
+      "system": "nllb_base",
+      "overall_chrf": 0.4808,
+      "seconds": 62.9,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.6462,
+          "tapai_rate": 0.0741,
+          "timi_rate": 0.0519
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.5824,
+          "tapai_rate": 0.073,
+          "timi_rate": 0.0511
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.61,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.08,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    }
+  ]
+}

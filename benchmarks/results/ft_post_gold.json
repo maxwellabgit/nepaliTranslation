@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-07-20T17:08:05.764040+00:00",
+  "base_model": "facebook/nllb-200-distilled-600M",
+  "adapter": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\artifacts\\nllb600m_en_ne_lora\\adapter",
+  "systems": [
+    {
+      "system": "nllb_ft",
+      "overall_chrf": 0.4075,
+      "seconds": 138.6,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 135,
+          "chrf_mean": 0.3913,
+          "tapai_rate": 0.0889,
+          "timi_rate": 0.0074
+        },
+        "en_ne_informal": {
+          "n": 137,
+          "chrf_mean": 0.4977,
+          "tapai_rate": 0.1533,
+          "timi_rate": 0.0073
+        },
+        "ne_en_deva": {
+          "n": 132,
+          "chrf_mean": 0.671,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 133,
+          "chrf_mean": 0.0696,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    }
+  ]
+}

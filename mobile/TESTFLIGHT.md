@@ -2,7 +2,7 @@
 
 Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight. No server URL or tunnel configuration is required.
 
-**Current release:** app version **1.4.0** (Normal + Conversation modes, offline-only product).
+**Current release:** app version **1.4.1** (Auto + Conversation, Formal/देवनागरी light switches, Pass flow).
 
 ## Build & submit
 
@@ -26,7 +26,7 @@ App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/
 
 ## Privacy strings
 
-iOS rejects IPAs missing required `Info.plist` usage descriptions (e.g. microphone, speech recognition). Those live in `app.json` → `expo.ios.infoPlist`. If submit reports **ITMS 90683**, add the missing key there and rebuild.
+iOS rejects IPAs missing required `Info.plist` usage descriptions (e.g. microphone, speech recognition, photo library). Those live in `app.json` → `expo.ios.infoPlist`. If submit reports **ITMS-90683**, add the missing key there and rebuild (e.g. `NSPhotoLibraryUsageDescription` even when only an SDK references Photos APIs).
 
 ## What to verify
 

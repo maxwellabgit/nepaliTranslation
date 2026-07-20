@@ -1,0 +1,28 @@
+# Secrets / local env
+.env
+**/.env
+benchmarks/.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Benchmark caches / large downloads (keep slim samples if committed intentionally)
+benchmarks/data/in22_conv_npi_sample.jsonl
+benchmarks/__pycache__/
+
+# Local IDE
+.cursor/
+
+# Fine-tuned / merged model weights (multi-GB; keep scripts + small data in git)
+training/artifacts/
+
+# Node / mobile (root safety)
+node_modules/
+.expo/
+
+# OS
+.DS_Store
+Thumbs.db

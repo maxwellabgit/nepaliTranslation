@@ -98,3 +98,40 @@
 {"id": "en_ne_informal-098", "source": "Is parking available?", "status": "reviewed"}
 {"id": "en_ne_informal-099", "source": "No smoking.", "status": "reviewed"}
 {"id": "en_ne_informal-100", "source": "Please be careful.", "status": "reviewed"}
+{"id": "en_ne_informal-101", "source": "Could you please look at this document?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal verb"}
+{"id": "en_ne_informal-102", "source": "What would you like to eat?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-103", "source": "I will pick you up at the airport.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal object"}
+{"id": "en_ne_informal-104", "source": "Please make yourself comfortable.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "imperative informal"}
+{"id": "en_ne_informal-105", "source": "How long have you been waiting?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal progressive"}
+{"id": "en_ne_informal-106", "source": "Do you have any allergies?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "same structure"}
+{"id": "en_ne_informal-107", "source": "The doctor will see you shortly.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-108", "source": "Please take a seat.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "sit informal"}
+{"id": "en_ne_informal-109", "source": "Can you show me the way to the temple?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal can"}
+{"id": "en_ne_informal-110", "source": "I appreciate your help.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "तिम्रो"}
+{"id": "en_ne_informal-111", "source": "Are you feeling better today?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-112", "source": "Please fill out this form.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal imperative"}
+{"id": "en_ne_informal-113", "source": "Where should I pay?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "neutral"}
+{"id": "en_ne_informal-114", "source": "I need to renew my visa.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "neutral"}
+{"id": "en_ne_informal-115", "source": "Is this medicine available over the counter?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "neutral"}
+{"id": "en_ne_informal-116", "source": "Please speak a little louder.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-117", "source": "I am looking for a room with a view.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "neutral"}
+{"id": "en_ne_informal-118", "source": "What time does the bus leave?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "neutral"}
+{"id": "en_ne_informal-119", "source": "Please wake me up at six.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-120", "source": "Do you accept credit cards?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-121", "source": "Could you write that down for me?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-122", "source": "How much do I owe you?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal object"}
+{"id": "en_ne_informal-123", "source": "Please take care of yourself.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal"}
+{"id": "en_ne_informal-124", "source": "Could you tell me where the nearest health center is?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "clinic directions informal"}
+{"id": "en_ne_informal-125", "source": "Do you know if there is an ATM nearby?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "ATM lookup informal"}
+{"id": "en_ne_informal-126", "source": "Can you tell me how to get to the old city from here?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "travel directions informal"}
+{"id": "en_ne_informal-127", "source": "I have landed safely; I will call you soon.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family call peer"}
+{"id": "en_ne_informal-128", "source": "Could we see the menu, please?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hotel dining informal"}
+{"id": "en_ne_informal-129", "source": "I have been coughing for three days.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "clinic symptom neutral"}
+{"id": "en_ne_informal-130", "source": "I tried to withdraw money but the transaction failed.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "ATM failure neutral"}
+{"id": "en_ne_informal-131", "source": "Which stop should I get off at for the museum?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "transit directions neutral"}
+{"id": "en_ne_informal-132", "source": "Please let Grandma know I am doing well.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "family relay informal"}
+{"id": "en_ne_informal-133", "source": "Is lunch included in the room rate?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hotel meal plan neutral"}
+{"id": "en_ne_informal-134", "source": "Where is the nearest pharmacy?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "pharmacy location"}
+{"id": "en_ne_informal-135", "source": "That was delicious.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "past dining feedback"}
+{"id": "en_ne_informal-136", "source": "Don't leave me.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "informal imperative emotional"}
+{"id": "en_ne_informal-137", "source": "I lost my way.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "restored: within 5% prune budget; informal keep"}

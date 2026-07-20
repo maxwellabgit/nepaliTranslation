@@ -1,7 +1,8 @@
 {
   "class": "ne_en_roman",
-  "n_target": 100,
-  "n_filled": 100,
+  "n_target": 133,
+  "n_filled": 133,
+  "n_premium": 33,
   "items": [
     {
       "id": "ne_en_roman-001",
@@ -402,6 +403,138 @@
     {
       "id": "ne_en_roman-100",
       "status": "reviewed"
+    },
+    {
+      "id": "ne_en_roman-101",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-102",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-103",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-104",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-105",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-106",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-107",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-108",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-109",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-110",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-111",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-112",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-113",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-114",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-115",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-116",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-117",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-118",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-119",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-120",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-121",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-122",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-123",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-124",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-125",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-126",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-127",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-128",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-129",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-130",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-131",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-132",
+      "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_roman-133",
+      "status": "premium_reviewed"
     }
   ]
 }

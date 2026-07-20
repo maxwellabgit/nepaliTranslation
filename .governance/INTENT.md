@@ -8,14 +8,12 @@ An **offline, on-device iOS app** that translates **English ↔ Nepali** in real
 **NepTranslate** — Nepali-first translation companion.
 
 ### Modes (v1 UI)
-1. **Normal** — Type or speak. Auto-detect Nepali or English; translate to the other language. Mic + keyboard on one screen.
-2. **Conversation** — Face-to-face handoff. One **Handoff** control (whose turn / language) and one **Speak** control. Translated text is shown large; history scrolls upward like a chat.
+1. **Auto** — Type or speak (equal prominence). Auto-detect Nepali or English; translate to the other language.
+2. **Conversation** — Pass the phone. Speak with longer continuous listening; tap **Pass** / **पास** to finalize translation and flip to the other side. Chat bubbles; retry last 5 turns.
 
-### Register
-When the English speaker produces Nepali, a **Formal / Informal** toggle controls Nepali output (`तपाईं` vs `तिमी` style, with verb agreement as models allow).
-
-### Script
-Support **Devanagari** and **Romanized Nepali** input where feasible (normalize Roman → Devanagari before MT when needed).
+### Toggles (light switches)
+- **Formal** — ON = formal Nepali; OFF = informal.
+- **देवनागरी** — ON = Devanagari; OFF = Roman Nepali (Auto always; Conversation on Nepali side).
 
 ## V1 Scope
 - Languages: **English ↔ Nepali only** (NPHC 2021: Nepali is the national lingua franca; Maithili/Bhojpuri etc. are later).

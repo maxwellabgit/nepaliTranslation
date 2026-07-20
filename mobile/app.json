@@ -2,7 +2,7 @@
   "expo": {
     "name": "NepTranslate",
     "slug": "translate",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,8 +13,10 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
         "NSSpeechRecognitionUsageDescription": "NepTranslate uses speech recognition to translate what you say.",
+        "NSPhotoLibraryUsageDescription": "NepTranslate does not need your photo library for translation. This description is required because included iOS frameworks reference photo-library APIs; NepTranslate will not access your photos unless you explicitly choose to share an image in a future update.",
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "buildNumber": "2"
     },
     "android": {
       "package": "com.neptranslate.app",

@@ -3,8 +3,15 @@
  * No network. Phrase pack + word lexicon (bundled).
  */
 
+import {
+  formatNepaliScript,
+  looksLikeRomanNepali,
+} from './romanize';
+
 export type Direction = 'en-ne' | 'ne-en';
 export type Formality = 'formal' | 'informal';
+/** Devanagari (on) vs Roman Nepali (off) for Nepali display / preference. */
+export type NepaliScript = 'deva' | 'roman';
 
 const DEVANAGARI = /[\u0900-\u097F]/;
 
@@ -424,6 +431,7 @@ function wordTranslate(text: string, direction: Direction): string {
 
 export function detectDirection(text: string, preferred: Direction): Direction {
   if (DEVANAGARI.test(text)) return 'ne-en';
+  if (looksLikeRomanNepali(text)) return 'ne-en';
   if (/[a-zA-Z]/.test(text)) return 'en-ne';
   return preferred;
 }
@@ -434,12 +442,25 @@ export type TranslateResult = {
   direction: Direction;
 };
 
+export type TranslateOptions = {
+  formality?: Formality;
+  /** Applied to Nepali output (EN→NE). */
+  script?: NepaliScript;
+};
+
 /** Fully on-device. Never hits the network. */
 export function translateOnDevice(
   text: string,
   preferred: Direction,
-  formality: Formality = 'formal',
+  formalityOrOpts: Formality | TranslateOptions = 'formal',
 ): TranslateResult {
+  const opts: TranslateOptions =
+    typeof formalityOrOpts === 'string'
+      ? { formality: formalityOrOpts }
+      : formalityOrOpts;
+  const formality = opts.formality ?? 'formal';
+  const script = opts.script ?? 'deva';
+
   const raw = (text || '').trim();
   if (!raw) {
     return { text: '', method: 'phrase', direction: preferred };
@@ -449,6 +470,9 @@ export function translateOnDevice(
   let out = hit ?? wordTranslate(raw, direction);
   if (direction === 'en-ne' && formality === 'informal') {
     out = applyInformal(out);
+  }
+  if (direction === 'en-ne') {
+    out = formatNepaliScript(out, script);
   }
   return {
     text: out,
@@ -464,3 +488,5 @@ export function sourceLabel(direction: Direction): string {
 export function targetLabel(direction: Direction): string {
   return direction === 'en-ne' ? 'Nepali' : 'English';
 }
+
+export { formatNepaliScript, looksLikeRomanNepali } from './romanize';
