@@ -1,0 +1,34 @@
+# EAS uploads from the git repo root. Keep the archive under 2 GB.
+# https://docs.expo.dev/build-reference/easignore/
+
+# --- everything except the Expo app ---
+/benchmarks/
+/training/
+/scripts/
+/docs/
+/.cursor/
+/.governance/
+/.git/
+
+# --- heavy / local-only under mobile ---
+/mobile/node_modules/
+/mobile/.expo/
+/mobile/dist/
+/mobile/web-build/
+/mobile/ios/
+/mobile/android/
+/mobile/assets/models/
+/mobile/**/*.bin
+/mobile/**/*.gguf
+/mobile/**/*.onnx
+/mobile/**/*.mlmodel
+/mobile/**/*.mlpackage
+
+# --- common junk ---
+**/.DS_Store
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/venv/
+**/*.log
+**/.cache/

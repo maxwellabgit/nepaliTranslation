@@ -1,0 +1,2 @@
+# Dev-machine model checkpoints (not shipped in the iOS IPA).
+# Populate via scripts/build_en_indic_merged.py and training/finetune_lora.py.

@@ -1,0 +1,57 @@
+{
+  "name": "neptranslate-gold",
+  "version": "0.1.0",
+  "description": "High-quality low-quantity gold standard for NepTranslate (~100 samples per class).",
+  "languages_v1": ["en", "ne"],
+  "language_rationale": "NPHC 2021: Nepali ~44.9% L1 + large L2 base (~90% access). Maithili/Bhojpuri later.",
+  "classes": [
+    {
+      "id": "en_ne_formal",
+      "direction": "en-ne",
+      "register": "formal",
+      "script": "deva",
+      "n_target": 100,
+      "path": "en_ne_formal/"
+    },
+    {
+      "id": "en_ne_informal",
+      "direction": "en-ne",
+      "register": "informal",
+      "script": "deva",
+      "n_target": 100,
+      "path": "en_ne_informal/"
+    },
+    {
+      "id": "ne_en_deva",
+      "direction": "ne-en",
+      "register": "neutral",
+      "script": "deva",
+      "n_target": 100,
+      "path": "ne_en_deva/"
+    },
+    {
+      "id": "ne_en_roman",
+      "direction": "ne-en",
+      "register": "neutral",
+      "script": "roman",
+      "n_target": 100,
+      "path": "ne_en_roman/"
+    }
+  ],
+  "seed_sources": [
+    "Hand-authored daily conversation (work-for-hire)",
+    "IN22-Conv npi_Deva (CC-BY-4.0, attribution) — seed only, re-translate for register",
+    "FLORES+ npi_Deva (CC-BY-SA) — seed English prompts only when re-licensed/hand-rewritten for holdout"
+  ],
+  "curation_rules": [
+    "Two native Nepali reviewers; reject pronoun/verb honorific mismatch",
+    "Formal: तपाईं + matching verb forms (गर्नुहुन्छ, दिनुहोस्, …)",
+    "Informal: तिमी + matching verb forms (गर्छौ, देऊ, …); keep तँ out of informal class unless labeled low",
+    "Roman class: natural chat romanization paired with Devanagari + English",
+    "Do not train on this set; freeze before shipping models"
+  ],
+  "licenses": {
+    "hand_authored": "NepTranslate proprietary / work-for-hire",
+    "in22_seed": "CC-BY-4.0 attribution if retaining IN22 text"
+  }
+}

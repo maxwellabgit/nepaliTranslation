@@ -1,0 +1,258 @@
+{
+  "created_at": "2026-07-19T23:42:19.467495+00:00",
+  "suite": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\benchmarks\\data\\ne_quality_bench.json",
+  "suite_counts": {
+    "flores101_dev": 997,
+    "opus100_test": 1121
+  },
+  "eval_n": 2118,
+  "device": "cuda",
+  "models": {
+    "indic_en": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\experiments\\models\\it2_indic_en_merged",
+    "en_indic": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\experiments\\models\\it2_en_indic_merged"
+  },
+  "metrics": {
+    "primary": "chrF++",
+    "secondary": "BLEU",
+    "register": "honorific marker rates"
+  },
+  "primary": {
+    "ne-en": {
+      "direction": "ne-en",
+      "src": "npi_Deva",
+      "tgt": "eng_Latn",
+      "bleu": 41.6,
+      "chrf": 63.94,
+      "chrf_plus_plus": 63.94,
+      "n": 2118,
+      "latency_s": 546.14,
+      "latency_ms_per_sent": 257.9,
+      "by_domain": {
+        "flores": {
+          "bleu": 42.97,
+          "chrf": 65.94,
+          "chrf_plus_plus": 65.94,
+          "n": 997
+        },
+        "opus100_test": {
+          "bleu": 33.05,
+          "chrf": 56.11,
+          "chrf_plus_plus": 56.11,
+          "n": 1121
+        }
+      },
+      "examples": [
+        {
+          "src": "सोमबारका दिन, स्ट्यानफोर्ड युनिभर्सिटी स्कुल अफ मेडिसिनका वैज्ञानिकहरूले एक नयाँ डायग्नोस्टिक उपकरणको आविष्कारको घोषणा गरे जसले कोषहरूलाई प्रकारका आधारमा क्रमबद्ध गर्न सक्दछः एउटा सानो प्रिन्ट गर्न सकिने चिप जुन मानक ईंकजेट प्रिन्टरहरू प्रयोग गरेर सम्भवतः लगभग एक अमेरिकी सेन्टको लागतमा निर्माण गर्न सकिन्छ।",
+          "ref": "On Monday, scientists from the Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a tiny printable chip that can be manufactured using standard inkjet printers for possibly about one U.S. cent each.",
+          "hyp": "On Monday, scientists at Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a small printable chip that can be manufactured using standard inkjet printers, possibly at a cost of about one US cent.",
+          "domain": "flores"
+        },
+        {
+          "src": "धनी देशहरूको तुलनामा कम आय भएका देशहरूमा क्यान्सर, क्षयरोग, एचआईभी र मलेरियाको पहिचान लगाउन सक्छ भनेर स्तन क्यान्सर जस्ता रोगहरूबाट बाँच्ने दर आधा हुने प्रमुख अन्वेषकहरूको भनाइ छ।",
+          "ref": "Lead researchers say this may bring early detection of cancer, tuberculosis, HIV and malaria to patients in low-income countries, where the survival rates for illnesses such as breast cancer can be half those of richer countries.",
+          "hyp": "Leading researchers say that low-income countries can detect cancer, tuberculosis, HIV, and malaria compared to rich countries, which can halve the survival rate from diseases such as breast cancer.",
+          "domain": "flores"
+        },
+        {
+          "src": "JAS 39C ग्रिपेन स्थानीय समयअनुसार बिहान 9:30 बजे (0230 UTC) रनवेमा दुर्घटनाग्रस्त हुँदै विस्फोट हुन पुगेको थियो र जसले गर्दा विमानस्थलले व्यावसायिक उडानहरू बन्द गरेको थियो।",
+          "ref": "The JAS 39C Gripen crashed onto a runway at around 9:30 am local time (0230 UTC) and exploded, closing the airport to commercial flights.",
+          "hyp": "The JAS 39C Gripen crashed into the runway at\\ 1.30 am local time (0230 UTC), causing the airport to suspend commercial flights.",
+          "domain": "flores"
+        },
+        {
+          "src": "पाइलटलाई स्क्वाड्रोन नेता डिलोक्रिट पट्टावीको रूपमा पहिचान गरियो।",
+          "ref": "The pilot was identified as Squadron Leader Dilokrit Pattavee.",
+          "hyp": "The pilot was identified as Squadron Leader Delocrit Pattavi.",
+          "domain": "flores"
+        },
+        {
+          "src": "स्थानीय मिडियाले प्रतिक्रियाको क्रममा विमानस्थलको अग्नि नियन्त्रक सवारी पल्टिएको सूचना दियो।",
+          "ref": "Local media reports an airport fire vehicle rolled over while responding.",
+          "hyp": "Local media reported that the airport's fire brigade vehicle overturned during the response.",
+          "domain": "flores"
+        },
+        {
+          "src": "28-वर्ष-उमेरका विडाल सेभिलाबाट तीन सिजनअघि बार्सामा सामेल भए।",
+          "ref": "28-year-old Vidal had joined Barça three seasons ago, from Sevilla.",
+          "hyp": "The 28-year-old Vidal joined Barca from Sevilla three seasons ago.",
+          "domain": "flores"
+        },
+        {
+          "src": "क्याटालन- क्यापिटल गएपछिबाट, भिडालले क्लबका लागि 49 खेलहरू खेलेका थिए।",
+          "ref": "Since moving to the Catalan-capital, Vidal had played 49 games for the club.",
+          "hyp": "Since leaving Catalan-Capital, Vidal had played 49 games for the club.",
+          "domain": "flores"
+        },
+        {
+          "src": "प्रधानमन्त्रीको आधिकारिक निवासस्थान, डाउनिङ स्ट्रिटमा प्रहरीद्वारा संरक्षित प्रवेशद्वारको विपरीत रहेको ह्वाइटहलमा स्थानीय समय, 11:00 बजे (युटिसी+1) को छेउछाउ विरोश-प्रदर्शन सुरु भएको थियो।",
+          "ref": "The protest started around 11:00 local time (UTC+1) on Whitehall opposite the police-guarded entrance to Downing Street, the Prime Minister's official residence.",
+          "hyp": "The protest began around 11:00 local time (UTC + 1) at the Whitehall, opposite the police-protected entrance to the Prime Minister's official residence, Downing Street.",
+          "domain": "flores"
+        }
+      ]
+    },
+    "en-ne": {
+      "direction": "en-ne",
+      "src": "eng_Latn",
+      "tgt": "npi_Deva",
+      "bleu": 34.64,
+      "chrf": 53.43,
+      "chrf_plus_plus": 53.43,
+      "n": 2118,
+      "latency_s": 607.05,
+      "latency_ms_per_sent": 286.6,
+      "by_domain": {
+        "flores": {
+          "bleu": 36.93,
+          "chrf": 55.09,
+          "chrf_plus_plus": 55.09,
+          "n": 997
+        },
+        "opus100_test": {
+          "bleu": 25.9,
+          "chrf": 47.84,
+          "chrf_plus_plus": 47.84,
+          "n": 1121
+        }
+      },
+      "examples": [
+        {
+          "src": "On Monday, scientists from the Stanford University School of Medicine announced the invention of a new diagnostic tool that can sort cells by type: a tiny printable chip that can be manufactured using standard inkjet printers for possibly about one U.S. cent each.",
+          "ref": "सोमबारका दिन, स्ट्यानफोर्ड युनिभर्सिटी स्कुल अफ मेडिसिनका वैज्ञानिकहरूले एक नयाँ डायग्नोस्टिक उपकरणको आविष्कारको घोषणा गरे जसले कोषहरूलाई प्रकारका आधारमा क्रमबद्ध गर्न सक्दछः एउटा सानो प्रिन्ट गर्न सकिने चिप जुन मानक ईंकजेट प्रिन्टरहरू प्रयोग गरेर सम्भवतः लगभग एक अमेरिकी सेन्टको लागतमा निर्माण गर्न सकिन्छ।",
+          "hyp": "सोमबार, स्ट्यानफोर्ड युनिभर्सिटी स्कूल अफ मेडिसिनका वैज्ञानिकहरूले नयाँ निदान उपकरणको आविष्कारको घोषणा गरे जसले कोशिकाहरूलाई प्रकारअनुसार क्रमबद्ध गर्न सक्छः एउटा सानो छाप्न सकिने चिप जुन मानक इंकजेट प्रिन्टरहरू प्रयोग गरेर सम्भवतः एक अमेरिकी प्रतिशतका लागि निर्माण गर्न सकिन्छ।",
+          "domain": "flores"
+        },
+        {
+          "src": "Lead researchers say this may bring early detection of cancer, tuberculosis, HIV and malaria to patients in low-income countries, where the survival rates for illnesses such as breast cancer can be half those of richer countries.",
+          "ref": "धनी देशहरूको तुलनामा कम आय भएका देशहरूमा क्यान्सर, क्षयरोग, एचआईभी र मलेरियाको पहिचान लगाउन सक्छ भनेर स्तन क्यान्सर जस्ता रोगहरूबाट बाँच्ने दर आधा हुने प्रमुख अन्वेषकहरूको भनाइ छ।",
+          "hyp": "प्रमुख शोधकर्ताहरू भन्छन् कि यसले कम आय भएका देशहरूमा क्यान्सर, क्षयरोग, एचआइभी र मलेरियाको प्रारम्भिक पत्ता लगाउन सक्छ, जहाँ स्तन क्यान्सर जस्ता रोगहरूका लागि बाँच्ने दर धनी देशहरूको आधा हुन सक्छ।",
+          "domain": "flores"
+        },
+        {
+          "src": "The JAS 39C Gripen crashed onto a runway at around 9:30 am local time (0230 UTC) and exploded, closing the airport to commercial flights.",
+          "ref": "JAS 39C ग्रिपेन स्थानीय समयअनुसार बिहान 9:30 बजे (0230 UTC) रनवेमा दुर्घटनाग्रस्त हुँदै विस्फोट हुन पुगेको थियो र जसले गर्दा विमानस्थलले व्यावसायिक उडानहरू बन्द गरेको थियो।",
+          "hyp": "जेएएस 39सी ग्रिपेन स्थानीय समयअनुसार बिहान 9ः30 बजे (0230 युटिसी) रनवेमा दुर्घटनाग्रस्त भयो र विस्फोट भयो, जसले विमानस्थललाई व्यावसायिक उडानहरूका लागि बन्द गऱ्यो।",
+          "domain": "flores"
+        },
+        {
+          "src": "The pilot was identified as Squadron Leader Dilokrit Pattavee.",
+          "ref": "पाइलटलाई स्क्वाड्रोन नेता डिलोक्रिट पट्टावीको रूपमा पहिचान गरियो।",
+          "hyp": "पायलटको पहिचान स्क्वाड्रन लिडर दिलोक्रित पट्टावीका रूपमा गरिएको थियो।",
+          "domain": "flores"
+        },
+        {
+          "src": "Local media reports an airport fire vehicle rolled over while responding.",
+          "ref": "स्थानीय मिडियाले प्रतिक्रियाको क्रममा विमानस्थलको अग्नि नियन्त्रक सवारी पल्टिएको सूचना दियो।",
+          "hyp": "स्थानीय मिडियाले प्रतिक्रिया दिँदै एयरपोर्ट फायर गाडी पल्टिएको रिपोर्ट गरेको छ।",
+          "domain": "flores"
+        },
+        {
+          "src": "28-year-old Vidal had joined Barça three seasons ago, from Sevilla.",
+          "ref": "28-वर्ष-उमेरका विडाल सेभिलाबाट तीन सिजनअघि बार्सामा सामेल भए।",
+          "hyp": "28 वर्षीय विडाल तीन सिजनअघि सेभियाबाट बार्सामा सामेल भएका थिए।",
+          "domain": "flores"
+        },
+        {
+          "src": "Since moving to the Catalan-capital, Vidal had played 49 games for the club.",
+          "ref": "क्याटालन- क्यापिटल गएपछिबाट, भिडालले क्लबका लागि 49 खेलहरू खेलेका थिए।",
+          "hyp": "क्याटालान-राजधानीमा सरेपछि विडालले क्लबका लागि 49 खेल खेलेका थिए।",
+          "domain": "flores"
+        },
+        {
+          "src": "The protest started around 11:00 local time (UTC+1) on Whitehall opposite the police-guarded entrance to Downing Street, the Prime Minister's official residence.",
+          "ref": "प्रधानमन्त्रीको आधिकारिक निवासस्थान, डाउनिङ स्ट्रिटमा प्रहरीद्वारा संरक्षित प्रवेशद्वारको विपरीत रहेको ह्वाइटहलमा स्थानीय समय, 11:00 बजे (युटिसी+1) को छेउछाउ विरोश-प्रदर्शन सुरु भएको थियो।",
+          "hyp": "विरोध प्रदर्शन स्थानीय समय (युटिसी + 1) को वरिपरि ह्वाइटहलमा प्रधानमन्त्रीको आधिकारिक निवास डाउनिङ स्ट्रिटको प्रहरी-संरक्षित प्रवेशद्वारको विपरीतमा सुरु भयो।",
+          "domain": "flores"
+        }
+      ]
+    }
+  },
+  "honorific": {
+    "n": 15,
+    "formal_marker_rate": 1.0,
+    "informal_marker_rate": 1.0,
+    "examples": [
+      {
+        "en": "Could you please tell me where the station is?",
+        "formal": "के तपाईँ कृपया मलाई बताउन सक्नुहुन्छ कि स्टेसन कहाँ छ?",
+        "informal": "के तिमी कृपया मलाई बताउन सक्नुहुन्छ कि स्टेसन कहाँ छ?",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Sir, would you like some tea?",
+        "formal": "सर, तपाईँलाई चिया चाहिएको छ?",
+        "informal": "सर, तिमीलाई चिया चाहिएको छ?",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "I respectfully request that you review this document.",
+        "formal": "म सम्मानपूर्वक अनुरोध गर्दछु कि तपाईँले यो कागजातको समीक्षा गर्नुहोस्।",
+        "informal": "म सम्मानपूर्वक अनुरोध गर्दछु कि तिमीले यो कागजातको समीक्षा गर्नुहोस्।",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "May I ask how you are feeling today?",
+        "formal": "के म तपाईँलाई सोध्न सक्छु कि तपाईँ आज कस्तो महसुस गर्दै हुनुहुन्छ?",
+        "informal": "के म तिमीलाई सोध्न सक्छु कि तिमी आज कस्तो महसुस गर्दै हुनुहुन्छ?",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Please wait here until the doctor arrives.",
+        "formal": "डाक्टर नआउन्जेल कृपया यहाँ पर्खनुहोस्।",
+        "informal": "डाक्टर नआउन्जेल कृपया यहाँ पर्खनुहोस्।",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Would you be able to help me with this form?",
+        "formal": "के तपाईँ मलाई यो फारममा मद्दत गर्न सक्नुहुन्छ?",
+        "informal": "के तिमी मलाई यो फारममा मद्दत गर्न सक्नुहुन्छ?",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Thank you for your kind assistance.",
+        "formal": "तपाईँको दयालु सहयोगका लागि धन्यवाद।",
+        "informal": "तिमीको दयालु सहयोगका लागि धन्यवाद।",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Where do you work, if I may ask?",
+        "formal": "यदि मैले सोध्न सक्छु भने तपाईँ कहाँ काम गर्नुहुन्छ?",
+        "informal": "यदि मैले सोध्न सक्छु भने तिमी कहाँ काम गर्नुहुन्छ?",
+        "formality_tag": "formal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Hey, where are you going?",
+        "formal": "हे, कहाँ जाँदैछौ?",
+        "informal": "हे, कहाँ जाँदैछौ?",
+        "formality_tag": "informal",
+        "formal_ok": true,
+        "informal_ok": true
+      },
+      {
+        "en": "Come on, hurry up!",
+        "formal": "आउनुहोस्, चाँडै!",
+        "informal": "आउनुहोस्, चाँडै!",
+        "formality_tag": "informal",
+        "formal_ok": true,
+        "informal_ok": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+/** NepTranslate palette — crimson/saffron brand, mint conversation surface. */
+export const colors = {
+  bg: '#F7F1EA',
+  surface: '#FFFFFF',
+  text: '#1A1410',
+  textSecondary: '#6B5E55',
+  textPlaceholder: '#9A8D84',
+  blue: '#1A73E8',
+  blueSoft: '#D2E3FC',
+  pasteBg: '#F3E6D8',
+  divider: '#E8DDD2',
+  star: '#E8A317',
+  mintBg: '#E8F2EC',
+  mintCard: '#FFFFFF',
+  forest: '#0D652D',
+  forestSoft: '#C4E7D4',
+  danger: '#D93025',
+  crimson: '#C8102E',
+  saffron: '#E8A317',
+};

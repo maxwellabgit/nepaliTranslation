@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>NepTranslate gold benchmark</title>
+<style>
+  :root { --bg:#F7F1EA; --ink:#1A1410; --muted:#6B5E55; --crimson:#C8102E; --forest:#0D652D; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; margin:0; background:var(--bg); color:var(--ink); }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 28px; letter-spacing:-0.02em; margin:0 0 8px; color:var(--crimson); }
+  .sub { color:var(--muted); margin-bottom: 28px; }
+  section { background:#fff; border-radius:20px; padding:22px; margin-bottom:18px; }
+  h2 { font-size:18px; margin:0 0 14px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:10px 8px; border-bottom:1px solid #E8DDD2; }
+  th { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:0.04em; }
+  figure { margin: 16px 0; }
+  figcaption { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .grid { display:grid; gap:12px; }
+  .note { font-size:13px; color:var(--muted); line-height:1.5; }
+</style>
+</head>
+<body>
+<main>
+  <h1>NepTranslate gold benchmark</h1>
+  <p class="sub">Generated 2026-07-20T15:41:00.036691+00:00 · 400 / 400 samples</p>
+
+  <section>
+    <h2>Coverage</h2>
+    
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280">
+  <rect width="100%" height="100%" fill="#F7F1EA"/>
+  <text x="320.0" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1410">Gold coverage (filled / 100)</text>
+  <line x1="56" y1="40" x2="56" y2="232" stroke="#E8DDD2"/>
+  <line x1="56" y1="232" x2="620" y2="232" stroke="#E8DDD2"/>
+  <rect x="77.2" y="40.0" width="98.7" height="192.0" rx="6" fill="#C8102E"/><text x="126.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">formal</text><text x="126.5" y="34.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">100%</text><rect x="218.2" y="40.0" width="98.7" height="192.0" rx="6" fill="#C8102E"/><text x="267.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">informal</text><text x="267.5" y="34.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">100%</text><rect x="359.1" y="40.0" width="98.7" height="192.0" rx="6" fill="#C8102E"/><text x="408.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">deva</text><text x="408.5" y="34.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">100%</text><rect x="500.1" y="40.0" width="98.7" height="192.0" rx="6" fill="#C8102E"/><text x="549.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">roman</text><text x="549.5" y="34.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">100%</text>
+</svg>
+
+  </section>
+
+  <section><h2>Register integrity</h2>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280">
+  <rect width="100%" height="100%" fill="#F7F1EA"/>
+  <text x="320.0" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1410">Gold register integrity (formal/informal)</text>
+  <line x1="56" y1="40" x2="56" y2="232" stroke="#E8DDD2"/>
+  <line x1="56" y1="232" x2="620" y2="232" stroke="#E8DDD2"/>
+  <rect x="98.3" y="109.1" width="197.4" height="122.9" rx="6" fill="#C8102E"/><text x="197.0" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">formal</text><text x="197.0" y="103.1" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">64%</text><rect x="380.3" y="40.0" width="197.4" height="192.0" rx="6" fill="#C8102E"/><text x="479.0" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">informal</text><text x="479.0" y="34.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">100%</text>
+</svg>
+</section>
+
+  <section>
+    <h2>Class summary</h2>
+    <table>
+      <thead><tr><th>Class</th><th>Filled</th><th>Src tokens (mean)</th><th>Ref tokens (mean)</th><th>Register OK</th></tr></thead>
+      <tbody>
+        <tr><td>en_ne_formal</td><td>100/100</td><td>3.7</td><td>3.3</td><td>0.64</td></tr><tr><td>en_ne_informal</td><td>100/100</td><td>3.7</td><td>3.3</td><td>1.0</td></tr><tr><td>ne_en_deva</td><td>100/100</td><td>2.8</td><td>3.6</td><td>—</td></tr><tr><td>ne_en_roman</td><td>100/100</td><td>2.8</td><td>3.6</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Register OK applies to EN→NE formal/informal gold references (तपाईं vs तिमी). Model prediction scores will appear here once on-device IT2 is wired into <code>run_gold_bench.py</code>.</p>
+  </section>
+
+  <section>
+    <h2>Source length distributions</h2>
+    <div class="grid">
+      <figure><figcaption>en_ne_formal</figcaption>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+  <text x="320.0" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1410">en_ne_formal — source token length</text>
+  <line x1="48" y1="216" x2="620" y2="216" stroke="#E8DDD2"/>
+  <rect x="58.2" y="200.6" width="61.3" height="15.4" rx="4" fill="#0D652D"/><text x="88.9" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">1</text><rect x="139.9" y="149.1" width="61.3" height="66.9" rx="4" fill="#0D652D"/><text x="170.6" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">2</text><rect x="221.6" y="82.3" width="61.3" height="133.7" rx="4" fill="#0D652D"/><text x="252.3" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">3</text><rect x="303.4" y="36.0" width="61.3" height="180.0" rx="4" fill="#0D652D"/><text x="334.0" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">4</text><rect x="385.1" y="128.6" width="61.3" height="87.4" rx="4" fill="#0D652D"/><text x="415.7" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">5</text><rect x="466.8" y="190.3" width="61.3" height="25.7" rx="4" fill="#0D652D"/><text x="497.4" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">6</text><rect x="548.5" y="210.9" width="61.3" height="5.1" rx="4" fill="#0D652D"/><text x="579.1" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">7</text>
+</svg>
+</figure><figure><figcaption>en_ne_informal</figcaption>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+  <text x="320.0" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1410">en_ne_informal — source token length</text>
+  <line x1="48" y1="216" x2="620" y2="216" stroke="#E8DDD2"/>
+  <rect x="58.2" y="200.6" width="61.3" height="15.4" rx="4" fill="#0D652D"/><text x="88.9" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">1</text><rect x="139.9" y="149.1" width="61.3" height="66.9" rx="4" fill="#0D652D"/><text x="170.6" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">2</text><rect x="221.6" y="82.3" width="61.3" height="133.7" rx="4" fill="#0D652D"/><text x="252.3" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">3</text><rect x="303.4" y="36.0" width="61.3" height="180.0" rx="4" fill="#0D652D"/><text x="334.0" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">4</text><rect x="385.1" y="128.6" width="61.3" height="87.4" rx="4" fill="#0D652D"/><text x="415.7" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">5</text><rect x="466.8" y="190.3" width="61.3" height="25.7" rx="4" fill="#0D652D"/><text x="497.4" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">6</text><rect x="548.5" y="210.9" width="61.3" height="5.1" rx="4" fill="#0D652D"/><text x="579.1" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">7</text>
+</svg>
+</figure><figure><figcaption>ne_en_deva</figcaption>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+  <text x="320.0" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1410">ne_en_deva — source token length</text>
+  <line x1="48" y1="216" x2="620" y2="216" stroke="#E8DDD2"/>
+  <rect x="62.3" y="208.2" width="85.8" height="7.8" rx="4" fill="#0D652D"/><text x="105.2" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">1</text><rect x="176.7" y="75.1" width="85.8" height="140.9" rx="4" fill="#0D652D"/><text x="219.6" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">2</text><rect x="291.1" y="36.0" width="85.8" height="180.0" rx="4" fill="#0D652D"/><text x="334.0" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">3</text><rect x="405.5" y="157.3" width="85.8" height="58.7" rx="4" fill="#0D652D"/><text x="448.4" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">4</text><rect x="519.9" y="212.1" width="85.8" height="3.9" rx="4" fill="#0D652D"/><text x="562.8" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">5</text>
+</svg>
+</figure><figure><figcaption>ne_en_roman</figcaption>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+  <text x="320.0" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1410">ne_en_roman — source token length</text>
+  <line x1="48" y1="216" x2="620" y2="216" stroke="#E8DDD2"/>
+  <rect x="59.9" y="208.2" width="71.5" height="7.8" rx="4" fill="#0D652D"/><text x="95.7" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">1</text><rect x="155.2" y="75.1" width="71.5" height="140.9" rx="4" fill="#0D652D"/><text x="191.0" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">2</text><rect x="250.6" y="36.0" width="71.5" height="180.0" rx="4" fill="#0D652D"/><text x="286.3" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">3</text><rect x="345.9" y="169.0" width="71.5" height="47.0" rx="4" fill="#0D652D"/><text x="381.7" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">4</text><rect x="441.2" y="204.3" width="71.5" height="11.7" rx="4" fill="#0D652D"/><text x="477.0" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">5</text><rect x="536.6" y="212.1" width="71.5" height="3.9" rx="4" fill="#0D652D"/><text x="572.3" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">6</text>
+</svg>
+</figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Current app baseline (phrasebook MT)</h2>
+    
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280">
+  <rect width="100%" height="100%" fill="#F7F1EA"/>
+  <text x="320.0" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1410">Phrasebook baseline chrF (v1.4.0)</text>
+  <line x1="56" y1="40" x2="56" y2="232" stroke="#E8DDD2"/>
+  <line x1="56" y1="232" x2="620" y2="232" stroke="#E8DDD2"/>
+  <rect x="77.2" y="195.1" width="98.7" height="36.9" rx="6" fill="#C8102E"/><text x="126.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">formal</text><text x="126.5" y="189.1" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">19%</text><rect x="218.2" y="197.2" width="98.7" height="34.8" rx="6" fill="#C8102E"/><text x="267.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">informal</text><text x="267.5" y="191.2" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">18%</text><rect x="359.1" y="197.8" width="98.7" height="34.2" rx="6" fill="#C8102E"/><text x="408.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">deva</text><text x="408.5" y="191.8" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">18%</text><rect x="500.1" y="232.0" width="98.7" height="0.0" rx="6" fill="#C8102E"/><text x="549.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">roman</text><text x="549.5" y="226.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">0%</text>
+</svg>
+
+    
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280">
+  <rect width="100%" height="100%" fill="#F7F1EA"/>
+  <text x="320.0" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1410">Phrasebook baseline exact match</text>
+  <line x1="56" y1="40" x2="56" y2="232" stroke="#E8DDD2"/>
+  <line x1="56" y1="232" x2="620" y2="232" stroke="#E8DDD2"/>
+  <rect x="77.2" y="228.2" width="98.7" height="3.8" rx="6" fill="#C8102E"/><text x="126.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">formal</text><text x="126.5" y="222.2" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">2%</text><rect x="218.2" y="230.1" width="98.7" height="1.9" rx="6" fill="#C8102E"/><text x="267.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">informal</text><text x="267.5" y="224.1" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">1%</text><rect x="359.1" y="232.0" width="98.7" height="0.0" rx="6" fill="#C8102E"/><text x="408.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">deva</text><text x="408.5" y="226.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">0%</text><rect x="500.1" y="232.0" width="98.7" height="0.0" rx="6" fill="#C8102E"/><text x="549.5" y="250" text-anchor="middle" font-size="11" fill="#6B5E55">roman</text><text x="549.5" y="226.0" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1410">0%</text>
+</svg>
+
+    <p class="note">Scores rise when on-device IndicTrans2 replaces the bundled phrase pack. Gold set remains the ship gate.</p>
+  </section>
+</main>
+</body>
+</html>

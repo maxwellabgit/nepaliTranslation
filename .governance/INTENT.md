@@ -1,53 +1,61 @@
 # INTENT
-Last updated: 2026-02-11
+Last updated: 2026-07-20
 
 ## North Star
-Real-time bidirectional Nepali-English translation running entirely on a single iPhone 17 Pro acting as edge compute for two pairs of open-source smart glasses. Two modes: Conversation (two glasses, two clean audio streams, no diarization) and Ambient (one glasses, single audio stream, automatic diarization). Zero internet required. Text output only. All inference on the iPhone.
+An **offline, on-device iOS app** that translates **English ↔ Nepali** in real time for live conversation and everyday text. All speech recognition and translation run on the iPhone. No server, no PC backend, no cloud inference for the core loop. Developed on Windows; shipped to iPhone via Expo EAS → TestFlight / App Store.
 
-## V1 Vision
-Two pairs of smart glasses connect to one iPhone 17 Pro over Bluetooth audio. The iPhone is the shared brain -- it receives audio from the glasses, runs STT + translation, and sends translated text back to each pair's display. Conversation Mode uses two streams (one per glasses wearer, no diarization). Ambient Mode uses one stream from a single pair and diarizes to separate speakers.
+## Product
+**NepTranslate** — Nepali-first translation companion.
 
-## MVP Scope
-Smart glasses hardware is not yet available. Two iPhones stand in for two pairs of glasses to validate both modes. Phone A simulates the remote glasses (captures close-talk audio, streams to hub). Phone B is the hub (edge compute + simulates the second pair of glasses). The two-phone setup exists solely to test Conversation Mode and Ambient Mode before glasses arrive. The iPhone's role as edge compute is identical in MVP and V1 -- only the input/output peripherals change.
+### Modes (v1 UI)
+1. **Normal** — Type or speak. Auto-detect Nepali or English; translate to the other language. Mic + keyboard on one screen.
+2. **Conversation** — Face-to-face handoff. One **Handoff** control (whose turn / language) and one **Speak** control. Translated text is shown large; history scrolls upward like a chat.
 
-## Goals (this iteration -- MVP)
-- [ ] Milestone 1: Audio capture pipeline with AVAudioEngine + VAD (energy-based, voice-processing mode)
-- [ ] Milestone 2: On-device STT via whisper.cpp (Whisper small, GGML quantized, CoreML accelerated)
-- [ ] Milestone 3: On-device translation via OPUS-MT CoreML models (ne->en, en->ne formal, en->ne informal)
-- [ ] Milestone 4: Conversation Mode with Multipeer Connectivity (hub processes both streams, remote streams mic audio, no diarization)
-- [ ] Milestone 5: Ambient Mode with ECAPA-TDNN diarization + online cosine-similarity clustering (single phone captures all audio)
-- [ ] Milestone 6: Integration polish -- mode selection, all toggles wired, latency optimization, error handling, end-to-end testing on physical iPhone 17 Pro
+### Register
+When the English speaker produces Nepali, a **Formal / Informal** toggle controls Nepali output (`तपाईं` vs `तिमी` style, with verb agreement as models allow).
+
+### Script
+Support **Devanagari** and **Romanized Nepali** input where feasible (normalize Roman → Devanagari before MT when needed).
+
+## V1 Scope
+- Languages: **English ↔ Nepali only** (NPHC 2021: Nepali is the national lingua franca; Maithili/Bhojpuri etc. are later).
+- Surfaces: **Expo iOS app only** (`mobile/`).
+- Inference: on-device STT + on-device MT (Whisper-class ASR + IndicTrans2-class MT, or successors that meet the gold bench).
+- Output: text (+ optional TTS). No camera / OCR in v1.
+- Quality gate: private **gold standard** set — ~100 high-quality samples per eval class (formal EN→NE, informal EN→NE, NE→EN Devanagari, Roman NE→EN).
+
+## Goals (this iteration)
+- [x] Single coherent offline product story in all docs and code
+- [x] Normal + Conversation UI with bottom mode switch; no camera
+- [x] Formal/Informal toggle for English→Nepali
+- [x] Gold-standard benchmark scaffold (100/class) + curation guide
+- [ ] Path to whisper.rn + on-device IndicTrans2 (ONNX/Core ML) without any PC runtime dependency
+- [x] Remove web/hybrid/glasses/PC-server code from the repo
 
 ## Constraints
-- Must: run fully offline with zero internet
-- Must: use Swift/SwiftUI as the only application language
-- Must: bundle all models in-app (~560MB total: Whisper small ~200MB, OPUS-MT ne->en ~150MB, OPUS-MT en->ne ~150MB, ECAPA-TDNN ~60MB)
-- Must: perform all inference on the hub phone (edge compute) only
-- Must: use Multipeer Connectivity for phone-to-phone communication in MVP
-- Must: support manual formal/informal Nepali style toggle
-- Must: design audio input abstraction so swapping phones for Bluetooth glasses requires no pipeline changes
-- Must not: require an Apple Developer account for dev builds (free Apple ID signing via USB)
-- Must not: depend on any server infrastructure
-- Must not: transcribe ambient noise in Conversation Mode (close-talk + beamforming + VAD threshold)
+- Must: run fully offline for core translate after models are on device
+- Must: ship iOS via Expo/EAS from Windows (no Mac required day-to-day)
+- Must: EN↔NE only in v1
+- Must not: require a PC, tunnel, or cloud API for translation/STT in the product path
+- Must not: camera translate in v1
+- Must not: smart glasses / Halo / Multipeer as current scope
 
-## Not Doing
-- Server-side or cloud inference
-- Voice enrollment / personalized voiceprint calibration (post-MVP)
-- WebRTC networking
-- App Store or TestFlight submission (for now)
-- Audio output / TTS (text output only)
-- Fine-tuned model training (MVP uses base OPUS-MT; interface ready for drop-in fine-tuned models)
-- Smart glasses integration (deferred until hardware arrives; MVP uses phones as stand-ins)
+## Not Doing (v1)
+- PC hybrid Whisper/IndicTrans2 servers
+- Web/Safari demo as a product surface
+- Camera OCR
+- Hindi or other Nepal languages as product languages
+- Smart glasses / Brilliant Halo
+- Swift-only rewrite (Expo is the app shell; native modules OK for inference)
 
-## Definition of Done (MVP)
-- Conversation Mode: Person A speaks Nepali on remote phone (glasses stand-in), English text appears on hub; Person B speaks English on hub, Nepali text appears on remote. Speaker labels deterministic. No diarization needed.
-- Ambient Mode: Hub phone captures surrounding audio, segments by speaker via diarization, transcribes, translates, displays labeled text with manual N->E / E->N direction toggle.
-- Both modes working end-to-end on a physical iPhone 17 Pro with acceptable latency (target 1-2s per segment).
-- Formal/informal toggle functional in UI (wired to same model for MVP, ready for fine-tuned swap).
-- Audio input layer abstracted so Bluetooth glasses can replace phone mic with no pipeline changes.
+## Definition of Done (v1 product coherence)
+- Docs and INTENT describe only the offline iOS EN↔NE app
+- App has Normal + Conversation modes as specified; camera gone
+- No hybrid/server client code in `mobile/`
+- Gold bench classes defined with 100-slot scaffolds and curation guide
+- Offline model path documented without PC runtime
 
-## Sensitive areas (avoid unless explicitly requested)
-- Resources/Models/
-- .env
-- Multipeer session encryption keys
-- Any credential or signing configuration
+## Sensitive areas
+- Apple Developer / EAS credentials
+- Bundled model weights and licenses
+- Private gold benchmark answers (do not publish if used as holdout)

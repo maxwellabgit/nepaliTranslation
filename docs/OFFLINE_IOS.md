@@ -1,66 +1,79 @@
 # Offline iOS path
 
-Goal: ship a fully on-device Nepali ↔ English ambient translator on iPhone, developed primarily on Windows, without requiring a Mac day-to-day.
+Ship a fully on-device English ↔ Nepali translator on iPhone. Develop on Windows; no Mac required day-to-day. Core loop: mic or keyboard → on-device STT → on-device MT → text on screen.
 
-## Primary path: Expo + whisper.rn + ONNX IndicTrans2
+## Stack
 
 ```
 Windows (dev)  →  EAS cloud build  →  TestFlight  →  iPhone
                       │
-                      ├─ STT: whisper.rn (ggml Whisper small)
-                      └─ MT:  ONNX Runtime mobile (IndicTrans2 en↔indic)
+                      ├─ STT: whisper.rn (ggml Whisper small / quantized)
+                      └─ MT:  ONNX Runtime mobile (IndicTrans2 en↔ne)
 ```
 
 | Layer | Choice | Notes |
 |-------|--------|--------|
-| App shell | Expo (`mobile/`) | Mic + UI; EAS for iOS IPA |
-| Speech-to-text | [whisper.rn](https://github.com/mybigday/whisper.rn) | Bundle ggml `small` (or quantized) for EN + Nepali |
-| Translation | ONNX Runtime for React Native | Export merged IT2 dirs under `experiments/models/` — see [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md) |
-| Ship | EAS Build → TestFlight | Apple Developer required; no local Xcode on Windows |
+| App shell | Expo (`mobile/`) | Normal + Conversation UI; EAS for iOS IPA |
+| Speech-to-text | [whisper.rn](https://github.com/mybigday/whisper.rn) | Bundle ggml `small` or `small-q5_1` for EN + Nepali |
+| Translation | ONNX Runtime for React Native | IndicTrans2-class merged checkpoints, exported to ONNX |
+| Ship | EAS Build → TestFlight | Apple Developer required |
 
-Hybrid PC-backend mode (`web/serve.py` + tunnel) remains useful for UI iteration. Offline GA means mic → whisper.rn → ONNX IT2 entirely on device.
+Expo is the app shell; native modules (whisper.rn, ONNX) are expected for inference.
 
-### Windows → TestFlight checklist
+## Model artifacts
 
-1. Prepare ggml Whisper + ONNX IT2 artifacts (`scripts/prepare_offline_models.md`).
-2. Wire models into the Expo app (assets / download-on-first-launch).
-3. `npx eas build --platform ios --profile production` from `mobile/`.
-4. `npx eas submit --platform ios --latest` → install via TestFlight.
+Weights live in the app, not on a PC:
 
-Details for the current hybrid app live in [`mobile/README.md`](../mobile/README.md).
+| Location | When |
+|----------|------|
+| `mobile/assets/models/` | Bundled in release IPA (Whisper ggml, ONNX graphs + tokenizers) |
+| Download on first launch | Large artifacts fetched once, then cached on device |
 
-## Mac moonshot: speech-swift
+Export flow (dev machine, one-time or per release):
 
-Native Apple stack (Speech framework / custom Core ML ASR wrappers, SwiftUI shell in `NepTranslate/`) is a **Mac-only moonshot**: better system integration and Neural Engine path, but blocks Windows-first iteration. Keep the Swift project as a reference; do not block the Expo offline path on it.
+1. **Whisper** — ggml `small` or `small-q5_1` via [whisper.cpp](https://github.com/ggerganov/whisper.cpp) scripts; copy into `mobile/assets/models/whisper/`.
+2. **IndicTrans2** — export merged EN→NE and NE→EN checkpoints to ONNX (encoder/decoder + tokenizer files). See [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md) for export commands; copy results into `mobile/assets/models/it2_en_indic/` and `it2_indic_en/`.
+3. Wire paths in the Expo native layer; smoke-test on a device build before TestFlight.
 
-## Formal / informal plan
+Fine-tuned checkpoints from [`training/`](../training/) follow the same export → `mobile/assets/models/` path.
+
+## Windows → TestFlight checklist
+
+1. Prepare ggml Whisper + ONNX IT2 artifacts under `mobile/assets/models/` (or implement first-launch download).
+2. `npx eas build --platform ios --profile production` from `mobile/`.
+3. `npx eas submit --platform ios --latest` → install via TestFlight.
+4. Verify offline: airplane mode, Normal + Conversation, Formal / Informal on EN→NE.
+
+App setup details: [`mobile/README.md`](../mobile/README.md).
+
+## Formal / informal
 
 | Phase | Behavior |
 |-------|----------|
-| **Now (stopgap)** | `Formality` on `/translate` and `TranslationManager.translate()`. Informal EN→NE applies a lightweight तपाईं→तिमी surface rewrite. NE→EN unchanged. |
-| **Next** | Fine-tune or distill separate EN→NE formal / informal IT2 (or adapter) checkpoints; ship both ONNX graphs; UI toggle selects model (mirrors Swift `FormalityStyle`). |
-| **Eval** | Qualitative checks via `benchmarks/honorific_probe.json` (तपाईं vs तिमी markers). Do not use FLORES for register quality. |
+| **Now** | UI **Formal / Informal** toggle on EN→NE. Models or post-processing apply `तपाईं` vs `तिमी` register where supported. |
+| **Next** | Separate formal / informal IT2 checkpoints (or adapters); ship both ONNX graphs; toggle selects model. |
+| **Eval** | Gold class `en_ne_formal` / `en_ne_informal` under [`benchmarks/gold/`](../benchmarks/gold/); honorific probe for quick register checks. |
 
-## Diarization moonshot
+## Quality gate
 
-Speaker labels (“Speaker 1 / 2”) for ambient conversation are **out of MVP scope**. Candidate later work: lightweight on-device embedding diarization (e.g. ECAPA-style) or Apple speaker segmentation APIs if exposed. Until then, single-stream transcript is enough.
+**Primary:** private **gold standard** — ~100 curated samples per class:
 
-## Benchmark gate (ship blocker)
+| Class | Direction / input |
+|-------|-------------------|
+| `en_ne_formal` | English → Nepali (formal register) |
+| `en_ne_informal` | English → Nepali (informal register) |
+| `ne_en_deva` | Nepali Devanagari → English |
+| `ne_en_roman` | Romanized Nepali → English |
 
-Any offline MT build (desktop PyTorch, ONNX mobile, or quantized) must **meet or beat** the frozen FLORES baseline on **n=50**:
+Scaffold and curation guide: [`benchmarks/gold/`](../benchmarks/gold/).
 
-| Artifact | Path |
-|----------|------|
-| Baseline | [`benchmarks/results/flores_baseline.json`](../benchmarks/results/flores_baseline.json) |
-| Harness | `python benchmarks/run_mt_bench.py --n 50` |
+Any on-device MT build must meet or beat the frozen gold baseline before shipping. Do not use FLORES alone as the ship gate.
 
-**Pass rule:** for each primary direction present in the baseline (`ne-en`, `en-ne`, and optionally `hi-en` / `en-hi`), corpus **chrF++** must be ≥ baseline `chrf_plus_plus` (BLEU is secondary). Regressions block shipping that model artifact.
+**Secondary / legacy:** corpus-scale suites (`benchmarks/run_ne_quality_bench.py`, `benchmarks/run_mt_bench.py`) for regression signal during training — see [`benchmarks/README.md`](../benchmarks/README.md).
 
-Snapshot (for orientation; always re-read the JSON):
+## Out of scope (v1)
 
-| Direction | chrF++ | BLEU |
-|-----------|--------|------|
-| ne-en | 63.79 | 39.76 |
-| en-ne | 51.87 | 36.35 |
-| hi-en | 62.94 | 40.33 |
-| en-hi | 55.47 | 39.23 |
+- PC hybrid backend, tunnels, cloud translation APIs
+- Camera / OCR
+- Hindi or other Nepal languages as product languages
+- Speaker diarization (“Speaker 1 / 2”) — single-stream transcript is enough for v1

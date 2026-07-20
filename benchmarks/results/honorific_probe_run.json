@@ -1,0 +1,151 @@
+{
+  "n": 15,
+  "mean_marker_hit_rate": 0.5333333333333333,
+  "rows": [
+    {
+      "id": "f01",
+      "register": "formal",
+      "en": "Could you please tell me where the station is?",
+      "hyp": "के तपाईँ कृपया मलाई बताउन सक्नुहुन्छ कि स्टेसन कहाँ छ?",
+      "marker_hits": [
+        "तपाईं",
+        "कृपया"
+      ],
+      "marker_hit_rate": 1.0
+    },
+    {
+      "id": "f02",
+      "register": "formal",
+      "en": "Sir, would you like some tea?",
+      "hyp": "सर, तपाईँलाई चिया चाहिएको छ?",
+      "marker_hits": [
+        "तपाईं"
+      ],
+      "marker_hit_rate": 0.5
+    },
+    {
+      "id": "f03",
+      "register": "formal",
+      "en": "I respectfully request that you review this document.",
+      "hyp": "म सम्मानपूर्वक अनुरोध गर्दछु कि तपाईँले यो कागजातको समीक्षा गर्नुहोस्।",
+      "marker_hits": [
+        "तपाईं"
+      ],
+      "marker_hit_rate": 0.5
+    },
+    {
+      "id": "f04",
+      "register": "formal",
+      "en": "May I ask how you are feeling today?",
+      "hyp": "के म तपाईँलाई सोध्न सक्छु कि तपाईँ आज कस्तो महसुस गर्दै हुनुहुन्छ?",
+      "marker_hits": [
+        "तपाईं"
+      ],
+      "marker_hit_rate": 1.0
+    },
+    {
+      "id": "f05",
+      "register": "formal",
+      "en": "Please wait here until the doctor arrives.",
+      "hyp": "डाक्टर नआउन्जेल कृपया यहाँ पर्खनुहोस्।",
+      "marker_hits": [
+        "कृपया"
+      ],
+      "marker_hit_rate": 0.5
+    },
+    {
+      "id": "f06",
+      "register": "formal",
+      "en": "Would you be able to help me with this form?",
+      "hyp": "के तपाईँ मलाई यो फारममा मद्दत गर्न सक्नुहुन्छ?",
+      "marker_hits": [
+        "तपाईं"
+      ],
+      "marker_hit_rate": 1.0
+    },
+    {
+      "id": "f07",
+      "register": "formal",
+      "en": "Thank you for your kind assistance.",
+      "hyp": "तपाईँको दयालु सहयोगका लागि धन्यवाद।",
+      "marker_hits": [
+        "तपाईंको",
+        "धन्यवाद"
+      ],
+      "marker_hit_rate": 1.0
+    },
+    {
+      "id": "f08",
+      "register": "formal",
+      "en": "Where do you work, if I may ask?",
+      "hyp": "यदि मैले सोध्न सक्छु भने तपाईँ कहाँ काम गर्नुहुन्छ?",
+      "marker_hits": [
+        "तपाईं"
+      ],
+      "marker_hit_rate": 1.0
+    },
+    {
+      "id": "i01",
+      "register": "informal",
+      "en": "Hey, where are you going?",
+      "hyp": "हे, कहाँ जाँदैछौ?",
+      "marker_hits": [],
+      "marker_hit_rate": 0.0
+    },
+    {
+      "id": "i02",
+      "register": "informal",
+      "en": "Come on, hurry up!",
+      "hyp": "आउनुहोस्, चाँडै!",
+      "marker_hits": [],
+      "marker_hit_rate": 0.0
+    },
+    {
+      "id": "i03",
+      "register": "informal",
+      "en": "Did you eat yet?",
+      "hyp": "तिमीले अझै पनि खानुभएको छ?",
+      "marker_hits": [
+        "तिमीले"
+      ],
+      "marker_hit_rate": 0.5
+    },
+    {
+      "id": "i04",
+      "register": "informal",
+      "en": "Call me when you get home.",
+      "hyp": "घर पुग्दा मलाई फोन गर्नुहोस्।",
+      "marker_hits": [
+        "फोन गर्"
+      ],
+      "marker_hit_rate": 0.5
+    },
+    {
+      "id": "i05",
+      "register": "informal",
+      "en": "Why didn't you tell me earlier?",
+      "hyp": "मलाई पहिले नै किन भन्नुभएन?",
+      "marker_hits": [],
+      "marker_hit_rate": 0.0
+    },
+    {
+      "id": "i06",
+      "register": "informal",
+      "en": "Let's hang out this evening.",
+      "hyp": "आज साँझ बाहिर हङ्गआउट गरौँ।",
+      "marker_hits": [],
+      "marker_hit_rate": 0.0
+    },
+    {
+      "id": "i07",
+      "register": "informal",
+      "en": "You look tired, bro.",
+      "hyp": "तिमी थकित देखिँदै हुनुहुन्छ, भाइ।",
+      "marker_hits": [
+        "तिमी"
+      ],
+      "marker_hit_rate": 0.5
+    }
+  ],
+  "note": "Stopgap तपाईं→तिमी rewrite for informal; not a trained register model."
+}

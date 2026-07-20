@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "NepTranslate",
+    "slug": "translate",
+    "version": "1.4.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "neptranslate",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.neptranslate.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
+        "NSSpeechRecognitionUsageDescription": "NepTranslate uses speech recognition to translate what you say.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.neptranslate.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#C8102E",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "RECORD_AUDIO",
+        "INTERNET",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow NepTranslate to access your microphone for speech translation.",
+          "speechRecognitionPermission": "Allow NepTranslate to recognize your speech for translation."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4d0a21e4-5c2e-45fa-b8fd-86a996abb404"
+      }
+    },
+    "owner": "mbucholzs-team"
+  }
+}

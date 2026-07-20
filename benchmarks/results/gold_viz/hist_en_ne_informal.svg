@@ -1,0 +1,7 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+  <text x="320.0" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1410">en_ne_informal — source token length</text>
+  <line x1="48" y1="216" x2="620" y2="216" stroke="#E8DDD2"/>
+  <rect x="58.2" y="200.6" width="61.3" height="15.4" rx="4" fill="#0D652D"/><text x="88.9" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">1</text><rect x="139.9" y="149.1" width="61.3" height="66.9" rx="4" fill="#0D652D"/><text x="170.6" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">2</text><rect x="221.6" y="82.3" width="61.3" height="133.7" rx="4" fill="#0D652D"/><text x="252.3" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">3</text><rect x="303.4" y="36.0" width="61.3" height="180.0" rx="4" fill="#0D652D"/><text x="334.0" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">4</text><rect x="385.1" y="128.6" width="61.3" height="87.4" rx="4" fill="#0D652D"/><text x="415.7" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">5</text><rect x="466.8" y="190.3" width="61.3" height="25.7" rx="4" fill="#0D652D"/><text x="497.4" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">6</text><rect x="548.5" y="210.9" width="61.3" height="5.1" rx="4" fill="#0D652D"/><text x="579.1" y="232" text-anchor="middle" font-size="10" fill="#6B5E55">7</text>
+</svg>

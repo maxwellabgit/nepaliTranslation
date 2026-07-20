@@ -1,0 +1,185 @@
+{
+  "generated_at": "2026-07-20T15:41:00.036691+00:00",
+  "total_filled": 400,
+  "total_target": 400,
+  "classes": [
+    {
+      "class": "en_ne_formal",
+      "n": 100,
+      "n_target": 100,
+      "coverage": 1.0,
+      "src_tokens_mean": 3.69,
+      "src_tokens_median": 4.0,
+      "ref_tokens_mean": 3.34,
+      "ref_tokens_median": 3.0,
+      "null_baseline": {
+        "exact_match": 0.0,
+        "token_f1_mean": 0.0,
+        "chrf_mean": 0.0
+      },
+      "gold_register_integrity": {
+        "rate": 0.64,
+        "ok": 64,
+        "n": 100
+      },
+      "src_len_hist": {
+        "1": 3,
+        "3": 26,
+        "4": 35,
+        "5": 17,
+        "2": 13,
+        "6": 5,
+        "7": 1
+      },
+      "ref_len_hist": {
+        "1": 1,
+        "3": 37,
+        "4": 28,
+        "2": 21,
+        "6": 3,
+        "5": 10
+      },
+      "phrasebook_baseline": {
+        "phrase_pairs_loaded": 155,
+        "coverage_hit_rate": 0.2,
+        "exact_match": 0.02,
+        "norm_exact_match": 0.19,
+        "token_f1_mean": 0.19666666666666666,
+        "chrf_mean": 0.1923529411764706
+      }
+    },
+    {
+      "class": "en_ne_informal",
+      "n": 100,
+      "n_target": 100,
+      "coverage": 1.0,
+      "src_tokens_mean": 3.69,
+      "src_tokens_median": 4.0,
+      "ref_tokens_mean": 3.34,
+      "ref_tokens_median": 3.0,
+      "null_baseline": {
+        "exact_match": 0.0,
+        "token_f1_mean": 0.0,
+        "chrf_mean": 0.0
+      },
+      "gold_register_integrity": {
+        "rate": 1.0,
+        "ok": 100,
+        "n": 100
+      },
+      "src_len_hist": {
+        "1": 3,
+        "3": 26,
+        "4": 35,
+        "5": 17,
+        "2": 13,
+        "6": 5,
+        "7": 1
+      },
+      "ref_len_hist": {
+        "1": 1,
+        "3": 37,
+        "4": 28,
+        "2": 21,
+        "6": 3,
+        "5": 10
+      },
+      "phrasebook_baseline": {
+        "phrase_pairs_loaded": 155,
+        "coverage_hit_rate": 0.2,
+        "exact_match": 0.01,
+        "norm_exact_match": 0.16,
+        "token_f1_mean": 0.18666666666666668,
+        "chrf_mean": 0.18113684020427206
+      }
+    },
+    {
+      "class": "ne_en_deva",
+      "n": 100,
+      "n_target": 100,
+      "coverage": 1.0,
+      "src_tokens_mean": 2.77,
+      "src_tokens_median": 3.0,
+      "ref_tokens_mean": 3.6,
+      "ref_tokens_median": 4.0,
+      "null_baseline": {
+        "exact_match": 0.0,
+        "token_f1_mean": 0.0,
+        "chrf_mean": 0.0
+      },
+      "gold_register_integrity": {
+        "rate": null,
+        "ok": 0,
+        "n": 0
+      },
+      "src_len_hist": {
+        "1": 2,
+        "3": 46,
+        "4": 15,
+        "2": 36,
+        "5": 1
+      },
+      "ref_len_hist": {
+        "1": 3,
+        "3": 27,
+        "4": 39,
+        "2": 13,
+        "6": 4,
+        "5": 14
+      },
+      "phrasebook_baseline": {
+        "phrase_pairs_loaded": 155,
+        "coverage_hit_rate": 0.21,
+        "exact_match": 0.0,
+        "norm_exact_match": 0.16,
+        "token_f1_mean": 0.17483333333333334,
+        "chrf_mean": 0.17821978021978022
+      }
+    },
+    {
+      "class": "ne_en_roman",
+      "n": 100,
+      "n_target": 100,
+      "coverage": 1.0,
+      "src_tokens_mean": 2.81,
+      "src_tokens_median": 3.0,
+      "ref_tokens_mean": 3.59,
+      "ref_tokens_median": 4.0,
+      "null_baseline": {
+        "exact_match": 0.0,
+        "token_f1_mean": 0.0,
+        "chrf_mean": 0.0
+      },
+      "gold_register_integrity": {
+        "rate": null,
+        "ok": 0,
+        "n": 0
+      },
+      "src_len_hist": {
+        "1": 2,
+        "4": 12,
+        "3": 46,
+        "2": 36,
+        "5": 3,
+        "6": 1
+      },
+      "ref_len_hist": {
+        "1": 3,
+        "3": 28,
+        "4": 38,
+        "2": 13,
+        "6": 4,
+        "5": 14
+      },
+      "phrasebook_baseline": {
+        "phrase_pairs_loaded": 155,
+        "coverage_hit_rate": 0.0,
+        "exact_match": 0.0,
+        "norm_exact_match": 0.0,
+        "token_f1_mean": 0.0,
+        "chrf_mean": 0.0
+      }
+    }
+  ],
+  "status": "complete"
+}

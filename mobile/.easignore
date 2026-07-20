@@ -1,0 +1,15 @@
+# Also applied when packing from mobile/ (belt and suspenders)
+node_modules/
+.expo/
+dist/
+web-build/
+ios/
+android/
+assets/models/
+*.bin
+*.gguf
+*.onnx
+*.mlmodel
+*.mlpackage
+.env*.local
+*.log

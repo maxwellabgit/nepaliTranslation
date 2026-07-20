@@ -1,0 +1,100 @@
+{"id": "ne_en_roman-001", "reference": "Hello", "deva": "नमस्ते"}
+{"id": "ne_en_roman-002", "reference": "How are you?", "deva": "तपाईंलाई कस्तो छ?"}
+{"id": "ne_en_roman-003", "reference": "My name is Ram", "deva": "मेरो नाम राम हो"}
+{"id": "ne_en_roman-004", "reference": "Thank you", "deva": "धन्यवाद"}
+{"id": "ne_en_roman-005", "reference": "Where is the bathroom?", "deva": "शौचालय कहाँ छ?"}
+{"id": "ne_en_roman-006", "reference": "I need help", "deva": "मलाई मद्दत चाहियो"}
+{"id": "ne_en_roman-007", "reference": "How much is this?", "deva": "यो कति हो?"}
+{"id": "ne_en_roman-008", "reference": "I do not understand", "deva": "मैले बुझिनँ"}
+{"id": "ne_en_roman-009", "reference": "Do you speak English?", "deva": "तपाईं अंग्रेजी बोल्नुहुन्छ?"}
+{"id": "ne_en_roman-010", "reference": "I am fine", "deva": "म ठिक छु"}
+{"id": "ne_en_roman-011", "reference": "Where is the hotel?", "deva": "होटल कहाँ छ?"}
+{"id": "ne_en_roman-012", "reference": "Please give me water", "deva": "पानी दिनुहोस्"}
+{"id": "ne_en_roman-013", "reference": "See you tomorrow", "deva": "भोलि भेटौंला"}
+{"id": "ne_en_roman-014", "reference": "I am hungry", "deva": "म भोकाएको छु"}
+{"id": "ne_en_roman-015", "reference": "Welcome", "deva": "स्वागत छ"}
+{"id": "ne_en_roman-016", "reference": "Good morning", "deva": "शुभ प्रभात"}
+{"id": "ne_en_roman-017", "reference": "Good night", "deva": "शुभ रात्री"}
+{"id": "ne_en_roman-018", "reference": "Excuse me", "deva": "माफ गर्नुहोस्"}
+{"id": "ne_en_roman-019", "reference": "Where is the hospital?", "deva": "अस्पताल कहाँ छ?"}
+{"id": "ne_en_roman-020", "reference": "I am lost", "deva": "म हराएँ"}
+{"id": "ne_en_roman-021", "reference": "Please wait", "deva": "कृपया पर्खनुहोस्"}
+{"id": "ne_en_roman-022", "reference": "What time is it?", "deva": "कति बज्यो?"}
+{"id": "ne_en_roman-023", "reference": "The food is delicious", "deva": "खाना मिठो छ"}
+{"id": "ne_en_roman-024", "reference": "Is this spicy?", "deva": "यो पिरो छ?"}
+{"id": "ne_en_roman-025", "reference": "The bill, please", "deva": "बिल दिनुहोस्"}
+{"id": "ne_en_roman-026", "reference": "Too expensive", "deva": "धेरै महँगो"}
+{"id": "ne_en_roman-027", "reference": "I will take this", "deva": "म यो लिन्छु"}
+{"id": "ne_en_roman-028", "reference": "I am looking for a taxi", "deva": "ट्याक्सी खोज्दै छु"}
+{"id": "ne_en_roman-029", "reference": "Please stop here", "deva": "यहाँ रोक्नुहोस्"}
+{"id": "ne_en_roman-030", "reference": "How long will it take?", "deva": "कति समय लाग्छ?"}
+{"id": "ne_en_roman-031", "reference": "Is there Wi‑Fi?", "deva": "वाइफाइ छ?"}
+{"id": "ne_en_roman-032", "reference": "What is the password?", "deva": "पासवर्ड के हो?"}
+{"id": "ne_en_roman-033", "reference": "My phone is dead", "deva": "मेरो फोन सकियो"}
+{"id": "ne_en_roman-034", "reference": "I have a reservation", "deva": "मेरो बुकिङ छ"}
+{"id": "ne_en_roman-035", "reference": "The AC is not working", "deva": "एसी काम गर्दैन"}
+{"id": "ne_en_roman-036", "reference": "Please clean the room", "deva": "कोठा सफा गर्नुहोस्"}
+{"id": "ne_en_roman-037", "reference": "I need a SIM card", "deva": "सिम कार्ड चाहियो"}
+{"id": "ne_en_roman-038", "reference": "Where is the bus station?", "deva": "बस स्टेशन कहाँ छ?"}
+{"id": "ne_en_roman-039", "reference": "Which bus goes to Pokhara?", "deva": "कुन बस पोखरा जान्छ?"}
+{"id": "ne_en_roman-040", "reference": "I missed my flight", "deva": "मेरो उडान छुट्यो"}
+{"id": "ne_en_roman-041", "reference": "My passport is missing", "deva": "राहदानी हरायो"}
+{"id": "ne_en_roman-042", "reference": "Call the police", "deva": "प्रहरी बोलाउनुहोस्"}
+{"id": "ne_en_roman-043", "reference": "This is an emergency", "deva": "यो आपतकाल हो"}
+{"id": "ne_en_roman-044", "reference": "I am a tourist", "deva": "म पर्यटक हुँ"}
+{"id": "ne_en_roman-045", "reference": "Please say that again", "deva": "फेरि भन्नुहोस्"}
+{"id": "ne_en_roman-046", "reference": "I agree", "deva": "म सहमत छु"}
+{"id": "ne_en_roman-047", "reference": "That is correct", "deva": "त्यो सही हो"}
+{"id": "ne_en_roman-048", "reference": "Congratulations", "deva": "बधाई छ"}
+{"id": "ne_en_roman-049", "reference": "Happy birthday", "deva": "जन्मदिनको शुभकामना"}
+{"id": "ne_en_roman-050", "reference": "Take care", "deva": "ख्याल राख्नुहोस्"}
+{"id": "ne_en_roman-051", "reference": "Get well soon", "deva": "चाँडै निको होस्"}
+{"id": "ne_en_roman-052", "reference": "I am thirsty", "deva": "म तिर्खाएको छु"}
+{"id": "ne_en_roman-053", "reference": "I need a doctor", "deva": "डाक्टर चाहियो"}
+{"id": "ne_en_roman-054", "reference": "My head hurts", "deva": "टाउको दुख्यो"}
+{"id": "ne_en_roman-055", "reference": "Where can I get medicine?", "deva": "औषधि कहाँ पाइन्छ?"}
+{"id": "ne_en_roman-056", "reference": "Do you take cards?", "deva": "कार्ड चल्छ?"}
+{"id": "ne_en_roman-057", "reference": "Cash only", "deva": "नगद मात्र"}
+{"id": "ne_en_roman-058", "reference": "Please lower the price", "deva": "मूल्य घटाउनुहोस्"}
+{"id": "ne_en_roman-059", "reference": "How do I get to Kathmandu?", "deva": "काठमाडौं कसरी जाने?"}
+{"id": "ne_en_roman-060", "reference": "Is this seat free?", "deva": "सिट खाली छ?"}
+{"id": "ne_en_roman-061", "reference": "Please open the window", "deva": "झ्याल खोल्नुहोस्"}
+{"id": "ne_en_roman-062", "reference": "Please close the door", "deva": "ढोका बन्द गर्नुहोस्"}
+{"id": "ne_en_roman-063", "reference": "I feel sick", "deva": "मलाई बिरामी लाग्यो"}
+{"id": "ne_en_roman-064", "reference": "Call an ambulance", "deva": "एम्बुलेन्स बोलाउनुहोस्"}
+{"id": "ne_en_roman-065", "reference": "What is your name?", "deva": "तपाईंको नाम के हो?"}
+{"id": "ne_en_roman-066", "reference": "Where do you live?", "deva": "तिमी कहाँ बस्छौ?"}
+{"id": "ne_en_roman-067", "reference": "I speak a little Nepali", "deva": "म थोरै नेपाली बोल्छु"}
+{"id": "ne_en_roman-068", "reference": "See you later", "deva": "पछि भेटौंला"}
+{"id": "ne_en_roman-069", "reference": "Have a nice day", "deva": "दिन शुभ रहोस्"}
+{"id": "ne_en_roman-070", "reference": "I am allergic to peanuts", "deva": "बदामको एलर्जी छ"}
+{"id": "ne_en_roman-071", "reference": "Keep the change", "deva": "बाँकी राख्नुहोस्"}
+{"id": "ne_en_roman-072", "reference": "Can I charge my phone?", "deva": "फोन चार्ज गर्न मिल्छ?"}
+{"id": "ne_en_roman-073", "reference": "Under what name is the booking?", "deva": "कुन नाममा बुकिङ छ?"}
+{"id": "ne_en_roman-074", "reference": "A room for two nights", "deva": "दुई रातको कोठा"}
+{"id": "ne_en_roman-075", "reference": "Is breakfast included?", "deva": "बिहानको खाजा छ?"}
+{"id": "ne_en_roman-076", "reference": "Where is baggage claim?", "deva": "सामान दाबी कहाँ छ?"}
+{"id": "ne_en_roman-077", "reference": "Please help my child", "deva": "मेरो बच्चालाई मद्दत गर्नुहोस्"}
+{"id": "ne_en_roman-078", "reference": "I am here for work", "deva": "म कामको लागि यहाँ छु"}
+{"id": "ne_en_roman-079", "reference": "Please write it down", "deva": "लेखेर दिनुहोस्"}
+{"id": "ne_en_roman-080", "reference": "Please speak louder", "deva": "ठूलो स्वरमा बोल्नुहोस्"}
+{"id": "ne_en_roman-081", "reference": "I disagree", "deva": "म असहमत छु"}
+{"id": "ne_en_roman-082", "reference": "That is wrong", "deva": "त्यो गलत हो"}
+{"id": "ne_en_roman-083", "reference": "Happy New Year", "deva": "नयाँ वर्षको शुभकामना"}
+{"id": "ne_en_roman-084", "reference": "Merry Christmas", "deva": "मेरी क्रिसमस"}
+{"id": "ne_en_roman-085", "reference": "Sorry for being late", "deva": "ढिलो भएकोमा माफ गर्नुहोस्"}
+{"id": "ne_en_roman-086", "reference": "What do you recommend?", "deva": "के सिफारिस गर्नुहुन्छ?"}
+{"id": "ne_en_roman-087", "reference": "Is it far from here?", "deva": "यहाँबाट टाढा छ?"}
+{"id": "ne_en_roman-088", "reference": "Please show me on the map", "deva": "नक्सामा देखाउनुहोस्"}
+{"id": "ne_en_roman-089", "reference": "I need small change", "deva": "सानो पैसा चाहियो"}
+{"id": "ne_en_roman-090", "reference": "The meeting is at three", "deva": "बैठक तीन बजे छ"}
+{"id": "ne_en_roman-091", "reference": "Please send the address", "deva": "ठेगाना पठाउनुहोस्"}
+{"id": "ne_en_roman-092", "reference": "Is there parking?", "deva": "पार्किङ छ?"}
+{"id": "ne_en_roman-093", "reference": "No smoking", "deva": "धुम्रपान निषेध"}
+{"id": "ne_en_roman-094", "reference": "Please be careful", "deva": "सावधान रहनुहोस्"}
+{"id": "ne_en_roman-095", "reference": "I am sleepy", "deva": "मलाई निद्रा लाग्यो"}
+{"id": "ne_en_roman-096", "reference": "The weather is nice today", "deva": "आज मौसम राम्रो छ"}
+{"id": "ne_en_roman-097", "reference": "It is raining", "deva": "पानी पर्दै छ"}
+{"id": "ne_en_roman-098", "reference": "I go to school", "deva": "म स्कूल जान्छु"}
+{"id": "ne_en_roman-099", "reference": "Where do you work?", "deva": "तपाईं कहाँ काम गर्नुहुन्छ?"}
+{"id": "ne_en_roman-100", "reference": "I want tea", "deva": "मलाई चिया चाहियो"}

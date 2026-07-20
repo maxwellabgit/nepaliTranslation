@@ -1,0 +1,11 @@
+{
+  "created_at": "2026-07-19T23:23:01.877780+00:00",
+  "train_n": 78400,
+  "val_n": 1600,
+  "sources": {
+    "opus100": 80000
+  },
+  "bench_blocklist": 4196,
+  "train_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\train_en_ne.jsonl",
+  "val_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\val_en_ne.jsonl"
+}

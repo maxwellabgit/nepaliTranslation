@@ -1,57 +1,47 @@
-# Offline MT benchmarks (Nepali ↔ English, Hindi)
+# Benchmarks — English ↔ Nepali
 
-Autonomous evaluation harness for the local IndicTrans2 models used by the offline app.
+## Primary: gold standard (`gold/`)
 
-## Primary metrics
+Curated eval — **100 samples per class** (400 total):
 
-| Metric | Library | Notes |
-|--------|---------|--------|
-| **chrF++** | sacrebleu (`chrF2++`) | Primary quality signal for Indic scripts (character n-grams + word bigrams). |
-| **BLEU** | sacrebleu (`corpus_bleu`, 13a tokenizer for EN; `flores200` / none for Devanagari) | Secondary; report alongside chrF++. |
+| Class | What it tests |
+|-------|----------------|
+| `en_ne_formal` | English → Nepali (formal) |
+| `en_ne_informal` | English → Nepali (informal) |
+| `ne_en_deva` | Nepali Devanagari → English |
+| `ne_en_roman` | Romanized Nepali → English |
 
-Scores are corpus-level over the evaluated slice (default `n=50`).
+```powershell
+python benchmarks/fill_gold.py
+python benchmarks/run_gold_bench.py
+python benchmarks/score_phrasebook_gold.py
+```
 
-## Primary split: FLORES eng_Latn ↔ npi_Deva (and hin_Deva)
+**Visualizations:** open [`results/gold_viz/index.html`](results/gold_viz/index.html)  
+PNGs: `coverage.png`, `length_hists.png`, `phrasebook_chrf.png`
 
-| Split | Languages | Role |
-|-------|-----------|------|
-| **FLORES-200 / FLORES+** | `eng_Latn` ↔ `npi_Deva`, `eng_Latn` ↔ `hin_Deva` | Primary official-style eval |
-| Cached **FLORES-101** sample | same three columns in `data/flores_sample.json` | Offline / gated-HF fallback |
+Curation guide: [`gold/README.md`](gold/README.md). Summary JSON: `results/gold_summary.json`.
 
-`run_mt_bench.py` tries HuggingFace (`openlanguagedata/flores_plus`, then `facebook/flores`) first. If gated or unavailable, it loads `benchmarks/data/flores_sample.json` (FLORES-101 `dev`: eng / npi / hin).
+**Ship gate:** on-device MT must meet or beat the frozen gold baseline before promoting a model build.
 
-## Secondary: IN22-Conv
+## Secondary / legacy corpus suites
 
-If `ai4bharat/IN22-Conv` is reachable (HF auth), the harness also scores conversational pairs and records them under `secondary` in the results JSON. Skipped silently when gated.
+Larger automated suites for training regression — not the sole ship gate.
 
-## Models under test
-
-| Direction | Path |
-|-----------|------|
-| Indic → EN | `experiments/models/it2_indic_en_merged` |
-| EN → Indic | `experiments/models/it2_en_indic_merged` |
-
-Loading reuses `core.translation.indictrans2.TranslationManager` (IndicProcessor + `AutoModelForSeq2SeqLM`).
-
-## Honorific probe
-
-`honorific_probe.json` — hand-written English sentences tagged `formal` / `informal` for future तपाईं vs तिमी (and related) register evaluation. Not scored by the FLORES baseline run.
-
-## Quick start
+### Comprehensive quality bench
 
 ```powershell
 $env:HF_HUB_DISABLE_XET = "1"
-pip install -r benchmarks/requirements.txt
-python benchmarks/run_mt_bench.py --n 50
+python benchmarks/build_ne_quality_bench.py
+python benchmarks/run_ne_quality_bench.py
 ```
 
-Results: `benchmarks/results/flores_baseline.json`.
+FLORES-101 + OPUS-100 test (filtered Devanagari), plus honorific register probe. Results: `benchmarks/results/ne_quality_baseline.json`.
 
-### Flags
+### Legacy FLORES quick slice
 
-| Flag | Default | Meaning |
-|------|---------|---------|
-| `--n` | `50` | Sentences per direction |
-| `--directions` | `ne-en,en-ne,hi-en,en-hi` | Comma-separated pairs |
-| `--skip-secondary` | off | Skip IN22-Conv attempt |
-| `--device` | auto | `cuda` / `cpu` |
+```powershell
+python benchmarks/run_mt_bench.py --n 50 --directions ne-en,en-ne
+```
+
+Frozen baseline: `benchmarks/results/flores_baseline.json`. Useful for fast direction checks during model work; superseded by `gold/` for product decisions.
