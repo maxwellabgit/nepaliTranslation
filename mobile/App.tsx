@@ -83,7 +83,7 @@ export default function App() {
           <Text
             style={[styles.tabHint, mode === 'conversation' && styles.tabHintOn]}
           >
-            Pass the phone
+            Speak · Pass · Speak
           </Text>
         </Pressable>
       </View>

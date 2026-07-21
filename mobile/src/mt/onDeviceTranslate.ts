@@ -492,6 +492,11 @@ export type TranslateOptions = {
   formality?: Formality;
   /** Applied to Nepali output (EN→NE). */
   script?: NepaliScript;
+  /**
+   * Conversation mode: never auto-detect opposite language.
+   * Trust the speaker side so EN↔NE switching stays stable.
+   */
+  forcePreferred?: boolean;
 };
 
 /** Fully on-device. Never hits the network. */
@@ -511,7 +516,9 @@ export function translateOnDevice(
   if (!raw) {
     return { text: '', method: 'phrase', direction: preferred };
   }
-  const direction = detectDirection(raw, preferred);
+  const direction = opts.forcePreferred
+    ? preferred
+    : detectDirection(raw, preferred);
   const hit = phraseLookup(raw, direction);
   let out = hit ?? wordTranslate(raw, direction);
   if (direction === 'en-ne' && formality === 'informal') {
