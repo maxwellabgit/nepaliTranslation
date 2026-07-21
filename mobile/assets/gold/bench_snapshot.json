@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-07-20T21:30:00Z",
+  "title": "Gold benchmark snapshot",
+  "classes": [
+    {"id": "en_ne_formal", "label": "EN→NE formal", "filled": "100/100", "register_ok": 0.64},
+    {"id": "en_ne_informal", "label": "EN→NE informal", "filled": "100/100", "register_ok": 1.0},
+    {"id": "ne_en_deva", "label": "NE→EN Deva", "filled": "100/100", "register_ok": null},
+    {"id": "ne_en_roman", "label": "NE→EN Roman", "filled": "100/100", "register_ok": null}
+  ],
+  "models": [
+    {"id": "phrasebook", "overall": 0.12, "note": "Exact/lexicon floor"},
+    {"id": "it2_base", "overall": 0.508, "formal": 0.672, "informal": 0.585, "ne_en": 0.699, "roman": 0.074},
+    {"id": "it2_ft", "overall": 0.51, "formal": 0.631, "informal": 0.599, "ne_en": 0.691, "roman": 0.116},
+    {"id": "it2_meanings", "overall": 0.491, "formal": 0.604, "informal": 0.581, "ne_en": 0.702, "roman": 0.074}
+  ],
+  "gates": {
+    "ship_overall_vs_base": "+0.7pp",
+    "formal_floor": 0.655,
+    "note": "Adapters ship only if gold gates pass; app tonight still uses offline phrasebook."
+  }
+}

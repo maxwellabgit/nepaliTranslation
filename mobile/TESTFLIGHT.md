@@ -1,8 +1,10 @@
 # TestFlight
 
-Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight. No server URL or tunnel configuration is required.
+Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight.
 
-**Current release:** app version **1.4.2** — Auto + Conversation, Formal/देवनागरी switches, sentence-aware translate, Gold Review (▣, password `1234`).
+**Current target:** **1.4.3** — Auto + Conversation UX polish, Gold Review speedups, benchmark snapshot in-app.
+
+**What this binary runs today:** offline **phrasebook + lexicon** MT + Apple speech recognition. IndicTrans2 LoRA adapters are trained overnight and only ship after gold gates pass.
 
 ## Build & submit
 
@@ -11,34 +13,33 @@ cd mobile
 npx eas build --platform ios --profile production --auto-submit
 ```
 
-Or stepwise:
-
-```powershell
-npx eas build --platform ios --profile production
-npx eas submit --platform ios --latest
-```
-
-Apple processing usually takes **5–15 minutes** after submit succeeds.
-
 ## On your iPhone
 
-1. Open **TestFlight** → pull to refresh **NepTranslate**
-2. Tap **Update** (or install if new)
-3. Confirm **v1.4.2** on the Auto screen footer (`v1.4.2 (7) · offline`)
-
-If stuck on an old build: delete the app → reinstall from TestFlight.
+1. TestFlight → refresh **NepTranslate** → Update  
+2. Confirm footer: `v1.4.3 · voice via Apple · MT offline`
 
 App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/ios
 
-## Privacy strings
-
-iOS rejects IPAs missing required `Info.plist` usage descriptions (e.g. microphone, speech recognition, photo library). Those live in `app.json` → `expo.ios.infoPlist`. If submit reports **ITMS-90683**, add the missing key there and rebuild (e.g. `NSPhotoLibraryUsageDescription` even when only an SDK references Photos APIs).
-
 ## What to verify
 
-- **Normal** — type and speak; EN↔NE auto-detect
-- **Conversation** — continuous speak; sentences translate as you finish them; Pass flushes remainder
-- **Formal / Informal** — Nepali register when English is the source
-- **Devanagari / Roman** — script toggle on Nepali output
-- **Gold Review** — ▣ top-right → password `1234` → Correct / edit / Export
-- **Offline** — airplane mode; phrasebook translate still works
+- **Auto** — type/speak; Formal/Informal; Devanagari/Roman; result label shows register+script  
+- **Conversation** — Pass the phone; Roman toggle on Nepali originals  
+- **Gold Review** — ▣ → password `1234` → Correct (keeps edits) / Complete / Split / Undo / Premium first / Export (Share)  
+- **Benchmark strip** — chrF snapshot at top of Gold Review  
+- **Offline** — airplane mode; phrasebook still works  
+
+## Gold → train loop
+
+1. Gold Review → **Export** (Share/save JSON)  
+2. `python benchmarks/apply_app_reviews.py reviews.json`  
+3. `python benchmarks/pack_gold_for_app.py`  
+4. Bump version → EAS build → submit  
+
+## After overnight FT
+
+```powershell
+# Or let training/run_overnight_pipeline.py finish
+python benchmarks/eval_it2_gold.py --systems it2_base,it2_big,it2_overnight --tag overnight_post
+```
+
+Ship adapters only if gates in `training/OVERNIGHT_FT_PLAN.md` pass.

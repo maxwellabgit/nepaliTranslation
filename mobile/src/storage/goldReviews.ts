@@ -45,6 +45,13 @@ export async function upsertReview(review: GoldReview): Promise<ReviewMap> {
   return map;
 }
 
+export async function deleteReview(id: string): Promise<ReviewMap> {
+  const map = await loadReviews();
+  delete map[id];
+  await saveReviews(map);
+  return map;
+}
+
 export async function clearReviews(): Promise<void> {
   await AsyncStorage.removeItem(KEY);
 }

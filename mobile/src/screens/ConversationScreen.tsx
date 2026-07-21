@@ -295,14 +295,20 @@ export function ConversationScreen({
           small: turn.original,
         };
       }
-      return { big: turn.translatedDevaOrEn, small: turn.original };
+      return {
+        big: turn.translatedDevaOrEn,
+        small:
+          script === 'roman' && /[\u0900-\u097F]/.test(turn.original)
+            ? formatNepaliScript(turn.original, 'roman')
+            : turn.original,
+      };
     }
     if (turn.from === 'ne') {
       return {
         big: turn.translatedDevaOrEn,
         small:
           script === 'roman' && /[\u0900-\u097F]/.test(turn.original)
-            ? turn.original
+            ? formatNepaliScript(turn.original, 'roman')
             : turn.original,
       };
     }
@@ -313,12 +319,12 @@ export function ConversationScreen({
   };
 
   const recent = turns.slice(-MAX_RETRY);
-  const passLabel = side === 'en' ? 'Pass' : 'पास';
+  const sideTitle = side === 'en' ? 'Your turn · English' : 'तपाईंको पालो · नेपाली';
   const speakHint =
     side === 'en'
-      ? 'Sentences translate as you speak · Pass when done'
-      : 'वाक्य सकिएपछि अनुवाद · सकिएपछि पास';
-  const sideTitle = side === 'en' ? 'English side' : 'नेपाली पक्ष';
+      ? 'Finish your sentence, then Pass the phone'
+      : 'वाक्य सकिएपछि पास गर्नुहोस्';
+  const passLabel = side === 'en' ? 'Pass' : 'पास';
 
   return (
     <View style={[styles.root, side === 'ne' && styles.rootNe]}>

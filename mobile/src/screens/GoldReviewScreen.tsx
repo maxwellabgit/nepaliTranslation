@@ -3,6 +3,7 @@ import {
   Alert,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -11,10 +12,12 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { goldPack, GOLD_CLASSES, itemsForClass } from '../gold/pack';
 import type { GoldItem } from '../gold/types';
+import benchSnapshot from '../../assets/gold/bench_snapshot.json';
 import {
   buildExportPayload,
   completeFromItem,
   completeSentenceSplits,
+  deleteReview,
   loadReviews,
   type GoldReview,
   type ReviewMap,
@@ -30,8 +33,7 @@ type Props = {
 };
 
 /**
- * Password-gated human gold review.
- * Fast path: Correct as-is, or edit either side → Complete.
+ * Password-gated human gold review — fast path for overnight training loop.
  */
 export function GoldReviewScreen({ onClose }: Props) {
   const [unlocked, setUnlocked] = useState(false);
@@ -42,12 +44,23 @@ export function GoldReviewScreen({ onClose }: Props) {
   const [sourceEdit, setSourceEdit] = useState('');
   const [refEdit, setRefEdit] = useState('');
   const [showCompleted, setShowCompleted] = useState(false);
+  const [premiumOnly, setPremiumOnly] = useState(false);
+  const [lastUndoneId, setLastUndoneId] = useState<string | null>(null);
 
   useEffect(() => {
     void loadReviews().then(setReviews);
   }, []);
 
-  const classItems = useMemo(() => itemsForClass(classId), [classId]);
+  const classItems = useMemo(() => {
+    const base = itemsForClass(classId);
+    if (!premiumOnly) return base;
+    return base.filter(
+      (i) =>
+        i.provenance.trust === 'gold' ||
+        i.provenance.trust === 'high' ||
+        i.provenance.tier === 'premium',
+    );
+  }, [classId, premiumOnly]);
   const pending = useMemo(
     () =>
       showCompleted
@@ -60,7 +73,7 @@ export function GoldReviewScreen({ onClose }: Props) {
 
   useEffect(() => {
     setIndex(0);
-  }, [classId, showCompleted]);
+  }, [classId, showCompleted, premiumOnly]);
 
   useEffect(() => {
     if (!item) {
@@ -95,12 +108,14 @@ export function GoldReviewScreen({ onClose }: Props) {
   const persist = useCallback(async (review: GoldReview) => {
     const next = await upsertReview(review);
     setReviews(next);
-    // Completed row drops out of pending; keep index so the next item appears.
+    setLastUndoneId(review.id);
   }, []);
 
   const markCorrect = async () => {
     if (!item) return;
-    if (isMultiSentence(item.source) || isMultiSentence(item.reference)) {
+    const src = sourceEdit.trim() || item.source;
+    const ref = refEdit.trim() || item.reference;
+    if (isMultiSentence(src) || isMultiSentence(ref)) {
       Alert.alert(
         'Multi-sentence pair',
         'Fine-tuning is sentence-level. Prefer Split when both sides align, or edit down to one sentence.',
@@ -110,7 +125,7 @@ export function GoldReviewScreen({ onClose }: Props) {
             text: 'Accept anyway',
             onPress: () =>
               void persist(
-                completeFromItem(item, item.source, item.reference, {
+                completeFromItem(item, src, ref, {
                   multi_sentence_flag: true,
                 }),
               ),
@@ -119,7 +134,7 @@ export function GoldReviewScreen({ onClose }: Props) {
       );
       return;
     }
-    await persist(completeFromItem(item, item.source, item.reference));
+    await persist(completeFromItem(item, src, ref));
   };
 
   const markCompleteEdits = async () => {
@@ -128,8 +143,7 @@ export function GoldReviewScreen({ onClose }: Props) {
       Alert.alert('Both sides required');
       return;
     }
-    const multi =
-      isMultiSentence(sourceEdit) || isMultiSentence(refEdit);
+    const multi = isMultiSentence(sourceEdit) || isMultiSentence(refEdit);
     await persist(
       completeFromItem(item, sourceEdit, refEdit, {
         multi_sentence_flag: multi || undefined,
@@ -151,14 +165,32 @@ export function GoldReviewScreen({ onClose }: Props) {
     setReviews(next);
   };
 
+  const undoLast = async () => {
+    const id = lastUndoneId;
+    if (!id || !reviews[id]) {
+      Alert.alert('Nothing to undo');
+      return;
+    }
+    const next = await deleteReview(id);
+    setReviews(next);
+    setLastUndoneId(null);
+  };
+
   const exportReviews = async () => {
     const payload = buildExportPayload(reviews);
     const text = JSON.stringify(payload, null, 2);
-    await Clipboard.setStringAsync(text);
-    Alert.alert(
-      'Exported',
-      `${payload.n_completed} completed reviews copied.\nRun: python benchmarks/apply_app_reviews.py <file>`,
-    );
+    try {
+      await Share.share({
+        message: text,
+        title: `NepTranslate gold reviews (${payload.n_completed})`,
+      });
+    } catch {
+      await Clipboard.setStringAsync(text);
+      Alert.alert(
+        'Copied',
+        `${payload.n_completed} reviews on clipboard.\nPC: python benchmarks/apply_app_reviews.py <file>`,
+      );
+    }
   };
 
   if (!unlocked) {
@@ -241,8 +273,31 @@ export function GoldReviewScreen({ onClose }: Props) {
             {showCompleted ? 'Show pending only' : 'Include completed'}
           </Text>
         </Pressable>
+        <Pressable onPress={() => setPremiumOnly((v) => !v)}>
+          <Text style={styles.link}>{premiumOnly ? 'All tiers' : 'Premium first'}</Text>
+        </Pressable>
+        <Pressable onPress={() => void undoLast()}>
+          <Text style={styles.link}>Undo</Text>
+        </Pressable>
         <Text style={styles.meta}>
           {pending.length ? `${Math.min(index + 1, pending.length)}/${pending.length}` : 'Done'}
+        </Text>
+      </View>
+
+      <View style={styles.benchCard}>
+        <Text style={styles.benchTitle}>Benchmark · chrF overall</Text>
+        <View style={styles.benchRow}>
+          {(benchSnapshot.models as { id: string; overall: number }[]).map((m) => (
+            <View key={m.id} style={styles.benchCell}>
+              <Text style={styles.benchId}>{m.id}</Text>
+              <Text style={styles.benchVal}>{(100 * m.overall).toFixed(1)}%</Text>
+            </View>
+          ))}
+        </View>
+        <Text style={styles.benchNote}>
+          Formal register OK {(100 * (benchSnapshot.classes[0].register_ok ?? 0)).toFixed(0)}% ·
+          Informal {(100 * (benchSnapshot.classes[1].register_ok ?? 0)).toFixed(0)}% · App ships
+          phrasebook until adapters pass gates
         </Text>
       </View>
 
@@ -258,7 +313,7 @@ export function GoldReviewScreen({ onClose }: Props) {
             </Text>
             <Text style={styles.doneBody}>
               {totals.done >= totals.total
-                ? 'All benchmark gold reviewed. Next: training-data review.'
+                ? 'All gold reviewed. Export → apply_app_reviews.py → pack_gold_for_app.py.'
                 : 'Pick another class, or Export completed reviews.'}
             </Text>
           </View>
@@ -419,8 +474,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingBottom: 6,
+    flexWrap: 'wrap',
+    gap: 8,
   },
   meta: { fontSize: 12, color: colors.textSecondary, fontWeight: '600' },
+  benchCard: {
+    marginHorizontal: 16,
+    marginBottom: 10,
+    padding: 12,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.divider,
+  },
+  benchTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.crimson,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: 8,
+  },
+  benchRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  benchCell: { minWidth: 72 },
+  benchId: { fontSize: 10, color: colors.textSecondary, fontWeight: '600' },
+  benchVal: { fontSize: 16, fontWeight: '700', color: colors.text },
+  benchNote: {
+    marginTop: 8,
+    fontSize: 11,
+    lineHeight: 15,
+    color: colors.textSecondary,
+  },
   scroll: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingBottom: 32 },
   idLine: { fontSize: 12, fontWeight: '700', color: colors.textSecondary, marginBottom: 4 },

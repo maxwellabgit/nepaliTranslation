@@ -41,7 +41,7 @@ function delay(ms: number) {
 const APP_VERSION =
   Constants.expoConfig?.version ??
   Constants.nativeAppVersion ??
-  '1.4.2';
+  '1.4.3';
 const BUILD_NUMBER =
   Constants.expoConfig?.ios?.buildNumber ??
   Constants.nativeBuildVersion ??
@@ -339,7 +339,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
           />
           <Text style={styles.brand}>NepTranslate</Text>
           <Text style={styles.modeTag}>
-            {listening ? 'Auto · listening' : 'Auto · offline'}
+            {listening ? 'Listening…' : 'Offline · on this device'}
           </Text>
         </View>
         <Pressable
@@ -400,12 +400,12 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
             onChangeText={setInput}
             onBlur={() => commitTranslate(input)}
             onSubmitEditing={() => commitTranslate(input)}
-            placeholder="Type or tap the mic to speak…"
+            placeholder="Say or type in English or Nepali"
             placeholderTextColor={colors.textPlaceholder}
             multiline
             textAlignVertical="top"
             autoCorrect
-            editable={!listening}
+            editable
           />
           {!input ? (
             <Pressable style={styles.pasteBtn} onPress={paste}>
@@ -432,7 +432,11 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
         {showResult ? (
           <View style={styles.resultCard}>
             <Text style={styles.resultLang}>
-              {listening ? `${targetName} · live` : targetName}
+              {listening
+                ? `${targetName} · live`
+                : targetLang === 'ne'
+                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'}`
+                  : targetName}
             </Text>
             <Text
               style={[
@@ -464,7 +468,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
       </ScrollView>
       <Text style={styles.versionLine}>
         v{APP_VERSION}
-        {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''} · offline
+        {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''} · voice via Apple · MT offline
       </Text>
     </View>
   );
