@@ -2,9 +2,9 @@
 
 Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight.
 
-**Current target:** **1.4.5** — Paired Gold Review (formal/informal + Deva/Roman), Settings entry for Gold Review, auto-height phrase fields, keyboard dismiss.
+**Current target:** **1.4.5 → 1.5 track** — Honesty labels, paired Gold Review, Jest unit suite. **2.0 reserved for neural MT.**
 
-**What this binary runs today:** offline **phrasebook + lexicon** MT + Apple speech recognition. IndicTrans2 LoRA adapters are trained overnight and only ship after gold gates pass.
+**What this binary runs today:** offline **phrasebook + lexicon** MT + Apple speech recognition. IndicTrans2 LoRA adapters train offline and only ship after gold gates pass (see `mobile/docs/V2_FLEET_DECISION.md`).
 
 ## Build & submit
 

@@ -40,8 +40,9 @@ export function SettingsScreen({ onClose, onOpenGoldReview }: Props) {
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
-          NepTranslate works offline on this device. Speech uses Apple recognition.
-          Translation today is phrasebook + lexicon — not a cloud model.
+          NepTranslate works offline for saved phrases and word guesses on this device.
+          Speech uses Apple recognition (not fully offline). Neural on-device MT is the
+          2.0 path after gold gates pass.
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}

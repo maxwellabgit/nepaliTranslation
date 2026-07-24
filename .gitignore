@@ -29,6 +29,8 @@ benchmarks/results/*.err.log
 # Node / mobile (root safety)
 node_modules/
 .expo/
+coverage/
+mobile/coverage/
 
 # OS
 .DS_Store

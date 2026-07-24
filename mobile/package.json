@@ -14,8 +14,11 @@
     "react-native": "0.86.0"
   },
   "devDependencies": {
+    "@types/jest": "29.5.14",
     "@types/react": "~19.2.2",
     "eas-cli": "^21.0.2",
+    "jest": "~29.7.0",
+    "jest-expo": "~57.0.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -23,12 +26,35 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
     "eas:configure": "eas build:configure",
     "build:ios": "eas build --platform ios --profile production",
     "build:android": "eas build --platform android --profile production",
     "build:all": "eas build --platform all --profile production",
     "submit:ios": "eas submit --platform ios --latest",
     "submit:android": "eas submit --platform android --latest"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "testMatch": [
+      "**/__tests__/**/*.(test|spec).(ts|tsx)",
+      "**/*.(test|spec).(ts|tsx)"
+    ],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json"],
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "collectCoverageFrom": [
+      "src/mt/romanize.ts",
+      "src/mt/sentences.ts",
+      "src/mt/onDeviceTranslate.ts",
+      "src/mt/TranslationEngine.ts",
+      "src/gold/pairs.ts",
+      "src/storage/goldReviews.ts",
+      "src/stt/listenSession.ts",
+      "src/conversation/passLogic.ts"
+    ],
+    "coveragePathIgnorePatterns": ["/node_modules/", "src/mt/meaningUnit.ts"]
   },
   "private": true
 }

@@ -23,6 +23,7 @@ import {
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
+import { methodLabel } from '../conversation/passLogic';
 import { addHistory, isStarred, toggleStar, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import { colors } from '../theme';
@@ -46,6 +47,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   const [devaOn, setDevaOn] = useState(true);
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
+  const [mtMethod, setMtMethod] = useState<'phrase' | 'lexicon'>('phrase');
   const [listening, setListening] = useState(false);
   const [starred, setStarred] = useState(false);
   const [romanTip, setRomanTip] = useState(false);
@@ -104,6 +106,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     const t = raw.trim();
     if (!t) {
       setOutput('');
+      setMtMethod('phrase');
       return;
     }
     void sharedTranslationEngine
@@ -116,6 +119,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       .then((result) => {
         preferredRef.current = result.direction;
         setOutput(result.text);
+        setMtMethod(result.method === 'lexicon' ? 'lexicon' : 'phrase');
       });
   }, []);
 
@@ -124,6 +128,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       const t = raw.trim();
       if (!t) {
         setOutput('');
+        setMtMethod('phrase');
         return;
       }
       void sharedTranslationEngine
@@ -136,6 +141,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
         .then((result) => {
           preferredRef.current = result.direction;
           setOutput(result.text);
+          setMtMethod(result.method === 'lexicon' ? 'lexicon' : 'phrase');
           saveHistoryFor(t, result.text, result.direction);
         });
     },
@@ -378,7 +384,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
           />
           <Text style={styles.brand}>NepTranslate</Text>
           <Text style={styles.modeTag}>
-            {listening ? 'Listening…' : 'Offline · on this device'}
+            {listening ? 'Listening…' : 'Phrases on device · voice via Apple'}
           </Text>
         </View>
         <Pressable
@@ -403,8 +409,8 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
               {listening
                 ? `${targetName} · live`
                 : targetLang === 'ne'
-                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'} · phrasebook`
-                  : `${targetName} · phrasebook`}
+                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'} · ${methodLabel(mtMethod)}`
+                  : `${targetName} · ${methodLabel(mtMethod)}`}
             </Text>
             <Text
               style={[

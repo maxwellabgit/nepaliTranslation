@@ -21,6 +21,7 @@ import {
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { takeNewCompleteSentences } from '../mt/sentences';
+import { canPassPhone } from '../conversation/passLogic';
 import { colors } from '../theme';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 
@@ -269,11 +270,12 @@ export function ConversationScreen() {
     }
   };
 
-  const hasContentToPass = () => {
-    if (interimRef.current.trim()) return true;
-    const last = turns.length ? turns[turns.length - 1] : null;
-    return Boolean(last && last.from === sideRef.current);
-  };
+  const hasContentToPass = () =>
+    canPassPhone({
+      interim: interimRef.current,
+      turns,
+      side: sideRef.current,
+    });
 
   const onPass = async () => {
     if (passingRef.current || busy) return;
