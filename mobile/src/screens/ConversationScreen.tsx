@@ -16,10 +16,10 @@ import {
 } from 'expo-speech-recognition';
 import {
   formatNepaliScript,
-  translateOnDevice,
   type Formality,
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
+import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { takeNewCompleteSentences } from '../mt/sentences';
 import { canPassPhone, emptyShowFallback } from '../conversation/passLogic';
 import { colors } from '../theme';
@@ -34,11 +34,15 @@ type Turn = {
   show: string;
 };
 
+type Props = {
+  neuralReady?: boolean;
+};
+
 /**
  * Conversation = pass-the-phone dialogue.
- * Fleet B/H: Pass + consent; empty Pass blocked; Show fullscreen; Formal refreshes hero.
+ * Uses shared TranslationEngine (ONNX when ready, phrasebook fallback).
  */
-export function ConversationScreen() {
+export function ConversationScreen({ neuralReady = false }: Props) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [side, setSide] = useState<Side>('en');
   const [listening, setListening] = useState(false);
@@ -68,20 +72,27 @@ export function ConversationScreen() {
   scriptRef.current = script;
   sideRef.current = side;
 
-  const translateForced = useCallback((text: string, from: Side) => {
-    const preferred = from === 'en' ? 'en-ne' : 'ne-en';
-    return translateOnDevice(text, preferred, {
-      formality: formalityRef.current,
-      script: 'deva',
-      forcePreferred: true,
-    });
-  }, []);
+  const translateForced = useCallback(
+    async (text: string, from: Side) => {
+      const preferred = from === 'en' ? 'en-ne' : 'ne-en';
+      return sharedTranslationEngine.translate({
+        text,
+        preferred,
+        formality: formalityRef.current,
+        script: 'deva',
+        forcePreferred: true,
+        bySentences: false,
+      });
+    },
+    [],
+  );
 
   const speakShow = useCallback((turn: Turn) => {
     const text =
       turn.from === 'en'
         ? formatNepaliScript(turn.show, scriptRef.current)
         : turn.show;
+    if (!text.trim() || text === emptyShowFallback(turn.from)) return;
     Speech.stop();
     Speech.speak(text, {
       language: turn.from === 'en' ? 'ne-NP' : 'en-US',
@@ -90,10 +101,11 @@ export function ConversationScreen() {
   }, []);
 
   const commitSentence = useCallback(
-    (text: string, from: Side, speakAloud: boolean) => {
+    async (text: string, from: Side, speakAloud: boolean) => {
       const t = text.trim();
       if (!t) return null;
-      const result = translateForced(t, from);
+      const result = await translateForced(t, from);
+      if (result.cancelled) return null;
       const show = result.text.trim() || emptyShowFallback(from);
       const turn: Turn = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -102,7 +114,6 @@ export function ConversationScreen() {
         show,
       };
       setTurns((prev) => [...prev, turn]);
-      // Only speak real translations — not the empty-match fallback.
       if (speakAloud && result.text.trim()) speakShow(turn);
       return turn;
     },
@@ -118,7 +129,7 @@ export function ConversationScreen() {
         emittedCountRef.current,
       );
       for (const sent of newSentences) {
-        commitSentence(sent, from, false);
+        void commitSentence(sent, from, false);
       }
       emittedCountRef.current = nextEmittedCount;
       setInterim(remainder);
@@ -127,17 +138,17 @@ export function ConversationScreen() {
   );
 
   const flushRemainder = useCallback(
-    (from: Side, speakAloud: boolean): Turn | null => {
+    async (from: Side, speakAloud: boolean): Promise<Turn | null> => {
       const full = interimRef.current.trim();
       let last: Turn | null = null;
       if (full) {
         const drained = takeNewCompleteSentences(full, emittedCountRef.current);
         for (const sent of drained.newSentences) {
-          last = commitSentence(sent, from, false);
+          last = await commitSentence(sent, from, false);
         }
         const leftover = drained.remainder.trim();
         if (leftover) {
-          last = commitSentence(leftover, from, false);
+          last = await commitSentence(leftover, from, false);
         }
       }
       interimRef.current = '';
@@ -173,15 +184,29 @@ export function ConversationScreen() {
 
   useEffect(() => {
     if (!prefsLoadedRef.current) return;
-    setTurns((prev) =>
-      prev.map((t) => {
-        const result = translateForced(t.heard, t.from);
-        return {
+    let cancelled = false;
+    void (async () => {
+      const snapshot = await new Promise<Turn[]>((resolve) => {
+        setTurns((prev) => {
+          resolve(prev);
+          return prev;
+        });
+      });
+      if (!snapshot.length || cancelled) return;
+      const next: Turn[] = [];
+      for (const t of snapshot) {
+        const result = await translateForced(t.heard, t.from);
+        if (cancelled) return;
+        next.push({
           ...t,
           show: result.text.trim() || emptyShowFallback(t.from),
-        };
-      }),
-    );
+        });
+      }
+      if (!cancelled) setTurns(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [formalOn, translateForced]);
 
   useSpeechRecognitionEvent('result', (event) => {
@@ -302,7 +327,7 @@ export function ConversationScreen() {
 
     try {
       await new Promise((r) => setTimeout(r, 260));
-      flushRemainder(from, true);
+      await flushRemainder(from, true);
       setSide(next);
       sideRef.current = next;
       await new Promise((r) => setTimeout(r, 420));
@@ -558,7 +583,11 @@ export function ConversationScreen() {
             </Text>
           </Pressable>
         </View>
-        <Text style={styles.trustLine}>saved phrases on device · voice via Apple</Text>
+        <Text style={styles.trustLine}>
+          {neuralReady
+            ? 'on-device model · voice via Apple'
+            : 'saved phrases · preparing model · voice via Apple'}
+        </Text>
       </View>
 
       <Modal visible={consentVisible} animationType="fade" transparent>

@@ -2,8 +2,15 @@
  * Small helpers for Conversation pass-the-phone UX.
  */
 
-export function methodLabel(method: 'phrase' | 'lexicon'): string {
-  return method === 'lexicon' ? 'word guess' : 'saved phrase';
+export function methodLabel(method: 'phrase' | 'lexicon' | 'neural'): string {
+  switch (method) {
+    case 'neural':
+      return 'on-device model';
+    case 'lexicon':
+      return 'word guess';
+    default:
+      return 'saved phrase';
+  }
 }
 
 /** Pass needs either live interim speech or a completed turn from this side. */

@@ -6,12 +6,13 @@ import { colors } from '../theme';
 type Props = {
   onClose: () => void;
   onOpenGoldReview: () => void;
+  neuralReady?: boolean;
 };
 
 const APP_VERSION =
   Constants.expoConfig?.version ??
   Constants.nativeAppVersion ??
-  '1.5.0';
+  '1.6.0';
 const BUILD_NUMBER =
   Constants.expoConfig?.ios?.buildNumber ??
   Constants.nativeBuildVersion ??
@@ -20,7 +21,11 @@ const BUILD_NUMBER =
 /**
  * Traveler settings. Gold Review lives under Advanced — not in the main chrome.
  */
-export function SettingsScreen({ onClose, onOpenGoldReview }: Props) {
+export function SettingsScreen({
+  onClose,
+  onOpenGoldReview,
+  neuralReady = false,
+}: Props) {
   const [advanced, setAdvanced] = useState(false);
 
   useEffect(() => {
@@ -40,13 +45,14 @@ export function SettingsScreen({ onClose, onOpenGoldReview }: Props) {
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
-          NepTranslate is a traveler phrasebook for English ↔ Nepali. Saved phrases
-          and word guesses run on this device. Speech uses Apple recognition and may
-          need a network. This build is not a full neural translator yet.
+          {neuralReady
+            ? 'NepTranslate runs IndicTrans2 on this device for free-form English ↔ Nepali. Exact traveler phrases still use the saved phrasebook. Speech uses Apple recognition and may need a network.'
+            : 'NepTranslate will download an on-device translation model on first launch (one-time). Until then it uses saved traveler phrases. Speech uses Apple recognition and may need a network.'}
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}
           {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''}
+          {neuralReady ? ' · model ready' : ' · model pending'}
         </Text>
       </View>
 
