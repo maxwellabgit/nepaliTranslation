@@ -24,12 +24,15 @@ import {
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { methodLabel } from '../conversation/passLogic';
+import { mtStatusLine } from '../mt/mtStatus';
 import { addHistory, isStarred, toggleStar, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import { colors } from '../theme';
 
 type Props = {
   seed?: HistoryItem | null;
+  neuralReady?: boolean;
+  mtWarmStatus?: string | null;
   onOpenHistory: () => void;
   onOpenSettings: () => void;
 };
@@ -49,14 +52,22 @@ const QUICK_PHRASES = [
 
 /**
  * Auto mode — bottom input dock, results above.
- * Traveler build: phrasebook + lexicon; Apple speech (may use network).
+ * Uses on-device IndicTrans2 when warmed; phrasebook/lexicon as fallback.
  */
-export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
+export function HomeScreen({
+  seed,
+  neuralReady = false,
+  mtWarmStatus = null,
+  onOpenHistory,
+  onOpenSettings,
+}: Props) {
   const [formalOn, setFormalOn] = useState(true);
   const [devaOn, setDevaOn] = useState(true);
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
-  const [mtMethod, setMtMethod] = useState<'phrase' | 'lexicon'>('phrase');
+  const [mtMethod, setMtMethod] = useState<'phrase' | 'lexicon' | 'neural'>(
+    'phrase',
+  );
   const [listening, setListening] = useState(false);
   const [starred, setStarred] = useState(false);
   const [romanTip, setRomanTip] = useState(false);
@@ -117,7 +128,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     (
       result: {
         text: string;
-        method: 'phrase' | 'lexicon';
+        method: 'phrase' | 'lexicon' | 'neural';
         direction: 'en-ne' | 'ne-en';
         cancelled?: boolean;
       },
@@ -422,7 +433,11 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
           />
           <Text style={styles.brand}>NepTranslate</Text>
           <Text style={styles.modeTag}>
-            {listening ? 'Listening…' : 'Phrases on device · voice via Apple'}
+            {mtStatusLine({
+              neuralReady,
+              warmStatus: mtWarmStatus,
+              listening,
+            })}
           </Text>
         </View>
         <Pressable
@@ -491,8 +506,12 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
             </Text>
             <Text style={styles.emptyBody}>
               {missMatch
-                ? 'This traveler build uses a saved phrasebook. Try a shorter everyday line below.'
-                : 'English ↔ Nepali from phrases on this device. Results appear here.'}
+                ? neuralReady
+                  ? 'Could not translate that yet. Try another phrasing, or a shorter line.'
+                  : 'Model still preparing — try a traveler phrase below, or wait a moment.'
+                : neuralReady
+                  ? 'English ↔ Nepali on this device. Results appear here.'
+                  : 'Preparing on-device translation. Meanwhile try a traveler phrase below.'}
             </Text>
             {!missMatch ? (
               <View style={styles.suggestRow}>
@@ -631,7 +650,9 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       </View>
 
       <Text style={styles.trustLine}>
-        saved phrases on device · voice via Apple
+        {neuralReady
+          ? 'on-device model · voice via Apple'
+          : 'saved phrases · preparing model · voice via Apple'}
       </Text>
     </View>
   );

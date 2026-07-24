@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Speech from 'expo-speech';
@@ -9,6 +9,10 @@ import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { GoldReviewScreen } from './src/screens/GoldReviewScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
+import {
+  MT_WARM_DOWNLOADING,
+  MT_WARM_PREPARING,
+} from './src/mt/mtStatus';
 import type { HistoryItem } from './src/storage/phrasebook';
 import { colors } from './src/theme';
 
@@ -39,6 +43,27 @@ export default function App() {
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
+  const [neuralReady, setNeuralReady] = useState(false);
+  const [mtWarmStatus, setMtWarmStatus] = useState<string | null>(MT_WARM_PREPARING);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      setMtWarmStatus(MT_WARM_PREPARING);
+      await sharedTranslationEngine.warmUp((p) => {
+        if (cancelled) return;
+        setMtWarmStatus(
+          `${MT_WARM_DOWNLOADING} ${p.index}/${p.total}`,
+        );
+      });
+      if (cancelled) return;
+      setNeuralReady(sharedTranslationEngine.isNeuralReady());
+      setMtWarmStatus(null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const switchMode = (next: Mode) => {
     if (next === mode) return;
@@ -71,6 +96,7 @@ export default function App() {
         <SettingsScreen
           onClose={() => setOverlay(null)}
           onOpenGoldReview={() => setOverlay('gold')}
+          neuralReady={neuralReady}
         />
       </SafeAreaView>
     );
@@ -90,11 +116,13 @@ export default function App() {
       <StatusBar style="dark" />
       <View style={styles.body}>
         {mode === 'conversation' ? (
-          <ConversationScreen />
+          <ConversationScreen neuralReady={neuralReady} />
         ) : (
           <HomeScreen
             key={seedKey}
             seed={seed}
+            neuralReady={neuralReady}
+            mtWarmStatus={mtWarmStatus}
             onOpenHistory={() => {
               hardStopAudio();
               setOverlay('history');

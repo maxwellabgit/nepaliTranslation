@@ -622,7 +622,7 @@ export function detectDirection(text: string, preferred: Direction): Direction {
 
 export type TranslateResult = {
   text: string;
-  method: 'phrase' | 'lexicon';
+  method: 'phrase' | 'lexicon' | 'neural';
   direction: Direction;
 };
 
