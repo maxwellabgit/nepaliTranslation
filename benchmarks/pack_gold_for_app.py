@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -11,10 +13,7 @@ GOLD = ROOT / "gold"
 OUT_BENCH = ROOT / "data" / "gold_review_pack.json"
 OUT_MOBILE = ROOT.parent / "mobile" / "assets" / "gold" / "review_pack.json"
 
-sys_path_root = ROOT.parent
-import sys
-
-sys.path.insert(0, str(sys_path_root))
+sys.path.insert(0, str(ROOT.parent))
 from training.sentence_split import is_multi_sentence as _is_multi  # noqa: E402
 
 CLASSES = [
@@ -132,15 +131,35 @@ def infer_provenance(src: dict) -> dict:
     }
 
 
+def _norm_pair_key(source: str, reference: str) -> str:
+    """Normalize for within-class dedupe (punctuation / whitespace)."""
+
+    def one(s: str) -> str:
+        s = s.strip().lower()
+        s = re.sub(r"[?.!,;:।]+$", "", s)
+        return re.sub(r"\s+", " ", s)
+
+    return f"{one(source)}|||{one(reference)}"
+
+
 def pack() -> dict:
     items: list[dict] = []
+    dropped_dups = 0
     for meta in CLASSES:
         cid = meta["id"]
         folder = GOLD / cid
         sources = {r["id"]: r for r in load_jsonl(folder / "sources.jsonl")}
         refs = {r["id"]: r for r in load_jsonl(folder / "references.jsonl")}
+        seen_keys: set[str] = set()
         for sid, src in sources.items():
             ref = refs.get(sid, {})
+            source_text = src.get("source", "")
+            reference_text = ref.get("reference", "")
+            key = _norm_pair_key(source_text, reference_text)
+            if key in seen_keys:
+                dropped_dups += 1
+                continue
+            seen_keys.add(key)
             prov = infer_provenance(src)
             items.append(
                 {
@@ -153,15 +172,17 @@ def pack() -> dict:
                     "target_lang": meta["target_lang"],
                     "source_label": meta["source_label"],
                     "target_label": meta["target_label"],
-                    "source": src.get("source", ""),
-                    "reference": ref.get("reference", ""),
+                    "source": source_text,
+                    "reference": reference_text,
                     "deva": src.get("deva"),
                     "pack_status": src.get("status", "unknown"),
                     "provenance": prov,
-                    "multi_sentence": _is_multi(src.get("source", ""))
-                    or _is_multi(ref.get("reference", "")),
+                    "multi_sentence": _is_multi(source_text) or _is_multi(reference_text),
                 }
             )
+
+    if dropped_dups:
+        print(f"deduped {dropped_dups} within-class duplicate pair(s)")
 
     return {
         "version": 1,

@@ -156,9 +156,16 @@ def score(name: str, fn) -> dict:
         scores = []
         tapai = timi = 0
         n_en = 0
+        seen_pairs: set[str] = set()
         for i in sorted(sources):
-            pred = fn(sources[i]["source"], cls) or ""
-            scores.append(chr_f(pred, refs[i]["reference"]))
+            src = sources[i]["source"]
+            ref = refs[i]["reference"]
+            pair_key = f"{norm(src)}|||{norm(ref)}"
+            if pair_key in seen_pairs:
+                continue
+            seen_pairs.add(pair_key)
+            pred = fn(src, cls) or ""
+            scores.append(chr_f(pred, ref))
             if cls.startswith("en_ne"):
                 n_en += 1
                 if "तपाईं" in pred or "तपाईँ" in pred:
@@ -173,7 +180,7 @@ def score(name: str, fn) -> dict:
             "tapai_rate": round(tapai / n_en, 4) if n_en else None,
             "timi_rate": round(timi / n_en, 4) if n_en else None,
         }
-        print(f"  {name} {cls}: {mean:.1%}", flush=True)
+        print(f"  {name} {cls}: {mean:.1%} (n={len(scores)})", flush=True)
     return {
         "system": name,
         "overall_chrf": round(sum(all_s) / len(all_s), 4) if all_s else 0.0,

@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ComponentProps } from 'react';
 import {
   Alert,
+  Keyboard,
+  Platform,
   Pressable,
   ScrollView,
   Share,
@@ -8,20 +10,28 @@ import {
   Text,
   TextInput,
   View,
+  type NativeSyntheticEvent,
+  type TextInputContentSizeChangeEventData,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { goldPack, GOLD_CLASSES, itemsForClass } from '../gold/pack';
+import { goldPack } from '../gold/pack';
 import type { GoldItem } from '../gold/types';
+import {
+  REVIEW_LANES,
+  allReviewUnits,
+  unitsForLane,
+  type ReviewLane,
+  type ReviewUnit,
+} from '../gold/pairs';
 import benchSnapshot from '../../assets/gold/bench_snapshot.json';
 import {
   buildExportPayload,
   completeFromItem,
   completeSentenceSplits,
-  deleteReview,
   loadReviews,
+  saveReviews,
   type GoldReview,
   type ReviewMap,
-  upsertReview,
 } from '../storage/goldReviews';
 import { isMultiSentence, suggestAlignedSplits, IT2_WINDOW } from '../mt/sentences';
 import { colors } from '../theme';
@@ -32,68 +42,143 @@ type Props = {
   onClose: () => void;
 };
 
+type PairEdits = {
+  shared: string;
+  left: string;
+  right: string;
+};
+
+type AutoHeightProps = ComponentProps<typeof TextInput>;
+
+/** Multiline field that grows with phrase length instead of a fixed tall box. */
+function AutoHeightInput({ style, onContentSizeChange, value, ...rest }: AutoHeightProps) {
+  const [height, setHeight] = useState(36);
+
+  useEffect(() => {
+    // Reset when navigating to a shorter phrase so the box shrinks.
+    setHeight(36);
+  }, [value]);
+
+  const handleSize = (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
+    const next = Math.ceil(e.nativeEvent.contentSize.height);
+    setHeight(Math.max(36, next));
+    onContentSizeChange?.(e);
+  };
+
+  return (
+    <TextInput
+      {...rest}
+      value={value}
+      multiline
+      textAlignVertical="top"
+      scrollEnabled={false}
+      onContentSizeChange={handleSize}
+      style={[styles.field, style, { height: height + 28 }]}
+    />
+  );
+}
+
+function unitCompleted(unit: ReviewUnit, reviews: ReviewMap): boolean {
+  if (!unit.itemIds.length) return false;
+  return unit.itemIds.every((id) => Boolean(reviews[id]?.completed_at));
+}
+
+function unitPending(unit: ReviewUnit, reviews: ReviewMap, showCompleted: boolean): boolean {
+  return showCompleted || !unitCompleted(unit, reviews);
+}
+
 /**
- * Password-gated human gold review — fast path for overnight training loop.
+ * Password-gated human gold review — paired formal/informal + Deva/Roman cards.
  */
 export function GoldReviewScreen({ onClose }: Props) {
   const [unlocked, setUnlocked] = useState(false);
   const [password, setPassword] = useState('');
-  const [classId, setClassId] = useState(GOLD_CLASSES[0]);
+  const [lane, setLane] = useState<ReviewLane>('en_ne');
   const [reviews, setReviews] = useState<ReviewMap>({});
   const [index, setIndex] = useState(0);
-  const [sourceEdit, setSourceEdit] = useState('');
-  const [refEdit, setRefEdit] = useState('');
+  const [edits, setEdits] = useState<PairEdits>({ shared: '', left: '', right: '' });
   const [showCompleted, setShowCompleted] = useState(false);
   const [premiumOnly, setPremiumOnly] = useState(false);
-  const [lastUndoneId, setLastUndoneId] = useState<string | null>(null);
+  const [lastUndoneIds, setLastUndoneIds] = useState<string[]>([]);
 
   useEffect(() => {
     void loadReviews().then(setReviews);
   }, []);
 
-  const classItems = useMemo(() => {
-    const base = itemsForClass(classId);
-    if (!premiumOnly) return base;
-    return base.filter(
-      (i) =>
-        i.provenance.trust === 'gold' ||
-        i.provenance.trust === 'high' ||
-        i.provenance.tier === 'premium',
-    );
-  }, [classId, premiumOnly]);
+  const laneUnits = useMemo(() => {
+    let units = unitsForLane(lane);
+    if (premiumOnly) {
+      units = units.filter((u) => {
+        const items = [u.left, u.right].filter(Boolean) as GoldItem[];
+        return items.some(
+          (i) =>
+            i.provenance.trust === 'gold' ||
+            i.provenance.trust === 'high' ||
+            i.provenance.tier === 'premium' ||
+            i.provenance.tier === 'premium_word_choice',
+        );
+      });
+    }
+    return units;
+  }, [lane, premiumOnly]);
+
   const pending = useMemo(
-    () =>
-      showCompleted
-        ? classItems
-        : classItems.filter((i) => !reviews[i.id]?.completed_at),
-    [classItems, reviews, showCompleted],
+    () => laneUnits.filter((u) => unitPending(u, reviews, showCompleted)),
+    [laneUnits, reviews, showCompleted],
   );
 
-  const item: GoldItem | undefined = pending[Math.min(index, Math.max(pending.length - 1, 0))];
+  const unit: ReviewUnit | undefined = pending[Math.min(index, Math.max(pending.length - 1, 0))];
 
   useEffect(() => {
     setIndex(0);
-  }, [classId, showCompleted, premiumOnly]);
+  }, [lane, showCompleted, premiumOnly]);
 
   useEffect(() => {
-    if (!item) {
-      setSourceEdit('');
-      setRefEdit('');
+    if (!unit) {
+      setEdits({ shared: '', left: '', right: '' });
       return;
     }
-    const existing = reviews[item.id];
-    setSourceEdit(existing?.source_final ?? item.source);
-    setRefEdit(existing?.reference_final ?? item.reference);
-  }, [item?.id, reviews]);
+    const leftRev = unit.left ? reviews[unit.left.id] : undefined;
+    const rightRev = unit.right ? reviews[unit.right.id] : undefined;
+
+    let shared = unit.shared;
+    if (unit.lane === 'en_ne') {
+      shared =
+        leftRev?.source_final ??
+        rightRev?.source_final ??
+        unit.left?.source ??
+        unit.right?.source ??
+        '';
+    } else {
+      shared =
+        leftRev?.reference_final ??
+        rightRev?.reference_final ??
+        unit.left?.reference ??
+        unit.right?.reference ??
+        '';
+    }
+
+    const leftText =
+      unit.lane === 'en_ne'
+        ? (leftRev?.reference_final ?? unit.left?.reference ?? '')
+        : (leftRev?.source_final ?? unit.left?.source ?? '');
+    const rightText =
+      unit.lane === 'en_ne'
+        ? (rightRev?.reference_final ?? unit.right?.reference ?? '')
+        : (rightRev?.source_final ?? unit.right?.source ?? '');
+
+    setEdits({ shared, left: leftText, right: rightText });
+  }, [unit?.id, reviews]);
 
   const totals = useMemo(() => {
-    const done = goldPack.items.filter((i) => reviews[i.id]?.completed_at).length;
-    return { done, total: goldPack.n_items };
+    const all = allReviewUnits();
+    const done = all.filter((u) => unitCompleted(u, reviews)).length;
+    return { done, total: all.length, items: goldPack.n_items };
   }, [reviews]);
 
-  const classDone = useMemo(
-    () => classItems.filter((i) => reviews[i.id]?.completed_at).length,
-    [classItems, reviews],
+  const laneDone = useMemo(
+    () => laneUnits.filter((u) => unitCompleted(u, reviews)).length,
+    [laneUnits, reviews],
   );
 
   const tryUnlock = () => {
@@ -105,17 +190,66 @@ export function GoldReviewScreen({ onClose }: Props) {
     }
   };
 
-  const persist = useCallback(async (review: GoldReview) => {
-    const next = await upsertReview(review);
-    setReviews(next);
-    setLastUndoneId(review.id);
+  const persistMany = useCallback(async (nextReviews: GoldReview[]) => {
+    const map = await loadReviews();
+    for (const review of nextReviews) {
+      map[review.id] = review;
+    }
+    await saveReviews(map);
+    setReviews(map);
+    setLastUndoneIds(nextReviews.map((r) => r.id));
   }, []);
 
+  const buildPairReviews = (action: 'correct' | 'edited'): GoldReview[] | null => {
+    if (!unit) return null;
+    const shared = edits.shared.trim();
+    const leftVal = edits.left.trim();
+    const rightVal = edits.right.trim();
+    if (!shared) {
+      Alert.alert('English required');
+      return null;
+    }
+    if (unit.left && !leftVal) {
+      Alert.alert(`${unit.leftLabel} required`);
+      return null;
+    }
+    if (unit.right && !rightVal) {
+      Alert.alert(`${unit.rightLabel} required`);
+      return null;
+    }
+
+    const out: GoldReview[] = [];
+    if (unit.left) {
+      const src = unit.lane === 'en_ne' ? shared : leftVal;
+      const ref = unit.lane === 'en_ne' ? leftVal : shared;
+      const multi = isMultiSentence(src) || isMultiSentence(ref);
+      out.push(
+        completeFromItem(unit.left, src, ref, {
+          multi_sentence_flag: multi || undefined,
+        }),
+      );
+    }
+    if (unit.right) {
+      const src = unit.lane === 'en_ne' ? shared : rightVal;
+      const ref = unit.lane === 'en_ne' ? rightVal : shared;
+      const multi = isMultiSentence(src) || isMultiSentence(ref);
+      out.push(
+        completeFromItem(unit.right, src, ref, {
+          multi_sentence_flag: multi || undefined,
+        }),
+      );
+    }
+    if (action === 'correct') {
+      // completeFromItem already sets accepted vs edited from content diff
+    }
+    return out;
+  };
+
   const markCorrect = async () => {
-    if (!item) return;
-    const src = sourceEdit.trim() || item.source;
-    const ref = refEdit.trim() || item.reference;
-    if (isMultiSentence(src) || isMultiSentence(ref)) {
+    const built = buildPairReviews('correct');
+    if (!built?.length) return;
+    const multi = built.some((r) => r.multi_sentence_flag);
+    if (multi) {
       Alert.alert(
         'Multi-sentence pair',
         'Fine-tuning is sentence-level. Prefer Split when both sides align, or edit down to one sentence.',
@@ -123,37 +257,32 @@ export function GoldReviewScreen({ onClose }: Props) {
           { text: 'Cancel', style: 'cancel' },
           {
             text: 'Accept anyway',
-            onPress: () =>
-              void persist(
-                completeFromItem(item, src, ref, {
-                  multi_sentence_flag: true,
-                }),
-              ),
+            onPress: () => void persistMany(built),
           },
         ],
       );
       return;
     }
-    await persist(completeFromItem(item, src, ref));
+    await persistMany(built);
   };
 
   const markCompleteEdits = async () => {
-    if (!item) return;
-    if (!sourceEdit.trim() || !refEdit.trim()) {
-      Alert.alert('Both sides required');
-      return;
-    }
-    const multi = isMultiSentence(sourceEdit) || isMultiSentence(refEdit);
-    await persist(
-      completeFromItem(item, sourceEdit, refEdit, {
-        multi_sentence_flag: multi || undefined,
-      }),
-    );
+    const built = buildPairReviews('edited');
+    if (!built?.length) return;
+    await persistMany(built);
   };
 
   const splitAligned = async () => {
-    if (!item) return;
-    const pairs = suggestAlignedSplits(sourceEdit || item.source, refEdit || item.reference);
+    if (!unit?.left && !unit?.right) return;
+    // Split only applies cleanly to a single item; prefer left then right.
+    const item = unit.left ?? unit.right!;
+    const src =
+      unit.lane === 'en_ne' ? edits.shared || item.source : edits.left || item.source;
+    const ref =
+      unit.lane === 'en_ne'
+        ? (unit.left ? edits.left : edits.right) || item.reference
+        : edits.shared || item.reference;
+    const pairs = suggestAlignedSplits(src, ref);
     if (!pairs) {
       Alert.alert(
         'Cannot auto-split',
@@ -166,14 +295,18 @@ export function GoldReviewScreen({ onClose }: Props) {
   };
 
   const undoLast = async () => {
-    const id = lastUndoneId;
-    if (!id || !reviews[id]) {
+    const ids = lastUndoneIds;
+    if (!ids.length) {
       Alert.alert('Nothing to undo');
       return;
     }
-    const next = await deleteReview(id);
-    setReviews(next);
-    setLastUndoneId(null);
+    const map = await loadReviews();
+    for (const id of ids) {
+      delete map[id];
+    }
+    await saveReviews(map);
+    setReviews(map);
+    setLastUndoneIds([]);
   };
 
   const exportReviews = async () => {
@@ -192,6 +325,8 @@ export function GoldReviewScreen({ onClose }: Props) {
       );
     }
   };
+
+  const dismissKeyboard = () => Keyboard.dismiss();
 
   if (!unlocked) {
     return (
@@ -224,6 +359,21 @@ export function GoldReviewScreen({ onClose }: Props) {
     );
   }
 
+  const multiDetect =
+    Boolean(unit) &&
+    (isMultiSentence(edits.shared) ||
+      isMultiSentence(edits.left) ||
+      isMultiSentence(edits.right));
+
+  const primaryItem = unit?.left ?? unit?.right;
+  const splitPairs =
+    unit && primaryItem
+      ? suggestAlignedSplits(
+          unit.lane === 'en_ne' ? edits.shared : edits.left || edits.right,
+          unit.lane === 'en_ne' ? edits.left || edits.right : edits.shared,
+        )
+      : null;
+
   return (
     <View style={styles.root}>
       <View style={styles.header}>
@@ -233,7 +383,8 @@ export function GoldReviewScreen({ onClose }: Props) {
         <View style={styles.headerCenter}>
           <Text style={styles.title}>Gold Review</Text>
           <Text style={styles.progress}>
-            {totals.done}/{totals.total} · {classDone}/{classItems.length} this class
+            {totals.done}/{totals.total} units · {laneDone}/{laneUnits.length} this lane ·{' '}
+            {totals.items} rows
           </Text>
         </View>
         <Pressable onPress={() => void exportReviews()} hitSlop={8}>
@@ -245,22 +396,21 @@ export function GoldReviewScreen({ onClose }: Props) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.classRow}
+        keyboardShouldPersistTaps="handled"
       >
-        {GOLD_CLASSES.map((cid) => {
-          const n = itemsForClass(cid).length;
-          const d = itemsForClass(cid).filter((i) => reviews[i.id]?.completed_at).length;
-          const on = cid === classId;
+        {REVIEW_LANES.map((l) => {
+          const units = unitsForLane(l.id);
+          const d = units.filter((u) => unitCompleted(u, reviews)).length;
+          const on = l.id === lane;
           return (
             <Pressable
-              key={cid}
+              key={l.id}
               style={[styles.chip, on && styles.chipOn]}
-              onPress={() => setClassId(cid)}
+              onPress={() => setLane(l.id)}
             >
-              <Text style={[styles.chipText, on && styles.chipTextOn]}>
-                {cid.replace(/_/g, ' ')}
-              </Text>
+              <Text style={[styles.chipText, on && styles.chipTextOn]}>{l.label}</Text>
               <Text style={[styles.chipSub, on && styles.chipTextOn]}>
-                {d}/{n}
+                {d}/{units.length}
               </Text>
             </Pressable>
           );
@@ -284,139 +434,170 @@ export function GoldReviewScreen({ onClose }: Props) {
         </Text>
       </View>
 
-      <View style={styles.benchCard}>
-        <Text style={styles.benchTitle}>Benchmark · chrF overall</Text>
-        <View style={styles.benchRow}>
-          {(benchSnapshot.models as { id: string; overall: number }[]).map((m) => (
-            <View key={m.id} style={styles.benchCell}>
-              <Text style={styles.benchId}>{m.id}</Text>
-              <Text style={styles.benchVal}>{(100 * m.overall).toFixed(1)}%</Text>
-            </View>
-          ))}
-        </View>
-        <Text style={styles.benchNote}>
-          Formal register OK {(100 * (benchSnapshot.classes[0].register_ok ?? 0)).toFixed(0)}% ·
-          Informal {(100 * (benchSnapshot.classes[1].register_ok ?? 0)).toFixed(0)}% · App ships
-          phrasebook until adapters pass gates
-        </Text>
-      </View>
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        onScrollBeginDrag={dismissKeyboard}
       >
-        {!item ? (
-          <View style={styles.doneCard}>
-            <Text style={styles.doneTitle}>
-              {showCompleted ? 'No rows in this class' : 'Class complete'}
-            </Text>
-            <Text style={styles.doneBody}>
-              {totals.done >= totals.total
-                ? 'All gold reviewed. Export → apply_app_reviews.py → pack_gold_for_app.py.'
-                : 'Pick another class, or Export completed reviews.'}
+        <Pressable style={styles.tapDismiss} onPress={dismissKeyboard}>
+          {!unit ? (
+            <View style={styles.doneCard}>
+              <Text style={styles.doneTitle}>
+                {showCompleted ? 'No rows in this lane' : 'Lane complete'}
+              </Text>
+              <Text style={styles.doneBody}>
+                {totals.done >= totals.total
+                  ? 'All gold reviewed. Export → apply_app_reviews.py → pack_gold_for_app.py.'
+                  : 'Pick the other lane, or Export completed reviews.'}
+              </Text>
+            </View>
+          ) : (
+            <>
+              <Text style={styles.idLine}>
+                {unit.itemIds.join(' · ')}
+                {unit.left && unit.right ? ' · paired' : ' · solo'}
+              </Text>
+              {primaryItem ? (
+                <Text style={styles.prov}>
+                  {primaryItem.provenance.dataset_id} · trust {primaryItem.provenance.trust}
+                  {primaryItem.provenance.note ? ` · ${primaryItem.provenance.note}` : ''}
+                </Text>
+              ) : null}
+              <Text style={styles.windowHint}>
+                FT window ~{IT2_WINDOW.fineTuneMaxLength} tok (model max{' '}
+                {IT2_WINDOW.maxSourcePositions}) · prefer one sentence · approve both variants
+                together
+              </Text>
+
+              {multiDetect ? (
+                <View style={styles.warnCard}>
+                  <Text style={styles.warnTitle}>Multi-sentence detected</Text>
+                  <Text style={styles.warnBody}>
+                    IndicTrans2 fine-tunes per sentence. Split when both sides align, or trim to a
+                    single sentence before completing.
+                  </Text>
+                  {splitPairs ? (
+                    <Pressable style={styles.splitBtn} onPress={() => void splitAligned()}>
+                      <Text style={styles.splitBtnText}>
+                        Split into {splitPairs.length} sentence pairs
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <Text style={styles.warnBody}>
+                      Counts differ — edit manually to one sentence each.
+                    </Text>
+                  )}
+                </View>
+              ) : null}
+
+              <Text style={styles.fieldLabel}>{unit.sharedLabel}</Text>
+              <AutoHeightInput
+                value={edits.shared}
+                onChangeText={(t) => setEdits((e) => ({ ...e, shared: t }))}
+                autoCapitalize="sentences"
+              />
+
+              <View style={styles.pairRow}>
+                {unit.left ? (
+                  <View style={styles.pairCol}>
+                    <Text style={styles.fieldLabel}>{unit.leftLabel}</Text>
+                    <AutoHeightInput
+                      value={edits.left}
+                      onChangeText={(t) => setEdits((e) => ({ ...e, left: t }))}
+                      style={styles.fieldTarget}
+                      autoCorrect={false}
+                      autoCapitalize="none"
+                      // iOS cannot force Devanagari; keep default keyboard so the
+                      // user's last Indic layout can surface when enabled.
+                      keyboardType="default"
+                    />
+                  </View>
+                ) : null}
+                {unit.right ? (
+                  <View style={styles.pairCol}>
+                    <Text style={styles.fieldLabel}>{unit.rightLabel}</Text>
+                    <AutoHeightInput
+                      value={edits.right}
+                      onChangeText={(t) => setEdits((e) => ({ ...e, right: t }))}
+                      style={styles.fieldTarget}
+                      autoCorrect={false}
+                      autoCapitalize="none"
+                      keyboardType="default"
+                    />
+                  </View>
+                ) : null}
+              </View>
+
+              {unit.lane === 'ne_en' && unit.left ? (
+                <Text style={styles.kbdHint}>
+                  {Platform.OS === 'ios'
+                    ? 'iOS cannot auto-select Devanagari. Add Nepali (Devanagari) under Settings → General → Keyboard, then switch with the globe key when editing the left field.'
+                    : 'Android cannot force an Indic IME from the app. Switch to a Nepali/Devanagari keyboard when editing the left field.'}
+                </Text>
+              ) : null}
+
+              <View style={styles.actions}>
+                <Pressable style={styles.correctBtn} onPress={() => void markCorrect()}>
+                  <Text style={styles.correctText}>
+                    ✓ Correct {unit.left && unit.right ? 'both' : ''}
+                  </Text>
+                </Pressable>
+                <Pressable style={styles.primaryBtn} onPress={() => void markCompleteEdits()}>
+                  <Text style={styles.primaryBtnText}>
+                    Save & complete {unit.left && unit.right ? 'both' : ''}
+                  </Text>
+                </Pressable>
+              </View>
+
+              <View style={styles.navRow}>
+                <Pressable
+                  disabled={index <= 0}
+                  onPress={() => setIndex((i) => Math.max(0, i - 1))}
+                >
+                  <Text style={[styles.link, index <= 0 && styles.disabled]}>← Prev</Text>
+                </Pressable>
+                <Pressable
+                  disabled={index >= pending.length - 1}
+                  onPress={() => setIndex((i) => Math.min(pending.length - 1, i + 1))}
+                >
+                  <Text
+                    style={[styles.link, index >= pending.length - 1 && styles.disabled]}
+                  >
+                    Skip →
+                  </Text>
+                </Pressable>
+              </View>
+            </>
+          )}
+
+          <View style={styles.benchCard}>
+            <Text style={styles.benchTitle}>Benchmark · chrF overall</Text>
+            <View style={styles.benchRow}>
+              {(benchSnapshot.models as { id: string; overall: number }[]).map((m) => (
+                <View key={m.id} style={styles.benchCell}>
+                  <Text style={styles.benchId}>{m.id}</Text>
+                  <Text style={styles.benchVal}>{(100 * m.overall).toFixed(1)}%</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={styles.benchNote}>
+              Formal register OK {(100 * (benchSnapshot.classes[0].register_ok ?? 0)).toFixed(0)}% ·
+              Informal {(100 * (benchSnapshot.classes[1].register_ok ?? 0)).toFixed(0)}% · App ships
+              phrasebook until adapters pass gates
             </Text>
           </View>
-        ) : (
-          <>
-            <Text style={styles.idLine}>{item.id}</Text>
-            <Text style={styles.prov}>
-              {item.provenance.dataset_id} · trust {item.provenance.trust}
-              {item.provenance.note ? ` · ${item.provenance.note}` : ''}
-            </Text>
-            <Text style={styles.windowHint}>
-              FT window ~{IT2_WINDOW.fineTuneMaxLength} tok (model max{' '}
-              {IT2_WINDOW.maxSourcePositions}) · prefer one sentence
-            </Text>
 
-            {isMultiSentence(sourceEdit) || isMultiSentence(refEdit) ? (
-              <View style={styles.warnCard}>
-                <Text style={styles.warnTitle}>Multi-sentence detected</Text>
-                <Text style={styles.warnBody}>
-                  IndicTrans2 fine-tunes per sentence. Split when both sides align,
-                  or trim to a single sentence before completing.
-                </Text>
-                {suggestAlignedSplits(sourceEdit, refEdit) ? (
-                  <Pressable style={styles.splitBtn} onPress={() => void splitAligned()}>
-                    <Text style={styles.splitBtnText}>
-                      Split into {suggestAlignedSplits(sourceEdit, refEdit)!.length}{' '}
-                      sentence pairs
-                    </Text>
-                  </Pressable>
-                ) : (
-                  <Text style={styles.warnBody}>
-                    Counts differ — edit manually to one sentence each.
-                  </Text>
-                )}
-              </View>
-            ) : null}
-
-            <Text style={styles.fieldLabel}>{item.source_label}</Text>
-            <TextInput
-              style={styles.field}
-              value={sourceEdit}
-              onChangeText={setSourceEdit}
-              multiline
-              textAlignVertical="top"
-            />
-
-            <Text style={styles.fieldLabel}>{item.target_label}</Text>
-            <TextInput
-              style={[styles.field, styles.fieldTarget]}
-              value={refEdit}
-              onChangeText={setRefEdit}
-              multiline
-              textAlignVertical="top"
-            />
-
-            {item.deva ? (
-              <Text style={styles.devaHint}>Devanagari pair: {item.deva}</Text>
-            ) : null}
-
-            <View style={styles.actions}>
-              <Pressable style={styles.correctBtn} onPress={() => void markCorrect()}>
-                <Text style={styles.correctText}>✓ Correct</Text>
-              </Pressable>
-              <Pressable
-                style={styles.primaryBtn}
-                onPress={() => void markCompleteEdits()}
-              >
-                <Text style={styles.primaryBtnText}>Save & complete</Text>
-              </Pressable>
-            </View>
-
-            <View style={styles.navRow}>
-              <Pressable
-                disabled={index <= 0}
-                onPress={() => setIndex((i) => Math.max(0, i - 1))}
-              >
-                <Text style={[styles.link, index <= 0 && styles.disabled]}>← Prev</Text>
-              </Pressable>
-              <Pressable
-                disabled={index >= pending.length - 1}
-                onPress={() => setIndex((i) => Math.min(pending.length - 1, i + 1))}
-              >
-                <Text
-                  style={[
-                    styles.link,
-                    index >= pending.length - 1 && styles.disabled,
-                  ]}
-                >
-                  Skip →
-                </Text>
-              </Pressable>
-            </View>
-          </>
-        )}
-
-        <View style={styles.catalog}>
-          <Text style={styles.catalogTitle}>Dataset trust (for later train pulls)</Text>
-          {goldPack.dataset_catalog.map((d) => (
-            <Text key={d.id} style={styles.catalogLine}>
-              {d.trust.toUpperCase()} · {d.id} — {d.use}
-            </Text>
-          ))}
-        </View>
+          <View style={styles.catalog}>
+            <Text style={styles.catalogTitle}>Dataset trust (for later train pulls)</Text>
+            {goldPack.dataset_catalog.map((d) => (
+              <Text key={d.id} style={styles.catalogLine}>
+                {d.trust.toUpperCase()} · {d.id} — {d.use}
+              </Text>
+            ))}
+          </View>
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -466,7 +647,12 @@ const styles = StyleSheet.create({
     borderColor: colors.divider,
   },
   chipOn: { backgroundColor: colors.crimson, borderColor: colors.crimson },
-  chipText: { fontSize: 12, fontWeight: '700', color: colors.text, textTransform: 'capitalize' },
+  chipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text,
+    textTransform: 'capitalize',
+  },
   chipTextOn: { color: '#fff' },
   chipSub: { fontSize: 10, color: colors.textSecondary, marginTop: 2 },
   toolbar: {
@@ -478,8 +664,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   meta: { fontSize: 12, color: colors.textSecondary, fontWeight: '600' },
+  tapDismiss: { flexGrow: 1 },
   benchCard: {
-    marginHorizontal: 16,
+    marginTop: 22,
     marginBottom: 10,
     padding: 12,
     borderRadius: 14,
@@ -543,15 +730,28 @@ const styles = StyleSheet.create({
   field: {
     backgroundColor: colors.surface,
     borderRadius: 16,
-    padding: 14,
-    fontSize: 20,
-    lineHeight: 28,
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 12,
+    fontSize: 18,
+    lineHeight: 26,
     color: colors.text,
-    minHeight: 88,
     marginBottom: 14,
   },
-  fieldTarget: { minHeight: 100 },
-  devaHint: { fontSize: 13, color: colors.textSecondary, marginBottom: 12 },
+  fieldTarget: {},
+  pairRow: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'flex-start',
+  },
+  pairCol: { flex: 1, minWidth: 0 },
+  kbdHint: {
+    fontSize: 11,
+    lineHeight: 15,
+    color: colors.textSecondary,
+    marginBottom: 12,
+    marginTop: -4,
+  },
   actions: { gap: 10, marginTop: 4 },
   correctBtn: {
     backgroundColor: colors.forestSoft,
