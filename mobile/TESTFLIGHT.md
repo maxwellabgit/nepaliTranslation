@@ -2,9 +2,9 @@
 
 Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight.
 
-**Current target:** **1.4.5** — Paired Gold Review (formal/informal + Deva/Roman), Settings entry for Gold Review, auto-height phrase fields, keyboard dismiss.
+**Current target:** **1.5.0** — First traveler release. Honest phrasebook UX, Formal/Roman chip stability, suggested phrases, Gold Review lane chips fixed.
 
-**What this binary runs today:** offline **phrasebook + lexicon** MT + Apple speech recognition. IndicTrans2 LoRA adapters are trained overnight and only ship after gold gates pass.
+**What this binary runs today:** offline **phrasebook + lexicon** MT + Apple speech recognition. It is **not** a full on-device neural model yet. IndicTrans2 ships later after gold gates pass.
 
 ## Build & submit
 
@@ -16,19 +16,19 @@ npx eas build --platform ios --profile production --auto-submit
 ## On your iPhone
 
 1. TestFlight → refresh **NepTranslate** → Update  
-2. Confirm Settings → About: `v1.4.5`
+2. Confirm Settings → About: `v1.5.0`
 
 App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/ios
 
 ## What to verify
 
-- **Auto** — type/speak; Formal/Informal; Devanagari/Roman; result label shows register+script  
-- **Conversation** — Pass the phone; Roman toggle on Nepali originals  
-- **Settings** — gear → About; Advanced → Gold Review  
-- **Gold Review** — password `1234` → paired formal/informal or Deva/Roman → Correct both / Save & complete both / Undo / Export  
-- **Benchmark strip** — chrF snapshot below the editors  
-- **Keyboard** — tap outside fields dismisses; Devanagari needs globe-key (iOS cannot force script)  
-- **Offline** — airplane mode; phrasebook still works  
+- **Auto** — type/speak; Formal/Informal; Devanagari/Roman; result label shows `saved phrase` or `word guess`  
+- **Misses** — free chat without a phrase shows “No saved phrase yet” + quick suggestions (not a blank model failure)  
+- **Conversation** — Pass the phone; empty Pass blocked; Roman toggle on Nepali originals  
+- **Tabs** — switching Auto ↔ Conversation stops mic/TTS cleanly  
+- **Settings** — About honesty copy; Advanced → Gold Review  
+- **Gold Review** — password `1234` → compact lane chips → targets visible  
+- **Offline** — airplane mode; phrasebook still works (Apple voice may not)
 
 ## Gold → train loop
 
@@ -36,12 +36,3 @@ App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/
 2. `python benchmarks/apply_app_reviews.py reviews.json`  
 3. `python benchmarks/pack_gold_for_app.py`  
 4. Bump version → EAS build → submit  
-
-## After overnight FT
-
-```powershell
-# Or let training/run_overnight_pipeline.py finish
-python benchmarks/eval_it2_gold.py --systems it2_base,it2_big,it2_overnight --tag overnight_post
-```
-
-Ship adapters only if gates in `training/OVERNIGHT_FT_PLAN.md` pass.

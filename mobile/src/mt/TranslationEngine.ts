@@ -1,6 +1,7 @@
 /**
- * Neural translation engine interface (on-device).
- * Phrasebook remains the fallback until ONNX/IndicTrans2 weights are bundled.
+ * Phrasebook translation façade.
+ * ONNX/IndicTrans2 is not wired in this traveler build — translate() always
+ * runs the on-device phrasebook + lexicon path.
  */
 import {
   translateBySentences,
@@ -13,8 +14,7 @@ import {
 
 export type EngineState = 'idle' | 'loading' | 'ready' | 'translating' | 'error';
 
-export type NeuralTranslateRequest = {
-  id: number;
+export type TranslateRequest = {
   text: string;
   preferred: Direction;
   formality: Formality;
@@ -23,9 +23,15 @@ export type NeuralTranslateRequest = {
   bySentences?: boolean;
 };
 
+export type EngineTranslateResult = TranslateResult & {
+  requestId: number;
+  /** True when a newer translate/cancel superseded this request. */
+  cancelled: boolean;
+};
+
 /**
- * Async façade matching the review-plan TranslationEngine.
- * Today: wraps sync phrasebook. Tomorrow: ONNX Runtime session + cancellation.
+ * Async façade for UI. Today: sync phrasebook. Sequence ids let callers
+ * ignore stale results when chips / STT fire rapidly.
  */
 export class TranslationEngine {
   private state: EngineState = 'ready';
@@ -41,13 +47,10 @@ export class TranslationEngine {
   }
 
   async warmUp(): Promise<void> {
-    // Placeholder for loading ONNX encoder/decoder once.
     this.state = 'ready';
   }
 
-  async translate(
-    req: Omit<NeuralTranslateRequest, 'id'>,
-  ): Promise<TranslateResult & { requestId: number }> {
+  async translate(req: TranslateRequest): Promise<EngineTranslateResult> {
     const requestId = ++this.seq;
     this.state = 'translating';
     try {
@@ -56,11 +59,9 @@ export class TranslationEngine {
         formality: req.formality,
         script: req.script,
       });
-      if (requestId !== this.seq) {
-        return { ...result, requestId };
-      }
-      this.state = 'ready';
-      return { ...result, requestId };
+      const cancelled = requestId !== this.seq;
+      if (!cancelled) this.state = 'ready';
+      return { ...result, requestId, cancelled };
     } catch (e) {
       this.state = 'error';
       this.lastError = e instanceof Error ? e.message : String(e);

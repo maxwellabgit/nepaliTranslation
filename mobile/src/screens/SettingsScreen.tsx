@@ -11,7 +11,7 @@ type Props = {
 const APP_VERSION =
   Constants.expoConfig?.version ??
   Constants.nativeAppVersion ??
-  '1.4.5';
+  '1.5.0';
 const BUILD_NUMBER =
   Constants.expoConfig?.ios?.buildNumber ??
   Constants.nativeBuildVersion ??
@@ -40,8 +40,9 @@ export function SettingsScreen({ onClose, onOpenGoldReview }: Props) {
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
-          NepTranslate works offline on this device. Speech uses Apple recognition.
-          Translation today is phrasebook + lexicon — not a cloud model.
+          NepTranslate is a traveler phrasebook for English ↔ Nepali. Saved phrases
+          and word guesses run on this device. Speech uses Apple recognition and may
+          need a network. This build is not a full neural translator yet.
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}
