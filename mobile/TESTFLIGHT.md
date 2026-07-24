@@ -2,7 +2,7 @@
 
 Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight.
 
-**Current target:** **1.4.3** — Auto + Conversation UX polish, Gold Review speedups, benchmark snapshot in-app.
+**Current target:** **1.4.5** — Paired Gold Review (formal/informal + Deva/Roman), Settings entry for Gold Review, auto-height phrase fields, keyboard dismiss.
 
 **What this binary runs today:** offline **phrasebook + lexicon** MT + Apple speech recognition. IndicTrans2 LoRA adapters are trained overnight and only ship after gold gates pass.
 
@@ -16,7 +16,7 @@ npx eas build --platform ios --profile production --auto-submit
 ## On your iPhone
 
 1. TestFlight → refresh **NepTranslate** → Update  
-2. Confirm footer: `v1.4.3 · voice via Apple · MT offline`
+2. Confirm Settings → About: `v1.4.5`
 
 App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/ios
 
@@ -24,8 +24,10 @@ App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/
 
 - **Auto** — type/speak; Formal/Informal; Devanagari/Roman; result label shows register+script  
 - **Conversation** — Pass the phone; Roman toggle on Nepali originals  
-- **Gold Review** — ▣ → password `1234` → Correct (keeps edits) / Complete / Split / Undo / Premium first / Export (Share)  
-- **Benchmark strip** — chrF snapshot at top of Gold Review  
+- **Settings** — gear → About; Advanced → Gold Review  
+- **Gold Review** — password `1234` → paired formal/informal or Deva/Roman → Correct both / Save & complete both / Undo / Export  
+- **Benchmark strip** — chrF snapshot below the editors  
+- **Keyboard** — tap outside fields dismisses; Devanagari needs globe-key (iOS cannot force script)  
 - **Offline** — airplane mode; phrasebook still works  
 
 ## Gold → train loop

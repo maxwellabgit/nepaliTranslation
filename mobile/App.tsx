@@ -1,15 +1,16 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
 import { GoldReviewScreen } from './src/screens/GoldReviewScreen';
 import type { HistoryItem } from './src/storage/phrasebook';
 import { colors } from './src/theme';
 
 type Mode = 'auto' | 'conversation';
-type Overlay = 'history' | 'gold' | null;
+type Overlay = 'history' | 'settings' | 'gold' | null;
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('auto');
@@ -34,11 +35,23 @@ export default function App() {
     );
   }
 
+  if (overlay === 'settings') {
+    return (
+      <SafeAreaView style={styles.root}>
+        <StatusBar style="dark" />
+        <SettingsScreen
+          onClose={() => setOverlay(null)}
+          onOpenGoldReview={() => setOverlay('gold')}
+        />
+      </SafeAreaView>
+    );
+  }
+
   if (overlay === 'gold') {
     return (
       <SafeAreaView style={styles.root}>
         <StatusBar style="dark" />
-        <GoldReviewScreen onClose={() => setOverlay(null)} />
+        <GoldReviewScreen onClose={() => setOverlay('settings')} />
       </SafeAreaView>
     );
   }
@@ -48,13 +61,13 @@ export default function App() {
       <StatusBar style="dark" />
       <View style={styles.body}>
         {mode === 'conversation' ? (
-          <ConversationScreen onOpenGoldReview={() => setOverlay('gold')} />
+          <ConversationScreen />
         ) : (
           <HomeScreen
             key={seedKey}
             seed={seed}
             onOpenHistory={() => setOverlay('history')}
-            onOpenGoldReview={() => setOverlay('gold')}
+            onOpenSettings={() => setOverlay('settings')}
           />
         )}
       </View>

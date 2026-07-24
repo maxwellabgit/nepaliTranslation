@@ -4,6 +4,7 @@ import {
   Keyboard,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -15,7 +16,6 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
-import { LightSwitch } from '../components/LightSwitch';
 import {
   detectDirection,
   formatNepaliScript,
@@ -26,44 +26,36 @@ import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { addHistory, isStarred, toggleStar, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import { colors } from '../theme';
-import Constants from 'expo-constants';
 
 type Props = {
   seed?: HistoryItem | null;
   onOpenHistory: () => void;
-  onOpenGoldReview: () => void;
+  onOpenSettings: () => void;
 };
 
 function delay(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-const APP_VERSION =
-  Constants.expoConfig?.version ??
-  Constants.nativeAppVersion ??
-  '1.4.3';
-const BUILD_NUMBER =
-  Constants.expoConfig?.ios?.buildNumber ??
-  Constants.nativeBuildVersion ??
-  '';
-
-
 /**
- * Auto mode: one text box + mic. Type or speak; live translate as speech arrives.
+ * Auto mode — bottom input dock, results above (fleet Team A).
+ * Formal / script as compact chips. Honest footer: phrasebook offline.
  */
-export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
+export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   const [formalOn, setFormalOn] = useState(true);
   const [devaOn, setDevaOn] = useState(true);
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
   const [listening, setListening] = useState(false);
   const [starred, setStarred] = useState(false);
+  const [romanTip, setRomanTip] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const idleHistoryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const prefsLoadedRef = useRef(false);
   const listeningRef = useRef(false);
   const startingRef = useRef(false);
+  const sttLangRef = useRef<'en-US' | 'ne-NP'>('en-US');
   const preferredRef = useRef<'en-ne' | 'ne-en'>(
     seed?.sourceLang === 'ne' ? 'ne-en' : 'en-ne',
   );
@@ -94,9 +86,9 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
   }, []);
 
   const saveHistoryFor = useCallback(
-    (t: string, translation: string, direction: 'en-ne' | 'ne-en') => {
-      const sl = direction === 'en-ne' ? 'en' : 'ne';
-      const tl = direction === 'en-ne' ? 'ne' : 'en';
+    (t: string, translation: string, dir: 'en-ne' | 'ne-en') => {
+      const sl = dir === 'en-ne' ? 'en' : 'ne';
+      const tl = dir === 'en-ne' ? 'ne' : 'en';
       void addHistory({
         source: t,
         translation,
@@ -108,27 +100,24 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
     [],
   );
 
-  const previewTranslate = useCallback(
-    (raw: string) => {
-      const t = raw.trim();
-      if (!t) {
-        setOutput('');
-        return;
-      }
-      void sharedTranslationEngine
-        .translate({
-          text: t,
-          preferred: preferredRef.current,
-          formality: optsRef.current.formality,
-          script: optsRef.current.script,
-        })
-        .then((result) => {
-          preferredRef.current = result.direction;
-          setOutput(result.text);
-        });
-    },
-    [],
-  );
+  const previewTranslate = useCallback((raw: string) => {
+    const t = raw.trim();
+    if (!t) {
+      setOutput('');
+      return;
+    }
+    void sharedTranslationEngine
+      .translate({
+        text: t,
+        preferred: preferredRef.current,
+        formality: optsRef.current.formality,
+        script: optsRef.current.script,
+      })
+      .then((result) => {
+        preferredRef.current = result.direction;
+        setOutput(result.text);
+      });
+  }, []);
 
   const commitTranslate = useCallback(
     (raw: string) => {
@@ -153,11 +142,35 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
     [saveHistoryFor],
   );
 
+  /** Restart STT when Detect flips mid-listen (Team H). */
+  const syncSttLocale = useCallback(
+    async (dir: 'en-ne' | 'ne-en') => {
+      if (!listeningRef.current) return;
+      const nextLang = dir === 'ne-en' ? 'ne-NP' : 'en-US';
+      if (sttLangRef.current === nextLang) return;
+      sttLangRef.current = nextLang;
+      try {
+        hardStopRecognition();
+        await delay(160);
+        if (!listeningRef.current) return;
+        ExpoSpeechRecognitionModule.start({
+          lang: nextLang,
+          interimResults: true,
+          continuous: false,
+          requiresOnDeviceRecognition: false,
+        });
+      } catch {
+        listeningRef.current = false;
+        setListening(false);
+      }
+    },
+    [hardStopRecognition],
+  );
+
   useSpeechRecognitionEvent('result', (event) => {
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
     if (!text) return;
     setInput(text);
-    // Live-fill translation while the user is speaking (sentence-aware).
     void sharedTranslationEngine
       .translate({
         text,
@@ -168,6 +181,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
       .then((result) => {
         preferredRef.current = result.direction;
         setOutput(result.text);
+        void syncSttLocale(result.direction);
         if (event.isFinal) {
           listeningRef.current = false;
           setListening(false);
@@ -207,11 +221,16 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
 
   useEffect(() => {
     if (!prefsLoadedRef.current) return;
-    void savePrefs({ formalOn, devaOn });
+    void loadPrefs().then((prev) => {
+      void savePrefs({
+        ...prev,
+        formalOn,
+        devaOn,
+      });
+    });
   }, [formalOn, devaOn]);
 
   useEffect(() => {
-    // While listening, speech handler already live-updates output.
     if (listeningRef.current) return;
 
     requestIdRef.current += 1;
@@ -267,7 +286,6 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
 
     startingRef.current = true;
     try {
-      // Always fully reset before a new session — second tap often fails otherwise.
       hardStopRecognition();
       await delay(180);
 
@@ -281,6 +299,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
       setListening(true);
       setOutput('');
       const lang = preferredRef.current === 'ne-en' ? 'ne-NP' : 'en-US';
+      sttLangRef.current = lang;
       ExpoSpeechRecognitionModule.start({
         lang,
         interimResults: true,
@@ -291,7 +310,6 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
       listeningRef.current = false;
       setListening(false);
     } finally {
-      // Allow end/error handlers after start settles.
       await delay(50);
       startingRef.current = false;
     }
@@ -315,10 +333,31 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
     );
   };
 
+  const onShare = async () => {
+    const text = displayOutput.trim();
+    if (!text) return;
+    try {
+      await Share.share({ message: text });
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const setDevaWithTip = (next: boolean) => {
+    setDevaOn(next);
+    if (!next) {
+      void loadPrefs().then((prefs) => {
+        if (!prefs.romanTipSeen) {
+          setRomanTip(true);
+          void savePrefs({ ...prefs, formalOn, devaOn: false, romanTipSeen: true });
+        }
+      });
+    }
+  };
+
   const displayOutput =
     targetLang === 'ne' ? formatNepaliScript(output, script) : output;
   const showResult = Boolean(input.trim() && displayOutput);
-  const historyLabel = direction === 'ne-en' ? 'इतिहास' : 'History';
 
   return (
     <View style={styles.root}>
@@ -328,9 +367,9 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
           hitSlop={12}
           style={styles.headerBtn}
           accessibilityRole="button"
-          accessibilityLabel={historyLabel}
+          accessibilityLabel="Your activity"
         >
-          <Text style={styles.historyLabel}>{historyLabel}</Text>
+          <Text style={styles.headerLink}>Activity</Text>
         </Pressable>
         <View style={styles.brandBlock}>
           <Image
@@ -343,31 +382,14 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
           </Text>
         </View>
         <Pressable
-          onPress={onOpenGoldReview}
+          onPress={onOpenSettings}
           hitSlop={12}
           style={styles.headerBtn}
           accessibilityRole="button"
-          accessibilityLabel="Gold review"
+          accessibilityLabel="Settings"
         >
-          <Text style={styles.reviewGlyph}>▣</Text>
+          <Text style={styles.headerLink}>Settings</Text>
         </Pressable>
-      </View>
-
-      <View style={styles.switches}>
-        <LightSwitch
-          value={formalOn}
-          onValueChange={setFormalOn}
-          offLabel="Informal"
-          onLabel="Formal"
-          accessibilityLabel="Formal or informal Nepali register"
-        />
-        <LightSwitch
-          value={devaOn}
-          onValueChange={setDevaOn}
-          offLabel="Roman"
-          onLabel="देवनागरी"
-          accessibilityLabel="Devanagari or Roman Nepali script"
-        />
       </View>
 
       <ScrollView
@@ -375,41 +397,129 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={[styles.card, listening && styles.cardListening]}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.inputLang}>
+        {showResult ? (
+          <View style={styles.resultBlock}>
+            <Text style={styles.resultLang}>
               {listening
-                ? 'Listening…'
-                : input.trim()
-                  ? sourceName
-                  : 'English or Nepali'}
+                ? `${targetName} · live`
+                : targetLang === 'ne'
+                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'} · phrasebook`
+                  : `${targetName} · phrasebook`}
             </Text>
-            <Pressable
-              onPress={() => void toggleVoice()}
-              style={[styles.micBtn, listening && styles.micBtnOn]}
-              hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel={listening ? 'Stop listening' : 'Speak to translate'}
+            <Text
+              style={[
+                styles.resultText,
+                targetLang === 'ne' && script === 'deva' && styles.resultNe,
+              ]}
+              selectable
             >
-              <Text style={styles.micGlyph}>{listening ? '■' : '🎤'}</Text>
-            </Pressable>
+              {displayOutput}
+            </Text>
+            <Text style={styles.sourceEcho} numberOfLines={3}>
+              {sourceName}: {input.trim()}
+            </Text>
+            <View style={styles.resultActions}>
+              <Pressable onPress={() => speak(displayOutput, targetLang)} hitSlop={8}>
+                <Text style={styles.actionLabel}>Speak</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => void Clipboard.setStringAsync(displayOutput)}
+                hitSlop={8}
+              >
+                <Text style={styles.actionLabel}>Copy</Text>
+              </Pressable>
+              <Pressable onPress={() => void onStar()} hitSlop={8}>
+                <Text style={[styles.actionLabel, starred && styles.actionStarred]}>
+                  {starred ? 'Starred' : 'Star'}
+                </Text>
+              </Pressable>
+              <Pressable onPress={() => void onShare()} hitSlop={8}>
+                <Text style={styles.actionLabel}>Share</Text>
+              </Pressable>
+            </View>
           </View>
+        ) : (
+          <View style={styles.emptyResult}>
+            <Text style={styles.emptyTitle}>Type or speak</Text>
+            <Text style={styles.emptyBody}>
+              English ↔ Nepali on this device. Results appear here.
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+
+      {romanTip ? (
+        <View style={styles.tipBanner}>
+          <Text style={styles.tipText}>
+            Roman shows everyday Latin spelling. Devanagari stays the written default.
+          </Text>
+          <Pressable onPress={() => setRomanTip(false)} hitSlop={8}>
+            <Text style={styles.tipDismiss}>Got it</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      <View style={[styles.dock, listening && styles.dockListening]}>
+        <View style={styles.chipRow}>
+          <Pressable
+            onPress={() => setFormalOn(true)}
+            style={[styles.chip, formalOn && styles.chipOn]}
+          >
+            <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>Formal</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setFormalOn(false)}
+            style={[styles.chip, !formalOn && styles.chipOn]}
+          >
+            <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
+              Informal
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setDevaWithTip(true)}
+            style={[styles.chip, devaOn && styles.chipOn]}
+          >
+            <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setDevaWithTip(false)}
+            style={[styles.chip, !devaOn && styles.chipOn]}
+          >
+            <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
             value={input}
             onChangeText={setInput}
             onBlur={() => commitTranslate(input)}
             onSubmitEditing={() => commitTranslate(input)}
-            placeholder="Say or type in English or Nepali"
+            placeholder="English or Nepali"
             placeholderTextColor={colors.textPlaceholder}
             multiline
             textAlignVertical="top"
             autoCorrect
-            editable
           />
+          <Pressable
+            onPress={() => void toggleVoice()}
+            style={[styles.micBtn, listening && styles.micBtnOn]}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={listening ? 'Stop listening' : 'Speak to translate'}
+          >
+            <Text style={styles.micGlyph}>{listening ? 'Stop' : 'Mic'}</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.dockMeta}>
+          <Text style={styles.inputLang}>
+            {listening ? 'Listening…' : input.trim() ? sourceName : 'Detect'}
+          </Text>
           {!input ? (
-            <Pressable style={styles.pasteBtn} onPress={paste}>
-              <Text style={styles.pasteText}>Paste</Text>
+            <Pressable onPress={() => void paste()} hitSlop={8}>
+              <Text style={styles.metaAction}>Paste</Text>
             </Pressable>
           ) : (
             <Pressable
@@ -424,51 +534,14 @@ export function HomeScreen({ seed, onOpenHistory, onOpenGoldReview }: Props) {
               }}
               hitSlop={8}
             >
-              <Text style={styles.clear}>✕</Text>
+              <Text style={styles.metaAction}>Clear</Text>
             </Pressable>
           )}
         </View>
+      </View>
 
-        {showResult ? (
-          <View style={styles.resultCard}>
-            <Text style={styles.resultLang}>
-              {listening
-                ? `${targetName} · live`
-                : targetLang === 'ne'
-                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'}`
-                  : targetName}
-            </Text>
-            <Text
-              style={[
-                styles.resultText,
-                targetLang === 'ne' && script === 'deva' && styles.resultNe,
-              ]}
-              selectable
-            >
-              {displayOutput}
-            </Text>
-            <View style={styles.resultActions}>
-              <Pressable onPress={() => speak(displayOutput, targetLang)} hitSlop={8}>
-                <Text style={styles.actionIcon}>🔊</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => Clipboard.setStringAsync(displayOutput)}
-                hitSlop={8}
-              >
-                <Text style={styles.actionIcon}>⧉</Text>
-              </Pressable>
-              <Pressable onPress={onStar} hitSlop={8}>
-                <Text style={[styles.actionIcon, starred && { color: colors.star }]}>
-                  {starred ? '★' : '☆'}
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        ) : null}
-      </ScrollView>
-      <Text style={styles.versionLine}>
-        v{APP_VERSION}
-        {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''} · voice via Apple · MT offline
+      <Text style={styles.trustLine}>
+        phrasebook offline · voice via Apple
       </Text>
     </View>
   );
@@ -484,20 +557,16 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   headerBtn: {
-    width: 48,
+    minWidth: 64,
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 4,
   },
-  historyLabel: {
+  headerLink: {
     fontSize: 13,
     fontWeight: '700',
     color: colors.text,
-  },
-  reviewGlyph: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textSecondary,
   },
   brandBlock: { flex: 1, alignItems: 'center', gap: 2 },
   brandMark: { width: 36, height: 36, borderRadius: 9 },
@@ -508,75 +577,33 @@ const styles = StyleSheet.create({
     color: colors.crimson,
   },
   modeTag: { fontSize: 11, color: colors.textSecondary, fontWeight: '600' },
-  switches: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    gap: 10,
-    alignItems: 'center',
-  },
   scroll: { flex: 1 },
-  scrollContent: { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 4 },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: 18,
-    minHeight: 160,
-    borderWidth: 2,
-    borderColor: 'transparent',
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    paddingTop: 8,
+    flexGrow: 1,
   },
-  cardListening: {
-    borderColor: colors.forest,
-    backgroundColor: '#F4FBF7',
+  emptyResult: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 48,
+    paddingHorizontal: 8,
   },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: colors.text,
     marginBottom: 8,
   },
-  inputLang: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.4,
+  emptyBody: {
+    fontSize: 15,
+    lineHeight: 22,
     color: colors.textSecondary,
-    textTransform: 'uppercase',
-    flex: 1,
-    paddingRight: 8,
   },
-  micBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.pasteBg,
-  },
-  micBtnOn: {
-    backgroundColor: colors.forestSoft,
-  },
-  micGlyph: { fontSize: 20 },
-  input: {
-    fontSize: 24,
-    lineHeight: 32,
-    color: colors.text,
-    minHeight: 88,
-    padding: 0,
-  },
-  pasteBtn: {
-    alignSelf: 'flex-start',
-    marginTop: 10,
-    backgroundColor: colors.pasteBg,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 16,
-  },
-  pasteText: { fontSize: 14, color: colors.blue, fontWeight: '600' },
-  clear: { fontSize: 18, color: colors.textSecondary, marginTop: 8 },
-  resultCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: 18,
-    marginTop: 12,
+  resultBlock: {
+    paddingTop: 8,
+    gap: 10,
   },
   resultLang: {
     fontSize: 11,
@@ -584,20 +611,129 @@ const styles = StyleSheet.create({
     color: colors.crimson,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
-    marginBottom: 8,
   },
-  resultText: { fontSize: 24, lineHeight: 34, color: colors.text, fontWeight: '600' },
-  resultNe: { fontSize: 26, lineHeight: 38 },
+  resultText: {
+    fontSize: 28,
+    lineHeight: 38,
+    color: colors.text,
+    fontWeight: '700',
+  },
+  resultNe: { fontSize: 30, lineHeight: 42 },
+  sourceEcho: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.textSecondary,
+  },
   resultActions: {
     flexDirection: 'row',
-    gap: 22,
-    marginTop: 14,
+    flexWrap: 'wrap',
+    gap: 18,
+    marginTop: 8,
     paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.divider,
   },
-  actionIcon: { fontSize: 22, color: colors.textSecondary },
-  versionLine: {
+  actionLabel: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.forest,
+  },
+  actionStarred: { color: colors.star },
+  tipBanner: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+    padding: 12,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    gap: 8,
+  },
+  tipText: { fontSize: 13, lineHeight: 18, color: colors.text },
+  tipDismiss: { fontSize: 13, fontWeight: '800', color: colors.forest },
+  dock: {
+    marginHorizontal: 12,
+    marginBottom: 4,
+    padding: 12,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    gap: 10,
+  },
+  dockListening: {
+    borderColor: colors.forest,
+    backgroundColor: '#F4FBF7',
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  chip: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: colors.pasteBg,
+  },
+  chipOn: {
+    backgroundColor: colors.crimson,
+  },
+  chipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  chipTextOn: { color: '#fff' },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: 20,
+    lineHeight: 28,
+    color: colors.text,
+    minHeight: 52,
+    maxHeight: 120,
+    padding: 0,
+  },
+  micBtn: {
+    minWidth: 56,
+    height: 44,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    backgroundColor: colors.pasteBg,
+  },
+  micBtnOn: {
+    backgroundColor: colors.forestSoft,
+  },
+  micGlyph: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  dockMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  inputLang: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
+  },
+  metaAction: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.blue,
+  },
+  trustLine: {
     textAlign: 'center',
     fontSize: 11,
     color: colors.textPlaceholder,

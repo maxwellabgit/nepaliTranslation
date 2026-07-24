@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -13,7 +14,6 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
-import { LightSwitch } from '../components/LightSwitch';
 import {
   formatNepaliScript,
   translateOnDevice,
@@ -29,23 +29,15 @@ type Side = 'en' | 'ne';
 type Turn = {
   id: string;
   from: Side;
-  /** What the speaker said (source language). */
   heard: string;
-  /** What the other person should read (always the translation). */
   show: string;
 };
 
 /**
  * Conversation = pass-the-phone dialogue.
- * - Language is forced by whose turn it is (never auto-detect flip).
- * - Latest line is a hero card: big text = show the other person.
- * - Pass flushes, flips side, speaks the line, and auto-listens for them.
+ * Fleet B/H: Pass + consent; empty Pass blocked; Show fullscreen; Formal refreshes hero.
  */
-export function ConversationScreen({
-  onOpenGoldReview,
-}: {
-  onOpenGoldReview?: () => void;
-}) {
+export function ConversationScreen() {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [side, setSide] = useState<Side>('en');
   const [listening, setListening] = useState(false);
@@ -53,7 +45,10 @@ export function ConversationScreen({
   const [interim, setInterim] = useState('');
   const [formalOn, setFormalOn] = useState(true);
   const [devaOn, setDevaOn] = useState(true);
-  const [faceToFace, setFaceToFace] = useState(false);
+  const [showPartner, setShowPartner] = useState(false);
+  const [partnerRotate, setPartnerRotate] = useState(false);
+  const [consentVisible, setConsentVisible] = useState(false);
+  const [passBlockedHint, setPassBlockedHint] = useState(false);
 
   const sideRef = useRef<Side>('en');
   const interimRef = useRef('');
@@ -76,7 +71,6 @@ export function ConversationScreen({
     const preferred = from === 'en' ? 'en-ne' : 'ne-en';
     return translateOnDevice(text, preferred, {
       formality: formalityRef.current,
-      // Store Devanagari canonically; format at display time.
       script: 'deva',
       forcePreferred: true,
     });
@@ -121,7 +115,6 @@ export function ConversationScreen({
         emittedCountRef.current,
       );
       for (const sent of newSentences) {
-        // Live commits: no TTS while mic is open (fights the recognizer).
         commitSentence(sent, from, false);
       }
       emittedCountRef.current = nextEmittedCount;
@@ -158,13 +151,32 @@ export function ConversationScreen({
       setFormalOn(prefs.formalOn);
       setDevaOn(prefs.devaOn);
       prefsLoadedRef.current = true;
+      if (!prefs.conversationConsentSeen) {
+        setConsentVisible(true);
+      }
     });
   }, []);
 
   useEffect(() => {
     if (!prefsLoadedRef.current) return;
-    void savePrefs({ formalOn, devaOn });
+    void loadPrefs().then((prev) => {
+      void savePrefs({
+        ...prev,
+        formalOn,
+        devaOn,
+      });
+    });
   }, [formalOn, devaOn]);
+
+  useEffect(() => {
+    if (!prefsLoadedRef.current) return;
+    setTurns((prev) =>
+      prev.map((t) => {
+        const result = translateForced(t.heard, t.from);
+        return { ...t, show: result.text };
+      }),
+    );
+  }, [formalOn, translateForced]);
 
   useSpeechRecognitionEvent('result', (event) => {
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
@@ -182,7 +194,6 @@ export function ConversationScreen({
   useSpeechRecognitionEvent('end', () => {
     if (passingRef.current) return;
     if (!listeningRef.current) return;
-    // iOS often ends continuous sessions — restart on the SAME side/lang.
     if (restartTimer.current) clearTimeout(restartTimer.current);
     restartTimer.current = setTimeout(() => {
       if (!listeningRef.current || passingRef.current) return;
@@ -204,14 +215,6 @@ export function ConversationScreen({
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [turns, interim, side]);
 
-  useEffect(() => {
-    return () => {
-      if (restartTimer.current) clearTimeout(restartTimer.current);
-      hardStopRecognition();
-      Speech.stop();
-    };
-  }, []);
-
   const hardStopRecognition = () => {
     try {
       const mod = ExpoSpeechRecognitionModule as {
@@ -224,6 +227,14 @@ export function ConversationScreen({
       /* ignore */
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (restartTimer.current) clearTimeout(restartTimer.current);
+      hardStopRecognition();
+      Speech.stop();
+    };
+  }, []);
 
   const stopListening = () => {
     if (restartTimer.current) clearTimeout(restartTimer.current);
@@ -258,8 +269,20 @@ export function ConversationScreen({
     }
   };
 
+  const hasContentToPass = () => {
+    if (interimRef.current.trim()) return true;
+    const last = turns.length ? turns[turns.length - 1] : null;
+    return Boolean(last && last.from === sideRef.current);
+  };
+
   const onPass = async () => {
     if (passingRef.current || busy) return;
+    if (!hasContentToPass()) {
+      setPassBlockedHint(true);
+      Vibration.vibrate(20);
+      setTimeout(() => setPassBlockedHint(false), 1600);
+      return;
+    }
     passingRef.current = true;
     setBusy(true);
     const from = sideRef.current;
@@ -273,7 +296,6 @@ export function ConversationScreen({
       flushRemainder(from, true);
       setSide(next);
       sideRef.current = next;
-      // Hand the phone — immediately listen for the other speaker.
       await new Promise((r) => setTimeout(r, 420));
       await startListeningFor(next);
     } finally {
@@ -289,6 +311,12 @@ export function ConversationScreen({
       return;
     }
     await startListeningFor(side);
+  };
+
+  const acceptConsent = async () => {
+    const prefs = await loadPrefs();
+    await savePrefs({ ...prefs, conversationConsentSeen: true });
+    setConsentVisible(false);
   };
 
   const displayShow = (turn: Turn) => {
@@ -310,13 +338,19 @@ export function ConversationScreen({
 
   const enTurn = side === 'en';
   const title = enTurn ? 'English speaking' : 'नेपाली बोलिरहेको';
-  const hint = listening
+  const hint = passBlockedHint
     ? enTurn
-      ? 'Listening — keep talking, then Pass'
-      : 'सुन्दैछ — बोलिसकेपछि पास गर्नुहोस्'
-    : enTurn
-      ? 'Speak, then Pass the phone'
-      : 'बोल्नुहोस्, अनि पास गर्नुहोस्';
+      ? 'Say something before Pass'
+      : 'पास गर्नु अघि बोल्नुहोस्'
+    : listening
+      ? enTurn
+        ? 'Listening — keep talking, then Pass'
+        : 'सुन्दैछ — बोलिसकेपछि पास गर्नुहोस्'
+      : enTurn
+        ? 'Speak, then Pass the phone'
+        : 'बोल्नुहोस्, अनि पास गर्नुहोस्';
+
+  const partnerText = latest ? displayShow(latest) : '';
 
   return (
     <View style={[styles.root, !enTurn && styles.rootNe]}>
@@ -327,55 +361,53 @@ export function ConversationScreen({
             {enTurn ? 'They read Nepali below' : 'उनीहरूले तल अङ्ग्रेजी पढ्छन्'}
           </Text>
         </View>
-        <View style={styles.topRight}>
-          {onOpenGoldReview ? (
-            <Pressable onPress={onOpenGoldReview} hitSlop={10} style={styles.iconBtn}>
-              <Text style={styles.iconGlyph}>▣</Text>
-            </Pressable>
-          ) : null}
-          <Pressable
-            onPress={() => {
-              stopListening();
-              Speech.stop();
-              setTurns([]);
-              interimRef.current = '';
-              emittedCountRef.current = 0;
-              setInterim('');
-              setSide('en');
-              sideRef.current = 'en';
-            }}
-            hitSlop={10}
-            style={styles.iconBtn}
-          >
-            <Text style={styles.clearText}>{enTurn ? 'Clear' : 'मेटाउनुहोस्'}</Text>
-          </Pressable>
-        </View>
+        <Pressable
+          onPress={() => {
+            stopListening();
+            Speech.stop();
+            setTurns([]);
+            interimRef.current = '';
+            emittedCountRef.current = 0;
+            setInterim('');
+            setSide('en');
+            sideRef.current = 'en';
+            setShowPartner(false);
+          }}
+          hitSlop={10}
+          style={styles.iconBtn}
+        >
+          <Text style={styles.clearText}>{enTurn ? 'Clear' : 'मेटाउनुहोस्'}</Text>
+        </Pressable>
       </View>
 
-      <View style={styles.switches}>
-        <LightSwitch
-          value={formalOn}
-          onValueChange={setFormalOn}
-          offLabel={enTurn ? 'Informal' : 'अनौपचारिक'}
-          onLabel={enTurn ? 'Formal' : 'औपचारिक'}
-          accessibilityLabel="Formal or informal Nepali"
-        />
-        <LightSwitch
-          value={devaOn}
-          onValueChange={setDevaOn}
-          offLabel="Roman"
-          onLabel="देवनागरी"
-          accessibilityLabel="Devanagari or Roman script"
-        />
+      <View style={styles.chipRow}>
         <Pressable
-          onPress={() => setFaceToFace((v) => !v)}
-          style={[styles.faceChip, faceToFace && styles.faceChipOn]}
-          accessibilityRole="button"
-          accessibilityState={{ selected: faceToFace }}
+          onPress={() => setFormalOn(true)}
+          style={[styles.chip, formalOn && styles.chipOn]}
         >
-          <Text style={[styles.faceChipText, faceToFace && styles.faceChipTextOn]}>
-            {faceToFace ? 'Face to face · on' : 'Face to face'}
+          <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>
+            {enTurn ? 'Formal' : 'औपचारिक'}
           </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setFormalOn(false)}
+          style={[styles.chip, !formalOn && styles.chipOn]}
+        >
+          <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
+            {enTurn ? 'Informal' : 'अनौपचारिक'}
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setDevaOn(true)}
+          style={[styles.chip, devaOn && styles.chipOn]}
+        >
+          <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setDevaOn(false)}
+          style={[styles.chip, !devaOn && styles.chipOn]}
+        >
+          <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
         </Pressable>
       </View>
 
@@ -392,7 +424,7 @@ export function ConversationScreen({
             </Text>
             <Text style={styles.emptyBody}>
               {enTurn
-                ? 'Tap Speak, say a full sentence, then Pass. The phone will listen for Nepali next.'
+                ? 'Tap Speak, say a full sentence, then Pass. The phone listens for Nepali next.'
                 : 'बोल्नुहोस् थिच्नुहोस्, वाक्य भन्नुहोस्, अनि पास गर्नुहोस्। अर्को पटक अङ्ग्रेजी सुनिन्छ।'}
             </Text>
           </View>
@@ -419,7 +451,6 @@ export function ConversationScreen({
           <View
             style={[
               styles.hero,
-              faceToFace && styles.heroFace,
               latest.from === 'en' ? styles.heroFromEn : styles.heroFromNe,
             ]}
           >
@@ -438,20 +469,16 @@ export function ConversationScreen({
             <Text style={styles.heroHeard}>{displayHeard(latest)}</Text>
             <View style={styles.heroActions}>
               <Pressable onPress={() => speakShow(latest)} hitSlop={10}>
-                <Text style={styles.heroAction}>Listen</Text>
+                <Text style={styles.heroAction}>Speak</Text>
               </Pressable>
               <Pressable
                 onPress={() => {
-                  const result = translateForced(latest.heard, latest.from);
-                  setTurns((prev) =>
-                    prev.map((t) =>
-                      t.id === latest.id ? { ...t, show: result.text } : t,
-                    ),
-                  );
+                  setPartnerRotate(false);
+                  setShowPartner(true);
                 }}
                 hitSlop={10}
               >
-                <Text style={styles.heroAction}>Say differently</Text>
+                <Text style={styles.heroAction}>Show</Text>
               </Pressable>
             </View>
           </View>
@@ -486,7 +513,6 @@ export function ConversationScreen({
             accessibilityRole="button"
             accessibilityLabel={listening ? 'Stop' : 'Speak'}
           >
-            <Text style={styles.speakGlyph}>{listening ? '■' : '●'}</Text>
             <Text style={styles.speakLabel}>
               {listening
                 ? enTurn
@@ -499,7 +525,11 @@ export function ConversationScreen({
           </Pressable>
 
           <Pressable
-            style={[styles.passBtn, busy && styles.passBtnBusy]}
+            style={[
+              styles.passBtn,
+              busy && styles.passBtnBusy,
+              passBlockedHint && styles.passBtnBlocked,
+            ]}
             onPress={() => void onPass()}
             disabled={busy}
             accessibilityRole="button"
@@ -511,7 +541,58 @@ export function ConversationScreen({
             </Text>
           </Pressable>
         </View>
+        <Text style={styles.trustLine}>phrasebook offline · voice via Apple</Text>
       </View>
+
+      <Modal visible={consentVisible} animationType="fade" transparent>
+        <View style={styles.modalScrim}>
+          <View style={styles.consentCard}>
+            <Text style={styles.consentTitle}>Pass the phone</Text>
+            <Text style={styles.consentBody}>
+              One person speaks, then taps Pass. The phone flips language and listens
+              for the other person. Ask before handing it over.
+            </Text>
+            <Pressable style={styles.consentBtn} onPress={() => void acceptConsent()}>
+              <Text style={styles.consentBtnText}>Continue</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={showPartner && Boolean(partnerText)} animationType="slide">
+        <View style={styles.showRoot}>
+          <View style={styles.showTop}>
+            <Pressable onPress={() => setShowPartner(false)} hitSlop={12}>
+              <Text style={styles.showClose}>Done</Text>
+            </Pressable>
+            <Pressable onPress={() => setPartnerRotate((v) => !v)} hitSlop={12}>
+              <Text style={styles.showClose}>
+                {partnerRotate ? 'Upright' : 'Face them'}
+              </Text>
+            </Pressable>
+          </View>
+          <View style={[styles.showBody, partnerRotate && styles.showBodyRotate]}>
+            <Text style={styles.showLabel}>
+              {latest?.from === 'en' ? 'नेपाली' : 'English'}
+            </Text>
+            <Text
+              style={[
+                styles.showText,
+                latest?.from === 'en' && script === 'deva' && styles.showTextNe,
+              ]}
+              selectable
+            >
+              {partnerText}
+            </Text>
+            <Pressable
+              style={styles.showSpeak}
+              onPress={() => latest && speakShow(latest)}
+            >
+              <Text style={styles.showSpeakText}>Speak</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -534,30 +615,29 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.textSecondary,
   },
-  topRight: { flexDirection: 'row', alignItems: 'center' },
   iconBtn: { paddingHorizontal: 8, paddingVertical: 6 },
-  iconGlyph: { fontSize: 16, fontWeight: '700', color: colors.textSecondary },
   clearText: { fontSize: 13, fontWeight: '700', color: colors.textSecondary },
-  switches: {
-    alignItems: 'center',
-    gap: 8,
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    paddingHorizontal: 16,
     paddingBottom: 8,
-    paddingHorizontal: 12,
   },
-  faceChip: {
-    paddingHorizontal: 12,
+  chip: {
+    paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.85)',
     borderWidth: 1,
     borderColor: colors.divider,
   },
-  faceChipOn: {
-    backgroundColor: colors.forest,
-    borderColor: colors.forest,
+  chipOn: {
+    backgroundColor: colors.crimson,
+    borderColor: colors.crimson,
   },
-  faceChipText: { fontSize: 12, fontWeight: '700', color: colors.text },
-  faceChipTextOn: { color: '#fff' },
+  chipText: { fontSize: 12, fontWeight: '700', color: colors.text },
+  chipTextOn: { color: '#fff' },
   feed: { flex: 1 },
   feedContent: { paddingHorizontal: 16, paddingBottom: 16, gap: 10 },
   emptyCard: {
@@ -582,8 +662,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 2,
   },
-  histEn: { backgroundColor: 'rgba(255,255,255,0.7)', alignSelf: 'flex-end', maxWidth: '92%' },
-  histNe: { backgroundColor: 'rgba(255,247,240,0.9)', alignSelf: 'flex-start', maxWidth: '92%' },
+  histEn: {
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    alignSelf: 'flex-end',
+    maxWidth: '92%',
+  },
+  histNe: {
+    backgroundColor: 'rgba(255,247,240,0.9)',
+    alignSelf: 'flex-start',
+    maxWidth: '92%',
+  },
   histHeard: { fontSize: 12, color: colors.textSecondary },
   histShow: { fontSize: 15, fontWeight: '700', color: colors.text },
   hero: {
@@ -595,7 +683,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.forestSoft,
   },
-  heroFace: { transform: [{ rotate: '180deg' }] },
   heroFromEn: { borderColor: colors.forestSoft },
   heroFromNe: { borderColor: '#F0D9C8' },
   heroLabel: {
@@ -626,7 +713,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   interimLabel: { fontSize: 12, fontWeight: '700', color: colors.textSecondary },
-  interimText: { fontSize: 18, lineHeight: 26, color: colors.text, fontWeight: '600' },
+  interimText: {
+    fontSize: 18,
+    lineHeight: 26,
+    color: colors.text,
+    fontWeight: '600',
+  },
   loadingRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -636,7 +728,7 @@ const styles = StyleSheet.create({
   loadingText: { fontSize: 13, color: colors.textSecondary },
   controls: {
     paddingHorizontal: 16,
-    paddingBottom: 12,
+    paddingBottom: 8,
     paddingTop: 8,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#D5E3DB',
@@ -663,9 +755,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.forest,
   },
   speakBtnHot: { backgroundColor: colors.danger },
-  speakGlyph: { fontSize: 22, color: '#fff', fontWeight: '900' },
   speakLabel: {
-    marginTop: 4,
     fontSize: 16,
     fontWeight: '800',
     color: '#fff',
@@ -679,6 +769,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.crimson,
   },
   passBtnBusy: { opacity: 0.7 },
+  passBtnBlocked: { backgroundColor: colors.textSecondary },
   passLabel: {
     fontSize: 22,
     fontWeight: '900',
@@ -691,4 +782,76 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.9)',
     fontWeight: '700',
   },
+  trustLine: {
+    textAlign: 'center',
+    fontSize: 11,
+    color: colors.textPlaceholder,
+    marginTop: 8,
+  },
+  modalScrim: {
+    flex: 1,
+    backgroundColor: 'rgba(26,20,16,0.45)',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  consentCard: {
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    padding: 24,
+    gap: 12,
+  },
+  consentTitle: { fontSize: 22, fontWeight: '800', color: colors.text },
+  consentBody: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.textSecondary,
+  },
+  consentBtn: {
+    marginTop: 8,
+    backgroundColor: colors.crimson,
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  consentBtnText: { fontSize: 16, fontWeight: '800', color: '#fff' },
+  showRoot: { flex: 1, backgroundColor: colors.bg, paddingTop: 56 },
+  showTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 12,
+  },
+  showClose: { fontSize: 16, fontWeight: '800', color: colors.forest },
+  showBody: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    gap: 16,
+  },
+  showBodyRotate: { transform: [{ rotate: '180deg' }] },
+  showLabel: {
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: colors.crimson,
+    textAlign: 'center',
+  },
+  showText: {
+    fontSize: 40,
+    lineHeight: 52,
+    fontWeight: '800',
+    color: colors.text,
+    textAlign: 'center',
+  },
+  showTextNe: { fontSize: 42, lineHeight: 58 },
+  showSpeak: {
+    alignSelf: 'center',
+    marginTop: 12,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 18,
+    backgroundColor: colors.forest,
+  },
+  showSpeakText: { fontSize: 16, fontWeight: '800', color: '#fff' },
 });

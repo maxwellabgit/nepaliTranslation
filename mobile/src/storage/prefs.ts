@@ -5,11 +5,17 @@ const PREFS_KEY = 'neptranslate.prefs.v1';
 export type AppPrefs = {
   formalOn: boolean;
   devaOn: boolean;
+  /** Conversation consent sheet shown once. */
+  conversationConsentSeen: boolean;
+  /** Roman-script tip shown once when user first leaves Devanagari. */
+  romanTipSeen: boolean;
 };
 
 const DEFAULTS: AppPrefs = {
   formalOn: true,
   devaOn: true,
+  conversationConsentSeen: false,
+  romanTipSeen: false,
 };
 
 export async function loadPrefs(): Promise<AppPrefs> {
@@ -21,6 +27,14 @@ export async function loadPrefs(): Promise<AppPrefs> {
       formalOn:
         typeof parsed.formalOn === 'boolean' ? parsed.formalOn : DEFAULTS.formalOn,
       devaOn: typeof parsed.devaOn === 'boolean' ? parsed.devaOn : DEFAULTS.devaOn,
+      conversationConsentSeen:
+        typeof parsed.conversationConsentSeen === 'boolean'
+          ? parsed.conversationConsentSeen
+          : DEFAULTS.conversationConsentSeen,
+      romanTipSeen:
+        typeof parsed.romanTipSeen === 'boolean'
+          ? parsed.romanTipSeen
+          : DEFAULTS.romanTipSeen,
     };
   } catch {
     return { ...DEFAULTS };
