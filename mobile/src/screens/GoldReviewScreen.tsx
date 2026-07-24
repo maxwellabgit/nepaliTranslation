@@ -17,11 +17,9 @@ import * as Clipboard from 'expo-clipboard';
 import { goldPack } from '../gold/pack';
 import type { GoldItem } from '../gold/types';
 import {
-  REVIEW_LANES,
-  allReviewUnits,
-  unitsForLane,
-  type ReviewLane,
-  type ReviewUnit,
+  allReviewSamples,
+  isPremiumSample,
+  sampleKindLabel,
 } from '../gold/pairs';
 import benchSnapshot from '../../assets/gold/bench_snapshot.json';
 import {
@@ -42,24 +40,18 @@ type Props = {
   onClose: () => void;
 };
 
-type PairEdits = {
-  shared: string;
-  left: string;
-  right: string;
+type SampleEdits = {
+  source: string;
+  reference: string;
 };
 
 type AutoHeightProps = ComponentProps<typeof TextInput> & {
-  /** Soft cap so one field cannot swallow the paired target editors. */
   maxHeight?: number;
 };
 
 const FIELD_MIN = 72;
-const FIELD_MAX_DEFAULT = 140;
+const FIELD_MAX_DEFAULT = 160;
 
-/**
- * Multiline field that grows with phrase length, capped so Review keeps
- * source + both targets visible without a giant empty white box.
- */
 function AutoHeightInput({
   style,
   onContentSizeChange,
@@ -75,7 +67,6 @@ function AutoHeightInput({
 
   const handleSize = (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
     const next = Math.ceil(e.nativeEvent.contentSize.height);
-    // Ignore pathological contentSize spikes from ScrollView/flex measurement.
     if (next > maxHeight * 3) {
       onContentSizeChange?.(e);
       return;
@@ -85,7 +76,6 @@ function AutoHeightInput({
   };
 
   const capped = Math.min(maxHeight, Math.max(FIELD_MIN, height));
-  const scrollEnabled = height >= maxHeight;
 
   return (
     <TextInput
@@ -93,115 +83,74 @@ function AutoHeightInput({
       value={value}
       multiline
       textAlignVertical="top"
-      scrollEnabled={scrollEnabled}
+      scrollEnabled={height >= maxHeight}
       onContentSizeChange={handleSize}
       style={[styles.field, style, { height: capped, maxHeight }]}
     />
   );
 }
 
-function unitCompleted(unit: ReviewUnit, reviews: ReviewMap): boolean {
-  if (!unit.itemIds.length) return false;
-  return unit.itemIds.every((id) => Boolean(reviews[id]?.completed_at));
-}
-
-function unitPending(unit: ReviewUnit, reviews: ReviewMap, showCompleted: boolean): boolean {
-  return showCompleted || !unitCompleted(unit, reviews);
+function sampleCompleted(item: GoldItem, reviews: ReviewMap): boolean {
+  return Boolean(reviews[item.id]?.completed_at);
 }
 
 /**
- * Password-gated human gold review — paired formal/informal + Deva/Roman cards.
+ * Password-gated human gold review — flat sample-by-sample queue.
  */
 export function GoldReviewScreen({ onClose }: Props) {
   const [unlocked, setUnlocked] = useState(false);
   const [password, setPassword] = useState('');
-  const [lane, setLane] = useState<ReviewLane>('en_ne');
   const [reviews, setReviews] = useState<ReviewMap>({});
   const [index, setIndex] = useState(0);
-  const [edits, setEdits] = useState<PairEdits>({ shared: '', left: '', right: '' });
+  const [edits, setEdits] = useState<SampleEdits>({ source: '', reference: '' });
   const [showCompleted, setShowCompleted] = useState(false);
   const [premiumOnly, setPremiumOnly] = useState(false);
-  const [lastUndoneIds, setLastUndoneIds] = useState<string[]>([]);
+  const [lastSavedIds, setLastSavedIds] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     void loadReviews().then(setReviews);
   }, []);
 
-  const laneUnits = useMemo(() => {
-    let units = unitsForLane(lane);
-    if (premiumOnly) {
-      units = units.filter((u) => {
-        const items = [u.left, u.right].filter(Boolean) as GoldItem[];
-        return items.some(
-          (i) =>
-            i.provenance.trust === 'gold' ||
-            i.provenance.trust === 'high' ||
-            i.provenance.tier === 'premium' ||
-            i.provenance.tier === 'premium_word_choice',
-        );
-      });
-    }
-    return units;
-  }, [lane, premiumOnly]);
+  const queue = useMemo(() => {
+    let items = allReviewSamples();
+    if (premiumOnly) items = items.filter(isPremiumSample);
+    if (!showCompleted) items = items.filter((i) => !sampleCompleted(i, reviews));
+    return items;
+  }, [premiumOnly, showCompleted, reviews]);
 
-  const pending = useMemo(
-    () => laneUnits.filter((u) => unitPending(u, reviews, showCompleted)),
-    [laneUnits, reviews, showCompleted],
-  );
-
-  const unit: ReviewUnit | undefined = pending[Math.min(index, Math.max(pending.length - 1, 0))];
+  const sample: GoldItem | undefined = queue[Math.min(index, Math.max(queue.length - 1, 0))];
 
   useEffect(() => {
     setIndex(0);
-  }, [lane, showCompleted, premiumOnly]);
+  }, [showCompleted, premiumOnly]);
 
   useEffect(() => {
-    if (!unit) {
-      setEdits({ shared: '', left: '', right: '' });
+    if (!sample) {
+      setEdits({ source: '', reference: '' });
       return;
     }
-    const leftRev = unit.left ? reviews[unit.left.id] : undefined;
-    const rightRev = unit.right ? reviews[unit.right.id] : undefined;
+    const rev = reviews[sample.id];
+    setEdits({
+      source: rev?.source_final ?? sample.source,
+      reference: rev?.reference_final ?? sample.reference,
+    });
+  }, [sample?.id, reviews]);
 
-    let shared = unit.shared;
-    if (unit.lane === 'en_ne') {
-      shared =
-        leftRev?.source_final ??
-        rightRev?.source_final ??
-        unit.left?.source ??
-        unit.right?.source ??
-        '';
-    } else {
-      shared =
-        leftRev?.reference_final ??
-        rightRev?.reference_final ??
-        unit.left?.reference ??
-        unit.right?.reference ??
-        '';
+  // Keep index in range when queue shrinks after a save.
+  useEffect(() => {
+    if (!queue.length) {
+      setIndex(0);
+      return;
     }
-
-    const leftText =
-      unit.lane === 'en_ne'
-        ? (leftRev?.reference_final ?? unit.left?.reference ?? '')
-        : (leftRev?.source_final ?? unit.left?.source ?? '');
-    const rightText =
-      unit.lane === 'en_ne'
-        ? (rightRev?.reference_final ?? unit.right?.reference ?? '')
-        : (rightRev?.source_final ?? unit.right?.source ?? '');
-
-    setEdits({ shared, left: leftText, right: rightText });
-  }, [unit?.id, reviews]);
+    if (index > queue.length - 1) setIndex(queue.length - 1);
+  }, [queue.length, index]);
 
   const totals = useMemo(() => {
-    const all = allReviewUnits();
-    const done = all.filter((u) => unitCompleted(u, reviews)).length;
-    return { done, total: all.length, items: goldPack.n_items };
+    const all = allReviewSamples();
+    const done = all.filter((i) => sampleCompleted(i, reviews)).length;
+    return { done, total: all.length };
   }, [reviews]);
-
-  const laneDone = useMemo(
-    () => laneUnits.filter((u) => unitCompleted(u, reviews)).length,
-    [laneUnits, reviews],
-  );
 
   const tryUnlock = () => {
     if (password.trim() === REVIEW_PASSWORD) {
@@ -212,123 +161,103 @@ export function GoldReviewScreen({ onClose }: Props) {
     }
   };
 
-  const persistMany = useCallback(async (nextReviews: GoldReview[]) => {
-    const map = await loadReviews();
-    for (const review of nextReviews) {
+  const persistOne = useCallback(async (review: GoldReview) => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      const map = await loadReviews();
       map[review.id] = review;
-    }
-    await saveReviews(map);
-    setReviews(map);
-    setLastUndoneIds(nextReviews.map((r) => r.id));
-  }, []);
-
-  const buildPairReviews = (action: 'correct' | 'edited'): GoldReview[] | null => {
-    if (!unit) return null;
-    const shared = edits.shared.trim();
-    const leftVal = edits.left.trim();
-    const rightVal = edits.right.trim();
-    if (!shared) {
-      Alert.alert('English required');
-      return null;
-    }
-    if (unit.left && !leftVal) {
-      Alert.alert(`${unit.leftLabel} required`);
-      return null;
-    }
-    if (unit.right && !rightVal) {
-      Alert.alert(`${unit.rightLabel} required`);
-      return null;
-    }
-
-    const out: GoldReview[] = [];
-    if (unit.left) {
-      const src = unit.lane === 'en_ne' ? shared : leftVal;
-      const ref = unit.lane === 'en_ne' ? leftVal : shared;
-      const multi = isMultiSentence(src) || isMultiSentence(ref);
-      out.push(
-        completeFromItem(unit.left, src, ref, {
-          multi_sentence_flag: multi || undefined,
-        }),
+      await saveReviews(map);
+      setReviews(map);
+      setLastSavedIds([review.id]);
+    } catch (e) {
+      Alert.alert(
+        'Save failed',
+        e instanceof Error ? e.message : 'Could not save review on this device.',
       );
+    } finally {
+      setSaving(false);
     }
-    if (unit.right) {
-      const src = unit.lane === 'en_ne' ? shared : rightVal;
-      const ref = unit.lane === 'en_ne' ? rightVal : shared;
-      const multi = isMultiSentence(src) || isMultiSentence(ref);
-      out.push(
-        completeFromItem(unit.right, src, ref, {
-          multi_sentence_flag: multi || undefined,
-        }),
-      );
+  }, [saving]);
+
+  const buildReview = (): GoldReview | null => {
+    if (!sample) return null;
+    const src = edits.source.trim();
+    const ref = edits.reference.trim();
+    if (!src) {
+      Alert.alert(`${sample.source_label} required`);
+      return null;
     }
-    if (action === 'correct') {
-      // completeFromItem already sets accepted vs edited from content diff
+    if (!ref) {
+      Alert.alert(`${sample.target_label} required`);
+      return null;
     }
-    return out;
+    const multi = isMultiSentence(src) || isMultiSentence(ref);
+    return completeFromItem(sample, src, ref, {
+      multi_sentence_flag: multi || undefined,
+    });
   };
 
-  const markCorrect = async () => {
-    const built = buildPairReviews('correct');
-    if (!built?.length) return;
-    const multi = built.some((r) => r.multi_sentence_flag);
-    if (multi) {
+  const commitSample = async (allowMultiWithoutPrompt: boolean) => {
+    const built = buildReview();
+    if (!built) return;
+    if (built.multi_sentence_flag && !allowMultiWithoutPrompt) {
       Alert.alert(
-        'Multi-sentence pair',
+        'Multi-sentence sample',
         'Fine-tuning is sentence-level. Prefer Split when both sides align, or edit down to one sentence.',
         [
           { text: 'Cancel', style: 'cancel' },
           {
             text: 'Accept anyway',
-            onPress: () => void persistMany(built),
+            onPress: () => void persistOne(built),
           },
         ],
       );
       return;
     }
-    await persistMany(built);
-  };
-
-  const markCompleteEdits = async () => {
-    const built = buildPairReviews('edited');
-    if (!built?.length) return;
-    await persistMany(built);
+    await persistOne(built);
   };
 
   const splitAligned = async () => {
-    if (!unit?.left && !unit?.right) return;
-    // Split only applies cleanly to a single item; prefer left then right.
-    const item = unit.left ?? unit.right!;
-    const src =
-      unit.lane === 'en_ne' ? edits.shared || item.source : edits.left || item.source;
-    const ref =
-      unit.lane === 'en_ne'
-        ? (unit.left ? edits.left : edits.right) || item.reference
-        : edits.shared || item.reference;
-    const pairs = suggestAlignedSplits(src, ref);
+    if (!sample) return;
+    const pairs = suggestAlignedSplits(edits.source, edits.reference);
     if (!pairs) {
       Alert.alert(
         'Cannot auto-split',
-        'Source and reference sentence counts differ. Edit to one sentence each, or split manually into separate reviews later.',
+        'Source and reference sentence counts differ. Edit to one sentence each.',
       );
       return;
     }
-    const next = await completeSentenceSplits(item, pairs);
-    setReviews(next);
+    try {
+      const next = await completeSentenceSplits(sample, pairs);
+      setReviews(next);
+      setLastSavedIds([sample.id, ...pairs.map((_, i) => `${sample.id}__s${i + 1}`)]);
+    } catch (e) {
+      Alert.alert(
+        'Split failed',
+        e instanceof Error ? e.message : 'Could not save split reviews.',
+      );
+    }
   };
 
   const undoLast = async () => {
-    const ids = lastUndoneIds;
+    const ids = lastSavedIds;
     if (!ids.length) {
       Alert.alert('Nothing to undo');
       return;
     }
-    const map = await loadReviews();
-    for (const id of ids) {
-      delete map[id];
+    try {
+      const map = await loadReviews();
+      for (const id of ids) delete map[id];
+      await saveReviews(map);
+      setReviews(map);
+      setLastSavedIds([]);
+    } catch (e) {
+      Alert.alert(
+        'Undo failed',
+        e instanceof Error ? e.message : 'Could not undo on this device.',
+      );
     }
-    await saveReviews(map);
-    setReviews(map);
-    setLastUndoneIds([]);
   };
 
   const exportReviews = async () => {
@@ -382,19 +311,14 @@ export function GoldReviewScreen({ onClose }: Props) {
   }
 
   const multiDetect =
-    Boolean(unit) &&
-    (isMultiSentence(edits.shared) ||
-      isMultiSentence(edits.left) ||
-      isMultiSentence(edits.right));
-
-  const primaryItem = unit?.left ?? unit?.right;
-  const splitPairs =
-    unit && primaryItem
-      ? suggestAlignedSplits(
-          unit.lane === 'en_ne' ? edits.shared : edits.left || edits.right,
-          unit.lane === 'en_ne' ? edits.left || edits.right : edits.shared,
-        )
-      : null;
+    Boolean(sample) &&
+    (isMultiSentence(edits.source) || isMultiSentence(edits.reference));
+  const splitPairs = sample
+    ? suggestAlignedSplits(edits.source, edits.reference)
+    : null;
+  const needsIndicHint =
+    Boolean(sample) &&
+    (/[\u0900-\u097F]/.test(edits.source) || sample!.source_lang === 'ne');
 
   return (
     <View style={styles.root}>
@@ -405,40 +329,13 @@ export function GoldReviewScreen({ onClose }: Props) {
         <View style={styles.headerCenter}>
           <Text style={styles.title}>Gold Review</Text>
           <Text style={styles.progress}>
-            {totals.done}/{totals.total} units · {laneDone}/{laneUnits.length} this lane ·{' '}
-            {totals.items} rows
+            {totals.done}/{totals.total} samples
           </Text>
         </View>
         <Pressable onPress={() => void exportReviews()} hitSlop={8}>
           <Text style={styles.link}>Export</Text>
         </Pressable>
       </View>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.classScroll}
-        contentContainerStyle={styles.classRow}
-        keyboardShouldPersistTaps="handled"
-      >
-        {REVIEW_LANES.map((l) => {
-          const units = unitsForLane(l.id);
-          const d = units.filter((u) => unitCompleted(u, reviews)).length;
-          const on = l.id === lane;
-          return (
-            <Pressable
-              key={l.id}
-              style={[styles.chip, on && styles.chipOn]}
-              onPress={() => setLane(l.id)}
-            >
-              <Text style={[styles.chipText, on && styles.chipTextOn]}>{l.label}</Text>
-              <Text style={[styles.chipSub, on && styles.chipTextOn]}>
-                {d}/{units.length}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
 
       <View style={styles.toolbar}>
         <Pressable onPress={() => setShowCompleted((v) => !v)}>
@@ -453,7 +350,7 @@ export function GoldReviewScreen({ onClose }: Props) {
           <Text style={styles.link}>Undo</Text>
         </Pressable>
         <Text style={styles.meta}>
-          {pending.length ? `${Math.min(index + 1, pending.length)}/${pending.length}` : 'Done'}
+          {queue.length ? `${Math.min(index + 1, queue.length)}/${queue.length}` : 'Done'}
         </Text>
       </View>
 
@@ -465,33 +362,28 @@ export function GoldReviewScreen({ onClose }: Props) {
         onScrollBeginDrag={dismissKeyboard}
       >
         <Pressable style={styles.tapDismiss} onPress={dismissKeyboard}>
-          {!unit ? (
+          {!sample ? (
             <View style={styles.doneCard}>
               <Text style={styles.doneTitle}>
-                {showCompleted ? 'No rows in this lane' : 'Lane complete'}
+                {showCompleted ? 'No samples' : 'Queue complete'}
               </Text>
               <Text style={styles.doneBody}>
                 {totals.done >= totals.total
                   ? 'All gold reviewed. Export → apply_app_reviews.py → pack_gold_for_app.py.'
-                  : 'Pick the other lane, or Export completed reviews.'}
+                  : 'Export completed reviews, or turn on Include completed to revisit.'}
               </Text>
             </View>
           ) : (
             <>
-              <Text style={styles.idLine}>
-                {unit.itemIds.join(' · ')}
-                {unit.left && unit.right ? ' · paired' : ' · solo'}
+              <Text style={styles.idLine}>{sample.id}</Text>
+              <Text style={styles.kindLine}>{sampleKindLabel(sample)}</Text>
+              <Text style={styles.prov}>
+                {sample.provenance.dataset_id} · trust {sample.provenance.trust}
+                {sample.provenance.note ? ` · ${sample.provenance.note}` : ''}
               </Text>
-              {primaryItem ? (
-                <Text style={styles.prov}>
-                  {primaryItem.provenance.dataset_id} · trust {primaryItem.provenance.trust}
-                  {primaryItem.provenance.note ? ` · ${primaryItem.provenance.note}` : ''}
-                </Text>
-              ) : null}
               <Text style={styles.windowHint}>
-                FT window ~{IT2_WINDOW.fineTuneMaxLength} tok (model max{' '}
-                {IT2_WINDOW.maxSourcePositions}) · prefer one sentence · approve both variants
-                together
+                FT window ~{IT2_WINDOW.fineTuneMaxLength} tok · prefer one sentence · sample{' '}
+                {Math.min(index + 1, queue.length)} of {queue.length}
               </Text>
 
               {multiDetect ? (
@@ -515,64 +407,50 @@ export function GoldReviewScreen({ onClose }: Props) {
                 </View>
               ) : null}
 
-              <Text style={styles.fieldLabel}>{unit.sharedLabel}</Text>
+              <Text style={styles.fieldLabel}>{sample.source_label}</Text>
               <AutoHeightInput
-                value={edits.shared}
-                onChangeText={(t) => setEdits((e) => ({ ...e, shared: t }))}
+                value={edits.source}
+                onChangeText={(t) => setEdits((e) => ({ ...e, source: t }))}
                 autoCapitalize="sentences"
-                maxHeight={120}
+                autoCorrect={sample.source_lang !== 'ne'}
+                keyboardType="default"
+                maxHeight={140}
               />
 
-              <View style={styles.pairStack}>
-                {unit.left ? (
-                  <View style={styles.pairBlock}>
-                    <Text style={styles.fieldLabel}>{unit.leftLabel}</Text>
-                    <AutoHeightInput
-                      value={edits.left}
-                      onChangeText={(t) => setEdits((e) => ({ ...e, left: t }))}
-                      style={styles.fieldTarget}
-                      autoCorrect={false}
-                      autoCapitalize="none"
-                      // iOS cannot force Devanagari; keep default keyboard so the
-                      // user's last Indic layout can surface when enabled.
-                      keyboardType="default"
-                      maxHeight={160}
-                    />
-                  </View>
-                ) : null}
-                {unit.right ? (
-                  <View style={styles.pairBlock}>
-                    <Text style={styles.fieldLabel}>{unit.rightLabel}</Text>
-                    <AutoHeightInput
-                      value={edits.right}
-                      onChangeText={(t) => setEdits((e) => ({ ...e, right: t }))}
-                      style={styles.fieldTarget}
-                      autoCorrect={false}
-                      autoCapitalize="none"
-                      keyboardType="default"
-                      maxHeight={160}
-                    />
-                  </View>
-                ) : null}
-              </View>
+              <Text style={styles.fieldLabel}>{sample.target_label}</Text>
+              <AutoHeightInput
+                value={edits.reference}
+                onChangeText={(t) => setEdits((e) => ({ ...e, reference: t }))}
+                style={styles.fieldTarget}
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="default"
+                maxHeight={180}
+              />
 
-              {unit.lane === 'ne_en' && unit.left ? (
+              {needsIndicHint ? (
                 <Text style={styles.kbdHint}>
                   {Platform.OS === 'ios'
-                    ? 'iOS cannot auto-select Devanagari. Add Nepali (Devanagari) under Settings → General → Keyboard, then switch with the globe key when editing the left field.'
-                    : 'Android cannot force an Indic IME from the app. Switch to a Nepali/Devanagari keyboard when editing the left field.'}
+                    ? 'iOS cannot auto-select Devanagari. Add Nepali (Devanagari) under Settings → General → Keyboard, then switch with the globe key.'
+                    : 'Switch to a Nepali/Devanagari keyboard when editing Nepali fields.'}
                 </Text>
               ) : null}
 
               <View style={styles.actions}>
-                <Pressable style={styles.correctBtn} onPress={() => void markCorrect()}>
-                  <Text style={styles.correctText}>
-                    ✓ Correct {unit.left && unit.right ? 'both' : ''}
-                  </Text>
+                <Pressable
+                  style={[styles.correctBtn, saving && styles.btnDisabled]}
+                  onPress={() => void commitSample(false)}
+                  disabled={saving}
+                >
+                  <Text style={styles.correctText}>✓ Correct</Text>
                 </Pressable>
-                <Pressable style={styles.primaryBtn} onPress={() => void markCompleteEdits()}>
+                <Pressable
+                  style={[styles.primaryBtn, saving && styles.btnDisabled]}
+                  onPress={() => void commitSample(false)}
+                  disabled={saving}
+                >
                   <Text style={styles.primaryBtnText}>
-                    Save & complete {unit.left && unit.right ? 'both' : ''}
+                    {saving ? 'Saving…' : 'Save & next'}
                   </Text>
                 </Pressable>
               </View>
@@ -585,11 +463,11 @@ export function GoldReviewScreen({ onClose }: Props) {
                   <Text style={[styles.link, index <= 0 && styles.disabled]}>← Prev</Text>
                 </Pressable>
                 <Pressable
-                  disabled={index >= pending.length - 1}
-                  onPress={() => setIndex((i) => Math.min(pending.length - 1, i + 1))}
+                  disabled={index >= queue.length - 1}
+                  onPress={() => setIndex((i) => Math.min(queue.length - 1, i + 1))}
                 >
                   <Text
-                    style={[styles.link, index >= pending.length - 1 && styles.disabled]}
+                    style={[styles.link, index >= queue.length - 1 && styles.disabled]}
                   >
                     Skip →
                   </Text>
@@ -609,9 +487,7 @@ export function GoldReviewScreen({ onClose }: Props) {
               ))}
             </View>
             <Text style={styles.benchNote}>
-              Formal register OK {(100 * (benchSnapshot.classes[0].register_ok ?? 0)).toFixed(0)}% ·
-              Informal {(100 * (benchSnapshot.classes[1].register_ok ?? 0)).toFixed(0)}% · App ships
-              phrasebook until adapters pass gates
+              App ships phrasebook until adapters pass gates · {goldPack.n_items} pack rows
             </Text>
           </View>
 
@@ -663,34 +539,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.text,
   },
-  classScroll: {
-    flexGrow: 0,
-    flexShrink: 0,
-  },
-  classRow: {
-    paddingHorizontal: 12,
-    gap: 8,
-    paddingBottom: 8,
-    alignItems: 'center',
-  },
-  chip: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    alignSelf: 'center',
-  },
-  chipOn: { backgroundColor: colors.crimson, borderColor: colors.crimson },
-  chipText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.text,
-    textTransform: 'capitalize',
-  },
-  chipTextOn: { color: '#fff' },
-  chipSub: { fontSize: 10, color: colors.textSecondary, marginTop: 1 },
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -730,7 +578,15 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingBottom: 32 },
-  idLine: { fontSize: 12, fontWeight: '700', color: colors.textSecondary, marginBottom: 4 },
+  idLine: { fontSize: 12, fontWeight: '700', color: colors.textSecondary, marginBottom: 2 },
+  kindLine: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.crimson,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginBottom: 4,
+  },
   prov: { fontSize: 12, color: colors.forest, marginBottom: 6 },
   windowHint: {
     fontSize: 11,
@@ -779,18 +635,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.divider,
   },
-  pairStack: {
-    gap: 4,
-  },
-  pairBlock: {
-    marginBottom: 4,
-  },
-  pairRow: {
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'flex-start',
-  },
-  pairCol: { flex: 1, minWidth: 0 },
   kbdHint: {
     fontSize: 11,
     lineHeight: 15,
@@ -815,6 +659,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryBtnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  btnDisabled: { opacity: 0.55 },
   navRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
