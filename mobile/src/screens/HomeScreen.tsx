@@ -46,6 +46,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   const [devaOn, setDevaOn] = useState(true);
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
+  const [mtMethod, setMtMethod] = useState<'phrase' | 'lexicon'>('phrase');
   const [listening, setListening] = useState(false);
   const [starred, setStarred] = useState(false);
   const [romanTip, setRomanTip] = useState(false);
@@ -104,6 +105,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     const t = raw.trim();
     if (!t) {
       setOutput('');
+      setMtMethod('phrase');
       return;
     }
     void sharedTranslationEngine
@@ -116,6 +118,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       .then((result) => {
         preferredRef.current = result.direction;
         setOutput(result.text);
+        setMtMethod(result.method);
       });
   }, []);
 
@@ -124,6 +127,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       const t = raw.trim();
       if (!t) {
         setOutput('');
+        setMtMethod('phrase');
         return;
       }
       void sharedTranslationEngine
@@ -136,6 +140,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
         .then((result) => {
           preferredRef.current = result.direction;
           setOutput(result.text);
+          setMtMethod(result.method);
           saveHistoryFor(t, result.text, result.direction);
         });
     },
@@ -181,6 +186,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       .then((result) => {
         preferredRef.current = result.direction;
         setOutput(result.text);
+        setMtMethod(result.method);
         void syncSttLocale(result.direction);
         if (event.isFinal) {
           listeningRef.current = false;
@@ -298,6 +304,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       listeningRef.current = true;
       setListening(true);
       setOutput('');
+      setMtMethod('phrase');
       const lang = preferredRef.current === 'ne-en' ? 'ne-NP' : 'en-US';
       sttLangRef.current = lang;
       ExpoSpeechRecognitionModule.start({
@@ -403,8 +410,10 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
               {listening
                 ? `${targetName} · live`
                 : targetLang === 'ne'
-                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'} · phrasebook`
-                  : `${targetName} · phrasebook`}
+                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'} · ${
+                      mtMethod === 'lexicon' ? 'word guess' : 'phrasebook'
+                    }`
+                  : `${targetName} · ${mtMethod === 'lexicon' ? 'word guess' : 'phrasebook'}`}
             </Text>
             <Text
               style={[
@@ -440,9 +449,13 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
           </View>
         ) : (
           <View style={styles.emptyResult}>
-            <Text style={styles.emptyTitle}>Type or speak</Text>
+            <Text style={styles.emptyTitle}>
+              {input.trim() ? 'No saved phrase yet' : 'Type or speak'}
+            </Text>
             <Text style={styles.emptyBody}>
-              English ↔ Nepali on this device. Results appear here.
+              {input.trim()
+                ? 'This build ships a traveler phrasebook. Try a shorter everyday line, or wait for the on-device model.'
+                : 'English ↔ Nepali on this device. Results appear here.'}
             </Text>
           </View>
         )}
@@ -531,6 +544,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
                 }
                 setInput('');
                 setOutput('');
+                setMtMethod('phrase');
               }}
               hitSlop={8}
             >
