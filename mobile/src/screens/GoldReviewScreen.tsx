@@ -417,6 +417,7 @@ export function GoldReviewScreen({ onClose }: Props) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.classScroll}
         contentContainerStyle={styles.classRow}
         keyboardShouldPersistTaps="handled"
       >
@@ -662,14 +663,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.text,
   },
-  classRow: { paddingHorizontal: 12, gap: 8, paddingBottom: 8 },
+  classScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  classRow: {
+    paddingHorizontal: 12,
+    gap: 8,
+    paddingBottom: 8,
+    alignItems: 'center',
+  },
   chip: {
     backgroundColor: colors.surface,
-    borderRadius: 14,
+    borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderWidth: 1,
     borderColor: colors.divider,
+    alignSelf: 'center',
   },
   chipOn: { backgroundColor: colors.crimson, borderColor: colors.crimson },
   chipText: {
@@ -679,7 +690,7 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   chipTextOn: { color: '#fff' },
-  chipSub: { fontSize: 10, color: colors.textSecondary, marginTop: 2 },
+  chipSub: { fontSize: 10, color: colors.textSecondary, marginTop: 1 },
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
