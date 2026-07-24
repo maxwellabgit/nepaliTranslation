@@ -48,22 +48,44 @@ type PairEdits = {
   right: string;
 };
 
-type AutoHeightProps = ComponentProps<typeof TextInput>;
+type AutoHeightProps = ComponentProps<typeof TextInput> & {
+  /** Soft cap so one field cannot swallow the paired target editors. */
+  maxHeight?: number;
+};
 
-/** Multiline field that grows with phrase length instead of a fixed tall box. */
-function AutoHeightInput({ style, onContentSizeChange, value, ...rest }: AutoHeightProps) {
-  const [height, setHeight] = useState(36);
+const FIELD_MIN = 72;
+const FIELD_MAX_DEFAULT = 140;
+
+/**
+ * Multiline field that grows with phrase length, capped so Review keeps
+ * source + both targets visible without a giant empty white box.
+ */
+function AutoHeightInput({
+  style,
+  onContentSizeChange,
+  value,
+  maxHeight = FIELD_MAX_DEFAULT,
+  ...rest
+}: AutoHeightProps) {
+  const [height, setHeight] = useState(FIELD_MIN);
 
   useEffect(() => {
-    // Reset when navigating to a shorter phrase so the box shrinks.
-    setHeight(36);
+    setHeight(FIELD_MIN);
   }, [value]);
 
   const handleSize = (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
     const next = Math.ceil(e.nativeEvent.contentSize.height);
-    setHeight(Math.max(36, next));
+    // Ignore pathological contentSize spikes from ScrollView/flex measurement.
+    if (next > maxHeight * 3) {
+      onContentSizeChange?.(e);
+      return;
+    }
+    setHeight(Math.min(maxHeight, Math.max(FIELD_MIN, next)));
     onContentSizeChange?.(e);
   };
+
+  const capped = Math.min(maxHeight, Math.max(FIELD_MIN, height));
+  const scrollEnabled = height >= maxHeight;
 
   return (
     <TextInput
@@ -71,9 +93,9 @@ function AutoHeightInput({ style, onContentSizeChange, value, ...rest }: AutoHei
       value={value}
       multiline
       textAlignVertical="top"
-      scrollEnabled={false}
+      scrollEnabled={scrollEnabled}
       onContentSizeChange={handleSize}
-      style={[styles.field, style, { height: height + 28 }]}
+      style={[styles.field, style, { height: capped, maxHeight }]}
     />
   );
 }
@@ -497,11 +519,12 @@ export function GoldReviewScreen({ onClose }: Props) {
                 value={edits.shared}
                 onChangeText={(t) => setEdits((e) => ({ ...e, shared: t }))}
                 autoCapitalize="sentences"
+                maxHeight={120}
               />
 
-              <View style={styles.pairRow}>
+              <View style={styles.pairStack}>
                 {unit.left ? (
-                  <View style={styles.pairCol}>
+                  <View style={styles.pairBlock}>
                     <Text style={styles.fieldLabel}>{unit.leftLabel}</Text>
                     <AutoHeightInput
                       value={edits.left}
@@ -512,11 +535,12 @@ export function GoldReviewScreen({ onClose }: Props) {
                       // iOS cannot force Devanagari; keep default keyboard so the
                       // user's last Indic layout can surface when enabled.
                       keyboardType="default"
+                      maxHeight={160}
                     />
                   </View>
                 ) : null}
                 {unit.right ? (
-                  <View style={styles.pairCol}>
+                  <View style={styles.pairBlock}>
                     <Text style={styles.fieldLabel}>{unit.rightLabel}</Text>
                     <AutoHeightInput
                       value={edits.right}
@@ -525,6 +549,7 @@ export function GoldReviewScreen({ onClose }: Props) {
                       autoCorrect={false}
                       autoCapitalize="none"
                       keyboardType="default"
+                      maxHeight={160}
                     />
                   </View>
                 ) : null}
@@ -664,7 +689,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   meta: { fontSize: 12, color: colors.textSecondary, fontWeight: '600' },
-  tapDismiss: { flexGrow: 1 },
+  tapDismiss: {},
   benchCard: {
     marginTop: 22,
     marginBottom: 10,
@@ -738,7 +763,17 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: 14,
   },
-  fieldTarget: {},
+  fieldTarget: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.divider,
+  },
+  pairStack: {
+    gap: 4,
+  },
+  pairBlock: {
+    marginBottom: 4,
+  },
   pairRow: {
     flexDirection: 'row',
     gap: 10,
