@@ -23,6 +23,7 @@ import {
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
+import { methodLabel } from '../conversation/passLogic';
 import { addHistory, isStarred, toggleStar, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import { colors } from '../theme';
@@ -37,9 +38,18 @@ function delay(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
+const QUICK_PHRASES = [
+  'Hello',
+  'Thank you',
+  'How are you?',
+  "What's your name?",
+  'Where is the bathroom?',
+  'How much is this?',
+] as const;
+
 /**
- * Auto mode — bottom input dock, results above (fleet Team A).
- * Formal / script as compact chips. Honest footer: phrasebook offline.
+ * Auto mode — bottom input dock, results above.
+ * Traveler build: phrasebook + lexicon; Apple speech (may use network).
  */
 export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   const [formalOn, setFormalOn] = useState(true);
@@ -54,6 +64,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   const idleHistoryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const prefsLoadedRef = useRef(false);
+  const prefsRef = useRef({ formalOn: true, devaOn: true, romanTipSeen: false });
   const listeningRef = useRef(false);
   const startingRef = useRef(false);
   const sttLangRef = useRef<'en-US' | 'ne-NP'>('en-US');
@@ -88,6 +99,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
 
   const saveHistoryFor = useCallback(
     (t: string, translation: string, dir: 'en-ne' | 'ne-en') => {
+      if (!translation.trim()) return;
       const sl = dir === 'en-ne' ? 'en' : 'ne';
       const tl = dir === 'en-ne' ? 'ne' : 'en';
       void addHistory({
@@ -101,26 +113,48 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     [],
   );
 
-  const previewTranslate = useCallback((raw: string) => {
-    const t = raw.trim();
-    if (!t) {
-      setOutput('');
-      setMtMethod('phrase');
-      return;
-    }
-    void sharedTranslationEngine
-      .translate({
-        text: t,
-        preferred: preferredRef.current,
-        formality: optsRef.current.formality,
-        script: optsRef.current.script,
-      })
-      .then((result) => {
-        preferredRef.current = result.direction;
-        setOutput(result.text);
-        setMtMethod(result.method);
-      });
-  }, []);
+  const applyResult = useCallback(
+    (
+      result: {
+        text: string;
+        method: 'phrase' | 'lexicon';
+        direction: 'en-ne' | 'ne-en';
+        cancelled?: boolean;
+      },
+      requestId: number,
+      opts?: { save?: boolean; source?: string },
+    ) => {
+      if (result.cancelled || requestId !== requestIdRef.current) return;
+      preferredRef.current = result.direction;
+      setOutput(result.text);
+      setMtMethod(result.method);
+      if (opts?.save && opts.source) {
+        saveHistoryFor(opts.source, result.text, result.direction);
+      }
+    },
+    [saveHistoryFor],
+  );
+
+  const previewTranslate = useCallback(
+    (raw: string) => {
+      const t = raw.trim();
+      if (!t) {
+        setOutput('');
+        setMtMethod('phrase');
+        return;
+      }
+      const requestId = ++requestIdRef.current;
+      void sharedTranslationEngine
+        .translate({
+          text: t,
+          preferred: preferredRef.current,
+          formality: optsRef.current.formality,
+          script: optsRef.current.script,
+        })
+        .then((result) => applyResult(result, requestId));
+    },
+    [applyResult],
+  );
 
   const commitTranslate = useCallback(
     (raw: string) => {
@@ -130,6 +164,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
         setMtMethod('phrase');
         return;
       }
+      const requestId = ++requestIdRef.current;
       void sharedTranslationEngine
         .translate({
           text: t,
@@ -137,17 +172,14 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
           formality: optsRef.current.formality,
           script: optsRef.current.script,
         })
-        .then((result) => {
-          preferredRef.current = result.direction;
-          setOutput(result.text);
-          setMtMethod(result.method);
-          saveHistoryFor(t, result.text, result.direction);
-        });
+        .then((result) =>
+          applyResult(result, requestId, { save: true, source: t }),
+        );
     },
-    [saveHistoryFor],
+    [applyResult],
   );
 
-  /** Restart STT when Detect flips mid-listen (Team H). */
+  /** Only remount STT after a final transcript when Detect flips language. */
   const syncSttLocale = useCallback(
     async (dir: 'en-ne' | 'ne-en') => {
       if (!listeningRef.current) return;
@@ -176,6 +208,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
     if (!text) return;
     setInput(text);
+    const requestId = ++requestIdRef.current;
     void sharedTranslationEngine
       .translate({
         text,
@@ -184,14 +217,12 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
         script: optsRef.current.script,
       })
       .then((result) => {
-        preferredRef.current = result.direction;
-        setOutput(result.text);
-        setMtMethod(result.method);
-        void syncSttLocale(result.direction);
-        if (event.isFinal) {
-          listeningRef.current = false;
-          setListening(false);
-          saveHistoryFor(text, result.text, result.direction);
+        applyResult(result, requestId, {
+          save: Boolean(event.isFinal),
+          source: text,
+        });
+        if (event.isFinal && !result.cancelled) {
+          void syncSttLocale(result.direction);
         }
       });
     if (event.isFinal) {
@@ -214,6 +245,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     void ExpoSpeechRecognitionModule.requestPermissionsAsync().catch(() => {});
     return () => {
       hardStopRecognition();
+      sharedTranslationEngine.cancelAll();
     };
   }, [hardStopRecognition]);
 
@@ -221,6 +253,11 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     void loadPrefs().then((prefs) => {
       setFormalOn(prefs.formalOn);
       setDevaOn(prefs.devaOn);
+      prefsRef.current = {
+        formalOn: prefs.formalOn,
+        devaOn: prefs.devaOn,
+        romanTipSeen: prefs.romanTipSeen,
+      };
       prefsLoadedRef.current = true;
     });
   }, []);
@@ -228,17 +265,18 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   useEffect(() => {
     if (!prefsLoadedRef.current) return;
     void loadPrefs().then((prev) => {
-      void savePrefs({
-        ...prev,
-        formalOn,
-        devaOn,
-      });
+      const next = { ...prev, formalOn, devaOn };
+      prefsRef.current = {
+        formalOn: next.formalOn,
+        devaOn: next.devaOn,
+        romanTipSeen: next.romanTipSeen,
+      };
+      void savePrefs(next);
     });
   }, [formalOn, devaOn]);
 
   useEffect(() => {
-    if (listeningRef.current) return;
-
+    // Retranslate on chip flips even while listening so Formal/Roman feel instant.
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
 
@@ -246,7 +284,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
     debounceRef.current = setTimeout(() => {
       if (requestId !== requestIdRef.current) return;
       previewTranslate(input);
-    }, 200);
+    }, 160);
 
     if (idleHistoryRef.current) clearTimeout(idleHistoryRef.current);
     idleHistoryRef.current = setTimeout(() => {
@@ -260,17 +298,16 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
           formality,
           script,
         })
-        .then((result) => {
-          if (requestId !== requestIdRef.current) return;
-          saveHistoryFor(t, result.text, result.direction);
-        });
+        .then((result) =>
+          applyResult(result, requestId, { save: true, source: t }),
+        );
     }, 1500);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (idleHistoryRef.current) clearTimeout(idleHistoryRef.current);
     };
-  }, [input, formality, script, previewTranslate, saveHistoryFor]);
+  }, [input, formality, script, previewTranslate, applyResult]);
 
   const paste = async () => {
     const clip = await Clipboard.getStringAsync();
@@ -352,12 +389,11 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
 
   const setDevaWithTip = (next: boolean) => {
     setDevaOn(next);
-    if (!next) {
+    if (!next && !prefsRef.current.romanTipSeen) {
+      setRomanTip(true);
+      prefsRef.current = { ...prefsRef.current, formalOn, devaOn: false, romanTipSeen: true };
       void loadPrefs().then((prefs) => {
-        if (!prefs.romanTipSeen) {
-          setRomanTip(true);
-          void savePrefs({ ...prefs, formalOn, devaOn: false, romanTipSeen: true });
-        }
+        void savePrefs({ ...prefs, formalOn, devaOn: false, romanTipSeen: true });
       });
     }
   };
@@ -365,6 +401,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
   const displayOutput =
     targetLang === 'ne' ? formatNepaliScript(output, script) : output;
   const showResult = Boolean(input.trim() && displayOutput);
+  const missMatch = Boolean(input.trim() && !displayOutput);
 
   return (
     <View style={styles.root}>
@@ -385,7 +422,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
           />
           <Text style={styles.brand}>NepTranslate</Text>
           <Text style={styles.modeTag}>
-            {listening ? 'Listening…' : 'Offline · on this device'}
+            {listening ? 'Listening…' : 'Phrases on device · voice via Apple'}
           </Text>
         </View>
         <Pressable
@@ -410,10 +447,10 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
               {listening
                 ? `${targetName} · live`
                 : targetLang === 'ne'
-                  ? `${targetName} · ${formality} · ${script === 'deva' ? 'देवनागरी' : 'Roman'} · ${
-                      mtMethod === 'lexicon' ? 'word guess' : 'phrasebook'
-                    }`
-                  : `${targetName} · ${mtMethod === 'lexicon' ? 'word guess' : 'phrasebook'}`}
+                  ? `${targetName} · ${formality} · ${
+                      script === 'deva' ? 'देवनागरी' : 'Roman'
+                    } · ${methodLabel(mtMethod)}`
+                  : `${targetName} · ${methodLabel(mtMethod)}`}
             </Text>
             <Text
               style={[
@@ -450,13 +487,44 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
         ) : (
           <View style={styles.emptyResult}>
             <Text style={styles.emptyTitle}>
-              {input.trim() ? 'No saved phrase yet' : 'Type or speak'}
+              {missMatch ? 'No saved phrase yet' : 'Type or speak'}
             </Text>
             <Text style={styles.emptyBody}>
-              {input.trim()
-                ? 'This build ships a traveler phrasebook. Try a shorter everyday line, or wait for the on-device model.'
-                : 'English ↔ Nepali on this device. Results appear here.'}
+              {missMatch
+                ? 'This traveler build uses a saved phrasebook. Try a shorter everyday line below.'
+                : 'English ↔ Nepali from phrases on this device. Results appear here.'}
             </Text>
+            {!missMatch ? (
+              <View style={styles.suggestRow}>
+                {QUICK_PHRASES.map((phrase) => (
+                  <Pressable
+                    key={phrase}
+                    style={styles.suggestChip}
+                    onPress={() => {
+                      setInput(phrase);
+                      commitTranslate(phrase);
+                    }}
+                  >
+                    <Text style={styles.suggestText}>{phrase}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ) : (
+              <View style={styles.suggestRow}>
+                {QUICK_PHRASES.slice(0, 4).map((phrase) => (
+                  <Pressable
+                    key={phrase}
+                    style={styles.suggestChip}
+                    onPress={() => {
+                      setInput(phrase);
+                      commitTranslate(phrase);
+                    }}
+                  >
+                    <Text style={styles.suggestText}>{phrase}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
@@ -475,13 +543,17 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       <View style={[styles.dock, listening && styles.dockListening]}>
         <View style={styles.chipRow}>
           <Pressable
-            onPress={() => setFormalOn(true)}
+            onPress={() => {
+              if (!formalOn) setFormalOn(true);
+            }}
             style={[styles.chip, formalOn && styles.chipOn]}
           >
             <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>Formal</Text>
           </Pressable>
           <Pressable
-            onPress={() => setFormalOn(false)}
+            onPress={() => {
+              if (formalOn) setFormalOn(false);
+            }}
             style={[styles.chip, !formalOn && styles.chipOn]}
           >
             <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
@@ -489,13 +561,17 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
             </Text>
           </Pressable>
           <Pressable
-            onPress={() => setDevaWithTip(true)}
+            onPress={() => {
+              if (!devaOn) setDevaWithTip(true);
+            }}
             style={[styles.chip, devaOn && styles.chipOn]}
           >
             <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
           </Pressable>
           <Pressable
-            onPress={() => setDevaWithTip(false)}
+            onPress={() => {
+              if (devaOn) setDevaWithTip(false);
+            }}
             style={[styles.chip, !devaOn && styles.chipOn]}
           >
             <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
@@ -555,7 +631,7 @@ export function HomeScreen({ seed, onOpenHistory, onOpenSettings }: Props) {
       </View>
 
       <Text style={styles.trustLine}>
-        phrasebook offline · voice via Apple
+        saved phrases on device · voice via Apple
       </Text>
     </View>
   );
@@ -614,6 +690,25 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     color: colors.textSecondary,
+  },
+  suggestRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 16,
+  },
+  suggestChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.divider,
+  },
+  suggestText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.text,
   },
   resultBlock: {
     paddingTop: 8,

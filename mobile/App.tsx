@@ -1,22 +1,50 @@
 ﻿import { useState } from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import * as Speech from 'expo-speech';
+import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { GoldReviewScreen } from './src/screens/GoldReviewScreen';
+import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import type { HistoryItem } from './src/storage/phrasebook';
 import { colors } from './src/theme';
 
 type Mode = 'auto' | 'conversation';
 type Overlay = 'history' | 'settings' | 'gold' | null;
 
+function hardStopAudio() {
+  try {
+    const mod = ExpoSpeechRecognitionModule as {
+      abort?: () => void;
+      stop?: () => void;
+    };
+    if (typeof mod.abort === 'function') mod.abort();
+    else if (typeof mod.stop === 'function') mod.stop();
+  } catch {
+    /* ignore */
+  }
+  try {
+    Speech.stop();
+  } catch {
+    /* ignore */
+  }
+  sharedTranslationEngine.cancelAll();
+}
+
 export default function App() {
   const [mode, setMode] = useState<Mode>('auto');
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
+
+  const switchMode = (next: Mode) => {
+    if (next === mode) return;
+    hardStopAudio();
+    setMode(next);
+  };
 
   if (overlay === 'history') {
     return (
@@ -25,6 +53,7 @@ export default function App() {
         <HistoryScreen
           onClose={() => setOverlay(null)}
           onSelect={(item) => {
+            hardStopAudio();
             setSeed(item);
             setSeedKey((k) => k + 1);
             setMode('auto');
@@ -66,8 +95,14 @@ export default function App() {
           <HomeScreen
             key={seedKey}
             seed={seed}
-            onOpenHistory={() => setOverlay('history')}
-            onOpenSettings={() => setOverlay('settings')}
+            onOpenHistory={() => {
+              hardStopAudio();
+              setOverlay('history');
+            }}
+            onOpenSettings={() => {
+              hardStopAudio();
+              setOverlay('settings');
+            }}
           />
         )}
       </View>
@@ -75,7 +110,7 @@ export default function App() {
       <View style={styles.tabBar}>
         <Pressable
           style={[styles.tab, mode === 'auto' && styles.tabOn]}
-          onPress={() => setMode('auto')}
+          onPress={() => switchMode('auto')}
         >
           <Text style={[styles.tabLabel, mode === 'auto' && styles.tabLabelOn]}>
             Auto
@@ -86,7 +121,7 @@ export default function App() {
         </Pressable>
         <Pressable
           style={[styles.tab, mode === 'conversation' && styles.tabOn]}
-          onPress={() => setMode('conversation')}
+          onPress={() => switchMode('conversation')}
         >
           <Text
             style={[styles.tabLabel, mode === 'conversation' && styles.tabLabelOn]}

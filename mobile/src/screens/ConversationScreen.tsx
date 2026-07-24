@@ -21,6 +21,7 @@ import {
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { takeNewCompleteSentences } from '../mt/sentences';
+import { canPassPhone, emptyShowFallback } from '../conversation/passLogic';
 import { colors } from '../theme';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 
@@ -93,14 +94,16 @@ export function ConversationScreen() {
       const t = text.trim();
       if (!t) return null;
       const result = translateForced(t, from);
+      const show = result.text.trim() || emptyShowFallback(from);
       const turn: Turn = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
         from,
         heard: t,
-        show: result.text,
+        show,
       };
       setTurns((prev) => [...prev, turn]);
-      if (speakAloud) speakShow(turn);
+      // Only speak real translations — not the empty-match fallback.
+      if (speakAloud && result.text.trim()) speakShow(turn);
       return turn;
     },
     [speakShow, translateForced],
@@ -173,7 +176,10 @@ export function ConversationScreen() {
     setTurns((prev) =>
       prev.map((t) => {
         const result = translateForced(t.heard, t.from);
-        return { ...t, show: result.text };
+        return {
+          ...t,
+          show: result.text.trim() || emptyShowFallback(t.from),
+        };
       }),
     );
   }, [formalOn, translateForced]);
@@ -270,9 +276,12 @@ export function ConversationScreen() {
   };
 
   const hasContentToPass = () => {
-    if (interimRef.current.trim()) return true;
     const last = turns.length ? turns[turns.length - 1] : null;
-    return Boolean(last && last.from === sideRef.current);
+    return canPassPhone(
+      interimRef.current,
+      last ? last.from : null,
+      sideRef.current,
+    );
   };
 
   const onPass = async () => {
@@ -382,7 +391,9 @@ export function ConversationScreen() {
 
       <View style={styles.chipRow}>
         <Pressable
-          onPress={() => setFormalOn(true)}
+          onPress={() => {
+            if (!formalOn) setFormalOn(true);
+          }}
           style={[styles.chip, formalOn && styles.chipOn]}
         >
           <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>
@@ -390,7 +401,9 @@ export function ConversationScreen() {
           </Text>
         </Pressable>
         <Pressable
-          onPress={() => setFormalOn(false)}
+          onPress={() => {
+            if (formalOn) setFormalOn(false);
+          }}
           style={[styles.chip, !formalOn && styles.chipOn]}
         >
           <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
@@ -398,13 +411,17 @@ export function ConversationScreen() {
           </Text>
         </Pressable>
         <Pressable
-          onPress={() => setDevaOn(true)}
+          onPress={() => {
+            if (!devaOn) setDevaOn(true);
+          }}
           style={[styles.chip, devaOn && styles.chipOn]}
         >
           <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
         </Pressable>
         <Pressable
-          onPress={() => setDevaOn(false)}
+          onPress={() => {
+            if (devaOn) setDevaOn(false);
+          }}
           style={[styles.chip, !devaOn && styles.chipOn]}
         >
           <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
@@ -424,7 +441,7 @@ export function ConversationScreen() {
             </Text>
             <Text style={styles.emptyBody}>
               {enTurn
-                ? 'Tap Speak, say a full sentence, then Pass. The phone listens for Nepali next.'
+                ? 'Tap Speak, say a traveler phrase (hello, thank you, where is the bathroom), then Pass.'
                 : 'बोल्नुहोस् थिच्नुहोस्, वाक्य भन्नुहोस्, अनि पास गर्नुहोस्। अर्को पटक अङ्ग्रेजी सुनिन्छ।'}
             </Text>
           </View>
@@ -541,7 +558,7 @@ export function ConversationScreen() {
             </Text>
           </Pressable>
         </View>
-        <Text style={styles.trustLine}>phrasebook offline · voice via Apple</Text>
+        <Text style={styles.trustLine}>saved phrases on device · voice via Apple</Text>
       </View>
 
       <Modal visible={consentVisible} animationType="fade" transparent>
