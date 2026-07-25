@@ -586,7 +586,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         <Text style={styles.trustLine}>
           {neuralReady
             ? 'on-device model · voice via Apple'
-            : 'saved phrases · preparing model · voice via Apple'}
+            : 'saved phrases · loading model · voice via Apple'}
         </Text>
       </View>
 

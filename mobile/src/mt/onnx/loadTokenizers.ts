@@ -6,7 +6,7 @@ import { Tokenizer } from '@huggingface/tokenizers';
 import { File } from 'expo-file-system';
 
 import type { It2DirectionBundle } from './modelAssets';
-import { bundleDirectory } from './modelAssets';
+import { resolveModelDirectory } from './modelAssets';
 
 export type It2TokenizerPair = {
   src: Tokenizer;
@@ -19,7 +19,7 @@ async function loadTokenizerFromBundle(
   bundleKind: It2DirectionBundle,
   fileName: 'tokenizer_src.json' | 'tokenizer_tgt.json',
 ): Promise<Tokenizer> {
-  const bundle = bundleDirectory(bundleKind);
+  const bundle = await resolveModelDirectory(bundleKind);
   const tokFile = new File(bundle, fileName);
   const configFile = new File(bundle, 'tokenizer_config.json');
   const tokenizerJson = JSON.parse(await tokFile.text()) as object;

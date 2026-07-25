@@ -1,6 +1,6 @@
 {
   "name": "neptranslate",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "index.ts",
   "dependencies": {
     "@huggingface/tokenizers": "^0.1.3",
@@ -27,6 +27,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "verify:translate": "node scripts/verify_translate_fix.mjs",
+    "fetch:models": "node ./scripts/eas_fetch_it2_models.mjs",
+    "eas-build-post-install": "node ./scripts/eas_fetch_it2_models.mjs",
     "eas:configure": "eas build:configure",
     "build:ios": "eas build --platform ios --profile production",
     "build:android": "eas build --platform android --profile production",
