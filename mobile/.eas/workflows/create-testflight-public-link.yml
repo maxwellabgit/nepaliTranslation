@@ -1,0 +1,269 @@
+name: Create TestFlight public redeem link
+
+on:
+  workflow_dispatch:
+    inputs:
+      group_name:
+        type: string
+        required: false
+        default: Public Testers
+        description: External TestFlight group name
+      public_link_limit:
+        type: string
+        required: false
+        default: "100"
+        description: Max testers via public link (0 = unlimited)
+
+jobs:
+  create_link:
+    name: Enable public TestFlight link
+    environment: production
+    image: linux-large-nested-virtualization
+    runs_on: linux-large-nested-virtualization
+    steps:
+      - name: Create / fetch public redeem link
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet PyJWT cryptography requests
+
+          export GROUP_NAME="${{ inputs.group_name || 'Public Testers' }}"
+          export PUBLIC_LINK_LIMIT="${{ inputs.public_link_limit || '100' }}"
+          export APP_ID="${ASC_APP_ID}"
+          export KEY_ID="${ASC_KEY_ID}"
+          export ISSUER_ID="${ASC_ISSUER_ID}"
+          export KEY_PATH="${ASC_KEY_P8}"
+
+          python3 <<'PY'
+          import json, os, sys, time
+          from pathlib import Path
+
+          import jwt
+          import requests
+
+          APP_ID = os.environ["APP_ID"]
+          KEY_ID = os.environ["KEY_ID"]
+          ISSUER_ID = os.environ["ISSUER_ID"]
+          KEY_PATH = os.environ["KEY_PATH"]
+          GROUP_NAME = os.environ.get("GROUP_NAME") or "Public Testers"
+          try:
+              LIMIT = int(os.environ.get("PUBLIC_LINK_LIMIT") or "100")
+          except ValueError:
+              LIMIT = 100
+
+          key = Path(KEY_PATH).read_text(encoding="utf-8")
+          now = int(time.time())
+          token = jwt.encode(
+              {
+                  "iss": ISSUER_ID,
+                  "iat": now,
+                  "exp": now + 20 * 60,
+                  "aud": "appstoreconnect-v1",
+              },
+              key,
+              algorithm="ES256",
+              headers={"kid": KEY_ID},
+          )
+          if isinstance(token, bytes):
+              token = token.decode("utf-8")
+
+          S = requests.Session()
+          S.headers.update(
+              {
+                  "Authorization": f"Bearer {token}",
+                  "Content-Type": "application/json",
+                  "Accept": "application/json",
+              }
+          )
+          BASE = "https://api.appstoreconnect.apple.com/v1"
+
+          def get(path, **params):
+              r = S.get(f"{BASE}{path}", params=params, timeout=60)
+              if r.status_code >= 400:
+                  print("GET", path, r.status_code, r.text[:2000], file=sys.stderr)
+                  r.raise_for_status()
+              return r.json()
+
+          def post(path, body):
+              r = S.post(f"{BASE}{path}", data=json.dumps(body), timeout=60)
+              if r.status_code >= 400:
+                  print("POST", path, r.status_code, r.text[:2000], file=sys.stderr)
+                  r.raise_for_status()
+              return r.json() if r.text else {}
+
+          def patch(path, body):
+              r = S.patch(f"{BASE}{path}", data=json.dumps(body), timeout=60)
+              if r.status_code >= 400:
+                  print("PATCH", path, r.status_code, r.text[:2000], file=sys.stderr)
+                  r.raise_for_status()
+              return r.json() if r.text else {}
+
+          # App sanity check
+          app = get(f"/apps/{APP_ID}")
+          print("app:", app["data"]["attributes"].get("name"), APP_ID)
+
+          groups = get(
+              "/betaGroups",
+              **{"filter[app]": APP_ID, "limit": 200},
+          )["data"]
+          print("existing_groups:", [
+              {
+                  "id": g["id"],
+                  "name": g["attributes"].get("name"),
+                  "internal": g["attributes"].get("isInternalGroup"),
+                  "publicLinkEnabled": g["attributes"].get("publicLinkEnabled"),
+                  "publicLink": g["attributes"].get("publicLink"),
+              }
+              for g in groups
+          ])
+
+          # Prefer an existing external group with a public link already.
+          for g in groups:
+              attrs = g["attributes"]
+              if attrs.get("publicLinkEnabled") and attrs.get("publicLink"):
+                  print("ALREADY_ENABLED")
+                  print("PUBLIC_LINK=", attrs["publicLink"])
+                  print("GROUP=", attrs.get("name"), g["id"])
+                  sys.exit(0)
+
+          external = [
+              g for g in groups
+              if not g["attributes"].get("isInternalGroup")
+          ]
+          group = next(
+              (g for g in external if g["attributes"].get("name") == GROUP_NAME),
+              None,
+          )
+          if group is None and external:
+              group = external[0]
+              print("using_existing_external_group:", group["attributes"].get("name"))
+
+          if group is None:
+              print("creating_external_group:", GROUP_NAME)
+              body = {
+                  "data": {
+                      "type": "betaGroups",
+                      "attributes": {
+                          "name": GROUP_NAME,
+                          "isInternalGroup": False,
+                          "publicLinkEnabled": False,
+                          "publicLinkLimitEnabled": LIMIT > 0,
+                          "publicLinkLimit": LIMIT if LIMIT > 0 else None,
+                          "feedbackEnabled": True,
+                      },
+                      "relationships": {
+                          "app": {"data": {"type": "apps", "id": APP_ID}}
+                      },
+                  }
+              }
+              group = post("/betaGroups", body)["data"]
+
+          gid = group["id"]
+          print("target_group:", group["attributes"].get("name"), gid)
+
+          # Latest processed iOS build for this app
+          builds = get(
+              "/builds",
+              **{
+                  "filter[app]": APP_ID,
+                  "filter[processingState]": "VALID",
+                  "sort": "-uploadedDate",
+                  "limit": 10,
+              },
+          )["data"]
+          if not builds:
+              print("ERROR: no VALID builds found for app", file=sys.stderr)
+              sys.exit(2)
+          build = builds[0]
+          bid = build["id"]
+          battrs = build["attributes"]
+          print(
+              "latest_build:",
+              battrs.get("version"),
+              "uploaded",
+              battrs.get("uploadedDate"),
+              "id",
+              bid,
+              "expired",
+              battrs.get("expired"),
+          )
+
+          # Assign build to group (ignore if already assigned)
+          try:
+              post(
+                  f"/betaGroups/{gid}/relationships/builds",
+                  {"data": [{"type": "builds", "id": bid}]},
+              )
+              print("assigned_build_to_group")
+          except Exception as e:
+              print("assign_build_note:", e)
+
+          # Beta App Review may be required before public link works
+          review_details = get(
+              "/betaAppReviewDetails",
+              **{"filter[app]": APP_ID, "limit": 1},
+          ).get("data") or []
+          if review_details:
+              print("beta_app_review_details:", review_details[0].get("attributes"))
+
+          # Try submit latest build for beta review if not already
+          try:
+              post(
+                  "/betaAppReviewSubmissions",
+                  {
+                      "data": {
+                          "type": "betaAppReviewSubmissions",
+                          "relationships": {
+                              "build": {
+                                  "data": {"type": "builds", "id": bid}
+                              }
+                          },
+                      }
+                  },
+              )
+              print("submitted_for_beta_app_review")
+          except Exception as e:
+              print("beta_review_submit_note:", e)
+
+          # Enable public link
+          limit_enabled = LIMIT > 0
+          patch_body = {
+              "data": {
+                  "type": "betaGroups",
+                  "id": gid,
+                  "attributes": {
+                      "publicLinkEnabled": True,
+                      "publicLinkLimitEnabled": limit_enabled,
+                      **({"publicLinkLimit": LIMIT} if limit_enabled else {}),
+                  },
+              }
+          }
+          try:
+              updated = patch(f"/betaGroups/{gid}", patch_body)["data"]
+          except Exception:
+              # Re-fetch and report why
+              updated = get(f"/betaGroups/{gid}")["data"]
+              attrs = updated["attributes"]
+              print("ENABLE_FAILED")
+              print("group_attrs=", json.dumps(attrs, indent=2))
+              print(
+                  "HINT: Public links require an external group with a build "
+                  "that has passed Beta App Review. Open App Store Connect → "
+                  "TestFlight → External Testing, finish review, then Enable Public Link."
+              )
+              sys.exit(3)
+
+          attrs = updated["attributes"]
+          link = attrs.get("publicLink")
+          print("publicLinkEnabled=", attrs.get("publicLinkEnabled"))
+          print("publicLinkLimit=", attrs.get("publicLinkLimit"))
+          if link:
+              print("PUBLIC_LINK=", link)
+              # Also print just the redeem code segment
+              code = link.rstrip("/").split("/")[-1]
+              print("REDEEM_CODE=", code)
+              print("TESTFLIGHT_JOIN_URL=", f"https://testflight.apple.com/join/{code}")
+          else:
+              print("ENABLED_BUT_NO_LINK_YET")
+              print(json.dumps(attrs, indent=2))
+              sys.exit(4)
+          PY
