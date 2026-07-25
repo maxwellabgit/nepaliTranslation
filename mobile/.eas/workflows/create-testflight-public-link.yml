@@ -18,8 +18,7 @@ jobs:
   create_link:
     name: Enable public TestFlight link
     environment: production
-    image: linux-large-nested-virtualization
-    runs_on: linux-large-nested-virtualization
+    runs_on: linux-medium
     steps:
       - name: Create / fetch public redeem link
         run: |
