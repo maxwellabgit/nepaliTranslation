@@ -186,7 +186,7 @@ export function SettingsScreen({
                 secureTextEntry
               />
               <Text style={styles.syncHint}>
-                Batches of 5, or ~12s after you stop reviewing. See training/REVIEW_SYNC.md.
+                Batches of 1 (immediate after Accept/Skip), or ~3s debounce. See training/REVIEW_SYNC.md.
               </Text>
               {syncStatus?.lastError ? (
                 <Text style={styles.syncError}>Last error: {syncStatus.lastError}</Text>

@@ -6,11 +6,11 @@ const QUEUE_KEY = 'neptranslate.review_sync.queue.v1';
 const STATUS_KEY = 'neptranslate.review_sync.status.v1';
 
 /** Flush when this many reviews are pending (or sooner via timer / manual). */
-export const BATCH_SIZE = 5;
+export const BATCH_SIZE = 1;
 /** Cap reviews per HTTP request. */
 export const MAX_BATCH_UPLOAD = 50;
 /** Debounce flush after the latest enqueue (ms). */
-export const BATCH_DEBOUNCE_MS = 12_000;
+export const BATCH_DEBOUNCE_MS = 3_000;
 
 export type ReviewSyncConfig = {
   enabled: boolean;

@@ -5,7 +5,7 @@ Reviews can land on this PC **as you Accept / Skip** (batched), without Share �
 ## How it works
 
 1. Phone queues each completed review locally.
-2. When **5** pile up, or after **~12s** idle, it POSTs a batch to your PC.
+2. When **1** review is ready (or after **~3s** idle), it POSTs a batch to your PC.
 3. `training/review_sync_server.py` writes the batch under
    `training/artifacts/review_sync_inbox/` and runs `route_corrections.py`.
 4. Dedup by `event_id` so retries / re-exports do not double-count `edited_since_train`.
@@ -17,14 +17,16 @@ Manual **Export** in Meaning Review still works as a backup.
 ```powershell
 cd C:\Users\maxwe\.cursor\nepaliTranslation
 $env:REVIEW_SYNC_SECRET = "pick-a-long-random-secret"
-python training/review_sync_server.py --host 127.0.0.1 --port 8765
+python training/review_sync_server.py --host 0.0.0.0 --port 8765
 ```
 
 Leave that window open while reviewing.
 
+Same Wi‑Fi: `http://YOUR-PC-LAN-IP:8765` (local networking is allowed in the app).
+
 ### Reachable from TestFlight (cellular / away from home Wi‑Fi)
 
-Use a temporary HTTPS tunnel (App Transport Security requires HTTPS):
+Use a temporary HTTPS tunnel:
 
 ```powershell
 # install once: winget install Cloudflare.cloudflared
@@ -32,10 +34,6 @@ cloudflared tunnel --url http://127.0.0.1:8765
 ```
 
 Copy the `https://….trycloudflare.com` URL.
-
-Same Wi‑Fi only (no tunnel): use `http://YOUR-PC-LAN-IP:8765` and enable
-**Allow local HTTP** in the app sync settings (adds ATS exception for local network).
-
 ## In the app
 
 Settings → Advanced → **Review sync**
