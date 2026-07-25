@@ -16,8 +16,13 @@ benchmarks/__pycache__/
 # Local IDE
 .cursor/
 
-# Fine-tuned / merged model weights (multi-GB; keep scripts + small data in git)
-training/artifacts/
+# Datasets — keep seeds/manifests; ignore bulky generated runs
+datasets/synthetic/student_raw/
+datasets/synthetic/teacher_reviewed/
+datasets/benchmarks/runs/
+training/artifacts/it2_en_indic_1b/
+training/artifacts/it2_indic_en_1b/
+
 
 # Large harvested / scraped corpora (rebuild from scripts)
 training/data/raw/

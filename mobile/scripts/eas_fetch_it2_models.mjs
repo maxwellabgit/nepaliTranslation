@@ -28,7 +28,6 @@ const ALLOW = [
 
 const BUNDLES = [
   ['hari31416/indictrans2-en-indic-dist-200M-ONNX-int8', 'it2_en_indic'],
-  ['hari31416/indictrans2-indic-en-dist-200M-ONNX-int8', 'it2_indic_en'],
 ];
 
 function complete(dir) {

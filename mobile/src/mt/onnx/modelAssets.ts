@@ -77,9 +77,11 @@ export async function packagedIsComplete(kind: It2DirectionBundle): Promise<bool
   }
 }
 
+/** Directions shipped in the IPA. EN→NE only keeps install ~half size. */
+export const SHIPPED_IT2_DIRECTIONS: It2DirectionBundle[] = ['en-indic'];
+
 export async function neuralAssetsAvailable(): Promise<boolean> {
-  const kinds: It2DirectionBundle[] = ['en-indic', 'indic-en'];
-  for (const kind of kinds) {
+  for (const kind of SHIPPED_IT2_DIRECTIONS) {
     if (await packagedIsComplete(kind)) continue;
     if (await bundleIsComplete(kind)) continue;
     return false;
@@ -138,18 +140,19 @@ export type ModelDownloadProgress = {
 };
 
 /**
- * Ensure both EN↔NE INT8 bundles are ready for ORT.
+ * Ensure shipped EN→NE INT8 bundle is ready for ORT.
  * Packaged IPA/APK models win — no network.
+ * NE→EN neural is intentionally not shipped (phrasebook covers reverse).
  */
 export async function ensureIt2OnnxBundles(
   onProgress?: (p: ModelDownloadProgress) => void,
-): Promise<{ enIndic: string; indicEn: string }> {
+): Promise<{ enIndic: string; indicEn: string | null }> {
   const root = cacheRoot();
   if (!root.exists) {
     root.create({ intermediates: true, idempotent: true });
   }
 
-  for (const kind of ['en-indic', 'indic-en'] as It2DirectionBundle[]) {
+  for (const kind of SHIPPED_IT2_DIRECTIONS) {
     // Fast path: already usable from package (iOS) or cache.
     if (Platform.OS === 'ios' && (await packagedIsComplete(kind))) {
       onProgress?.({
@@ -219,6 +222,5 @@ export async function ensureIt2OnnxBundles(
   }
 
   const enDir = await resolveModelDirectory('en-indic');
-  const neDir = await resolveModelDirectory('indic-en');
-  return { enIndic: enDir.uri, indicEn: neDir.uri };
+  return { enIndic: enDir.uri, indicEn: null };
 }

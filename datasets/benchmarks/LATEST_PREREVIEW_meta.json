@@ -1,0 +1,12 @@
+{
+  "tag": "prereview",
+  "started_at": "20260725T163636Z",
+  "systems": "it2_base",
+  "model_note": "IndicTrans2 dist-200M student (on-device base)",
+  "gold_root": "benchmarks/gold",
+  "gold_snapshot": "d127e1fecc1556d4",
+  "git_commit": "503ef92c9d271816b1f47b1ccb080cf8e30d3bf8",
+  "review_status": "non_reviewed",
+  "finished_at": "2026-07-25T16:38:50Z",
+  "exit_code": 0
+}

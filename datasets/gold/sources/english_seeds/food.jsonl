@@ -1,0 +1,20 @@
+{"id": "food_0001", "domain": "food", "english": "I would like tea.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0002", "domain": "food", "english": "Is this spicy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0003", "domain": "food", "english": "No meat, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0004", "domain": "food", "english": "I am vegetarian.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0005", "domain": "food", "english": "The bill, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0006", "domain": "food", "english": "Is water free?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0007", "domain": "food", "english": "What do you recommend?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0008", "domain": "food", "english": "I am allergic to dairy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0009", "domain": "food", "english": "Can I get this without onion?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0010", "domain": "food", "english": "How much is this?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0011", "domain": "food", "english": "One more plate, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0012", "domain": "food", "english": "Is this fresh?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0013", "domain": "food", "english": "I do not eat beef.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0014", "domain": "food", "english": "Coffee with milk.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0015", "domain": "food", "english": "That was delicious.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0016", "domain": "food", "english": "Too spicy for me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0017", "domain": "food", "english": "Can we sit outside?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0018", "domain": "food", "english": "Do you have rice?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0019", "domain": "food", "english": "I will take the set meal.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0020", "domain": "food", "english": "Please pack this to go.", "unit": "sentence", "source": "hand_seed_v1"}

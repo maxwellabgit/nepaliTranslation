@@ -7,7 +7,7 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
-import { GoldReviewScreen } from './src/screens/GoldReviewScreen';
+import { MeaningReviewScreen } from './src/screens/MeaningReviewScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import {
   MT_WARM_DOWNLOADING,
@@ -18,7 +18,7 @@ import type { HistoryItem } from './src/storage/phrasebook';
 import { colors } from './src/theme';
 
 type Mode = 'auto' | 'conversation';
-type Overlay = 'history' | 'settings' | 'gold' | null;
+type Overlay = 'history' | 'settings' | 'meaning' | null;
 
 function hardStopAudio() {
   try {
@@ -107,18 +107,18 @@ export default function App() {
         <StatusBar style="dark" />
         <SettingsScreen
           onClose={() => setOverlay(null)}
-          onOpenGoldReview={() => setOverlay('gold')}
+          onOpenMeaningReview={() => setOverlay('meaning')}
           neuralReady={neuralReady}
         />
       </SafeAreaView>
     );
   }
 
-  if (overlay === 'gold') {
+  if (overlay === 'meaning') {
     return (
       <SafeAreaView style={styles.root}>
         <StatusBar style="dark" />
-        <GoldReviewScreen onClose={() => setOverlay('settings')} />
+        <MeaningReviewScreen onClose={() => setOverlay('settings')} />
       </SafeAreaView>
     );
   }

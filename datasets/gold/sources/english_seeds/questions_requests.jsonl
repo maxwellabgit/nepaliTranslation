@@ -1,0 +1,20 @@
+{"id": "questions_requests_0001", "domain": "questions_requests", "english": "Can you help me?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0002", "domain": "questions_requests", "english": "Could you repeat that?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0003", "domain": "questions_requests", "english": "Please speak slowly.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0004", "domain": "questions_requests", "english": "What does this mean?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0005", "domain": "questions_requests", "english": "Where can I find that?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0006", "domain": "questions_requests", "english": "May I sit here?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0007", "domain": "questions_requests", "english": "Would you like tea?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0008", "domain": "questions_requests", "english": "Can we meet tomorrow?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0009", "domain": "questions_requests", "english": "Please wait a moment.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0010", "domain": "questions_requests", "english": "Is that okay?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0011", "domain": "questions_requests", "english": "Could you write it down?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0012", "domain": "questions_requests", "english": "Can you show me?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0013", "domain": "questions_requests", "english": "Please tell me again.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0014", "domain": "questions_requests", "english": "Do you understand?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0015", "domain": "questions_requests", "english": "I do not understand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0016", "domain": "questions_requests", "english": "One moment, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0017", "domain": "questions_requests", "english": "After you.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0018", "domain": "questions_requests", "english": "Excuse me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0019", "domain": "questions_requests", "english": "Sorry.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0020", "domain": "questions_requests", "english": "You are welcome.", "unit": "sentence", "source": "hand_seed_v1"}

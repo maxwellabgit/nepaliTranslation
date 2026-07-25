@@ -1,0 +1,20 @@
+{"id": "travel_0001", "domain": "travel", "english": "Where is the bus stop?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0002", "domain": "travel", "english": "How much is a taxi to the airport?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0003", "domain": "travel", "english": "Please take me to Thamel.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0004", "domain": "travel", "english": "Is this the way to the temple?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0005", "domain": "travel", "english": "What time does the flight leave?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0006", "domain": "travel", "english": "I need a ticket to Pokhara.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0007", "domain": "travel", "english": "Can you show me on the map?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0008", "domain": "travel", "english": "How long will it take?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0009", "domain": "travel", "english": "Is there a restroom nearby?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0010", "domain": "travel", "english": "I am lost.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0011", "domain": "travel", "english": "Which way to the hotel?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0012", "domain": "travel", "english": "Does this bus go to Bhaktapur?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0013", "domain": "travel", "english": "Please stop here.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0014", "domain": "travel", "english": "I will wait outside.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0015", "domain": "travel", "english": "Is the road open today?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0016", "domain": "travel", "english": "Where can I buy a SIM card?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0017", "domain": "travel", "english": "How far is the station?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0018", "domain": "travel", "english": "I need change for a hundred.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0019", "domain": "travel", "english": "Is breakfast included?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0020", "domain": "travel", "english": "What time is checkout?", "unit": "sentence", "source": "hand_seed_v1"}

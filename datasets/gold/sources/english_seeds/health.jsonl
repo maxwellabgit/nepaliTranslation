@@ -1,0 +1,20 @@
+{"id": "health_0001", "domain": "health", "english": "I need a doctor.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0002", "domain": "health", "english": "Where is the nearest pharmacy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0003", "domain": "health", "english": "I have a fever.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0004", "domain": "health", "english": "My stomach hurts.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0005", "domain": "health", "english": "I feel dizzy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0006", "domain": "health", "english": "I am allergic to peanuts.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0007", "domain": "health", "english": "Please call an ambulance.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0008", "domain": "health", "english": "Does this medicine need a prescription?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0009", "domain": "health", "english": "I have a headache.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0010", "domain": "health", "english": "I cannot breathe well.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0011", "domain": "health", "english": "Is there a hospital nearby?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0012", "domain": "health", "english": "I cut my hand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0013", "domain": "health", "english": "I need water.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0014", "domain": "health", "english": "I feel sick.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0015", "domain": "health", "english": "How often should I take this?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0016", "domain": "health", "english": "I have high blood pressure.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0017", "domain": "health", "english": "My child has a cough.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0018", "domain": "health", "english": "Is this safe during pregnancy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0019", "domain": "health", "english": "I need a bandage.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0020", "domain": "health", "english": "Can you help me?", "unit": "sentence", "source": "hand_seed_v1"}

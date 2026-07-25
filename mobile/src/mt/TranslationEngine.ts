@@ -133,13 +133,22 @@ export class TranslationEngine {
       return phrase;
     }
 
+    // Lighter IPA ships EN→NE neural only; NE→EN stays phrasebook/lexicon.
+    if (direction === 'ne-en') {
+      return translateOnDevice(raw, direction, {
+        formality: req.formality,
+        script: req.script,
+        forcePreferred: true,
+      });
+    }
+
     const bySentences = req.bySentences !== false;
     if (bySentences) {
       const { complete, remainder } = splitSentences(raw);
       const parts = remainder ? [...complete, remainder] : complete;
       if (parts.length > 1) {
         const out: string[] = [];
-        let dir = direction;
+        let dir: Direction = direction;
         for (const part of parts) {
           const piece = await this.translateNeural({
             ...req,
@@ -161,24 +170,21 @@ export class TranslationEngine {
 
     const neuralText = await sharedIndicTransOnnx.translate({
       text: raw,
-      direction,
+      direction: 'en-ne',
       formality: req.formality,
     });
 
-    let out = neuralText;
-    if (direction === 'en-ne') {
-      out = formatNepaliScript(out, req.script ?? 'deva');
-    }
+    let out = formatNepaliScript(neuralText, req.script ?? 'deva');
 
     if (!out.trim()) {
-      return translateOnDevice(raw, direction, {
+      return translateOnDevice(raw, 'en-ne', {
         formality: req.formality,
         script: req.script,
         forcePreferred: true,
       });
     }
 
-    return { text: out, method: 'neural', direction };
+    return { text: out, method: 'neural', direction: 'en-ne' };
   }
 
   cancelAll(): void {
