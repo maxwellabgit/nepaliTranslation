@@ -1,30 +1,30 @@
 # TestFlight
 
-**Current target:** **1.6.1** — On-device IndicTrans2 **bundled in the IPA** (no first-launch model download).
+**Current target:** **1.6.2** — EN→NE IndicTrans2 only in the IPA (~half prior model size) + Meaning Review.
 
-## Why 1.6.0 looked stuck
+## Models
 
-1.6.0 tried to download ~545MB from Hugging Face at runtime. That path soft-failed (network / HF / ORT), so the UI stayed on “preparing model” and only the phrasebook worked. Models were also excluded from the EAS upload via `.easignore`.
+- Bundled: `it2_en_indic` INT8 only
+- NE→EN: phrasebook / lexicon (no second ONNX graph)
 
-## What 1.6.1 does
+## Meaning Review → local train
 
-- `eas-build-pre-install` / `post-install` download INT8 graphs **during the cloud build**
-- `plugins/withIt2Models` also fetches if missing, then packs into iOS resources / Android assets
-- App loads from the install bundle immediately (phrasebook still fallback)
+1. Settings → Advanced → Meaning Review  
+2. Export JSON  
+3. On this PC:
 
-## Build & submit
+```powershell
+python training/route_corrections.py export.json
+python training/local_auto_train.py --daemon
+```
+
+Training starts automatically after **100 edited** meanings are routed.
+
+## Build
 
 ```powershell
 cd mobile
-npx eas build --platform ios --profile production --auto-submit
+npx eas build --platform ios --profile production
 ```
 
-IPA will be large (~600MB+). First TestFlight install may take a while over Wi‑Fi.
-
-## On your iPhone
-
-1. TestFlight → Update NepTranslate **1.6.1**
-2. Settings → About should show `model ready` shortly after open (no long download)
-3. Try free text e.g. “Tomorrow we can clean the apartment”
-
-App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/ios
+(Skip auto-submit unless you ask for TestFlight.)

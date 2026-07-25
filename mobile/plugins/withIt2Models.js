@@ -2,8 +2,7 @@
  * Pack IndicTrans2 ONNX folders into the native iOS/Android app so install
  * includes the model (no first-launch Hugging Face download).
  *
- * Expects mobile/assets/models/it2_en_indic + it2_indic_en (see
- * scripts/eas_fetch_it2_models.mjs / eas-build-post-install).
+ * Expects mobile/assets/models/it2_en_indic (EN→NE only — lighter IPA).
  */
 const {
   withDangerousMod,
@@ -14,7 +13,7 @@ const {
 const fs = require('fs');
 const path = require('path');
 
-const MODEL_DIRS = ['it2_en_indic', 'it2_indic_en'];
+const MODEL_DIRS = ['it2_en_indic'];
 const REQUIRED = [
   'encoder_model.onnx',
   'encoder_model.onnx.data',

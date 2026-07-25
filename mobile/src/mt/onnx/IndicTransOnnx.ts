@@ -139,7 +139,8 @@ export class IndicTransOnnxEngine {
       try {
         await ensureIt2OnnxBundles(onProgress);
         this.enIndic = await loadBundle('en-indic');
-        this.indicEn = await loadBundle('indic-en');
+        // NE→EN neural intentionally omitted — phrasebook covers reverse.
+        this.indicEn = null;
         this.ready = true;
         this.lastError = null;
       } catch (e) {
@@ -162,22 +163,24 @@ export class IndicTransOnnxEngine {
     formality: Formality;
     maxNewTokens?: number;
   }): Promise<string> {
-    if (!this.ready || !this.enIndic || !this.indicEn) {
+    if (!this.ready || !this.enIndic) {
       throw new Error('IndicTrans ONNX engine is not ready');
     }
 
     const raw = opts.text.trim();
     if (!raw) return '';
 
-    const bundle = opts.direction === 'en-ne' ? this.enIndic : this.indicEn;
-    const srcLang = opts.direction === 'en-ne' ? 'eng_Latn' : 'npi_Deva';
-    const tgtLang = opts.direction === 'en-ne' ? 'npi_Deva' : 'eng_Latn';
-
-    let body = raw;
-    if (opts.direction === 'en-ne') {
-      const tag = opts.formality === 'informal' ? '<informal>' : '<formal>';
-      body = `${tag} ${raw}`;
+    if (opts.direction === 'ne-en') {
+      // Lighter IPA: only EN→NE is bundled. Callers should fall back to phrasebook.
+      throw new Error('NE→EN neural not bundled; use phrasebook');
     }
+
+    const bundle = this.enIndic;
+    const srcLang = 'eng_Latn';
+    const tgtLang = 'npi_Deva';
+
+    const tag = opts.formality === 'informal' ? '<informal>' : '<formal>';
+    const body = `${tag} ${raw}`;
 
     return this.generate(bundle, body, srcLang, tgtLang, opts.maxNewTokens);
   }

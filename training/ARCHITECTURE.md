@@ -54,23 +54,19 @@ Informal = friendly **तिमी** Nepali (not तँ) for v1.
 ## User data improvement
 
 ```
-In-app Gold Review (holdout sentences, password 1234)
+In-app Meaning Review (password 1234)
+  English read-only · edit NE formal/informal + Roman
+  Accept all | Skip (flags founder queue)
         ↓ export JSON
-benchmarks/apply_app_reviews.py  →  frozen gold stay frozen
-        ↓
-Meaning units (preferred long-term):
-  edit english / ne_formal / ne_informal only
-  roman_* = everyday_roman(ne_*)   ← never hand-edit separately
-        ↓
-training/build_meaning_bank.py  (≤10k expanded examples, surface caps)
-        ↓
-training/finetune_it2_meanings.py  → LoRA adapters (no merge_and_unload)
-        ↓
-ONNX/Core ML INT8 + identical tokenize/decode tests
+training/route_corrections.py
+  train_meaning → meaning_bank.jsonl
+  founder_queue → founder_review_queue.jsonl
+        ↓ when ≥100 edited
+training/local_auto_train.py  (this machine overnight)
+  build_meaning_bank → finetune_it2_meanings (en-ne) → eval
 ```
 
-In-app review should prefer **meaning units**, not four divergent translation strings.
-Surface caps keep OPUS/`core_grammar` from drowning travel/health/honorifics.  
+On-device ship: **EN→NE INT8 only** (lighter IPA). NE→EN uses phrasebook.
 
 
 ## Scripts

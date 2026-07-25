@@ -5,14 +5,14 @@ import { colors } from '../theme';
 
 type Props = {
   onClose: () => void;
-  onOpenGoldReview: () => void;
+  onOpenMeaningReview: () => void;
   neuralReady?: boolean;
 };
 
 const APP_VERSION =
   Constants.expoConfig?.version ??
   Constants.nativeAppVersion ??
-  '1.6.1';
+  '1.6.2';
 const BUILD_NUMBER =
   Constants.expoConfig?.ios?.buildNumber ??
   Constants.nativeBuildVersion ??
@@ -23,7 +23,7 @@ const BUILD_NUMBER =
  */
 export function SettingsScreen({
   onClose,
-  onOpenGoldReview,
+  onOpenMeaningReview,
   neuralReady = false,
 }: Props) {
   const [advanced, setAdvanced] = useState(false);
@@ -46,8 +46,8 @@ export function SettingsScreen({
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
           {neuralReady
-            ? 'NepTranslate runs IndicTrans2 on this device for free-form English ↔ Nepali. The model ships inside the app install. Exact traveler phrases still use the saved phrasebook. Speech uses Apple recognition and may need a network.'
-            : 'NepTranslate includes an on-device translation model in the install. If it has not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
+            ? 'NepTranslate runs IndicTrans2 on this device for free-form English → Nepali. Nepali → English uses the saved phrasebook. The EN→NE model ships in the install. Speech uses Apple recognition and may need a network.'
+            : 'NepTranslate includes an on-device English → Nepali model in the install. If it has not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}
@@ -68,12 +68,12 @@ export function SettingsScreen({
       {advanced ? (
         <Pressable
           style={styles.subRow}
-          onPress={onOpenGoldReview}
+          onPress={onOpenMeaningReview}
           accessibilityRole="button"
-          accessibilityLabel="Open Gold Review"
+          accessibilityLabel="Open Meaning Review"
         >
-          <Text style={styles.subTitle}>Gold Review</Text>
-          <Text style={styles.subHint}>Internal quality bench · password required</Text>
+          <Text style={styles.subTitle}>Meaning Review</Text>
+          <Text style={styles.subHint}>Edit Nepali / Roman · password required</Text>
         </Pressable>
       ) : null}
     </View>
