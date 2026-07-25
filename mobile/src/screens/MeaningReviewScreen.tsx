@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ComponentProps } from 'react';
 import {
   Alert,
+  AppState,
   Keyboard,
   Pressable,
   ScrollView,
@@ -24,6 +25,7 @@ import {
   type MeaningReview,
   type MeaningReviewMap,
 } from '../storage/meaningReviews';
+import { dropQueuedReviewSync, enqueueReviewSync, flushReviewSync } from '../sync/reviewSync';
 import { colors } from '../theme';
 
 const REVIEW_PASSWORD = '1234';
@@ -120,6 +122,15 @@ export function MeaningReviewScreen({ onClose }: Props) {
     void loadMeaningReviews().then(setReviews);
   }, []);
 
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'background' || state === 'inactive') {
+        void flushReviewSync({ reason: 'app_background' });
+      }
+    });
+    return () => sub.remove();
+  }, []);
+
   const queue = useMemo(() => {
     let items = allMeaningUnits();
     if (!showCompleted) items = items.filter((i) => !sampleCompleted(i, reviews));
@@ -187,6 +198,8 @@ export function MeaningReviewScreen({ onClose }: Props) {
         await saveMeaningReviews(map);
         setReviews(map);
         setLastSavedId(review.meaning_id);
+        // Queue for PC sync (batched). Never block Accept/Skip on network.
+        void enqueueReviewSync(review);
       } catch (e) {
         Alert.alert(
           'Save failed',
@@ -247,6 +260,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
       delete map[lastSavedId];
       await saveMeaningReviews(map);
       setReviews(map);
+      void dropQueuedReviewSync(lastSavedId);
       setLastSavedId(null);
     } catch (e) {
       Alert.alert(

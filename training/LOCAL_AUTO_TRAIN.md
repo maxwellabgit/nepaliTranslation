@@ -2,15 +2,22 @@
 
 Train the **edge IndicTrans2 dist-200M** LoRA here overnight — do not use HF Jobs for this loop.
 
-## When training fires
+## Getting reviews onto this machine
 
-After you export Meaning Review and run:
+**Automatic (recommended):** run `training/review_sync_server.py` and enable
+**Settings → Advanced → Review sync** on the phone. Batches upload as you
+Accept / Skip. Details: `training/REVIEW_SYNC.md`.
+
+**Manual fallback:** export JSON from Meaning Review, then:
 
 ```powershell
 python training/route_corrections.py path\to\export.json
 ```
 
-the router increments `edited_since_train`. When that counter hits **100**, it writes
+## When training fires
+
+After reviews are routed (sync or manual export), the router increments
+`edited_since_train`. When that counter hits **100**, it writes
 `training/artifacts/auto_train_ready.json`.
 
 ## Run overnight

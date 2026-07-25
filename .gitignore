@@ -22,6 +22,8 @@ datasets/synthetic/teacher_reviewed/
 datasets/benchmarks/runs/
 training/artifacts/it2_en_indic_1b/
 training/artifacts/it2_indic_en_1b/
+training/artifacts/review_sync_inbox/
+training/artifacts/review_sync_seen.json
 
 
 # Large harvested / scraped corpora (rebuild from scripts)
