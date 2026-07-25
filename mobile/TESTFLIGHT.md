@@ -8,8 +8,8 @@
 
 ## What 1.6.1 does
 
-- `eas-build-post-install` downloads INT8 graphs **during the cloud build**
-- `plugins/withIt2Models` packs them into the iOS app resources / Android assets
+- `eas-build-pre-install` / `post-install` download INT8 graphs **during the cloud build**
+- `plugins/withIt2Models` also fetches if missing, then packs into iOS resources / Android assets
 - App loads from the install bundle immediately (phrasebook still fallback)
 
 ## Build & submit

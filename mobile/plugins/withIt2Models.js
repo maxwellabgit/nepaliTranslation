@@ -31,18 +31,43 @@ function modelsSrc(projectRoot) {
   return path.join(projectRoot, 'assets', 'models');
 }
 
-function assertModelsPresent(projectRoot) {
+function modelsComplete(projectRoot) {
   const root = modelsSrc(projectRoot);
   for (const dir of MODEL_DIRS) {
     for (const file of REQUIRED) {
       const p = path.join(root, dir, file);
-      if (!fs.existsSync(p) || fs.statSync(p).size <= 0) {
-        throw new Error(
-          `[withIt2Models] Missing ${path.relative(projectRoot, p)}. ` +
-            `Run: node scripts/eas_fetch_it2_models.mjs`,
-        );
-      }
+      if (!fs.existsSync(p) || fs.statSync(p).size <= 0) return false;
     }
+  }
+  return true;
+}
+
+function ensureModelsPresent(projectRoot) {
+  if (modelsComplete(projectRoot)) return;
+
+  // EAS sometimes skips npm lifecycle hooks; fetch here during prebuild.
+  const script = path.join(projectRoot, 'scripts', 'eas_fetch_it2_models.mjs');
+  if (!fs.existsSync(script)) {
+    throw new Error(
+      `[withIt2Models] Missing ${script}. Add scripts/eas_fetch_it2_models.mjs`,
+    );
+  }
+  console.log('[withIt2Models] Models missing — running eas_fetch_it2_models.mjs');
+  const { spawnSync } = require('child_process');
+  const result = spawnSync(process.execPath, [script], {
+    cwd: projectRoot,
+    stdio: 'inherit',
+    env: process.env,
+  });
+  if (result.status !== 0) {
+    throw new Error(
+      `[withIt2Models] Failed to download IndicTrans2 models (exit ${result.status})`,
+    );
+  }
+  if (!modelsComplete(projectRoot)) {
+    throw new Error(
+      `[withIt2Models] Models still incomplete after fetch under assets/models/`,
+    );
   }
 }
 
@@ -61,7 +86,7 @@ function withAndroidModels(config) {
     'android',
     async (cfg) => {
       const projectRoot = cfg.modRequest.projectRoot;
-      assertModelsPresent(projectRoot);
+      ensureModelsPresent(projectRoot);
       const dest = path.join(
         cfg.modRequest.platformProjectRoot,
         'app',
@@ -82,7 +107,7 @@ function withIosModelFiles(config) {
     'ios',
     async (cfg) => {
       const projectRoot = cfg.modRequest.projectRoot;
-      assertModelsPresent(projectRoot);
+      ensureModelsPresent(projectRoot);
       const dest = path.join(
         cfg.modRequest.platformProjectRoot,
         'NepTranslateModels',

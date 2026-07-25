@@ -28,6 +28,7 @@
     "web": "expo start --web",
     "verify:translate": "node scripts/verify_translate_fix.mjs",
     "fetch:models": "node ./scripts/eas_fetch_it2_models.mjs",
+    "eas-build-pre-install": "node ./scripts/eas_fetch_it2_models.mjs",
     "eas-build-post-install": "node ./scripts/eas_fetch_it2_models.mjs",
     "eas:configure": "eas build:configure",
     "build:ios": "eas build --platform ios --profile production",
