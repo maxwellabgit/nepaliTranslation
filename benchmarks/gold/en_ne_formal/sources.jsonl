@@ -133,3 +133,5 @@
 {"id": "en_ne_formal-133", "source": "Is lunch included in the room rate?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hotel meal plan"}
 {"id": "en_ne_formal-134", "source": "Where is the nearest pharmacy?", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "pharmacy location distinct from I need a pharmacy"}
 {"id": "en_ne_formal-135", "source": "That was delicious.", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "past dining feedback"}
+{"id": "en_ne_formal-136", "source": "I love Kathmandu.", "status": "reviewed", "note": "love/like place uses man parcha not maya"}
+{"id": "en_ne_formal-137", "source": "I like Kathmandu.", "status": "reviewed", "note": "love/like place uses man parcha not maya"}

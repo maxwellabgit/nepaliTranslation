@@ -130,3 +130,4 @@
 {"id": "ne_en_deva-130", "source": "के तपाईं अङ्ग्रेजी बोल्नुहुन्छ?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "staff query"}
 {"id": "ne_en_deva-131", "source": "बिरामी कक्ष कुन तर्फ हो?", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hospital direction"}
 {"id": "ne_en_deva-132", "source": "पैसा सकियो।", "script": "deva", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "colloquial money"}
+{"id": "ne_en_deva-133", "source": "मलाई काठमाडौं मन पर्छ।", "status": "reviewed", "note": "man parcha = like (not romantic love)"}

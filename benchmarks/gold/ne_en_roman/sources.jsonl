@@ -131,3 +131,4 @@
 {"id": "ne_en_roman-131", "source": "birami kakshya kun tarfa ho?", "deva": "बिरामी कक्ष कुन तर्फ हो?", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "hospital"}
 {"id": "ne_en_roman-132", "source": "paisa sakiyo", "deva": "पैसा सकियो।", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "colloquial money roman"}
 {"id": "ne_en_roman-133", "source": "bato biraye", "deva": "बाटो बिराएँ", "script": "roman", "status": "premium_reviewed", "tier": "premium_word_choice", "note": "restored roman idiom within prune budget"}
+{"id": "ne_en_roman-134", "source": "malai kathmandu man parcha", "status": "reviewed", "note": "man parcha = like (not romantic love)"}

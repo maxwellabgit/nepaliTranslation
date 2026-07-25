@@ -3,9 +3,10 @@ import {
   Alert,
   AppState,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -13,11 +14,10 @@ import {
   type NativeSyntheticEvent,
   type TextInputContentSizeChangeEventData,
 } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
 import { allMeaningUnits } from '../meaning/pack';
 import type { MeaningUnit } from '../meaning/types';
+import { romanToDevanagari } from '../mt/romanize';
 import {
-  buildMeaningExportPayload,
   completeMeaningAccept,
   completeMeaningSkip,
   loadMeaningReviews,
@@ -101,7 +101,7 @@ function hasEdits(unit: MeaningUnit, edits: FieldEdits): boolean {
 
 /**
  * Meaning-unit review: English read-only; Accept all / Skip only.
- * Skip auto-flags for founder review.
+ * Skip auto-flags for founder review. Sync is automatic.
  */
 export function MeaningReviewScreen({ onClose }: Props) {
   const [unlocked, setUnlocked] = useState(false);
@@ -198,8 +198,12 @@ export function MeaningReviewScreen({ onClose }: Props) {
         await saveMeaningReviews(map);
         setReviews(map);
         setLastSavedId(review.meaning_id);
-        // Queue for PC sync (batched). Never block Accept/Skip on network.
-        void enqueueReviewSync(review);
+        await enqueueReviewSync(review);
+        // Sync after each save (batch size 1) — don't wait for debounce alone.
+        void flushReviewSync({ reason: 'after_save' });
+        if (showCompleted) {
+          setIndex((i) => Math.min(i + 1, Math.max(queue.length - 1, 0)));
+        }
       } catch (e) {
         Alert.alert(
           'Save failed',
@@ -209,7 +213,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
         setSaving(false);
       }
     },
-    [saving],
+    [saving, showCompleted, queue.length],
   );
 
   const doAccept = async () => {
@@ -250,6 +254,24 @@ export function MeaningReviewScreen({ onClose }: Props) {
     void persistOne(completeMeaningSkip(unit));
   };
 
+  const regenerateNepaliFromRoman = () => {
+    const rf = edits.roman_formal.trim();
+    const ri = edits.roman_informal.trim();
+    if (!rf && !ri) {
+      Alert.alert('Need Roman', 'Type Roman formal and/or informal first, then regenerate.');
+      return;
+    }
+    setEdits((e) => ({
+      ...e,
+      ne_formal: rf ? romanToDevanagari(rf) : e.ne_formal,
+      ne_informal: ri
+        ? romanToDevanagari(ri)
+        : rf
+          ? romanToDevanagari(rf)
+          : e.ne_informal,
+    }));
+  };
+
   const undoLast = async () => {
     if (!lastSavedId) {
       Alert.alert('Nothing to undo');
@@ -266,23 +288,6 @@ export function MeaningReviewScreen({ onClose }: Props) {
       Alert.alert(
         'Undo failed',
         e instanceof Error ? e.message : 'Could not undo on this device.',
-      );
-    }
-  };
-
-  const exportReviews = async () => {
-    const payload = buildMeaningExportPayload(reviews);
-    const text = JSON.stringify(payload, null, 2);
-    try {
-      await Share.share({
-        message: text,
-        title: `NepTranslate meaning reviews (${payload.n_completed})`,
-      });
-    } catch {
-      await Clipboard.setStringAsync(text);
-      Alert.alert(
-        'Copied',
-        `${payload.n_completed} reviews on clipboard.\nPC: python training/route_corrections.py <file>`,
       );
     }
   };
@@ -321,7 +326,11 @@ export function MeaningReviewScreen({ onClose }: Props) {
   }
 
   return (
-    <View style={styles.root}>
+    <KeyboardAvoidingView
+      style={styles.root}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
+    >
       <View style={styles.header}>
         <Pressable onPress={onClose} hitSlop={12}>
           <Text style={styles.link}>Close</Text>
@@ -334,9 +343,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
             {totals.skipped ? ` · ${totals.skipped} flagged` : ''}
           </Text>
         </View>
-        <Pressable onPress={() => void exportReviews()} hitSlop={8}>
-          <Text style={styles.link}>Export</Text>
-        </Pressable>
+        <View style={{ width: 48 }} />
       </View>
 
       <View style={styles.toolbar}>
@@ -348,16 +355,14 @@ export function MeaningReviewScreen({ onClose }: Props) {
         <Pressable onPress={() => void undoLast()}>
           <Text style={styles.link}>Undo</Text>
         </Pressable>
-        <Text style={styles.meta}>
-          {queue.length ? `Next up` : 'Done'}
-        </Text>
+        <Text style={styles.meta}>{queue.length ? 'Next up' : 'Done'}</Text>
       </View>
 
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
+        keyboardDismissMode="interactive"
         onScrollBeginDrag={dismissKeyboard}
       >
         <Pressable style={styles.tapDismiss} onPress={dismissKeyboard}>
@@ -367,34 +372,13 @@ export function MeaningReviewScreen({ onClose }: Props) {
                 {showCompleted ? 'No meanings' : 'Queue complete'}
               </Text>
               <Text style={styles.doneBody}>
-                Export reviews, then on PC run:{'\n'}
-                python training/route_corrections.py &lt;export.json&gt;
+                Reviews sync automatically to the training PC after each Accept or Skip.
               </Text>
             </View>
           ) : (
             <>
-              <Text style={styles.idLine}>{unit.meaning_id}</Text>
-              <Text style={styles.kindLine}>{unit.surface}</Text>
-              <Text style={styles.prov}>{unit.provenance}</Text>
-
               <Text style={styles.fieldLabel}>English (read-only)</Text>
               <Text style={styles.englishReadonly}>{unit.english}</Text>
-
-              <Text style={styles.fieldLabel}>Nepali formal · तपाईं</Text>
-              <AutoHeightInput
-                value={edits.ne_formal}
-                onChangeText={(t) => setEdits((e) => ({ ...e, ne_formal: t }))}
-                style={styles.fieldTarget}
-                maxHeight={200}
-              />
-
-              <Text style={styles.fieldLabel}>Nepali informal · तिमी</Text>
-              <AutoHeightInput
-                value={edits.ne_informal}
-                onChangeText={(t) => setEdits((e) => ({ ...e, ne_informal: t }))}
-                style={styles.fieldTarget}
-                maxHeight={200}
-              />
 
               <Text style={styles.fieldLabel}>Roman formal</Text>
               <AutoHeightInput
@@ -412,6 +396,26 @@ export function MeaningReviewScreen({ onClose }: Props) {
                 style={styles.fieldTarget}
                 maxHeight={140}
                 autoCapitalize="none"
+              />
+
+              <Pressable style={styles.regenBtn} onPress={regenerateNepaliFromRoman}>
+                <Text style={styles.regenText}>Regenerate Nepali from Roman</Text>
+              </Pressable>
+
+              <Text style={styles.fieldLabel}>Nepali formal · तपाईं</Text>
+              <AutoHeightInput
+                value={edits.ne_formal}
+                onChangeText={(t) => setEdits((e) => ({ ...e, ne_formal: t }))}
+                style={styles.fieldTarget}
+                maxHeight={200}
+              />
+
+              <Text style={styles.fieldLabel}>Nepali informal · तिमी</Text>
+              <AutoHeightInput
+                value={edits.ne_informal}
+                onChangeText={(t) => setEdits((e) => ({ ...e, ne_informal: t }))}
+                style={styles.fieldTarget}
+                maxHeight={200}
               />
 
               <View style={styles.actions}>
@@ -451,7 +455,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
           )}
         </Pressable>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -492,22 +496,7 @@ const styles = StyleSheet.create({
   meta: { fontSize: 12, color: colors.textSecondary, fontWeight: '600' },
   tapDismiss: {},
   scroll: { flex: 1 },
-  scrollContent: { paddingHorizontal: 16, paddingBottom: 32 },
-  idLine: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.textSecondary,
-    marginBottom: 2,
-  },
-  kindLine: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.crimson,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-    marginBottom: 4,
-  },
-  prov: { fontSize: 12, color: colors.forest, marginBottom: 12 },
+  scrollContent: { paddingHorizontal: 16, paddingBottom: 140 },
   fieldLabel: {
     fontSize: 11,
     fontWeight: '700',
@@ -544,7 +533,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.divider,
   },
-  actions: { gap: 10, marginTop: 4 },
+  regenBtn: {
+    alignSelf: 'flex-start',
+    marginTop: -4,
+    marginBottom: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: colors.mintBg,
+    borderWidth: 1,
+    borderColor: colors.forestSoft,
+  },
+  regenText: { fontSize: 13, fontWeight: '700', color: colors.forest },
+  actions: { gap: 10, marginTop: 8, marginBottom: 24 },
   primaryBtn: {
     backgroundColor: colors.crimson,
     borderRadius: 16,
@@ -565,7 +566,8 @@ const styles = StyleSheet.create({
   navRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 18,
+    marginTop: 8,
+    marginBottom: 24,
   },
   doneCard: {
     backgroundColor: colors.surface,

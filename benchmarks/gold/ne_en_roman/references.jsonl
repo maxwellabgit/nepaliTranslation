@@ -131,3 +131,4 @@
 {"id": "ne_en_roman-131", "reference": "Which way to the ward?", "deva": "बिरामी कक्ष कुन तर्फ हो?", "tier": "premium_word_choice", "note": "hospital"}
 {"id": "ne_en_roman-132", "reference": "I'm out of cash.", "deva": "पैसा सकियो।", "tier": "premium_word_choice", "note": "colloquial money roman"}
 {"id": "ne_en_roman-133", "reference": "I lost my way.", "deva": "बाटो बिराएँ", "tier": "premium_word_choice", "note": "restored roman idiom within prune budget"}
+{"id": "ne_en_roman-134", "reference": "I like Kathmandu.", "deva": "मलाई काठमाडौं मन पर्छ।"}

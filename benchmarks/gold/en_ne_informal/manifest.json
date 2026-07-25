@@ -1,7 +1,7 @@
 {
   "class": "en_ne_informal",
-  "n_target": 137,
-  "n_filled": 137,
+  "n_target": 139,
+  "n_filled": 139,
   "n_premium": 37,
   "items": [
     {
@@ -551,6 +551,14 @@
     {
       "id": "en_ne_informal-137",
       "status": "premium_reviewed"
+    },
+    {
+      "id": "en_ne_informal-138",
+      "status": "reviewed"
+    },
+    {
+      "id": "en_ne_informal-139",
+      "status": "reviewed"
     }
   ]
 }

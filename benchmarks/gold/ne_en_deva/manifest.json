@@ -1,7 +1,7 @@
 {
   "class": "ne_en_deva",
-  "n_target": 132,
-  "n_filled": 132,
+  "n_target": 133,
+  "n_filled": 133,
   "n_premium": 32,
   "items": [
     {
@@ -531,6 +531,10 @@
     {
       "id": "ne_en_deva-132",
       "status": "premium_reviewed"
+    },
+    {
+      "id": "ne_en_deva-133",
+      "status": "reviewed"
     }
   ]
 }

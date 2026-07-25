@@ -133,3 +133,5 @@
 {"id": "en_ne_formal-133", "reference": "के कोठाको भाडामा दिउँसोको खाना समावेश छ?", "tier": "premium_word_choice", "note": "hotel meal plan"}
 {"id": "en_ne_formal-134", "reference": "नजिकको औषधि पसल कहाँ छ?", "tier": "premium_word_choice", "note": "pharmacy location distinct from I need a pharmacy"}
 {"id": "en_ne_formal-135", "reference": "मिठो थियो।", "tier": "premium_word_choice", "note": "past dining feedback"}
+{"id": "en_ne_formal-136", "reference": "मलाई काठमाडौं मन पर्छ।"}
+{"id": "en_ne_formal-137", "reference": "मलाई काठमाडौं मन पर्छ।"}

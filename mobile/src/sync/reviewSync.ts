@@ -11,7 +11,7 @@ export const BATCH_SIZE = 1;
 /** Cap reviews per HTTP request. */
 export const MAX_BATCH_UPLOAD = 50;
 /** Debounce flush after the latest enqueue (ms). */
-export const BATCH_DEBOUNCE_MS = 3_000;
+export const BATCH_DEBOUNCE_MS = 800;
 
 export type ReviewSyncConfig = {
   enabled: boolean;
