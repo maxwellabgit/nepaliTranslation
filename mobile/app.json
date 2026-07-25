@@ -2,7 +2,7 @@
   "expo": {
     "name": "NepTranslate",
     "slug": "translate",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -52,7 +52,8 @@
           "backgroundColor": "#FFFFFF"
         }
       ],
-      "onnxruntime-react-native"
+      "onnxruntime-react-native",
+      "./plugins/withIt2Models"
     ],
     "extra": {
       "eas": {

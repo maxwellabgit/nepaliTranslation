@@ -12,7 +12,7 @@ type Props = {
 const APP_VERSION =
   Constants.expoConfig?.version ??
   Constants.nativeAppVersion ??
-  '1.6.0';
+  '1.6.1';
 const BUILD_NUMBER =
   Constants.expoConfig?.ios?.buildNumber ??
   Constants.nativeBuildVersion ??
@@ -46,8 +46,8 @@ export function SettingsScreen({
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
           {neuralReady
-            ? 'NepTranslate runs IndicTrans2 on this device for free-form English ↔ Nepali. Exact traveler phrases still use the saved phrasebook. Speech uses Apple recognition and may need a network.'
-            : 'NepTranslate will download an on-device translation model on first launch (one-time). Until then it uses saved traveler phrases. Speech uses Apple recognition and may need a network.'}
+            ? 'NepTranslate runs IndicTrans2 on this device for free-form English ↔ Nepali. The model ships inside the app install. Exact traveler phrases still use the saved phrasebook. Speech uses Apple recognition and may need a network.'
+            : 'NepTranslate includes an on-device translation model in the install. If it has not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}

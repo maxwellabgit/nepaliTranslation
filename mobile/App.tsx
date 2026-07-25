@@ -11,6 +11,7 @@ import { GoldReviewScreen } from './src/screens/GoldReviewScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import {
   MT_WARM_DOWNLOADING,
+  MT_WARM_FAILED,
   MT_WARM_PREPARING,
 } from './src/mt/mtStatus';
 import type { HistoryItem } from './src/storage/phrasebook';
@@ -52,13 +53,24 @@ export default function App() {
       setMtWarmStatus(MT_WARM_PREPARING);
       await sharedTranslationEngine.warmUp((p) => {
         if (cancelled) return;
-        setMtWarmStatus(
-          `${MT_WARM_DOWNLOADING} ${p.index}/${p.total}`,
-        );
+        if (p.phase === 'download') {
+          setMtWarmStatus(`${MT_WARM_DOWNLOADING} ${p.index}/${p.total}`);
+        } else {
+          setMtWarmStatus(MT_WARM_PREPARING);
+        }
       });
       if (cancelled) return;
-      setNeuralReady(sharedTranslationEngine.isNeuralReady());
-      setMtWarmStatus(null);
+      const ready = sharedTranslationEngine.isNeuralReady();
+      setNeuralReady(ready);
+      if (!ready) {
+        setMtWarmStatus(MT_WARM_FAILED);
+        // Clear the failure banner after a beat so phrasebook mode feels calm.
+        setTimeout(() => {
+          if (!cancelled) setMtWarmStatus(null);
+        }, 4000);
+      } else {
+        setMtWarmStatus(null);
+      }
     })();
     return () => {
       cancelled = true;

@@ -10,5 +10,6 @@ export function mtStatusLine(opts: {
   return 'Saved phrases · voice via Apple';
 }
 
-export const MT_WARM_PREPARING = 'Preparing translation…';
+export const MT_WARM_PREPARING = 'Loading on-device model…';
 export const MT_WARM_DOWNLOADING = 'Downloading translation model…';
+export const MT_WARM_FAILED = 'Model unavailable · using phrases';

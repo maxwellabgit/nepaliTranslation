@@ -1,12 +1,16 @@
 # TestFlight
 
-Offline iOS builds ship through Expo EAS → App Store Connect → TestFlight.
+**Current target:** **1.6.1** — On-device IndicTrans2 **bundled in the IPA** (no first-launch model download).
 
-**Current target:** **1.6.0** — On-device IndicTrans2 (INT8 ONNX). First launch downloads ~545MB model once; phrasebook remains fallback until ready / if download fails.
+## Why 1.6.0 looked stuck
 
-**What this binary runs today:**
-- **MT:** IndicTrans2 on-device when model is ready; traveler phrasebook + lexicon fallback
-- **STT:** Apple speech recognition (may need network)
+1.6.0 tried to download ~545MB from Hugging Face at runtime. That path soft-failed (network / HF / ORT), so the UI stayed on “preparing model” and only the phrasebook worked. Models were also excluded from the EAS upload via `.easignore`.
+
+## What 1.6.1 does
+
+- `eas-build-post-install` downloads INT8 graphs **during the cloud build**
+- `plugins/withIt2Models` packs them into the iOS app resources / Android assets
+- App loads from the install bundle immediately (phrasebook still fallback)
 
 ## Build & submit
 
@@ -15,25 +19,12 @@ cd mobile
 npx eas build --platform ios --profile production --auto-submit
 ```
 
+IPA will be large (~600MB+). First TestFlight install may take a while over Wi‑Fi.
+
 ## On your iPhone
 
-1. TestFlight → refresh **NepTranslate** → Update  
-2. Confirm Settings → About: `v1.6.0` · model ready (after first download)  
-3. First open needs network for the one-time model download; afterward MT works offline
+1. TestFlight → Update NepTranslate **1.6.1**
+2. Settings → About should show `model ready` shortly after open (no long download)
+3. Try free text e.g. “Tomorrow we can clean the apartment”
 
 App Store Connect: https://appstoreconnect.apple.com/apps/6792574384/testflight/ios
-
-## What to verify
-
-- Header shows **Preparing / Downloading** then **On-device translation**
-- Free English → Nepali (not just phrasebook lines) returns Devanagari
-- Formal / Informal / Roman chips still work
-- Airplane mode after download: typing still translates
-- Conversation Pass uses the same engine
-- Gold Review: flat sample queue
-
-## Model notes
-
-- Repos: `hari31416/indictrans2-*-dist-200M-ONNX-int8`
-- Cached under app documents `models/it2_*`
-- Optional local seed: `python scripts/download_it2_onnx.py` (gitignored assets)

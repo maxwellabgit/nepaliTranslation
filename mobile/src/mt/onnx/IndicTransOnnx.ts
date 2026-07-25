@@ -7,9 +7,8 @@ import { File } from 'expo-file-system';
 
 import type { Formality } from '../onDeviceTranslate';
 import {
-  bundleDirectory,
-  bundlePath,
   ensureIt2OnnxBundles,
+  resolveModelDirectory,
   type It2DirectionBundle,
 } from './modelAssets';
 import { loadIt2Tokenizers, type It2TokenizerPair } from './loadTokenizers';
@@ -88,8 +87,8 @@ async function readJson<T>(root: string, name: string): Promise<T> {
 }
 
 async function loadBundle(kind: It2DirectionBundle): Promise<BundleSessions> {
-  const root = bundlePath(kind);
-  const dir = bundleDirectory(kind);
+  const dir = await resolveModelDirectory(kind);
+  const root = dir.uri;
 
   const enc = await InferenceSession.create(
     new File(dir, 'encoder_model.onnx').uri,

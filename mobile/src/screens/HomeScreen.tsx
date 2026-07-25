@@ -508,10 +508,10 @@ export function HomeScreen({
               {missMatch
                 ? neuralReady
                   ? 'Could not translate that yet. Try another phrasing, or a shorter line.'
-                  : 'Model still preparing — try a traveler phrase below, or wait a moment.'
+                  : 'On-device model is not ready yet — try a traveler phrase below.'
                 : neuralReady
                   ? 'English ↔ Nepali on this device. Results appear here.'
-                  : 'Preparing on-device translation. Meanwhile try a traveler phrase below.'}
+                  : 'Loading the on-device model packed with this app…'}
             </Text>
             {!missMatch ? (
               <View style={styles.suggestRow}>
@@ -652,7 +652,7 @@ export function HomeScreen({
       <Text style={styles.trustLine}>
         {neuralReady
           ? 'on-device model · voice via Apple'
-          : 'saved phrases · preparing model · voice via Apple'}
+          : 'saved phrases · loading model · voice via Apple'}
       </Text>
     </View>
   );
