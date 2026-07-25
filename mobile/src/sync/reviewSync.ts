@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import type { MeaningReview } from '../storage/meaningReviews';
 
-const CONFIG_KEY = 'neptranslate.review_sync.config.v1';
+const CONFIG_KEY = 'neptranslate.review_sync.config.v2';
 const QUEUE_KEY = 'neptranslate.review_sync.queue.v1';
 const STATUS_KEY = 'neptranslate.review_sync.status.v1';
 
@@ -30,23 +31,49 @@ export type ReviewSyncStatus = {
 
 type QueueItem = MeaningReview & { queued_at: string };
 
-const DEFAULT_CONFIG: ReviewSyncConfig = {
-  enabled: false,
-  endpointUrl: '',
-  secret: '',
-  deviceLabel: 'iphone',
+type ExtraSync = {
+  reviewSyncEndpoint?: string;
+  reviewSyncSecret?: string;
+  reviewSyncEnabled?: boolean;
 };
+
+/**
+ * Built into TestFlight so reviewers never paste URL/secret.
+ * Keep the PC tunnel + review_sync_server running against the same values.
+ */
+function bakedDefaults(): ReviewSyncConfig {
+  const extra = (Constants.expoConfig?.extra ?? {}) as ExtraSync;
+  return {
+    enabled: extra.reviewSyncEnabled !== false,
+    endpointUrl:
+      (extra.reviewSyncEndpoint || '').trim() ||
+      'https://containers-darwin-ice-soon.trycloudflare.com',
+    secret:
+      (extra.reviewSyncSecret || '').trim() || 'neptranslate-sync-test-2026',
+    deviceLabel: 'testflight',
+  };
+}
 
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
 let flushing = false;
 
 export async function loadReviewSyncConfig(): Promise<ReviewSyncConfig> {
+  const baked = bakedDefaults();
   try {
     const raw = await AsyncStorage.getItem(CONFIG_KEY);
-    if (!raw) return { ...DEFAULT_CONFIG };
-    return { ...DEFAULT_CONFIG, ...(JSON.parse(raw) as Partial<ReviewSyncConfig>) };
+    if (!raw) return baked;
+    const stored = JSON.parse(raw) as Partial<ReviewSyncConfig>;
+    // Stored overrides only when they provide a non-empty endpoint (founder override).
+    const endpointUrl = (stored.endpointUrl || '').trim() || baked.endpointUrl;
+    const secret = (stored.secret || '').trim() || baked.secret;
+    return {
+      enabled: stored.enabled ?? baked.enabled,
+      endpointUrl,
+      secret,
+      deviceLabel: (stored.deviceLabel || '').trim() || baked.deviceLabel,
+    };
   } catch {
-    return { ...DEFAULT_CONFIG };
+    return baked;
   }
 }
 
@@ -158,12 +185,12 @@ export async function flushReviewSync(opts?: {
     }
     const endpoint = normalizeEndpoint(config.endpointUrl);
     if (!endpoint) {
-      const err = 'Set a sync endpoint URL in Advanced → Review sync';
+      const err = 'Sync endpoint missing from app build';
       await saveStatus({ lastError: err, pending: queue.length });
       return { ok: false, error: err, sent: 0 };
     }
     if (!config.secret.trim()) {
-      const err = 'Set a sync secret in Advanced → Review sync';
+      const err = 'Sync secret missing from app build';
       await saveStatus({ lastError: err, pending: queue.length });
       return { ok: false, error: err, sent: 0 };
     }
@@ -179,7 +206,7 @@ export async function flushReviewSync(opts?: {
       export_kind: 'meaning_unit_reviews',
       exported_at: new Date().toISOString(),
       sync: {
-        device_label: config.deviceLabel || 'iphone',
+        device_label: config.deviceLabel || 'testflight',
         reason: opts?.reason ?? 'flush',
         batch_size: batch.length,
       },
@@ -213,7 +240,6 @@ export async function flushReviewSync(opts?: {
       lastBatchSize: batch.length,
     });
 
-    // Keep draining if more than one batch piled up.
     if (remaining.length >= BATCH_SIZE) {
       flushing = false;
       return flushReviewSync({ reason: 'drain' });
