@@ -4,12 +4,13 @@
  * mobile/assets/models/ so the withIt2Models config plugin can pack them
  * into the native app (no first-launch HF download).
  */
-const fs = require('fs');
-const path = require('path');
-const { pipeline } = require('stream/promises');
-const { Readable } = require('stream');
+import fs from 'fs';
+import path from 'path';
+import { pipeline } from 'stream/promises';
+import { Readable } from 'stream';
+import { fileURLToPath } from 'url';
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MODELS = path.join(ROOT, 'assets', 'models');
 
 /** Must match plugins/withIt2Models.js + src/mt/onnx/modelAssets.ts */
