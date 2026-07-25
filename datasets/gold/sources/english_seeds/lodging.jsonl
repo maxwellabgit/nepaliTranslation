@@ -1,0 +1,20 @@
+{"id": "lodging_0001", "domain": "lodging", "english": "Do you have a room for tonight?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0002", "domain": "lodging", "english": "I have a reservation.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0003", "domain": "lodging", "english": "Is there Wi‑Fi?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0004", "domain": "lodging", "english": "The key does not work.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0005", "domain": "lodging", "english": "Can I leave my luggage?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0006", "domain": "lodging", "english": "Is there hot water?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0007", "domain": "lodging", "english": "Please clean the room.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0008", "domain": "lodging", "english": "The air conditioning is broken.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0009", "domain": "lodging", "english": "I need an extra towel.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0010", "domain": "lodging", "english": "What time is breakfast?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0011", "domain": "lodging", "english": "Can I extend my stay?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0012", "domain": "lodging", "english": "Is parking available?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0013", "domain": "lodging", "english": "The room is too noisy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0014", "domain": "lodging", "english": "I need a quiet room.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0015", "domain": "lodging", "english": "Is there a safe in the room?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0016", "domain": "lodging", "english": "Please call a taxi.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0017", "domain": "lodging", "english": "Where is the elevator?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0018", "domain": "lodging", "english": "I locked myself out.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0019", "domain": "lodging", "english": "Can I pay by card?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0020", "domain": "lodging", "english": "Thank you for your help.", "unit": "sentence", "source": "hand_seed_v1"}

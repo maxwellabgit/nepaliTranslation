@@ -1,0 +1,20 @@
+{"id": "core_grammar_0001", "domain": "core_grammar", "english": "This is good.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0002", "domain": "core_grammar", "english": "That is not right.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0003", "domain": "core_grammar", "english": "I am fine.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0004", "domain": "core_grammar", "english": "It is raining.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0005", "domain": "core_grammar", "english": "He is coming.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0006", "domain": "core_grammar", "english": "She is waiting.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0007", "domain": "core_grammar", "english": "We are ready.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0008", "domain": "core_grammar", "english": "They are late.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0009", "domain": "core_grammar", "english": "I do not know.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0010", "domain": "core_grammar", "english": "I understand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0011", "domain": "core_grammar", "english": "I agree.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0012", "domain": "core_grammar", "english": "I disagree.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0013", "domain": "core_grammar", "english": "It is possible.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0014", "domain": "core_grammar", "english": "It is impossible.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0015", "domain": "core_grammar", "english": "This is mine.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0016", "domain": "core_grammar", "english": "That is yours.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0017", "domain": "core_grammar", "english": "Here it is.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0018", "domain": "core_grammar", "english": "There it is.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0019", "domain": "core_grammar", "english": "Not now.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0020", "domain": "core_grammar", "english": "Maybe later.", "unit": "sentence", "source": "hand_seed_v1"}

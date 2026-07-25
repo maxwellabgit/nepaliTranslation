@@ -315,7 +315,9 @@ export function MeaningReviewScreen({ onClose }: Props) {
         <View style={styles.headerCenter}>
           <Text style={styles.title}>Meaning Review</Text>
           <Text style={styles.progress}>
-            {totals.done}/{totals.total} · {totals.edited} edited · {totals.skipped} flagged
+            {totals.done} reviewed
+            {totals.edited ? ` · ${totals.edited} edited` : ''}
+            {totals.skipped ? ` · ${totals.skipped} flagged` : ''}
           </Text>
         </View>
         <Pressable onPress={() => void exportReviews()} hitSlop={8}>
@@ -333,7 +335,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
           <Text style={styles.link}>Undo</Text>
         </Pressable>
         <Text style={styles.meta}>
-          {queue.length ? `${Math.min(index + 1, queue.length)}/${queue.length}` : 'Done'}
+          {queue.length ? `Next up` : 'Done'}
         </Text>
       </View>
 

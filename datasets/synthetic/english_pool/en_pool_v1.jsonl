@@ -1,0 +1,240 @@
+{"id": "travel_0001", "domain": "travel", "english": "Where is the bus stop?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0002", "domain": "travel", "english": "How much is a taxi to the airport?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0003", "domain": "travel", "english": "Please take me to Thamel.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0004", "domain": "travel", "english": "Is this the way to the temple?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0005", "domain": "travel", "english": "What time does the flight leave?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0006", "domain": "travel", "english": "I need a ticket to Pokhara.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0007", "domain": "travel", "english": "Can you show me on the map?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0008", "domain": "travel", "english": "How long will it take?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0009", "domain": "travel", "english": "Is there a restroom nearby?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0010", "domain": "travel", "english": "I am lost.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0011", "domain": "travel", "english": "Which way to the hotel?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0012", "domain": "travel", "english": "Does this bus go to Bhaktapur?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0013", "domain": "travel", "english": "Please stop here.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0014", "domain": "travel", "english": "I will wait outside.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0015", "domain": "travel", "english": "Is the road open today?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0016", "domain": "travel", "english": "Where can I buy a SIM card?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0017", "domain": "travel", "english": "How far is the station?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0018", "domain": "travel", "english": "I need change for a hundred.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0019", "domain": "travel", "english": "Is breakfast included?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "travel_0020", "domain": "travel", "english": "What time is checkout?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0001", "domain": "health", "english": "I need a doctor.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0002", "domain": "health", "english": "Where is the nearest pharmacy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0003", "domain": "health", "english": "I have a fever.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0004", "domain": "health", "english": "My stomach hurts.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0005", "domain": "health", "english": "I feel dizzy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0006", "domain": "health", "english": "I am allergic to peanuts.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0007", "domain": "health", "english": "Please call an ambulance.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0008", "domain": "health", "english": "Does this medicine need a prescription?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0009", "domain": "health", "english": "I have a headache.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0010", "domain": "health", "english": "I cannot breathe well.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0011", "domain": "health", "english": "Is there a hospital nearby?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0012", "domain": "health", "english": "I cut my hand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0013", "domain": "health", "english": "I need water.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0014", "domain": "health", "english": "I feel sick.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0015", "domain": "health", "english": "How often should I take this?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0016", "domain": "health", "english": "I have high blood pressure.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0017", "domain": "health", "english": "My child has a cough.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0018", "domain": "health", "english": "Is this safe during pregnancy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0019", "domain": "health", "english": "I need a bandage.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "health_0020", "domain": "health", "english": "Can you help me?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0001", "domain": "emergencies", "english": "Call the police.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0002", "domain": "emergencies", "english": "There has been an accident.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0003", "domain": "emergencies", "english": "I lost my passport.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0004", "domain": "emergencies", "english": "Someone stole my bag.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0005", "domain": "emergencies", "english": "I need the embassy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0006", "domain": "emergencies", "english": "Please help me now.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0007", "domain": "emergencies", "english": "Where is the police station?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0008", "domain": "emergencies", "english": "I am in danger.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0009", "domain": "emergencies", "english": "Fire!", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0010", "domain": "emergencies", "english": "I cannot find my child.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0011", "domain": "emergencies", "english": "My phone was stolen.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0012", "domain": "emergencies", "english": "I need to report a theft.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0013", "domain": "emergencies", "english": "Please stay with me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0014", "domain": "emergencies", "english": "Do you speak English?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0015", "domain": "emergencies", "english": "I need a lawyer.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0016", "domain": "emergencies", "english": "This is an emergency.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0017", "domain": "emergencies", "english": "Call my hotel.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0018", "domain": "emergencies", "english": "I am locked out.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0019", "domain": "emergencies", "english": "I lost my wallet.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "emergencies_0020", "domain": "emergencies", "english": "Please translate for me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0001", "domain": "food", "english": "I would like tea.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0002", "domain": "food", "english": "Is this spicy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0003", "domain": "food", "english": "No meat, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0004", "domain": "food", "english": "I am vegetarian.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0005", "domain": "food", "english": "The bill, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0006", "domain": "food", "english": "Is water free?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0007", "domain": "food", "english": "What do you recommend?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0008", "domain": "food", "english": "I am allergic to dairy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0009", "domain": "food", "english": "Can I get this without onion?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0010", "domain": "food", "english": "How much is this?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0011", "domain": "food", "english": "One more plate, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0012", "domain": "food", "english": "Is this fresh?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0013", "domain": "food", "english": "I do not eat beef.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0014", "domain": "food", "english": "Coffee with milk.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0015", "domain": "food", "english": "That was delicious.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0016", "domain": "food", "english": "Too spicy for me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0017", "domain": "food", "english": "Can we sit outside?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0018", "domain": "food", "english": "Do you have rice?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0019", "domain": "food", "english": "I will take the set meal.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "food_0020", "domain": "food", "english": "Please pack this to go.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0001", "domain": "lodging", "english": "Do you have a room for tonight?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0002", "domain": "lodging", "english": "I have a reservation.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0003", "domain": "lodging", "english": "Is there Wi‑Fi?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0004", "domain": "lodging", "english": "The key does not work.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0005", "domain": "lodging", "english": "Can I leave my luggage?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0006", "domain": "lodging", "english": "Is there hot water?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0007", "domain": "lodging", "english": "Please clean the room.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0008", "domain": "lodging", "english": "The air conditioning is broken.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0009", "domain": "lodging", "english": "I need an extra towel.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0010", "domain": "lodging", "english": "What time is breakfast?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0011", "domain": "lodging", "english": "Can I extend my stay?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0012", "domain": "lodging", "english": "Is parking available?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0013", "domain": "lodging", "english": "The room is too noisy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0014", "domain": "lodging", "english": "I need a quiet room.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0015", "domain": "lodging", "english": "Is there a safe in the room?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0016", "domain": "lodging", "english": "Please call a taxi.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0017", "domain": "lodging", "english": "Where is the elevator?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0018", "domain": "lodging", "english": "I locked myself out.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0019", "domain": "lodging", "english": "Can I pay by card?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "lodging_0020", "domain": "lodging", "english": "Thank you for your help.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0001", "domain": "shopping", "english": "How much does this cost?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0002", "domain": "shopping", "english": "Can you go lower?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0003", "domain": "shopping", "english": "I will take it.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0004", "domain": "shopping", "english": "Do you have a smaller size?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0005", "domain": "shopping", "english": "Can I try this on?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0006", "domain": "shopping", "english": "Do you accept dollars?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0007", "domain": "shopping", "english": "I need a bag.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0008", "domain": "shopping", "english": "Is this handmade?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0009", "domain": "shopping", "english": "Where was this made?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0010", "domain": "shopping", "english": "I am just looking.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0011", "domain": "shopping", "english": "Do you have change?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0012", "domain": "shopping", "english": "Too expensive.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0013", "domain": "shopping", "english": "What is your best price?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0014", "domain": "shopping", "english": "I will come back later.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0015", "domain": "shopping", "english": "Can you wrap this as a gift?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0016", "domain": "shopping", "english": "Is there a warranty?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0017", "domain": "shopping", "english": "I need batteries.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0018", "domain": "shopping", "english": "Where is the market?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0019", "domain": "shopping", "english": "Open later today?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "shopping_0020", "domain": "shopping", "english": "Thank you.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0001", "domain": "family", "english": "This is my wife.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0002", "domain": "family", "english": "This is my husband.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0003", "domain": "family", "english": "These are my children.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0004", "domain": "family", "english": "How old are you?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0005", "domain": "family", "english": "I miss my family.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0006", "domain": "family", "english": "My parents are visiting.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0007", "domain": "family", "english": "We are on holiday.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0008", "domain": "family", "english": "She is my sister.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0009", "domain": "family", "english": "He is my brother.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0010", "domain": "family", "english": "We have two kids.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0011", "domain": "family", "english": "My son is sick.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0012", "domain": "family", "english": "Can the children play here?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0013", "domain": "family", "english": "We need a family room.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0014", "domain": "family", "english": "My daughter loves momos.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0015", "domain": "family", "english": "Please meet my friend.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0016", "domain": "family", "english": "We are traveling together.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0017", "domain": "family", "english": "I am here alone.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0018", "domain": "family", "english": "My mother does not speak English.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0019", "domain": "family", "english": "Please speak slowly.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "family_0020", "domain": "family", "english": "They are tired.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0001", "domain": "government", "english": "Where is the immigration office?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0002", "domain": "government", "english": "I need a visa extension.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0003", "domain": "government", "english": "Where do I pay the fee?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0004", "domain": "government", "english": "What documents do I need?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0005", "domain": "government", "english": "Is this form correct?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0006", "domain": "government", "english": "How long will it take?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0007", "domain": "government", "english": "I need a stamp.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0008", "domain": "government", "english": "Where is the tourist police?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0009", "domain": "government", "english": "I lost my documents.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0010", "domain": "government", "english": "Can I get a receipt?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0011", "domain": "government", "english": "Is the office open today?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0012", "domain": "government", "english": "Who should I talk to?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0013", "domain": "government", "english": "I have an appointment.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0014", "domain": "government", "english": "Please check this passport.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0015", "domain": "government", "english": "I need a copy.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0016", "domain": "government", "english": "Where is the bank?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0017", "domain": "government", "english": "I need to exchange money.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0018", "domain": "government", "english": "Is there a queue?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0019", "domain": "government", "english": "Please wait here.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "government_0020", "domain": "government", "english": "Thank you for your patience.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0001", "domain": "questions_requests", "english": "Can you help me?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0002", "domain": "questions_requests", "english": "Could you repeat that?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0003", "domain": "questions_requests", "english": "Please speak slowly.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0004", "domain": "questions_requests", "english": "What does this mean?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0005", "domain": "questions_requests", "english": "Where can I find that?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0006", "domain": "questions_requests", "english": "May I sit here?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0007", "domain": "questions_requests", "english": "Would you like tea?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0008", "domain": "questions_requests", "english": "Can we meet tomorrow?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0009", "domain": "questions_requests", "english": "Please wait a moment.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0010", "domain": "questions_requests", "english": "Is that okay?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0011", "domain": "questions_requests", "english": "Could you write it down?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0012", "domain": "questions_requests", "english": "Can you show me?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0013", "domain": "questions_requests", "english": "Please tell me again.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0014", "domain": "questions_requests", "english": "Do you understand?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0015", "domain": "questions_requests", "english": "I do not understand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0016", "domain": "questions_requests", "english": "One moment, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0017", "domain": "questions_requests", "english": "After you.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0018", "domain": "questions_requests", "english": "Excuse me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0019", "domain": "questions_requests", "english": "Sorry.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "questions_requests_0020", "domain": "questions_requests", "english": "You are welcome.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0001", "domain": "pronouns_honorifics", "english": "How are you?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0002", "domain": "pronouns_honorifics", "english": "What is your name?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0003", "domain": "pronouns_honorifics", "english": "Where are you from?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0004", "domain": "pronouns_honorifics", "english": "Please come in.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0005", "domain": "pronouns_honorifics", "english": "Please sit down.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0006", "domain": "pronouns_honorifics", "english": "Please give me water.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0007", "domain": "pronouns_honorifics", "english": "Please wait.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0008", "domain": "pronouns_honorifics", "english": "Are you busy?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0009", "domain": "pronouns_honorifics", "english": "Do you work here?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0010", "domain": "pronouns_honorifics", "english": "Can you come with me?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0011", "domain": "pronouns_honorifics", "english": "Please listen.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0012", "domain": "pronouns_honorifics", "english": "Please look at this.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0013", "domain": "pronouns_honorifics", "english": "Where do you live?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0014", "domain": "pronouns_honorifics", "english": "What do you do?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0015", "domain": "pronouns_honorifics", "english": "Please take this.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0016", "domain": "pronouns_honorifics", "english": "Please open the door.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0017", "domain": "pronouns_honorifics", "english": "Please close the window.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0018", "domain": "pronouns_honorifics", "english": "Are you ready?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0019", "domain": "pronouns_honorifics", "english": "Please call me.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "pronouns_honorifics_0020", "domain": "pronouns_honorifics", "english": "Please tell him.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0001", "domain": "numbers_money", "english": "How much is twenty?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0002", "domain": "numbers_money", "english": "I need five hundred rupees.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0003", "domain": "numbers_money", "english": "That is too much.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0004", "domain": "numbers_money", "english": "Can you break a thousand?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0005", "domain": "numbers_money", "english": "I only have a card.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0006", "domain": "numbers_money", "english": "Is cash okay?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0007", "domain": "numbers_money", "english": "Half price?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0008", "domain": "numbers_money", "english": "Two tickets, please.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0009", "domain": "numbers_money", "english": "Three people.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0010", "domain": "numbers_money", "english": "Room for four.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0011", "domain": "numbers_money", "english": "It costs fifty.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0012", "domain": "numbers_money", "english": "Give me ten.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0013", "domain": "numbers_money", "english": "I paid already.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0014", "domain": "numbers_money", "english": "Keep the change.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0015", "domain": "numbers_money", "english": "I need a receipt for one thousand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0016", "domain": "numbers_money", "english": "What is the total?", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0017", "domain": "numbers_money", "english": "Add twenty percent.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0018", "domain": "numbers_money", "english": "Minus fifty.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0019", "domain": "numbers_money", "english": "Around two hundred.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "numbers_money_0020", "domain": "numbers_money", "english": "Exactly one hundred.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0001", "domain": "core_grammar", "english": "This is good.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0002", "domain": "core_grammar", "english": "That is not right.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0003", "domain": "core_grammar", "english": "I am fine.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0004", "domain": "core_grammar", "english": "It is raining.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0005", "domain": "core_grammar", "english": "He is coming.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0006", "domain": "core_grammar", "english": "She is waiting.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0007", "domain": "core_grammar", "english": "We are ready.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0008", "domain": "core_grammar", "english": "They are late.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0009", "domain": "core_grammar", "english": "I do not know.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0010", "domain": "core_grammar", "english": "I understand.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0011", "domain": "core_grammar", "english": "I agree.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0012", "domain": "core_grammar", "english": "I disagree.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0013", "domain": "core_grammar", "english": "It is possible.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0014", "domain": "core_grammar", "english": "It is impossible.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0015", "domain": "core_grammar", "english": "This is mine.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0016", "domain": "core_grammar", "english": "That is yours.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0017", "domain": "core_grammar", "english": "Here it is.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0018", "domain": "core_grammar", "english": "There it is.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0019", "domain": "core_grammar", "english": "Not now.", "unit": "sentence", "source": "hand_seed_v1"}
+{"id": "core_grammar_0020", "domain": "core_grammar", "english": "Maybe later.", "unit": "sentence", "source": "hand_seed_v1"}

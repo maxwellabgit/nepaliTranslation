@@ -1,0 +1,12 @@
+{
+  "packed_at": "2026-07-25T16:36:15Z",
+  "n_parallel": 105,
+  "n_nepali_rows": 135,
+  "trusted_provenance": [
+    "assistant_curated",
+    "hand_authored_seed",
+    "hand_priority_seed",
+    "human_meaning_review"
+  ],
+  "note": "Eval holdout remains in benchmarks/gold/; do not train on holdout."
+}

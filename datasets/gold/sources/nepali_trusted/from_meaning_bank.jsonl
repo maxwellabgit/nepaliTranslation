@@ -1,0 +1,135 @@
+{"id": "core_grammar_00001_formal", "nepali": "यो राम्रो छ।", "register": "formal", "english_anchor": "This is good.", "provenance": "hand_priority_seed"}
+{"id": "core_grammar_00002_formal", "nepali": "त्यो ठिक होइन।", "register": "formal", "english_anchor": "That is not right.", "provenance": "hand_priority_seed"}
+{"id": "core_grammar_00003_formal", "nepali": "नमस्कार।", "register": "formal", "english_anchor": "Hello.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00004_formal", "nepali": "नमस्ते।", "register": "formal", "english_anchor": "Hello.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00005_formal", "nepali": "म क्षमा चाहन्छु।", "register": "formal", "english_anchor": "I am sorry.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00006_formal", "nepali": "हो।", "register": "formal", "english_anchor": "Yes.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00007_formal", "nepali": "होइन।", "register": "formal", "english_anchor": "No.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00008_formal", "nepali": "म नेपालबाट आएको हुँ।", "register": "formal", "english_anchor": "I am from Nepal.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00009_formal", "nepali": "बायाँ मोड्नुहोस्।", "register": "formal", "english_anchor": "Turn left.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00010_formal", "nepali": "बायाँ मोड।", "register": "formal", "english_anchor": "Turn left.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00011_formal", "nepali": "दायाँ मोड्नुहोस्।", "register": "formal", "english_anchor": "Turn right.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00012_formal", "nepali": "दायाँ मोड।", "register": "formal", "english_anchor": "Turn right.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00013_formal", "nepali": "सिधा जानुहोस्।", "register": "formal", "english_anchor": "Go straight.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00013_informal", "nepali": "सिधा जा।", "register": "informal", "english_anchor": "Go straight.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00014_formal", "nepali": "सिधा जाऊ।", "register": "formal", "english_anchor": "Go straight.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00015_formal", "nepali": "मलाई यो चाहिन्छ।", "register": "formal", "english_anchor": "I would like this.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00016_formal", "nepali": "मलाई यो चाहिँदैन।", "register": "formal", "english_anchor": "I do not want this.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00017_formal", "nepali": "म मासु खाँदिनँ।", "register": "formal", "english_anchor": "I do not eat meat.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00018_formal", "nepali": "मलाई एलर्जी छ।", "register": "formal", "english_anchor": "I have an allergy.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00019_formal", "nepali": "म बिरामी छु।", "register": "formal", "english_anchor": "I am sick.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00020_formal", "nepali": "म भोलि आउनेछु।", "register": "formal", "english_anchor": "I will come tomorrow.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00021_formal", "nepali": "म भोलि आउँछु।", "register": "formal", "english_anchor": "I will come tomorrow.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00022_formal", "nepali": "म हिजो आएको थिएँ।", "register": "formal", "english_anchor": "I came yesterday.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00023_formal", "nepali": "म काठमाडौंमा बस्छु।", "register": "formal", "english_anchor": "I live in Kathmandu.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00024_formal", "nepali": "मलाई सन्देश पठाऊ न।", "register": "formal", "english_anchor": "Send me a message.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00025_formal", "nepali": "नेटवर्कले काम गरिरहेको छैन।", "register": "formal", "english_anchor": "The network is not working.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00026_formal", "nepali": "नेटवर्क चलेको छैन।", "register": "formal", "english_anchor": "The network is not working.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00027_formal", "nepali": "मेरो फोनको ब्याट्री सकिएको छ।", "register": "formal", "english_anchor": "My phone has no battery.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00028_formal", "nepali": "मेरो फोनको ब्याट्री सकियो।", "register": "formal", "english_anchor": "My phone has no battery.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00029_formal", "nepali": "मैले बोलिसकेँ।", "register": "formal", "english_anchor": "I have finished speaking.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00030_formal", "nepali": "अनुवाद तयार हुँदैछ।", "register": "formal", "english_anchor": "The translation is loading.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00031_formal", "nepali": "अनुवाद लोड हुँदैछ।", "register": "formal", "english_anchor": "The translation is loading.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00032_formal", "nepali": "त्यो अनुवाद गलत छ।", "register": "formal", "english_anchor": "That translation is wrong.", "provenance": "assistant_curated"}
+{"id": "core_grammar_00033_formal", "nepali": "त्यो अनुवाद सही छ।", "register": "formal", "english_anchor": "That translation is correct.", "provenance": "assistant_curated"}
+{"id": "pronouns_honorifics_00001_formal", "nepali": "तपाईं कहाँ जाँदै हुनुहुन्छ?", "register": "formal", "english_anchor": "Where are you going?", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00001_informal", "nepali": "तिमी कहाँ जाँदै छौ?", "register": "informal", "english_anchor": "Where are you going?", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00002_formal", "nepali": "कृपया भित्र आउनुहोस्।", "register": "formal", "english_anchor": "Please come in.", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00002_informal", "nepali": "भित्र आ।", "register": "informal", "english_anchor": "Please come in.", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00003_formal", "nepali": "के तपाईं चिया खानुहुन्छ?", "register": "formal", "english_anchor": "Would you like some tea?", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00003_informal", "nepali": "के तिमी चिया खान्छौ?", "register": "informal", "english_anchor": "Would you like some tea?", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00004_formal", "nepali": "तपाईं पहिले।", "register": "formal", "english_anchor": "After you.", "provenance": "hand_priority_seed"}
+{"id": "pronouns_honorifics_00004_informal", "nepali": "तिमी पहिले।", "register": "informal", "english_anchor": "After you.", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00001_formal", "nepali": "कृपया यहाँ पर्खनुहोस्।", "register": "formal", "english_anchor": "Please wait here.", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00001_informal", "nepali": "यहाँ पर्ख न।", "register": "informal", "english_anchor": "Please wait here.", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00002_formal", "nepali": "के तपाईं बुझ्नुहुन्छ?", "register": "formal", "english_anchor": "Do you understand?", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00002_informal", "nepali": "के तिमी बुझ्छौ?", "register": "informal", "english_anchor": "Do you understand?", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00003_formal", "nepali": "यसको अर्थ के हो?", "register": "formal", "english_anchor": "What does this mean?", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00004_formal", "nepali": "के तपाईं लेखिदिन सक्नुहुन्छ?", "register": "formal", "english_anchor": "Could you write it down?", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00004_informal", "nepali": "के तिमी लेखिदिन सक्छौ?", "register": "informal", "english_anchor": "Could you write it down?", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00005_formal", "nepali": "के त्यो ठिक छ?", "register": "formal", "english_anchor": "Is that okay?", "provenance": "hand_priority_seed"}
+{"id": "questions_requests_00006_formal", "nepali": "कृपया।", "register": "formal", "english_anchor": "Please.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00007_formal", "nepali": "तपाईं कहाँबाट आउनुभएको हो?", "register": "formal", "english_anchor": "Where are you from?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00007_informal", "nepali": "तिमी कहाँबाट आउनुभएको हो?", "register": "informal", "english_anchor": "Where are you from?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00008_formal", "nepali": "तपाईं कहाँबाट आएको?", "register": "formal", "english_anchor": "Where are you from?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00008_informal", "nepali": "तिमी कहाँबाट आएको?", "register": "informal", "english_anchor": "Where are you from?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00009_formal", "nepali": "के तपाईंसँग योभन्दा सानो आकार छ?", "register": "formal", "english_anchor": "Do you have a smaller size?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00009_informal", "nepali": "के तिमीसँग योभन्दा सानो आकार छ?", "register": "informal", "english_anchor": "Do you have a smaller size?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00010_formal", "nepali": "के तपाईंसँग योभन्दा सानो साइज छ?", "register": "formal", "english_anchor": "Do you have a smaller size?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00010_informal", "nepali": "के तिमीसँग योभन्दा सानो साइज छ?", "register": "informal", "english_anchor": "Do you have a smaller size?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00011_formal", "nepali": "कृपया मलाई रसिद दिनुहोस्।", "register": "formal", "english_anchor": "Please give me a receipt.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00011_informal", "nepali": "मलाई रसिद देऊ।", "register": "informal", "english_anchor": "Please give me a receipt.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00012_formal", "nepali": "मलाई रसिद देऊ न।", "register": "formal", "english_anchor": "Please give me a receipt.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00013_formal", "nepali": "के यो शाकाहारी हो?", "register": "formal", "english_anchor": "Is this vegetarian?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00014_formal", "nepali": "यो शाकाहारी हो?", "register": "formal", "english_anchor": "Is this vegetarian?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00015_formal", "nepali": "तपाईंलाई कहाँ दुखेको छ?", "register": "formal", "english_anchor": "Where does it hurt?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00015_informal", "nepali": "तिमीलाई कहाँ दुखेको छ?", "register": "informal", "english_anchor": "Where does it hurt?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00016_formal", "nepali": "कृपया मसँग आउनुहोस्।", "register": "formal", "english_anchor": "Please come with me.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00016_informal", "nepali": "मसँग आउ।", "register": "informal", "english_anchor": "Please come with me.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00017_formal", "nepali": "मसँग आऊ न।", "register": "formal", "english_anchor": "Please come with me.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00018_formal", "nepali": "कृपया यहाँ उभिनुहोस्।", "register": "formal", "english_anchor": "Please stand here.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00018_informal", "nepali": "यहाँ उभिनुहोस्।", "register": "informal", "english_anchor": "Please stand here.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00019_formal", "nepali": "यहाँ उभिऊ न।", "register": "formal", "english_anchor": "Please stand here.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00020_formal", "nepali": "यो कहिले आइपुग्छ?", "register": "formal", "english_anchor": "When will it arrive?", "provenance": "assistant_curated"}
+{"id": "questions_requests_00021_formal", "nepali": "कृपया मलाई फोन गर्नुहोस्।", "register": "formal", "english_anchor": "Please call me.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00021_informal", "nepali": "मलाई फोन गर।", "register": "informal", "english_anchor": "Please call me.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00022_formal", "nepali": "मलाई फोन गर न।", "register": "formal", "english_anchor": "Please call me.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00023_formal", "nepali": "कृपया मलाई सन्देश पठाउनुहोस्।", "register": "formal", "english_anchor": "Send me a message.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00023_informal", "nepali": "मलाई सन्देश पठाउनुहोस्।", "register": "informal", "english_anchor": "Send me a message.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00024_formal", "nepali": "कृपया फोन अर्को व्यक्तिलाई दिनुहोस्।", "register": "formal", "english_anchor": "Please pass the phone.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00024_informal", "nepali": "फोन अर्को व्यक्तिलाई देऊ।", "register": "informal", "english_anchor": "Please pass the phone.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00025_formal", "nepali": "फोन अर्कोलाई देऊ न।", "register": "formal", "english_anchor": "Please pass the phone.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00026_formal", "nepali": "कृपया फेरि प्रयास गर्नुहोस्।", "register": "formal", "english_anchor": "Please try again.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00026_informal", "nepali": "फेरि प्रयास गर।", "register": "informal", "english_anchor": "Please try again.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00027_formal", "nepali": "फेरि प्रयास गर।", "register": "formal", "english_anchor": "Please try again.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00028_formal", "nepali": "कृपया अनुवाद जाँच गर्नुहोस्।", "register": "formal", "english_anchor": "Please check the translation.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00028_informal", "nepali": "अनुवाद जाँच गर।", "register": "informal", "english_anchor": "Please check the translation.", "provenance": "assistant_curated"}
+{"id": "questions_requests_00029_formal", "nepali": "अनुवाद जाँच गर।", "register": "formal", "english_anchor": "Please check the translation.", "provenance": "assistant_curated"}
+{"id": "travel_00001_formal", "nepali": "यो कति टाढा छ?", "register": "formal", "english_anchor": "How far is it?", "provenance": "hand_priority_seed"}
+{"id": "travel_00002_formal", "nepali": "कृपया मलाई बस स्टेशन लैजानुहोस्।", "register": "formal", "english_anchor": "Please take me to the bus station.", "provenance": "hand_priority_seed"}
+{"id": "travel_00002_informal", "nepali": "मलाई बस स्टेशन लगिदे।", "register": "informal", "english_anchor": "Please take me to the bus station.", "provenance": "hand_priority_seed"}
+{"id": "travel_00003_formal", "nepali": "के यो ठमेल जाने बाटो हो?", "register": "formal", "english_anchor": "Is this the way to Thamel?", "provenance": "hand_priority_seed"}
+{"id": "travel_00004_formal", "nepali": "मलाई ट्याक्सी चाहियो।", "register": "formal", "english_anchor": "I need a taxi.", "provenance": "hand_priority_seed"}
+{"id": "travel_00005_formal", "nepali": "कुन बस पाटन जान्छ?", "register": "formal", "english_anchor": "Which bus goes to Patan?", "provenance": "hand_priority_seed"}
+{"id": "travel_00006_formal", "nepali": "नजिकै सस्तो होटल छ?", "register": "formal", "english_anchor": "Is there a cheaper hotel nearby?", "provenance": "hand_priority_seed"}
+{"id": "travel_00007_formal", "nepali": "सिम कार्ड कहाँ किन्न सकिन्छ?", "register": "formal", "english_anchor": "Where can I buy a SIM card?", "provenance": "hand_priority_seed"}
+{"id": "travel_00008_formal", "nepali": "उडान ढिलो भयो।", "register": "formal", "english_anchor": "The flight is delayed.", "provenance": "hand_priority_seed"}
+{"id": "health_00001_formal", "nepali": "मलाई ज्वरो आएको छ।", "register": "formal", "english_anchor": "I have a fever.", "provenance": "hand_priority_seed"}
+{"id": "health_00002_formal", "nepali": "मलाई टाउको घुमेको छ।", "register": "formal", "english_anchor": "I feel dizzy.", "provenance": "hand_priority_seed"}
+{"id": "health_00003_formal", "nepali": "मलाई टाउको दुखाइको औषधि चाहियो।", "register": "formal", "english_anchor": "I need medicine for a headache.", "provenance": "hand_priority_seed"}
+{"id": "health_00004_formal", "nepali": "के यहाँ दुख्छ?", "register": "formal", "english_anchor": "Does it hurt here?", "provenance": "hand_priority_seed"}
+{"id": "health_00005_formal", "nepali": "म गर्भवती छु।", "register": "formal", "english_anchor": "I am pregnant.", "provenance": "hand_priority_seed"}
+{"id": "health_00006_formal", "nepali": "कृपया नर्स बोलाउनुहोस्।", "register": "formal", "english_anchor": "Please call a nurse.", "provenance": "hand_priority_seed"}
+{"id": "health_00006_informal", "nepali": "नर्स बोला।", "register": "informal", "english_anchor": "Please call a nurse.", "provenance": "hand_priority_seed"}
+{"id": "shopping_00001_formal", "nepali": "त्यो धेरै महँगो छ।", "register": "formal", "english_anchor": "That is too expensive.", "provenance": "hand_priority_seed"}
+{"id": "shopping_00002_formal", "nepali": "म यो चाहन्छु।", "register": "formal", "english_anchor": "I want this one.", "provenance": "hand_priority_seed"}
+{"id": "shopping_00003_formal", "nepali": "के म यो लगाएर हेर्न सक्छु?", "register": "formal", "english_anchor": "Can I try this on?", "provenance": "hand_priority_seed"}
+{"id": "shopping_00003_informal", "nepali": "म यो लगाएर हेर्न सक्छु?", "register": "informal", "english_anchor": "Can I try this on?", "provenance": "hand_priority_seed"}
+{"id": "shopping_00004_formal", "nepali": "साना साइज छ?", "register": "formal", "english_anchor": "Do you have a smaller size?", "provenance": "hand_priority_seed"}
+{"id": "shopping_00005_formal", "nepali": "म नगद तिर्छु।", "register": "formal", "english_anchor": "I will pay in cash.", "provenance": "hand_priority_seed"}
+{"id": "shopping_00006_formal", "nepali": "के म कार्डबाट भुक्तानी गर्न सक्छु?", "register": "formal", "english_anchor": "Can I pay by card?", "provenance": "assistant_curated"}
+{"id": "shopping_00007_formal", "nepali": "के म कार्डले तिर्न सक्छु?", "register": "formal", "english_anchor": "Can I pay by card?", "provenance": "assistant_curated"}
+{"id": "government_00001_formal", "nepali": "यो मेरो पासपोर्ट हो।", "register": "formal", "english_anchor": "This is my passport.", "provenance": "hand_priority_seed"}
+{"id": "government_00052_formal", "nepali": "कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "register": "formal", "english_anchor": "Please use formal language.", "provenance": "assistant_curated"}
+{"id": "government_00052_informal", "nepali": "औपचारिक भाषा प्रयोग गर।", "register": "informal", "english_anchor": "Please use formal language.", "provenance": "assistant_curated"}
+{"id": "government_00053_formal", "nepali": "औपचारिक भाषा प्रयोग गर।", "register": "formal", "english_anchor": "Please use formal language.", "provenance": "assistant_curated"}
+{"id": "family_00001_formal", "nepali": "यो मेरो परिवार हो।", "register": "formal", "english_anchor": "This is my family.", "provenance": "hand_priority_seed"}
+{"id": "family_00002_formal", "nepali": "तपाईंकी आमालाई कस्तो छ?", "register": "formal", "english_anchor": "How is your mother?", "provenance": "hand_priority_seed"}
+{"id": "family_00002_informal", "nepali": "तिम्री आमालाई कस्तो छ?", "register": "informal", "english_anchor": "How is your mother?", "provenance": "hand_priority_seed"}
+{"id": "family_00003_formal", "nepali": "यो मेरो भाइ हो।", "register": "formal", "english_anchor": "This is my brother.", "provenance": "hand_priority_seed"}
+{"id": "family_00004_formal", "nepali": "धन्यवाद।", "register": "formal", "english_anchor": "Thank you.", "provenance": "assistant_curated"}
+{"id": "family_00005_formal", "nepali": "हजुरलाई स्वागत छ।", "register": "formal", "english_anchor": "You are welcome.", "provenance": "assistant_curated"}
+{"id": "numbers_money_00001_formal", "nepali": "दुई सय रुपैयाँ हो।", "register": "formal", "english_anchor": "It is two hundred rupees.", "provenance": "hand_priority_seed"}
+{"id": "numbers_money_00002_formal", "nepali": "मलाई छ बजे उठाउनुहोस्।", "register": "formal", "english_anchor": "Wake me up at six.", "provenance": "hand_priority_seed"}
+{"id": "numbers_money_00002_informal", "nepali": "मलाई छ बजे उठा।", "register": "informal", "english_anchor": "Wake me up at six.", "provenance": "hand_priority_seed"}
+{"id": "numbers_money_00003_formal", "nepali": "साढे तीन बज्यो।", "register": "formal", "english_anchor": "It is half past three.", "provenance": "hand_priority_seed"}
+{"id": "numbers_money_00004_formal", "nepali": "एक हजार रुपैयाँ।", "register": "formal", "english_anchor": "One thousand rupees.", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00001_formal", "nepali": "म काठमाडौंलाई माया गर्छु।", "register": "formal", "english_anchor": "I love Kathmandu.", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00002_formal", "nepali": "के यहाँ वाइफाइ निःशुल्क छ?", "register": "formal", "english_anchor": "Is Wi-Fi free here?", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00002_informal", "nepali": "यहाँ वाइफाइ फ्री छ?", "register": "informal", "english_anchor": "Is Wi-Fi free here?", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00003_formal", "nepali": "मेरो नाम कुपर हो।", "register": "formal", "english_anchor": "My name is Cooper.", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00004_formal", "nepali": "दरबार स्क्वायरमा भेटौं।", "register": "formal", "english_anchor": "Meet me at Durbar Square.", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00005_formal", "nepali": "गुगल म्याप्स खोल्नुहोस्।", "register": "formal", "english_anchor": "Open Google Maps.", "provenance": "hand_priority_seed"}
+{"id": "code_switch_names_00005_informal", "nepali": "गुगल म्याप्स खोल।", "register": "informal", "english_anchor": "Open Google Maps.", "provenance": "hand_priority_seed"}
+{"id": "asr_noise_00001_formal", "nepali": "कृपया मलाई मद्दत गर्नुहोस्।", "register": "formal", "english_anchor": "Please help me.", "provenance": "hand_priority_seed"}
+{"id": "asr_noise_00001_informal", "nepali": "मलाई मद्दत गर।", "register": "informal", "english_anchor": "Please help me.", "provenance": "hand_priority_seed"}

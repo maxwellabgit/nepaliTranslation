@@ -1,0 +1,19 @@
+{
+  "packed_at": "2026-07-25T16:36:15Z",
+  "n_english_seeds": 240,
+  "by_domain": {
+    "travel": 20,
+    "health": 20,
+    "emergencies": 20,
+    "food": 20,
+    "lodging": 20,
+    "shopping": 20,
+    "family": 20,
+    "government": 20,
+    "questions_requests": 20,
+    "pronouns_honorifics": 20,
+    "numbers_money": 20,
+    "core_grammar": 20
+  },
+  "pool": "datasets\\synthetic\\english_pool\\en_pool_v1.jsonl"
+}
