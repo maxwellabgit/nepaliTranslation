@@ -77,6 +77,8 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const restartTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   /** Serializes sentence commits so turns append in spoken order. */
   const commitChainRef = useRef<Promise<unknown>>(Promise.resolve());
+  /** Resolvers waiting for the recognizer's 'end' event (pass handoff). */
+  const endWaitersRef = useRef<Array<() => void>>([]);
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
@@ -99,23 +101,51 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     [],
   );
 
-  const speakShow = useCallback(
-    (turn: Turn) => {
-      // Nepali output needs a Nepali voice; skip silently rather than
-      // mangling Devanagari through an English voice.
-      if (turn.from === 'en' && !neVoiceOk) return;
-      const text =
-        turn.from === 'en'
-          ? formatNepaliScript(turn.show, scriptRef.current)
-          : turn.show;
-      if (!text.trim() || text === emptyShowFallback(turn.from)) return;
-      Speech.stop();
-      Speech.speak(text, {
-        language: turn.from === 'en' ? 'ne-NP' : 'en-US',
-        rate: 0.95,
+  /**
+   * Speak a turn and resolve when the voice finishes, so the caller can
+   * keep the mic off while the phone talks (otherwise it transcribes
+   * its own TTS).
+   */
+  const speakShowAsync = useCallback(
+    (turn: Turn): Promise<void> => {
+      return new Promise((resolve) => {
+        // Nepali output needs a Nepali voice; skip silently rather than
+        // mangling Devanagari through an English voice.
+        if (turn.from === 'en' && !neVoiceOk) return resolve();
+        const text =
+          turn.from === 'en'
+            ? formatNepaliScript(turn.show, scriptRef.current)
+            : turn.show;
+        if (!text.trim() || text === emptyShowFallback(turn.from)) {
+          return resolve();
+        }
+        let settled = false;
+        const finish = () => {
+          if (!settled) {
+            settled = true;
+            resolve();
+          }
+        };
+        Speech.stop();
+        Speech.speak(text, {
+          language: turn.from === 'en' ? 'ne-NP' : 'en-US',
+          rate: 0.95,
+          onDone: finish,
+          onStopped: finish,
+          onError: finish,
+        });
+        // Safety valve: never let a missing TTS callback hang the pass.
+        setTimeout(finish, 12000);
       });
     },
     [neVoiceOk],
+  );
+
+  const speakShow = useCallback(
+    (turn: Turn) => {
+      void speakShowAsync(turn);
+    },
+    [speakShowAsync],
   );
 
   const commitSentence = useCallback(
@@ -162,7 +192,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   );
 
   const flushRemainder = useCallback(
-    async (from: Side, speakAloud: boolean): Promise<Turn | null> => {
+    async (from: Side): Promise<Turn | null> => {
       const full = interimRef.current.trim();
       let last: Turn | null = null;
       if (full) {
@@ -178,10 +208,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       interimRef.current = '';
       setInterim('');
       emittedCountRef.current = 0;
-      if (speakAloud && last) speakShow(last);
       return last;
     },
-    [commitSentence, speakShow],
+    [commitSentence],
   );
 
   useEffect(() => {
@@ -215,6 +244,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   });
 
   useSpeechRecognitionEvent('error', () => {
+    endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (!passingRef.current) {
       listeningRef.current = false;
       setListening(false);
@@ -222,6 +252,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   });
 
   useSpeechRecognitionEvent('end', () => {
+    endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (passingRef.current) return;
     if (!listeningRef.current) return;
     // Don't re-arm a recognizer that can't exist for this side.
@@ -259,11 +290,37 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     };
   }, []);
 
-  const stopListening = () => {
+  /**
+   * Stop the recognizer and resolve once it has actually ended (via the
+   * 'end'/'error' event), so the next start never races a live session.
+   * Replaces the old fixed sleeps.
+   */
+  const stopAndWait = useCallback((): Promise<void> => {
     if (restartTimer.current) clearTimeout(restartTimer.current);
-    hardStopRecognition();
+    const wasActive = listeningRef.current;
     listeningRef.current = false;
     setListening(false);
+    if (!wasActive) {
+      hardStopRecognition();
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      let settled = false;
+      const finish = () => {
+        if (!settled) {
+          settled = true;
+          resolve();
+        }
+      };
+      endWaitersRef.current.push(finish);
+      // Recognizer may already be dead; don't hang the handoff.
+      setTimeout(finish, 600);
+      hardStopRecognition();
+    });
+  }, []);
+
+  const stopListening = () => {
+    void stopAndWait();
   };
 
   const startListeningFor = async (next: Side) => {
@@ -276,8 +333,6 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       return false;
     }
     try {
-      hardStopRecognition();
-      await new Promise((r) => setTimeout(r, 220));
       const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
       if (!perm.granted) return false;
       sideRef.current = next;
@@ -322,15 +377,16 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     const from = sideRef.current;
     const next: Side = from === 'en' ? 'ne' : 'en';
 
-    stopListening();
     Vibration.vibrate(40);
 
     try {
-      await new Promise((r) => setTimeout(r, 260));
-      await flushRemainder(from, true);
+      // Event-driven handoff: recognizer end → translate remainder →
+      // speak aloud (mic off, so it can't hear itself) → arm next side.
+      await stopAndWait();
+      const last = await flushRemainder(from);
       setSide(next);
       sideRef.current = next;
-      await new Promise((r) => setTimeout(r, 420));
+      if (last) await speakShowAsync(last);
       await startListeningFor(next);
     } finally {
       setBusy(false);
@@ -344,6 +400,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       stopListening();
       return;
     }
+    await stopAndWait();
     await startListeningFor(side);
   };
 
