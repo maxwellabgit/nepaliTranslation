@@ -2,7 +2,7 @@
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Speech from 'expo-speech';
-import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
+import { hardStopRecognition } from './src/stt/sttSupport';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
@@ -21,16 +21,7 @@ type Mode = 'auto' | 'conversation';
 type Overlay = 'history' | 'settings' | 'meaning' | null;
 
 function hardStopAudio() {
-  try {
-    const mod = ExpoSpeechRecognitionModule as {
-      abort?: () => void;
-      stop?: () => void;
-    };
-    if (typeof mod.abort === 'function') mod.abort();
-    else if (typeof mod.stop === 'function') mod.stop();
-  } catch {
-    /* ignore */
-  }
+  hardStopRecognition();
   try {
     Speech.stop();
   } catch {
@@ -82,46 +73,6 @@ export default function App() {
     hardStopAudio();
     setMode(next);
   };
-
-  if (overlay === 'history') {
-    return (
-      <SafeAreaView style={styles.root}>
-        <StatusBar style="dark" />
-        <HistoryScreen
-          onClose={() => setOverlay(null)}
-          onSelect={(item) => {
-            hardStopAudio();
-            setSeed(item);
-            setSeedKey((k) => k + 1);
-            setMode('auto');
-            setOverlay(null);
-          }}
-        />
-      </SafeAreaView>
-    );
-  }
-
-  if (overlay === 'settings') {
-    return (
-      <SafeAreaView style={styles.root}>
-        <StatusBar style="dark" />
-        <SettingsScreen
-          onClose={() => setOverlay(null)}
-          onOpenMeaningReview={() => setOverlay('meaning')}
-          neuralReady={neuralReady}
-        />
-      </SafeAreaView>
-    );
-  }
-
-  if (overlay === 'meaning') {
-    return (
-      <SafeAreaView style={styles.root}>
-        <StatusBar style="dark" />
-        <MeaningReviewScreen onClose={() => setOverlay('settings')} />
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.root}>
@@ -175,6 +126,32 @@ export default function App() {
           </Text>
         </Pressable>
       </View>
+
+      {/* Overlays render on top so the screens beneath keep their state. */}
+      {overlay ? (
+        <View style={styles.overlay}>
+          {overlay === 'history' ? (
+            <HistoryScreen
+              onClose={() => setOverlay(null)}
+              onSelect={(item) => {
+                hardStopAudio();
+                setSeed(item);
+                setSeedKey((k) => k + 1);
+                setMode('auto');
+                setOverlay(null);
+              }}
+            />
+          ) : overlay === 'settings' ? (
+            <SettingsScreen
+              onClose={() => setOverlay(null)}
+              onOpenMeaningReview={() => setOverlay('meaning')}
+              neuralReady={neuralReady}
+            />
+          ) : (
+            <MeaningReviewScreen onClose={() => setOverlay('settings')} />
+          )}
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }
@@ -182,6 +159,14 @@ export default function App() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   body: { flex: 1 },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.bg,
+  },
   tabBar: {
     flexDirection: 'row',
     gap: 10,

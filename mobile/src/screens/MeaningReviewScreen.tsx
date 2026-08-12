@@ -43,6 +43,8 @@ type FieldEdits = {
 
 type AutoHeightProps = ComponentProps<typeof TextInput> & {
   maxHeight?: number;
+  /** Changes when a new card loads; resets measured height without flickering per keystroke. */
+  resetKey?: string;
 };
 
 const FIELD_MIN = 72;
@@ -53,13 +55,14 @@ function AutoHeightInput({
   onContentSizeChange,
   value,
   maxHeight = FIELD_MAX_DEFAULT,
+  resetKey,
   ...rest
 }: AutoHeightProps) {
   const [height, setHeight] = useState(FIELD_MIN);
 
   useEffect(() => {
     setHeight(FIELD_MIN);
-  }, [value]);
+  }, [resetKey]);
 
   const handleSize = (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
     const next = Math.ceil(e.nativeEvent.contentSize.height);
@@ -382,6 +385,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
 
               <Text style={styles.fieldLabel}>Roman formal</Text>
               <AutoHeightInput
+                resetKey={unit.meaning_id}
                 value={edits.roman_formal}
                 onChangeText={(t) => setEdits((e) => ({ ...e, roman_formal: t }))}
                 style={styles.fieldTarget}
@@ -391,6 +395,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
 
               <Text style={styles.fieldLabel}>Roman informal</Text>
               <AutoHeightInput
+                resetKey={unit.meaning_id}
                 value={edits.roman_informal}
                 onChangeText={(t) => setEdits((e) => ({ ...e, roman_informal: t }))}
                 style={styles.fieldTarget}
@@ -404,6 +409,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
 
               <Text style={styles.fieldLabel}>Nepali formal · तपाईं</Text>
               <AutoHeightInput
+                resetKey={unit.meaning_id}
                 value={edits.ne_formal}
                 onChangeText={(t) => setEdits((e) => ({ ...e, ne_formal: t }))}
                 style={styles.fieldTarget}
@@ -412,6 +418,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
 
               <Text style={styles.fieldLabel}>Nepali informal · तिमी</Text>
               <AutoHeightInput
+                resetKey={unit.meaning_id}
                 value={edits.ne_informal}
                 onChangeText={(t) => setEdits((e) => ({ ...e, ne_informal: t }))}
                 style={styles.fieldTarget}

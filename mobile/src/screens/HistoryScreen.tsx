@@ -14,7 +14,6 @@ import {
   clearHistory,
   deleteHistoryItem,
   loadHistory,
-  loadStarred,
   type HistoryItem,
 } from '../storage/phrasebook';
 import {
@@ -93,15 +92,12 @@ function SwipeableRow({
 }
 
 export function HistoryScreen({ onClose, onSelect }: Props) {
-  const [tab, setTab] = useState<'history' | 'saved'>('saved');
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [starred, setStarred] = useState<HistoryItem[]>([]);
   const [sentKeys, setSentKeys] = useState<Set<string>>(new Set());
   const [sendingId, setSendingId] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     setHistory(await loadHistory());
-    setStarred(await loadStarred());
     setSentKeys(await loadSentTrainingKeys());
   }, []);
 
@@ -125,8 +121,6 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
     }
   };
 
-  const items = tab === 'history' ? history : starred;
-
   return (
     <View style={styles.root}>
       <View style={styles.topBar}>
@@ -136,46 +130,23 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         <Text style={styles.title}>History</Text>
         <Pressable
           onPress={async () => {
-            if (tab === 'history') {
-              await clearHistory();
-              await reload();
-            }
+            await clearHistory();
+            await reload();
           }}
           hitSlop={12}
           style={styles.topBtn}
         >
-          <Text style={styles.clearText}>{tab === 'history' ? 'Clear' : ''}</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.tabs}>
-        <Pressable
-          style={[styles.tab, tab === 'saved' && styles.tabOn]}
-          onPress={() => setTab('saved')}
-        >
-          <Text style={[styles.tabText, tab === 'saved' && styles.tabTextOn]}>
-            Saved
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.tab, tab === 'history' && styles.tabOn]}
-          onPress={() => setTab('history')}
-        >
-          <Text style={[styles.tabText, tab === 'history' && styles.tabTextOn]}>
-            History
-          </Text>
+          <Text style={styles.clearText}>Clear</Text>
         </Pressable>
       </View>
 
       <ScrollView contentContainerStyle={styles.list}>
-        {items.length === 0 ? (
+        {history.length === 0 ? (
           <Text style={styles.empty}>
-            {tab === 'history'
-              ? 'Translations you make will show up here.'
-              : 'Tap the star on a translation to save it.'}
+            Translations you make will show up here.
           </Text>
-        ) : tab === 'history' ? (
-          items.map((item) => {
+        ) : (
+          history.map((item) => {
             const sent = sentKeys.has(trainingKeyFor(item));
             const sending = sendingId === item.id;
             return (
@@ -211,23 +182,6 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
               </SwipeableRow>
             );
           })
-        ) : (
-          items.map((item) => (
-            <Pressable
-              key={item.id}
-              style={styles.row}
-              onPress={() => onSelect(item)}
-            >
-              <View style={styles.rowBody}>
-                <Text style={styles.src} numberOfLines={2}>
-                  {item.source}
-                </Text>
-                <Text style={styles.dst} numberOfLines={2}>
-                  {item.translation}
-                </Text>
-              </View>
-            </Pressable>
-          ))
         )}
       </ScrollView>
     </View>
@@ -258,22 +212,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.text,
   },
-  tabs: {
-    flexDirection: 'row',
-    backgroundColor: colors.surface,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.divider,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabOn: { borderBottomColor: colors.blue },
-  tabText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
-  tabTextOn: { color: colors.blue },
   list: { padding: 12, paddingBottom: 40 },
   empty: {
     textAlign: 'center',

@@ -29,6 +29,11 @@ import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { sendLiveIncorrectToReviewSet } from '../storage/liveIncorrect';
 import { addHistory, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
+import {
+  getSttSupport,
+  hardStopRecognition,
+  hasNepaliVoice,
+} from '../stt/sttSupport';
 import { colors } from '../theme';
 
 type Props = {
@@ -66,8 +71,8 @@ const QUICK_PHRASES = [
  */
 export function HomeScreen({
   seed,
-  neuralReady: _neuralReady = false,
-  mtWarmStatus: _mtWarmStatus = null,
+  neuralReady = false,
+  mtWarmStatus = null,
   onOpenHistory,
   onOpenSettings,
 }: Props) {
@@ -82,11 +87,12 @@ export function HomeScreen({
   const [copiedFlash, setCopiedFlash] = useState(false);
   const [markedFlash, setMarkedFlash] = useState(false);
   const [markingIncorrect, setMarkingIncorrect] = useState(false);
+  const [neSttOk, setNeSttOk] = useState(true);
+  const [neVoiceOk, setNeVoiceOk] = useState(true);
   const [stage, setStage] = useState<StageFocus>('input');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const markedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const idleHistoryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const prefsLoadedRef = useRef(false);
   const listeningRef = useRef(false);
@@ -109,19 +115,6 @@ export function HomeScreen({
     preferred: Direction;
   }>({ formality, script, preferred });
   optsRef.current = { formality, script, preferred };
-
-  const hardStopRecognition = useCallback(() => {
-    try {
-      const mod = ExpoSpeechRecognitionModule as {
-        abort?: () => void;
-        stop?: () => void;
-      };
-      if (typeof mod.abort === 'function') mod.abort();
-      else if (typeof mod.stop === 'function') mod.stop();
-    } catch {
-      /* ignore */
-    }
-  }, []);
 
   const stopListening = useCallback(
     (opts?: { commit?: boolean }) => {
@@ -158,7 +151,7 @@ export function HomeScreen({
         }
       }
     },
-    [hardStopRecognition, input],
+    [input],
   );
 
   const saveHistoryFor = useCallback(
@@ -241,9 +234,10 @@ export function HomeScreen({
   );
 
   useSpeechRecognitionEvent('result', (event) => {
-    const text = event.results?.[0]?.transcript?.trim?.() ?? '';
-    if (!text) return;
+    const raw = event.results?.[0]?.transcript?.trim?.() ?? '';
+    if (!raw) return;
     if (!listeningRef.current && !startingRef.current) return;
+    const text = raw.slice(0, MAX_INPUT_CHARS);
     setInput(text);
     const requestId = ++requestIdRef.current;
     void sharedTranslationEngine
@@ -282,6 +276,8 @@ export function HomeScreen({
 
   useEffect(() => {
     void ExpoSpeechRecognitionModule.requestPermissionsAsync().catch(() => {});
+    void getSttSupport().then((s) => setNeSttOk(s.ne));
+    void hasNepaliVoice().then(setNeVoiceOk);
     return () => {
       listenGenRef.current += 1;
       hardStopRecognition();
@@ -289,7 +285,7 @@ export function HomeScreen({
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
       if (markedTimerRef.current) clearTimeout(markedTimerRef.current);
     };
-  }, [hardStopRecognition]);
+  }, []);
 
   useEffect(() => {
     void loadPrefs().then((prefs) => {
@@ -306,6 +302,8 @@ export function HomeScreen({
     });
   }, [formalOn, devaOn]);
 
+  // Single live-preview path. History is written only on explicit commits
+  // (blur, submit, STT final, quick phrase) — not on an idle timer.
   useEffect(() => {
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
@@ -316,29 +314,10 @@ export function HomeScreen({
       previewTranslate(input);
     }, 160);
 
-    if (idleHistoryRef.current) clearTimeout(idleHistoryRef.current);
-    idleHistoryRef.current = setTimeout(() => {
-      if (requestId !== requestIdRef.current) return;
-      const t = input.trim();
-      if (!t) return;
-      void sharedTranslationEngine
-        .translate({
-          text: t,
-          preferred: optsRef.current.preferred,
-          formality,
-          script,
-          forcePreferred: true,
-        })
-        .then((result) =>
-          applyResult(result, requestId, { save: true, source: t }),
-        );
-    }, 1500);
-
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
-      if (idleHistoryRef.current) clearTimeout(idleHistoryRef.current);
     };
-  }, [input, formality, script, preferred, previewTranslate, applyResult]);
+  }, [input, formality, script, preferred, previewTranslate]);
 
   const onChangeInput = (text: string) => {
     if (listeningRef.current || startingRef.current) {
@@ -371,6 +350,13 @@ export function HomeScreen({
   };
 
   const toggleVoice = async () => {
+    if (sourceSide === 'ne' && !neSttOk) {
+      Alert.alert(
+        'Nepali voice input unavailable',
+        'This device has no Nepali speech recognizer. Type Nepali instead — translation still works.',
+      );
+      return;
+    }
     Keyboard.dismiss();
     inputRef.current?.blur();
     setStage('mic');
@@ -439,7 +425,16 @@ export function HomeScreen({
     targetLang === 'ne' ? formatNepaliScript(output, script) : output;
   const showResult = Boolean(input.trim() && displayOutput);
 
+  const speakDisabled = targetLang === 'ne' && !neVoiceOk;
+
   const speakOutput = () => {
+    if (speakDisabled) {
+      Alert.alert(
+        'Nepali voice unavailable',
+        'This device has no Nepali text-to-speech voice installed.',
+      );
+      return;
+    }
     const text = displayOutput.trim();
     if (!text) return;
     Speech.stop();
@@ -629,6 +624,7 @@ export function HomeScreen({
             styles.micBtn,
             micUnder && styles.micUnderStage,
             listening && styles.micBtnOn,
+            sourceSide === 'ne' && !neSttOk && styles.micBtnUnavailable,
           ]}
           accessibilityRole="button"
           accessibilityLabel={listening ? 'Stop listening' : 'Speak to translate'}
@@ -677,6 +673,14 @@ export function HomeScreen({
         </Pressable>
       </View>
 
+      {mtWarmStatus ? (
+        <Text style={styles.statusLine}>{mtWarmStatus}</Text>
+      ) : !neuralReady ? (
+        <Text style={styles.statusLine}>
+          Model unavailable — using saved phrases
+        </Text>
+      ) : null}
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -702,7 +706,11 @@ export function HomeScreen({
                 accessibilityRole="button"
                 accessibilityLabel="Speak translation aloud"
               >
-                <Ionicons name="volume-high" size={26} color={colors.forest} />
+                <Ionicons
+                  name="volume-high"
+                  size={26}
+                  color={speakDisabled ? colors.textPlaceholder : colors.forest}
+                />
               </Pressable>
             </View>
             <View style={styles.resultActions}>
@@ -930,6 +938,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
     elevation: 12,
   },
+  micBtnUnavailable: { opacity: 0.45 },
   micDot: {
     width: 8,
     height: 8,
@@ -970,6 +979,13 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   chipTextOn: { color: '#fff' },
+  statusLine: {
+    paddingHorizontal: 16,
+    marginBottom: 6,
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
   scroll: { flex: 1 },
   scrollContent: {
     paddingHorizontal: 16,

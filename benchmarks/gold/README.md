@@ -13,14 +13,13 @@ Private holdout for product quality decisions. **~100 base + premium word-choice
 
 **v1 languages:** English ↔ Nepali only. NPHC 2021: Nepali is the largest mother tongue (~44.9%) and the national lingua franca; Maithili / Bhojpuri / Tharu are later expansions.
 
-## In-app human review (current)
+## Human review (current)
 
-1. Pack: `python benchmarks/pack_gold_for_app.py` → `mobile/assets/gold/review_pack.json`
-2. In the app: top-right **▣** → password `1234` → mark **Correct** or edit + **Save & complete**
-3. **Sentence-level:** multi-sentence rows are flagged (IT2 FT unit = one sentence; model max 256 positions, FT truncates ~96). Prefer **Split into N pairs** when both sides align, or trim to one sentence.
-4. Export JSON → `python benchmarks/apply_app_reviews.py export.json` (writes `human_gold` + `__sN` split children)
-5. After **all** benchmark classes are reviewed, open training-data review.
-6. Provenance / dataset trust ladder: pack `dataset_catalog` + `training/ARCHITECTURE.md`.
+Human review now runs through the in-app **Meaning Review** flow (Settings → Review training data), which syncs each Accept/Skip to the review server (`training/review_server.py`). The old in-app gold-pack review screen (`pack_gold_for_app.py` / `apply_app_reviews.py`) was removed.
+
+**Sentence-level rule still applies:** the IT2 FT unit is one sentence (model max 256 positions, FT truncates ~96); split or trim multi-sentence rows before they enter training data.
+
+Provenance / dataset trust ladder: `training/ARCHITECTURE.md`.
 
 Settled model for FT + edge: **IndicTrans2 dist-200M (MIT)**.
 
@@ -56,7 +55,7 @@ Source research: `benchmarks/PREMIUM_SOURCES.md`.
 
 ## Running eval
 
-Harness TBD. Until then: qualitative review of filled seeds + honorific spot checks.
+`python benchmarks/eval_it2_gold.py --classes en_ne_formal en_ne_informal ne_en_deva ne_en_roman` (chrF++ + honorific checks; see `--help` for adapter/base options). Phrasebook baseline: `benchmarks/score_phrasebook_gold.py`.
 
 ## Sensitive
 

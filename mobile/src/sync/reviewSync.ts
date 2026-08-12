@@ -6,12 +6,10 @@ const CONFIG_KEY = 'neptranslate.review_sync.config.v2';
 const QUEUE_KEY = 'neptranslate.review_sync.queue.v1';
 const STATUS_KEY = 'neptranslate.review_sync.status.v1';
 
-/** Flush when this many reviews are pending (or sooner via timer / manual). */
-export const BATCH_SIZE = 1;
 /** Cap reviews per HTTP request. */
 export const MAX_BATCH_UPLOAD = 50;
-/** Debounce flush after the latest enqueue (ms). */
-export const BATCH_DEBOUNCE_MS = 800;
+/** Cap on locally queued reviews; oldest are dropped past this. */
+export const MAX_QUEUE = 200;
 
 export type ReviewSyncConfig = {
   enabled: boolean;
@@ -54,7 +52,6 @@ function bakedDefaults(): ReviewSyncConfig {
   };
 }
 
-let flushTimer: ReturnType<typeof setTimeout> | null = null;
 let flushing = false;
 
 export async function loadReviewSyncConfig(): Promise<ReviewSyncConfig> {
@@ -136,28 +133,20 @@ export async function dropQueuedReviewSync(meaningId: string): Promise<void> {
 }
 
 /**
- * Queue a completed review for upload. Flushes in batches when enabled.
+ * Queue a completed review for upload, then flush immediately when enabled.
+ * The queue is capped so a dead endpoint can never grow storage unbounded.
  */
 export async function enqueueReviewSync(review: MeaningReview): Promise<void> {
   const config = await loadReviewSyncConfig();
   const queue = await loadQueue();
   const withoutDup = queue.filter((q) => q.meaning_id !== review.meaning_id);
   withoutDup.push({ ...review, queued_at: new Date().toISOString() });
-  await saveQueue(withoutDup);
-  await saveStatus({ pending: withoutDup.length });
+  const capped = withoutDup.slice(-MAX_QUEUE);
+  await saveQueue(capped);
+  await saveStatus({ pending: capped.length });
 
   if (!config.enabled || !config.endpointUrl.trim()) return;
-
-  if (withoutDup.length >= BATCH_SIZE) {
-    void flushReviewSync({ reason: 'batch_full' });
-    return;
-  }
-
-  if (flushTimer) clearTimeout(flushTimer);
-  flushTimer = setTimeout(() => {
-    flushTimer = null;
-    void flushReviewSync({ reason: 'debounce' });
-  }, BATCH_DEBOUNCE_MS);
+  void flushReviewSync({ reason: 'enqueue' });
 }
 
 export type FlushResult =
@@ -240,7 +229,7 @@ export async function flushReviewSync(opts?: {
       lastBatchSize: batch.length,
     });
 
-    if (remaining.length >= BATCH_SIZE) {
+    if (remaining.length > 0) {
       flushing = false;
       return flushReviewSync({ reason: 'drain' });
     }

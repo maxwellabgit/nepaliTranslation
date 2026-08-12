@@ -22,6 +22,11 @@ import {
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { takeNewCompleteSentences } from '../mt/sentences';
 import { canPassPhone, emptyShowFallback } from '../conversation/passLogic';
+import {
+  getSttSupport,
+  hardStopRecognition,
+  hasNepaliVoice,
+} from '../stt/sttSupport';
 import { colors } from '../theme';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 
@@ -37,6 +42,9 @@ type Turn = {
 type Props = {
   neuralReady?: boolean;
 };
+
+/** Keep memory bounded on long sessions; history UI shows the last 8 anyway. */
+const MAX_TURNS = 40;
 
 /**
  * Conversation = pass-the-phone dialogue.
@@ -54,6 +62,8 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const [partnerRotate, setPartnerRotate] = useState(false);
   const [consentVisible, setConsentVisible] = useState(false);
   const [passBlockedHint, setPassBlockedHint] = useState(false);
+  const [neSttOk, setNeSttOk] = useState(true);
+  const [neVoiceOk, setNeVoiceOk] = useState(true);
 
   const sideRef = useRef<Side>('en');
   const interimRef = useRef('');
@@ -65,6 +75,8 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const formalityRef = useRef<Formality>('formal');
   const scriptRef = useRef<NepaliScript>('deva');
   const restartTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Serializes sentence commits so turns append in spoken order. */
+  const commitChainRef = useRef<Promise<unknown>>(Promise.resolve());
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
@@ -87,35 +99,47 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     [],
   );
 
-  const speakShow = useCallback((turn: Turn) => {
-    const text =
-      turn.from === 'en'
-        ? formatNepaliScript(turn.show, scriptRef.current)
-        : turn.show;
-    if (!text.trim() || text === emptyShowFallback(turn.from)) return;
-    Speech.stop();
-    Speech.speak(text, {
-      language: turn.from === 'en' ? 'ne-NP' : 'en-US',
-      rate: 0.95,
-    });
-  }, []);
+  const speakShow = useCallback(
+    (turn: Turn) => {
+      // Nepali output needs a Nepali voice; skip silently rather than
+      // mangling Devanagari through an English voice.
+      if (turn.from === 'en' && !neVoiceOk) return;
+      const text =
+        turn.from === 'en'
+          ? formatNepaliScript(turn.show, scriptRef.current)
+          : turn.show;
+      if (!text.trim() || text === emptyShowFallback(turn.from)) return;
+      Speech.stop();
+      Speech.speak(text, {
+        language: turn.from === 'en' ? 'ne-NP' : 'en-US',
+        rate: 0.95,
+      });
+    },
+    [neVoiceOk],
+  );
 
   const commitSentence = useCallback(
-    async (text: string, from: Side, speakAloud: boolean) => {
+    (text: string, from: Side, speakAloud: boolean): Promise<Turn | null> => {
       const t = text.trim();
-      if (!t) return null;
-      const result = await translateForced(t, from);
-      if (result.cancelled) return null;
-      const show = result.text.trim() || emptyShowFallback(from);
-      const turn: Turn = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        from,
-        heard: t,
-        show,
-      };
-      setTurns((prev) => [...prev, turn]);
-      if (speakAloud && result.text.trim()) speakShow(turn);
-      return turn;
+      if (!t) return Promise.resolve(null);
+      // Chain commits: translations resolve at different speeds, and
+      // unordered appends scramble the transcript.
+      const run = commitChainRef.current.then(async () => {
+        const result = await translateForced(t, from);
+        if (result.cancelled) return null;
+        const show = result.text.trim() || emptyShowFallback(from);
+        const turn: Turn = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          from,
+          heard: t,
+          show,
+        };
+        setTurns((prev) => [...prev, turn].slice(-MAX_TURNS));
+        if (speakAloud && result.text.trim()) speakShow(turn);
+        return turn;
+      });
+      commitChainRef.current = run.catch(() => null);
+      return run;
     },
     [speakShow, translateForced],
   );
@@ -169,6 +193,8 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         setConsentVisible(true);
       }
     });
+    void getSttSupport().then((s) => setNeSttOk(s.ne));
+    void hasNepaliVoice().then(setNeVoiceOk);
   }, []);
 
   useEffect(() => {
@@ -181,33 +207,6 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       });
     });
   }, [formalOn, devaOn]);
-
-  useEffect(() => {
-    if (!prefsLoadedRef.current) return;
-    let cancelled = false;
-    void (async () => {
-      const snapshot = await new Promise<Turn[]>((resolve) => {
-        setTurns((prev) => {
-          resolve(prev);
-          return prev;
-        });
-      });
-      if (!snapshot.length || cancelled) return;
-      const next: Turn[] = [];
-      for (const t of snapshot) {
-        const result = await translateForced(t.heard, t.from);
-        if (cancelled) return;
-        next.push({
-          ...t,
-          show: result.text.trim() || emptyShowFallback(t.from),
-        });
-      }
-      if (!cancelled) setTurns(next);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [formalOn, translateForced]);
 
   useSpeechRecognitionEvent('result', (event) => {
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
@@ -225,6 +224,12 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   useSpeechRecognitionEvent('end', () => {
     if (passingRef.current) return;
     if (!listeningRef.current) return;
+    // Don't re-arm a recognizer that can't exist for this side.
+    if (sideRef.current === 'ne' && !neSttOk) {
+      listeningRef.current = false;
+      setListening(false);
+      return;
+    }
     if (restartTimer.current) clearTimeout(restartTimer.current);
     restartTimer.current = setTimeout(() => {
       if (!listeningRef.current || passingRef.current) return;
@@ -246,19 +251,6 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [turns, interim, side]);
 
-  const hardStopRecognition = () => {
-    try {
-      const mod = ExpoSpeechRecognitionModule as {
-        abort?: () => void;
-        stop?: () => void;
-      };
-      if (typeof mod.abort === 'function') mod.abort();
-      else if (typeof mod.stop === 'function') mod.stop();
-    } catch {
-      /* ignore */
-    }
-  };
-
   useEffect(() => {
     return () => {
       if (restartTimer.current) clearTimeout(restartTimer.current);
@@ -275,6 +267,14 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   };
 
   const startListeningFor = async (next: Side) => {
+    if (next === 'ne' && !neSttOk) {
+      // No Nepali recognizer on this device — flip the display but don't
+      // pretend to listen. The partner can read; speech input stays EN-only.
+      sideRef.current = next;
+      listeningRef.current = false;
+      setListening(false);
+      return false;
+    }
     try {
       hardStopRecognition();
       await new Promise((r) => setTimeout(r, 220));
@@ -380,9 +380,11 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       ? enTurn
         ? 'Listening — keep talking, then Pass'
         : 'सुन्दैछ — बोलिसकेपछि पास गर्नुहोस्'
-      : enTurn
-        ? 'Speak, then Pass the phone'
-        : 'बोल्नुहोस्, अनि पास गर्नुहोस्';
+      : !enTurn && !neSttOk
+        ? 'Nepali voice input unavailable on this device'
+        : enTurn
+          ? 'Speak, then Pass the phone'
+          : 'बोल्नुहोस्, अनि पास गर्नुहोस्';
 
   const partnerText = latest ? displayShow(latest) : '';
 
