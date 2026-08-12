@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Keyboard,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   Vibration,
   View,
 } from 'react-native';
@@ -64,6 +68,8 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const [passBlockedHint, setPassBlockedHint] = useState(false);
   const [neSttOk, setNeSttOk] = useState(true);
   const [neVoiceOk, setNeVoiceOk] = useState(true);
+  /** Typed fallback for the Nepali side when the device has no ne recognizer. */
+  const [typedReply, setTypedReply] = useState('');
 
   const sideRef = useRef<Side>('en');
   const interimRef = useRef('');
@@ -134,8 +140,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
           onStopped: finish,
           onError: finish,
         });
-        // Safety valve: never let a missing TTS callback hang the pass.
-        setTimeout(finish, 12000);
+        // Safety valve so a missing TTS callback can't hang the pass —
+        // sized to the text so it never cuts off real speech.
+        setTimeout(finish, Math.min(25000, 4000 + text.length * 90));
       });
     },
     [neVoiceOk],
@@ -404,6 +411,25 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     await startListeningFor(side);
   };
 
+  /** Nepali partner types (roman or Devanagari) when speech input is absent. */
+  const onSendTypedReply = async () => {
+    const text = typedReply.trim();
+    if (!text || busy) return;
+    setTypedReply('');
+    Keyboard.dismiss();
+    setBusy(true);
+    try {
+      const turn = await commitSentence(text, 'ne', false);
+      // Hand back to the English speaker, voice their line, re-arm their mic.
+      setSide('en');
+      sideRef.current = 'en';
+      if (turn) await speakShowAsync(turn);
+      await startListeningFor('en');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const acceptConsent = async () => {
     const prefs = await loadPrefs();
     await savePrefs({ ...prefs, conversationConsentSeen: true });
@@ -444,6 +470,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
           : 'बोल्नुहोस्, अनि पास गर्नुहोस्';
 
   const partnerText = latest ? displayShow(latest) : '';
+  const showTypedReply = !enTurn && !neSttOk;
 
   return (
     <View style={[styles.root, !enTurn && styles.rootNe]}>
@@ -604,50 +631,80 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         ) : null}
       </ScrollView>
 
-      <View style={[styles.controls, !enTurn && styles.controlsNe]}>
-        <Text style={styles.hint}>{hint}</Text>
-        <View style={styles.actionRow}>
-          <Pressable
-            style={[styles.speakBtn, listening && styles.speakBtnHot]}
-            onPress={() => void onToggleMic()}
-            disabled={busy}
-            accessibilityRole="button"
-            accessibilityLabel={listening ? 'Stop' : 'Speak'}
-          >
-            <Text style={styles.speakLabel}>
-              {listening
-                ? enTurn
-                  ? 'Stop'
-                  : 'रोक्नुहोस्'
-                : enTurn
-                  ? 'Speak'
-                  : 'बोल्नुहोस्'}
-            </Text>
-          </Pressable>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={[styles.controls, !enTurn && styles.controlsNe]}>
+          <Text style={styles.hint}>
+            {showTypedReply ? 'यहाँ टाइप गर्नुहोस् — रोमन वा देवनागरी' : hint}
+          </Text>
+          <View style={styles.actionRow}>
+            {showTypedReply ? (
+              <View style={styles.typedRow}>
+                <TextInput
+                  style={styles.typedInput}
+                  value={typedReply}
+                  onChangeText={setTypedReply}
+                  placeholder="नेपालीमा जवाफ…"
+                  placeholderTextColor={colors.textPlaceholder}
+                  onSubmitEditing={() => void onSendTypedReply()}
+                  returnKeyType="send"
+                  editable={!busy}
+                />
+                <Pressable
+                  style={[styles.typedSend, busy && styles.passBtnBusy]}
+                  onPress={() => void onSendTypedReply()}
+                  disabled={busy || !typedReply.trim()}
+                  accessibilityRole="button"
+                  accessibilityLabel="Send typed reply"
+                >
+                  <Text style={styles.typedSendText}>पठाउनुहोस्</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <Pressable
+                style={[styles.speakBtn, listening && styles.speakBtnHot]}
+                onPress={() => void onToggleMic()}
+                disabled={busy}
+                accessibilityRole="button"
+                accessibilityLabel={listening ? 'Stop' : 'Speak'}
+              >
+                <Text style={styles.speakLabel}>
+                  {listening
+                    ? enTurn
+                      ? 'Stop'
+                      : 'रोक्नुहोस्'
+                    : enTurn
+                      ? 'Speak'
+                      : 'बोल्नुहोस्'}
+                </Text>
+              </Pressable>
+            )}
 
-          <Pressable
-            style={[
-              styles.passBtn,
-              busy && styles.passBtnBusy,
-              passBlockedHint && styles.passBtnBlocked,
-            ]}
-            onPress={() => void onPass()}
-            disabled={busy}
-            accessibilityRole="button"
-            accessibilityLabel="Pass the phone"
-          >
-            <Text style={styles.passLabel}>{enTurn ? 'Pass' : 'पास'}</Text>
-            <Text style={styles.passSub}>
-              {enTurn ? 'Listen for Nepali next' : 'अर्को: अङ्ग्रेजी'}
-            </Text>
-          </Pressable>
+            <Pressable
+              style={[
+                styles.passBtn,
+                busy && styles.passBtnBusy,
+                passBlockedHint && styles.passBtnBlocked,
+              ]}
+              onPress={() => void onPass()}
+              disabled={busy}
+              accessibilityRole="button"
+              accessibilityLabel="Pass the phone"
+            >
+              <Text style={styles.passLabel}>{enTurn ? 'Pass' : 'पास'}</Text>
+              <Text style={styles.passSub}>
+                {enTurn ? 'Listen for Nepali next' : 'अर्को: अङ्ग्रेजी'}
+              </Text>
+            </Pressable>
+          </View>
+          <Text style={styles.trustLine}>
+            {neuralReady
+              ? 'on-device model · voice via Apple'
+              : 'saved phrases · loading model · voice via Apple'}
+          </Text>
         </View>
-        <Text style={styles.trustLine}>
-          {neuralReady
-            ? 'on-device model · voice via Apple'
-            : 'saved phrases · loading model · voice via Apple'}
-        </Text>
-      </View>
+      </KeyboardAvoidingView>
 
       <Modal visible={consentVisible} animationType="fade" transparent>
         <View style={styles.modalScrim}>
@@ -865,6 +922,30 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#fff',
   },
+  typedRow: {
+    flex: 1.6,
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'stretch',
+  },
+  typedInput: {
+    flex: 1,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    fontSize: 16,
+    color: colors.text,
+  },
+  typedSend: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    backgroundColor: colors.forest,
+  },
+  typedSendText: { fontSize: 14, fontWeight: '800', color: '#fff' },
   passBtn: {
     flex: 1.25,
     alignItems: 'center',

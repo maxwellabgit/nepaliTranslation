@@ -62,10 +62,10 @@ def transcribe(whisper: Path, model: Path, wav: Path, threads: int) -> tuple[str
             "-l", "ne", "-t", str(threads), "-np", "-nt",
         ],
         capture_output=True,
-        text=True,
         timeout=600,
     )
-    return out.stdout.strip(), time.time() - t0
+    # whisper-cli can emit a truncated multi-byte sequence at buffer edges.
+    return out.stdout.decode("utf-8", errors="replace").strip(), time.time() - t0
 
 
 def main() -> int:
