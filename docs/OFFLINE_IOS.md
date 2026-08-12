@@ -14,8 +14,9 @@ Windows (dev)  →  EAS cloud build  →  TestFlight  →  iPhone
 | Layer | Choice | Notes |
 |-------|--------|--------|
 | App shell | Expo (`mobile/`) | Normal + Conversation UI; EAS for iOS IPA |
-| Speech-to-text | [whisper.rn](https://github.com/mybigday/whisper.rn) | Bundle ggml `small` or `small-q5_1` for EN + Nepali |
-| Translation | ONNX Runtime for React Native | IndicTrans2-class merged checkpoints, exported to ONNX |
+| Speech-to-text (EN) | Apple recognition (`expo-speech-recognition`) | Streaming, free, shipped today |
+| Speech-to-text (NE) | [whisper.rn](https://github.com/mybigday/whisper.rn) | Bundle `Dragneel/whisper-small-nepali` → ggml q5_1 (~190 MB, Apache-2.0). Validated 2026-08: CER 21% on FLEURS ne_np vs 100%+ for stock Whisper — stock is unusable, the fine-tune is required. Convert: `whisper.cpp/models/convert-h5-to-ggml.py` + `whisper-quantize q5_1`; score with `benchmarks/eval_whisper_nepali.py`. |
+| Translation | ONNX Runtime for React Native (shipped) | IndicTrans2 dist-200M INT8, both directions bundled |
 | Ship | EAS Build → TestFlight | Apple Developer required |
 
 Expo is the app shell; native modules (whisper.rn, ONNX) are expected for inference.

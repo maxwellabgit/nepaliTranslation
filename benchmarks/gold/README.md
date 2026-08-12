@@ -57,6 +57,8 @@ Source research: `benchmarks/PREMIUM_SOURCES.md`.
 
 `python benchmarks/eval_it2_gold.py --classes en_ne_formal en_ne_informal ne_en_deva ne_en_roman` (chrF++ + honorific checks; see `--help` for adapter/base options). Phrasebook baseline: `benchmarks/score_phrasebook_gold.py`.
 
+Ship-exact INT8 ONNX graphs (what the app runs): `python benchmarks/eval_it2_onnx.py --model-dir <onnx dir> --direction ne-en`. Spoken-Nepali STT checks: `benchmarks/fetch_nepali_speech_samples.py` + `benchmarks/eval_whisper_nepali.py`.
+
 ## Sensitive
 
 Keep `references.jsonl` private if this is a true holdout. Sources alone are usually safe to share.

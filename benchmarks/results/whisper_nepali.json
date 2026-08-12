@@ -1,0 +1,25 @@
+{
+  "dataset": "FLEURS ne_np test, first 40 clips (benchmarks/fetch_nepali_speech_samples.py)",
+  "date": "2026-08-12",
+  "note": "sec_per_clip measured on a 4-core cloud VM under contention; on-device with NEON/Metal is much faster",
+  "ggml-base-q5_1": {
+    "n": 23,
+    "cer_mean": 1.07,
+    "wer_mean": 1.39,
+    "verdict": "unusable — hallucinates Latin/Arabic script for Nepali audio (partial run, crashed on UTF-8 edge; evidence decisive)"
+  },
+  "ggml-small-q5_1": {
+    "n": 40,
+    "cer_mean": 0.483,
+    "wer_mean": 1.215,
+    "sec_per_clip": 57.3,
+    "verdict": "unusable for Nepali"
+  },
+  "ggml-ne-small-q5_1 (Dragneel/whisper-small-nepali, Apache-2.0)": {
+    "n": 40,
+    "cer_mean": 0.212,
+    "wer_mean": 0.64,
+    "sec_per_clip": 23.9,
+    "verdict": "viable — errors are mostly phonetic spelling variants; content words survive for downstream MT. WER inflated by Nepali segmentation; model card reports 26.7% WER in-domain (OpenSLR-54)."
+  }
+}
