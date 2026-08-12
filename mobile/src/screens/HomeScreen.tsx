@@ -13,6 +13,8 @@ import {
   View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import * as Speech from 'expo-speech';
+import { Ionicons } from '@expo/vector-icons';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
@@ -44,6 +46,12 @@ function delay(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * UI cap. The MT engine chunks per sentence (soft 140 / hard 220 chars per
+ * chunk; IT2 fine-tune truncates ~96 tokens), so longer input only degrades.
+ */
+const MAX_INPUT_CHARS = 240;
+
 const QUICK_PHRASES = [
   'Hello',
   'Thank you',
@@ -74,7 +82,6 @@ export function HomeScreen({
   const [copiedFlash, setCopiedFlash] = useState(false);
   const [markedFlash, setMarkedFlash] = useState(false);
   const [markingIncorrect, setMarkingIncorrect] = useState(false);
-  const [romanTip, setRomanTip] = useState(false);
   const [stage, setStage] = useState<StageFocus>('input');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -82,7 +89,6 @@ export function HomeScreen({
   const idleHistoryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const prefsLoadedRef = useRef(false);
-  const prefsRef = useRef({ formalOn: true, devaOn: true, romanTipSeen: false });
   const listeningRef = useRef(false);
   const startingRef = useRef(false);
   /** Bumped on every stop/start so stale `end`/`error` events cannot kill a new session. */
@@ -123,6 +129,8 @@ export function HomeScreen({
       startingRef.current = false;
       listeningRef.current = false;
       setListening(false);
+      // Always hand focus stage back to the input so typing never gets stuck.
+      setStage('input');
       ignoreEndUntilRef.current = Date.now() + 350;
       hardStopRecognition();
       if (opts?.commit) {
@@ -287,11 +295,6 @@ export function HomeScreen({
     void loadPrefs().then((prefs) => {
       setFormalOn(prefs.formalOn);
       setDevaOn(prefs.devaOn);
-      prefsRef.current = {
-        formalOn: prefs.formalOn,
-        devaOn: prefs.devaOn,
-        romanTipSeen: prefs.romanTipSeen,
-      };
       prefsLoadedRef.current = true;
     });
   }, []);
@@ -299,13 +302,7 @@ export function HomeScreen({
   useEffect(() => {
     if (!prefsLoadedRef.current) return;
     void loadPrefs().then((prev) => {
-      const next = { ...prev, formalOn, devaOn };
-      prefsRef.current = {
-        formalOn: next.formalOn,
-        devaOn: next.devaOn,
-        romanTipSeen: next.romanTipSeen,
-      };
-      void savePrefs(next);
+      void savePrefs({ ...prev, formalOn, devaOn });
     });
   }, [formalOn, devaOn]);
 
@@ -430,22 +427,6 @@ export function HomeScreen({
     }
   };
 
-  const setDevaWithTip = (next: boolean) => {
-    setDevaOn(next);
-    if (!next && !prefsRef.current.romanTipSeen) {
-      setRomanTip(true);
-      prefsRef.current = {
-        ...prefsRef.current,
-        formalOn,
-        devaOn: false,
-        romanTipSeen: true,
-      };
-      void loadPrefs().then((prefs) => {
-        void savePrefs({ ...prefs, formalOn, devaOn: false, romanTipSeen: true });
-      });
-    }
-  };
-
   const clearAll = () => {
     if (listeningRef.current || startingRef.current) {
       stopListening();
@@ -457,6 +438,16 @@ export function HomeScreen({
   const displayOutput =
     targetLang === 'ne' ? formatNepaliScript(output, script) : output;
   const showResult = Boolean(input.trim() && displayOutput);
+
+  const speakOutput = () => {
+    const text = displayOutput.trim();
+    if (!text) return;
+    Speech.stop();
+    Speech.speak(text, {
+      language: targetLang === 'en' ? 'en-US' : 'ne-NP',
+      rate: 0.95,
+    });
+  };
 
   const onCopy = async () => {
     const text = displayOutput.trim();
@@ -506,6 +497,7 @@ export function HomeScreen({
 
   const inputUnder = stage === 'mic';
   const micUnder = stage === 'input';
+  const showPhrases = !input.trim() && !output.trim() && !listening;
 
   return (
     <KeyboardAvoidingView
@@ -513,15 +505,20 @@ export function HomeScreen({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={8}
     >
+      <Pressable
+        style={styles.flexFill}
+        onPress={() => Keyboard.dismiss()}
+        accessible={false}
+      >
       <View style={styles.header}>
         <Pressable
           onPress={onOpenHistory}
           hitSlop={12}
           style={styles.headerBtn}
           accessibilityRole="button"
-          accessibilityLabel="Your activity"
+          accessibilityLabel="History"
         >
-          <Text style={styles.headerLink}>Activity</Text>
+          <Text style={styles.headerLink}>History</Text>
         </Pressable>
         <View style={styles.brandBlock}>
           <Image
@@ -584,7 +581,6 @@ export function HomeScreen({
             inputUnder && styles.underStage,
             listening && styles.inputCardListening,
           ]}
-          pointerEvents={inputUnder ? 'box-none' : 'auto'}
         >
           <TextInput
             ref={inputRef}
@@ -599,8 +595,8 @@ export function HomeScreen({
             multiline
             textAlignVertical="top"
             autoCorrect
+            maxLength={MAX_INPUT_CHARS}
             editable={!listening}
-            pointerEvents={inputUnder ? 'none' : 'auto'}
           />
           {input.trim() ? (
             <Pressable
@@ -612,6 +608,18 @@ export function HomeScreen({
             >
               <Text style={styles.clearText}>Clear</Text>
             </Pressable>
+          ) : null}
+          {listening ? (
+            // Tap the card while listening → stop the mic and go back to typing.
+            <Pressable
+              style={StyleSheet.absoluteFill}
+              accessibilityRole="button"
+              accessibilityLabel="Stop listening and type"
+              onPress={() => {
+                stopListening();
+                setTimeout(() => inputRef.current?.focus(), 80);
+              }}
+            />
           ) : null}
         </View>
 
@@ -653,7 +661,7 @@ export function HomeScreen({
         </Pressable>
         <Pressable
           onPress={() => {
-            if (!devaOn) setDevaWithTip(true);
+            if (!devaOn) setDevaOn(true);
           }}
           style={[styles.chip, devaOn && styles.chipOn]}
         >
@@ -661,7 +669,7 @@ export function HomeScreen({
         </Pressable>
         <Pressable
           onPress={() => {
-            if (devaOn) setDevaWithTip(false);
+            if (devaOn) setDevaOn(false);
           }}
           style={[styles.chip, !devaOn && styles.chipOn]}
         >
@@ -669,33 +677,34 @@ export function HomeScreen({
         </Pressable>
       </View>
 
-      {romanTip ? (
-        <View style={styles.tipBanner}>
-          <Text style={styles.tipText}>
-            Roman shows everyday Latin spelling. Devanagari stays the written default.
-          </Text>
-          <Pressable onPress={() => setRomanTip(false)} hitSlop={8}>
-            <Text style={styles.tipDismiss}>Got it</Text>
-          </Pressable>
-        </View>
-      ) : null}
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       >
         {showResult ? (
           <View style={styles.resultBlock}>
-            <Text
-              style={[
-                styles.resultText,
-                targetLang === 'ne' && script === 'deva' && styles.resultNe,
-              ]}
-              selectable
-            >
-              {displayOutput}
-            </Text>
+            <View style={styles.resultRow}>
+              <Text
+                style={[
+                  styles.resultText,
+                  targetLang === 'ne' && script === 'deva' && styles.resultNe,
+                ]}
+                selectable
+              >
+                {displayOutput}
+              </Text>
+              <Pressable
+                onPress={speakOutput}
+                hitSlop={10}
+                style={styles.speakIconBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Speak translation aloud"
+              >
+                <Ionicons name="volume-high" size={26} color={colors.forest} />
+              </Pressable>
+            </View>
             <View style={styles.resultActions}>
               <Pressable onPress={() => void onCopy()} hitSlop={8}>
                 <Text style={styles.actionLabel}>
@@ -728,31 +737,34 @@ export function HomeScreen({
         ) : null}
       </ScrollView>
 
-      <View style={styles.phrasesDock}>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled
-        >
-          {QUICK_PHRASES.map((phrase) => (
-            <Pressable
-              key={phrase}
-              style={styles.suggestChip}
-              onPress={() => {
-                if (listeningRef.current || startingRef.current) {
-                  stopListening();
-                }
-                setStage('input');
-                setSourceSide('en');
-                setInput(phrase);
-                commitTranslate(phrase);
-              }}
-            >
-              <Text style={styles.suggestText}>{phrase}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
+      {showPhrases ? (
+        <View style={styles.phrasesDock}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled
+          >
+            {QUICK_PHRASES.map((phrase) => (
+              <Pressable
+                key={phrase}
+                style={styles.suggestChip}
+                onPress={() => {
+                  if (listeningRef.current || startingRef.current) {
+                    stopListening();
+                  }
+                  setStage('input');
+                  setSourceSide('en');
+                  setInput(phrase);
+                  commitTranslate(phrase);
+                }}
+              >
+                <Text style={styles.suggestText}>{phrase}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
+      </Pressable>
     </KeyboardAvoidingView>
   );
 }
@@ -762,6 +774,7 @@ const MIC_OVERHANG = MIC_SIZE / 2;
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
+  flexFill: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -957,18 +970,6 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   chipTextOn: { color: '#fff' },
-  tipBanner: {
-    marginHorizontal: 16,
-    marginBottom: 8,
-    padding: 12,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    gap: 8,
-  },
-  tipText: { fontSize: 13, lineHeight: 18, color: colors.text },
-  tipDismiss: { fontSize: 13, fontWeight: '800', color: colors.forest },
   scroll: { flex: 1 },
   scrollContent: {
     paddingHorizontal: 16,
@@ -980,11 +981,21 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingTop: 4,
   },
+  resultRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
   resultText: {
+    flex: 1,
     fontSize: 28,
     lineHeight: 38,
     color: colors.text,
     fontWeight: '700',
+  },
+  speakIconBtn: {
+    paddingTop: 6,
+    paddingLeft: 2,
   },
   resultNe: { fontSize: 30, lineHeight: 42 },
   resultActions: {
