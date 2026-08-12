@@ -373,7 +373,10 @@ export function ConversationScreen({ neuralReady = false }: Props) {
 
   const onPass = async () => {
     if (passingRef.current || busy) return;
-    if (!hasContentToPass()) {
+    // Typed-reply mode has no mic to "say something" into — let the
+    // Nepali partner hand the phone back without a reply.
+    const typedMode = sideRef.current === 'ne' && !neSttOk;
+    if (!typedMode && !hasContentToPass()) {
       setPassBlockedHint(true);
       Vibration.vibrate(20);
       setTimeout(() => setPassBlockedHint(false), 1600);
