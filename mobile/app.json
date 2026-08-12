@@ -19,7 +19,7 @@
           "NSAllowsLocalNetworking": true
         }
       },
-      "buildNumber": "31"
+      "buildNumber": "32"
     },
     "android": {
       "package": "com.neptranslate.app",
