@@ -132,6 +132,11 @@ export class IndicTransOnnxEngine {
     return direction === 'en-ne' ? this.enIndic !== null : this.indicEn !== null;
   }
 
+  /** Resolves when the background NE→EN load finishes (success or failure). */
+  whenIndicEnSettled(): Promise<void> {
+    return this.indicEnLoading ?? Promise.resolve();
+  }
+
   getLastError(): string | null {
     return this.lastError ?? this.indicEnError;
   }

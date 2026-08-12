@@ -54,6 +54,11 @@ export class TranslationEngine {
     return this.neuralReady;
   }
 
+  /** Resolves when the background NE→EN model load settles. */
+  whenReverseSettled(): Promise<void> {
+    return sharedIndicTransOnnx.whenIndicEnSettled();
+  }
+
   /**
    * Download (if needed) + load ONNX sessions.
    * Soft-fails so the app stays usable on phrasebook alone.

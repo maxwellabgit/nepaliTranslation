@@ -1,0 +1,12 @@
+{
+  "ne_en_deva": {
+    "n": 133,
+    "chrf_mean": 0.6559,
+    "sec_per_sentence": 0.04
+  },
+  "ne_en_roman": {
+    "n": 134,
+    "chrf_mean": 0.1482,
+    "sec_per_sentence": 0.04
+  }
+}

@@ -62,6 +62,10 @@ export default function App() {
       } else {
         setMtWarmStatus(null);
       }
+      // NE→EN loads in the background and shares the progress callback;
+      // clear whatever banner it may have raised once it settles.
+      await sharedTranslationEngine.whenReverseSettled();
+      if (!cancelled && ready) setMtWarmStatus(null);
     })();
     return () => {
       cancelled = true;
