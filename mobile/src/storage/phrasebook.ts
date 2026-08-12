@@ -101,3 +101,11 @@ export async function isStarred(
 export async function clearHistory() {
   await writeList(HISTORY_KEY, []);
 }
+
+export async function deleteHistoryItem(id: string) {
+  const list = await loadHistory();
+  await writeList(
+    HISTORY_KEY,
+    list.filter((h) => h.id !== id),
+  );
+}

@@ -8,6 +8,8 @@ export type LiveIncorrectInput = {
   sourceLang: 'en' | 'ne';
   formality: Formality;
   script: NepaliScript;
+  /** Provenance tag; defaults to the Mark-incorrect flow. */
+  origin?: 'user_mark_incorrect' | 'history_contribution';
 };
 
 function shortId(seed: string): string {
@@ -34,25 +36,24 @@ export function buildLiveIncorrectReview(input: LiveIncorrectInput): MeaningRevi
 
   const ne_formal = formal ? nepali : '';
   const ne_informal = formal ? '' : nepali;
-  const roman_formal = formal ? nepali : '';
-  const roman_informal = formal ? '' : nepali;
+  const origin = input.origin ?? 'user_mark_incorrect';
 
   return {
     meaning_id,
     english,
     ne_formal_original: ne_formal,
     ne_informal_original: ne_informal,
-    roman_formal_original: roman_formal,
-    roman_informal_original: roman_informal,
+    roman_formal_original: '',
+    roman_informal_original: '',
     ne_formal_final: ne_formal,
     ne_informal_final: ne_informal,
-    roman_formal_final: roman_formal,
-    roman_informal_final: roman_informal,
+    roman_formal_final: '',
+    roman_informal_final: '',
     action: 'skipped',
     flag_for_founder: true,
     route: 'founder_queue',
     surface: 'live_translate',
-    provenance: `user_mark_incorrect:${input.sourceLang === 'en' ? 'en-ne' : 'ne-en'}:${input.formality}:${input.script}`,
+    provenance: `${origin}:${input.sourceLang === 'en' ? 'en-ne' : 'ne-en'}:${input.formality}:${input.script}`,
     completed_at: stamp,
     fields_changed: [],
   };
