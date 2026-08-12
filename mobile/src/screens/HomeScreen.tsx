@@ -7,14 +7,12 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import * as Speech from 'expo-speech';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
@@ -26,7 +24,8 @@ import {
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
-import { addHistory, isStarred, toggleStar, type HistoryItem } from '../storage/phrasebook';
+import { sendLiveIncorrectToReviewSet } from '../storage/liveIncorrect';
+import { addHistory, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import { colors } from '../theme';
 
@@ -72,10 +71,14 @@ export function HomeScreen({
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
   const [listening, setListening] = useState(false);
-  const [starred, setStarred] = useState(false);
+  const [copiedFlash, setCopiedFlash] = useState(false);
+  const [markedFlash, setMarkedFlash] = useState(false);
+  const [markingIncorrect, setMarkingIncorrect] = useState(false);
   const [romanTip, setRomanTip] = useState(false);
   const [stage, setStage] = useState<StageFocus>('input');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const markedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const idleHistoryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const prefsLoadedRef = useRef(false);
@@ -161,7 +164,6 @@ export function HomeScreen({
         sourceLang: sl,
         targetLang: tl,
       });
-      void isStarred(t, translation, sl).then(setStarred);
     },
     [],
   );
@@ -276,6 +278,8 @@ export function HomeScreen({
       listenGenRef.current += 1;
       hardStopRecognition();
       sharedTranslationEngine.cancelAll();
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      if (markedTimerRef.current) clearTimeout(markedTimerRef.current);
     };
   }, [hardStopRecognition]);
 
@@ -426,34 +430,6 @@ export function HomeScreen({
     }
   };
 
-  const speak = (text: string, lang: 'en' | 'ne') => {
-    if (!text.trim()) return;
-    Speech.stop();
-    Speech.speak(text, { language: lang === 'en' ? 'en-US' : 'ne-NP', rate: 0.95 });
-  };
-
-  const onStar = async () => {
-    if (!input.trim() || !output.trim()) return;
-    setStarred(
-      await toggleStar({
-        source: input.trim(),
-        translation: output.trim(),
-        sourceLang,
-        targetLang,
-      }),
-    );
-  };
-
-  const onShare = async () => {
-    const text = displayOutput.trim();
-    if (!text) return;
-    try {
-      await Share.share({ message: text });
-    } catch {
-      /* ignore */
-    }
-  };
-
   const setDevaWithTip = (next: boolean) => {
     setDevaOn(next);
     if (!next && !prefsRef.current.romanTipSeen) {
@@ -481,6 +457,52 @@ export function HomeScreen({
   const displayOutput =
     targetLang === 'ne' ? formatNepaliScript(output, script) : output;
   const showResult = Boolean(input.trim() && displayOutput);
+
+  const onCopy = async () => {
+    const text = displayOutput.trim();
+    if (!text) return;
+    await Clipboard.setStringAsync(text);
+    setCopiedFlash(true);
+    if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedFlash(false);
+      copiedTimerRef.current = null;
+    }, 1400);
+  };
+
+  const onMarkIncorrect = async () => {
+    if (markingIncorrect) return;
+    const source = input.trim();
+    const translation = displayOutput.trim();
+    if (!source || !translation) return;
+    setMarkingIncorrect(true);
+    try {
+      const result = await sendLiveIncorrectToReviewSet({
+        source,
+        translation,
+        sourceLang,
+        formality,
+        script,
+      });
+      if (!result.ok) {
+        Alert.alert('Could not mark', result.error);
+        return;
+      }
+      setMarkedFlash(true);
+      if (markedTimerRef.current) clearTimeout(markedTimerRef.current);
+      markedTimerRef.current = setTimeout(() => {
+        setMarkedFlash(false);
+        markedTimerRef.current = null;
+      }, 1600);
+    } catch (e) {
+      Alert.alert(
+        'Could not mark',
+        e instanceof Error ? e.message : 'Failed to send to review set.',
+      );
+    } finally {
+      setMarkingIncorrect(false);
+    }
+  };
 
   const inputUnder = stage === 'mic';
   const micUnder = stage === 'input';
@@ -675,22 +697,31 @@ export function HomeScreen({
               {displayOutput}
             </Text>
             <View style={styles.resultActions}>
-              <Pressable onPress={() => speak(displayOutput, targetLang)} hitSlop={8}>
-                <Text style={styles.actionLabel}>Speak</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => void Clipboard.setStringAsync(displayOutput)}
-                hitSlop={8}
-              >
-                <Text style={styles.actionLabel}>Copy</Text>
-              </Pressable>
-              <Pressable onPress={() => void onStar()} hitSlop={8}>
-                <Text style={[styles.actionLabel, starred && styles.actionStarred]}>
-                  {starred ? 'Starred' : 'Star'}
+              <Pressable onPress={() => void onCopy()} hitSlop={8}>
+                <Text style={styles.actionLabel}>
+                  {copiedFlash ? 'Copied' : 'Copy'}
                 </Text>
               </Pressable>
-              <Pressable onPress={() => void onShare()} hitSlop={8}>
-                <Text style={styles.actionLabel}>Share</Text>
+              <Pressable
+                onPress={() => void onMarkIncorrect()}
+                hitSlop={8}
+                disabled={markingIncorrect}
+                accessibilityRole="button"
+                accessibilityLabel="Mark incorrect"
+              >
+                <Text
+                  style={[
+                    styles.actionLabel,
+                    styles.actionMarkIncorrect,
+                    markedFlash && styles.actionMarked,
+                  ]}
+                >
+                  {markedFlash
+                    ? 'Marked'
+                    : markingIncorrect
+                      ? 'Sending…'
+                      : 'Mark incorrect'}
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -969,7 +1000,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: colors.forest,
   },
-  actionStarred: { color: colors.star },
+  actionMarkIncorrect: { color: colors.danger },
+  actionMarked: { color: colors.forest },
   phrasesDock: {
     maxHeight: 118,
     marginHorizontal: 16,
