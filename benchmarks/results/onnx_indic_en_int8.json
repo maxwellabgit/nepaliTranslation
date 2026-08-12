@@ -1,12 +1,15 @@
 {
+  "note": "Ship-exact INT8 greedy decode. Roman class runs the app romanToDevanagari first.",
+  "date": "2026-08-12",
   "ne_en_deva": {
     "n": 133,
-    "chrf_mean": 0.6559,
+    "chrf_mean": 0.64,
     "sec_per_sentence": 0.04
   },
   "ne_en_roman": {
     "n": 134,
-    "chrf_mean": 0.1482,
-    "sec_per_sentence": 0.04
+    "chrf_mean_before_romanizer_fix": 0.1482,
+    "chrf_mean": 0.474,
+    "sec_per_sentence": 0.03
   }
 }

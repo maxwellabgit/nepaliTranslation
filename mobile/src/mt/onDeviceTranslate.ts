@@ -7,6 +7,7 @@ import {
   formatNepaliScript,
   looksLikeRomanNepali,
 } from './romanize';
+import { meaningLexicon, normKey } from './meaningLexicon';
 import { splitSentences } from './sentences';
 
 export type Direction = 'en-ne' | 'ne-en';
@@ -507,16 +508,29 @@ const EN_PHRASE_PARTS: { parts: string[]; ne: string }[] = [...PHRASES]
   );
 
 function phraseLookup(text: string, direction: Direction): string | null {
-  const n = norm(text);
+  const n = normKey(text);
+  if (!n) return null;
+
   if (direction === 'ne-en') {
     for (const [roman, en] of ROMAN_NE_PHRASES) {
       if (norm(roman) === n) return en;
     }
+    const romanHit = meaningLexicon.romanToEn[n];
+    if (romanHit) return romanHit;
+    const neHit = meaningLexicon.neToEn[n];
+    if (neHit) return neHit;
   }
+
   for (const [en, ne] of PHRASES) {
     if (direction === 'en-ne' && norm(en) === n) return ne;
     if (direction === 'ne-en' && norm(ne) === n) return en;
   }
+
+  if (direction === 'en-ne') {
+    const enHit = meaningLexicon.enToNe[n];
+    if (enHit) return enHit;
+  }
+
   // starts-with for "my name is X" — keep a short Latin name remainder only.
   if (direction === 'en-ne') {
     for (const [en, ne] of PHRASES) {
@@ -731,4 +745,4 @@ export function targetLabel(direction: Direction): string {
   return direction === 'en-ne' ? 'Nepali' : 'English';
 }
 
-export { formatNepaliScript, looksLikeRomanNepali } from './romanize';
+export { formatNepaliScript, looksLikeRomanNepali, romanToDevanagari } from './romanize';

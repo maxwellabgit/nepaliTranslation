@@ -66,7 +66,7 @@ training/local_auto_train.py  (this machine overnight)
   build_meaning_bank → finetune_it2_meanings (en-ne) → eval
 ```
 
-On-device ship: **EN→NE INT8 only** (lighter IPA). NE→EN uses phrasebook.
+On-device ship: **both EN→NE and NE→EN INT8**. Chat-Roman is normalized to Devanagari before NE→EN. Phrase overlay from the meaning bank covers in-domain lines exactly. See `training/DATA.md`.
 
 
 ## Scripts

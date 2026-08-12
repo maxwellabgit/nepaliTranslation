@@ -136,7 +136,7 @@ export function HomeScreen({
               preferred: optsRef.current.preferred,
               formality: optsRef.current.formality,
               script: optsRef.current.script,
-              forcePreferred: true,
+              forcePreferred: false,
             })
             .then((result) => {
               if (result.cancelled || requestId !== requestIdRef.current) return;
@@ -182,6 +182,8 @@ export function HomeScreen({
     ) => {
       if (result.cancelled || requestId !== requestIdRef.current) return;
       setOutput(result.text);
+      const detected: SourceSide = result.direction === 'ne-en' ? 'ne' : 'en';
+      setSourceSide((prev) => (prev === detected ? prev : detected));
       if (opts?.save && opts.source) {
         saveHistoryFor(opts.source, result.text, result.direction);
       }
@@ -203,7 +205,7 @@ export function HomeScreen({
           preferred: optsRef.current.preferred,
           formality: optsRef.current.formality,
           script: optsRef.current.script,
-          forcePreferred: true,
+          forcePreferred: false,
         })
         .then((result) => applyResult(result, requestId));
     },
@@ -224,7 +226,7 @@ export function HomeScreen({
           preferred: optsRef.current.preferred,
           formality: optsRef.current.formality,
           script: optsRef.current.script,
-          forcePreferred: true,
+          forcePreferred: false,
         })
         .then((result) =>
           applyResult(result, requestId, { save: true, source: t }),

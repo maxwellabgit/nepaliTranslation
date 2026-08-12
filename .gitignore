@@ -28,6 +28,10 @@ training/artifacts/review_sync_seen.json
 
 # Large harvested / scraped corpora (rebuild from scripts)
 training/data/raw/
+# Generated on-device lexicon (rebuild: node mobile/scripts/export_meaning_lexicon.mjs)
+mobile/src/mt/generated/meaningLexicon.json
+training/data/external/*.parquet
+training/data/external/titung_ne_en_short.jsonl
 
 # Transient bench logs
 benchmarks/results/*.log

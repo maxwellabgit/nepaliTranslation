@@ -1,7 +1,11 @@
 /**
- * Lightweight Devanagari ↔ display romanization for Nepali UI.
- * Not a full linguistic transliterator — good enough for v1 captions.
+ * Everyday Nepali Devanagari ↔ chat-Roman.
+ *
+ * Roman → Devanagari is lexicon-first (meaning-bank words) then a
+ * syllable parser. The old greedy letter matcher treated every "a" as
+ * independent अ and produced unreadable input for the NE→EN model.
  */
+import { meaningLexicon, normKey } from './meaningLexicon';
 
 const CONSONANTS: Record<string, string> = {
   क: 'k',
@@ -76,7 +80,6 @@ const MATRAS: Record<string, string> = {
 
 const VIRAMA = '्';
 
-/** Common phrase overrides (natural chat romanization). */
 const PHRASE_ROMAN: Record<string, string> = {
   नमस्ते: 'namaste',
   धन्यवाद: 'dhanyabad',
@@ -96,64 +99,15 @@ const PHRASE_ROMAN: Record<string, string> = {
   बिदा: 'bida',
 };
 
-export function looksLikeRomanNepali(text: string): boolean {
-  const t = text.toLowerCase();
-  if (!/[a-z]/.test(t)) return false;
-  if (/[\u0900-\u097F]/.test(t)) return false;
-  return /\b(namaste|dhanyabad|dhanyabad|tapai|timi|kasto|chha|cha\b|hoina|malai|mero|kaha|garnuhos|dinuhos|bhetaula|bhokeko|swagat|shubha|maaf|kripya|thik|chu|chhu|lai|ko\b|le\b|ho\b|parcha|parchha|man\b)\b/i.test(
-    t,
-  );
-}
-
-/** Longest-first roman tokens → Devanagari (good enough for review regenerate). */
-const ROMAN_TO_DEVA: Array<[string, string]> = [
-  ['kathamandu', 'काठमाडौं'],
-  ['kathmandu', 'काठमाडौं'],
-  ['kaathmaadau', 'काठमाडौं'],
-  ['nishulka', 'निःशुल्क'],
-  ['waiphai', 'वाइफाइ'],
-  ['wifi', 'वाइफाइ'],
-  ['namaste', 'नमस्ते'],
-  ['dhanyabad', 'धन्यवाद'],
-  ['dhanyavaad', 'धन्यवाद'],
-  ['garnuhos', 'गर्नुहोस्'],
-  ['dinuhos', 'दिनुहोस्'],
-  ['kripya', 'कृपया'],
-  ['tapai', 'तपाईं'],
-  ['timi', 'तिमी'],
-  ['malai', 'मलाई'],
-  ['mero', 'मेरो'],
-  ['kasto', 'कस्तो'],
-  ['kaha', 'कहाँ'],
-  ['yahan', 'यहाँ'],
-  ['yahaa', 'यहाँ'],
-  ['parcha', 'पर्छ'],
-  ['parchha', 'पर्छ'],
-  ['man', 'मन'],
-  ['chha', 'छ'],
-  ['cha', 'छ'],
-  ['chu', 'छु'],
-  ['chhu', 'छु'],
-  ['hoina', 'होइन'],
-  ['ho', 'हो'],
-  ['ke', 'के'],
-  ['ma', 'म'],
-  ['lai', 'लाई'],
-  ['ko', 'को'],
-  ['le', 'ले'],
-  ['ra', 'र'],
-  ['ta', 'त'],
-  ['na', 'न'],
-  ['phri', 'फ्री'],
-  ['free', 'फ्री'],
-  ['aa', 'आ'],
-  ['ii', 'ई'],
-  ['uu', 'ऊ'],
-  ['ai', 'ऐ'],
-  ['au', 'औ'],
+/** Longest-first chat-Roman consonant spellings. */
+const CONS_ROMAN: Array<[string, string]> = [
+  ['chh', 'छ'],
+  ['ksh', 'क्ष'],
+  ['gy', 'ज्ञ'],
+  ['tr', 'त्र'],
   ['kh', 'ख'],
   ['gh', 'घ'],
-  ['chh', 'छ'],
+  ['ng', 'ङ'],
   ['ch', 'च'],
   ['jh', 'झ'],
   ['th', 'थ'],
@@ -161,7 +115,6 @@ const ROMAN_TO_DEVA: Array<[string, string]> = [
   ['ph', 'फ'],
   ['bh', 'भ'],
   ['sh', 'श'],
-  ['ng', 'ङ'],
   ['ny', 'ञ'],
   ['k', 'क'],
   ['g', 'ग'],
@@ -179,16 +132,117 @@ const ROMAN_TO_DEVA: Array<[string, string]> = [
   ['v', 'व'],
   ['s', 'स'],
   ['h', 'ह'],
-  ['a', 'अ'],
-  ['i', 'इ'],
-  ['u', 'उ'],
-  ['e', 'ए'],
-  ['o', 'ओ'],
 ];
 
+const VOWEL_ROMAN = ['aa', 'ii', 'ee', 'uu', 'oo', 'ai', 'au', 'a', 'i', 'u', 'e', 'o'];
+
+const INDEP_FROM_ROMAN: Record<string, string> = {
+  aa: 'आ',
+  ii: 'ई',
+  ee: 'ई',
+  uu: 'ऊ',
+  oo: 'ऊ',
+  ai: 'ऐ',
+  au: 'औ',
+  a: 'अ',
+  i: 'इ',
+  u: 'उ',
+  e: 'ए',
+  o: 'ओ',
+};
+
+const MATRA_FROM_ROMAN: Record<string, string> = {
+  aa: 'ा',
+  ii: 'ी',
+  ee: 'ी',
+  uu: 'ू',
+  oo: 'ू',
+  ai: 'ै',
+  au: 'ौ',
+  a: '',
+  i: 'ि',
+  u: 'ु',
+  e: 'े',
+  o: 'ो',
+};
+
+function matchAt(
+  s: string,
+  i: number,
+  table: Array<[string, string]> | string[],
+): { rom: string; extra?: string; n: number } | null {
+  if (Array.isArray(table) && table.length && typeof table[0] === 'string') {
+    for (const rom of table as string[]) {
+      if (s.startsWith(rom, i)) return { rom, n: rom.length };
+    }
+    return null;
+  }
+  for (const [rom, extra] of table as Array<[string, string]>) {
+    if (s.startsWith(rom, i)) return { rom, extra, n: rom.length };
+  }
+  return null;
+}
+
+/** Syllable parser for a single roman token with no spaces. */
+function syllablesToDeva(raw: string): string {
+  const s = raw.toLowerCase();
+  let i = 0;
+  let out = '';
+  while (i < s.length) {
+    const cons = matchAt(s, i, CONS_ROMAN);
+    if (cons) {
+      const after = i + cons.n;
+      const vow = matchAt(s, after, VOWEL_ROMAN);
+      if (vow) {
+        out += (cons.extra ?? '') + (MATRA_FROM_ROMAN[vow.rom] ?? '');
+        i = after + vow.n;
+      } else {
+        // No vowel written: conjunct if more letters follow, else keep inherent a.
+        const more = after < s.length && /[a-z]/.test(s[after]);
+        out += (cons.extra ?? '') + (more ? VIRAMA : '');
+        i = after;
+      }
+      continue;
+    }
+    const vow = matchAt(s, i, VOWEL_ROMAN);
+    if (vow) {
+      out += INDEP_FROM_ROMAN[vow.rom] ?? '';
+      i += vow.n;
+      continue;
+    }
+    out += s[i];
+    i += 1;
+  }
+  return out;
+}
+
+function tokenToDeva(tok: string): string {
+  const key = tok.toLowerCase();
+  const hit = meaningLexicon.romanWords[key];
+  if (hit) return hit;
+  return syllablesToDeva(key);
+}
+
+export function looksLikeRomanNepali(text: string): boolean {
+  const t = text.toLowerCase();
+  if (!/[a-z]/.test(t)) return false;
+  if (/[\u0900-\u097F]/.test(t)) return false;
+  const words = t.match(/[a-z]+/g) ?? [];
+  if (!words.length) return false;
+  let hits = 0;
+  for (const w of words) {
+    if (meaningLexicon.romanWords[w]) hits += 1;
+  }
+  if (hits >= 2) return true;
+  if (words.length === 1 && hits === 1 && words[0].length >= 4) return true;
+  return /\b(namaste|dhanyabad|tapai|timi|kasto|chha|hoina|malai|mero|kaha|garnuhos|dinuhos|swagat|maaf|kripya|thik|bujhina|shauchalaya|madat)\b/i.test(
+    t,
+  );
+}
+
 /**
- * Best-effort Roman Nepali → Devanagari for Meaning Review regenerate.
- * Prefer editing Roman first, then tap regenerate.
+ * Chat-style Roman Nepali → Devanagari.
+ * Known words come from the meaning bank; the rest is syllable-parsed.
  */
 export function romanToDevanagari(text: string): string {
   const trimmed = text.trim();
@@ -199,28 +253,15 @@ export function romanToDevanagari(text: string): string {
   const out: string[] = [];
   for (const tok of tokens) {
     if (!tok) continue;
-    if (/^\s+$/.test(tok) || /^[?.!,;:।]+$/u.test(tok)) {
+    if (/^\s+$/.test(tok)) {
+      out.push(tok);
+      continue;
+    }
+    if (/^[?.!,;:।]+$/u.test(tok)) {
       out.push(tok === '.' || tok === '!' || tok === '?' ? '।' : tok);
       continue;
     }
-    let rest = tok.toLowerCase();
-    let built = '';
-    while (rest.length) {
-      let matched = false;
-      for (const [rom, deva] of ROMAN_TO_DEVA) {
-        if (rest.startsWith(rom)) {
-          built += deva;
-          rest = rest.slice(rom.length);
-          matched = true;
-          break;
-        }
-      }
-      if (!matched) {
-        built += rest[0];
-        rest = rest.slice(1);
-      }
-    }
-    out.push(built);
+    out.push(tokenToDeva(tok));
   }
   return out.join('').replace(/\s+/g, ' ').trim();
 }
@@ -229,7 +270,6 @@ export function devanagariToRoman(text: string): string {
   const trimmed = text.trim();
   if (!trimmed) return '';
   if (PHRASE_ROMAN[trimmed]) return PHRASE_ROMAN[trimmed];
-  // Try without trailing punctuation
   const bare = trimmed.replace(/[?.!,;:।]+$/u, '');
   const punct = trimmed.slice(bare.length);
   if (PHRASE_ROMAN[bare]) return PHRASE_ROMAN[bare] + punct;
@@ -249,10 +289,6 @@ export function devanagariToRoman(text: string): string {
       i += 1;
       continue;
     }
-    // conjuncts
-    if (i + 1 < s.length && CONSONANTS[s.slice(i, i + 2)]) {
-      // skip — single chars only in map for now
-    }
     const cons = CONSONANTS[ch];
     if (cons) {
       let vowel = 'a';
@@ -264,7 +300,6 @@ export function devanagariToRoman(text: string): string {
         vowel = MATRAS[s[j]];
         j += 1;
       }
-      // anusvara / chandrabindu after matra
       if (j < s.length && (s[j] === 'ं' || s[j] === 'ँ')) {
         vowel += 'n';
         j += 1;
@@ -288,7 +323,6 @@ export function devanagariToRoman(text: string): string {
   return out.replace(/\s+/g, ' ').trim();
 }
 
-/** Format Nepali text for the selected script preference. */
 export function formatNepaliScript(
   text: string,
   script: 'deva' | 'roman',
@@ -298,3 +332,5 @@ export function formatNepaliScript(
   if (/[\u0900-\u097F]/.test(text)) return devanagariToRoman(text);
   return text;
 }
+
+export { normKey };
