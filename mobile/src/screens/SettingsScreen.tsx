@@ -13,6 +13,7 @@ import {
   loadReviewSyncStatus,
   type ReviewSyncStatus,
 } from '../sync/reviewSync';
+import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
 import { colors } from '../theme';
 
 type Props = {
@@ -42,9 +43,15 @@ export function SettingsScreen({
   const [advanced, setAdvanced] = useState(false);
   const [syncStatus, setSyncStatus] = useState<ReviewSyncStatus | null>(null);
   const [syncBusy, setSyncBusy] = useState(false);
+  const [speechCaps, setSpeechCaps] = useState<{
+    neStt: boolean;
+    neTts: boolean;
+  } | null>(null);
 
   useEffect(() => {
-    setAdvanced(false);
+    void Promise.all([getSttSupport(), hasNepaliVoice()]).then(
+      ([stt, neTts]) => setSpeechCaps({ neStt: stt.ne, neTts }),
+    );
   }, []);
 
   const refreshSync = useCallback(async () => {
@@ -89,14 +96,41 @@ export function SettingsScreen({
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
           {neuralReady
-            ? 'NepTranslate runs IndicTrans2 on this device for free-form English → Nepali. Nepali → English uses the saved phrasebook. The EN→NE model ships in the install. Speech uses Apple recognition and may need a network.'
-            : 'NepTranslate includes an on-device English → Nepali model in the install. If it has not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
+            ? 'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.'
+            : 'NepTranslate includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}
           {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''}
           {neuralReady ? ' · model ready' : ' · model pending'}
         </Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Speech on this device</Text>
+        {speechCaps ? (
+          <>
+            <Text style={styles.capRow}>
+              English voice input · available
+            </Text>
+            <Text style={styles.capRow}>
+              Nepali voice input ·{' '}
+              {speechCaps.neStt ? 'available' : 'not supported by this device'}
+            </Text>
+            <Text style={styles.capRow}>
+              Nepali spoken aloud ·{' '}
+              {speechCaps.neTts ? 'available' : 'no Nepali voice installed'}
+            </Text>
+            {!speechCaps.neStt || !speechCaps.neTts ? (
+              <Text style={styles.meta}>
+                iPhones don't ship Nepali speech services. Typing and reading
+                translations work fully offline.
+              </Text>
+            ) : null}
+          </>
+        ) : (
+          <Text style={styles.meta}>Checking…</Text>
+        )}
       </View>
 
       <Pressable
@@ -198,6 +232,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     color: colors.textPlaceholder,
+  },
+  capRow: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.text,
+    fontWeight: '600',
   },
   row: {
     marginTop: 16,
