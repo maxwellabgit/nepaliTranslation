@@ -7,9 +7,10 @@ import { File } from 'expo-file-system';
 
 import type { Formality } from '../onDeviceTranslate';
 import {
-  ensureIt2OnnxBundles,
+  ensureIt2Bundle,
   resolveModelDirectory,
   type It2DirectionBundle,
+  type ModelDownloadProgress,
 } from './modelAssets';
 import { loadIt2Tokenizers, type It2TokenizerPair } from './loadTokenizers';
 
@@ -118,43 +119,70 @@ export class IndicTransOnnxEngine {
   private enIndic: BundleSessions | null = null;
   private indicEn: BundleSessions | null = null;
   private loading: Promise<void> | null = null;
+  private indicEnLoading: Promise<void> | null = null;
   private ready = false;
   private lastError: string | null = null;
+  private indicEnError: string | null = null;
 
   isReady(): boolean {
     return this.ready;
   }
 
+  isDirectionReady(direction: 'en-ne' | 'ne-en'): boolean {
+    return direction === 'en-ne' ? this.enIndic !== null : this.indicEn !== null;
+  }
+
   getLastError(): string | null {
-    return this.lastError;
+    return this.lastError ?? this.indicEnError;
   }
 
   async warmUp(
-    onProgress?: Parameters<typeof ensureIt2OnnxBundles>[0],
+    onProgress?: (p: ModelDownloadProgress) => void,
   ): Promise<void> {
     if (this.ready) return;
     if (this.loading) return this.loading;
 
     this.loading = (async () => {
       try {
-        await ensureIt2OnnxBundles(onProgress);
+        // EN→NE first: it unblocks the main translate surface fastest.
+        await ensureIt2Bundle('en-indic', onProgress);
         this.enIndic = await loadBundle('en-indic');
-        // NE→EN neural intentionally omitted — phrasebook covers reverse.
-        this.indicEn = null;
         this.ready = true;
         this.lastError = null;
       } catch (e) {
         this.ready = false;
         this.enIndic = null;
-        this.indicEn = null;
         this.lastError = e instanceof Error ? e.message : String(e);
         throw e;
       } finally {
         this.loading = null;
       }
+
+      // NE→EN loads behind readiness; ne-en requests await it below.
+      this.startIndicEnLoad(onProgress);
     })();
 
     return this.loading;
+  }
+
+  private startIndicEnLoad(
+    onProgress?: (p: ModelDownloadProgress) => void,
+  ): Promise<void> {
+    if (this.indicEn) return Promise.resolve();
+    if (this.indicEnLoading) return this.indicEnLoading;
+    this.indicEnLoading = (async () => {
+      try {
+        await ensureIt2Bundle('indic-en', onProgress);
+        this.indicEn = await loadBundle('indic-en');
+        this.indicEnError = null;
+      } catch (e) {
+        this.indicEn = null;
+        this.indicEnError = e instanceof Error ? e.message : String(e);
+      } finally {
+        this.indicEnLoading = null;
+      }
+    })();
+    return this.indicEnLoading;
   }
 
   async translate(opts: {
@@ -163,7 +191,7 @@ export class IndicTransOnnxEngine {
     formality: Formality;
     maxNewTokens?: number;
   }): Promise<string> {
-    if (!this.ready || !this.enIndic) {
+    if (!this.ready) {
       throw new Error('IndicTrans ONNX engine is not ready');
     }
 
@@ -171,18 +199,36 @@ export class IndicTransOnnxEngine {
     if (!raw) return '';
 
     if (opts.direction === 'ne-en') {
-      // Lighter IPA: only EN→NE is bundled. Callers should fall back to phrasebook.
-      throw new Error('NE→EN neural not bundled; use phrasebook');
+      if (!this.indicEn) {
+        await this.startIndicEnLoad();
+      }
+      if (!this.indicEn) {
+        throw new Error(
+          this.indicEnError ?? 'NE→EN model unavailable; use phrasebook',
+        );
+      }
+      return this.generate(
+        this.indicEn,
+        raw,
+        'npi_Deva',
+        'eng_Latn',
+        opts.maxNewTokens,
+      );
     }
 
-    const bundle = this.enIndic;
-    const srcLang = 'eng_Latn';
-    const tgtLang = 'npi_Deva';
-
+    if (!this.enIndic) {
+      throw new Error('IndicTrans ONNX engine is not ready');
+    }
     const tag = opts.formality === 'informal' ? '<informal>' : '<formal>';
     const body = `${tag} ${raw}`;
 
-    return this.generate(bundle, body, srcLang, tgtLang, opts.maxNewTokens);
+    return this.generate(
+      this.enIndic,
+      body,
+      'eng_Latn',
+      'npi_Deva',
+      opts.maxNewTokens,
+    );
   }
 
   private async generate(

@@ -77,17 +77,6 @@ export async function packagedIsComplete(kind: It2DirectionBundle): Promise<bool
   }
 }
 
-/** Directions shipped in the IPA. EN→NE only keeps install ~half size. */
-export const SHIPPED_IT2_DIRECTIONS: It2DirectionBundle[] = ['en-indic'];
-
-export async function neuralAssetsAvailable(): Promise<boolean> {
-  for (const kind of SHIPPED_IT2_DIRECTIONS) {
-    if (await packagedIsComplete(kind)) continue;
-    if (await bundleIsComplete(kind)) continue;
-    return false;
-  }
-  return true;
-}
 
 /**
  * Directory ORT should load from for this direction.
@@ -140,87 +129,83 @@ export type ModelDownloadProgress = {
 };
 
 /**
- * Ensure shipped EN→NE INT8 bundle is ready for ORT.
- * Packaged IPA/APK models win — no network.
- * NE→EN neural is intentionally not shipped (phrasebook covers reverse).
+ * Ensure one direction's INT8 bundle is usable by ORT.
+ * Packaged IPA/APK models win — no network. Falls back to a Hugging Face
+ * download only when the binary was built without bundled models.
  */
-export async function ensureIt2OnnxBundles(
+export async function ensureIt2Bundle(
+  kind: It2DirectionBundle,
   onProgress?: (p: ModelDownloadProgress) => void,
-): Promise<{ enIndic: string; indicEn: string | null }> {
+): Promise<void> {
   const root = cacheRoot();
   if (!root.exists) {
     root.create({ intermediates: true, idempotent: true });
   }
 
-  for (const kind of SHIPPED_IT2_DIRECTIONS) {
-    // Fast path: already usable from package (iOS) or cache.
-    if (Platform.OS === 'ios' && (await packagedIsComplete(kind))) {
-      onProgress?.({
-        kind,
-        fileName: DIR_NAME[kind],
-        index: 1,
-        total: 1,
-        phase: 'packaged',
-      });
-      continue;
-    }
-    if (await bundleIsComplete(kind)) {
-      onProgress?.({
-        kind,
-        fileName: DIR_NAME[kind],
-        index: 1,
-        total: 1,
-        phase: 'cache',
-      });
-      continue;
-    }
-    if (await trySeedFromPackage(kind)) {
-      onProgress?.({
-        kind,
-        fileName: DIR_NAME[kind],
-        index: 1,
-        total: 1,
-        phase: 'packaged',
-      });
-      continue;
-    }
+  // Fast path: already usable from package (iOS) or cache.
+  if (Platform.OS === 'ios' && (await packagedIsComplete(kind))) {
+    onProgress?.({
+      kind,
+      fileName: DIR_NAME[kind],
+      index: 1,
+      total: 1,
+      phase: 'packaged',
+    });
+    return;
+  }
+  if (await bundleIsComplete(kind)) {
+    onProgress?.({
+      kind,
+      fileName: DIR_NAME[kind],
+      index: 1,
+      total: 1,
+      phase: 'cache',
+    });
+    return;
+  }
+  if (await trySeedFromPackage(kind)) {
+    onProgress?.({
+      kind,
+      fileName: DIR_NAME[kind],
+      index: 1,
+      total: 1,
+      phase: 'packaged',
+    });
+    return;
+  }
 
-    // Last resort — only if the binary was built without bundled models.
-    const dir = bundleDirectory(kind);
-    if (!dir.exists) {
-      dir.create({ intermediates: true, idempotent: true });
-    }
+  const dir = bundleDirectory(kind);
+  if (!dir.exists) {
+    dir.create({ intermediates: true, idempotent: true });
+  }
 
-    const repo = IT2_HF_REPOS[kind];
-    const total = IT2_REQUIRED_FILES.length;
-    for (let i = 0; i < IT2_REQUIRED_FILES.length; i++) {
-      const fileName = IT2_REQUIRED_FILES[i];
-      const dest = fileIn(dir, fileName);
-      if (dest.exists && dest.size > 0) continue;
+  const repo = IT2_HF_REPOS[kind];
+  const total = IT2_REQUIRED_FILES.length;
+  for (let i = 0; i < IT2_REQUIRED_FILES.length; i++) {
+    const fileName = IT2_REQUIRED_FILES[i];
+    const dest = fileIn(dir, fileName);
+    if (dest.exists && dest.size > 0) continue;
 
-      onProgress?.({
-        kind,
-        fileName,
-        index: i + 1,
-        total,
-        phase: 'download',
-      });
-      const url = hfResolveUrl(repo, fileName);
-      const downloaded = await File.downloadFileAsync(url, dest, {
-        idempotent: true,
-      });
-      if (!downloaded.exists || downloaded.size <= 0) {
-        throw new Error(
-          `Model not bundled and download failed for ${repo}/${fileName}`,
-        );
-      }
-    }
-
-    if (!(await bundleIsComplete(kind))) {
-      throw new Error(`Incomplete ONNX bundle: ${kind}`);
+    onProgress?.({
+      kind,
+      fileName,
+      index: i + 1,
+      total,
+      phase: 'download',
+    });
+    const url = hfResolveUrl(repo, fileName);
+    const downloaded = await File.downloadFileAsync(url, dest, {
+      idempotent: true,
+    });
+    if (!downloaded.exists || downloaded.size <= 0) {
+      throw new Error(
+        `Model not bundled and download failed for ${repo}/${fileName}`,
+      );
     }
   }
 
-  const enDir = await resolveModelDirectory('en-indic');
-  return { enIndic: enDir.uri, indicEn: null };
+  if (!(await bundleIsComplete(kind))) {
+    throw new Error(`Incomplete ONNX bundle: ${kind}`);
+  }
 }
+

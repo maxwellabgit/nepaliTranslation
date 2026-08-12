@@ -13,6 +13,7 @@ import {
   type TranslateResult,
 } from './onDeviceTranslate';
 import { splitSentences } from './sentences';
+import { romanToDevanagari } from './romanize';
 import { sharedIndicTransOnnx } from './onnx/IndicTransOnnx';
 import type { ModelDownloadProgress } from './onnx/modelAssets';
 
@@ -133,15 +134,6 @@ export class TranslationEngine {
       return phrase;
     }
 
-    // Lighter IPA ships EN→NE neural only; NE→EN stays phrasebook/lexicon.
-    if (direction === 'ne-en') {
-      return translateOnDevice(raw, direction, {
-        formality: req.formality,
-        script: req.script,
-        forcePreferred: true,
-      });
-    }
-
     const bySentences = req.bySentences !== false;
     if (bySentences) {
       const { complete, remainder } = splitSentences(raw);
@@ -168,13 +160,32 @@ export class TranslationEngine {
       }
     }
 
+    if (direction === 'ne-en') {
+      // Model expects Devanagari; convert chat-style roman Nepali first.
+      const hasDeva = /[\u0900-\u097F]/.test(raw);
+      const devaText = hasDeva ? raw : romanToDevanagari(raw);
+      const neuralText = await sharedIndicTransOnnx.translate({
+        text: devaText,
+        direction: 'ne-en',
+        formality: req.formality,
+      });
+      if (!neuralText.trim()) {
+        return translateOnDevice(raw, 'ne-en', {
+          formality: req.formality,
+          script: req.script,
+          forcePreferred: true,
+        });
+      }
+      return { text: neuralText.trim(), method: 'neural', direction: 'ne-en' };
+    }
+
     const neuralText = await sharedIndicTransOnnx.translate({
       text: raw,
       direction: 'en-ne',
       formality: req.formality,
     });
 
-    let out = formatNepaliScript(neuralText, req.script ?? 'deva');
+    const out = formatNepaliScript(neuralText, req.script ?? 'deva');
 
     if (!out.trim()) {
       return translateOnDevice(raw, 'en-ne', {

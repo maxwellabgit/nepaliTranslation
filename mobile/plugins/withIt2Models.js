@@ -1,8 +1,8 @@
 /**
  * Pack IndicTrans2 ONNX folders into the native iOS/Android app so install
- * includes the model (no first-launch Hugging Face download).
+ * includes the models (no first-launch Hugging Face download).
  *
- * Expects mobile/assets/models/it2_en_indic (EN→NE only — lighter IPA).
+ * Expects mobile/assets/models/it2_en_indic + it2_indic_en (both directions).
  */
 const {
   withDangerousMod,
@@ -13,7 +13,7 @@ const {
 const fs = require('fs');
 const path = require('path');
 
-const MODEL_DIRS = ['it2_en_indic'];
+const MODEL_DIRS = ['it2_en_indic', 'it2_indic_en'];
 const REQUIRED = [
   'encoder_model.onnx',
   'encoder_model.onnx.data',
