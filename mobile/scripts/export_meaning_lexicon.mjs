@@ -8,16 +8,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REPO = path.resolve(__dirname, '../..');
-const BANK = path.join(REPO, 'training', 'data', 'meaning_bank.jsonl');
-const OUT = path.join(
-  REPO,
-  'mobile',
-  'src',
-  'mt',
-  'generated',
-  'meaningLexicon.json',
-);
+const MOBILE = path.resolve(__dirname, '..');
+const BANK_CANDIDATES = [
+  path.join(MOBILE, 'assets', 'data', 'meaning_bank.jsonl'),
+  path.join(MOBILE, '..', 'training', 'data', 'meaning_bank.jsonl'),
+];
+const BANK = BANK_CANDIDATES.find((p) => fs.existsSync(p));
+const OUT = path.join(MOBILE, 'src', 'mt', 'generated', 'meaningLexicon.json');
 
 const DEVANAGARI = /[\u0900-\u097F]/;
 const LATIN_WORD = /^[a-z]+$/;
@@ -99,6 +96,11 @@ const WORD_EXCEPTIONS = {
 };
 
 function main() {
+  if (!BANK) {
+    throw new Error(
+      'meaning_bank.jsonl not found (looked in assets/data and ../../training/data)',
+    );
+  }
   const rows = fs
     .readFileSync(BANK, 'utf8')
     .split('\n')
@@ -174,7 +176,7 @@ function main() {
   fs.writeFileSync(OUT, JSON.stringify({ enToNe, neToEn, romanToEn, romanWords }));
   const kb = (fs.statSync(OUT).size / 1024).toFixed(0);
   console.log(
-    `[lexicon] wrote ${path.relative(REPO, OUT)} (${kb} KB) en=${Object.keys(enToNe).length} ne=${Object.keys(neToEn).length} romanSent=${Object.keys(romanToEn).length} romanWords=${Object.keys(romanWords).length}`,
+    `[lexicon] wrote ${path.relative(MOBILE, OUT)} (${kb} KB) en=${Object.keys(enToNe).length} ne=${Object.keys(neToEn).length} romanSent=${Object.keys(romanToEn).length} romanWords=${Object.keys(romanWords).length}`,
   );
 }
 
