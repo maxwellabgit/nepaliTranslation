@@ -183,19 +183,23 @@ def main() -> int:
     ap.add_argument("--eval-steps", type=int, default=150)
     args = ap.parse_args()
 
-    from benchmarks.hf_login import load_hf_token
-    from huggingface_hub import login
+    from benchmarks.hf_login import try_hf_login
 
-    login(token=load_hf_token(), add_to_git_credential=False)
+    try_hf_login()
 
     for d in [x.strip() for x in args.directions.split(",") if x.strip()]:
+        train_p = DATA / f"train_clean_{d}.jsonl"
+        val_p = DATA / f"val_clean_{d}.jsonl"
+        if not train_p.exists():
+            raise SystemExit(
+                f"Missing {train_p}. Run: python training/prepare_cpu_mix.py "
+                "(legacy train_meanings_*.jsonl was OPUS-contaminated and deleted)."
+            )
+        train_rows = load_jsonl(train_p)
+        val_rows = load_jsonl(val_p)
         if d == "en-ne":
-            train_rows = load_jsonl(DATA / "train_meanings_en_ne.jsonl")
-            val_rows = load_jsonl(DATA / "val_meanings_en_ne.jsonl")
             train_one(d, EN_INDIC, OUT_EN_NE, train_rows, val_rows, args)
         elif d == "ne-en":
-            train_rows = load_jsonl(DATA / "train_meanings_ne_en.jsonl")
-            val_rows = load_jsonl(DATA / "val_meanings_ne_en.jsonl")
             train_one(d, INDIC_EN, OUT_NE_EN, train_rows, val_rows, args)
         else:
             print("skip", d)

@@ -5,9 +5,11 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 
 def norm(s: str) -> str:
@@ -15,6 +17,9 @@ def norm(s: str) -> str:
 
 
 def main() -> None:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     blocked: set[str] = set()
     gpath = ROOT / "benchmarks" / "data" / "gold_train_blocklist.json"
     g = json.loads(gpath.read_text(encoding="utf-8"))

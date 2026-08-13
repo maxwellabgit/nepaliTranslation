@@ -37,8 +37,8 @@ Informal = friendly **तिमी** Nepali (not तँ) for v1.
 }
 ```
 
-- Bank: `training/data/meaning_bank.jsonl`
-- Expanded FT examples (≤10k): `train_meanings_*.jsonl`
+- Bank: `training/data/meaning_bank.jsonl` (curated provenances only)
+- CPU FT examples: `train_clean_*.jsonl` (see [`CPU_FT_JOB.md`](CPU_FT_JOB.md))
 - User review / future in-app training curation should edit **meanings**, not four divergent strings.
 
 ## Model
@@ -63,7 +63,7 @@ training/route_corrections.py
   founder_queue → founder_review_queue.jsonl
         ↓ when ≥100 edited
 training/local_auto_train.py  (this machine overnight)
-  build_meaning_bank → finetune_it2_meanings (en-ne) → eval
+  prepare_cpu_mix → finetune_it2_cpu (both directions) → eval_it2_gold --systems it2_base,it2_cpu
 ```
 
 On-device ship: **both EN→NE and NE→EN INT8**. Chat-Roman is normalized to Devanagari before NE→EN. Phrase overlay from the meaning bank covers in-domain lines exactly. See `training/DATA.md`.
@@ -72,8 +72,8 @@ On-device ship: **both EN→NE and NE→EN INT8**. Chat-Roman is normalized to D
 ## Scripts
 
 ```powershell
-python training/build_meaning_bank.py
-python training/finetune_it2_meanings.py --directions en-ne,ne-en --epochs 3
+python training/prepare_cpu_mix.py
+python training/finetune_it2_cpu.py --directions en-ne,ne-en --epochs 3
 ```
 
 Roman house style: [`ANNOTATION_GUIDE_ROMAN.md`](ANNOTATION_GUIDE_ROMAN.md)

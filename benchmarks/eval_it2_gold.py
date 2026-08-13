@@ -26,6 +26,8 @@ FT_EN_NE = REPO / "training" / "artifacts" / "it2_en_indic_gold_ft"
 FT_NE_EN = REPO / "training" / "artifacts" / "it2_indic_en_gold_ft"
 MEANINGS_EN_NE = REPO / "training" / "artifacts" / "it2_meanings_en_ne_lora"
 MEANINGS_NE_EN = REPO / "training" / "artifacts" / "it2_meanings_ne_en_lora"
+CPU_EN_NE = REPO / "training" / "artifacts" / "it2_cpu_en_ne_lora"
+CPU_NE_EN = REPO / "training" / "artifacts" / "it2_cpu_ne_en_lora"
 BIG_EN_NE = REPO / "training" / "artifacts" / "it2_big_quality_en_ne_lora"
 BIG_NE_EN = REPO / "training" / "artifacts" / "it2_big_quality_ne_en_lora"
 OVERNIGHT_EN_NE = REPO / "training" / "artifacts" / "it2_overnight_hybrid_en_ne_lora"
@@ -259,6 +261,24 @@ def main() -> int:
             results["systems"].append(
                 score(
                     "it2_meanings",
+                    make_it2(
+                        BASE_EN_NE,
+                        BASE_NE_EN,
+                        use_formality_prefix=True,
+                        adapter_en_ne=ad_en,
+                        adapter_ne_en=ad_ne,
+                    ),
+                )
+            )
+        elif name == "it2_cpu":
+            ad_en = latest_adapter(CPU_EN_NE)
+            ad_ne = latest_adapter(CPU_NE_EN)
+            if not ad_en or not ad_ne:
+                print("CPU adapters missing — skip", flush=True)
+                continue
+            results["systems"].append(
+                score(
+                    "it2_cpu",
                     make_it2(
                         BASE_EN_NE,
                         BASE_NE_EN,

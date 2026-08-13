@@ -6,11 +6,13 @@ import hashlib
 import json
 import os
 import re
+import sys
 from pathlib import Path
 
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 TRAIN = ROOT / "training" / "data" / "train_en_ne.jsonl"
 VAL = ROOT / "training" / "data" / "val_en_ne.jsonl"
 MAX_ADD = 30_000
@@ -37,6 +39,9 @@ def ok(en: str, ne: str) -> bool:
 
 
 def main() -> None:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     from datasets import load_dataset
 
     seen: set[str] = set()

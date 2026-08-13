@@ -11,9 +11,9 @@ Typical overnight flow (Windows):
        python training/local_auto_train.py --if-ready
 
 What it does when ready:
-  - build_meaning_bank.py (expand train rows)
-  - finetune_it2_meanings.py --directions en-ne  (edge model as-is; EN→NE primary)
-  - eval_it2_gold.py if present
+  - prepare_cpu_mix.py (clean bank + CPU jsonl)
+  - finetune_it2_cpu.py --directions en-ne,ne-en
+  - eval_it2_gold.py --systems it2_base,it2_cpu
   - reset edited_since_train counter
 """
 from __future__ import annotations
@@ -67,19 +67,28 @@ def train_once() -> int:
     print(f"[auto_train] START {started} meta={meta}", flush=True)
 
     steps = [
-        [sys.executable, str(REPO / "training" / "build_meaning_bank.py")],
+        [sys.executable, str(REPO / "training" / "prepare_cpu_mix.py")],
         [
             sys.executable,
-            str(REPO / "training" / "finetune_it2_meanings.py"),
+            str(REPO / "training" / "finetune_it2_cpu.py"),
             "--directions",
-            "en-ne",
+            "en-ne,ne-en",
             "--epochs",
             "2",
         ],
     ]
     eval_script = REPO / "benchmarks" / "eval_it2_gold.py"
     if eval_script.exists():
-        steps.append([sys.executable, str(eval_script)])
+        steps.append(
+            [
+                sys.executable,
+                str(eval_script),
+                "--systems",
+                "it2_base,it2_cpu",
+                "--tag",
+                "cpu_clean",
+            ]
+        )
 
     codes = []
     for cmd in steps:

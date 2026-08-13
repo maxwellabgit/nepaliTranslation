@@ -14,6 +14,7 @@ os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
 TRAIN = Path(__file__).resolve().parent / "data" / "train_en_ne.jsonl"
 OUT = REPO / "training" / "artifacts" / "nllb600m_en_ne_lora_v2"
 PREV = REPO / "training" / "artifacts" / "nllb600m_en_ne_lora" / "adapter"
@@ -21,6 +22,9 @@ BASE = "facebook/nllb-200-distilled-600M"
 
 
 def main() -> int:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     from benchmarks.hf_login import load_hf_token
     from huggingface_hub import login
 

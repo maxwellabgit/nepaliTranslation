@@ -58,8 +58,9 @@ SURFACES = [
     "conversation_long",
 ]
 
-# Soft caps when ingesting OPUS/GV/gold extras so core_grammar cannot drown
+# Soft caps when ingesting extra seeds so core_grammar cannot drown
 # priority surfaces. Hand seeds + user CSV are never capped.
+# Do not ingest OPUS / Global Voices / gold_domain here — see CPU_FT_JOB.md.
 SURFACE_CAPS: dict[str, int] = {
     "core_grammar": 350,
     "conversation_long": 220,
@@ -532,12 +533,10 @@ def build_bank() -> list[dict]:
                     blocked,
                 )
 
-    # Short high-signal rows from gold_domain / GV / law
+    # Short high-signal rows from curated seeds / law labels only.
     extras = [
         (OUT / "train_user_conversation_seeds.jsonl", "user_conv_seed"),
         (OUT / "train_law_gov_en_ne.jsonl", "law_gov"),
-        (OUT / "train_global_voices_en_ne.jsonl", "global_voices"),
-        (OUT / "train_gold_domain.jsonl", "gold_domain_short"),
     ]
     surface_counts = {s: 0 for s in SURFACES}
     for m in bank.values():
@@ -548,7 +547,7 @@ def build_bank() -> list[dict]:
     for path, prov in extras:
         if not path.exists():
             continue
-        n_take = 800 if "global_voices" in prov else 1200 if "gold_domain" in prov else 500
+        n_take = 500
         taken = 0
         for line in path.open(encoding="utf-8"):
             if taken >= n_take:
@@ -557,9 +556,6 @@ def build_bank() -> list[dict]:
             en = (r.get("eng_Latn") or "").strip()
             ne = (r.get("npi_Deva") or "").strip()
             if not en or not ne or not DEVANAGARI.search(ne):
-                continue
-            # Prefer short conversational / formal gov; skip very long journalism for meaning bank core
-            if prov == "global_voices" and (len(en) > 160 or len(ne) > 200):
                 continue
             if len(en) > 140 or len(ne) > 160:
                 continue

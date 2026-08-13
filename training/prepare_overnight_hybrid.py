@@ -56,6 +56,9 @@ def add_w(
 
 
 def main() -> int:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     blocked = load_blocklist()
     rows: list[dict] = []
     seen: set[str] = set()

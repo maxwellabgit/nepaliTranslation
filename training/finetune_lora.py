@@ -225,6 +225,9 @@ def train_one(
 
 
 def main() -> int:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     ap = argparse.ArgumentParser()
     ap.add_argument("--directions", default="en-ne,ne-en")
     ap.add_argument("--max-train", type=int, default=30_000, help="Cap train rows per direction")

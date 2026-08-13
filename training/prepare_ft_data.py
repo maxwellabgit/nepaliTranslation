@@ -26,6 +26,7 @@ from typing import Any, Iterable
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
 OUT_DIR = Path(__file__).resolve().parent / "data"
 BENCH_QUALITY = REPO / "benchmarks" / "data" / "ne_quality_bench.json"
 GOLD_BLOCK = REPO / "benchmarks" / "data" / "gold_train_blocklist.json"
@@ -239,6 +240,9 @@ def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> int:
 
 
 def main() -> int:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     ap = argparse.ArgumentParser()
     ap.add_argument("--opus-max", type=int, default=80_000)
     ap.add_argument("--bpcc-max", type=int, default=50_000)

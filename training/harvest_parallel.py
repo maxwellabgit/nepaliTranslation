@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 """Pull extra NE↔EN parallel data we don't already train on.
 
-Existing train_en_ne.jsonl is almost entirely OPUS-100 software strings
-(KDE/GNOME UI). That is the wrong domain for a traveler/conversation app.
+Do **not** train on the Titung harvest. Even after short-sentence / legal-text
+filters it is still Bible, KDE UI, and legal prose — the wrong domain for this
+app. The file is gitignored.
 
-This script fetches:
-  - Titung/nepali-english-parallel (Apache-2.0, ~161k, mostly formal/legal)
-    and keeps short sentence-like pairs as a future FT seed.
+The CPU job uses `training/prepare_cpu_mix.py` (curated meanings + traveler
+seeds). See training/CPU_FT_JOB.md.
 
-  Notes on other corpora (not downloaded here — too large / gated):
-  - ai4bharat/BPCC          mined web bitext, includes npi_Deva; best next FT mix
-  - facebook/flores_plus    2009-sentence eval set, npi_Deva (use as held-out)
-  - Helsinki-NLP/opus-100   already ingested (and is the noisy majority)
-  - NLLB bitext             overlap with OPUS; skip unless we filter hard
+This script fetches Titung/nepali-english-parallel (Apache-2.0) and keeps short
+sentence-like pairs as a future research dump only.
 
 Usage:
     python training/harvest_parallel.py

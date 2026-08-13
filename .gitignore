@@ -22,8 +22,15 @@ datasets/synthetic/teacher_reviewed/
 datasets/benchmarks/runs/
 training/artifacts/it2_en_indic_1b/
 training/artifacts/it2_indic_en_1b/
+training/artifacts/it2_en_indic_merged/
+training/artifacts/it2_indic_en_merged/
+training/artifacts/*_lora/
+training/artifacts/*_ft/
 training/artifacts/review_sync_inbox/
 training/artifacts/review_sync_seen.json
+training/artifacts/auto_train_ready.json
+training/artifacts/auto_train_runs.jsonl
+training/artifacts/correction_router_state.json
 
 
 # Large harvested / scraped corpora (rebuild from scripts)
@@ -32,6 +39,22 @@ training/data/raw/
 mobile/src/mt/generated/meaningLexicon.json
 training/data/external/*.parquet
 training/data/external/titung_ne_en_short.jsonl
+
+# Deleted OPUS / Global Voices junk — do not commit if a --force-opus-junk script recreates them
+training/data/train_en_ne.jsonl
+training/data/val_en_ne.jsonl
+training/data/train_gold_domain.jsonl
+training/data/val_gold_domain.jsonl
+training/data/train_roman_ne_en.jsonl
+training/data/train_global_voices_en_ne.jsonl
+training/data/train_meanings_en_ne.jsonl
+training/data/train_meanings_ne_en.jsonl
+training/data/train_meanings_controlled.jsonl
+training/data/val_meanings_en_ne.jsonl
+training/data/val_meanings_ne_en.jsonl
+training/data/val_meanings_controlled.jsonl
+training/data/manifest.json
+training/data/gold_domain_manifest.json
 
 # Transient bench logs
 benchmarks/results/*.log

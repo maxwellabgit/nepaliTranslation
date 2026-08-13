@@ -202,6 +202,9 @@ def add(
 
 
 def main() -> None:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     blocked = load_blocklist()
     print(f"blocklist={len(blocked)}", flush=True)
     rows: list[dict] = []

@@ -1,21 +1,24 @@
 {
-  "meanings_n": 1422,
-  "train_ex": 4918,
-  "val_ex": 258,
-  "max_train_ex_cap": 10000,
+  "meanings_n": 165,
   "by_surface": {
-    "core_grammar": 350,
-    "pronouns_honorifics": 100,
-    "questions_requests": 180,
-    "travel": 120,
-    "health": 72,
-    "shopping": 100,
-    "government": 120,
-    "family": 54,
-    "numbers_money": 100,
+    "core_grammar": 31,
+    "pronouns_honorifics": 4,
+    "questions_requests": 32,
+    "travel": 8,
+    "health": 6,
+    "shopping": 7,
+    "government": 63,
+    "family": 4,
+    "numbers_money": 4,
     "code_switch_names": 5,
-    "asr_noise": 1,
-    "conversation_long": 220
+    "asr_noise": 1
+  },
+  "by_provenance": {
+    "hand_priority_seed": 44,
+    "assistant_curated": 58,
+    "user_conv_seed": 3,
+    "recovered_site_labels_and_manual_normalization": 50,
+    "law_gov": 10
   },
   "schema": [
     "meaning_id",
@@ -35,9 +38,9 @@
       "<formal>",
       "<informal>",
       "(direction via en-indic / indic-en checkpoint)"
-    ],
-    "note": "IndicTrans2 tokenizer treats <en> as a language tag; runtime maps product → model prefixes."
+    ]
   },
   "architecture": "one_mt_devanagari_canonical_plus_roman_layers",
-  "bank_path": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\data\\meaning_bank.jsonl"
+  "bank_path": "/workspace/training/data/meaning_bank.jsonl",
+  "cpu_mix": "training/data/cpu_mix_manifest.json"
 }

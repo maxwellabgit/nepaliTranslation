@@ -14,10 +14,10 @@ sys.path.insert(0, str(REPO))
 
 
 def main() -> int:
-    from benchmarks.hf_login import load_hf_token
-    from huggingface_hub import hf_hub_download, login, list_repo_files
+    from benchmarks.hf_login import try_hf_login
+    from huggingface_hub import hf_hub_download, list_repo_files
 
-    login(token=load_hf_token(), add_to_git_credential=False)
+    try_hf_login()
     targets = [
         ("ai4bharat/indictrans2-en-indic-dist-200M", REPO / "training" / "artifacts" / "it2_en_indic_merged"),
         ("ai4bharat/indictrans2-indic-en-dist-200M", REPO / "training" / "artifacts" / "it2_indic_en_merged"),

@@ -19,6 +19,7 @@ os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
 TRAIN = Path(__file__).resolve().parent / "data" / "train_en_ne.jsonl"
 VAL = Path(__file__).resolve().parent / "data" / "val_en_ne.jsonl"
 OUT = REPO / "training" / "artifacts" / "nllb600m_en_ne_lora"
@@ -78,6 +79,9 @@ def tokenize_examples(examples, tok, max_length: int):
 
 
 def main() -> int:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     ap = argparse.ArgumentParser()
     ap.add_argument("--max-train", type=int, default=25_000)
     ap.add_argument("--max-val", type=int, default=800)

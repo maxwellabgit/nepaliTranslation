@@ -1,0 +1,46 @@
+{
+  "created_at": "2026-08-13T02:45:53.645991+00:00",
+  "meanings_n": 165,
+  "by_provenance": {
+    "hand_priority_seed": 44,
+    "assistant_curated": 58,
+    "user_conv_seed": 3,
+    "recovered_site_labels_and_manual_normalization": 50,
+    "law_gov": 10
+  },
+  "by_surface": {
+    "core_grammar": 31,
+    "pronouns_honorifics": 4,
+    "questions_requests": 32,
+    "travel": 8,
+    "health": 6,
+    "shopping": 7,
+    "government": 63,
+    "family": 4,
+    "numbers_money": 4,
+    "code_switch_names": 5,
+    "asr_noise": 1
+  },
+  "gold_blocklist_n": 599,
+  "upsample": {
+    "default": 4,
+    "priority": 8
+  },
+  "priority_surfaces": [
+    "health",
+    "pronouns_honorifics",
+    "questions_requests",
+    "travel"
+  ],
+  "unique_examples_before_upsample": 584,
+  "train_n": {
+    "en-ne": 1552,
+    "ne-en": 1356
+  },
+  "val_n": {
+    "en-ne": 32,
+    "ne-en": 27
+  },
+  "note": "Quality >> quantity. Do not mix OPUS-100, Global Voices, or Titung into this job.",
+  "run": "python training/finetune_it2_cpu.py --directions en-ne,ne-en"
+}

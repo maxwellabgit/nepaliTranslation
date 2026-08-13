@@ -33,6 +33,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
 RAW = Path(__file__).resolve().parent / "data" / "raw"
 OUT = Path(__file__).resolve().parent / "data"
 GOLD_BLOCK = REPO / "benchmarks" / "data" / "gold_train_blocklist.json"
@@ -372,6 +373,9 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 
 
 def main() -> int:
+    from training.opus_junk import refuse_unless_forced
+
+    refuse_unless_forced()
     if not ALIGN_XML.exists() or not EN_ZIP.exists() or not NE_ZIP.exists():
         print("Missing GlobalVoices raw files under training/data/raw/", flush=True)
         return 1
