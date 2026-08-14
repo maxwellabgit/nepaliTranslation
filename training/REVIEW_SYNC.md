@@ -1,48 +1,35 @@
-# Automatic Meaning Review sync
+# Phone → this PC data review
 
-Reviews land on this PC **as testers Accept / Skip**, without Share → AirDrop.
+Review **gold benchmarks first**, then training meanings. Each card is edit-or-confirm, then **Send to PC**.
 
-## How it works
-
-1. Phone queues each completed review locally.
-2. When **1** review is ready (or after **~3s** idle), it POSTs a batch to your PC.
-3. `training/review_sync_server.py` writes the batch under
-   `training/artifacts/review_sync_inbox/` and runs `route_corrections.py`.
-4. Dedup by `event_id` so retries / re-exports do not double-count `edited_since_train`.
-
-Manual **Export** in Meaning Review still works as a backup.
-
-## In the app (testers)
-
-TestFlight builds ship with sync **already on**. Endpoint + secret are baked into
-`mobile/app.json` → `extra.reviewSync*`. Reviewers only:
-
-1. Settings → Advanced → Meaning Review  
-2. Password `1234`  
-3. Accept / Skip  
-
-No URL or secret entry. Advanced → Review sync is status + Sync now only.
-
-## On this PC
-
-Keep the server (and tunnel) running while people review:
+## On this PC (keep running while you review)
 
 ```powershell
 cd C:\Users\maxwe\.cursor\nepaliTranslation
-$env:REVIEW_SYNC_SECRET = "neptranslate-sync-test-2026"
-python training/review_sync_server.py --host 0.0.0.0 --port 8765
-
-# separate terminal — URL must match app.json extra.reviewSyncEndpoint
-.\tools\cloudflared.exe tunnel --url http://127.0.0.1:8765
+python training\review_sync_server.py
 ```
 
-If the Cloudflare quick-tunnel URL changes, update `app.json` `reviewSyncEndpoint`
-and ship a new TestFlight build.
+The server prints a Wi-Fi address such as `192.168.1.42`. Phone and laptop must be on the same network. Windows may ask to allow Python on port 8765 — allow it.
 
-## Overnight train
+## On the phone
 
-```powershell
-python training/local_auto_train.py --daemon --poll-seconds 300
-```
+1. Settings → Advanced → **Data review**
+2. Password `1234`
+3. First time: paste the laptop address (IP is enough, e.g. `192.168.1.42`)
+4. **Benchmark** deck: source + reference. **Send to PC** (as-is or after edits)
+5. **Training** deck: same button for meaning-bank pairs
+6. **Send pending** retries anything that failed to land
 
-When routed edits hit 100, `auto_train_ready.json` still triggers training.
+Mark incorrect / History → To training still use this same pipe; they land in `founder_review_queue.jsonl` for a later pass.
+
+## What the PC does
+
+| Send | File updated |
+|------|----------------|
+| Gold bench | `benchmarks/gold/{class}/sources.jsonl` + `references.jsonl`, then gold blocklist + in-app pack |
+| Training meaning | `training/data/meaning_bank.jsonl` (provenance `human_meaning_review`) |
+| Live / history flag | `training/data/founder_review_queue.jsonl` |
+
+Gold never enters the LoRA mix. After gold is trusted, train + `eval_it2_gold.py` is a fair comparison.
+
+Secret is baked (`neptranslate-sync-test-2026`) and must match the server. This is a home-LAN lock, not a public API.

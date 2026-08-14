@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 """
-Receive Meaning Review batches from the iPhone and route them into the training inbox.
+Receive Data review batches from the iPhone and route them on this PC.
 
-Usage (this machine):
-  set REVIEW_SYNC_SECRET=your-long-secret
-  python training/review_sync_server.py --host 0.0.0.0 --port 8765
+Usage:
+  python training/review_sync_server.py
 
-Expose for TestFlight / cellular (recommended):
-  cloudflared tunnel --url http://127.0.0.1:8765
-  # paste the https://….trycloudflare.com URL into the app Advanced → Review sync
+Phone (same Wi-Fi): Settings → Advanced → Data review · password 1234 · laptop address printed here.
 
 POST /v1/reviews
-  Header: X-Review-Sync-Secret: <secret>
-  Body: same shape as Meaning Review export JSON ({ reviews: { mid: {...} } })
+  Header: X-Review-Sync-Secret: <baked secret>
+  Body: { reviews: { review_key: { kind, ... } } }
 
 GET /health → { ok: true }
 """
@@ -30,12 +27,28 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
+import socket
 
 REPO = Path(__file__).resolve().parents[1]
 INBOX = REPO / "training" / "artifacts" / "review_sync_inbox"
 SEEN = REPO / "training" / "artifacts" / "review_sync_seen.json"
 EVENTS = REPO / "training" / "data" / "meaning_review_events.jsonl"
 ROUTE = REPO / "training" / "route_corrections.py"
+BAKED_SECRET = "neptranslate-sync-test-2026"
+
+
+def lan_urls(port: int) -> list[str]:
+    urls = [f"http://127.0.0.1:{port}"]
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.connect(("8.8.8.8", 80))
+        ip = sock.getsockname()[0]
+        sock.close()
+        if ip and not str(ip).startswith("127."):
+            urls.append(f"http://{ip}:{port}")
+    except Exception:
+        pass
+    return urls
 
 
 def utc_now() -> str:
@@ -78,7 +91,8 @@ def save_seen(seen: set[str]) -> None:
 
 def event_id_for(mid: str, rev: dict) -> str:
     completed = rev.get("completed_at") or ""
-    return f"mre_{mid}_{completed}"
+    key = rev.get("review_key") or mid
+    return f"mre_{key}_{completed}"
 
 
 def filter_new_reviews(payload: dict) -> tuple[dict, int, int, set[str]]:
@@ -106,7 +120,7 @@ def write_and_route(payload: dict, fresh: dict, new_ids: set[str]) -> dict:
     path = INBOX / f"batch_{stamp}_{digest}.json"
     out = {
         **payload,
-        "export_kind": "meaning_unit_reviews",
+        "export_kind": payload.get("export_kind") or "data_reviews",
         "exported_at": payload.get("exported_at") or utc_now(),
         "n_completed": len(fresh),
         "reviews": fresh,
@@ -221,37 +235,37 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Meaning Review sync receiver")
-    ap.add_argument("--host", default="127.0.0.1")
+    ap = argparse.ArgumentParser(description="Phone → PC data review receiver")
+    ap.add_argument("--host", default="0.0.0.0")
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument(
         "--secret",
-        default=os.environ.get("REVIEW_SYNC_SECRET", ""),
+        default=os.environ.get("REVIEW_SYNC_SECRET", BAKED_SECRET),
         help="Shared secret (or set REVIEW_SYNC_SECRET)",
     )
     args = ap.parse_args()
-    secret = (args.secret or "").strip()
-    if not secret:
-        secret = secrets.token_urlsafe(24)
-        print(
-            "WARNING: no --secret / REVIEW_SYNC_SECRET; generated ephemeral secret:",
-            secret,
-            file=sys.stderr,
-        )
-        print("Pass the same value into the app Advanced → Review sync.", file=sys.stderr)
+    secret = (args.secret or BAKED_SECRET).strip()
 
     httpd = ThreadingHTTPServer((args.host, args.port), Handler)
     httpd.sync_secret = secret  # type: ignore[attr-defined]
+    urls = lan_urls(args.port)
+    phone = urls[-1].replace("http://", "").replace(f":{args.port}", "")
     print(
         json.dumps(
             {
                 "listening": f"http://{args.host}:{args.port}",
-                "post": f"http://{args.host}:{args.port}/v1/reviews",
+                "phone_urls": urls,
+                "post": f"{urls[-1]}/v1/reviews",
                 "inbox": str(INBOX),
-                "hint": "cloudflared tunnel --url http://127.0.0.1:%d" % args.port,
+                "app": {
+                    "password": "1234",
+                    "laptop_address": phone if ":" not in phone else urls[-1],
+                    "hint": f"On the phone: Settings → Advanced → Data review. Password 1234. Laptop address {urls[-1].replace('http://', '')}",
+                },
             },
             indent=2,
-        )
+        ),
+        flush=True,
     )
     try:
         httpd.serve_forever()

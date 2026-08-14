@@ -148,18 +148,18 @@ export function SettingsScreen({
             style={styles.subRow}
             onPress={onOpenMeaningReview}
             accessibilityRole="button"
-            accessibilityLabel="Open Meaning Review"
+            accessibilityLabel="Open Data review"
           >
-            <Text style={styles.subTitle}>Meaning Review</Text>
+            <Text style={styles.subTitle}>Data review</Text>
             <Text style={styles.subHint}>
-              Edit Nepali / Roman · password required · auto-syncs
+              Gold bench then training · password 1234 · Send to PC
             </Text>
           </Pressable>
 
           <View style={styles.syncBox}>
-            <Text style={styles.subTitle}>Review sync</Text>
+            <Text style={styles.subTitle}>Send to this PC</Text>
             <Text style={styles.subHint}>
-              Built-in · {syncStatus?.pending ?? 0} pending
+              Same Wi-Fi · {syncStatus?.pending ?? 0} pending
               {syncStatus?.lastOkAt
                 ? ` · last OK ${syncStatus.lastOkAt.slice(0, 16).replace('T', ' ')}`
                 : ''}
@@ -175,7 +175,7 @@ export function SettingsScreen({
               {syncBusy ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.syncBtnText}>Sync now</Text>
+                <Text style={styles.syncBtnText}>Send pending</Text>
               )}
             </Pressable>
           </View>

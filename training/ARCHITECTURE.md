@@ -54,16 +54,16 @@ Informal = friendly **तिमी** Nepali (not तँ) for v1.
 ## User data improvement
 
 ```
-In-app Meaning Review (password 1234)
-  English read-only · edit NE formal/informal + Roman
-  Accept all | Skip (flags founder queue)
-        ↓ export JSON
-training/route_corrections.py
+In-app Data review (password 1234)
+  Benchmark gold first · then training meanings
+  Send to PC (as-is or edited)
+        ↓ same Wi-Fi
+training/review_sync_server.py → route_corrections.py
+  gold_holdout → benchmarks/gold/
   train_meaning → meaning_bank.jsonl
-  founder_queue → founder_review_queue.jsonl
-        ↓ when ≥100 edited
-training/local_auto_train.py  (this machine overnight)
-  prepare_cpu_mix → finetune_it2_cpu (both directions) → eval_it2_gold --systems it2_base,it2_cpu
+        ↓ when ≥100 edited train meanings
+training/local_auto_train.py
+  prepare_cpu_mix → finetune_it2_cpu → eval_it2_gold
 ```
 
 On-device ship: **both EN→NE and NE→EN INT8**. Chat-Roman is normalized to Devanagari before NE→EN. Phrase overlay from the meaning bank covers in-domain lines exactly. See `training/DATA.md`.

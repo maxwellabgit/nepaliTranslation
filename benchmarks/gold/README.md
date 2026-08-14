@@ -15,7 +15,9 @@ Private holdout for product quality decisions. **~100 base + premium word-choice
 
 ## Human review (current)
 
-Human review now runs through the in-app **Meaning Review** flow (Settings → Review training data), which syncs each Accept/Skip to the review server (`training/review_server.py`). The old in-app gold-pack review screen (`pack_gold_for_app.py` / `apply_app_reviews.py`) was removed.
+In-app **Data review** (Settings → Advanced, password `1234`) sends gold pairs to this PC with **Send to PC**. Gold is reviewed first so later training gains are scored against a trusted holdout.
+
+Router: `training/route_corrections.py` writes `benchmarks/gold/{class}/` then refreshes the train blocklist. See `training/REVIEW_SYNC.md`.
 
 **Sentence-level rule still applies:** the IT2 FT unit is one sentence (model max 256 positions, FT truncates ~96); split or trim multi-sentence rows before they enter training data.
 

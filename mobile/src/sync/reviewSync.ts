@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import type { MeaningReview } from '../storage/meaningReviews';
+import { reviewKeyOf, type SyncableReview } from '../storage/goldReviews';
 
-const CONFIG_KEY = 'neptranslate.review_sync.config.v2';
+const CONFIG_KEY = 'neptranslate.review_sync.config.v3';
 const QUEUE_KEY = 'neptranslate.review_sync.queue.v1';
 const STATUS_KEY = 'neptranslate.review_sync.status.v1';
 
@@ -27,7 +28,7 @@ export type ReviewSyncStatus = {
   lastBatchSize: number;
 };
 
-type QueueItem = MeaningReview & { queued_at: string };
+type QueueItem = SyncableReview & { queued_at: string };
 
 type ExtraSync = {
   reviewSyncEndpoint?: string;
@@ -43,9 +44,7 @@ function bakedDefaults(): ReviewSyncConfig {
   const extra = (Constants.expoConfig?.extra ?? {}) as ExtraSync;
   return {
     enabled: extra.reviewSyncEnabled !== false,
-    endpointUrl:
-      (extra.reviewSyncEndpoint || '').trim() ||
-      'https://containers-darwin-ice-soon.trycloudflare.com',
+    endpointUrl: (extra.reviewSyncEndpoint || '').trim(),
     secret:
       (extra.reviewSyncSecret || '').trim() || 'neptranslate-sync-test-2026',
     deviceLabel: 'testflight',
@@ -75,7 +74,11 @@ export async function loadReviewSyncConfig(): Promise<ReviewSyncConfig> {
 }
 
 export async function saveReviewSyncConfig(config: ReviewSyncConfig): Promise<void> {
-  await AsyncStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  const next = {
+    ...config,
+    endpointUrl: normalizeLaptopAddress(config.endpointUrl),
+  };
+  await AsyncStorage.setItem(CONFIG_KEY, JSON.stringify(next));
 }
 
 export async function loadReviewSyncStatus(): Promise<ReviewSyncStatus> {
@@ -115,18 +118,30 @@ async function saveQueue(items: QueueItem[]): Promise<void> {
 }
 
 function normalizeEndpoint(url: string): string {
-  const trimmed = url.trim().replace(/\/+$/, '');
+  let trimmed = url.trim().replace(/\/+$/, '');
   if (!trimmed) return '';
+  if (/^\d{1,3}(\.\d{1,3}){3}(:\d+)?$/.test(trimmed)) {
+    trimmed = `http://${trimmed}`;
+  }
+  if (/^https?:\/\/\d{1,3}(\.\d{1,3}){3}$/.test(trimmed)) {
+    trimmed = `${trimmed}:8765`;
+  }
   if (trimmed.endsWith('/v1/reviews')) return trimmed;
   return `${trimmed}/v1/reviews`;
+}
+
+/** Store a laptop address the way a person would type it (IP or full URL). */
+export function normalizeLaptopAddress(raw: string): string {
+  const endpoint = normalizeEndpoint(raw);
+  return endpoint.replace(/\/v1\/reviews$/, '');
 }
 
 /**
  * Drop a pending upload (e.g. after Undo). Already-sent reviews are unchanged.
  */
-export async function dropQueuedReviewSync(meaningId: string): Promise<void> {
+export async function dropQueuedReviewSync(reviewKey: string): Promise<void> {
   const queue = await loadQueue();
-  const next = queue.filter((q) => q.meaning_id !== meaningId);
+  const next = queue.filter((q) => reviewKeyOf(q) !== reviewKey);
   if (next.length === queue.length) return;
   await saveQueue(next);
   await saveStatus({ pending: next.length });
@@ -136,11 +151,12 @@ export async function dropQueuedReviewSync(meaningId: string): Promise<void> {
  * Queue a completed review for upload, then flush immediately when enabled.
  * The queue is capped so a dead endpoint can never grow storage unbounded.
  */
-export async function enqueueReviewSync(review: MeaningReview): Promise<void> {
+export async function enqueueReviewSync(review: SyncableReview | MeaningReview): Promise<void> {
   const config = await loadReviewSyncConfig();
   const queue = await loadQueue();
-  const withoutDup = queue.filter((q) => q.meaning_id !== review.meaning_id);
-  withoutDup.push({ ...review, queued_at: new Date().toISOString() });
+  const key = reviewKeyOf(review);
+  const withoutDup = queue.filter((q) => reviewKeyOf(q) !== key);
+  withoutDup.push({ ...(review as SyncableReview), queued_at: new Date().toISOString() });
   const capped = withoutDup.slice(-MAX_QUEUE);
   await saveQueue(capped);
   await saveStatus({ pending: capped.length });
@@ -174,7 +190,7 @@ export async function flushReviewSync(opts?: {
     }
     const endpoint = normalizeEndpoint(config.endpointUrl);
     if (!endpoint) {
-      const err = 'Sync endpoint missing from app build';
+      const err = 'Laptop address missing. Unlock Data review and set it once.';
       await saveStatus({ lastError: err, pending: queue.length });
       return { ok: false, error: err, sent: 0 };
     }
@@ -185,17 +201,17 @@ export async function flushReviewSync(opts?: {
     }
 
     const batch = queue.slice(0, MAX_BATCH_UPLOAD);
-    const reviews: Record<string, MeaningReview> = {};
+    const reviews: Record<string, SyncableReview> = {};
     for (const item of batch) {
       const { queued_at: _q, ...review } = item;
-      reviews[review.meaning_id] = review;
+      reviews[reviewKeyOf(review)] = review;
     }
 
     const body = {
-      export_kind: 'meaning_unit_reviews',
+      export_kind: 'data_reviews',
       exported_at: new Date().toISOString(),
       sync: {
-        device_label: config.deviceLabel || 'testflight',
+        device_label: config.deviceLabel || 'phone',
         reason: opts?.reason ?? 'flush',
         batch_size: batch.length,
       },

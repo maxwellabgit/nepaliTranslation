@@ -19,7 +19,7 @@
           "NSAllowsLocalNetworking": true
         }
       },
-      "buildNumber": "34"
+      "buildNumber": "35"
     },
     "android": {
       "package": "com.neptranslate.app",
@@ -63,7 +63,7 @@
         "projectId": "4d0a21e4-5c2e-45fa-b8fd-86a996abb404"
       },
       "reviewSyncEnabled": true,
-      "reviewSyncEndpoint": "https://containers-darwin-ice-soon.trycloudflare.com",
+      "reviewSyncEndpoint": "",
       "reviewSyncSecret": "neptranslate-sync-test-2026"
     },
     "owner": "mbucholzs-team"

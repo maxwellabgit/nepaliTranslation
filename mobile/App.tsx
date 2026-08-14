@@ -7,7 +7,7 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
-import { MeaningReviewScreen } from './src/screens/MeaningReviewScreen';
+import { DataReviewScreen } from './src/screens/DataReviewScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import {
   MT_WARM_DOWNLOADING,
@@ -152,7 +152,7 @@ export default function App() {
               neuralReady={neuralReady}
             />
           ) : (
-            <MeaningReviewScreen onClose={() => setOverlay('settings')} />
+            <DataReviewScreen onClose={() => setOverlay('settings')} />
           )}
         </View>
       ) : null}

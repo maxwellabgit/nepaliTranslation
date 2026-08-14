@@ -31,6 +31,8 @@ training/artifacts/review_sync_seen.json
 training/artifacts/auto_train_ready.json
 training/artifacts/auto_train_runs.jsonl
 training/artifacts/correction_router_state.json
+training/data/meaning_review_events.jsonl
+training/data/founder_review_queue.jsonl
 
 
 # Large harvested / scraped corpora (rebuild from scripts)

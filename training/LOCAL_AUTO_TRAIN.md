@@ -4,9 +4,8 @@ Train the **edge IndicTrans2 dist-200M** LoRA here overnight — do not use HF J
 
 ## Getting reviews onto this machine
 
-**Automatic (recommended):** run `training/review_sync_server.py` and enable
-**Settings → Advanced → Review sync** on the phone. Batches upload as you
-Accept / Skip. Details: `training/REVIEW_SYNC.md`.
+**Automatic (recommended):** run `python training/review_sync_server.py` and use
+**Settings → Advanced → Data review** on the phone. Details: `training/REVIEW_SYNC.md`.
 
 **Manual fallback:** export JSON from Meaning Review, then:
 
@@ -40,10 +39,10 @@ Start in: C:\Users\maxwe\.cursor\nepaliTranslation
 
 ## Pipeline steps
 
-1. `build_meaning_bank.py` — expand meaning bank → train JSONL  
-2. `finetune_it2_meanings.py --directions en-ne` — LoRA on the same 200M edge base  
-3. `benchmarks/eval_it2_gold.py` — gate (if present)  
-4. Reset `edited_since_train` to 0  
+1. `prepare_cpu_mix.py` — clean bank + CPU jsonl (keeps `human_meaning_review`)
+2. `finetune_it2_cpu.py --directions en-ne,ne-en`
+3. `benchmarks/eval_it2_gold.py --systems it2_base,it2_cpu`
+4. Reset `edited_since_train` to 0
 
 Logs: `training/artifacts/auto_train_runs.jsonl`
 
