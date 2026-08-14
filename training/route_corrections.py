@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
 """
-Correction router: meaning-unit review export → meaning_bank + founder queue.
+Correction router: phone Data review → gold holdout and/or meaning bank.
 
 Usage:
   python training/route_corrections.py path/to/export.json
-  python training/route_corrections.py path/to/export.json --maybe-train
 
 Routes:
-  train_meaning (accepted | edited) → update training/data/meaning_bank.jsonl
-  founder_queue (skipped)           → training/data/founder_review_queue.jsonl
-
-When cumulative edited meanings since last train ≥ EDIT_THRESHOLD (100),
-writes training/artifacts/auto_train_ready.json and optionally launches
-training/local_auto_train.py --if-ready.
+  gold_holdout / kind=gold     → benchmarks/gold/{class}/sources+references
+  train_meaning                → training/data/meaning_bank.jsonl
+  founder_queue / live_pair    → training/data/founder_review_queue.jsonl
 """
 from __future__ import annotations
 
@@ -30,6 +26,8 @@ FOUNDER_Q = DATA / "founder_review_queue.jsonl"
 EVENTS = DATA / "meaning_review_events.jsonl"
 STATE = REPO / "training" / "artifacts" / "correction_router_state.json"
 READY = REPO / "training" / "artifacts" / "auto_train_ready.json"
+GOLD_DIR = REPO / "benchmarks" / "gold"
+GOLD_CLASSES = {"en_ne_formal", "en_ne_informal", "ne_en_deva", "ne_en_roman"}
 EDIT_THRESHOLD = 100
 
 
@@ -78,8 +76,75 @@ def append_jsonl(path: Path, rows: list[dict]) -> None:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
+def load_jsonl_rows(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+
+
+def write_jsonl_rows(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + ("\n" if rows else ""),
+        encoding="utf-8",
+    )
+
+
+def is_gold(rev: dict) -> bool:
+    return rev.get("kind") == "gold" or rev.get("route") == "gold_holdout"
+
+
+def apply_gold_review(rev: dict) -> bool:
+    cid = (rev.get("class_id") or "").strip()
+    iid = (rev.get("item_id") or rev.get("meaning_id") or "").strip()
+    if iid.startswith("gold:"):
+        iid = iid.split(":", 1)[1]
+    if cid not in GOLD_CLASSES or not iid:
+        return False
+    source_final = (rev.get("source_final") or "").strip()
+    ref_final = (rev.get("reference_final") or "").strip()
+    deva_final = (rev.get("deva_final") or None)
+    src_path = GOLD_DIR / cid / "sources.jsonl"
+    ref_path = GOLD_DIR / cid / "references.jsonl"
+    sources = load_jsonl_rows(src_path)
+    refs = load_jsonl_rows(ref_path)
+    found_s = False
+    for row in sources:
+        if row.get("id") == iid:
+            if source_final:
+                row["source"] = source_final
+            if cid == "ne_en_roman" and deva_final:
+                row["deva"] = deva_final
+            row["status"] = "reviewed"
+            row["human_reviewed_at"] = rev.get("completed_at") or utc_now()
+            found_s = True
+            break
+    if not found_s and source_final:
+        row = {"id": iid, "source": source_final, "status": "reviewed"}
+        if cid == "ne_en_roman" and deva_final:
+            row["deva"] = deva_final
+        sources.append(row)
+    found_r = False
+    for row in refs:
+        if row.get("id") == iid:
+            if ref_final:
+                row["reference"] = ref_final
+            if cid == "ne_en_roman" and deva_final:
+                row["deva"] = deva_final
+            found_r = True
+            break
+    if not found_r and ref_final:
+        row = {"id": iid, "reference": ref_final}
+        if cid == "ne_en_roman" and deva_final:
+            row["deva"] = deva_final
+        refs.append(row)
+    write_jsonl_rows(src_path, sources)
+    write_jsonl_rows(ref_path, refs)
+    return True
+
+
 def route(export_path: Path) -> dict:
-    payload = json.loads(export_path.read_text(encoding="utf-8"))
+    payload = json.loads(export_path.read_text(encoding="utf-8-sig"))
     reviews = payload.get("reviews") or {}
     if not isinstance(reviews, dict):
         raise SystemExit("export.reviews must be an object keyed by meaning_id")
@@ -92,17 +157,25 @@ def route(export_path: Path) -> dict:
     n_edited = 0
     n_accepted = 0
     n_skipped = 0
+    n_gold = 0
+    n_gold_applied = 0
 
     for mid, rev in reviews.items():
         action = rev.get("action")
+        kind = rev.get("kind") or ""
         route_name = rev.get("route") or (
-            "founder_queue" if action == "skipped" else "train_meaning"
+            "gold_holdout"
+            if kind == "gold"
+            else "founder_queue"
+            if action == "skipped" or kind == "live_pair"
+            else "train_meaning"
         )
         event = {
-            "event_id": f"mre_{mid}_{rev.get('completed_at', utc_now())}",
+            "event_id": f"mre_{rev.get('review_key') or mid}_{rev.get('completed_at', utc_now())}",
             "meaning_id": mid,
             "action": action,
             "route": route_name,
+            "kind": kind or route_name,
             "flag_for_founder": bool(rev.get("flag_for_founder")),
             "fields_changed": rev.get("fields_changed") or [],
             "completed_at": rev.get("completed_at") or utc_now(),
@@ -110,7 +183,13 @@ def route(export_path: Path) -> dict:
         }
         events.append(event)
 
-        if route_name == "founder_queue" or action == "skipped":
+        if is_gold(rev) or route_name == "gold_holdout":
+            n_gold += 1
+            if apply_gold_review(rev):
+                n_gold_applied += 1
+            continue
+
+        if route_name == "founder_queue" or action == "skipped" or kind == "live_pair":
             n_skipped += 1
             founder_rows.append(
                 {
@@ -134,15 +213,18 @@ def route(export_path: Path) -> dict:
         else:
             n_accepted += 1
 
-        prev = bank.get(mid) or {
-            "meaning_id": mid,
+        item_id = (rev.get("meaning_id") or mid or "").strip()
+        if item_id.startswith("train:"):
+            item_id = item_id.split(":", 1)[1]
+        prev = bank.get(item_id) or {
+            "meaning_id": item_id,
             "surface": rev.get("surface") or "travel",
             "provenance": rev.get("provenance") or "human_app_review",
             "unit": "sentence",
         }
-        bank[mid] = {
+        bank[item_id] = {
             **prev,
-            "meaning_id": mid,
+            "meaning_id": item_id,
             "english": (rev.get("english") or prev.get("english") or "").strip(),
             "ne_formal": (rev.get("ne_formal_final") or "").strip(),
             "ne_informal": (rev.get("ne_informal_final") or "").strip(),
@@ -182,17 +264,31 @@ def route(export_path: Path) -> dict:
         )
     save_state(state)
 
-    # Refresh mobile pack from updated bank
+    # Refresh mobile packs from updated gold / bank
     try:
-        subprocess.run(
-            [sys.executable, str(REPO / "training" / "pack_meaning_review.py")],
-            check=False,
-            cwd=str(REPO),
-        )
+        if n_gold_applied:
+            subprocess.run(
+                [sys.executable, str(REPO / "benchmarks" / "freeze_gold_holdout.py")],
+                check=False,
+                cwd=str(REPO),
+            )
+            subprocess.run(
+                [sys.executable, str(REPO / "benchmarks" / "pack_gold_review.py")],
+                check=False,
+                cwd=str(REPO),
+            )
+        if n_train:
+            subprocess.run(
+                [sys.executable, str(REPO / "training" / "pack_meaning_review.py")],
+                check=False,
+                cwd=str(REPO),
+            )
     except Exception:
         pass
 
     summary = {
+        "n_gold": n_gold,
+        "n_gold_applied": n_gold_applied,
         "n_train_meaning": n_train,
         "n_edited": n_edited,
         "n_accepted": n_accepted,

@@ -46,6 +46,8 @@ KEEP_PROVENANCE = {
     "recovered_site_labels_and_manual_normalization",
     "law_gov",
     "user_conv_seed",
+    "human_meaning_review",
+    "human_app_review",
 }
 
 PRIORITY_SURFACES = {

@@ -5,11 +5,14 @@ const KEY = 'neptranslate.meaning_reviews.v1';
 
 export type MeaningReviewAction = 'accepted' | 'edited' | 'skipped';
 
+export type ReviewKind = 'gold' | 'train_meaning' | 'live_pair';
+
 /** Route hint for PC-side correction router. */
 export type CorrectionRoute =
   | 'train_meaning'
   | 'founder_queue'
-  | 'eval_probe';
+  | 'eval_probe'
+  | 'gold_holdout';
 
 export type MeaningReview = {
   meaning_id: string;
@@ -30,6 +33,8 @@ export type MeaningReview = {
   provenance: string;
   completed_at: string;
   fields_changed: string[];
+  kind?: ReviewKind;
+  review_key?: string;
 };
 
 export type MeaningReviewMap = Record<string, MeaningReview>;
@@ -94,6 +99,8 @@ export function completeMeaningAccept(
     provenance: unit.provenance,
     completed_at: new Date().toISOString(),
     fields_changed: fields,
+    kind: 'train_meaning',
+    review_key: `train:${unit.meaning_id}`,
   };
 }
 
@@ -116,6 +123,8 @@ export function completeMeaningSkip(unit: MeaningUnit): MeaningReview {
     provenance: unit.provenance,
     completed_at: new Date().toISOString(),
     fields_changed: [],
+    kind: 'train_meaning',
+    review_key: `train:${unit.meaning_id}`,
   };
 }
 

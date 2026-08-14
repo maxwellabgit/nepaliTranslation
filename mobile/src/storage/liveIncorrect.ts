@@ -56,6 +56,8 @@ export function buildLiveIncorrectReview(input: LiveIncorrectInput): MeaningRevi
     provenance: `${origin}:${input.sourceLang === 'en' ? 'en-ne' : 'ne-en'}:${input.formality}:${input.script}`,
     completed_at: stamp,
     fields_changed: [],
+    kind: 'live_pair',
+    review_key: `live:${meaning_id}`,
   };
 }
 
