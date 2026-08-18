@@ -24,4 +24,4 @@ Read `AGENTS.md`, `plans/active/app-runtime.md`, then trace `mobile/App.tsx` war
 Gold, training, visual redesigns, new product modes.
 
 ## Proof
-`cd mobile && npx tsc --noEmit` and `npm run verify:translate`. Then `/independent-reviewer`. Done = lane 4 in `.agent/DONE.md`.
+`cd mobile && node ./scripts/export_meaning_lexicon.mjs && npx tsc --noEmit` and `npm run verify:translate`. Then `/independent-reviewer`. Done = lane 4 in `.agent/DONE.md`.

@@ -19,5 +19,6 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
+      - run: node ./scripts/export_meaning_lexicon.mjs
       - run: npx tsc --noEmit
       - run: npm run verify:translate

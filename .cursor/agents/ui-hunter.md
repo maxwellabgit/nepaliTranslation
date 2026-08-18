@@ -33,6 +33,6 @@ Read `AGENTS.md`, `.governance/INTENT.md`, `plans/active/ui-bugs.md`, then inspe
 Gold, training, ONNX, lexicon generation except by running `npm run verify:translate`.
 
 ## Proof
-`cd mobile && npx tsc --noEmit` and `npm run verify:translate`. Do not claim TestFlight/airplane-mode proof. Device-only issues go under Blockers.
+`cd mobile && node ./scripts/export_meaning_lexicon.mjs && npx tsc --noEmit` and `npm run verify:translate`. Do not claim TestFlight/airplane-mode proof. Device-only issues go under Blockers.
 
 Then `/independent-reviewer`. Done = lane 2 in `.agent/DONE.md`.

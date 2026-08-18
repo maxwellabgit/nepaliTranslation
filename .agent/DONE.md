@@ -4,7 +4,7 @@
 
 Shared (every lane that touches `mobile/`):
 
-- [ ] `cd mobile && npx tsc --noEmit`
+- [ ] `cd mobile && node ./scripts/export_meaning_lexicon.mjs && npx tsc --noEmit`
 - [ ] `cd mobile && npm run verify:translate`
 - [ ] Diff contains no unrelated files and no gold-reference edits
 - [ ] ExecPlan updated
