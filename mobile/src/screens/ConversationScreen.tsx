@@ -98,6 +98,8 @@ export function ConversationScreen({
   const endWaitersRef = useRef<Array<() => void>>([]);
   const activeRef = useRef(active);
   activeRef.current = active;
+  /** Bumped when the pane hides so in-flight Pass/Retry cannot re-arm the mic. */
+  const sessionGenRef = useRef(0);
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
@@ -128,6 +130,7 @@ export function ConversationScreen({
   const speakShowAsync = useCallback(
     (turn: Turn): Promise<void> => {
       return new Promise((resolve) => {
+        if (!activeRef.current) return resolve();
         // Nepali output needs a Nepali voice; skip silently rather than
         // mangling Devanagari through an English voice.
         if (turn.from === 'en' && !neVoiceOk) return resolve();
@@ -155,7 +158,10 @@ export function ConversationScreen({
         });
         // Safety valve so a missing TTS callback can't hang the pass —
         // sized to the text so it never cuts off real speech.
-        setTimeout(finish, Math.min(25000, 4000 + text.length * 90));
+        setTimeout(() => {
+          if (!activeRef.current) return finish();
+          finish();
+        }, Math.min(25000, 4000 + text.length * 90));
       });
     },
     [neVoiceOk],
@@ -196,18 +202,20 @@ export function ConversationScreen({
 
   const retryTurn = useCallback(
     async (turn: Turn) => {
-      if (busy || passingRef.current) return;
+      if (busy || passingRef.current || !activeRef.current) return;
       if (!isRetryableTurn(turn, turns)) return;
+      const gen = sessionGenRef.current;
       setBusy(true);
       try {
         const result = await translateForced(turn.heard, turn.from);
+        if (gen !== sessionGenRef.current || !activeRef.current) return;
         if (result.cancelled) return;
         const show = result.text.trim() || emptyShowFallback(turn.from);
         setTurns((prev) =>
           prev.map((t) => (t.id === turn.id ? { ...t, show } : t)),
         );
       } finally {
-        setBusy(false);
+        if (gen === sessionGenRef.current) setBusy(false);
       }
     },
     [busy, turns, translateForced],
@@ -259,10 +267,13 @@ export function ConversationScreen({
 
   useEffect(() => {
     if (!active) {
+      sessionGenRef.current += 1;
       prefsLoadedRef.current = false;
+      passingRef.current = false;
       if (restartTimer.current) clearTimeout(restartTimer.current);
       listeningRef.current = false;
       setListening(false);
+      setBusy(false);
       setConsentVisible(false);
       return;
     }
@@ -316,7 +327,7 @@ export function ConversationScreen({
     }
     if (restartTimer.current) clearTimeout(restartTimer.current);
     restartTimer.current = setTimeout(() => {
-      if (!listeningRef.current || passingRef.current) return;
+      if (!activeRef.current || !listeningRef.current || passingRef.current) return;
       try {
         ExpoSpeechRecognitionModule.start({
           lang: sideRef.current === 'en' ? 'en-US' : 'ne-NP',
@@ -377,6 +388,7 @@ export function ConversationScreen({
   };
 
   const startListeningFor = async (next: Side) => {
+    if (!activeRef.current) return false;
     if (next === 'ne' && !neSttOk) {
       // No Nepali recognizer on this device — flip the display but don't
       // pretend to listen. The partner can read; speech input stays EN-only.
@@ -418,7 +430,7 @@ export function ConversationScreen({
   };
 
   const onPass = async () => {
-    if (passingRef.current || busy) return;
+    if (passingRef.current || busy || !activeRef.current) return;
     // Typed-reply mode has no mic to "say something" into — let the
     // Nepali partner hand the phone back without a reply.
     const typedMode = sideRef.current === 'ne' && !neSttOk;
@@ -428,6 +440,7 @@ export function ConversationScreen({
       setTimeout(() => setPassBlockedHint(false), 1600);
       return;
     }
+    const gen = sessionGenRef.current;
     passingRef.current = true;
     setBusy(true);
     const from = sideRef.current;
@@ -440,6 +453,7 @@ export function ConversationScreen({
       // Event-driven handoff: recognizer end → translate remainder →
       // speak aloud (mic off, so it can't hear itself) → arm next side.
       await stopAndWait();
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       let last: Turn | null = null;
       if (typedText) {
         setTypedReply('');
@@ -447,42 +461,51 @@ export function ConversationScreen({
       } else {
         last = await flushRemainder(from);
       }
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       setSide(next);
       sideRef.current = next;
       if (last) await speakShowAsync(last);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       await startListeningFor(next);
     } finally {
-      setBusy(false);
-      passingRef.current = false;
+      if (gen === sessionGenRef.current) {
+        setBusy(false);
+        passingRef.current = false;
+      }
     }
   };
 
   const onToggleMic = async () => {
-    if (busy) return;
+    if (busy || !activeRef.current) return;
     if (listening) {
       stopListening();
       return;
     }
+    const gen = sessionGenRef.current;
     await stopAndWait();
+    if (gen !== sessionGenRef.current || !activeRef.current) return;
     await startListeningFor(side);
   };
 
   /** Nepali partner types (roman or Devanagari) when speech input is absent. */
   const onSendTypedReply = async () => {
     const text = typedReply.trim();
-    if (!text || busy) return;
+    if (!text || busy || !activeRef.current) return;
+    const gen = sessionGenRef.current;
     setTypedReply('');
     Keyboard.dismiss();
     setBusy(true);
     try {
       const turn = await commitSentence(text, 'ne', false);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       // Hand back to the English speaker, voice their line, re-arm their mic.
       setSide('en');
       sideRef.current = 'en';
       if (turn) await speakShowAsync(turn);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       await startListeningFor('en');
     } finally {
-      setBusy(false);
+      if (gen === sessionGenRef.current) setBusy(false);
     }
   };
 

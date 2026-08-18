@@ -52,7 +52,9 @@ Verified at source-walk (then fixed — see findings below). Do not treat these 
 
 ### Won't-fix / out of lane (with reason)
 
-- Conversation has no History/Settings chrome. After finding 3 is fixed, user can switch to Auto without losing the thread and open overlays there. Not a new product mode.
+- Conversation Formal chips remain visible on the Nepali turn (EN→NE register for the other side).
+- Typed-reply Pass stays enabled with empty text (silent hand-back).
+- Independent review FAIL (2026-08-18) then fix: Pass/Retry/typed-send aborted on hide via `sessionGenRef`; Home debounce/preview gated on `active`.
 - Conversation has no `mtWarmStatus` banner — matches known product fact; trust line covers not-ready. Not a dead screen.
 - Meaning Review password 1234 — architecture lock; INTENT does not ask to remove it.
 - Overlay covering the tab bar — full-screen History/Settings; close returns to Auto. Intended.
@@ -70,6 +72,7 @@ Verified at source-walk (then fixed — see findings below). Do not treat these 
 ## Decision log
 - Conversation retry = re-run MT on `heard` for the last 5 turns only, with current Formal/script. Do not auto-speak (Speak remains). Do not add a sixth mode.
 - Keep both Auto and Conversation mounted; hide the inactive pane (`display: 'none'`). Gate STT event handlers on `active` so the hidden screen cannot ingest the other’s speech. Reload prefs when a pane becomes active so Formal/देवनागरी stay in sync.
+- After independent-review FAIL: bump `sessionGenRef` when Conversation hides so Pass/Retry/typed-send cannot `startListeningFor` or speak after the tab switch. Gate Home `previewTranslate` / debounce / `applyResult` on `active` so a leftover Auto preview cannot bump `TranslationEngine` seq and cancel Conversation MT.
 - Hide Formal/Informal on Auto when source language is Nepali. Leave them in Conversation (they apply to the English speaker’s EN→NE turns).
 - Typed-mode Pass commits `typedReply` if non-empty, otherwise still allows a silent hand-back (existing exception for no NE STT).
 - Do not change `theme.ts` colors (taste). Do not touch gold, training, ONNX, or decode-path formality.
@@ -117,7 +120,8 @@ OK
 `npx tsc --noEmit` exit 0 (no stdout). Diff is `mobile/App.tsx`, four screens, `plans/active/ui-bugs.md`. No gold, no training.
 
 ## Remaining work
-- Independent review until PASS
+- Independent review 1 FAIL: in-flight Pass re-armed the mic after hide; hidden Auto debounce could cancel Conversation MT. Fixed with `sessionGenRef` + `active` gates (see Decision log).
+- Independent review 2 pending.
 - GitHub PR create is blocked for this principal (`must be a collaborator`); branch `cursor/ui-bugs-a8e4` is pushed.
 
 ## Blockers

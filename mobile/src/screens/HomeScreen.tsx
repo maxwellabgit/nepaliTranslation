@@ -144,6 +144,7 @@ export function HomeScreen({
               forcePreferred: false,
             })
             .then((result) => {
+              if (!activeRef.current) return;
               if (result.cancelled || requestId !== requestIdRef.current) return;
               setOutput(result.text);
               void addHistory({
@@ -186,6 +187,7 @@ export function HomeScreen({
       opts?: { save?: boolean; source?: string },
     ) => {
       if (result.cancelled || requestId !== requestIdRef.current) return;
+      if (!activeRef.current) return;
       setOutput(result.text);
       const detected: SourceSide = result.direction === 'ne-en' ? 'ne' : 'en';
       setSourceSide((prev) => (prev === detected ? prev : detected));
@@ -198,6 +200,7 @@ export function HomeScreen({
 
   const previewTranslate = useCallback(
     (raw: string) => {
+      if (!activeRef.current) return;
       const t = raw.trim();
       if (!t) {
         setOutput('');
@@ -219,6 +222,7 @@ export function HomeScreen({
 
   const commitTranslate = useCallback(
     (raw: string) => {
+      if (!activeRef.current) return;
       const t = raw.trim();
       if (!t) {
         setOutput('');
@@ -333,8 +337,14 @@ export function HomeScreen({
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
 
+    if (!active) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      return;
+    }
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
+      if (!activeRef.current) return;
       if (requestId !== requestIdRef.current) return;
       previewTranslate(input);
     }, 160);
@@ -342,7 +352,7 @@ export function HomeScreen({
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [input, formality, script, preferred, previewTranslate]);
+  }, [input, formality, script, preferred, previewTranslate, active]);
 
   const onChangeInput = (text: string) => {
     if (listeningRef.current || startingRef.current) {
@@ -375,6 +385,7 @@ export function HomeScreen({
   };
 
   const toggleVoice = async () => {
+    if (!activeRef.current) return;
     if (sourceSide === 'ne' && !neSttOk) {
       Alert.alert(
         'Nepali voice input unavailable',
