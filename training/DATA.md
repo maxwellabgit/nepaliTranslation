@@ -11,7 +11,7 @@
 
 ## CPU training mix (this machine)
 
-See [`CPU_FT_JOB.md`](CPU_FT_JOB.md). The mix is **165 curated meanings** → 584 unique examples → **1552 EN→NE + 1356 NE→EN** after upsample. Quality over quantity; OPUS-100 / Global Voices / Titung are gone.
+See [`CPU_FT_JOB.md`](CPU_FT_JOB.md). The mix is **164 curated meanings** → 581 unique examples → **1544 EN→NE + 1352 NE→EN** after upsample. Quality over quantity; OPUS-100 / Global Voices / Titung are gone.
 
 | File | Role |
 |------|------|
@@ -21,7 +21,7 @@ See [`CPU_FT_JOB.md`](CPU_FT_JOB.md). The mix is **165 curated meanings** → 58
 | `train_clean_en-ne.jsonl` / `train_clean_ne-en.jsonl` | Expanded + upsampled LoRA examples |
 | `cpu_mix_manifest.json` | Counts |
 
-Gold holdout strings in `benchmarks/data/gold_train_blocklist.json` are never trained on.
+Gold holdout strings in `benchmarks/data/gold_train_blocklist.json` **and** a live scan of `benchmarks/gold/` are never trained on. `prepare_cpu_mix.py`, `prepare_ft_data.py`, `prepare_gold_domain_data.py`, and `build_meaning_bank.py` scan live gold (plus the blocklist file). `scrub_gold_from_train.py` reads the blocklist file only — refresh it with `python benchmarks/check_gold_integrity.py --update-freeze` before scrubbing. Domain FT (`finetune_it2_gold.py` / `train_gold_domain.jsonl`) is holdout-blocked conversation data — not the eval set.
 
 ## Deleted junk (do not recreate)
 

@@ -1,7 +1,7 @@
 {
   "name": "neptranslate-gold",
   "version": "0.1.0",
-  "description": "High-quality low-quantity gold standard for NepTranslate (~100 samples per class).",
+  "description": "High-quality gold holdout for NepTranslate. Original scaffold was 100 samples per class; live n is in each class manifest and in benchmarks/results/gold_freeze.json (the IT2 ship-gate freeze). n_target_base is the original scaffold; n_target is the frozen class size.",
   "languages_v1": ["en", "ne"],
   "language_rationale": "NPHC 2021: Nepali ~44.9% L1 + large L2 base (~90% access). Maithili/Bhojpuri later.",
   "classes": [
@@ -10,7 +10,8 @@
       "direction": "en-ne",
       "register": "formal",
       "script": "deva",
-      "n_target": 100,
+      "n_target_base": 100,
+      "n_target": 137,
       "path": "en_ne_formal/"
     },
     {
@@ -18,7 +19,8 @@
       "direction": "en-ne",
       "register": "informal",
       "script": "deva",
-      "n_target": 100,
+      "n_target_base": 100,
+      "n_target": 139,
       "path": "en_ne_informal/"
     },
     {
@@ -26,7 +28,8 @@
       "direction": "ne-en",
       "register": "neutral",
       "script": "deva",
-      "n_target": 100,
+      "n_target_base": 100,
+      "n_target": 133,
       "path": "ne_en_deva/"
     },
     {
@@ -34,7 +37,8 @@
       "direction": "ne-en",
       "register": "neutral",
       "script": "roman",
-      "n_target": 100,
+      "n_target_base": 100,
+      "n_target": 134,
       "path": "ne_en_roman/"
     }
   ],
@@ -48,7 +52,8 @@
     "Formal: तपाईं + matching verb forms (गर्नुहुन्छ, दिनुहोस्, …)",
     "Informal: तिमी + matching verb forms (गर्छौ, देऊ, …); keep तँ out of informal class unless labeled low",
     "Roman class: natural chat romanization paired with Devanagari + English",
-    "Do not train on this set; freeze before shipping models"
+    "Do not train on this set; freeze before shipping models",
+    "Integrity: python benchmarks/check_gold_integrity.py (no GPU). Refresh freeze only with --update-freeze after a clean audit."
   ],
   "licenses": {
     "hand_authored": "NepTranslate proprietary / work-for-hire",

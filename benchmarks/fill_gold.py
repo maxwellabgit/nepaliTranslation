@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-"""Fill benchmarks/gold to exactly 100 reviewed samples per class."""
+"""Original 100-row gold scaffold writer.
+
+Will not overwrite live gold larger than 100/class unless
+`--force-overwrite-scaffold` is passed. That path destroys the IT2 freeze.
+Prefer `python benchmarks/check_gold_integrity.py`.
+"""
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -128,7 +134,7 @@ EN_NE_INFORMAL: list[tuple[str, str]] = [
     ("Please speak slowly.", "कृपया बिस्तारै बोल।"),
     ("Where do you live?", "तिमी कहाँ बस्छौ?"),
     ("Call me tomorrow.", "भोलि मलाई फोन गर।"),
-    ("Are you hungry?", "के तिमी भोकाएको छस्?"),
+    ("Are you hungry?", "के तिमी भोकाएको छौ?"),
     ("Welcome.", "स्वागत छ।"),
     ("Good morning.", "शुभ प्रभात।"),
     ("Good evening.", "शुभ सन्ध्या।"),
@@ -500,6 +506,31 @@ def write_roman_class(name: str, rows: list[tuple[str, str, str]]) -> None:
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(
+        description="Rewrite gold to the original 100-row scaffold. Destroys premium/Kathmandu rows."
+    )
+    ap.add_argument(
+        "--force-overwrite-scaffold",
+        action="store_true",
+        help="Required if live gold is larger than 100/class. This is not the IT2 freeze writer.",
+    )
+    args = ap.parse_args()
+    too_big = []
+    for name in ("en_ne_formal", "en_ne_informal", "ne_en_deva", "ne_en_roman"):
+        p = ROOT / name / "sources.jsonl"
+        if not p.exists():
+            continue
+        n = sum(1 for line in p.read_text(encoding="utf-8").splitlines() if line.strip())
+        if n > 100:
+            too_big.append(f"{name}={n}")
+    if too_big and not args.force_overwrite_scaffold:
+        raise SystemExit(
+            "Refusing to overwrite live gold ("
+            + ", ".join(too_big)
+            + ") with the 100-row scaffold. That would destroy the IT2 freeze "
+            "(premium + Kathmandu rows). Integrity: python benchmarks/check_gold_integrity.py. "
+            "Pass --force-overwrite-scaffold only if you intentionally want the original scaffold."
+        )
     write_pair_class("en_ne_formal", EN_NE_FORMAL)
     write_pair_class("en_ne_informal", EN_NE_INFORMAL)
     write_pair_class("ne_en_deva", NE_EN_DEVA, script="deva")

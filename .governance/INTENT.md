@@ -1,5 +1,5 @@
 # INTENT
-Last updated: 2026-07-20
+Last updated: 2026-08-18
 
 ## North Star
 An **offline, on-device iOS app** that translates **English ↔ Nepali** in real time for live conversation and everyday text. All speech recognition and translation run on the iPhone. No server, no PC backend, no cloud inference for the core loop. Developed on Windows; shipped to iPhone via Expo EAS → TestFlight / App Store.
@@ -20,7 +20,7 @@ An **offline, on-device iOS app** that translates **English ↔ Nepali** in real
 - Surfaces: **Expo iOS app only** (`mobile/`).
 - Inference: on-device STT + on-device MT (Whisper-class ASR + IndicTrans2-class MT, or successors that meet the gold bench).
 - Output: text (+ optional TTS). No camera / OCR in v1.
-- Quality gate: private **gold standard** set — ~100 high-quality samples per eval class (formal EN→NE, informal EN→NE, NE→EN Devanagari, Roman NE→EN).
+- Quality gate: private **gold standard** holdout — original scaffold ~100/class; live frozen sizes live in `benchmarks/gold/*/manifest.json` and `benchmarks/results/gold_freeze.json` (formal EN→NE, informal EN→NE, NE→EN Devanagari, Roman NE→EN). Phrasebook floor ≠ IT2 freeze.
 
 ## Goals (this iteration)
 - [x] Single coherent offline product story in all docs and code

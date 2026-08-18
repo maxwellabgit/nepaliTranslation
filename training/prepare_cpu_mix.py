@@ -80,13 +80,30 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 
 def load_blocklist() -> set[str]:
     blocked: set[str] = set()
-    if not GOLD_BLOCK.exists():
-        return blocked
-    g = json.loads(GOLD_BLOCK.read_text(encoding="utf-8"))
-    for s in (g.get("sources") or []) + (g.get("references") or []):
-        n = norm(s)
-        if n:
-            blocked.add(n)
+    if GOLD_BLOCK.exists():
+        g = json.loads(GOLD_BLOCK.read_text(encoding="utf-8"))
+        for s in (g.get("sources") or []) + (g.get("references") or []):
+            n = norm(s)
+            if n:
+                blocked.add(n)
+    gold = REPO / "benchmarks" / "gold"
+    if gold.exists():
+        for cls in gold.iterdir():
+            if not cls.is_dir():
+                continue
+            for name in ("sources.jsonl", "references.jsonl"):
+                path = cls / name
+                if not path.exists():
+                    continue
+                for line in path.read_text(encoding="utf-8").splitlines():
+                    if not line.strip():
+                        continue
+                    row = json.loads(line)
+                    for key in ("source", "reference", "deva"):
+                        if row.get(key):
+                            n = norm(str(row[key]))
+                            if n:
+                                blocked.add(n)
     return blocked
 
 

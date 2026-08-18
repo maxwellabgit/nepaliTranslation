@@ -1,8 +1,8 @@
 {
   "created_at": "2026-08-13T02:45:53.645991+00:00",
-  "meanings_n": 165,
+  "meanings_n": 164,
   "by_provenance": {
-    "hand_priority_seed": 44,
+    "hand_priority_seed": 43,
     "assistant_curated": 58,
     "user_conv_seed": 3,
     "recovered_site_labels_and_manual_normalization": 50,
@@ -18,7 +18,7 @@
     "government": 63,
     "family": 4,
     "numbers_money": 4,
-    "code_switch_names": 5,
+    "code_switch_names": 4,
     "asr_noise": 1
   },
   "gold_blocklist_n": 599,
@@ -32,15 +32,15 @@
     "questions_requests",
     "travel"
   ],
-  "unique_examples_before_upsample": 584,
+  "unique_examples_before_upsample": 581,
   "train_n": {
-    "en-ne": 1552,
-    "ne-en": 1356
+    "en-ne": 1544,
+    "ne-en": 1352
   },
   "val_n": {
     "en-ne": 32,
     "ne-en": 27
   },
-  "note": "Quality >> quantity. Do not mix OPUS-100, Global Voices, or Titung into this job.",
+  "note": "Quality >> quantity. Do not mix OPUS-100, Global Voices, or Titung into this job. code_switch_names_00001 (I love Kathmandu) removed 2026-08-18: exact gold holdout source.",
   "run": "python training/finetune_it2_cpu.py --directions en-ne,ne-en"
 }

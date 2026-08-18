@@ -124,7 +124,6 @@
 {"id": "numbers_money_00002_informal", "nepali": "मलाई छ बजे उठा।", "register": "informal", "english_anchor": "Wake me up at six.", "provenance": "hand_priority_seed"}
 {"id": "numbers_money_00003_formal", "nepali": "साढे तीन बज्यो।", "register": "formal", "english_anchor": "It is half past three.", "provenance": "hand_priority_seed"}
 {"id": "numbers_money_00004_formal", "nepali": "एक हजार रुपैयाँ।", "register": "formal", "english_anchor": "One thousand rupees.", "provenance": "hand_priority_seed"}
-{"id": "code_switch_names_00001_formal", "nepali": "म काठमाडौंलाई माया गर्छु।", "register": "formal", "english_anchor": "I love Kathmandu.", "provenance": "hand_priority_seed"}
 {"id": "code_switch_names_00002_formal", "nepali": "के यहाँ वाइफाइ निःशुल्क छ?", "register": "formal", "english_anchor": "Is Wi-Fi free here?", "provenance": "hand_priority_seed"}
 {"id": "code_switch_names_00002_informal", "nepali": "यहाँ वाइफाइ फ्री छ?", "register": "informal", "english_anchor": "Is Wi-Fi free here?", "provenance": "hand_priority_seed"}
 {"id": "code_switch_names_00003_formal", "nepali": "मेरो नाम कुपर हो।", "register": "formal", "english_anchor": "My name is Cooper.", "provenance": "hand_priority_seed"}

@@ -406,7 +406,7 @@ HAND_SEEDS: list[tuple[str, str, str, str | None]] = [
     ("numbers_money", "It is two hundred rupees.", "दुई सय रुपैयाँ हो।", "दुई सय रुपैयाँ हो।"),
     ("numbers_money", "Wake me up at six.", "मलाई छ बजे उठाउनुहोस्।", "मलाई छ बजे उठा।"),
     # code_switch / names
-    ("code_switch_names", "I love Kathmandu.", "म काठमाडौंलाई माया गर्छु।", "म काठमाडौंलाई माया गर्छु।"),
+    ("code_switch_names", "I love Pokhara.", "म पोखरालाई माया गर्छु।", "म पोखरालाई माया गर्छु।"),
     ("code_switch_names", "Is Wi-Fi free here?", "के यहाँ वाइफाइ निःशुल्क छ?", "यहाँ वाइफाइ फ्री छ?"),
     ("code_switch_names", "My name is Cooper.", "मेरो नाम कुपर हो।", "मेरो नाम कुपर हो।"),
     # asr_noise (clean targets; noisy variants added at expand time)

@@ -116,7 +116,13 @@ def score_class(name: str) -> dict:
     sources = {r["id"]: r for r in load_jsonl(GOLD / name / "sources.jsonl")}
     refs = {r["id"]: r for r in load_jsonl(GOLD / name / "references.jsonl")}
     ids = sorted(sources.keys())
-    assert len(ids) == 100, f"{name} expected 100, got {len(ids)}"
+    man_path = GOLD / name / "manifest.json"
+    n_target = len(ids)
+    if man_path.exists():
+        man = json.loads(man_path.read_text(encoding="utf-8"))
+        n_target = int(man.get("n_filled") or man.get("n_target") or len(ids))
+    if len(ids) != n_target:
+        raise AssertionError(f"{name} expected {n_target} from manifest, got {len(ids)}")
 
     exact = 0
     norm_exact = 0
@@ -189,8 +195,8 @@ def score_class(name: str) -> dict:
     return {
         "class": name,
         "n": filled,
-        "n_target": 100,
-        "coverage": filled / 100,
+        "n_target": n_target,
+        "coverage": filled / n_target if n_target else 0,
         "src_tokens_mean": statistics.mean(src_lens) if src_lens else 0,
         "src_tokens_median": statistics.median(src_lens) if src_lens else 0,
         "ref_tokens_mean": statistics.mean(ref_lens) if ref_lens else 0,
@@ -285,7 +291,7 @@ def write_html(summary: dict) -> Path:
     cov_svg = svg_bar(
         [c["class"].replace("en_ne_", "").replace("ne_en_", "") for c in classes],
         cov,
-        "Gold coverage (filled / 100)",
+        "Gold coverage (filled / class n_target)",
     )
     (VIZ / "coverage.svg").write_text(cov_svg, encoding="utf-8")
 
@@ -312,7 +318,7 @@ def write_html(summary: dict) -> Path:
     for c in classes:
         gri = c.get("gold_register_integrity") or {}
         rows.append(
-            f"<tr><td>{c['class']}</td><td>{c['n']}/100</td>"
+            f"<tr><td>{c['class']}</td><td>{c['n']}/{c.get('n_target', c['n'])}</td>"
             f"<td>{c['src_tokens_mean']:.1f}</td><td>{c['ref_tokens_mean']:.1f}</td>"
             f"<td>{(gri.get('rate') if gri.get('rate') is not None else '—')}</td></tr>"
         )
@@ -427,9 +433,9 @@ def main() -> None:
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "total_filled": sum(c["n"] for c in classes),
-        "total_target": 400,
+        "total_target": sum(c["n_target"] for c in classes),
         "classes": classes,
-        "status": "complete" if all(c["n"] == 100 for c in classes) else "incomplete",
+        "status": "complete" if all(c["n"] == c["n_target"] for c in classes) else "incomplete",
     }
     (OUT / "gold_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"

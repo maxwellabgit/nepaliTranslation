@@ -11,7 +11,7 @@
 {"id": "en_ne_informal-011", "reference": "कृपया बिस्तारै बोल।"}
 {"id": "en_ne_informal-012", "reference": "तिमी कहाँ बस्छौ?"}
 {"id": "en_ne_informal-013", "reference": "भोलि मलाई फोन गर।"}
-{"id": "en_ne_informal-014", "reference": "के तिमी भोकाएको छस्?"}
+{"id": "en_ne_informal-014", "reference": "के तिमी भोकाएको छौ?"}
 {"id": "en_ne_informal-015", "reference": "स्वागत छ।"}
 {"id": "en_ne_informal-016", "reference": "शुभ प्रभात।"}
 {"id": "en_ne_informal-017", "reference": "शुभ सन्ध्या।"}
@@ -102,7 +102,7 @@
 {"id": "en_ne_informal-102", "reference": "तिमी के खान चाहन्छौ?", "tier": "premium_word_choice", "note": "volition informal"}
 {"id": "en_ne_informal-103", "reference": "म तिमीलाई विमानस्थलमा लिन आउँछु।", "tier": "premium_word_choice", "note": "informal object"}
 {"id": "en_ne_informal-104", "reference": "कृपया आराम गर।", "tier": "premium_word_choice", "note": "imperative informal"}
-{"id": "en_ne_informal-105", "reference": "तिमी कति बेरदेखि पर्खिरहेको छस्?", "tier": "premium_word_choice", "note": "informal progressive"}
+{"id": "en_ne_informal-105", "reference": "तिमी कति बेरदेखि पर्खिरहेको छौ?", "tier": "premium_word_choice", "note": "informal progressive"}
 {"id": "en_ne_informal-106", "reference": "तिमीलाई कुनै एलर्जी छ?", "tier": "premium_word_choice", "note": "same structure"}
 {"id": "en_ne_informal-107", "reference": "डाक्टरले चाँडै तिमीलाई भेट्छ।", "tier": "premium_word_choice", "note": "informal"}
 {"id": "en_ne_informal-108", "reference": "कृपया बस्।", "tier": "premium_word_choice", "note": "sit informal"}
