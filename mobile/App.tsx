@@ -82,11 +82,21 @@ export default function App() {
     <SafeAreaView style={styles.root}>
       <StatusBar style="dark" />
       <View style={styles.body}>
-        {mode === 'conversation' ? (
-          <ConversationScreen neuralReady={neuralReady} />
-        ) : (
+        {/* Both panes stay mounted so a tab tap does not wipe Auto input or the
+            Conversation thread. Inactive pane is display:none and ignores
+            pointer/STT events. Overlays still sit on top of whichever mode is
+            showing. */}
+        <View
+          style={[styles.pane, mode !== 'auto' && styles.paneHidden]}
+          pointerEvents={mode === 'auto' ? 'auto' : 'none'}
+          accessibilityElementsHidden={mode !== 'auto'}
+          importantForAccessibility={
+            mode === 'auto' ? 'auto' : 'no-hide-descendants'
+          }
+        >
           <HomeScreen
             key={seedKey}
+            active={mode === 'auto'}
             seed={seed}
             neuralReady={neuralReady}
             mtWarmStatus={mtWarmStatus}
@@ -99,7 +109,20 @@ export default function App() {
               setOverlay('settings');
             }}
           />
-        )}
+        </View>
+        <View
+          style={[styles.pane, mode !== 'conversation' && styles.paneHidden]}
+          pointerEvents={mode === 'conversation' ? 'auto' : 'none'}
+          accessibilityElementsHidden={mode !== 'conversation'}
+          importantForAccessibility={
+            mode === 'conversation' ? 'auto' : 'no-hide-descendants'
+          }
+        >
+          <ConversationScreen
+            active={mode === 'conversation'}
+            neuralReady={neuralReady}
+          />
+        </View>
       </View>
 
       <View style={styles.tabBar}>
@@ -163,6 +186,12 @@ export default function App() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   body: { flex: 1 },
+  pane: {
+    ...StyleSheet.absoluteFill,
+  },
+  paneHidden: {
+    display: 'none',
+  },
   overlay: {
     position: 'absolute',
     top: 0,

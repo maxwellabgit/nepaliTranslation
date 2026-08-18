@@ -45,16 +45,27 @@ type Turn = {
 
 type Props = {
   neuralReady?: boolean;
+  /** False while Auto is showing so STT events are ignored. */
+  active?: boolean;
 };
 
 /** Keep memory bounded on long sessions; history UI shows the last 8 anyway. */
 const MAX_TURNS = 40;
+/** INTENT: retry last 5 turns only. */
+const RETRY_TURN_LIMIT = 5;
+
+function isRetryableTurn(turn: Turn, all: Turn[]): boolean {
+  return all.slice(-RETRY_TURN_LIMIT).some((t) => t.id === turn.id);
+}
 
 /**
  * Conversation = pass-the-phone dialogue.
  * Uses shared TranslationEngine (ONNX when ready, phrasebook fallback).
  */
-export function ConversationScreen({ neuralReady = false }: Props) {
+export function ConversationScreen({
+  neuralReady = false,
+  active = true,
+}: Props) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [side, setSide] = useState<Side>('en');
   const [listening, setListening] = useState(false);
@@ -85,6 +96,10 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const commitChainRef = useRef<Promise<unknown>>(Promise.resolve());
   /** Resolvers waiting for the recognizer's 'end' event (pass handoff). */
   const endWaitersRef = useRef<Array<() => void>>([]);
+  const activeRef = useRef(active);
+  activeRef.current = active;
+  /** Bumped when the pane hides so in-flight Pass/Retry cannot re-arm the mic. */
+  const sessionGenRef = useRef(0);
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
@@ -115,6 +130,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const speakShowAsync = useCallback(
     (turn: Turn): Promise<void> => {
       return new Promise((resolve) => {
+        if (!activeRef.current) return resolve();
         // Nepali output needs a Nepali voice; skip silently rather than
         // mangling Devanagari through an English voice.
         if (turn.from === 'en' && !neVoiceOk) return resolve();
@@ -142,7 +158,10 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         });
         // Safety valve so a missing TTS callback can't hang the pass —
         // sized to the text so it never cuts off real speech.
-        setTimeout(finish, Math.min(25000, 4000 + text.length * 90));
+        setTimeout(() => {
+          if (!activeRef.current) return finish();
+          finish();
+        }, Math.min(25000, 4000 + text.length * 90));
       });
     },
     [neVoiceOk],
@@ -162,7 +181,10 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       // Chain commits: translations resolve at different speeds, and
       // unordered appends scramble the transcript.
       const run = commitChainRef.current.then(async () => {
+        if (!activeRef.current) return null;
+        const gen = sessionGenRef.current;
         const result = await translateForced(t, from);
+        if (gen !== sessionGenRef.current || !activeRef.current) return null;
         if (result.cancelled) return null;
         const show = result.text.trim() || emptyShowFallback(from);
         const turn: Turn = {
@@ -181,8 +203,30 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     [speakShow, translateForced],
   );
 
+  const retryTurn = useCallback(
+    async (turn: Turn) => {
+      if (busy || passingRef.current || !activeRef.current) return;
+      if (!isRetryableTurn(turn, turns)) return;
+      const gen = sessionGenRef.current;
+      setBusy(true);
+      try {
+        const result = await translateForced(turn.heard, turn.from);
+        if (gen !== sessionGenRef.current || !activeRef.current) return;
+        if (result.cancelled) return;
+        const show = result.text.trim() || emptyShowFallback(turn.from);
+        setTurns((prev) =>
+          prev.map((t) => (t.id === turn.id ? { ...t, show } : t)),
+        );
+      } finally {
+        if (gen === sessionGenRef.current) setBusy(false);
+      }
+    },
+    [busy, turns, translateForced],
+  );
+
   const ingestTranscript = useCallback(
     (text: string, from: Side) => {
+      if (!activeRef.current) return;
       const trimmed = text.trim();
       interimRef.current = trimmed;
       const { newSentences, nextEmittedCount, remainder } = takeNewCompleteSentences(
@@ -200,15 +244,18 @@ export function ConversationScreen({ neuralReady = false }: Props) {
 
   const flushRemainder = useCallback(
     async (from: Side): Promise<Turn | null> => {
+      if (!activeRef.current) return null;
       const full = interimRef.current.trim();
       let last: Turn | null = null;
       if (full) {
         const drained = takeNewCompleteSentences(full, emittedCountRef.current);
         for (const sent of drained.newSentences) {
+          if (!activeRef.current) return last;
           last = await commitSentence(sent, from, false);
         }
         const leftover = drained.remainder.trim();
         if (leftover) {
+          if (!activeRef.current) return last;
           last = await commitSentence(leftover, from, false);
         }
       }
@@ -221,6 +268,22 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   );
 
   useEffect(() => {
+    void getSttSupport().then((s) => setNeSttOk(s.ne));
+    void hasNepaliVoice().then(setNeVoiceOk);
+  }, []);
+
+  useEffect(() => {
+    if (!active) {
+      sessionGenRef.current += 1;
+      prefsLoadedRef.current = false;
+      passingRef.current = false;
+      if (restartTimer.current) clearTimeout(restartTimer.current);
+      listeningRef.current = false;
+      setListening(false);
+      setBusy(false);
+      setConsentVisible(false);
+      return;
+    }
     void loadPrefs().then((prefs) => {
       setFormalOn(prefs.formalOn);
       setDevaOn(prefs.devaOn);
@@ -229,12 +292,10 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         setConsentVisible(true);
       }
     });
-    void getSttSupport().then((s) => setNeSttOk(s.ne));
-    void hasNepaliVoice().then(setNeVoiceOk);
-  }, []);
+  }, [active]);
 
   useEffect(() => {
-    if (!prefsLoadedRef.current) return;
+    if (!active || !prefsLoadedRef.current) return;
     void loadPrefs().then((prev) => {
       void savePrefs({
         ...prev,
@@ -242,15 +303,17 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         devaOn,
       });
     });
-  }, [formalOn, devaOn]);
+  }, [formalOn, devaOn, active]);
 
   useSpeechRecognitionEvent('result', (event) => {
+    if (!activeRef.current) return;
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
     if (!text || passingRef.current) return;
     ingestTranscript(text, sideRef.current);
   });
 
   useSpeechRecognitionEvent('error', () => {
+    if (!activeRef.current) return;
     endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (!passingRef.current) {
       listeningRef.current = false;
@@ -259,6 +322,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   });
 
   useSpeechRecognitionEvent('end', () => {
+    if (!activeRef.current) return;
     endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (passingRef.current) return;
     if (!listeningRef.current) return;
@@ -270,7 +334,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     }
     if (restartTimer.current) clearTimeout(restartTimer.current);
     restartTimer.current = setTimeout(() => {
-      if (!listeningRef.current || passingRef.current) return;
+      if (!activeRef.current || !listeningRef.current || passingRef.current) return;
       try {
         ExpoSpeechRecognitionModule.start({
           lang: sideRef.current === 'en' ? 'en-US' : 'ne-NP',
@@ -331,6 +395,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   };
 
   const startListeningFor = async (next: Side) => {
+    if (!activeRef.current) return false;
     if (next === 'ne' && !neSttOk) {
       // No Nepali recognizer on this device — flip the display but don't
       // pretend to listen. The partner can read; speech input stays EN-only.
@@ -341,6 +406,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     }
     try {
       const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+      if (!activeRef.current) return false;
       if (!perm.granted) return false;
       sideRef.current = next;
       interimRef.current = '';
@@ -372,7 +438,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   };
 
   const onPass = async () => {
-    if (passingRef.current || busy) return;
+    if (passingRef.current || busy || !activeRef.current) return;
     // Typed-reply mode has no mic to "say something" into — let the
     // Nepali partner hand the phone back without a reply.
     const typedMode = sideRef.current === 'ne' && !neSttOk;
@@ -382,10 +448,12 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       setTimeout(() => setPassBlockedHint(false), 1600);
       return;
     }
+    const gen = sessionGenRef.current;
     passingRef.current = true;
     setBusy(true);
     const from = sideRef.current;
     const next: Side = from === 'en' ? 'ne' : 'en';
+    const typedText = typedMode ? typedReply.trim() : '';
 
     Vibration.vibrate(40);
 
@@ -393,43 +461,59 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       // Event-driven handoff: recognizer end → translate remainder →
       // speak aloud (mic off, so it can't hear itself) → arm next side.
       await stopAndWait();
-      const last = await flushRemainder(from);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
+      let last: Turn | null = null;
+      if (typedText) {
+        setTypedReply('');
+        last = await commitSentence(typedText, 'ne', false);
+      } else {
+        last = await flushRemainder(from);
+      }
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       setSide(next);
       sideRef.current = next;
       if (last) await speakShowAsync(last);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       await startListeningFor(next);
     } finally {
-      setBusy(false);
-      passingRef.current = false;
+      if (gen === sessionGenRef.current) {
+        setBusy(false);
+        passingRef.current = false;
+      }
     }
   };
 
   const onToggleMic = async () => {
-    if (busy) return;
+    if (busy || !activeRef.current) return;
     if (listening) {
       stopListening();
       return;
     }
+    const gen = sessionGenRef.current;
     await stopAndWait();
+    if (gen !== sessionGenRef.current || !activeRef.current) return;
     await startListeningFor(side);
   };
 
   /** Nepali partner types (roman or Devanagari) when speech input is absent. */
   const onSendTypedReply = async () => {
     const text = typedReply.trim();
-    if (!text || busy) return;
+    if (!text || busy || !activeRef.current) return;
+    const gen = sessionGenRef.current;
     setTypedReply('');
     Keyboard.dismiss();
     setBusy(true);
     try {
       const turn = await commitSentence(text, 'ne', false);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       // Hand back to the English speaker, voice their line, re-arm their mic.
       setSide('en');
       sideRef.current = 'en';
       if (turn) await speakShowAsync(turn);
+      if (gen !== sessionGenRef.current || !activeRef.current) return;
       await startListeningFor('en');
     } finally {
-      setBusy(false);
+      if (gen === sessionGenRef.current) setBusy(false);
     }
   };
 
@@ -474,6 +558,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
 
   const partnerText = latest ? displayShow(latest) : '';
   const showTypedReply = !enTurn && !neSttOk;
+  const passAllowed =
+    showTypedReply ||
+    canPassPhone(interim, latest ? latest.from : null, side);
 
   return (
     <View style={[styles.root, !enTurn && styles.rootNe]}>
@@ -495,6 +582,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             setSide('en');
             sideRef.current = 'en';
             setShowPartner(false);
+            setTypedReply('');
           }}
           hitSlop={10}
           style={styles.iconBtn}
@@ -509,6 +597,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (!formalOn) setFormalOn(true);
           }}
           style={[styles.chip, formalOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: formalOn }}
+          accessibilityLabel="Formal Nepali"
         >
           <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>
             {enTurn ? 'Formal' : 'औपचारिक'}
@@ -519,6 +610,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (formalOn) setFormalOn(false);
           }}
           style={[styles.chip, !formalOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: !formalOn }}
+          accessibilityLabel="Informal Nepali"
         >
           <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
             {enTurn ? 'Informal' : 'अनौपचारिक'}
@@ -529,6 +623,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (!devaOn) setDevaOn(true);
           }}
           style={[styles.chip, devaOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: devaOn }}
+          accessibilityLabel="Devanagari"
         >
           <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
         </Pressable>
@@ -537,6 +634,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (devaOn) setDevaOn(false);
           }}
           style={[styles.chip, !devaOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: !devaOn }}
+          accessibilityLabel="Roman Nepali"
         >
           <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
         </Pressable>
@@ -575,6 +675,17 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             <Text style={styles.histShow} numberOfLines={3}>
               {displayShow(turn)}
             </Text>
+            {isRetryableTurn(turn, turns) ? (
+              <Pressable
+                onPress={() => void retryTurn(turn)}
+                hitSlop={8}
+                disabled={busy}
+                accessibilityRole="button"
+                accessibilityLabel="Retry translation"
+              >
+                <Text style={styles.histRetry}>Retry</Text>
+              </Pressable>
+            ) : null}
           </View>
         ))}
 
@@ -611,6 +722,17 @@ export function ConversationScreen({ neuralReady = false }: Props) {
               >
                 <Text style={styles.heroAction}>Show</Text>
               </Pressable>
+              {isRetryableTurn(latest, turns) ? (
+                <Pressable
+                  onPress={() => void retryTurn(latest)}
+                  hitSlop={10}
+                  disabled={busy}
+                  accessibilityRole="button"
+                  accessibilityLabel="Retry last translation"
+                >
+                  <Text style={styles.heroAction}>Retry</Text>
+                </Pressable>
+              ) : null}
             </View>
           </View>
         ) : null}
@@ -689,11 +811,13 @@ export function ConversationScreen({ neuralReady = false }: Props) {
                 styles.passBtn,
                 busy && styles.passBtnBusy,
                 passBlockedHint && styles.passBtnBlocked,
+                !passAllowed && !busy && styles.passBtnBusy,
               ]}
               onPress={() => void onPass()}
               disabled={busy}
               accessibilityRole="button"
               accessibilityLabel="Pass the phone"
+              accessibilityState={{ disabled: busy || !passAllowed }}
             >
               <Text style={styles.passLabel}>{enTurn ? 'Pass' : 'पास'}</Text>
               <Text style={styles.passSub}>
@@ -790,18 +914,20 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    minHeight: 44,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: 'rgba(255,255,255,0.85)',
     borderWidth: 1,
     borderColor: colors.divider,
+    justifyContent: 'center',
   },
   chipOn: {
     backgroundColor: colors.crimson,
     borderColor: colors.crimson,
   },
-  chipText: { fontSize: 12, fontWeight: '700', color: colors.text },
+  chipText: { fontSize: 13, fontWeight: '700', color: colors.text },
   chipTextOn: { color: '#fff' },
   feed: { flex: 1 },
   feedContent: { paddingHorizontal: 16, paddingBottom: 16, gap: 10 },
@@ -839,6 +965,12 @@ const styles = StyleSheet.create({
   },
   histHeard: { fontSize: 12, color: colors.textSecondary },
   histShow: { fontSize: 15, fontWeight: '700', color: colors.text },
+  histRetry: {
+    marginTop: 4,
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.forest,
+  },
   hero: {
     backgroundColor: '#fff',
     borderRadius: 28,

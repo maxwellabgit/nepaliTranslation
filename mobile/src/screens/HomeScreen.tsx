@@ -40,6 +40,8 @@ type Props = {
   seed?: HistoryItem | null;
   neuralReady?: boolean;
   mtWarmStatus?: string | null;
+  /** False while Conversation is showing so STT events are ignored. */
+  active?: boolean;
   onOpenHistory: () => void;
   onOpenSettings: () => void;
 };
@@ -73,6 +75,7 @@ export function HomeScreen({
   seed,
   neuralReady = false,
   mtWarmStatus = null,
+  active = true,
   onOpenHistory,
   onOpenSettings,
 }: Props) {
@@ -102,6 +105,8 @@ export function HomeScreen({
   /** Ignore recognition `end` until this time (abort→restart race). */
   const ignoreEndUntilRef = useRef(0);
   const inputRef = useRef<TextInput>(null);
+  const activeRef = useRef(active);
+  activeRef.current = active;
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
@@ -139,6 +144,7 @@ export function HomeScreen({
               forcePreferred: false,
             })
             .then((result) => {
+              if (!activeRef.current) return;
               if (result.cancelled || requestId !== requestIdRef.current) return;
               setOutput(result.text);
               void addHistory({
@@ -181,6 +187,7 @@ export function HomeScreen({
       opts?: { save?: boolean; source?: string },
     ) => {
       if (result.cancelled || requestId !== requestIdRef.current) return;
+      if (!activeRef.current) return;
       setOutput(result.text);
       const detected: SourceSide = result.direction === 'ne-en' ? 'ne' : 'en';
       setSourceSide((prev) => (prev === detected ? prev : detected));
@@ -193,6 +200,7 @@ export function HomeScreen({
 
   const previewTranslate = useCallback(
     (raw: string) => {
+      if (!activeRef.current) return;
       const t = raw.trim();
       if (!t) {
         setOutput('');
@@ -214,6 +222,7 @@ export function HomeScreen({
 
   const commitTranslate = useCallback(
     (raw: string) => {
+      if (!activeRef.current) return;
       const t = raw.trim();
       if (!t) {
         setOutput('');
@@ -236,6 +245,7 @@ export function HomeScreen({
   );
 
   useSpeechRecognitionEvent('result', (event) => {
+    if (!activeRef.current) return;
     const raw = event.results?.[0]?.transcript?.trim?.() ?? '';
     if (!raw) return;
     if (!listeningRef.current && !startingRef.current) return;
@@ -263,6 +273,7 @@ export function HomeScreen({
     }
   });
   useSpeechRecognitionEvent('error', () => {
+    if (!activeRef.current) return;
     if (Date.now() < ignoreEndUntilRef.current) return;
     if (startingRef.current) return;
     listeningRef.current = false;
@@ -270,6 +281,7 @@ export function HomeScreen({
     setListening(false);
   });
   useSpeechRecognitionEvent('end', () => {
+    if (!activeRef.current) return;
     if (Date.now() < ignoreEndUntilRef.current) return;
     if (startingRef.current) return;
     listeningRef.current = false;
@@ -290,19 +302,34 @@ export function HomeScreen({
   }, []);
 
   useEffect(() => {
+    if (active) return;
+    prefsLoadedRef.current = false;
+    if (listeningRef.current || startingRef.current) {
+      listenGenRef.current += 1;
+      startingRef.current = false;
+      listeningRef.current = false;
+      setListening(false);
+      setStage('input');
+      ignoreEndUntilRef.current = Date.now() + 350;
+      hardStopRecognition();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (!active) return;
     void loadPrefs().then((prefs) => {
       setFormalOn(prefs.formalOn);
       setDevaOn(prefs.devaOn);
       prefsLoadedRef.current = true;
     });
-  }, []);
+  }, [active]);
 
   useEffect(() => {
-    if (!prefsLoadedRef.current) return;
+    if (!active || !prefsLoadedRef.current) return;
     void loadPrefs().then((prev) => {
       void savePrefs({ ...prev, formalOn, devaOn });
     });
-  }, [formalOn, devaOn]);
+  }, [formalOn, devaOn, active]);
 
   // Single live-preview path. History is written only on explicit commits
   // (blur, submit, STT final, quick phrase) — not on an idle timer.
@@ -310,8 +337,14 @@ export function HomeScreen({
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
 
+    if (!active) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      return;
+    }
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
+      if (!activeRef.current) return;
       if (requestId !== requestIdRef.current) return;
       previewTranslate(input);
     }, 160);
@@ -319,7 +352,7 @@ export function HomeScreen({
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [input, formality, script, preferred, previewTranslate]);
+  }, [input, formality, script, preferred, previewTranslate, active]);
 
   const onChangeInput = (text: string) => {
     if (listeningRef.current || startingRef.current) {
@@ -352,6 +385,7 @@ export function HomeScreen({
   };
 
   const toggleVoice = async () => {
+    if (!activeRef.current) return;
     if (sourceSide === 'ne' && !neSttOk) {
       Alert.alert(
         'Nepali voice input unavailable',
@@ -606,6 +640,15 @@ export function HomeScreen({
               <Text style={styles.clearText}>Clear</Text>
             </Pressable>
           ) : null}
+          <Text
+            style={[
+              styles.charCount,
+              input.length >= MAX_INPUT_CHARS && styles.charCountMax,
+            ]}
+            accessibilityLabel={`${input.length} of ${MAX_INPUT_CHARS} characters`}
+          >
+            {input.length}/{MAX_INPUT_CHARS}
+          </Text>
           {listening ? (
             // Tap the card while listening → stop the mic and go back to typing.
             <Pressable
@@ -639,29 +682,42 @@ export function HomeScreen({
       </View>
 
       <View style={styles.chipRow}>
-        <Pressable
-          onPress={() => {
-            if (!formalOn) setFormalOn(true);
-          }}
-          style={[styles.chip, formalOn && styles.chipOn]}
-        >
-          <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>Formal</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            if (formalOn) setFormalOn(false);
-          }}
-          style={[styles.chip, !formalOn && styles.chipOn]}
-        >
-          <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
-            Informal
-          </Text>
-        </Pressable>
+        {sourceSide === 'en' ? (
+          <>
+            <Pressable
+              onPress={() => {
+                if (!formalOn) setFormalOn(true);
+              }}
+              style={[styles.chip, formalOn && styles.chipOn]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: formalOn }}
+              accessibilityLabel="Formal Nepali"
+            >
+              <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>Formal</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                if (formalOn) setFormalOn(false);
+              }}
+              style={[styles.chip, !formalOn && styles.chipOn]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: !formalOn }}
+              accessibilityLabel="Informal Nepali"
+            >
+              <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
+                Informal
+              </Text>
+            </Pressable>
+          </>
+        ) : null}
         <Pressable
           onPress={() => {
             if (!devaOn) setDevaOn(true);
           }}
           style={[styles.chip, devaOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: devaOn }}
+          accessibilityLabel="Devanagari"
         >
           <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
         </Pressable>
@@ -670,6 +726,9 @@ export function HomeScreen({
             if (devaOn) setDevaOn(false);
           }}
           style={[styles.chip, !devaOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: !devaOn }}
+          accessibilityLabel="Roman Nepali"
         >
           <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
         </Pressable>
@@ -906,6 +965,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.textSecondary,
   },
+  charCount: {
+    position: 'absolute',
+    left: 16,
+    bottom: MIC_OVERHANG + 8,
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.textPlaceholder,
+  },
+  charCountMax: {
+    color: colors.danger,
+  },
   micBtn: {
     position: 'absolute',
     alignSelf: 'center',
@@ -967,16 +1037,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    minHeight: 44,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: colors.pasteBg,
+    justifyContent: 'center',
   },
   chipOn: {
     backgroundColor: colors.crimson,
   },
   chipText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
     color: colors.text,
   },
