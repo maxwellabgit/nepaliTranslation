@@ -94,7 +94,7 @@ Lane 3 JS/decode work is Done pending the recorded gold-eval blocker. Independen
 - Informal verbs: explicit honorific → तिमी-class table (गर / सक्छौ / छौ / जाऊ / …), never तँ (गर्, छस्, …). Do not drop कृपया as a separate policy.
 - Mashup: restrict Latin remainder to `my name is` prefixes only; refuse other phrase+Latin leftovers.
 - House-style roman for the new informal sorry: `माफ गर` → `maaf gara` (matches `माफ गर्नुहोस्` → `maaf garnuhos`).
-- No gold edits, no LoRA, no `meaningLexicon.json` commit, no UI restyle.
+- Independent review PASS 2026-08-18. Material findings: none. Do not expand into a full informal morphology pass in this PR.
 
 ## Commands that actually ran (paste)
 
