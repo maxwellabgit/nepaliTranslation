@@ -85,6 +85,7 @@ const WORD_EXCEPTIONS = {
   maile: 'मैले',
   tapailai: 'तपाईंलाई',
   timilai: 'तिमीलाई',
+  lai: 'लाई',
   cha: 'छ',
   chha: 'छ',
   chu: 'छु',

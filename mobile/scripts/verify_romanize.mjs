@@ -86,6 +86,7 @@ const sentence = t.romanToDevanagari
 const sentOk =
   typeof sentence === 'string' &&
   sentence.includes('तपाईं') &&
+  sentence.includes('लाई') &&
   sentence.includes('कस्तो') &&
   /[\u0900-\u097F]/.test(sentence) &&
   !/[A-Za-z]/.test(sentence.replace(/[?.!,;:।]/g, ''));

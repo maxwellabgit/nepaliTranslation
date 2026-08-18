@@ -47,7 +47,8 @@ const INFORMAL_REWRITES: [string, string][] = [
   ['जानुहोस्', 'जाऊ'],
   ['रोक्नुहोस्', 'रोक'],
   ['पर्खनुहोस्', 'पर्ख'],
-].sort((a, b) => b[0].length - a[0].length);
+] as [string, string][];
+INFORMAL_REWRITES.sort((a, b) => b[0].length - a[0].length);
 
 function applyInformal(ne: string): string {
   let out = ne;

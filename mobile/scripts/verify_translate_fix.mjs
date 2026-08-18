@@ -148,7 +148,7 @@ const sorryRoman = t.translateOnDevice('sorry', 'en-ne', {
 check(
   'sorry-informal-roman',
   sorryRoman.method === 'phrase' &&
-    sorryRoman.text.length > 0 &&
+    sorryRoman.text === 'maaf gara' &&
     !/garnuhos/i.test(sorryRoman.text) &&
     !sorryRoman.text.includes('तँ'),
   { out: sorryRoman.text },
