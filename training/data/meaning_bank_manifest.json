@@ -1,5 +1,5 @@
 {
-  "meanings_n": 165,
+  "meanings_n": 164,
   "by_surface": {
     "core_grammar": 31,
     "pronouns_honorifics": 4,
@@ -10,11 +10,11 @@
     "government": 63,
     "family": 4,
     "numbers_money": 4,
-    "code_switch_names": 5,
+    "code_switch_names": 4,
     "asr_noise": 1
   },
   "by_provenance": {
-    "hand_priority_seed": 44,
+    "hand_priority_seed": 43,
     "assistant_curated": 58,
     "user_conv_seed": 3,
     "recovered_site_labels_and_manual_normalization": 50,
@@ -41,6 +41,6 @@
     ]
   },
   "architecture": "one_mt_devanagari_canonical_plus_roman_layers",
-  "bank_path": "/workspace/training/data/meaning_bank.jsonl",
+  "bank_path": "training/data/meaning_bank.jsonl",
   "cpu_mix": "training/data/cpu_mix_manifest.json"
 }

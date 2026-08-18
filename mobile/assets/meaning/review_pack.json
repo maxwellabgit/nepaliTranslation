@@ -3,7 +3,7 @@
   "packed_at": "2026-08-13T02:45:53Z",
   "purpose": "in_app_meaning_unit_review",
   "model_family": "indictrans2-dist-200M",
-  "n_items": 165,
+  "n_items": 164,
   "items": [
     {
       "meaning_id": "asr_noise_00001",
@@ -13,17 +13,6 @@
       "roman_formal": "kripya malai maddata garnuhos.",
       "roman_informal": "malai maddata gara.",
       "surface": "asr_noise",
-      "provenance": "hand_priority_seed",
-      "unit": "sentence"
-    },
-    {
-      "meaning_id": "code_switch_names_00001",
-      "english": "I love Kathmandu.",
-      "ne_formal": "म काठमाडौंलाई माया गर्छु।",
-      "ne_informal": "म काठमाडौंलाई माया गर्छु।",
-      "roman_formal": "ma kathamadaunlai maya garchhau.",
-      "roman_informal": "ma kathamadaunlai maya garchhau.",
-      "surface": "code_switch_names",
       "provenance": "hand_priority_seed",
       "unit": "sentence"
     },

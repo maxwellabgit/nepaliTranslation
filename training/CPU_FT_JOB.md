@@ -1,6 +1,6 @@
 # CPU fine-tune job (this machine)
 
-This cloud VM is **4 CPU cores, ~15 GB RAM, no CUDA**. The job is IndicTrans2 dist-200M LoRA on the cleaned traveler mix: **165 meanings**, 584 unique examples, **1552 EN→NE + 1356 NE→EN** after upsample. Quality over quantity; OPUS-100 / Global Voices / Titung are gone.
+This cloud VM is **4 CPU cores, ~15 GB RAM, no CUDA**. The job is IndicTrans2 dist-200M LoRA on the cleaned traveler mix: **164 meanings**, 581 unique examples, **1544 EN→NE + 1352 NE→EN** after upsample. Quality over quantity; OPUS-100 / Global Voices / Titung are gone.
 
 On-device ship stays **base INT8 ONNX**. This run saves LoRA adapters only (`PeftModel.from_pretrained`). Do not `merge_and_unload`.
 
@@ -27,7 +27,7 @@ python training/finetune_it2_cpu.py --dry-run
 | `meaning_bank.jsonl` provenances `hand_priority_seed`, `assistant_curated`, `recovered_site_labels_and_manual_normalization`, `law_gov` | Product meanings |
 | `train_user_conversation_seeds.jsonl` | Traveler phrases (formal/informal) |
 | `train_law_gov_en_ne.jsonl` | Short Nepal gov / site labels |
-| Gold blocklist | Never train on `benchmarks/data/gold_train_blocklist.json` |
+| Gold blocklist | Never train on live `benchmarks/gold/` strings (`gold_train_blocklist.json` + live scan). Domain FT is not the holdout. |
 
 Expansion: `<formal> EN → ne_formal`, `<informal> EN → ne_informal`, Devanagari → EN. Light Roman → EN only on travel/health/questions (the app already romanizes to Devanagari at inference). Priority surfaces upsample 8×, others 4×. Val is 10% of meaning IDs (no leakage).
 

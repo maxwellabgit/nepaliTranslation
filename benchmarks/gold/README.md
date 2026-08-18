@@ -1,15 +1,27 @@
 # Gold standard eval (EN ↔ NE)
 
-Private holdout for product quality decisions. **~100 base + premium word-choice slice per class** (see manifests for exact `n_filled` / `n_premium`).
+Private holdout for product quality decisions. **Original scaffold: 100/class.** Live frozen sizes are **137 / 139 / 133 / 134** (premium word-choice slice included). See each class `manifest.json` and `benchmarks/results/gold_freeze.json`.
+
+## Two different gates — do not mix them
+
+| Gate | What it is | Where |
+|------|------------|--------|
+| **Phrasebook floor** | v1.4.0 in-app phrase table on the original **100/class (400)** scaffold, frozen 2026-07-20 | [`../results/gold_baseline.md`](../results/gold_baseline.md) |
+| **IT2 ship-gate freeze** | SHA256 + counts of the **live holdout** (543 rows after the 2026-07-25 Kathmandu items). On-device IndicTrans2 is judged against this set, not against the phrasebook table. | [`../results/gold_freeze.json`](../results/gold_freeze.json) |
+
+Beating the phrasebook floor is necessary and **not** the same claim as matching a prior IT2 run on the frozen holdout.
+
+Integrity (no GPU): `python benchmarks/check_gold_integrity.py`  
+Refresh freeze + blocklist only after a clean audit: `python benchmarks/check_gold_integrity.py --update-freeze`
 
 ## Why these classes
 
-| Class | Why |
-|-------|-----|
-| `en_ne_formal` | English speaker wants respectful Nepali (`तपाईं` + verb agreement) |
-| `en_ne_informal` | Peer/friend Nepali (`तिमी` + verb agreement) |
-| `ne_en_deva` | Devanagari Nepali → English (core direction) |
-| `ne_en_roman` | Chat-style Roman Nepali → English (common diaspora typing) |
+| Class | Why | Frozen n (premium) |
+|-------|-----|--------------------|
+| `en_ne_formal` | English speaker wants respectful Nepali (`तपाईं` + verb agreement) | 137 (35) |
+| `en_ne_informal` | Peer/friend Nepali (`तिमी` + verb agreement) | 139 (37) |
+| `ne_en_deva` | Devanagari Nepali → English (core direction) | 133 (32) |
+| `ne_en_roman` | Chat-style Roman Nepali → English (common diaspora typing) | 134 (33) |
 
 **v1 languages:** English ↔ Nepali only. NPHC 2021: Nepali is the largest mother tongue (~44.9%) and the national lingua franca; Maithili / Bhojpuri / Tharu are later expansions.
 
@@ -55,7 +67,11 @@ Source research: `benchmarks/PREMIUM_SOURCES.md`.
 
 ## Running eval
 
-`python benchmarks/eval_it2_gold.py --classes en_ne_formal en_ne_informal ne_en_deva ne_en_roman` (chrF++ + honorific checks; see `--help` for adapter/base options). Phrasebook baseline: `benchmarks/score_phrasebook_gold.py`.
+Holdout integrity (CI-style, no GPU): `python benchmarks/check_gold_integrity.py`
+
+Model eval (needs weights on disk): `python benchmarks/eval_it2_gold.py --classes en_ne_formal en_ne_informal ne_en_deva ne_en_roman` (chrF++ + honorific checks; see `--help` for adapter/base options).
+
+Phrasebook floor (historical v1.4.0 numbers live in `gold_baseline.md`): `benchmarks/score_phrasebook_gold.py` — do not treat a new phrasebook run as the IT2 ship gate.
 
 Ship-exact INT8 ONNX graphs (what the app runs): `python benchmarks/eval_it2_onnx.py --model-dir <onnx dir> --direction ne-en`. Spoken-Nepali STT checks: `benchmarks/fetch_nepali_speech_samples.py` + `benchmarks/eval_whisper_nepali.py`.
 

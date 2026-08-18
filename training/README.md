@@ -39,6 +39,7 @@ Do **not** ship NLLB (CC-BY-NC). Research adapters live under `nllb600m_*`.
 
 ## Data rules
 
-- Never train on `benchmarks/gold/` (blocklist + scrub)
+- Never train on `benchmarks/gold/` (blocklist + live gold scan in prepare scripts + `python benchmarks/check_gold_integrity.py`)
 - Short conversational pairs + register expand + roman NE→EN views
-- Freeze checksums: `python benchmarks/freeze_gold_holdout.py`
+- Freeze checksums: `python benchmarks/check_gold_integrity.py --update-freeze` (or `python benchmarks/freeze_gold_holdout.py`)
+- `finetune_it2_gold.py` / `train_gold_domain.jsonl` are **domain** FT with holdout blocked — not training on the eval set

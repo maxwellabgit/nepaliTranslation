@@ -22,7 +22,7 @@ Develop on Windows. Ship to iPhone via Expo EAS → TestFlight / App Store.
 | App setup, build, TestFlight | [`mobile/README.md`](mobile/README.md) |
 | TestFlight updates | [`mobile/TESTFLIGHT.md`](mobile/TESTFLIGHT.md) |
 | On-device models (whisper.rn + ONNX IndicTrans2) | [`docs/OFFLINE_IOS.md`](docs/OFFLINE_IOS.md) |
-| Quality gate (gold standard, ~100 samples/class) | [`benchmarks/gold/`](benchmarks/gold/) |
+| Quality gate (gold holdout; freeze ≠ phrasebook floor) | [`benchmarks/gold/`](benchmarks/gold/) |
 | Benchmarks overview | [`benchmarks/README.md`](benchmarks/README.md) |
 
 Authoritative product intent: [`.governance/INTENT.md`](.governance/INTENT.md).

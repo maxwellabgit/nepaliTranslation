@@ -3651,7 +3651,7 @@
       "source_label": "English",
       "target_label": "Nepali (informal)",
       "source": "Are you hungry?",
-      "reference": "के तिमी भोकाएको छस्?",
+      "reference": "के तिमी भोकाएको छौ?",
       "deva": null,
       "pack_status": "reviewed",
       "provenance": {
@@ -5760,7 +5760,7 @@
       "source_label": "English",
       "target_label": "Nepali (informal)",
       "source": "How long have you been waiting?",
-      "reference": "तिमी कति बेरदेखि पर्खिरहेको छस्?",
+      "reference": "तिमी कति बेरदेखि पर्खिरहेको छौ?",
       "deva": null,
       "pack_status": "premium_reviewed",
       "provenance": {

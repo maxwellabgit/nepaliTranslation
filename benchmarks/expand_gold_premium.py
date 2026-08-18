@@ -50,7 +50,7 @@ PREMIUM_EN_NE_INFORMAL: list[tuple[str, str, str]] = [
     ("What would you like to eat?", "तिमी के खान्छौ?", "informal"),
     ("I will pick you up at the airport.", "म तिमीलाई विमानस्थलमा लिन आउँछु।", "informal object"),
     ("Please make yourself comfortable.", "कृपया आराम गर।", "imperative informal"),
-    ("How long have you been waiting?", "तिमी कति बेरदेखि पर्खिरहेको छस्?", "informal progressive"),
+    ("How long have you been waiting?", "तिमी कति बेरदेखि पर्खिरहेको छौ?", "informal progressive"),
     ("Do you have any allergies?", "तिमीलाई कुनै एलर्जी छ?", "same structure"),
     ("The doctor will see you shortly.", "डाक्टरले चाँडै तिमीलाई भेट्छ।", "informal"),
     ("Please take a seat.", "कृपया बस्।", "sit informal"),
