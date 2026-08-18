@@ -119,6 +119,8 @@ OK
 
 `npx tsc --noEmit` exit 0 (no stdout). Diff is `mobile/App.tsx`, four screens, `plans/active/ui-bugs.md`. No gold, no training.
 
+Re-run after abort-on-hide (same command, 2026-08-18, cwd `/workspace/mobile`): `tsc` exit 0; `verify:translate` OK / PHRASE_OK / ROMAN_OK (same output).
+
 ## Remaining work
 - Independent review 1 FAIL: in-flight Pass re-armed the mic after hide; hidden Auto debounce could cancel Conversation MT. Fixed with `sessionGenRef` + `active` gates (see Decision log).
 - Independent review 2 pending.
