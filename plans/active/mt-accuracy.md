@@ -20,7 +20,7 @@ Improve on-device EN↔NE output via phrase overlay, lexicon, romanize, and mash
 - [x] `cd mobile && node ./scripts/export_meaning_lexicon.mjs && npx tsc --noEmit`
 - [x] Diff contains no unrelated files and no gold-reference edits
 - [x] ExecPlan updated
-- [ ] `/independent-reviewer` reported no material findings
+- [x] `/independent-reviewer` reported no material findings
 
 ## Decode path (inspected, not assumed)
 
@@ -76,10 +76,10 @@ text
 - [x] Fix informal verb/register mismatch (`applyInformal` now includes तिमी-class verbs; "sorry" informal is माफ गर)
 - [x] Add/extend `verify_*.mjs` cases for register, mashup, roman; keep existing cases green
 - [x] Re-run `npm run verify:translate` and `npx tsc --noEmit`; paste output
-- [ ] Independent review until PASS
+- [x] Independent review until PASS
 
 ## Progress
-Decode path mapped. Informal verbs + mashup hole + `lai`→लाई roman word shipped. JS gates green. Awaiting independent review.
+Lane 3 JS/decode work is Done pending the recorded gold-eval blocker. Independent review **PASS** (no material findings). Nits logged below; not blocking.
 
 ## Surprises & discoveries
 - `INFORMAL_REWRITES` previously only swapped तपाईं* → तिमी*. Phrase "sorry" / "excuse me" stayed माफ **गर्नुहोस्** under informal. Gold README requires तिमी **and** verb agreement; mixed तिमी + गर्नुहोस् is a register bug. Fixed with an explicit honorific→तिमी verb table.
@@ -143,8 +143,10 @@ $ cd /workspace/mobile && node ./scripts/export_meaning_lexicon.mjs && npx tsc -
 
 IT2 gold eval not run — weights missing (see Blockers).
 
+- Independent review (fresh context): **PASS**. No material findings. Phrase authority, mashup cases, तिमी-class overlay, roman NE→EN pre-step, gold untouched, no chrF invention.
+
 ## Remaining work
-- Independent review until PASS
+- Nits from independent review (non-blocking): meaning-bank overlay lines that never hit `PHRASES` can still leave honorific verbs `applyInformal` does not cover (`मोड्नुहोस्`, `खानुहुन्छ`). Not claimed-fixed. A full morphological informalizer is out of scope for this smallest overlay fix.
 - Honorific verbs that appear only in the meaning bank (not the phrase overlay) still depend on `applyInformal` covering their endings; table is phrase-overlay-complete, not a full morphological analyzer.
 
 ## Blockers
