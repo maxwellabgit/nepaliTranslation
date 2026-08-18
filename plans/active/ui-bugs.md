@@ -14,47 +14,41 @@ Walk Auto, Conversation, History, Settings, and Meaning Review in source; fix ma
 ## Done when
 Lane 2 checklist in `.agent/DONE.md`:
 
-- [ ] Each finding is either **fixed** with a repro note, or **won't-fix** with a device-only blocker
-- [ ] Auto and Conversation: mode switch still hard-stops audio (`App.tsx`)
-- [ ] Formal / Informal and देवनागरी toggles still match INTENT
-- [ ] Loading, empty, error, and “MT not ready” states still exist
+- [x] Each finding is either **fixed** with a repro note, or **won't-fix** with a device-only blocker
+- [x] Auto and Conversation: mode switch still hard-stops audio (`App.tsx` `switchMode` → `hardStopAudio`)
+- [x] Formal / Informal and देवनागरी toggles still match INTENT
+- [x] Loading, empty, error, and “MT not ready” states still exist
 - [ ] Independent reviewer walked Home, Conversation, History, Settings, Meaning Review in source
-- Shared: lexicon export + `tsc --noEmit`, `verify:translate`, no gold edits, ExecPlan updated, reviewer PASS
+- Shared: lexicon export + `tsc --noEmit` PASS, `verify:translate` PASS, no gold edits, ExecPlan updated, reviewer pending
 
 ## Milestones
 - [x] Source walk of HomeScreen + ConversationScreen (loading/empty/error/offline/not-ready)
 - [x] Mode switch hard-stops audio; overlays do not leak state
 - [x] Toggle behavior vs INTENT
 - [x] History / Settings / Meaning Review obvious breakage
-- [ ] Fix material issues (this lane only)
+- [x] Fix material issues (this lane only)
 - [ ] Independent review
 
 ## Progress
-Source walk complete (2026-08-18). Highest-impact in-source fixes in progress. Proof and independent review not started.
+Source walk + in-source fixes + proof commands complete (2026-08-18). Waiting on `/independent-reviewer`.
 
 ## Surprises & discoveries
 
-Verified (not assumed):
+Verified at source-walk (then fixed — see findings below). Do not treat these as current code:
 
-- `hardStopAudio()` runs on Auto↔Conversation (`App.tsx:75-78`), History open (`93-95`), Settings open (`97-99`), and history restore (`140-145`).
-- Auto vs Conversation is a ternary (`App.tsx:85-102`): Conversation **unmounts** on tab switch (thread wiped). Overlays keep Home underneath (`134` comment).
-- INTENT Conversation retry last 5 turns is **missing** in `ConversationScreen.tsx` (no Retry control). Product bug vs INTENT.
-- Home `MAX_INPUT_CHARS = 240` with `maxLength` (`HomeScreen.tsx:58`, `595`) but **no visible counter**. User hits a silent wall.
-- Prefs persist via `src/storage/prefs.ts` (defaults both ON). Phrase-path formality applies only on EN→NE (`onDeviceTranslate.ts:697`). Home still shows Formal/Informal when source is Nepali (`HomeScreen.tsx:641-659`).
-- Home shows `mtWarmStatus`, then “Model unavailable — using saved phrases” (`678-684`). Conversation only gets `neuralReady` trust line (`704-708`) — no warm banner.
-- `canPassPhone` requires interim or a completed turn from this side (`passLogic.ts:6-13`). Typed Nepali fallback exists (`ConversationScreen.tsx:71-72`, `417-434`). **Pass in typed mode ignores `typedReply`** (`374-384`): user types a reply, taps पास, text is discarded.
-- Meaning Review lock is `1234` (`MeaningReviewScreen.tsx:31`). INTENT does not say to remove it.
-- Chip hit targets are ~24pt (`paddingVertical: 6`, `fontSize: 12`) on Home and Conversation — below 44pt.
+- `hardStopAudio()` ran on Auto↔Conversation, History, Settings, and history restore (still true after the fix).
+- Auto vs Conversation **was** a ternary unmount (thread wiped). Now both panes stay mounted.
+- Retry last 5 turns was missing; 240 cap was silent; Formal chips showed on NE Auto; typed Pass dropped text; Pass looked enabled empty; History Clear had no confirm.
 
 ### Material findings (file:line + repro)
 
-1. **Conversation retry missing** — `ConversationScreen.tsx` (whole screen; hero actions at `601-614`). Repro: start Conversation, speak a turn, look at the bubble. INTENT says retry last 5 turns. There is Speak/Show only. User cannot re-translate a bad turn after toggling Formal.
-2. **Silent 240-char cap** — `HomeScreen.tsx:58,595`. Repro: type past ~240 chars in Auto. Keyboard still accepts presses but characters stop appearing. No “240” anywhere on screen.
-3. **Tab switch destroys Conversation** — `App.tsx:85-87`. Repro: Conversation, speak two turns, tap Auto, tap Conversation. Thread is gone. Accidental tab tap during a live handoff wipes the dialogue. Home composer is also remounted (`88-101`).
-4. **Formal chips on NE→EN Auto** — `HomeScreen.tsx:641-659`. Repro: set input language to Nepali. Formal/Informal still show. INTENT: Formal only changes EN→NE register. Tapping Informal does not change English output (phrase path) but the UI claims it will.
-5. **Typed Pass drops the reply** — `ConversationScreen.tsx:374-384, 641-706`. Repro: device without Nepali STT; Conversation; Pass to Nepali side; type a reply; tap पास instead of पठाउनुहोस्. Phone flips to English; typed text is not translated or shown.
-6. **Pass looks enabled with nothing to pass** — `ConversationScreen.tsx:687-702`. Repro: open Conversation, tap Pass immediately. Button is full crimson. Then it greys and shows “Say something before Pass”. Enablement rule is correct in `passLogic.ts`; the control lies.
-7. **History Clear is one tap, no confirm** — `HistoryScreen.tsx:131-140`. Repro: History → Clear. Entire list is gone. Swipe-delete of one row is fine; bulk clear is not.
+1. **Conversation retry missing** — Repro: Conversation → speak a turn → only Speak/Show. **Fixed:** `Retry` on the last 5 turns (`RETRY_TURN_LIMIT = 5`); re-runs MT on `heard` with current Formal/script; does not auto-speak.
+2. **Silent 240-char cap** — Repro: type past 240 in Auto; chars stop with no explanation. **Fixed:** `n/240` in the composer (`HomeScreen` `charCount`); turns crimson at the cap. `maxLength={240}` unchanged.
+3. **Tab switch destroys Conversation** — Repro: two turns → Auto → Conversation → thread gone. **Fixed:** both panes stay mounted; inactive uses `display: 'none'`; STT handlers no-op unless `active`. `hardStopAudio()` still on tab switch.
+4. **Formal chips on NE→EN Auto** — Repro: input language Nepali; Formal/Informal still visible. **Fixed:** those chips render only when `sourceSide === 'en'`. Conversation still shows them (EN→NE turns).
+5. **Typed Pass drops the reply** — Repro: no NE STT; type a reply; tap पास. **Fixed:** Pass commits `typedReply` when non-empty; empty Pass still hands back.
+6. **Pass looks enabled with nothing to pass** — Repro: open Conversation, Pass is full crimson. **Fixed:** dimmed unless `canPassPhone` or typed-reply mode.
+7. **History Clear is one tap, no confirm** — Repro: History → Clear wipes everything. **Fixed:** `Alert` confirm (Cancel / destructive Clear).
 
 ### Won't-fix / out of lane (with reason)
 
@@ -82,10 +76,49 @@ Verified (not assumed):
 
 ## Commands that actually ran (paste)
 
+```
+$ cd /workspace/mobile && node ./scripts/export_meaning_lexicon.mjs && npx tsc --noEmit && npm run verify:translate
+```
+
+First `tsc` failed (pre-fix):
+
+```
+App.tsx(190,19): error TS2551: Property 'absoluteFillObject' does not exist on type 'typeof StyleSheet'. Did you mean 'absoluteFill'?
+```
+
+Switched to `StyleSheet.absoluteFill`. Re-run (cwd `/workspace/mobile`):
+
+```
+$ node ./scripts/export_meaning_lexicon.mjs && npx tsc --noEmit && npm run verify:translate
+[lexicon] wrote src/mt/generated/meaningLexicon.json (86 KB) en=141 ne=195 romanSent=258 romanWords=304
+
+> neptranslate@1.6.2 verify:translate
+> node ./scripts/export_meaning_lexicon.mjs && node scripts/verify_translate_fix.mjs && node scripts/verify_romanize.mjs
+
+[lexicon] wrote src/mt/generated/meaningLexicon.json (86 KB) en=141 ne=195 romanSent=258 romanWords=304
+{"text":"Hey what's up can you hear me","method":"phrase","out":"हे, के छ? के तपाईंले मलाई सुन्न सक्नुहुन्छ","latin":false,"ok":true}
+{"text":"can you hear me","method":"phrase","out":"के तपाईंले मलाई सुन्न सक्नुहुन्छ","latin":false,"ok":true}
+{"text":"Hello","method":"phrase","out":"नमस्ते","latin":false,"ok":true}
+{"text":"big dog","method":"lexicon","out":"ठूलो कुकुर","latin":false,"ok":true}
+{"text":"xyzzy unknownword","method":"lexicon","out":"","latin":false,"ok":true}
+{"text":"can you xyzzy me","method":"lexicon","out":"","latin":false,"ok":true}
+OK
+PHRASE_OK namaste → hello
+PHRASE_OK tapai lai kasto cha? → how are you
+PHRASE_OK dhanyabad → thank you
+PHRASE_OK ma thik chu → i am fine
+ROMAN_OK tapai → तपाईं
+ROMAN_OK kasto → कस्तो
+ROMAN_OK namaste → नमस्ते
+ROMAN_OK pani → पानी
+OK
+```
+
+`npx tsc --noEmit` exit 0 (no stdout). Diff is `mobile/App.tsx`, four screens, `plans/active/ui-bugs.md`. No gold, no training.
+
 ## Remaining work
-- Implement findings 1–7
-- Proof commands
 - Independent review until PASS
+- GitHub PR create is blocked for this principal (`must be a collaborator`); branch `cursor/ui-bugs-a8e4` is pushed.
 
 ## Blockers
 - Cloud agent cannot TestFlight or run this app on an iPhone. Device-only (list, do not fake):

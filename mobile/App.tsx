@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   body: { flex: 1 },
   pane: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   paneHidden: {
     display: 'none',

@@ -551,6 +551,7 @@ export function ConversationScreen({
             setSide('en');
             sideRef.current = 'en';
             setShowPartner(false);
+            setTypedReply('');
           }}
           hitSlop={10}
           style={styles.iconBtn}
