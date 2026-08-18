@@ -18,8 +18,8 @@ Lane 2 checklist in `.agent/DONE.md`:
 - [x] Auto and Conversation: mode switch still hard-stops audio (`App.tsx` `switchMode` → `hardStopAudio`)
 - [x] Formal / Informal and देवनागरी toggles still match INTENT
 - [x] Loading, empty, error, and “MT not ready” states still exist
-- [ ] Independent reviewer walked Home, Conversation, History, Settings, Meaning Review in source
-- Shared: lexicon export + `tsc --noEmit` PASS, `verify:translate` PASS, no gold edits, ExecPlan updated, reviewer pending
+- [x] Independent reviewer walked Home, Conversation, History, Settings, Meaning Review in source
+- Shared: lexicon export + `tsc --noEmit` PASS, `verify:translate` PASS, no gold edits, ExecPlan updated, reviewer PASS
 
 ## Milestones
 - [x] Source walk of HomeScreen + ConversationScreen (loading/empty/error/offline/not-ready)
@@ -27,10 +27,10 @@ Lane 2 checklist in `.agent/DONE.md`:
 - [x] Toggle behavior vs INTENT
 - [x] History / Settings / Meaning Review obvious breakage
 - [x] Fix material issues (this lane only)
-- [ ] Independent review
+- [x] Independent review
 
 ## Progress
-Source walk + in-source fixes + proof commands complete (2026-08-18). Waiting on `/independent-reviewer`.
+Done (2026-08-18). Source walk, in-source fixes, proof commands, independent review PASS (round 3). GitHub PR create is blocked (`must be a collaborator`); branch `cursor/ui-bugs-a8e4` is on origin.
 
 ## Surprises & discoveries
 
@@ -123,10 +123,13 @@ OK
 Re-run after abort-on-hide (same command, 2026-08-18, cwd `/workspace/mobile`): `tsc` exit 0; `verify:translate` OK / PHRASE_OK / ROMAN_OK (same output).
 
 ## Remaining work
-- Independent review 1 FAIL: in-flight Pass re-armed the mic after hide; hidden Auto debounce could cancel Conversation MT. Fixed with `sessionGenRef` + `active` gates (see Decision log).
-- Independent review 2 FAIL: queued `commitSentence` still called `translate()` after hide. Gated the chain.
-- Independent review 3 pending.
 - GitHub PR create is blocked for this principal (`must be a collaborator`); branch `cursor/ui-bugs-a8e4` is pushed.
+- Device-only blockers below (not claimed Done).
+
+## Independent review
+Round 1 FAIL — Pass re-armed mic after hide; Auto debounce cancelled Conversation MT.
+Round 2 FAIL — queued `commitSentence` still translated after hide.
+Round 3 PASS — material findings none. Nits (non-blocking): Home `stopListening({commit})` translate pre-check; overlay Speak can finish under History/Settings; Pass still pressable when dimmed.
 
 ## Blockers
 - Cloud agent cannot TestFlight or run this app on an iPhone. Device-only (list, do not fake):
