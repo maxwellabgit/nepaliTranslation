@@ -88,6 +88,7 @@ const PHRASE_ROMAN: Record<string, string> = {
   होइन: 'hoina',
   'ठिक छ': 'thik cha',
   'माफ गर्नुहोस्': 'maaf garnuhos',
+  'माफ गर': 'maaf gara',
   मद्दत: 'madat',
   'तपाईंलाई कस्तो छ': 'tapai lai kasto cha',
   'तिमीलाई कस्तो छ': 'timi lai kasto cha',

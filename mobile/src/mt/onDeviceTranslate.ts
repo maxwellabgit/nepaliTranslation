@@ -17,6 +17,11 @@ export type NepaliScript = 'deva' | 'roman';
 
 const DEVANAGARI = /[\u0900-\u097F]/;
 
+/**
+ * Formal तपाईं overlay → तिमी-class (not तँ).
+ * Pronouns plus honorific verbs; longest source first so हुनुहुन्छ
+ * does not steal a slice out of सक्नुहुन्छ / बोल्नुहुन्छ.
+ */
 const INFORMAL_REWRITES: [string, string][] = [
   ['तपाईंहरू', 'तिमीहरू'],
   ['तपाईँहरू', 'तिमीहरू'],
@@ -28,7 +33,22 @@ const INFORMAL_REWRITES: [string, string][] = [
   ['तपाईँले', 'तिमीले'],
   ['तपाईं', 'तिमी'],
   ['तपाईँ', 'तिमी'],
-];
+  ['सक्नुहुन्छ', 'सक्छौ'],
+  ['बोल्नुहुन्छ', 'बोल्छौ'],
+  ['भन्नुहुन्छ', 'भन्छौ'],
+  ['हुनुहुन्छ', 'छौ'],
+  ['सुन्नुभयो', 'सुन्यौ'],
+  ['बोलाउनुहोस्', 'बोलाऊ'],
+  ['गर्नुहोस्', 'गर'],
+  ['दिनुहोस्', 'देऊ'],
+  ['भन्नुहोस्', 'भन'],
+  ['बोल्नुहोस्', 'बोल'],
+  ['आउनुहोस्', 'आऊ'],
+  ['जानुहोस्', 'जाऊ'],
+  ['रोक्नुहोस्', 'रोक'],
+  ['पर्खनुहोस्', 'पर्ख'],
+] as [string, string][];
+INFORMAL_REWRITES.sort((a, b) => b[0].length - a[0].length);
 
 function applyInformal(ne: string): string {
   let out = ne;
@@ -473,6 +493,35 @@ function hasLatinLeftovers(text: string): boolean {
   return /[A-Za-z]/.test(text);
 }
 
+/** Only these prefixes may keep a trailing Latin name after a phrase hit. */
+const NAME_REMAINDER_PREFIXES = ['my name is'];
+
+function phraseNeFor(english: string): string | null {
+  const n = norm(english);
+  for (const [en, ne] of PHRASES) {
+    if (norm(en) === n) return ne;
+  }
+  return null;
+}
+
+function isAllowedLatinNameRemainder(english: string, neOut: string): boolean {
+  if (!hasLatinLeftovers(neOut)) return true;
+  const n = norm(english);
+  for (const prefix of NAME_REMAINDER_PREFIXES) {
+    const pn = norm(prefix);
+    if (!n.startsWith(pn)) continue;
+    const rest = n.slice(pn.length).trim();
+    if (!rest) return false;
+    const restBare = rest.replace(/[?.!,;:]+$/g, '');
+    if (!/^[a-z][a-z.'\-]*$/.test(restBare)) return false;
+    const last = (neOut.replace(/[?.!,;:।]+$/gu, '').trim().split(/\s+/).pop() ?? '');
+    return (
+      /[\u0900-\u097F]/.test(neOut) && /^[A-Za-z][A-Za-z.'\-]*$/.test(last)
+    );
+  }
+  return false;
+}
+
 /** Roman Nepali → English (common traveler spellings). */
 const ROMAN_NE_PHRASES: [string, string][] = [
   ['namaste', 'hello'],
@@ -531,15 +580,19 @@ function phraseLookup(text: string, direction: Direction): string | null {
     if (enHit) return enHit;
   }
 
-  // starts-with for "my name is X" — keep a short Latin name remainder only.
+  // "my name is X" only — do not treat leftover Latin after any long phrase as a name.
   if (direction === 'en-ne') {
-    for (const [en, ne] of PHRASES) {
-      if (en.length >= 8 && n.startsWith(norm(en))) {
-        const rest = text.trim().slice(en.length).trim();
-        if (!rest) return ne;
-        if (/^[A-Za-z][A-Za-z.'\-]*$/.test(rest)) {
-          return `${ne} ${rest}`;
-        }
+    for (const prefix of NAME_REMAINDER_PREFIXES) {
+      const pn = norm(prefix);
+      if (!n.startsWith(pn)) continue;
+      const ne = phraseNeFor(prefix);
+      if (!ne) continue;
+      const rest = text.trim().match(new RegExp(`^${prefix}\\s+(.+)$`, 'i'));
+      const origRest = (rest?.[1] ?? '').trim();
+      if (!origRest) return ne;
+      const [bare, punct] = splitPunct(origRest);
+      if (/^[A-Za-z][A-Za-z.'\-]*$/.test(bare)) {
+        return `${ne} ${bare}${punct}`;
       }
     }
   }
@@ -677,8 +730,17 @@ export function translateOnDevice(
 
   const hit = phraseLookup(raw, direction);
   if (hit) {
-    out = hit;
-    method = 'phrase';
+    if (
+      direction === 'en-ne' &&
+      hasLatinLeftovers(hit) &&
+      !isAllowedLatinNameRemainder(raw, hit)
+    ) {
+      out = '';
+      method = 'lexicon';
+    } else {
+      out = hit;
+      method = 'phrase';
+    }
   } else if (direction === 'en-ne') {
     const composed = composeEnNe(raw);
     // Refuse Latin/Nepali mashups — incomplete free text yields no target.
