@@ -79,6 +79,23 @@ for (const [src, expect] of romanWords) {
   }
 }
 
+// Chat-Roman sentence still normalizes before NE→EN overlay (phrase path).
+const sentence = t.romanToDevanagari
+  ? t.romanToDevanagari('tapai lai kasto cha?')
+  : '';
+const sentOk =
+  typeof sentence === 'string' &&
+  sentence.includes('तपाईं') &&
+  sentence.includes('कस्तो') &&
+  /[\u0900-\u097F]/.test(sentence) &&
+  !/[A-Za-z]/.test(sentence.replace(/[?.!,;:।]/g, ''));
+if (!sentOk) {
+  failed += 1;
+  console.log('ROMAN_FAIL', JSON.stringify({ src: 'tapai lai kasto cha?', out: sentence }));
+} else {
+  console.log('ROMAN_OK sentence', 'tapai lai kasto cha?', '→', sentence);
+}
+
 if (existsSync(out)) unlinkSync(out);
 if (failed) {
   console.error('FAILED', failed);
