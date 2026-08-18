@@ -1,0 +1,12 @@
+---
+description: Repo agent harness — one lane, expensive Done, files over chat
+alwaysApply: true
+---
+
+Read `AGENTS.md` and `.governance/INTENT.md` before changing this repo.
+
+Work exactly one line of effort per run/PR. Active plans live in `plans/active/`. Follow `.agent/LOOP.md`. Do not mark work complete because it compiles — use `.agent/DONE.md` for that lane.
+
+Never train on `benchmarks/gold/`. Never edit gold references to improve a score. Informal Nepali is तिमी, not तँ. Product path is on-device only (no PC/cloud MT).
+
+After implementation, run the `independent-reviewer` subagent. Persist progress in the ExecPlan, not in chat.

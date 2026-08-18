@@ -19,6 +19,8 @@ Develop on Windows. Ship to iPhone via Expo EAS → TestFlight / App Store.
 
 | Topic | Path |
 |-------|------|
+| Agent lanes (eval, UI, MT, runtime, model) | [`AGENTS.md`](AGENTS.md) |
+| Copy-paste launch prompts | [`.agent/LAUNCH.md`](.agent/LAUNCH.md) |
 | App setup, build, TestFlight | [`mobile/README.md`](mobile/README.md) |
 | TestFlight updates | [`mobile/TESTFLIGHT.md`](mobile/TESTFLIGHT.md) |
 | On-device models (whisper.rn + ONNX IndicTrans2) | [`docs/OFFLINE_IOS.md`](docs/OFFLINE_IOS.md) |
@@ -46,4 +48,8 @@ docs/            Offline model path and architecture notes
 benchmarks/      Gold-standard eval + legacy corpus suites
 training/        IT2 fine-tune for on-device ONNX export
 .governance/     INTENT and steward prompts
+AGENTS.md        How coding agents must work here
+.agent/          Loop, Done, ExecPlan contract, launch prompts
+plans/active/    One living plan per line of effort
+.cursor/agents/  Subagents: one per lane + independent reviewer
 ```

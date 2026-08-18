@@ -13,8 +13,12 @@ venv/
 benchmarks/data/in22_conv_npi_sample.jsonl
 benchmarks/__pycache__/
 
-# Local IDE
-.cursor/
+# Local Cursor state; keep the committed agent harness
+.cursor/*
+!.cursor/agents/
+!.cursor/agents/**
+!.cursor/rules/
+!.cursor/rules/**
 
 # Datasets — keep seeds/manifests; ignore bulky generated runs
 datasets/synthetic/student_raw/
