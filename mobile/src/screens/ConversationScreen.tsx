@@ -45,16 +45,27 @@ type Turn = {
 
 type Props = {
   neuralReady?: boolean;
+  /** False while Auto is showing so STT events are ignored. */
+  active?: boolean;
 };
 
 /** Keep memory bounded on long sessions; history UI shows the last 8 anyway. */
 const MAX_TURNS = 40;
+/** INTENT: retry last 5 turns only. */
+const RETRY_TURN_LIMIT = 5;
+
+function isRetryableTurn(turn: Turn, all: Turn[]): boolean {
+  return all.slice(-RETRY_TURN_LIMIT).some((t) => t.id === turn.id);
+}
 
 /**
  * Conversation = pass-the-phone dialogue.
  * Uses shared TranslationEngine (ONNX when ready, phrasebook fallback).
  */
-export function ConversationScreen({ neuralReady = false }: Props) {
+export function ConversationScreen({
+  neuralReady = false,
+  active = true,
+}: Props) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [side, setSide] = useState<Side>('en');
   const [listening, setListening] = useState(false);
@@ -85,6 +96,8 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   const commitChainRef = useRef<Promise<unknown>>(Promise.resolve());
   /** Resolvers waiting for the recognizer's 'end' event (pass handoff). */
   const endWaitersRef = useRef<Array<() => void>>([]);
+  const activeRef = useRef(active);
+  activeRef.current = active;
 
   const formality: Formality = formalOn ? 'formal' : 'informal';
   const script: NepaliScript = devaOn ? 'deva' : 'roman';
@@ -181,6 +194,25 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     [speakShow, translateForced],
   );
 
+  const retryTurn = useCallback(
+    async (turn: Turn) => {
+      if (busy || passingRef.current) return;
+      if (!isRetryableTurn(turn, turns)) return;
+      setBusy(true);
+      try {
+        const result = await translateForced(turn.heard, turn.from);
+        if (result.cancelled) return;
+        const show = result.text.trim() || emptyShowFallback(turn.from);
+        setTurns((prev) =>
+          prev.map((t) => (t.id === turn.id ? { ...t, show } : t)),
+        );
+      } finally {
+        setBusy(false);
+      }
+    },
+    [busy, turns, translateForced],
+  );
+
   const ingestTranscript = useCallback(
     (text: string, from: Side) => {
       const trimmed = text.trim();
@@ -221,6 +253,19 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   );
 
   useEffect(() => {
+    void getSttSupport().then((s) => setNeSttOk(s.ne));
+    void hasNepaliVoice().then(setNeVoiceOk);
+  }, []);
+
+  useEffect(() => {
+    if (!active) {
+      prefsLoadedRef.current = false;
+      if (restartTimer.current) clearTimeout(restartTimer.current);
+      listeningRef.current = false;
+      setListening(false);
+      setConsentVisible(false);
+      return;
+    }
     void loadPrefs().then((prefs) => {
       setFormalOn(prefs.formalOn);
       setDevaOn(prefs.devaOn);
@@ -229,12 +274,10 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         setConsentVisible(true);
       }
     });
-    void getSttSupport().then((s) => setNeSttOk(s.ne));
-    void hasNepaliVoice().then(setNeVoiceOk);
-  }, []);
+  }, [active]);
 
   useEffect(() => {
-    if (!prefsLoadedRef.current) return;
+    if (!active || !prefsLoadedRef.current) return;
     void loadPrefs().then((prev) => {
       void savePrefs({
         ...prev,
@@ -242,15 +285,17 @@ export function ConversationScreen({ neuralReady = false }: Props) {
         devaOn,
       });
     });
-  }, [formalOn, devaOn]);
+  }, [formalOn, devaOn, active]);
 
   useSpeechRecognitionEvent('result', (event) => {
+    if (!activeRef.current) return;
     const text = event.results?.[0]?.transcript?.trim?.() ?? '';
     if (!text || passingRef.current) return;
     ingestTranscript(text, sideRef.current);
   });
 
   useSpeechRecognitionEvent('error', () => {
+    if (!activeRef.current) return;
     endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (!passingRef.current) {
       listeningRef.current = false;
@@ -259,6 +304,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
   });
 
   useSpeechRecognitionEvent('end', () => {
+    if (!activeRef.current) return;
     endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (passingRef.current) return;
     if (!listeningRef.current) return;
@@ -386,6 +432,7 @@ export function ConversationScreen({ neuralReady = false }: Props) {
     setBusy(true);
     const from = sideRef.current;
     const next: Side = from === 'en' ? 'ne' : 'en';
+    const typedText = typedMode ? typedReply.trim() : '';
 
     Vibration.vibrate(40);
 
@@ -393,7 +440,13 @@ export function ConversationScreen({ neuralReady = false }: Props) {
       // Event-driven handoff: recognizer end → translate remainder →
       // speak aloud (mic off, so it can't hear itself) → arm next side.
       await stopAndWait();
-      const last = await flushRemainder(from);
+      let last: Turn | null = null;
+      if (typedText) {
+        setTypedReply('');
+        last = await commitSentence(typedText, 'ne', false);
+      } else {
+        last = await flushRemainder(from);
+      }
       setSide(next);
       sideRef.current = next;
       if (last) await speakShowAsync(last);
@@ -474,6 +527,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
 
   const partnerText = latest ? displayShow(latest) : '';
   const showTypedReply = !enTurn && !neSttOk;
+  const passAllowed =
+    showTypedReply ||
+    canPassPhone(interim, latest ? latest.from : null, side);
 
   return (
     <View style={[styles.root, !enTurn && styles.rootNe]}>
@@ -509,6 +565,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (!formalOn) setFormalOn(true);
           }}
           style={[styles.chip, formalOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: formalOn }}
+          accessibilityLabel="Formal Nepali"
         >
           <Text style={[styles.chipText, formalOn && styles.chipTextOn]}>
             {enTurn ? 'Formal' : 'औपचारिक'}
@@ -519,6 +578,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (formalOn) setFormalOn(false);
           }}
           style={[styles.chip, !formalOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: !formalOn }}
+          accessibilityLabel="Informal Nepali"
         >
           <Text style={[styles.chipText, !formalOn && styles.chipTextOn]}>
             {enTurn ? 'Informal' : 'अनौपचारिक'}
@@ -529,6 +591,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (!devaOn) setDevaOn(true);
           }}
           style={[styles.chip, devaOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: devaOn }}
+          accessibilityLabel="Devanagari"
         >
           <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
         </Pressable>
@@ -537,6 +602,9 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             if (devaOn) setDevaOn(false);
           }}
           style={[styles.chip, !devaOn && styles.chipOn]}
+          accessibilityRole="button"
+          accessibilityState={{ selected: !devaOn }}
+          accessibilityLabel="Roman Nepali"
         >
           <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
         </Pressable>
@@ -575,6 +643,17 @@ export function ConversationScreen({ neuralReady = false }: Props) {
             <Text style={styles.histShow} numberOfLines={3}>
               {displayShow(turn)}
             </Text>
+            {isRetryableTurn(turn, turns) ? (
+              <Pressable
+                onPress={() => void retryTurn(turn)}
+                hitSlop={8}
+                disabled={busy}
+                accessibilityRole="button"
+                accessibilityLabel="Retry translation"
+              >
+                <Text style={styles.histRetry}>Retry</Text>
+              </Pressable>
+            ) : null}
           </View>
         ))}
 
@@ -611,6 +690,17 @@ export function ConversationScreen({ neuralReady = false }: Props) {
               >
                 <Text style={styles.heroAction}>Show</Text>
               </Pressable>
+              {isRetryableTurn(latest, turns) ? (
+                <Pressable
+                  onPress={() => void retryTurn(latest)}
+                  hitSlop={10}
+                  disabled={busy}
+                  accessibilityRole="button"
+                  accessibilityLabel="Retry last translation"
+                >
+                  <Text style={styles.heroAction}>Retry</Text>
+                </Pressable>
+              ) : null}
             </View>
           </View>
         ) : null}
@@ -689,11 +779,13 @@ export function ConversationScreen({ neuralReady = false }: Props) {
                 styles.passBtn,
                 busy && styles.passBtnBusy,
                 passBlockedHint && styles.passBtnBlocked,
+                !passAllowed && !busy && styles.passBtnBusy,
               ]}
               onPress={() => void onPass()}
               disabled={busy}
               accessibilityRole="button"
               accessibilityLabel="Pass the phone"
+              accessibilityState={{ disabled: busy || !passAllowed }}
             >
               <Text style={styles.passLabel}>{enTurn ? 'Pass' : 'पास'}</Text>
               <Text style={styles.passSub}>
@@ -790,18 +882,20 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    minHeight: 44,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: 'rgba(255,255,255,0.85)',
     borderWidth: 1,
     borderColor: colors.divider,
+    justifyContent: 'center',
   },
   chipOn: {
     backgroundColor: colors.crimson,
     borderColor: colors.crimson,
   },
-  chipText: { fontSize: 12, fontWeight: '700', color: colors.text },
+  chipText: { fontSize: 13, fontWeight: '700', color: colors.text },
   chipTextOn: { color: '#fff' },
   feed: { flex: 1 },
   feedContent: { paddingHorizontal: 16, paddingBottom: 16, gap: 10 },
@@ -839,6 +933,12 @@ const styles = StyleSheet.create({
   },
   histHeard: { fontSize: 12, color: colors.textSecondary },
   histShow: { fontSize: 15, fontWeight: '700', color: colors.text },
+  histRetry: {
+    marginTop: 4,
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.forest,
+  },
   hero: {
     backgroundColor: '#fff',
     borderRadius: 28,

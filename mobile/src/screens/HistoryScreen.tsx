@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react';
 import {
+  Alert,
   Animated,
   PanResponder,
   Pressable,
@@ -129,12 +130,30 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         </Pressable>
         <Text style={styles.title}>History</Text>
         <Pressable
-          onPress={async () => {
-            await clearHistory();
-            await reload();
+          onPress={() => {
+            if (history.length === 0) return;
+            Alert.alert(
+              'Clear history',
+              'Remove all translations from this device?',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Clear',
+                  style: 'destructive',
+                  onPress: () => {
+                    void (async () => {
+                      await clearHistory();
+                      await reload();
+                    })();
+                  },
+                },
+              ],
+            );
           }}
           hitSlop={12}
           style={styles.topBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Clear history"
         >
           <Text style={styles.clearText}>Clear</Text>
         </Pressable>
