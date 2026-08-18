@@ -72,7 +72,8 @@ Verified at source-walk (then fixed — see findings below). Do not treat these 
 ## Decision log
 - Conversation retry = re-run MT on `heard` for the last 5 turns only, with current Formal/script. Do not auto-speak (Speak remains). Do not add a sixth mode.
 - Keep both Auto and Conversation mounted; hide the inactive pane (`display: 'none'`). Gate STT event handlers on `active` so the hidden screen cannot ingest the other’s speech. Reload prefs when a pane becomes active so Formal/देवनागरी stay in sync.
-- After independent-review FAIL: bump `sessionGenRef` when Conversation hides so Pass/Retry/typed-send cannot `startListeningFor` or speak after the tab switch. Gate Home `previewTranslate` / debounce / `applyResult` on `active` so a leftover Auto preview cannot bump `TranslationEngine` seq and cancel Conversation MT.
+- After independent-review FAIL 1: bump `sessionGenRef` when Conversation hides so Pass/Retry/typed-send cannot `startListeningFor` or speak after the tab switch. Gate Home `previewTranslate` / debounce / `applyResult` on `active` so a leftover Auto preview cannot bump `TranslationEngine` seq and cancel Conversation MT.
+- After independent-review FAIL 2: `commitSentence` / `ingestTranscript` / `flushRemainder` no-op when hidden so a queued sentence chain cannot start a new `translate()` after `cancelAll`. `startListeningFor` re-checks `active` after the permissions await.
 - Hide Formal/Informal on Auto when source language is Nepali. Leave them in Conversation (they apply to the English speaker’s EN→NE turns).
 - Typed-mode Pass commits `typedReply` if non-empty, otherwise still allows a silent hand-back (existing exception for no NE STT).
 - Do not change `theme.ts` colors (taste). Do not touch gold, training, ONNX, or decode-path formality.
@@ -123,7 +124,8 @@ Re-run after abort-on-hide (same command, 2026-08-18, cwd `/workspace/mobile`): 
 
 ## Remaining work
 - Independent review 1 FAIL: in-flight Pass re-armed the mic after hide; hidden Auto debounce could cancel Conversation MT. Fixed with `sessionGenRef` + `active` gates (see Decision log).
-- Independent review 2 pending.
+- Independent review 2 FAIL: queued `commitSentence` still called `translate()` after hide. Gated the chain.
+- Independent review 3 pending.
 - GitHub PR create is blocked for this principal (`must be a collaborator`); branch `cursor/ui-bugs-a8e4` is pushed.
 
 ## Blockers

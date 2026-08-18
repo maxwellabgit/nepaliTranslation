@@ -181,7 +181,10 @@ export function ConversationScreen({
       // Chain commits: translations resolve at different speeds, and
       // unordered appends scramble the transcript.
       const run = commitChainRef.current.then(async () => {
+        if (!activeRef.current) return null;
+        const gen = sessionGenRef.current;
         const result = await translateForced(t, from);
+        if (gen !== sessionGenRef.current || !activeRef.current) return null;
         if (result.cancelled) return null;
         const show = result.text.trim() || emptyShowFallback(from);
         const turn: Turn = {
@@ -223,6 +226,7 @@ export function ConversationScreen({
 
   const ingestTranscript = useCallback(
     (text: string, from: Side) => {
+      if (!activeRef.current) return;
       const trimmed = text.trim();
       interimRef.current = trimmed;
       const { newSentences, nextEmittedCount, remainder } = takeNewCompleteSentences(
@@ -240,15 +244,18 @@ export function ConversationScreen({
 
   const flushRemainder = useCallback(
     async (from: Side): Promise<Turn | null> => {
+      if (!activeRef.current) return null;
       const full = interimRef.current.trim();
       let last: Turn | null = null;
       if (full) {
         const drained = takeNewCompleteSentences(full, emittedCountRef.current);
         for (const sent of drained.newSentences) {
+          if (!activeRef.current) return last;
           last = await commitSentence(sent, from, false);
         }
         const leftover = drained.remainder.trim();
         if (leftover) {
+          if (!activeRef.current) return last;
           last = await commitSentence(leftover, from, false);
         }
       }
@@ -399,6 +406,7 @@ export function ConversationScreen({
     }
     try {
       const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+      if (!activeRef.current) return false;
       if (!perm.granted) return false;
       sideRef.current = next;
       interimRef.current = '';
