@@ -17,16 +17,16 @@ Lane 5 checklist in `.agent/DONE.md`.
 - [x] Export path still ends at `mobile/assets/models/`
 - [x] Gold eval vs frozen baseline if weights exist; **otherwise explicit GPU/artifact blocker**
 - [x] No new PC/cloud inference in the product path
-- [ ] Independent review
+- [x] Independent review (round 1 FAIL uncommitted; round 2 PASS)
 
 ## Milestones
 - [x] Confirm artifacts on disk (merged IT2, LoRA, ONNX). If missing, stop with a blocker after documenting the exact path
 - [x] If present: run the smallest gold eval that is honest — **skipped; nothing present**
 - [x] If missing: tighten export/FT docs and scripts only — no fake metrics
-- [ ] Independent review
+- [x] Independent review
 
 ## Progress
-2026-08-19: Inventory only. `python training/check_ship_artifacts.py` → exit 1 BLOCKED. Docs aligned to real paths (base merged dirs, LoRA adapters, Hari31416 INT8 file list). `eval_it2_gold.py` not run. No gold-reference edits. No TestFlight bump.
+2026-08-19: Inventory only. `python training/check_ship_artifacts.py` → exit 1 BLOCKED. Docs aligned to real paths (base merged dirs, LoRA adapters, Hari31416 INT8 file list). `eval_it2_gold.py` not run. No gold-reference edits. No TestFlight bump. Independent review round 2 **PASS** (nits: leftover merged/Whisper wording in OFFLINE_IOS export list — fixed after PASS).
 
 ## Surprises & discoveries
 - `scripts/prepare_offline_models.md` pointed at nonexistent `it2_indic_en_ne_ft` / single `model.onnx`. The app requires encoder/decoder/past + `.onnx.data` sidecars (`modelAssets.ts`).
@@ -49,7 +49,7 @@ $ python3 training/check_ship_artifacts.py
   "runnable_onnx_ship": false
   blockers:
     - No PyTorch in this environment — cannot load IndicTrans2 for eval_it2_gold.py.
-    - No eval checkpoints under training/artifacts/ (need it2_en_indic_merged + it2_indic_en_merged, or LoRA adapters).
+    - No eval checkpoints under training/artifacts/ (need it2_en_indic_merged + it2_indic_en_merged with config.json).
     - ONNX ship bundles incomplete under mobile/assets/models/it2_en_indic and it2_indic_en.
 result: BLOCKED (nothing to eval or ship from this box)
 EXIT:1
@@ -63,7 +63,6 @@ PY:0
 ## Remaining work
 - On a machine with `training/download_it2.py` output (or LoRA + base): run `eval_it2_gold.py --systems it2_base` against the live freeze; keep or revert on that number.
 - `cd mobile && node scripts/eas_fetch_it2_models.mjs` on the founder box if EAS should pack INT8 (large; not done here).
-- Independent review round 2 after this work is committed (round 1 FAIL: `origin/main...HEAD` empty).
 
 ## Blockers (concrete; cannot be solved from this repo)
 1. **No PyTorch / no CUDA** on this cloud agent VM.

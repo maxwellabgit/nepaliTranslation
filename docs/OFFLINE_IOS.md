@@ -32,11 +32,11 @@ Weights live in the app, not on a PC:
 
 Export flow (dev machine, one-time or per release):
 
-1. **Whisper** — ggml `small` or `small-q5_1` via [whisper.cpp](https://github.com/ggerganov/whisper.cpp) scripts; copy into `mobile/assets/models/whisper/`.
-2. **IndicTrans2** — export merged EN→NE and NE→EN checkpoints to ONNX (encoder/decoder + tokenizer files). See [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md) for export commands; copy results into `mobile/assets/models/it2_en_indic/` and `it2_indic_en/`.
-3. Wire paths in the Expo native layer; smoke-test on a device build before TestFlight.
+1. **Whisper (Nepali)** — `Dragneel/whisper-small-nepali` → ggml q5_1, not stock Whisper small. See [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md). Copy into `mobile/assets/models/whisper/` (whisper.rn not wired yet).
+2. **IndicTrans2** — ship **base INT8** encoder/decoder/past graphs (LoRA stays unmerged). Fast path: `cd mobile && node scripts/eas_fetch_it2_models.mjs`. Copy into `mobile/assets/models/it2_en_indic/` and `it2_indic_en/`.
+3. Inventory: `python training/check_ship_artifacts.py`. Smoke-test on a device build before TestFlight.
 
-Fine-tuned checkpoints from [`training/`](../training/) follow the same export → `mobile/assets/models/` path.
+Fine-tuned **adapters** from [`training/`](../training/) do not replace the INT8 base until a verified fuse path exists.
 
 ## Windows → TestFlight checklist
 
