@@ -3,10 +3,10 @@
 ## Model
 
 - **Family:** `ai4bharat/indictrans2-*-dist-200M` (MIT — commercial OK)
-- **Fine-tune:** `python training/run_it2_gold_job.py`
-- **Checkpoints:**
-  - `training/artifacts/it2_en_indic_gold_ft/`
-  - `training/artifacts/it2_indic_en_gold_ft/`
+- **Fine-tune:** LoRA only (`python training/finetune_it2_cpu.py` or `run_it2_gold_job.py`). Never `merge_and_unload`.
+- **Checkpoints (gitignored; inventory: `python training/check_ship_artifacts.py`):**
+  - Base: `training/artifacts/it2_en_indic_merged/` + `it2_indic_en_merged/`
+  - Optional LoRA: `it2_cpu_*_lora/adapter`, `it2_en_indic_gold_ft/`, `it2_indic_en_gold_ft/`
 
 ## Export ONNX (both directions)
 
@@ -45,14 +45,16 @@ npx eas-cli build --platform all --profile production
 
 ## Gate before ship
 
+Run `python training/check_ship_artifacts.py` first. If it is BLOCKED, do not fill this table with guesses.
+
 | Gate | Target |
 |------|--------|
-| Gold overall chrF | Beat `it2_base` pre-FT |
-| Formal तपाईं rate | >70% on formal class |
+| Gold overall chrF | Beat `it2_base` on the live freeze (`gold_freeze.json`) when eval actually ran |
+| Formal तपाईं rate | >70% on formal class (from `eval_it2_gold.py`, not invented) |
 | Informal (no तपाईं leak) | >70% OK |
-| p95 latency (20 tok) | <1.5s mid-range phone |
-| Peak RAM | <700 MB |
-| Crash rate | 0 on smoke suite |
+| p95 latency (20 tok) | <1.5s mid-range phone (device) |
+| Peak RAM | <700 MB (device) |
+| Crash rate | 0 on smoke suite (device) |
 
 ## Serving: our fine-tune on edge compute
 

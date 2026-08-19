@@ -26,6 +26,12 @@ Outputs (MIT, shippable):
 
 On-device export: [`ON_DEVICE_SHIP.md`](ON_DEVICE_SHIP.md)
 
+No-GPU inventory (this box often has empty `training/artifacts/`):
+
+```powershell
+python training/check_ship_artifacts.py
+```
+
 ## Why IndicTrans2 dist-200M
 
 | Criterion | Choice |

@@ -6,7 +6,8 @@ Trains:
   EN→NE with optional <formal>/<informal> text prefixes (no vocab resize)
   NE→EN including romanized Nepali sources
 
-Outputs merged checkpoints ready for ONNX export under training/artifacts/.
+Saves LoRA adapters only under training/artifacts/. Do not merge_and_unload.
+ONNX export uses the base dist-200M INT8 graphs; adapters load with PeftModel.
 """
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pre/post gold eval for IndicTrans2 base vs gold-domain LoRA merges."""
+"""Pre/post gold eval for IndicTrans2 base vs gold-domain LoRA adapters (never merge_and_unload)."""
 from __future__ import annotations
 
 import argparse

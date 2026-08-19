@@ -51,13 +51,13 @@ App setup details: [`mobile/README.md`](../mobile/README.md).
 
 | Phase | Behavior |
 |-------|----------|
-| **Now** | UI **Formal / Informal** toggle on EN→NE. Models or post-processing apply `तपाईं` vs `तिमी` register where supported. |
-| **Next** | Separate formal / informal IT2 checkpoints (or adapters); ship both ONNX graphs; toggle selects model. |
-| **Eval** | Gold class `en_ne_formal` / `en_ne_informal` under [`benchmarks/gold/`](../benchmarks/gold/); honorific probe for quick register checks. |
+| **Now** | UI **Formal / Informal** toggle on EN→NE. One IT2 family; prefixes `<formal>` / `<informal>` plus decode-path overlays (`तिमी`, not तँ). |
+| **Not next** | Four separate register×script checkpoints. That fragments data (`training/ARCHITECTURE.md`). |
+| **Eval** | Gold classes `en_ne_formal` / `en_ne_informal` under [`benchmarks/gold/`](../benchmarks/gold/). Integrity: `python benchmarks/check_gold_integrity.py`. |
 
 ## Quality gate
 
-**Primary:** private **gold standard** — ~100 curated samples per class:
+**Primary:** private **gold holdout**. Original scaffold was 100/class; live frozen sizes are in `benchmarks/results/gold_freeze.json` (137 / 139 / 133 / 134). Phrasebook floor in `gold_baseline.md` is a different, historical number.
 
 | Class | Direction / input |
 |-------|-------------------|
@@ -66,9 +66,9 @@ App setup details: [`mobile/README.md`](../mobile/README.md).
 | `ne_en_deva` | Nepali Devanagari → English |
 | `ne_en_roman` | Romanized Nepali → English |
 
-Scaffold and curation guide: [`benchmarks/gold/`](../benchmarks/gold/).
+Curation: [`benchmarks/gold/`](../benchmarks/gold/). Inventory (no GPU): `python training/check_ship_artifacts.py`.
 
-Any on-device MT build must meet or beat the frozen gold baseline before shipping. Do not use FLORES alone as the ship gate.
+On-device MT must be judged against the **IT2 freeze**, not FLORES, and not the phrasebook floor. If checkpoints are missing, do not invent chrF.
 
 **Secondary / legacy:** corpus-scale suites (`benchmarks/run_ne_quality_bench.py`, `benchmarks/run_mt_bench.py`) for regression signal during training — see [`benchmarks/README.md`](../benchmarks/README.md).
 
