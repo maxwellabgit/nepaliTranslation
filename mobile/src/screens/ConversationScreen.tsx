@@ -25,6 +25,7 @@ import {
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { takeNewCompleteSentences } from '../mt/sentences';
 import { canPassPhone, emptyShowFallback } from '../conversation/passLogic';
+import { mtStatusLine } from '../mt/mtStatus';
 import { noteEnglishAsrError, startEnglishAsr } from '../stt/enSpeech';
 import { isNepaliAsrReady, startNepaliAsr } from '../stt/nepaliAsr';
 import { speakUtterance, stopSpeech } from '../stt/speak';
@@ -43,6 +44,7 @@ type Turn = {
 
 type Props = {
   neuralReady?: boolean;
+  mtWarmStatus?: string | null;
   /** False while Auto is showing so STT events are ignored. */
   active?: boolean;
 };
@@ -62,6 +64,7 @@ function isRetryableTurn(turn: Turn, all: Turn[]): boolean {
  */
 export function ConversationScreen({
   neuralReady = false,
+  mtWarmStatus = null,
   active = true,
 }: Props) {
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -837,9 +840,11 @@ export function ConversationScreen({
             </Pressable>
           </View>
           <Text style={styles.trustLine}>
-            {neuralReady
-              ? 'on-device model · voice via Apple'
-              : 'saved phrases · loading model · voice via Apple'}
+            {mtStatusLine({
+              neuralReady,
+              warmStatus: mtWarmStatus,
+              listening,
+            })}
           </Text>
         </View>
       </KeyboardAvoidingView>

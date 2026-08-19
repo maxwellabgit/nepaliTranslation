@@ -115,6 +115,7 @@ export default function App() {
           <ConversationScreen
             active={mode === 'conversation' && overlay === null}
             neuralReady={neuralReady}
+            mtWarmStatus={mtWarmStatus}
           />
         </View>
       </View>

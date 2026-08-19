@@ -16,7 +16,7 @@ Track A checklist in `.agent/DONE.md`.
 - [x] Flip to network on English ASR error (`noteEnglishAsrError`)
 - [x] Settings About + caps no longer say speech always needs a network
 - [x] Conversation Pass still speaks English (`speakUtterance` lang `en`); skips only missing Nepali TTS
-- [x] Independent review
+- [x] Independent review (PASS; nits: Conversation trust line now uses `mtStatusLine`; ASCII diagram updated)
 
 ## Progress
 Implemented on `cursor/speech-runtime-tracks-9f0b` with tracks C/D and lane 4 at founder request.

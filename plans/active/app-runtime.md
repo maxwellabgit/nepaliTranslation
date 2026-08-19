@@ -17,7 +17,7 @@ Lane 4 checklist in `.agent/DONE.md`.
 - [x] History / Settings overlays set `active={mode && overlay === null}` so `end` cannot re-arm under an overlay
 - [x] Conversation `!active` also `hardStopSpeech()` (not just flags)
 - [x] Pass rules unchanged (`passLogic.ts`); typed Nepali fallback still allows Pass
-- [x] Independent review
+- [x] Independent review (PASS; wired Conversation trust line to `mtStatusLine`)
 
 ## Progress
 Highest-impact runtime bug fixed: screens stayed `active` while History/Settings covered them, so Conversation `end` could re-arm the mic. Warm-up path left as-is (already soft-fails).

@@ -17,7 +17,7 @@ Track D checklist in `.agent/DONE.md`. Bundled engine is a blocker, not a fake D
 - [x] Skip Nepali when `neVoiceOk === false`
 - [x] Settings copy: no Hindi substitute; no bundled Nepali voice yet
 - [ ] Bundle Piper/MMS (or other on-device) Nepali voice in the IPA
-- [x] Independent review of skip-path honesty
+- [x] Independent review of skip-path honesty (PASS; no material findings)
 
 ## Progress
 Skip-path + helper shipped. Bundled TTS engine is a blocker.

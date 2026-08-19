@@ -7,7 +7,7 @@ Ship a fully on-device English ↔ Nepali translator on iPhone. Develop on Windo
 ```
 Windows (dev)  →  EAS cloud build  →  TestFlight  →  iPhone
                       │
-                      ├─ STT: whisper.rn (ggml Whisper small / quantized)
+                      ├─ STT: Apple on-device English; Nepali Whisper when bundled
                       └─ MT:  ONNX Runtime mobile (IndicTrans2 en↔ne)
 ```
 

@@ -18,7 +18,7 @@ Track C checklist in `.agent/DONE.md`. Live device ASR is **not** required to cl
 - [x] Typed fallback when Whisper is not ready
 - [x] Fetch script + `--check`; docs no longer tell people to ship stock Whisper small as Nepali STT
 - [ ] Link whisper.rn + bundle ggml in an EAS build (founder / GPU machine)
-- [x] Independent review of this scaffold
+- [x] Independent review of this scaffold (PASS; no material findings)
 
 ## Progress
 Scaffold shipped. Live Nepali ASR is a blocker.
