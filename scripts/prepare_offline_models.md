@@ -6,20 +6,30 @@ Assumes repo root `nepaliTranslation/` and Python with `torch`, `transformers`, 
 
 ---
 
-## 1. Whisper small → ggml (for whisper.rn)
+## 1. Whisper Nepali → ggml (for whisper.rn, not wired as a native dep yet)
 
-whisper.rn loads [ggerganov ggml](https://github.com/ggerganov/whisper.cpp) weights.
+Stock Whisper small is unusable on Nepali (CER ~100%+ / Latin hallucinations). Use `Dragneel/whisper-small-nepali` → ggml q5_1 (`ggml-ne-small-q5_1.bin`, Apache-2.0). Score with `benchmarks/eval_whisper_nepali.py`.
+
+Do **not** copy `models/ggml-small-q5_1.bin` from `download-ggml-model.py small-q5_1` and call it Nepali STT.
+
+Convert (dev machine with whisper.cpp):
 
 ```powershell
-git clone --depth 1 https://github.com/ggerganov/whisper.cpp.git training/artifacts/whisper.cpp
-cd training/artifacts/whisper.cpp
-
-pip install huggingface_hub
-python models/download-ggml-model.py small-q5_1
-# → models/ggml-small-q5_1.bin
+# huggingface-cli download Dragneel/whisper-small-nepali
+# python whisper.cpp/models/convert-h5-to-ggml.py <hf-dir> <whisper.cpp> .
+# whisper-quantize ggml-model.bin ggml-ne-small-q5_1.bin q5_1
 ```
 
-Copy to `mobile/assets/models/whisper/ggml-small-q5_1.bin`. Point whisper.rn at that path.
+Copy into the app probe path:
+
+```powershell
+cd mobile
+$env:WHISPER_GGML="C:\path\to\ggml-ne-small-q5_1.bin"
+npm run fetch:whisper
+node ./scripts/fetch_whisper_nepali.mjs --check
+```
+
+whisper.rn is not in `mobile/package.json` yet. `src/stt/nepaliAsr.ts` stays on typed fallback until the native module is linked **and** this ggml is on device.
 
 ---
 

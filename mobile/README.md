@@ -10,7 +10,7 @@ Develop on Windows. Cloud-build with EAS. Install via TestFlight after Apple Dev
 
 ```
 iPhone (Expo)
-  ├─ STT: whisper.rn (ggml Whisper) or on-device speech APIs
+  ├─ STT: Apple on-device English (network fallback); Nepali Whisper when bundled
   └─ MT:  ONNX Runtime — IndicTrans2-class en↔ne
 ```
 

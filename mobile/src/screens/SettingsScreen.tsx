@@ -13,7 +13,7 @@ import {
   loadReviewSyncStatus,
   type ReviewSyncStatus,
 } from '../sync/reviewSync';
-import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
+import { getSpeechCaps, type SpeechCaps } from '../stt/speechCaps';
 import { colors } from '../theme';
 
 type Props = {
@@ -31,6 +31,25 @@ const BUILD_NUMBER =
   Constants.nativeBuildVersion ??
   '';
 
+function englishCapLine(caps: SpeechCaps): string {
+  if (!caps.enApple) return 'English voice input · not available';
+  if (!caps.enOnDeviceSupported) {
+    return 'English voice input · network Apple (on-device not on this device)';
+  }
+  if (caps.enSttMode === 'network') {
+    return 'English voice input · using network (on-device unavailable this session)';
+  }
+  return 'English voice input · on-device first, network if needed';
+}
+
+function nepaliSttLine(caps: SpeechCaps): string {
+  if (caps.neAsr === 'ready') return 'Nepali voice input · on-device Whisper';
+  if (caps.neAsr === 'weights-only') {
+    return 'Nepali voice input · model file present · native module not linked';
+  }
+  return 'Nepali voice input · not in this install';
+}
+
 /**
  * Traveler settings. Meaning Review lives under Advanced.
  * Review sync is baked into the build — testers do not configure it.
@@ -43,15 +62,10 @@ export function SettingsScreen({
   const [advanced, setAdvanced] = useState(false);
   const [syncStatus, setSyncStatus] = useState<ReviewSyncStatus | null>(null);
   const [syncBusy, setSyncBusy] = useState(false);
-  const [speechCaps, setSpeechCaps] = useState<{
-    neStt: boolean;
-    neTts: boolean;
-  } | null>(null);
+  const [speechCaps, setSpeechCaps] = useState<SpeechCaps | null>(null);
 
   useEffect(() => {
-    void Promise.all([getSttSupport(), hasNepaliVoice()]).then(
-      ([stt, neTts]) => setSpeechCaps({ neStt: stt.ne, neTts }),
-    );
+    void getSpeechCaps().then(setSpeechCaps);
   }, []);
 
   const refreshSync = useCallback(async () => {
@@ -96,8 +110,8 @@ export function SettingsScreen({
         <Text style={styles.sectionLabel}>About</Text>
         <Text style={styles.body}>
           {neuralReady
-            ? 'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.'
-            : 'NepTranslate includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
+            ? 'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. English voice input prefers on-device Apple recognition and falls back to network if needed. Spoken Nepali is not in this install — type instead.'
+            : 'NepTranslate includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. English voice input prefers on-device Apple recognition and falls back to network if needed. Spoken Nepali is not in this install — type instead.'}
         </Text>
         <Text style={styles.meta}>
           v{APP_VERSION}
@@ -110,21 +124,19 @@ export function SettingsScreen({
         <Text style={styles.sectionLabel}>Speech on this device</Text>
         {speechCaps ? (
           <>
-            <Text style={styles.capRow}>
-              English voice input · available
-            </Text>
-            <Text style={styles.capRow}>
-              Nepali voice input ·{' '}
-              {speechCaps.neStt ? 'available' : 'not supported by this device'}
-            </Text>
+            <Text style={styles.capRow}>{englishCapLine(speechCaps)}</Text>
+            <Text style={styles.capRow}>{nepaliSttLine(speechCaps)}</Text>
             <Text style={styles.capRow}>
               Nepali spoken aloud ·{' '}
-              {speechCaps.neTts ? 'available' : 'no Nepali voice installed'}
+              {speechCaps.neTts
+                ? 'available'
+                : 'no Nepali voice installed'}
             </Text>
-            {!speechCaps.neStt || !speechCaps.neTts ? (
+            {speechCaps.neAsr !== 'ready' || !speechCaps.neTts ? (
               <Text style={styles.meta}>
-                iPhones don't ship Nepali speech services. Typing and reading
-                translations work fully offline.
+                Type Nepali. This app will not use Hindi as Nepali speech.
+                Spoken-aloud Nepali needs an iOS Nepali voice — none is
+                bundled yet.
               </Text>
             ) : null}
           </>

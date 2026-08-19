@@ -14,8 +14,8 @@ Windows (dev)  →  EAS cloud build  →  TestFlight  →  iPhone
 | Layer | Choice | Notes |
 |-------|--------|--------|
 | App shell | Expo (`mobile/`) | Normal + Conversation UI; EAS for iOS IPA |
-| Speech-to-text (EN) | Apple recognition (`expo-speech-recognition`) | Streaming, free, shipped today |
-| Speech-to-text (NE) | [whisper.rn](https://github.com/mybigday/whisper.rn) | Bundle `Dragneel/whisper-small-nepali` → ggml q5_1 (~190 MB, Apache-2.0). Validated 2026-08: CER 21% on FLEURS ne_np vs 100%+ for stock Whisper — stock is unusable, the fine-tune is required. Convert: `whisper.cpp/models/convert-h5-to-ggml.py` + `whisper-quantize q5_1`; score with `benchmarks/eval_whisper_nepali.py`. |
+| Speech-to-text (EN) | Apple recognition (`expo-speech-recognition`) | On-device first (`requiresOnDeviceRecognition: true`); network fallback if Apple has no on-device English recognizer. |
+| Speech-to-text (NE) | [whisper.rn](https://github.com/mybigday/whisper.rn) (planned) | Adapter in `mobile/src/stt/nepaliAsr.ts`. whisper.rn is **not** in `package.json` yet. Bundle `Dragneel/whisper-small-nepali` → ggml q5_1 (`ggml-ne-small-q5_1.bin`, ~190 MB, Apache-2.0). Typed fallback until both the native module and ggml ship. Stock Whisper is unusable (CER 100%+). |
 | Translation | ONNX Runtime for React Native (shipped) | IndicTrans2 dist-200M INT8, both directions bundled |
 | Ship | EAS Build → TestFlight | Apple Developer required |
 
@@ -32,7 +32,7 @@ Weights live in the app, not on a PC:
 
 Export flow (dev machine, one-time or per release):
 
-1. **Whisper** — ggml `small` or `small-q5_1` via [whisper.cpp](https://github.com/ggerganov/whisper.cpp) scripts; copy into `mobile/assets/models/whisper/`.
+1. **Whisper (Nepali)** — `Dragneel/whisper-small-nepali` → ggml q5_1 (`ggml-ne-small-q5_1.bin`), not stock Whisper small. Copy with `cd mobile && npm run fetch:whisper` after setting `WHISPER_GGML`. The app probes that file in `src/stt/nepaliAsr.ts` and keeps typed fallback until whisper.rn is linked. See [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md).
 2. **IndicTrans2** — export merged EN→NE and NE→EN checkpoints to ONNX (encoder/decoder + tokenizer files). See [`scripts/prepare_offline_models.md`](../scripts/prepare_offline_models.md) for export commands; copy results into `mobile/assets/models/it2_en_indic/` and `it2_indic_en/`.
 3. Wire paths in the Expo native layer; smoke-test on a device build before TestFlight.
 

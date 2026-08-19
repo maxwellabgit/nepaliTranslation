@@ -1,12 +1,14 @@
 import * as Speech from 'expo-speech';
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
+import { hardStopNepaliAsr } from './nepaliAsr';
 
 /**
  * Capability detection + shared teardown for speech.
  *
  * Apple ships no Nepali speech recognizer and (on most devices) no Nepali
- * voice, so both must be checked — never assumed — before offering
- * Nepali mic or speaker UI.
+ * voice. English STT is probed fail-open (never hide the mic on a probe
+ * error). Nepali STT is probed fail-closed — a probe error must not pretend
+ * Apple can hear Nepali (that skips the typed fallback).
  */
 
 export function hardStopRecognition(): void {
@@ -22,6 +24,17 @@ export function hardStopRecognition(): void {
   }
 }
 
+/** Stop Apple STT, Whisper Nepali ASR (no-op until linked), and TTS. */
+export function hardStopSpeech(): void {
+  hardStopRecognition();
+  hardStopNepaliAsr();
+  try {
+    Speech.stop();
+  } catch {
+    /* ignore */
+  }
+}
+
 export type SttSupport = {
   en: boolean;
   ne: boolean;
@@ -29,7 +42,16 @@ export type SttSupport = {
 
 let sttPromise: Promise<SttSupport> | null = null;
 
-/** Cached once per app run. Fails open so a probe error never hides the mic. */
+function localesToSupport(locales: string[]): SttSupport {
+  const all = locales.map((l) => l.toLowerCase());
+  if (!all.length) return { en: true, ne: false };
+  return {
+    en: all.some((l) => l.startsWith('en')),
+    ne: all.some((l) => l.startsWith('ne')),
+  };
+}
+
+/** Cached once per app run. English fails open; Nepali fails closed. */
 export function getSttSupport(): Promise<SttSupport> {
   if (!sttPromise) {
     sttPromise = (async () => {
@@ -41,19 +63,15 @@ export function getSttSupport(): Promise<SttSupport> {
           }>;
         };
         if (typeof mod.getSupportedLocales !== 'function') {
-          return { en: true, ne: true };
+          return { en: true, ne: false };
         }
         const res = await mod.getSupportedLocales({});
-        const all = [...(res.locales ?? []), ...(res.installedLocales ?? [])].map(
-          (l) => l.toLowerCase(),
-        );
-        if (!all.length) return { en: true, ne: true };
-        return {
-          en: all.some((l) => l.startsWith('en')),
-          ne: all.some((l) => l.startsWith('ne')),
-        };
+        return localesToSupport([
+          ...(res.locales ?? []),
+          ...(res.installedLocales ?? []),
+        ]);
       } catch {
-        return { en: true, ne: true };
+        return { en: true, ne: false };
       }
     })();
   }

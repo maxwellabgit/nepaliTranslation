@@ -41,6 +41,7 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 
 - [ ] Warm-up still does not brick the UI when neural is slow/failing
 - [ ] Cancel / hard-stop still stops STT + TTS + in-flight MT
+- [ ] History / Settings overlays deactivate Auto and Conversation (`active={mode && overlay === null}`)
 - [ ] Conversation pass rules still match `src/conversation/passLogic.ts`
 - [ ] Phrasebook / fallback path still works when neural is not ready
 - [ ] `npx tsc --noEmit` + `npm run verify:translate`
@@ -52,3 +53,27 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 - [ ] Export path still ends at `mobile/assets/models/` (see `docs/OFFLINE_IOS.md`)
 - [ ] Gold eval vs frozen baseline if weights exist; otherwise explicit GPU/artifact blocker
 - [ ] No new PC/cloud inference in the product path
+
+## Track A — en-speech-offline
+
+- [ ] English `start` uses `requiresOnDeviceRecognition: true` first, network fallback on failure
+- [ ] Settings About + Speech caps do not say English always needs a network
+- [ ] Conversation still speaks English translations after Pass (skip only missing Nepali TTS)
+- [ ] No TestFlight / airplane-mode claim unless a human did it
+- [ ] `npx tsc --noEmit` + `npm run verify:translate`
+
+## Track C — ne-stt
+
+- [ ] Home / Conversation never start Apple `lang: 'ne-NP'`
+- [ ] Typed Nepali fallback still shows when Whisper is not ready
+- [ ] Fetch script exists; `--check` is honest on a machine without the ggml
+- [ ] whisper.rn not added to `package.json` unless an EAS/device proof exists
+- [ ] No claim that Nepali mic works on this VM
+
+## Track D — ne-tts
+
+- [ ] Speak helper never uses Hindi (`hi-IN`) as Nepali
+- [ ] Nepali TTS skipped when `hasNepaliVoice()` is false (Home Speak disabled; Conversation Pass still speaks English)
+- [ ] No cloud TTS in the product path
+- [ ] Piper/MMS (or other bundled) engine recorded as a blocker if not shipped
+

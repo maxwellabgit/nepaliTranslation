@@ -13,7 +13,6 @@ import {
   Vibration,
   View,
 } from 'react-native';
-import * as Speech from 'expo-speech';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
@@ -26,11 +25,10 @@ import {
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { takeNewCompleteSentences } from '../mt/sentences';
 import { canPassPhone, emptyShowFallback } from '../conversation/passLogic';
-import {
-  getSttSupport,
-  hardStopRecognition,
-  hasNepaliVoice,
-} from '../stt/sttSupport';
+import { noteEnglishAsrError, startEnglishAsr } from '../stt/enSpeech';
+import { isNepaliAsrReady, startNepaliAsr } from '../stt/nepaliAsr';
+import { speakUtterance, stopSpeech } from '../stt/speak';
+import { hardStopSpeech, hasNepaliVoice } from '../stt/sttSupport';
 import { colors } from '../theme';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 
@@ -77,7 +75,7 @@ export function ConversationScreen({
   const [partnerRotate, setPartnerRotate] = useState(false);
   const [consentVisible, setConsentVisible] = useState(false);
   const [passBlockedHint, setPassBlockedHint] = useState(false);
-  const [neSttOk, setNeSttOk] = useState(true);
+  const [neSttOk, setNeSttOk] = useState(false);
   const [neVoiceOk, setNeVoiceOk] = useState(true);
   /** Typed fallback for the Nepali side when the device has no ne recognizer. */
   const [typedReply, setTypedReply] = useState('');
@@ -148,14 +146,16 @@ export function ConversationScreen({
             resolve();
           }
         };
-        Speech.stop();
-        Speech.speak(text, {
-          language: turn.from === 'en' ? 'ne-NP' : 'en-US',
-          rate: 0.95,
+        const lang = turn.from === 'en' ? 'ne' : 'en';
+        const started = speakUtterance({
+          lang,
+          text,
+          neVoiceOk: lang === 'ne' ? neVoiceOk : true,
           onDone: finish,
           onStopped: finish,
           onError: finish,
         });
+        if (!started) return resolve();
         // Safety valve so a missing TTS callback can't hang the pass —
         // sized to the text so it never cuts off real speech.
         setTimeout(() => {
@@ -268,7 +268,7 @@ export function ConversationScreen({
   );
 
   useEffect(() => {
-    void getSttSupport().then((s) => setNeSttOk(s.ne));
+    void isNepaliAsrReady().then(setNeSttOk);
     void hasNepaliVoice().then(setNeVoiceOk);
   }, []);
 
@@ -282,6 +282,7 @@ export function ConversationScreen({
       setListening(false);
       setBusy(false);
       setConsentVisible(false);
+      hardStopSpeech();
       return;
     }
     void loadPrefs().then((prefs) => {
@@ -314,6 +315,7 @@ export function ConversationScreen({
 
   useSpeechRecognitionEvent('error', () => {
     if (!activeRef.current) return;
+    if (sideRef.current === 'en') noteEnglishAsrError();
     endWaitersRef.current.splice(0).forEach((fn) => fn());
     if (!passingRef.current) {
       listeningRef.current = false;
@@ -334,18 +336,26 @@ export function ConversationScreen({
     }
     if (restartTimer.current) clearTimeout(restartTimer.current);
     restartTimer.current = setTimeout(() => {
-      if (!activeRef.current || !listeningRef.current || passingRef.current) return;
-      try {
-        ExpoSpeechRecognitionModule.start({
-          lang: sideRef.current === 'en' ? 'en-US' : 'ne-NP',
-          interimResults: true,
-          continuous: true,
-          requiresOnDeviceRecognition: false,
-        });
-      } catch {
-        listeningRef.current = false;
-        setListening(false);
-      }
+      void (async () => {
+        if (!activeRef.current || !listeningRef.current || passingRef.current) {
+          return;
+        }
+        try {
+          if (sideRef.current === 'ne') {
+            if (!(await isNepaliAsrReady())) {
+              listeningRef.current = false;
+              setListening(false);
+              return;
+            }
+            await startNepaliAsr();
+            return;
+          }
+          await startEnglishAsr({ continuous: true, interimResults: true });
+        } catch {
+          listeningRef.current = false;
+          setListening(false);
+        }
+      })();
     }, 140);
   });
 
@@ -356,8 +366,7 @@ export function ConversationScreen({
   useEffect(() => {
     return () => {
       if (restartTimer.current) clearTimeout(restartTimer.current);
-      hardStopRecognition();
-      Speech.stop();
+      hardStopSpeech();
     };
   }, []);
 
@@ -372,7 +381,7 @@ export function ConversationScreen({
     listeningRef.current = false;
     setListening(false);
     if (!wasActive) {
-      hardStopRecognition();
+      hardStopSpeech();
       return Promise.resolve();
     }
     return new Promise((resolve) => {
@@ -386,7 +395,7 @@ export function ConversationScreen({
       endWaitersRef.current.push(finish);
       // Recognizer may already be dead; don't hang the handoff.
       setTimeout(finish, 600);
-      hardStopRecognition();
+      hardStopSpeech();
     });
   }, []);
 
@@ -396,13 +405,16 @@ export function ConversationScreen({
 
   const startListeningFor = async (next: Side) => {
     if (!activeRef.current) return false;
-    if (next === 'ne' && !neSttOk) {
-      // No Nepali recognizer on this device — flip the display but don't
-      // pretend to listen. The partner can read; speech input stays EN-only.
-      sideRef.current = next;
-      listeningRef.current = false;
-      setListening(false);
-      return false;
+    if (next === 'ne') {
+      const whisperOk = await isNepaliAsrReady();
+      if (!whisperOk) {
+        // No Nepali ASR in this install — flip the display but don't
+        // pretend to listen. The partner types; speech input stays EN-only.
+        sideRef.current = next;
+        listeningRef.current = false;
+        setListening(false);
+        return false;
+      }
     }
     try {
       const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
@@ -414,12 +426,11 @@ export function ConversationScreen({
       setInterim('');
       listeningRef.current = true;
       setListening(true);
-      ExpoSpeechRecognitionModule.start({
-        lang: next === 'en' ? 'en-US' : 'ne-NP',
-        interimResults: true,
-        continuous: true,
-        requiresOnDeviceRecognition: false,
-      });
+      if (next === 'ne') {
+        await startNepaliAsr();
+      } else {
+        await startEnglishAsr({ continuous: true, interimResults: true });
+      }
       return true;
     } catch {
       listeningRef.current = false;
@@ -574,7 +585,7 @@ export function ConversationScreen({
         <Pressable
           onPress={() => {
             stopListening();
-            Speech.stop();
+            stopSpeech();
             setTurns([]);
             interimRef.current = '';
             emittedCountRef.current = 0;

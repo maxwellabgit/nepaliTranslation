@@ -13,7 +13,6 @@ import {
   View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import * as Speech from 'expo-speech';
 import { Ionicons } from '@expo/vector-icons';
 import {
   ExpoSpeechRecognitionModule,
@@ -29,11 +28,10 @@ import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { sendLiveIncorrectToReviewSet } from '../storage/liveIncorrect';
 import { addHistory, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
-import {
-  getSttSupport,
-  hardStopRecognition,
-  hasNepaliVoice,
-} from '../stt/sttSupport';
+import { startEnglishAsr, noteEnglishAsrError } from '../stt/enSpeech';
+import { isNepaliAsrReady, startNepaliAsr } from '../stt/nepaliAsr';
+import { speakUtterance } from '../stt/speak';
+import { hardStopSpeech, hasNepaliVoice } from '../stt/sttSupport';
 import { colors } from '../theme';
 
 type Props = {
@@ -90,7 +88,7 @@ export function HomeScreen({
   const [copiedFlash, setCopiedFlash] = useState(false);
   const [markedFlash, setMarkedFlash] = useState(false);
   const [markingIncorrect, setMarkingIncorrect] = useState(false);
-  const [neSttOk, setNeSttOk] = useState(true);
+  const [neSttOk, setNeSttOk] = useState(false);
   const [neVoiceOk, setNeVoiceOk] = useState(true);
   const [stage, setStage] = useState<StageFocus>('input');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -130,7 +128,7 @@ export function HomeScreen({
       // Always hand focus stage back to the input so typing never gets stuck.
       setStage('input');
       ignoreEndUntilRef.current = Date.now() + 350;
-      hardStopRecognition();
+      hardStopSpeech();
       if (opts?.commit) {
         const t = input.trim();
         if (t) {
@@ -276,6 +274,7 @@ export function HomeScreen({
     if (!activeRef.current) return;
     if (Date.now() < ignoreEndUntilRef.current) return;
     if (startingRef.current) return;
+    if (optsRef.current.preferred === 'en-ne') noteEnglishAsrError();
     listeningRef.current = false;
     startingRef.current = false;
     setListening(false);
@@ -290,11 +289,11 @@ export function HomeScreen({
 
   useEffect(() => {
     void ExpoSpeechRecognitionModule.requestPermissionsAsync().catch(() => {});
-    void getSttSupport().then((s) => setNeSttOk(s.ne));
+    void isNepaliAsrReady().then(setNeSttOk);
     void hasNepaliVoice().then(setNeVoiceOk);
     return () => {
       listenGenRef.current += 1;
-      hardStopRecognition();
+      hardStopSpeech();
       sharedTranslationEngine.cancelAll();
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
       if (markedTimerRef.current) clearTimeout(markedTimerRef.current);
@@ -311,7 +310,7 @@ export function HomeScreen({
       setListening(false);
       setStage('input');
       ignoreEndUntilRef.current = Date.now() + 350;
-      hardStopRecognition();
+      hardStopSpeech();
     }
   }, [active]);
 
@@ -389,7 +388,7 @@ export function HomeScreen({
     if (sourceSide === 'ne' && !neSttOk) {
       Alert.alert(
         'Nepali voice input unavailable',
-        'This device has no Nepali speech recognizer. Type Nepali instead — translation still works.',
+        'Spoken Nepali is not in this install. Type Nepali instead — translation still works.',
       );
       return;
     }
@@ -408,7 +407,7 @@ export function HomeScreen({
     startingRef.current = true;
     ignoreEndUntilRef.current = Date.now() + 500;
     try {
-      hardStopRecognition();
+      hardStopSpeech();
       await delay(220);
       if (gen !== listenGenRef.current) return;
 
@@ -428,14 +427,12 @@ export function HomeScreen({
       listeningRef.current = true;
       setListening(true);
       setOutput('');
-      const lang = optsRef.current.preferred === 'ne-en' ? 'ne-NP' : 'en-US';
       ignoreEndUntilRef.current = Date.now() + 400;
-      ExpoSpeechRecognitionModule.start({
-        lang,
-        interimResults: true,
-        continuous: false,
-        requiresOnDeviceRecognition: false,
-      });
+      if (sourceSide === 'ne') {
+        await startNepaliAsr();
+      } else {
+        await startEnglishAsr({ continuous: false, interimResults: true });
+      }
     } catch {
       if (gen === listenGenRef.current) {
         listeningRef.current = false;
@@ -473,10 +470,10 @@ export function HomeScreen({
     }
     const text = displayOutput.trim();
     if (!text) return;
-    Speech.stop();
-    Speech.speak(text, {
-      language: targetLang === 'en' ? 'en-US' : 'ne-NP',
-      rate: 0.95,
+    speakUtterance({
+      lang: targetLang,
+      text,
+      neVoiceOk,
     });
   };
 

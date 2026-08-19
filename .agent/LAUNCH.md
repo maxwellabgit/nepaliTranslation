@@ -51,3 +51,35 @@ If GPU or model artifacts are missing, record the blocker and stop.
 Do not invent eval numbers. Do not edit gold references.
 Use /independent-reviewer before claiming complete.
 ```
+
+## Speech follow-on (copy one unless the founder asks to combine)
+
+### A — English speech offline
+
+```
+Run /en-speech-offline only.
+Read AGENTS.md and plans/active/en-speech-offline.md.
+English Apple STT on-device first, network fallback, honest Settings.
+Do not add whisper.rn. Do not claim airplane-mode proof.
+Use /independent-reviewer before claiming complete.
+```
+
+### C — Nepali STT
+
+```
+Run /ne-stt only.
+Read AGENTS.md and plans/active/ne-stt.md.
+Wire or scaffold whisper.rn for Nepali input only. Keep Apple for English.
+Do not download 190MB ggml in CI. Do not claim the Nepali mic works without native + weights.
+Use /independent-reviewer before claiming complete.
+```
+
+### D — Nepali TTS
+
+```
+Run /ne-tts only.
+Read AGENTS.md and plans/active/ne-tts.md.
+Do not use Hindi as Nepali. Do not add cloud TTS.
+If no bundled engine can ship from this machine, record the blocker.
+Use /independent-reviewer before claiming complete.
+```

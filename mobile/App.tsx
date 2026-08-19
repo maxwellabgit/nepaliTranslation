@@ -1,8 +1,7 @@
 ﻿import { useEffect, useState } from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import * as Speech from 'expo-speech';
-import { hardStopRecognition } from './src/stt/sttSupport';
+import { hardStopSpeech } from './src/stt/sttSupport';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
@@ -21,12 +20,7 @@ type Mode = 'auto' | 'conversation';
 type Overlay = 'history' | 'settings' | 'meaning' | null;
 
 function hardStopAudio() {
-  hardStopRecognition();
-  try {
-    Speech.stop();
-  } catch {
-    /* ignore */
-  }
+  hardStopSpeech();
   sharedTranslationEngine.cancelAll();
 }
 
@@ -96,7 +90,7 @@ export default function App() {
         >
           <HomeScreen
             key={seedKey}
-            active={mode === 'auto'}
+            active={mode === 'auto' && overlay === null}
             seed={seed}
             neuralReady={neuralReady}
             mtWarmStatus={mtWarmStatus}
@@ -119,7 +113,7 @@ export default function App() {
           }
         >
           <ConversationScreen
-            active={mode === 'conversation'}
+            active={mode === 'conversation' && overlay === null}
             neuralReady={neuralReady}
           />
         </View>

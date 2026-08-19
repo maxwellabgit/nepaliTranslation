@@ -27,6 +27,19 @@ Ranked by likelihood that an autonomous agent produces a real, checkable improve
 
 Do **not** start lane 5 until lane 1 is clean. Do **not** claim translation quality from UI-only diffs.
 
+### Speech follow-on tracks
+
+After lanes 1–3, spoken input/output is the next product hole. Each has its own ExecPlan. A founder may ask one agent to run several of these in one PR.
+
+| Track | Lane | Why | Launch |
+|-------|------|-----|--------|
+| **A** | English speech offline | Apple English STT is already shipped; flip to on-device first + honest Settings. No GPU. | `/en-speech-offline` |
+| **B** | App runtime | Warm-up, overlay vs `active`, cancel, Pass. | `/app-runtime` |
+| **C** | Nepali STT | whisper.rn + Dragneel ggml. Scaffold + fetch script here; live mic needs EAS + weights. | `/ne-stt` |
+| **D** | Nepali TTS | Bundled on-device Nepali voice, not `expo-speech` `ne-NP`. Piper/MMS is a hardware/asset blocker. | `/ne-tts` |
+
+Do not claim Nepali mic or Nepali speak-aloud works without the native module and the model/voice on a phone. Typed fallback is the honest path.
+
 Not autonomous (human-gated, still valid): TestFlight on a physical iPhone; overnight GPU FT on the founder machine. Record those as blockers, do not invent results.
 
 ## Hard rules
