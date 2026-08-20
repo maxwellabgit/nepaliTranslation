@@ -234,7 +234,7 @@ Ship M1–M5 without claiming Done if M6 is blocked. Do not fake clips with sile
 
 ## Progress
 
-Plan written (2026-08-20). No implementation yet.
+Plan written (2026-08-20). No implementation yet. Branch `cursor/companion-tools-plan-dbe6` is on origin. GitHub PR create from this agent is blocked (`must be a collaborator`).
 
 ## Surprises & discoveries
 
