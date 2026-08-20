@@ -52,3 +52,18 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 - [ ] Export path still ends at `mobile/assets/models/` (see `docs/OFFLINE_IOS.md`)
 - [ ] Gold eval vs frozen baseline if weights exist; otherwise explicit GPU/artifact blocker
 - [ ] No new PC/cloud inference in the product path
+
+## Lane 6 — companion-tools
+
+- [ ] INTENT lists Rates + Learn as Settings overlays; Auto + Conversation remain the only translation modes
+- [ ] Rates converter works from bundled seed with no network
+- [ ] Optional NRB refresh updates cache; failure leaves seed/cache visible with an as-of date
+- [ ] INR / JPY `unit` is applied (no 100× INR bug)
+- [ ] English alphabet: A–Z, example word, Play via `expo-speech`
+- [ ] Nepali alphabet: listed vowels + consonants; Play under every letter
+- [ ] Nepali Play uses bundled audio, not `ne-NP` TTS as the primary path
+- [ ] Overlay open/close stops STT/TTS/letter audio (`hardStopAudio`)
+- [ ] Informal example words use तिमी, not तँ
+- [ ] Independent reviewer walked Settings → Rates and Settings → Learn in source
+
+Honest limit: missing native letter recordings or no TestFlight are blockers, not Done.

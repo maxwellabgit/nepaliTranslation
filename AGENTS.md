@@ -27,7 +27,9 @@ Ranked by likelihood that an autonomous agent produces a real, checkable improve
 
 Do **not** start lane 5 until lane 1 is clean. Do **not** claim translation quality from UI-only diffs.
 
-Not autonomous (human-gated, still valid): TestFlight on a physical iPhone; overnight GPU FT on the founder machine. Record those as blockers, do not invent results.
+User-requested companion (not ranked with 1–5; still its own ExecPlan and PR): **companion-tools** — Settings overlays for Nepal Rastra Bank rates and EN/NE alphabet learning. Plan: `plans/active/companion-tools.md`. Launch: implement that plan only. Do not mix with gold, MT decode, or model-ship.
+
+Not autonomous (human-gated, still valid): TestFlight on a physical iPhone; overnight GPU FT on the founder machine; native recordings for Nepali letter audio. Record those as blockers, do not invent results.
 
 ## Hard rules
 
