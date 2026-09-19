@@ -2,7 +2,9 @@ name: agent-gates
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "cursor/beta-*"
   pull_request:
 
 jobs:
