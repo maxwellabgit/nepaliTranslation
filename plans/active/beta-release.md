@@ -34,7 +34,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 00 — Product contract and release lane (this file + INTENT / AGENTS / DONE updates)
 - [x] Slice 01 — Test harness and UI primitives (independent review PASS)
 - [x] Slice 02 — Supabase schema, RLS, and API skeleton (independent review PASS; backend-gate CI green)
-- [ ] Slice 03 — Sign in with Apple, consent, and deletion
+- [x] Slice 03 — Sign in with Apple, consent, and deletion (independent review PASS; agent-gates `35465801990` and backend-gate `35465801979` green)
 - [ ] Slice 04 — Unified correction sheet and offline outbox
 - [ ] Slice 05 — Contribution queue, hidden checks, and consensus
 - [ ] Slice 06 — Reward ledger and entitlement service
@@ -54,7 +54,8 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - Scope: optional Apple identity, versioned draft consent, resumable delete-account. No login wall on translate/history/settings/learn. No live Apple/Supabase project secrets in the bundle.
 - Human gates (not claimed): Apple capability + Supabase Apple provider; legal review of consent copy; physical device sign-in/deletion.
 - Review: round 1 FAIL (deletion not resumable, Apple revoke skipped token exchange, service-role JWT not rejected) → fixed; round 2 **PASS**.
-- Backend-gate CI still required for the new migration and Deno tests. Checkbox stays open until that run is green.
+- CI: agent-gates `35465801990` green; backend-gate `35465801979` green (start, reset, lint, pgTAP, deno, concurrent reward).
+- Commit: `7af191a`. Human gates remain open.
 
 **Previous: Slice 02** complete (backend-gate CI green, review PASS).
 
@@ -136,12 +137,13 @@ npm run verify:translate           # OK
 npx expo-doctor                    # 21/21 passed
 # docker / supabase CLI / deno: not available on this machine
 # backend-gate CI is the proof for migration 20260919200000 + deletion_test.ts
+# agent-gates 35465801990 green; backend-gate 35465801979 green
 ```
 
 ## Remaining work
 
-- Slice 03 review round 2 PASS. Backend-gate CI on this branch is the remaining proof. Do not start Slice 04 until that run is green.
-- Review-sync endpoint, secret, and Meaning Review password stay until Slice 04.
+- Next slice: 04 correction sheet and offline outbox on `cursor/beta-04-correction-outbox`. Remove the temporary review-sync endpoint, secret, and Meaning Review password `1234` in that slice only.
+- Slice 03 human gates stay open: Apple Sign in capability, Supabase Apple provider, legal review of consent `2026-09-19.draft`, physical-device sign-in and account deletion.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
