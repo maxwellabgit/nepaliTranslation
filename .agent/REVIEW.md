@@ -12,10 +12,11 @@ The implementer does not get to certify its own work.
 
 ## Material vs nit
 
-- **Material:** wrong product behavior vs INTENT, gold contamination, register bugs, broken fallback, silent audio/MT cancel, eval gate skipped, scope creep (camera, extra languages, server MT).
+- **Material:** wrong product behavior vs INTENT, gold contamination, register bugs, broken fallback, silent audio/MT cancel, eval gate skipped, scope creep (camera, extra languages, server MT), beta secrets in the bundle, contributor known checks derived from `benchmarks/gold/`, mixing beta slices or core+beta lanes in one PR.
 - **Nit:** style, comments, optional refactors. Do not block Done on nits.
 
 ## Specialized extras
 
 - UI lane: empty/loading/error, hit targets, Devanagari size, keyboard covering controls.
 - MT / model lanes: gold leakage, four-model fragmentation, तँ slipping in, FLORES used as ship gate.
+- Beta lanes: offline core must not hard-depend on optional services; no invented device/StoreKit/AdMob proof; docs-only slices must not ship runtime or artifact diffs.
