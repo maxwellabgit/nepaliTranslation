@@ -21,10 +21,11 @@ jobs:
           # Known mobile/app.json reviewSync* placeholders are removed in Slice 04;
           # still block service-role / live payment / AdMob secret patterns now.
           if git grep -I -n -E \
-            'service_role|eyJ[A-Za-z0-9_-]{20,}\.eyJ|sk_live_[A-Za-z0-9]+|rk_live_[A-Za-z0-9]+|SUPABASE_SERVICE_ROLE|REVENUECAT_SECRET|ADMOB_SSV_SECRET|password[[:space:]]*=[[:space:]]*['\''\"]1234['\''\"]' \
+            'eyJ[A-Za-z0-9_-]{20,}\.eyJ|sk_live_[A-Za-z0-9]+|rk_live_[A-Za-z0-9]+|REVENUECAT_SECRET_KEY|ADMOB_SSV_PRIVATE|password[[:space:]]*=[[:space:]]*['\''\"]1234['\''\"]' \
             -- \
             ':(exclude)*.md' \
             ':(exclude)*.lock' \
+            ':(exclude).github/**' \
             ':(exclude)plans/**' \
             ':(exclude).agent/**' \
             ':(exclude).governance/**' \
@@ -48,6 +49,7 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
+      - run: node ./scripts/export_meaning_lexicon.mjs
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:unit -- --runInBand

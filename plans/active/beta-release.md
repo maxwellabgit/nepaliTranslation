@@ -33,7 +33,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 - [x] Slice 00 — Product contract and release lane (this file + INTENT / AGENTS / DONE updates)
 - [x] Slice 01 — Test harness and UI primitives (independent review PASS)
-- [ ] Slice 02 — Supabase schema, RLS, and API skeleton
+- [x] Slice 02 — Supabase schema, RLS, and API skeleton (independent review PASS; backend-gate CI green)
 - [ ] Slice 03 — Sign in with Apple, consent, and deletion
 - [ ] Slice 04 — Unified correction sheet and offline outbox
 - [ ] Slice 05 — Contribution queue, hidden checks, and consensus
@@ -48,13 +48,13 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 02 — Supabase schema, RLS, and API skeleton**
+**Current slice: 02 — Supabase schema, RLS, and API skeleton** (complete; independent review PASS)
 
-- Branch: `cursor/beta-02-supabase-skeleton` (stacked on Slice 01)
-- Scope: `supabase/` schema, RLS, pgTAP, shared similarity/reward helpers, `account-summary` + health, endpoint skeletons, synthetic seed, CI backend gate. No mobile UX. No gold data.
-- Local limitation: Docker Desktop engine is not running; `supabase` CLI and `deno` are not installed. Backend gate is GitHub Actions (`backend-gate.yml`). Do not claim local `supabase start` proof.
+- Branch: `cursor/beta-02-supabase-skeleton`
+- Backend gate CI run `35460874866` succeeded: supabase start, db reset, db lint, pgTAP, deno test, concurrent reward.
+- Local Docker was unavailable; proof is that GitHub Actions run, not a local `supabase start`.
+- Seed is synthetic (`SYNQC01`), not from `benchmarks/gold/`.
 
-**Previous: Slice 01 — Test harness** (complete; independent review PASS)
 
 - Branch: `cursor/beta-01-test-harness` (stacked on Slice 00)
 - Added: jest-expo + RTL + eslint, `AppShell` / `hardStopAudio` / primitives, unit tests (tab persistence, hard-stop, History clear, Mark incorrect, passLogic, storage parse, app-state), CI mobile gate + secret scan
