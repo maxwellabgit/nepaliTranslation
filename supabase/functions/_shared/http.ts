@@ -5,7 +5,8 @@ export type ErrorCode =
   | "not_found"
   | "rate_limited"
   | "not_implemented"
-  | "unavailable";
+  | "unavailable"
+  | "deletion_incomplete";
 
 export function json(body: unknown, status = 200, requestId?: string): Response {
   const headers: Record<string, string> = {

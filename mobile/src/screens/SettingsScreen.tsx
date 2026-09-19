@@ -3,11 +3,21 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import Constants from 'expo-constants';
+import { AccountSection } from '../features/auth/AccountSection';
+import { useAuth } from '../features/auth/AuthProvider';
+import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
+import { requestAccountDeletion } from '../features/auth/deleteAccount';
+import { recordContributionConsent } from '../features/auth/recordConsent';
+import {
+  clearAppleAuthorizationCode,
+  loadAppleAuthorizationCode,
+} from '../features/auth/appleAuthCode';
 import {
   flushReviewSync,
   loadReviewSyncStatus,
@@ -47,6 +57,9 @@ export function SettingsScreen({
     neStt: boolean;
     neTts: boolean;
   } | null>(null);
+  const auth = useAuth();
+  const [consentVersion, setConsentVersion] = useState<string | null>(null);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
 
   useEffect(() => {
     void Promise.all([getSttSupport(), hasNepaliVoice()]).then(
@@ -91,6 +104,50 @@ export function SettingsScreen({
         <Text style={styles.title}>Settings</Text>
         <View style={styles.topBtn} />
       </View>
+
+      <ScrollView contentContainerStyle={styles.scroll}>
+      <AccountSection
+        authConfigured={auth.authConfigured}
+        status={auth.status}
+        userId={auth.userId}
+        consentVersion={consentVersion}
+        ageConfirmed={ageConfirmed}
+        onSignIn={() => void auth.signInWithApple()}
+        onSignOut={() => void auth.signOut()}
+        onSaveConsent={() => {
+          void recordContributionConsent().then((result) => {
+            if (!result.ok) {
+              Alert.alert(
+                'Consent not saved',
+                'Contribution consent was not recorded. Translation on this device is unchanged.',
+              );
+              return;
+            }
+            setAgeConfirmed(true);
+            setConsentVersion(CONTRIBUTION_CONSENT_VERSION);
+          });
+        }}
+        onDeleteAccount={() => {
+          const userId = auth.userId;
+          void (async () => {
+            const authorizationCode = userId
+              ? await loadAppleAuthorizationCode(userId)
+              : null;
+            const result = await requestAccountDeletion({
+              authorizationCode: authorizationCode ?? undefined,
+            });
+            if (result.ok) {
+              if (userId) await clearAppleAuthorizationCode(userId);
+              void auth.signOut();
+              return;
+            }
+            Alert.alert(
+              'Deletion paused',
+              'Account deletion did not finish. Translation history on this device was not cleared. Sign in with Apple again if this device does not have an authorization code, then retry.',
+            );
+          })();
+        }}
+      />
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>
@@ -181,6 +238,7 @@ export function SettingsScreen({
           </View>
         </>
       ) : null}
+      </ScrollView>
     </View>
   );
 }
@@ -208,6 +266,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text,
   },
+  scroll: { paddingBottom: 32 },
   section: {
     marginTop: 20,
     marginHorizontal: 16,

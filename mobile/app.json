@@ -9,6 +9,7 @@
     "scheme": "neptranslate",
     "ios": {
       "supportsTablet": true,
+      "usesAppleSignIn": true,
       "bundleIdentifier": "com.neptranslate.app",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
@@ -57,7 +58,8 @@
       ],
       "onnxruntime-react-native",
       "./plugins/withIt2Models",
-      "expo-font"
+      "expo-font",
+      "expo-apple-authentication"
     ],
     "extra": {
       "eas": {

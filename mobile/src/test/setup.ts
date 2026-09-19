@@ -27,6 +27,22 @@ jest.mock('expo-speech-recognition', () => ({
   useSpeechRecognitionEvent: jest.fn(),
 }));
 
+jest.mock('expo-clipboard', () => ({
+  setStringAsync: jest.fn(async () => undefined),
+  getStringAsync: jest.fn(async () => ''),
+}));
+
+jest.mock('expo-apple-authentication', () => ({
+  signInAsync: jest.fn(),
+  AppleAuthenticationScope: { FULL_NAME: 0, EMAIL: 1 },
+  isAvailableAsync: jest.fn(async () => false),
+}));
+
+jest.mock('expo-crypto', () => ({
+  CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
+  digestStringAsync: jest.fn(async () => 'hashed-nonce'),
+}));
+
 jest.mock('onnxruntime-react-native', () => ({
   InferenceSession: { create: jest.fn() },
   Tensor: jest.fn(),

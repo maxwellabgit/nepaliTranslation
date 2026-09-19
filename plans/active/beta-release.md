@@ -48,7 +48,15 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 02 — Supabase schema, RLS, and API skeleton** (complete; independent review PASS)
+**Current slice: 03 — Sign in with Apple, consent, and deletion**
+
+- Branch: `cursor/beta-03-apple-auth` (stacked on Slice 02)
+- Scope: optional Apple identity, versioned draft consent, resumable delete-account. No login wall on translate/history/settings/learn. No live Apple/Supabase project secrets in the bundle.
+- Human gates (not claimed): Apple capability + Supabase Apple provider; legal review of consent copy; physical device sign-in/deletion.
+- Review: round 1 FAIL (deletion not resumable, Apple revoke skipped token exchange, service-role JWT not rejected) → fixed; round 2 **PASS**.
+- Backend-gate CI still required for the new migration and Deno tests. Checkbox stays open until that run is green.
+
+**Previous: Slice 02** complete (backend-gate CI green, review PASS).
 
 - Branch: `cursor/beta-02-supabase-skeleton`
 - Backend gate CI run `35460874866` succeeded: supabase start, db reset, db lint, pgTAP, deno test, concurrent reward.
@@ -115,14 +123,27 @@ node --experimental-strip-types  # local check of scoring fixtures
 
 # Database gate is .github/workflows/backend-gate.yml
 # (supabase start, db reset, db lint, test db, deno test, concurrent_reward.sh)
+# backend-gate run 35460874866 green; agent-gates run 35461426076 green
+```
+
+### Slice 03 (local, 2026-09-19)
+```text
+cd mobile
+npm run lint          # exit 0 (2 pre-existing warnings)
+npm run typecheck     # exit 0
+npm run test:unit -- --runInBand   # 9 suites / 28 tests passed
+npm run verify:translate           # OK
+npx expo-doctor                    # 21/21 passed
+# docker / supabase CLI / deno: not available on this machine
+# backend-gate CI is the proof for migration 20260919200000 + deletion_test.ts
 ```
 
 ## Remaining work
 
-- Slice 02: GitHub Actions backend gate must go green (local Docker unavailable).
-- Next after PASS: Slice 03 Apple auth on `cursor/beta-03-apple-auth`.
+- Slice 03 review round 2 PASS. Backend-gate CI on this branch is the remaining proof. Do not start Slice 04 until that run is green.
+- Review-sync endpoint, secret, and Meaning Review password stay until Slice 04.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
-- Slice 02 local proof: Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. The same commands are in `.github/workflows/backend-gate.yml`.
-- Later slices: Apple / Supabase project / AdMob / RevenueCat / legal / bilingual review / physical device.
+- Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. Backend proof is `.github/workflows/backend-gate.yml`.
+- Slice 03 human gates (not claimed): Apple Sign in capability on the App ID, Supabase Apple provider, legal review of consent version `2026-09-19.draft`, physical-device sign-in and account deletion. Missing `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET` blocks deletion before any purge. Deleting the app account does not cancel an Apple subscription.

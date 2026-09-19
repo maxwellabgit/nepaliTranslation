@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import { Fragment } from 'react';
+import { AuthProvider } from '../features/auth/AuthProvider';
 
 type Props = {
   children: ReactNode;
 };
 
-/** Composition root for future Auth / Entitlement providers. Pass-through in Slice 01. */
+/** Optional identity. Missing Supabase config leaves children usable. */
 export function AppProviders({ children }: Props) {
-  return <Fragment>{children}</Fragment>;
+  return <AuthProvider>{children}</AuthProvider>;
 }

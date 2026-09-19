@@ -79,6 +79,9 @@ verify_jwt = true
 [functions.delete-account]
 verify_jwt = true
 
+[functions.record-consent]
+verify_jwt = true
+
 [functions.admob-ssv]
 verify_jwt = false
 
