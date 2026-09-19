@@ -786,6 +786,7 @@ export function HomeScreen({
                 disabled={markingIncorrect}
                 accessibilityRole="button"
                 accessibilityLabel="Mark incorrect"
+                testID="mark-incorrect"
               >
                 <Text
                   style={[

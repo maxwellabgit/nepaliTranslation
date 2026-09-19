@@ -56,7 +56,8 @@
         }
       ],
       "onnxruntime-react-native",
-      "./plugins/withIt2Models"
+      "./plugins/withIt2Models",
+      "expo-font"
     ],
     "extra": {
       "eas": {

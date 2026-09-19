@@ -6,6 +6,33 @@ on:
   pull_request:
 
 jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Block embedded secrets and temp sync credentials
+        run: |
+          set -euo pipefail
+          # Fail on production-style secrets accidentally committed to source.
+          # Known mobile/app.json reviewSync* placeholders are removed in Slice 04;
+          # still block service-role / live payment / AdMob secret patterns now.
+          if git grep -I -n -E \
+            'service_role|eyJ[A-Za-z0-9_-]{20,}\.eyJ|sk_live_[A-Za-z0-9]+|rk_live_[A-Za-z0-9]+|SUPABASE_SERVICE_ROLE|REVENUECAT_SECRET|ADMOB_SSV_SECRET|password[[:space:]]*=[[:space:]]*['\''\"]1234['\''\"]' \
+            -- \
+            ':(exclude)*.md' \
+            ':(exclude)*.lock' \
+            ':(exclude)plans/**' \
+            ':(exclude).agent/**' \
+            ':(exclude).governance/**' \
+            ':(exclude)**/__tests__/**' \
+            ':(exclude)**/*-test.*'; then
+            echo "::error::Potential secret or temporary credential pattern found in tracked files."
+            exit 1
+          fi
+          echo "Secret scan clean."
+
   js-verify:
     runs-on: ubuntu-latest
     defaults:
@@ -19,6 +46,8 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
-      - run: node ./scripts/export_meaning_lexicon.mjs
-      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:unit -- --runInBand
       - run: npm run verify:translate
+      - run: npx expo-doctor

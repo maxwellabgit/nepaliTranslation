@@ -32,7 +32,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 ## Milestones
 
 - [x] Slice 00 — Product contract and release lane (this file + INTENT / AGENTS / DONE updates)
-- [ ] Slice 01 — Test harness and UI primitives
+- [x] Slice 01 — Test harness and UI primitives (implementation complete; review pending)
 - [ ] Slice 02 — Supabase schema, RLS, and API skeleton
 - [ ] Slice 03 — Sign in with Apple, consent, and deletion
 - [ ] Slice 04 — Unified correction sheet and offline outbox
@@ -48,12 +48,13 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 00 — Product contract and release lane** (complete; independent review PASS)
+**Current slice: 01 — Test harness and UI primitives** (complete; independent review PASS)
 
-- Branch: `cursor/beta-00-product-contract`
-- Scope: governance + ExecPlan only. No `mobile/` runtime, no `supabase/`, no `admin/` code in this slice.
-- Acceptance: durable target / current slice / tests / prohibited-file rules readable without chat history.
-- Review: round 1 FAIL → fixed; round 2 **PASS**.
+- Branch: `cursor/beta-01-test-harness` (stacked on Slice 00)
+- Added: jest-expo + RTL + eslint, `AppShell` / `hardStopAudio` / primitives, unit tests (tab persistence, hard-stop, History clear, Mark incorrect, passLogic, storage parse, app-state), CI mobile gate + secret scan
+- SDK stayed on Expo 57; aligned `expo@^57.0.9`, `react-native@0.86.3`, expo module patches, added `expo-font`, removed local `eas-cli` so `expo-doctor` passes
+- Known deferral: `app.json` still has temporary `reviewSync*` values — removed in Slice 04; secret scan does not treat them as new production keys
+- Review: round 1 FAIL (expo-doctor patch drift) → fixed; round 2 **PASS**
 
 
 ## Surprises & discoveries
@@ -71,43 +72,26 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Commands that actually ran (paste)
 
+### Slice 00
 ```text
-git fetch origin
-git stash push -m "wip-before-beta-00-tracked" -- <tracked WIP paths>
-git checkout -B cursor/beta-00-product-contract origin/main
-# HEAD = 43f14b0adc2dd596f9eb64bc79aea2bece5d9406
-
-cd mobile
-npm ci
-node ./scripts/export_meaning_lexicon.mjs
-# [lexicon] wrote src\mt\generated\meaningLexicon.json (86 KB) en=140 ne=194 romanSent=256 romanWords=302
-
-npx --no-install tsc --noEmit
-# TSC_EXIT=0
-
-npm run verify:translate
-# OK (phrase / register / mashup / romanize checks); VERIFY_EXIT=0
+# HEAD baseline 43f14b0; docs commit 6be3fb1
+cd mobile && npm ci && npx --no-install tsc --noEmit && npm run verify:translate
+# TSC_EXIT=0 VERIFY_EXIT=0
 ```
 
-Independent review round 1 **FAIL** (staged local artifacts/credentials polluted the tree; baseline tsc not yet re-proven after `npm ci`). Fixed: `git reset HEAD` so only governance/docs remain; re-ran `tsc` green. Round 2 pending.
+### Slice 01
+```text
+cd mobile
+npm install --save-dev jest-expo jest@~29.7.0 @types/jest@29.5.14 @testing-library/react-native @react-native/jest-preset test-renderer eslint@^9 eslint-config-expo --legacy-peer-deps
+npx expo install expo-font expo@^57.0.9 react-native@0.86.3
+npm uninstall eas-cli --legacy-peer-deps
 
-Slice 00 commit scope (only these paths):
-
-- `plans/active/beta-release.md` (new)
-- `plans/README.md`
-- `.governance/INTENT.md`
-- `.agent/DONE.md`
-- `.agent/REVIEW.md`
-- `AGENTS.md`
-
-Local untracked `tools/`, `training/artifacts/**`, `training/data/*review*` must **not** be added. Stash `wip-before-beta-00-tracked` holds unrelated prior WIP.
-
-Independent review: round 1 FAIL → fixed; round 2 **PASS** (no material findings).
-
-## Remaining work
-
-- Slice 00: commit docs-only change set; open PR when requested.
-- Next slice: `cursor/beta-01-test-harness` after Slice 00 is on the branch (and ideally merged).
+npm run lint          # exit 0 (2 pre-existing warnings allowed)
+npm run typecheck     # exit 0
+npm run test:unit -- --runInBand   # 7 suites / 20 tests passed
+npm run verify:translate           # OK
+npx expo-doctor                    # 21/21 passed
+```
 
 ## Blockers (concrete; cannot be solved from this repo)
 

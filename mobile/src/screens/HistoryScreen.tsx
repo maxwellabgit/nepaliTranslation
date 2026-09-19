@@ -22,6 +22,7 @@ import {
   sendHistoryItemToTraining,
   trainingKeyFor,
 } from '../storage/trainingContrib';
+import { EmptyState } from '../components/AppPrimitives';
 import { colors } from '../theme';
 
 type Props = {
@@ -125,7 +126,14 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
   return (
     <View style={styles.root}>
       <View style={styles.topBar}>
-        <Pressable onPress={onClose} hitSlop={12} style={styles.topBtn}>
+        <Pressable
+          onPress={onClose}
+          hitSlop={12}
+          style={styles.topBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Close history"
+          testID="history-close"
+        >
           <Text style={styles.topBtnText}>←</Text>
         </Pressable>
         <Text style={styles.title}>History</Text>
@@ -161,9 +169,11 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
 
       <ScrollView contentContainerStyle={styles.list}>
         {history.length === 0 ? (
-          <Text style={styles.empty}>
-            Translations you make will show up here.
-          </Text>
+          <EmptyState
+            title="No translations yet"
+            detail="Translations you make will show up here."
+            testID="history-empty"
+          />
         ) : (
           history.map((item) => {
             const sent = sentKeys.has(trainingKeyFor(item));
@@ -232,14 +242,6 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   list: { padding: 12, paddingBottom: 40 },
-  empty: {
-    textAlign: 'center',
-    color: colors.textPlaceholder,
-    marginTop: 48,
-    fontSize: 15,
-    lineHeight: 22,
-    paddingHorizontal: 24,
-  },
   swipeWrap: {
     marginBottom: 10,
     borderRadius: 16,
