@@ -1,0 +1,89 @@
+# Local Supabase config. `private` is intentionally NOT in api.schemas.
+project_id = "neptranslate"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[db.pooler]
+enabled = false
+
+[realtime]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+[inbucket]
+enabled = false
+
+[storage]
+enabled = false
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3000"
+additional_redirect_urls = ["neptranslate://auth"]
+jwt_expiry = 3600
+enable_signup = true
+enable_anonymous_sign_ins = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+[edge_runtime]
+enabled = true
+policy = "oneshot"
+inspector_port = 8083
+
+[analytics]
+enabled = false
+
+[functions.health]
+verify_jwt = false
+
+[functions.account-summary]
+verify_jwt = true
+
+[functions.get-next-contribution]
+verify_jwt = true
+
+[functions.submit-contribution]
+verify_jwt = true
+
+[functions.submit-translation-report]
+verify_jwt = true
+
+[functions.sync-contribution-outbox]
+verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.admob-ssv]
+verify_jwt = false
+
+[functions.revenuecat-webhook]
+verify_jwt = false
+
+[functions.admin-api]
+verify_jwt = true

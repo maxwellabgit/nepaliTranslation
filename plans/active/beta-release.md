@@ -32,7 +32,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 ## Milestones
 
 - [x] Slice 00 — Product contract and release lane (this file + INTENT / AGENTS / DONE updates)
-- [x] Slice 01 — Test harness and UI primitives (implementation complete; review pending)
+- [x] Slice 01 — Test harness and UI primitives (independent review PASS)
 - [ ] Slice 02 — Supabase schema, RLS, and API skeleton
 - [ ] Slice 03 — Sign in with Apple, consent, and deletion
 - [ ] Slice 04 — Unified correction sheet and offline outbox
@@ -48,7 +48,13 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 01 — Test harness and UI primitives** (complete; independent review PASS)
+**Current slice: 02 — Supabase schema, RLS, and API skeleton**
+
+- Branch: `cursor/beta-02-supabase-skeleton` (stacked on Slice 01)
+- Scope: `supabase/` schema, RLS, pgTAP, shared similarity/reward helpers, `account-summary` + health, endpoint skeletons, synthetic seed, CI backend gate. No mobile UX. No gold data.
+- Local limitation: Docker Desktop engine is not running; `supabase` CLI and `deno` are not installed. Backend gate is GitHub Actions (`backend-gate.yml`). Do not claim local `supabase start` proof.
+
+**Previous: Slice 01 — Test harness** (complete; independent review PASS)
 
 - Branch: `cursor/beta-01-test-harness` (stacked on Slice 00)
 - Added: jest-expo + RTL + eslint, `AppShell` / `hardStopAudio` / primitives, unit tests (tab persistence, hard-stop, History clear, Mark incorrect, passLogic, storage parse, app-state), CI mobile gate + secret scan
@@ -69,6 +75,9 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - 2026-09-19: Contributor known checks are explicitly forbidden from `benchmarks/gold/` in AGENTS, INTENT, DONE, and this plan.
 - 2026-09-19: Public App Store metadata must not say “beta” / “test”; Apple “beta” distribution is TestFlight only.
 - 2026-09-19: Login required only for contributions and rewards — never for translation, history, settings, or Learn alphabet.
+- 2026-09-19: Slice 02 backend gate runs in GitHub Actions when Docker is unavailable locally. Do not claim `supabase start` proof from this machine.
+- 2026-09-19: Contributor known-check seed is synthetic (`SYNQC01…`), not copied from `benchmarks/gold/`.
+
 
 ## Commands that actually ran (paste)
 
@@ -93,6 +102,27 @@ npm run verify:translate           # OK
 npx expo-doctor                    # 21/21 passed
 ```
 
+### Slice 02
+```text
+docker version   # engine not running (pipe dockerDesktopLinuxEngine missing)
+supabase --version  # CLI not installed
+deno --version      # not installed
+
+node --experimental-strip-types  # local check of scoring fixtures
+# formal/informal "तपाईं जानुहोस्" vs "तिमी जाऊ" similarity 0.1875, knownCheckPasses false
+# negation "म आज जान्छु" vs "म आज जाँदिन" similarity ~0.64, below 0.72
+# NFC का vs decomposed similarity 1
+
+# Database gate is .github/workflows/backend-gate.yml
+# (supabase start, db reset, db lint, test db, deno test, concurrent_reward.sh)
+```
+
+## Remaining work
+
+- Slice 02: GitHub Actions backend gate must go green (local Docker unavailable).
+- Next after PASS: Slice 03 Apple auth on `cursor/beta-03-apple-auth`.
+
 ## Blockers (concrete; cannot be solved from this repo)
 
-None for Slice 00 (docs only). Later slices will hit human gates listed in INTENT / AGENTS (Apple / Supabase / AdMob / RevenueCat / legal / bilingual review / physical device).
+- Slice 02 local proof: Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. The same commands are in `.github/workflows/backend-gate.yml`.
+- Later slices: Apple / Supabase project / AdMob / RevenueCat / legal / bilingual review / physical device.

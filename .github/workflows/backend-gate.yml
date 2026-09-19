@@ -1,0 +1,30 @@
+name: backend-gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Start local Supabase
+        run: supabase start
+      - name: Reset database
+        run: supabase db reset
+      - name: Lint database
+        run: supabase db lint --level error
+      - name: pgTAP
+        run: supabase test db
+      - name: Edge function unit tests
+        run: deno test --allow-env supabase/functions/_shared supabase/functions/tests
+      - name: Concurrent reward grant
+        run: bash supabase/scripts/concurrent_reward.sh
