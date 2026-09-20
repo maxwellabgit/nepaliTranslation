@@ -37,7 +37,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 03 — Sign in with Apple, consent, and deletion (independent review PASS; agent-gates `35465801990` and backend-gate `35465801979` green)
 - [x] Slice 04 — Unified correction sheet and offline outbox (independent review PASS after CI; agent-gates `35481941650` and backend-gate `35481941665` green)
 - [x] Slice 05 — Contribution queue, hidden checks, and consensus (assignment_id fix; CI `35482928755` / `35482928694` green; contributionsEnabled still false)
-- [ ] Slice 06 — Reward ledger and entitlement service (in progress)
+- [x] Slice 06 — Reward ledger and entitlement service (review PASS; agent-gates `35483996952` + backend-gate `35483996973` green)
 - [ ] Slice 07 — Learn alphabet
 - [ ] Slice 08 — AdMob adapter and ad middleware
 - [ ] Slice 09 — StoreKit subscription through RevenueCat
@@ -48,13 +48,18 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 06 — Reward ledger and entitlement service**
+**Current slice: 07 — Learn alphabet**
 
-- Branch: `cursor/beta-06-reward-ledger` (stacked on Slice 05 tip `4931fa2`)
-- Scope: UTC daily caps (60 contribution / 12 video), `service_apply_scheduled_reward`, trusted-time (monotonic; wall skew cannot mint), `decideAdPresentation`, `EntitlementProvider` + cache, submit path uses schedule RPC while client envelope stays opaque.
-- Local mobile gate (2026-09-19): lint (2 pre-existing warnings), typecheck, test:unit 13 suites / 39 tests, verify:translate, expo-doctor 21/21.
-- Independent review: round 1–2 FAIL (cap-before-duplicate; wall/mono clock mint) → fixed; round 3 **PASS**.
-- CI: agent-gates `35483905086` green; backend-gate `35483905079` FAIL on migration (`reward_schedule` selected kind+credits+minutes into a two-column return) → fix push.
+- Branch: `cursor/beta-07-learn-alphabet` (stacked on Slice 06 tip)
+- Scope: third mounted Learn tab; bundled Nepali alphabet offline; quiz schema tests; missing Nepali voice handled honestly; bilingual sign-off human-gated.
+
+**Previous: Slice 06** complete (review PASS; CI green after reward_schedule column fix).
+
+- Branch: `cursor/beta-06-reward-ledger`
+- Scope: UTC daily caps (60 contribution / 12 video), schedule RPC, trusted-time, decideAdPresentation, EntitlementProvider.
+- Review: FAIL → FAIL → **PASS** (idempotent cap order; in-process trusted clock; null trusted time cannot mint).
+- CI: agent-gates `35483996952` green; backend-gate `35483996973` green (pgTAP + concurrent reward).
+- Commit: `a1965bb`. Ads remain mocked/off (Slice 08).
 
 **Previous: Slice 05** complete (review PASS after opacity + band lease; CI green).
 
@@ -179,22 +184,18 @@ npm run lint / typecheck / test:unit / verify:translate  # green (32 tests)
 # acceptance fix CI: agent-gates 35483222552 / backend-gate 35483222563
 ```
 
-### Slice 06 (local, 2026-09-19)
+### Slice 06 (local + CI, 2026-09-19)
 ```text
 cd mobile
-npm run lint          # exit 0 (2 pre-existing warnings)
-npm run typecheck     # exit 0
-npm run test:unit -- --runInBand   # 13 suites / 39 tests passed
-npm run verify:translate           # OK
-npx expo-doctor                    # 21/21 passed
-# docker / supabase CLI / deno: not available; backend-gate CI is proof for
-# migration 20260919230000_reward_caps.sql + 07_reward_caps.test.sql
-# independent-reviewer: PASS after cap-vs-duplicate + trusted-clock fixes
+npm run lint / typecheck / test:unit (39) / verify:translate / expo-doctor  # green
+# backend-gate FAIL 35483905079 (reward_schedule RETURNS TABLE mismatch)
+# fix commit a1965bb → agent-gates 35483996952 + backend-gate 35483996973 green
+# independent-reviewer PASS
 ```
 
 ## Remaining work
 
-- Slice 06: push + backend-gate CI green, then Slice 07 Learn alphabet.
+- Slice 07 Learn alphabet on `cursor/beta-07-learn-alphabet`.
 - Human gates remain: Apple capability, Supabase Apple provider, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
