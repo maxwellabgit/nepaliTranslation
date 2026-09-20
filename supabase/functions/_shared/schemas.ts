@@ -35,3 +35,20 @@ export const contributionSubmitSchema = z.object({
   response_text: z.string().max(2000).optional(),
   idempotency_key: z.string().min(8).max(120),
 });
+
+export const translationReportSchema = z.object({
+  source_text: z.string().min(1).max(4000),
+  model_output: z.string().max(4000).default(""),
+  correction_text: z.string().max(4000).nullable().optional(),
+  direction: z.enum(["en-ne", "ne-en"]),
+  formality: z.enum(["formal", "informal"]),
+  script: z.enum(["deva", "roman"]),
+  surface: z.enum(["live_translate", "history", "legacy-v1"]),
+  idempotency_key: z.string().min(8).max(120),
+  consent_version: z.string().min(4).max(80),
+  metadata: z.record(z.unknown()).optional(),
+});
+
+export const translationReportBatchSchema = z.object({
+  items: z.array(translationReportSchema).min(1).max(20),
+});

@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   Pressable,
   ScrollView,
@@ -18,11 +17,7 @@ import {
   clearAppleAuthorizationCode,
   loadAppleAuthorizationCode,
 } from '../features/auth/appleAuthCode';
-import {
-  flushReviewSync,
-  loadReviewSyncStatus,
-  type ReviewSyncStatus,
-} from '../sync/reviewSync';
+import { saveLocalConsent } from '../storage/contributionConsent';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
 import { colors } from '../theme';
 
@@ -51,8 +46,6 @@ export function SettingsScreen({
   neuralReady = false,
 }: Props) {
   const [advanced, setAdvanced] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<ReviewSyncStatus | null>(null);
-  const [syncBusy, setSyncBusy] = useState(false);
   const [speechCaps, setSpeechCaps] = useState<{
     neStt: boolean;
     neTts: boolean;
@@ -66,34 +59,6 @@ export function SettingsScreen({
       ([stt, neTts]) => setSpeechCaps({ neStt: stt.ne, neTts }),
     );
   }, []);
-
-  const refreshSync = useCallback(async () => {
-    setSyncStatus(await loadReviewSyncStatus());
-  }, []);
-
-  useEffect(() => {
-    if (advanced) void refreshSync();
-  }, [advanced, refreshSync]);
-
-  const onSyncNow = async () => {
-    setSyncBusy(true);
-    try {
-      const result = await flushReviewSync({ reason: 'manual', force: true });
-      await refreshSync();
-      if (result.ok) {
-        Alert.alert(
-          'Sync',
-          result.sent
-            ? `Sent ${result.sent} review(s).`
-            : 'Nothing pending to send.',
-        );
-      } else {
-        Alert.alert('Sync failed', result.error);
-      }
-    } finally {
-      setSyncBusy(false);
-    }
-  };
 
   return (
     <View style={styles.root}>
@@ -123,6 +88,7 @@ export function SettingsScreen({
               );
               return;
             }
+            void saveLocalConsent(true);
             setAgeConfirmed(true);
             setConsentVersion(CONTRIBUTION_CONSENT_VERSION);
           });
@@ -203,39 +169,24 @@ export function SettingsScreen({
         <>
           <Pressable
             style={styles.subRow}
-            onPress={onOpenMeaningReview}
+            onPress={() => {
+              Alert.alert(
+                'Developer tool',
+                'Meaning Review is a local founder tool. It does not upload automatically.',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Open', onPress: onOpenMeaningReview },
+                ],
+              );
+            }}
             accessibilityRole="button"
             accessibilityLabel="Open Meaning Review"
           >
             <Text style={styles.subTitle}>Meaning Review</Text>
             <Text style={styles.subHint}>
-              Edit Nepali / Roman · password required · auto-syncs
+              Local edits only · no password · no automatic upload
             </Text>
           </Pressable>
-
-          <View style={styles.syncBox}>
-            <Text style={styles.subTitle}>Review sync</Text>
-            <Text style={styles.subHint}>
-              Built-in · {syncStatus?.pending ?? 0} pending
-              {syncStatus?.lastOkAt
-                ? ` · last OK ${syncStatus.lastOkAt.slice(0, 16).replace('T', ' ')}`
-                : ''}
-            </Text>
-            {syncStatus?.lastError ? (
-              <Text style={styles.syncError}>Last error: {syncStatus.lastError}</Text>
-            ) : null}
-            <Pressable
-              style={[styles.syncBtn, syncBusy && styles.syncBtnDisabled]}
-              onPress={() => void onSyncNow()}
-              disabled={syncBusy}
-            >
-              {syncBusy ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.syncBtnText}>Sync now</Text>
-              )}
-            </Pressable>
-          </View>
         </>
       ) : null}
       </ScrollView>

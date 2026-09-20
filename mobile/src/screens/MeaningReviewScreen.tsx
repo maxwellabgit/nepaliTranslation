@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ComponentProps } from 'react';
 import {
   Alert,
-  AppState,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -25,10 +24,7 @@ import {
   type MeaningReview,
   type MeaningReviewMap,
 } from '../storage/meaningReviews';
-import { dropQueuedReviewSync, enqueueReviewSync, flushReviewSync } from '../sync/reviewSync';
 import { colors } from '../theme';
-
-const REVIEW_PASSWORD = '1234';
 
 type Props = {
   onClose: () => void;
@@ -104,11 +100,9 @@ function hasEdits(unit: MeaningUnit, edits: FieldEdits): boolean {
 
 /**
  * Meaning-unit review: English read-only; Accept all / Skip only.
- * Skip auto-flags for founder review. Sync is automatic.
+ * Local-only founder tool. Does not upload automatically.
  */
 export function MeaningReviewScreen({ onClose }: Props) {
-  const [unlocked, setUnlocked] = useState(false);
-  const [password, setPassword] = useState('');
   const [reviews, setReviews] = useState<MeaningReviewMap>({});
   const [index, setIndex] = useState(0);
   const [edits, setEdits] = useState<FieldEdits>({
@@ -123,15 +117,6 @@ export function MeaningReviewScreen({ onClose }: Props) {
 
   useEffect(() => {
     void loadMeaningReviews().then(setReviews);
-  }, []);
-
-  useEffect(() => {
-    const sub = AppState.addEventListener('change', (state) => {
-      if (state === 'background' || state === 'inactive') {
-        void flushReviewSync({ reason: 'app_background' });
-      }
-    });
-    return () => sub.remove();
   }, []);
 
   const queue = useMemo(() => {
@@ -182,15 +167,6 @@ export function MeaningReviewScreen({ onClose }: Props) {
     return { done, total: all.length, edited, skipped };
   }, [reviews]);
 
-  const tryUnlock = () => {
-    if (password.trim() === REVIEW_PASSWORD) {
-      setUnlocked(true);
-      setPassword('');
-    } else {
-      Alert.alert('Wrong password');
-    }
-  };
-
   const persistOne = useCallback(
     async (review: MeaningReview) => {
       if (saving) return;
@@ -201,9 +177,6 @@ export function MeaningReviewScreen({ onClose }: Props) {
         await saveMeaningReviews(map);
         setReviews(map);
         setLastSavedId(review.meaning_id);
-        await enqueueReviewSync(review);
-        // Sync after each save (batch size 1) — don't wait for debounce alone.
-        void flushReviewSync({ reason: 'after_save' });
         if (showCompleted) {
           setIndex((i) => Math.min(i + 1, Math.max(queue.length - 1, 0)));
         }
@@ -285,7 +258,6 @@ export function MeaningReviewScreen({ onClose }: Props) {
       delete map[lastSavedId];
       await saveMeaningReviews(map);
       setReviews(map);
-      void dropQueuedReviewSync(lastSavedId);
       setLastSavedId(null);
     } catch (e) {
       Alert.alert(
@@ -296,37 +268,6 @@ export function MeaningReviewScreen({ onClose }: Props) {
   };
 
   const dismissKeyboard = () => Keyboard.dismiss();
-
-  if (!unlocked) {
-    return (
-      <View style={styles.root}>
-        <View style={styles.header}>
-          <Pressable onPress={onClose} hitSlop={12}>
-            <Text style={styles.link}>Close</Text>
-          </Pressable>
-          <Text style={styles.title}>Meaning Review</Text>
-          <View style={{ width: 48 }} />
-        </View>
-        <View style={styles.lockBox}>
-          <Text style={styles.lockHint}>Reviewer access</Text>
-          <TextInput
-            style={styles.password}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            placeholderTextColor={colors.textPlaceholder}
-            secureTextEntry
-            keyboardType="number-pad"
-            onSubmitEditing={tryUnlock}
-            autoFocus
-          />
-          <Pressable style={styles.primaryBtn} onPress={tryUnlock}>
-            <Text style={styles.primaryBtnText}>Unlock</Text>
-          </Pressable>
-        </View>
-      </View>
-    );
-  }
 
   return (
     <KeyboardAvoidingView

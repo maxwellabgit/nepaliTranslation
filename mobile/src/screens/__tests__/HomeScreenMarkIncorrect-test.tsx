@@ -1,10 +1,5 @@
 import { render, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { HomeScreen } from '../HomeScreen';
-import { sendLiveIncorrectToReviewSet } from '../../storage/liveIncorrect';
-
-jest.mock('../../storage/liveIncorrect', () => ({
-  sendLiveIncorrectToReviewSet: jest.fn(async () => ({ ok: true })),
-}));
 
 jest.mock('expo-clipboard', () => ({
   setStringAsync: jest.fn(async () => undefined),
@@ -12,7 +7,7 @@ jest.mock('expo-clipboard', () => ({
 }));
 
 describe('HomeScreen Mark incorrect entry', () => {
-  test('Mark incorrect sends the visible source and translation', async () => {
+  test('Mark incorrect opens the correction sheet', async () => {
     await render(
       <HomeScreen
         active
@@ -38,13 +33,9 @@ describe('HomeScreen Mark incorrect entry', () => {
     await fireEvent.press(screen.getByTestId('mark-incorrect'));
 
     await waitFor(() => {
-      expect(sendLiveIncorrectToReviewSet).toHaveBeenCalledWith(
-        expect.objectContaining({
-          source: 'Thank you',
-          translation: 'धन्यवाद',
-          sourceLang: 'en',
-        }),
-      );
+      expect(screen.getByTestId('correction-sheet')).toBeTruthy();
     });
+    expect(screen.getByTestId('correction-save-draft')).toBeTruthy();
+    expect(screen.getByTestId('correction-submit')).toBeTruthy();
   });
 });

@@ -15,7 +15,6 @@ jest.mock('../../storage/phrasebook', () => {
 
 jest.mock('../../storage/trainingContrib', () => ({
   loadSentTrainingKeys: jest.fn(async () => new Set()),
-  sendHistoryItemToTraining: jest.fn(),
   trainingKeyFor: jest.fn((item: { id: string }) => item.id),
 }));
 

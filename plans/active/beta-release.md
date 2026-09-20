@@ -48,9 +48,15 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 03 — Sign in with Apple, consent, and deletion**
+**Current slice: 04 — Unified correction sheet and offline outbox**
 
-- Branch: `cursor/beta-03-apple-auth` (stacked on Slice 02)
+- Branch: `cursor/beta-04-correction-outbox` (stacked on Slice 03)
+- Scope: CorrectionSheet + contribution outbox; remove reviewSync endpoint/secret and Meaning Review password; implement submit-translation-report + sync-contribution-outbox.
+- Human gates (not claimed): legal consent still draft; contributionsEnabled remains false.
+
+**Previous: Slice 03** complete (review PASS; CI green).
+
+- Branch: `cursor/beta-03-apple-auth`
 - Scope: optional Apple identity, versioned draft consent, resumable delete-account. No login wall on translate/history/settings/learn. No live Apple/Supabase project secrets in the bundle.
 - Human gates (not claimed): Apple capability + Supabase Apple provider; legal review of consent copy; physical device sign-in/deletion.
 - Review: round 1 FAIL (deletion not resumable, Apple revoke skipped token exchange, service-role JWT not rejected) → fixed; round 2 **PASS**.
@@ -140,10 +146,21 @@ npx expo-doctor                    # 21/21 passed
 # agent-gates 35465801990 green; backend-gate 35465801979 green
 ```
 
+### Slice 04 (local, 2026-09-19)
+```text
+cd mobile
+npm run lint          # exit 0 (2 pre-existing warnings)
+npm run typecheck     # exit 0
+npm run test:unit -- --runInBand   # 10 suites / 31 tests passed
+npm run verify:translate           # OK
+npx expo-doctor                    # 21/21 passed
+# backend-gate CI required for migration 20260919210000 + reports_test.ts
+```
+
 ## Remaining work
 
-- Next slice: 04 correction sheet and offline outbox on `cursor/beta-04-correction-outbox`. Remove the temporary review-sync endpoint, secret, and Meaning Review password `1234` in that slice only.
-- Slice 03 human gates stay open: Apple Sign in capability, Supabase Apple provider, legal review of consent `2026-09-19.draft`, physical-device sign-in and account deletion.
+- Finish Slice 04 independent review + green CI, then Slice 05 contribution queue.
+- Slice 03–04 human gates stay open: Apple capability, Supabase Apple provider, legal consent, physical device.
 
 ## Blockers (concrete; cannot be solved from this repo)
 

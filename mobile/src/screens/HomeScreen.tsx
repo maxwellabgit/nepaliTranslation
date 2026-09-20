@@ -26,7 +26,7 @@ import {
   type NepaliScript,
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
-import { sendLiveIncorrectToReviewSet } from '../storage/liveIncorrect';
+import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
 import { addHistory, type HistoryItem } from '../storage/phrasebook';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import {
@@ -88,14 +88,12 @@ export function HomeScreen({
   const [output, setOutput] = useState(seed?.translation ?? '');
   const [listening, setListening] = useState(false);
   const [copiedFlash, setCopiedFlash] = useState(false);
-  const [markedFlash, setMarkedFlash] = useState(false);
-  const [markingIncorrect, setMarkingIncorrect] = useState(false);
+  const [correctionOpen, setCorrectionOpen] = useState(false);
   const [neSttOk, setNeSttOk] = useState(true);
   const [neVoiceOk, setNeVoiceOk] = useState(true);
   const [stage, setStage] = useState<StageFocus>('input');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const markedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const prefsLoadedRef = useRef(false);
   const listeningRef = useRef(false);
@@ -297,7 +295,6 @@ export function HomeScreen({
       hardStopRecognition();
       sharedTranslationEngine.cancelAll();
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
-      if (markedTimerRef.current) clearTimeout(markedTimerRef.current);
     };
   }, []);
 
@@ -492,38 +489,11 @@ export function HomeScreen({
     }, 1400);
   };
 
-  const onMarkIncorrect = async () => {
-    if (markingIncorrect) return;
+  const onMarkIncorrect = () => {
     const source = input.trim();
     const translation = displayOutput.trim();
     if (!source || !translation) return;
-    setMarkingIncorrect(true);
-    try {
-      const result = await sendLiveIncorrectToReviewSet({
-        source,
-        translation,
-        sourceLang,
-        formality,
-        script,
-      });
-      if (!result.ok) {
-        Alert.alert('Could not mark', result.error);
-        return;
-      }
-      setMarkedFlash(true);
-      if (markedTimerRef.current) clearTimeout(markedTimerRef.current);
-      markedTimerRef.current = setTimeout(() => {
-        setMarkedFlash(false);
-        markedTimerRef.current = null;
-      }, 1600);
-    } catch (e) {
-      Alert.alert(
-        'Could not mark',
-        e instanceof Error ? e.message : 'Failed to send to review set.',
-      );
-    } finally {
-      setMarkingIncorrect(false);
-    }
+    setCorrectionOpen(true);
   };
 
   const inputUnder = stage === 'mic';
@@ -781,25 +751,14 @@ export function HomeScreen({
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => void onMarkIncorrect()}
+                onPress={onMarkIncorrect}
                 hitSlop={8}
-                disabled={markingIncorrect}
                 accessibilityRole="button"
                 accessibilityLabel="Mark incorrect"
                 testID="mark-incorrect"
               >
-                <Text
-                  style={[
-                    styles.actionLabel,
-                    styles.actionMarkIncorrect,
-                    markedFlash && styles.actionMarked,
-                  ]}
-                >
-                  {markedFlash
-                    ? 'Marked'
-                    : markingIncorrect
-                      ? 'Sending…'
-                      : 'Mark incorrect'}
+                <Text style={[styles.actionLabel, styles.actionMarkIncorrect]}>
+                  Mark incorrect
                 </Text>
               </Pressable>
             </View>
@@ -835,6 +794,16 @@ export function HomeScreen({
         </View>
       ) : null}
       </Pressable>
+      <CorrectionSheet
+        visible={correctionOpen}
+        source={input.trim()}
+        translation={displayOutput.trim()}
+        sourceLang={sourceLang}
+        formality={formality}
+        script={script}
+        surface="live_translate"
+        onClose={() => setCorrectionOpen(false)}
+      />
     </KeyboardAvoidingView>
   );
 }

@@ -19,9 +19,9 @@ import {
 } from '../storage/phrasebook';
 import {
   loadSentTrainingKeys,
-  sendHistoryItemToTraining,
   trainingKeyFor,
 } from '../storage/trainingContrib';
+import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
 import { EmptyState } from '../components/AppPrimitives';
 import { colors } from '../theme';
 
@@ -96,7 +96,7 @@ function SwipeableRow({
 export function HistoryScreen({ onClose, onSelect }: Props) {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [sentKeys, setSentKeys] = useState<Set<string>>(new Set());
-  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [correctionItem, setCorrectionItem] = useState<HistoryItem | null>(null);
 
   const reload = useCallback(async () => {
     setHistory(await loadHistory());
@@ -110,17 +110,8 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
     setHistory((prev) => prev.filter((h) => h.id !== item.id));
   };
 
-  const onSendToTraining = async (item: HistoryItem) => {
-    if (sendingId) return;
-    setSendingId(item.id);
-    try {
-      const result = await sendHistoryItemToTraining(item);
-      if (result.ok || result.alreadySent) {
-        setSentKeys((prev) => new Set(prev).add(trainingKeyFor(item)));
-      }
-    } finally {
-      setSendingId(null);
-    }
+  const onSendToTraining = (item: HistoryItem) => {
+    setCorrectionItem(item);
   };
 
   return (
@@ -177,7 +168,6 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         ) : (
           history.map((item) => {
             const sent = sentKeys.has(trainingKeyFor(item));
-            const sending = sendingId === item.id;
             return (
               <SwipeableRow key={item.id} onDelete={() => void onDeleteItem(item)}>
                 <View style={styles.row}>
@@ -193,18 +183,18 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
                     </Text>
                   </Pressable>
                   <Pressable
-                    onPress={() => void onSendToTraining(item)}
-                    disabled={sent || sending}
-                    style={[styles.trainBtn, (sent || sending) && styles.trainBtnOff]}
+                    onPress={() => onSendToTraining(item)}
+                    disabled={sent}
+                    style={[styles.trainBtn, sent && styles.trainBtnOff]}
                     accessibilityRole="button"
                     accessibilityLabel={
-                      sent ? 'Already in training data' : 'Send to training data'
+                      sent ? 'Already in training data' : 'Suggest correction for training'
                     }
                   >
                     <Text
-                      style={[styles.trainText, (sent || sending) && styles.trainTextOff]}
+                      style={[styles.trainText, sent && styles.trainTextOff]}
                     >
-                      {sent ? 'In training' : sending ? 'Sending…' : 'To training'}
+                      {sent ? 'Submitted' : 'To training'}
                     </Text>
                   </Pressable>
                 </View>
@@ -213,6 +203,17 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
           })
         )}
       </ScrollView>
+      <CorrectionSheet
+        visible={Boolean(correctionItem)}
+        source={correctionItem?.source ?? ''}
+        translation={correctionItem?.translation ?? ''}
+        sourceLang={correctionItem?.sourceLang ?? 'en'}
+        formality="formal"
+        script="deva"
+        surface="history"
+        onClose={() => setCorrectionItem(null)}
+        onSaved={() => void reload()}
+      />
     </View>
   );
 }
