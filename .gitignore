@@ -64,6 +64,13 @@ training/data/gold_domain_manifest.json
 benchmarks/results/*.log
 benchmarks/results/*.err.log
 
+# Local training / review artifacts (never commit weights, secrets, or queues)
+training/artifacts/
+training/data/founder_review_queue.jsonl
+training/data/meaning_review_events.jsonl
+tools/cloudflared.exe
+tools/*.exe
+
 # Node / mobile (root safety)
 node_modules/
 .expo/

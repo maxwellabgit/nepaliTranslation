@@ -71,7 +71,9 @@ jest.mock('../stt/sttSupport', () => ({
   hasNepaliVoice: jest.fn(async () => false),
 }));
 
-// Optional services (not installed yet) — keep mocks ready for later slices.
-jest.mock('../services/supabase', () => ({}), { virtual: true });
-jest.mock('../features/ads', () => ({}), { virtual: true });
+// Optional services soft-fail when unconfigured.
+jest.mock('../services/supabase', () => ({
+  getSupabase: jest.fn(() => null),
+  bindAuthRefresh: jest.fn(),
+}));
 jest.mock('../features/subscription', () => ({}), { virtual: true });

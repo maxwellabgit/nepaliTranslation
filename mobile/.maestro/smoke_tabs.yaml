@@ -1,0 +1,24 @@
+# Device smoke E2E for NepTranslate (Expo iOS).
+# Requires a running app + Maestro CLI. Slice 12 expands coverage.
+# Run: maestro test .maestro/smoke_tabs.yaml
+appId: com.neptranslate.app
+---
+- launchApp
+- assertVisible:
+    id: "app-shell"
+- assertVisible:
+    id: "tab-bar"
+- assertVisible:
+    id: "tab-auto"
+- tapOn:
+    id: "tab-conversation"
+- assertVisible:
+    id: "pane-conversation"
+- tapOn:
+    id: "tab-learn"
+- assertVisible:
+    id: "pane-learn"
+- tapOn:
+    id: "tab-auto"
+- assertVisible:
+    id: "pane-auto"

@@ -12,7 +12,7 @@ Ship an iOS external TestFlight beta, then a public App Store release candidate,
 - **Source plan:** founder App Store beta implementation plan (slices 00–13). Do not combine adjacent slices.
 - **Protected:** `mobile/src/mt/`, `mobile/src/stt/`, translation verify scripts, Expo SDK 57. No model-family change; no cloud translation.
 - **Prohibited files / data:** never edit or copy contributor known-check answers from `benchmarks/gold/` (or any private holdout / training eval answers). Known checks are a separate curated seed under backend/admin data only.
-- **Release blockers already identified:** embedded review-sync URL/secret; hard-coded Meaning Review password `1234`.
+- **Former release blockers (removed in Slice 04):** embedded review-sync URL/secret and Meaning Review password `1234` are gone from the production path.
 
 ### Baseline proof (recorded 2026-09-19 on clean tree at baseline)
 
@@ -208,22 +208,22 @@ npm run lint / typecheck / test:unit (45) / verify:translate / expo-doctor  # gr
 # independent-reviewer PASS; bilingual sign-off human-gated
 ```
 
-### Slice 08 (local, 2026-09-19)
+### Slice 08 (local + cleanup/E2E, 2026-09-19)
 ```text
 cd mobile
-npm run lint          # exit 0 (2 pre-existing warnings)
-npm run typecheck     # exit 0
-npm run test:unit -- --runInBand   # 16 suites / 50 tests passed
-npm run verify:translate           # OK
-npx expo-doctor                    # 21/21 passed
-# AdMob console IDs + physical device proof: human gate (not claimed)
+npm run verify:beta
+# lint (2 pre-existing warnings), typecheck, test:unit 17 suites / 53 tests,
+# test:e2e 3 passed (appE2E-test), verify:translate OK, expo-doctor 21/21
+# Maestro CLI not installed on this machine — smoke_tabs.yaml is source-ready;
+#   device Maestro run is a Slice 12 / human gate
+# gitignore: training/artifacts, review_sync credentials, tools/*.exe
 ```
 
 ## Remaining work
 
-- Slice 08: push + agent-gates; native AdMob SDK + device proof remain human-gated.
-- Then Slice 09 RevenueCat (StoreKit sandbox human-gated).
-- Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
+- Open PR for `cursor/beta-08-admob` review; native AdMob SDK + device proof remain human-gated.
+- Next slice: 09 RevenueCat (StoreKit sandbox human-gated).
+- Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
@@ -231,3 +231,4 @@ npx expo-doctor                    # 21/21 passed
 - Slice 03 human gates (not claimed): Apple Sign in capability on the App ID, Supabase Apple provider, legal review of consent version `2026-09-19.draft`, physical-device sign-in and account deletion. Missing `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET` blocks deletion before any purge. Deleting the app account does not cancel an Apple subscription.
 - Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles.
 - Slice 08 human gates (not claimed): AdMob app registration, banner/rewarded unit IDs, `react-native-google-mobile-ads` in a native/dev client, physical-device ad load proof.
+- Device Maestro (`mobile/.maestro/smoke_tabs.yaml`): Maestro CLI + running iOS app not available on this Windows agent — human / Slice 12 gate.
