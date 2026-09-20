@@ -62,6 +62,7 @@ Deno.test("public task JSON drops known-check fields", () => {
   });
   const keys = Object.keys(pub).sort();
   assertEquals(keys, [
+    "assignment_id",
     "direction",
     "formality",
     "model_output",
@@ -70,6 +71,7 @@ Deno.test("public task JSON drops known-check fields", () => {
     "script",
     "source_text",
   ]);
+  assertEquals(pub.assignment_id, null);
   assertEquals(JSON.stringify(pub).includes("known_check"), false);
   assertEquals(JSON.stringify(pub).includes("secret"), false);
   assertEquals(pub.reward_label, "Earn 1–6 credits after validation");
