@@ -36,7 +36,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 02 — Supabase schema, RLS, and API skeleton (independent review PASS; backend-gate CI green)
 - [x] Slice 03 — Sign in with Apple, consent, and deletion (independent review PASS; agent-gates `35465801990` and backend-gate `35465801979` green)
 - [x] Slice 04 — Unified correction sheet and offline outbox (independent review PASS after CI; agent-gates `35481941650` and backend-gate `35481941665` green)
-- [ ] Slice 05 — Contribution queue, hidden checks, and consensus
+- [x] Slice 05 — Contribution queue, hidden checks, and consensus (assignment_id fix; CI `35482928755` / `35482928694` green; contributionsEnabled still false)
 - [ ] Slice 06 — Reward ledger and entitlement service
 - [ ] Slice 07 — Learn alphabet
 - [ ] Slice 08 — AdMob adapter and ad middleware
@@ -171,9 +171,9 @@ npm run lint / typecheck / test:unit / verify:translate  # green (32 tests)
 
 ## Remaining work
 
-- Slice 05 review round 1 FAIL (missing assignment_id) → fix pushed; re-review after CI.
-- Next after Slice 05 PASS: Slice 06 reward ledger / entitlements.
-- Human gates: Apple, Supabase Apple provider, legal consent, physical device.
+- Slice 05 review round 1 FAIL (missing assignment_id) → fixed; CI green after allowlist test update. Full edit/skip UI and lease ratio wiring into SQL remain polish for a follow-up if needed.
+- Next: Slice 06 reward ledger / entitlements on `cursor/beta-06-reward-ledger`.
+- Human gates remain: Apple capability, Supabase Apple provider, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
