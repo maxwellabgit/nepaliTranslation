@@ -24,6 +24,29 @@ select ok(
   'lease payload still hides task_type'
 );
 
+-- Band-share preference is exercised by leasing when both pools exist.
+-- Seed one unknown task so preference has somewhere to land.
+insert into private.contribution_tasks (
+  id, source_text, model_output, direction, formality, script,
+  task_type, state, reward_class, provenance
+) values (
+  'd0d0d0d0-d0d0-40d0-80d0-d0d0d0d0d0d0',
+  'SYNQC02 spare unknown sample',
+  'नमूना',
+  'en-ne',
+  'formal',
+  'deva',
+  'unknown',
+  'open',
+  'standard',
+  'synthetic'
+);
+
+select ok(
+  (select count(*)::int from private.contribution_tasks where state = 'open') >= 2,
+  'open pool has known and unknown tasks for band leasing'
+);
+
 -- Authenticated user B cannot record a submission for user A's assignment.
 reset role;
 select set_config('request.jwt.claim.sub', '22222222-2222-4222-8222-222222222222', true);

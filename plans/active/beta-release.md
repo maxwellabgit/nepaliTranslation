@@ -52,6 +52,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 - Branch: `cursor/beta-05-contribution-queue` (stacked on Slice 04)
 - Scope: consensus module + submit-contribution + assignment ratio test + ContributionCard (flag off by default).
+- Review: acceptance FAIL (lease ratios unwired; submit envelope leaked known vs unknown) → fixed in follow-up commit; band lease shares + opaque submit response.
 - Human gates: legal consent still draft; contributionsEnabled remains false.
 
 **Previous: Slice 04** complete (review PASS; CI green).

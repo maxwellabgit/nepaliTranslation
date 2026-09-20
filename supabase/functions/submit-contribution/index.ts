@@ -110,7 +110,6 @@ Deno.serve(async (req) => {
   }
 
   let consensus: ReturnType<typeof resolveConsensus> = { status: "pending" };
-  let reward: unknown = null;
   if (bundle.task_type === "unknown" && (body.action === "looks_correct" || body.action === "edit")) {
     const votesRes = await fetch(`${url}/rest/v1/rpc/service_list_task_votes`, {
       method: "POST",
@@ -133,49 +132,35 @@ Deno.serve(async (req) => {
         })),
       );
       if (consensus.status === "resolved" && consensus.rewardEligible) {
-        const rewardRes = await fetch(
-          `${url}/rest/v1/rpc/service_apply_contribution_reward`,
-          {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-              p_user_id: user.id,
-              p_source_id: `task:${bundle.task_id}`,
-              p_credits: 2,
-              p_minutes: 15,
-            }),
-          },
-        );
-        if (rewardRes.ok) reward = await rewardRes.json();
+        await fetch(`${url}/rest/v1/rpc/service_apply_contribution_reward`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            p_user_id: user.id,
+            p_source_id: `task:${bundle.task_id}`,
+            p_credits: 2,
+            p_minutes: 15,
+          }),
+        });
       }
     }
   } else if (knownPass === true) {
-    const rewardRes = await fetch(
-      `${url}/rest/v1/rpc/service_apply_contribution_reward`,
-      {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          p_user_id: user.id,
-          p_source_id: `known:${body.assignment_id}`,
-          p_credits: 2,
-          p_minutes: 15,
-        }),
-      },
-    );
-    if (rewardRes.ok) reward = await rewardRes.json();
+    await fetch(`${url}/rest/v1/rpc/service_apply_contribution_reward`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        p_user_id: user.id,
+        p_source_id: `known:${body.assignment_id}`,
+        p_credits: 2,
+        p_minutes: 15,
+      }),
+    });
   }
 
-  // Never expose task_type, references, or known outcome labels to the client.
+  // Identical client envelope for every outcome — no known/unknown leak.
   return json({
-    status: consensus.status === "resolved"
-      ? "accepted"
-      : consensus.status === "disputed"
-      ? "disputed"
-      : "received",
+    status: "received",
     reward_label: "Earn 1–6 credits after validation",
-    reward: reward && typeof reward === "object" && (reward as { applied?: boolean }).applied
-      ? { credits: 2, minutes: 15 }
-      : null,
+    reward: null,
   }, 200, requestId);
 });
