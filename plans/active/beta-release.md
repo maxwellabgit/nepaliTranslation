@@ -161,10 +161,19 @@ npx expo-doctor                    # 21/21 passed
 # agent-gates 35481941650 green; backend-gate 35481941665 green
 ```
 
+### Slice 05 (local + CI, 2026-09-19)
+```text
+cd mobile
+npm run lint / typecheck / test:unit / verify:translate  # green (32 tests)
+# agent-gates 35482604781; backend-gate 35482604776 (pre-fix)
+# follow-up: lease returns assignment_id + ownership pgTAP
+```
+
 ## Remaining work
 
-- Next slice: 05 contribution queue on `cursor/beta-05-contribution-queue`.
-- Human gates stay open: Apple capability, Supabase Apple provider, legal consent, physical device.
+- Slice 05 review round 1 FAIL (missing assignment_id) → fix pushed; re-review after CI.
+- Next after Slice 05 PASS: Slice 06 reward ledger / entitlements.
+- Human gates: Apple, Supabase Apple provider, legal consent, physical device.
 
 ## Blockers (concrete; cannot be solved from this repo)
 

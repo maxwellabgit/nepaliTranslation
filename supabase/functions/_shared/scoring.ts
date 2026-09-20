@@ -99,6 +99,7 @@ export function knownCheckPasses(answer: string, references: string[]): boolean 
 }
 
 export const PUBLIC_TASK_KEYS = [
+  "assignment_id",
   "public_task_id",
   "source_text",
   "model_output",

@@ -158,8 +158,8 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           p_user_id: user.id,
           p_source_id: `known:${body.assignment_id}`,
-          p_credits: 1,
-          p_minutes: 10,
+          p_credits: 2,
+          p_minutes: 15,
         }),
       },
     );
@@ -175,7 +175,7 @@ Deno.serve(async (req) => {
       : "received",
     reward_label: "Earn 1–6 credits after validation",
     reward: reward && typeof reward === "object" && (reward as { applied?: boolean }).applied
-      ? { credits: knownPass ? 1 : 2, minutes: knownPass ? 10 : 15 }
+      ? { credits: 2, minutes: 15 }
       : null,
   }, 200, requestId);
 });
