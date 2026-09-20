@@ -69,8 +69,9 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 - Scope: clean-checkout `verify:beta` (lexicon first), rename fake E2E → AppShell integration, delete synthetic AppState probe, CI = same `verify:beta` + coverage ratchet, console fail-on, SafeArea from `react-native-safe-area-context`, `--max-warnings 0`, MeaningReview hook deps.
 - Proof (2026-09-20): deleted `meaningLexicon.json`, then `npm run verify:beta` exit 0 (15 unit / 49 tests + 1 integration / 3 tests; translate OK; expo-doctor 21/21). `npm run test:coverage:beta` wrote `mobile/coverage/beta-critical-baseline.json`.
-- Commit: `5685a80` (`test: make beta proof clean-checkout reproducible`).
-- PR #2 title/body updated (no fake-pane “E2E” claim). Branch `cursor/beta-08-admob` fast-forwarded to `5685a80` for CI; local `main` holds the same tip (origin/main push blocked pending review).
+- Commit: `5685a80` (`test: make beta proof clean-checkout reproducible`); lock sync `b168f1b`.
+- PR #2 title/body updated (no fake-pane “E2E” claim). Branch `cursor/beta-08-admob` = `b168f1b` for CI; local `main` same tip (direct `origin/main` push still gated).
+- CI: agent-gates `35544780519` **green** (`npm ci` + `verify:beta` + coverage ratchet). Backend-gate flaked once on Supabase CLI GitHub rate limit (`35544782822`); not an H0 code regression.
 - **Stop before H1** until independent review PASS.
 
 Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until their owning milestone:
