@@ -147,15 +147,16 @@ returns table (credits integer, minutes integer)
 language sql
 immutable
 as $$
-  select * from (
+  select s.credits, s.minutes
+  from (
     values
-      ('known_check', 1, 5),
-      ('unknown_confirm', 3, 15),
-      ('unknown_correction', 6, 30),
-      ('admin_difficult', 8, 40),
-      ('rewarded_video', 2, 10)
+      ('known_check'::text, 1::integer, 5::integer),
+      ('unknown_confirm'::text, 3::integer, 15::integer),
+      ('unknown_correction'::text, 6::integer, 30::integer),
+      ('admin_difficult'::text, 8::integer, 40::integer),
+      ('rewarded_video'::text, 2::integer, 10::integer)
   ) as s(kind, credits, minutes)
-  where kind = p_kind;
+  where s.kind = p_kind;
 $$;
 
 create or replace function public.service_apply_scheduled_reward(

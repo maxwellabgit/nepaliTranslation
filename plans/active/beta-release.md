@@ -54,8 +54,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - Scope: UTC daily caps (60 contribution / 12 video), `service_apply_scheduled_reward`, trusted-time (monotonic; wall skew cannot mint), `decideAdPresentation`, `EntitlementProvider` + cache, submit path uses schedule RPC while client envelope stays opaque.
 - Local mobile gate (2026-09-19): lint (2 pre-existing warnings), typecheck, test:unit 13 suites / 39 tests, verify:translate, expo-doctor 21/21.
 - Independent review: round 1–2 FAIL (cap-before-duplicate; wall/mono clock mint) → fixed; round 3 **PASS**.
-- Backend gate: Docker/supabase still unavailable locally; proof will be `backend-gate` CI after push.
-- Ads remain mocked/off (Slice 08).
+- CI: agent-gates `35483905086` green; backend-gate `35483905079` FAIL on migration (`reward_schedule` selected kind+credits+minutes into a two-column return) → fix push.
 
 **Previous: Slice 05** complete (review PASS after opacity + band lease; CI green).
 
