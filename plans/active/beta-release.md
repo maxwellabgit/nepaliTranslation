@@ -51,7 +51,10 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current slice: 07 — Learn alphabet**
 
 - Branch: `cursor/beta-07-learn-alphabet` (stacked on Slice 06 tip)
-- Scope: third mounted Learn tab; bundled Nepali alphabet offline; quiz schema tests; missing Nepali voice handled honestly; bilingual sign-off human-gated.
+- Scope: third mounted Learn tab; bundled Nepali alphabet (vowels/consonants/conjuncts); quiz schema tests; lesson position AsyncStorage; missing Nepali voice banner; no login required.
+- Local mobile gate: lint (2 pre-existing warnings), typecheck, test:unit 15 suites / 45 tests, verify:translate, expo-doctor 21/21 (Commands paste below).
+- Human gate: bilingual Nepali content sign-off not claimed (Blockers).
+- Review: round 1 FAIL (Commands unpasted) → Commands + LearnScreen RTL added; re-review pending.
 
 **Previous: Slice 06** complete (review PASS; CI green after reward_schedule column fix).
 
@@ -193,12 +196,24 @@ npm run lint / typecheck / test:unit (39) / verify:translate / expo-doctor  # gr
 # independent-reviewer PASS
 ```
 
+### Slice 07 (local, 2026-09-19)
+```text
+cd mobile
+npm run lint          # exit 0 (2 pre-existing warnings)
+npm run typecheck     # exit 0
+npm run test:unit -- --runInBand   # 15 suites / 45 tests (after LearnScreen RTL)
+npm run verify:translate           # OK
+npx expo-doctor                    # 21/21 passed
+# bilingual Nepali alphabet content sign-off: human gate (not claimed)
+```
+
 ## Remaining work
 
-- Slice 07 Learn alphabet on `cursor/beta-07-learn-alphabet`.
+- Slice 07: independent review after Commands paste + LearnScreen RTL; push + agent-gates; then Slice 08 AdMob.
 - Human gates remain: Apple capability, Supabase Apple provider, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. Backend proof is `.github/workflows/backend-gate.yml`.
 - Slice 03 human gates (not claimed): Apple Sign in capability on the App ID, Supabase Apple provider, legal review of consent version `2026-09-19.draft`, physical-device sign-in and account deletion. Missing `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET` blocks deletion before any purge. Deleting the app account does not cancel an Apple subscription.
+- Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles.

@@ -5,7 +5,7 @@ import { hardStopAudio } from './hardStopAudio';
 import { colors } from '../theme';
 import type { HistoryItem } from '../storage/phrasebook';
 
-export type AppMode = 'auto' | 'conversation';
+export type AppMode = 'auto' | 'conversation' | 'learn';
 export type AppOverlay = 'history' | 'settings' | 'meaning' | null;
 
 type PaneProps = {
@@ -21,6 +21,10 @@ type PaneProps = {
 type ConversationPaneProps = {
   active: boolean;
   neuralReady: boolean;
+};
+
+type LearnPaneProps = {
+  active: boolean;
 };
 
 type HistoryOverlayProps = {
@@ -41,6 +45,7 @@ type MeaningOverlayProps = {
 type Props = {
   AutoPane: (props: PaneProps) => ReactNode;
   ConversationPane: (props: ConversationPaneProps) => ReactNode;
+  LearnPane: (props: LearnPaneProps) => ReactNode;
   HistoryOverlay: (props: HistoryOverlayProps) => ReactNode;
   SettingsOverlay: (props: SettingsOverlayProps) => ReactNode;
   MeaningOverlay: (props: MeaningOverlayProps) => ReactNode;
@@ -53,6 +58,7 @@ type Props = {
 export function AppShell({
   AutoPane,
   ConversationPane,
+  LearnPane,
   HistoryOverlay,
   SettingsOverlay,
   MeaningOverlay,
@@ -75,10 +81,9 @@ export function AppShell({
     <SafeAreaView style={styles.root} testID="app-shell">
       <StatusBar style="dark" />
       <View style={styles.body}>
-        {/* Both panes stay mounted so a tab tap does not wipe Auto input or the
-            Conversation thread. Inactive pane is display:none and ignores
-            pointer/STT events. Overlays still sit on top of whichever mode is
-            showing. */}
+        {/* Panes stay mounted so a tab tap does not wipe Auto input, the
+            Conversation thread, or Learn lesson position. Inactive panes use
+            display:none and ignore pointer/STT events. */}
         <View
           style={[styles.pane, mode !== 'auto' && styles.paneHidden]}
           pointerEvents={mode === 'auto' ? 'auto' : 'none'}
@@ -117,6 +122,17 @@ export function AppShell({
             active={mode === 'conversation'}
             neuralReady={neuralReady}
           />
+        </View>
+        <View
+          style={[styles.pane, mode !== 'learn' && styles.paneHidden]}
+          pointerEvents={mode === 'learn' ? 'auto' : 'none'}
+          accessibilityElementsHidden={mode !== 'learn'}
+          importantForAccessibility={
+            mode === 'learn' ? 'auto' : 'no-hide-descendants'
+          }
+          testID="pane-learn"
+        >
+          <LearnPane active={mode === 'learn'} />
         </View>
       </View>
 
@@ -158,7 +174,22 @@ export function AppShell({
               mode === 'conversation' && styles.tabHintOn,
             ]}
           >
-            Speak · Pass · Speak
+            Speak · Pass
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[styles.tab, mode === 'learn' && styles.tabOn]}
+          onPress={() => switchMode('learn')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: mode === 'learn' }}
+          accessibilityLabel="Learn tab"
+          testID="tab-learn"
+        >
+          <Text style={[styles.tabLabel, mode === 'learn' && styles.tabLabelOn]}>
+            Learn
+          </Text>
+          <Text style={[styles.tabHint, mode === 'learn' && styles.tabHintOn]}>
+            Alphabet
           </Text>
         </Pressable>
       </View>
@@ -210,8 +241,8 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: 16,
+    gap: 8,
+    paddingHorizontal: 12,
     paddingTop: 10,
     paddingBottom: 14,
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -221,8 +252,8 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 12,
-    borderRadius: 18,
+    paddingVertical: 10,
+    borderRadius: 16,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.divider,
@@ -232,14 +263,14 @@ const styles = StyleSheet.create({
     borderColor: colors.crimson,
   },
   tabLabel: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '700',
     color: colors.text,
   },
   tabLabelOn: { color: '#fff' },
   tabHint: {
     marginTop: 2,
-    fontSize: 11,
+    fontSize: 10,
     color: colors.textSecondary,
     fontWeight: '500',
   },

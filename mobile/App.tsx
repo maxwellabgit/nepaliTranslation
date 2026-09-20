@@ -6,6 +6,7 @@ import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { MeaningReviewScreen } from './src/screens/MeaningReviewScreen';
+import { LearnScreen } from './src/screens/LearnScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import {
   MT_WARM_DOWNLOADING,
@@ -57,6 +58,7 @@ export default function App() {
         mtWarmStatus={mtWarmStatus}
         AutoPane={(props) => <HomeScreen {...props} />}
         ConversationPane={(props) => <ConversationScreen {...props} />}
+        LearnPane={(props) => <LearnScreen {...props} />}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}
         MeaningOverlay={(props) => <MeaningReviewScreen {...props} />}

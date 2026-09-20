@@ -52,6 +52,21 @@ function FakeConversation({ active }: { active: boolean; neuralReady: boolean })
   );
 }
 
+function FakeLearn({ active }: { active: boolean }) {
+  const [mark, setMark] = useState('lesson-pos');
+  return (
+    <View testID="fake-learn">
+      <Text testID="learn-active">{active ? 'active' : 'inactive'}</Text>
+      <TextInput
+        testID="learn-mark"
+        value={mark}
+        onChangeText={setMark}
+        accessibilityLabel="Learn mark"
+      />
+    </View>
+  );
+}
+
 function FakeHistory({
   onClose,
 }: {
@@ -80,6 +95,7 @@ async function renderShell(onHardStop = jest.fn()) {
       onHardStop={onHardStop}
       AutoPane={(p) => <FakeAuto {...p} />}
       ConversationPane={(p) => <FakeConversation {...p} />}
+      LearnPane={(p) => <FakeLearn {...p} />}
       HistoryOverlay={(p) => <FakeHistory {...p} />}
       SettingsOverlay={() => <View testID="fake-settings" />}
       MeaningOverlay={() => <View testID="fake-meaning" />}
@@ -112,6 +128,18 @@ describe('AppShell tabs and overlays', () => {
     expect(onHardStop).toHaveBeenCalledTimes(1);
     await fireEvent.press(screen.getByTestId('tab-auto'));
     expect(onHardStop).toHaveBeenCalledTimes(2);
+    await fireEvent.press(screen.getByTestId('tab-learn'));
+    expect(onHardStop).toHaveBeenCalledTimes(3);
+  });
+
+  test('keeps Learn pane state when switching away and back', async () => {
+    await renderShell();
+    await fireEvent.press(screen.getByTestId('tab-learn'));
+    await fireEvent.changeText(screen.getByTestId('learn-mark'), 'keep-lesson');
+    await fireEvent.press(screen.getByTestId('tab-auto'));
+    expect(screen.queryByTestId('learn-mark')).toBeNull();
+    await fireEvent.press(screen.getByTestId('tab-learn'));
+    expect(screen.getByTestId('learn-mark').props.value).toBe('keep-lesson');
   });
 
   test('opens History overlay with hard stop and closes without remounting panes', async () => {
