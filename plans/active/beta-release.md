@@ -51,7 +51,9 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current slice: 08 — AdMob adapter and ad middleware**
 
 - Branch: `cursor/beta-08-admob` (stacked on Slice 07)
-- Scope: AdMob adapter + middleware using `decideAdPresentation`; zero network ad calls offline; Conversation/keyboard/audio blocked; physical device proof human-gated.
+- Scope: `adMiddleware` + mock adapter + `AdSlot`; policy table tests (zero network calls offline; blocked surfaces; SSV shape); network ads remain flag-off until AdMob console + native build.
+- Local mobile gate: lint, typecheck, test:unit 16 suites / 50 tests.
+- Human gates: AdMob app/unit IDs, native dev build, physical device proof.
 
 **Previous: Slice 07** complete (review PASS; CI green).
 
@@ -206,13 +208,26 @@ npm run lint / typecheck / test:unit (45) / verify:translate / expo-doctor  # gr
 # independent-reviewer PASS; bilingual sign-off human-gated
 ```
 
+### Slice 08 (local, 2026-09-19)
+```text
+cd mobile
+npm run lint          # exit 0 (2 pre-existing warnings)
+npm run typecheck     # exit 0
+npm run test:unit -- --runInBand   # 16 suites / 50 tests passed
+npm run verify:translate           # OK
+npx expo-doctor                    # 21/21 passed
+# AdMob console IDs + physical device proof: human gate (not claimed)
+```
+
 ## Remaining work
 
-- Slice 08 AdMob on `cursor/beta-08-admob` (device/AdMob console human-gated).
-- Human gates remain: Apple capability, Supabase Apple provider, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
+- Slice 08: push + agent-gates; native AdMob SDK + device proof remain human-gated.
+- Then Slice 09 RevenueCat (StoreKit sandbox human-gated).
+- Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. Backend proof is `.github/workflows/backend-gate.yml`.
 - Slice 03 human gates (not claimed): Apple Sign in capability on the App ID, Supabase Apple provider, legal review of consent version `2026-09-19.draft`, physical-device sign-in and account deletion. Missing `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET` blocks deletion before any purge. Deleting the app account does not cancel an Apple subscription.
 - Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles.
+- Slice 08 human gates (not claimed): AdMob app registration, banner/rewarded unit IDs, `react-native-google-mobile-ads` in a native/dev client, physical-device ad load proof.
