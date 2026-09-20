@@ -39,7 +39,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 05 — Contribution queue, hidden checks, and consensus (assignment_id fix; CI `35482928755` / `35482928694` green; contributionsEnabled still false)
 - [x] Slice 06 — Reward ledger and entitlement service (review PASS; agent-gates `35483996952` + backend-gate `35483996973` green)
 - [x] Slice 07 — Learn alphabet (review PASS; agent-gates `35484367709` + backend-gate `35484367702` green)
-- [ ] Slice 08 — AdMob adapter and ad middleware
+- [x] Slice 08 — AdMob adapter and ad middleware (review PASS; CI `35484608924` / `35484608918` green; native AdMob human-gated)
 - [ ] Slice 09 — StoreKit subscription through RevenueCat
 - [ ] Slice 10 — Protected admin console
 - [ ] Slice 11 — Privacy, security, observability, and store surfaces
@@ -48,12 +48,12 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 08 — AdMob adapter and ad middleware**
+**Current slice: 08 — AdMob adapter and ad middleware** (code Done; native AdMob human-gated)
 
-- Branch: `cursor/beta-08-admob` (stacked on Slice 07)
-- Scope: `adMiddleware` + mock adapter + `AdSlot`; policy table tests (zero network calls offline; blocked surfaces; SSV shape); network ads remain flag-off until AdMob console + native build.
-- Local mobile gate: lint, typecheck, test:unit 16 suites / 50 tests.
-- Human gates: AdMob app/unit IDs, native dev build, physical device proof.
+- Branch: `cursor/beta-08-admob`
+- Scope: `adMiddleware` + mock adapter + `AdSlot`; policy tests; network ads flag-off.
+- Review **PASS**. CI green. Commit: `eb27d50`.
+- Next: Slice 09 RevenueCat when ready (StoreKit sandbox remains human-gated).
 
 **Previous: Slice 07** complete (review PASS; CI green).
 
