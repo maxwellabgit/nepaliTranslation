@@ -6,10 +6,11 @@ Ship an iOS external TestFlight beta, then a public App Store release candidate,
 ## Context (paths, commands, constraints)
 
 - **Baseline:** `main` at `43f14b0adc2dd596f9eb64bc79aea2bece5d9406` (2026-09-19).
-- **Branch naming:** `cursor/beta-XX-short-name` (one slice per branch / PR).
+- **Branch policy (hardening):** work on **`main`** until H0–H6 pass. PR #2 is foundation only — not merge-as-beta-ready until hardening gates pass.
+- **Branch naming (Slice 09+):** `cursor/beta-XX-short-name` (one slice per branch / PR).
 - **Product contract:** `.governance/INTENT.md` (offline core + optional online services).
 - **Operating protocol:** `AGENTS.md`, `.agent/LOOP.md`, `.agent/DONE.md`, this ExecPlan.
-- **Source plan:** founder App Store beta implementation plan (slices 00–13). Do not combine adjacent slices.
+- **Source plan:** founder App Store beta implementation plan (slices 00–13) + PR #2 hardening plan (H0–H6).
 - **Protected:** `mobile/src/mt/`, `mobile/src/stt/`, translation verify scripts, Expo SDK 57. No model-family change; no cloud translation.
 - **Prohibited files / data:** never edit or copy contributor known-check answers from `benchmarks/gold/` (or any private holdout / training eval answers). Known checks are a separate curated seed under backend/admin data only.
 - **Former release blockers (removed in Slice 04):** embedded review-sync URL/secret and Meaning Review password `1234` are gone from the production path.
@@ -31,15 +32,31 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Milestones
 
-- [x] Slice 00 — Product contract and release lane (this file + INTENT / AGENTS / DONE updates)
-- [x] Slice 01 — Test harness and UI primitives (independent review PASS)
-- [x] Slice 02 — Supabase schema, RLS, and API skeleton (independent review PASS; backend-gate CI green)
-- [x] Slice 03 — Sign in with Apple, consent, and deletion (independent review PASS; agent-gates `35465801990` and backend-gate `35465801979` green)
-- [x] Slice 04 — Unified correction sheet and offline outbox (independent review PASS after CI; agent-gates `35481941650` and backend-gate `35481941665` green)
-- [x] Slice 05 — Contribution queue, hidden checks, and consensus (assignment_id fix; CI `35482928755` / `35482928694` green; contributionsEnabled still false)
-- [x] Slice 06 — Reward ledger and entitlement service (review PASS; agent-gates `35483996952` + backend-gate `35483996973` green)
-- [x] Slice 07 — Learn alphabet (review PASS; agent-gates `35484367709` + backend-gate `35484367702` green)
-- [x] Slice 08 — AdMob adapter and ad middleware (review PASS; CI `35484608924` / `35484608918` green; native AdMob human-gated)
+### Slices 00–08 (foundation on main; integration acceptance pending)
+
+- [x] Slice 00 — Product contract and release lane — foundation implemented; integration acceptance pending
+- [x] Slice 01 — Test harness and UI primitives — foundation implemented; integration acceptance pending
+- [x] Slice 02 — Supabase schema, RLS, and API skeleton — foundation implemented; integration acceptance pending
+- [x] Slice 03 — Sign in with Apple, consent, and deletion — foundation implemented; integration acceptance pending
+- [x] Slice 04 — Unified correction sheet and offline outbox — foundation implemented; integration acceptance pending
+- [x] Slice 05 — Contribution queue, hidden checks, and consensus — foundation implemented; integration acceptance pending
+- [x] Slice 06 — Reward ledger and entitlement service — foundation implemented; integration acceptance pending
+- [x] Slice 07 — Learn alphabet — foundation implemented; integration acceptance pending
+- [x] Slice 08 — AdMob adapter and ad middleware — foundation implemented; integration acceptance pending (native AdMob not proven)
+
+### PR #2 foundation hardening (work on `main`)
+
+- [ ] H0 — Truthful, reproducible gates (gates green locally; independent review pending)
+- [ ] H1 — Production-composition integration harness
+- [ ] H2 — Correction metadata and reliable offline outbox
+- [ ] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards
+- [ ] H4 — Apple identity/deletion + remove founder-only UI
+- [ ] H5 — Learn, reward visibility, accessibility, UI consistency
+- [ ] H6 — Real AdMob + cryptographically verified SSV
+- [ ] Merge foundation only after every H0–H6 merge gate passes
+
+### Later slices (separate PRs after foundation)
+
 - [ ] Slice 09 — StoreKit subscription through RevenueCat
 - [ ] Slice 10 — Protected admin console
 - [ ] Slice 11 — Privacy, security, observability, and store surfaces
@@ -48,14 +65,43 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 08 — AdMob adapter and ad middleware** (code Done; native AdMob human-gated)
+**Current: H0 — Truthful, reproducible gates** (on `main`)
 
-- Branch: `cursor/beta-08-admob`
-- Scope: `adMiddleware` + mock adapter + `AdSlot`; policy tests; network ads flag-off.
-- Review **PASS**. CI green. Commit: `eb27d50`.
-- Next: Slice 09 RevenueCat when ready (StoreKit sandbox remains human-gated).
+- Scope: clean-checkout `verify:beta` (lexicon first), rename fake E2E → AppShell integration, delete synthetic AppState probe, CI = same `verify:beta` + coverage ratchet, console fail-on, SafeArea from `react-native-safe-area-context`, `--max-warnings 0`, MeaningReview hook deps.
+- Proof (2026-09-20): deleted `meaningLexicon.json`, then `npm run verify:beta` exit 0 (15 unit / 49 tests + 1 integration / 3 tests; translate OK; expo-doctor 21/21). `npm run test:coverage:beta` wrote `mobile/coverage/beta-critical-baseline.json`.
+- Commit: `test: make beta proof clean-checkout reproducible` (pending independent review).
+- **Stop before H1** until independent review PASS.
 
-**Previous: Slice 07** complete (review PASS; CI green).
+Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until their owning milestone:
+
+### P0 (must before foundation merge)
+- [x] Clean-checkout `verify:beta` (H0)
+- [x] Rename fake E2E; keep as AppShell integration until H1 real composition (H0)
+- [ ] Maestro beyond tab smoke (H6/Slice 12)
+- [ ] Production AdMob + SSV crypto (H6)
+- [ ] ContributionCard submit (H2/H3)
+- [ ] Outbox retry after network failure (H2)
+- [ ] Server-side consent gate (H3)
+- [ ] Per-user idempotency + multi-user rewards (H3)
+- [ ] Consensus rewards all eligible (H3)
+- [ ] Atomic submit path (H3)
+- [ ] Model similarity in consensus (H3)
+- [ ] History formality/script metadata (H2)
+- [ ] Fresh Apple credential on deletion (H4)
+- [ ] Remove Meaning Review from production Settings (H4)
+
+### P1 (before external TestFlight)
+- [ ] Load server feature flags (H1+)
+- [ ] Entitlement UI (H5)
+- [ ] Auth error + consent UI (H4/H5)
+- [ ] Learn landing + reward summary (H5)
+- [ ] Alphabet roman disambiguation + bilingual sign-off (H5 + human)
+- [x] Console/act noise free (H0)
+- [x] Coverage thresholds on changed files (H0 ratchet baseline recorded; 80/70 by H6)
+- [ ] NSPhotoLibraryUsageDescription honesty (H4/H11)
+- [ ] Tab label Translate (H5)
+
+**Previous: Slice 08** foundation on `cursor/beta-08-admob` / now integrated on `main` tip.
 
 - Branch: `cursor/beta-07-learn-alphabet`
 - Scope: third Learn tab, alphabet + quiz, lesson position, no-voice honesty.
@@ -116,8 +162,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - 2026-09-19: Public App Store metadata must not say “beta” / “test”; Apple “beta” distribution is TestFlight only.
 - 2026-09-19: Login required only for contributions and rewards — never for translation, history, settings, or Learn alphabet.
 - 2026-09-19: Slice 02 backend gate runs in GitHub Actions when Docker is unavailable locally. Do not claim `supabase start` proof from this machine.
-- 2026-09-19: Contributor known-check seed is synthetic (`SYNQC01…`), not copied from `benchmarks/gold/`.
-
+- 2026-09-20: PR #2 foundation hardening (H0–H6) works on **`main`**. Do not merge PR #2 / start Slice 09 until H0–H6 pass. H0 records coverage baseline without manufacturing shallow tests.
 
 ## Commands that actually ran (paste)
 
@@ -208,6 +253,22 @@ npm run lint / typecheck / test:unit (45) / verify:translate / expo-doctor  # gr
 # independent-reviewer PASS; bilingual sign-off human-gated
 ```
 
+### H0 (local, 2026-09-20, on `main`)
+```text
+cd mobile
+# Delete generated lexicon to simulate clean checkout:
+Remove-Item src\mt\generated\meaningLexicon.json
+npm run verify:beta
+# exit 0 — export:lexicon first, lint max-warnings 0, typecheck,
+# test:unit 15 suites / 49 tests, test:integration 1 suite / 3 tests,
+# verify:translate OK, expo-doctor 21/21
+npm run test:coverage:beta
+# Wrote mobile/coverage/beta-critical-baseline.json
+# auth 16.56/23.2/18.25, contribution 21.84/9.09/22.5,
+# entitlements 18.52/30.14/20.62, ads 50.94/40/54,
+# contributionSync 3.33/0/3.57 (statements/branches/lines)
+```
+
 ### Slice 08 (local + cleanup/E2E, 2026-09-19)
 ```text
 cd mobile
@@ -221,8 +282,8 @@ npm run verify:beta
 
 ## Remaining work
 
-- Open PR for `cursor/beta-08-admob` review; native AdMob SDK + device proof remain human-gated.
-- Next slice: 09 RevenueCat (StoreKit sandbox human-gated).
+- **H0** independent review → then H1 production-composition harness (not started).
+- Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)

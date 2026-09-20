@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../features/auth/AuthProvider';
 import { EntitlementProvider } from '../features/entitlements/EntitlementProvider';
 import { migrateLegacyReviewQueue } from '../storage/contributionOutbox';
@@ -17,11 +18,13 @@ function LegacyOutboxMigration() {
 /** Optional identity + entitlements. Missing Supabase leaves children usable. */
 export function AppProviders({ children }: Props) {
   return (
-    <AuthProvider>
-      <EntitlementProvider>
-        <LegacyOutboxMigration />
-        {children}
-      </EntitlementProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <EntitlementProvider>
+          <LegacyOutboxMigration />
+          {children}
+        </EntitlementProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

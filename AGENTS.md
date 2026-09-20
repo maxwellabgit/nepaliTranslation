@@ -31,7 +31,11 @@ Do **not** start lane 5 until lane 1 is clean. Do **not** claim translation qual
 
 ### Beta release lanes (dependency order)
 
-App Store / TestFlight work uses **one** living ExecPlan: `plans/active/beta-release.md`. Execute **exactly one** slice per branch/PR. Do not combine adjacent slices because context remains.
+App Store / TestFlight work uses **one** living ExecPlan: `plans/active/beta-release.md`.
+
+**Foundation hardening (H0–H6):** work on **`main`**. Do not open Slice 09+ until H0–H6 pass independent review and the foundation merge gates. One hardening milestone per session. After the foundation is accepted, return to exactly one beta slice per branch/PR.
+
+Execute **exactly one** slice per branch/PR for Slice 09 onward. Do not combine adjacent slices because context remains.
 
 | Order | Slice / lane id | Goal | Branch pattern |
 |------:|-----------------|------|----------------|

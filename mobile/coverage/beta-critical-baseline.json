@@ -1,0 +1,27 @@
+{
+  "src/features/auth/": {
+    "statements": 16.56,
+    "branches": 23.2,
+    "lines": 18.25
+  },
+  "src/features/contribution/": {
+    "statements": 21.84,
+    "branches": 9.09,
+    "lines": 22.5
+  },
+  "src/features/entitlements/": {
+    "statements": 18.52,
+    "branches": 30.14,
+    "lines": 20.62
+  },
+  "src/features/ads/": {
+    "statements": 50.94,
+    "branches": 40,
+    "lines": 54
+  },
+  "src/services/contributionSync.ts": {
+    "statements": 3.33,
+    "branches": 0,
+    "lines": 3.57
+  }
+}

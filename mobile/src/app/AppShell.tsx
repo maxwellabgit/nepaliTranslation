@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { hardStopAudio } from './hardStopAudio';
 import { colors } from '../theme';

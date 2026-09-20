@@ -49,9 +49,7 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
-      - run: node ./scripts/export_meaning_lexicon.mjs
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run test:unit -- --runInBand
-      - run: npm run verify:translate
-      - run: npx expo-doctor
+      - name: verify:beta (same command as local)
+        run: npm run verify:beta
+      - name: coverage ratchet
+        run: npm run test:coverage:beta

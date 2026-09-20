@@ -37,7 +37,8 @@ yarn-error.*
 *.tsbuildinfo
 
 # tests
-coverage/
+coverage/*
+!coverage/beta-critical-baseline.json
 
 # generated native folders
 /ios

@@ -149,7 +149,7 @@ export function MeaningReviewScreen({ onClose }: Props) {
       roman_formal: rev?.roman_formal_final ?? unit.roman_formal,
       roman_informal: rev?.roman_informal_final ?? unit.roman_informal,
     });
-  }, [unit?.meaning_id, reviews]);
+  }, [unit, reviews]);
 
   useEffect(() => {
     if (!queue.length) {

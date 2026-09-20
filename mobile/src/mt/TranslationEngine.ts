@@ -91,7 +91,7 @@ export class TranslationEngine {
       const cancelled = requestId !== this.seq;
       if (!cancelled) this.state = 'ready';
       return { ...result, requestId, cancelled };
-    } catch (e) {
+    } catch {
       try {
         const fallback = this.translateFallback(req);
         const cancelled = requestId !== this.seq;

@@ -1,4 +1,5 @@
 import '@testing-library/react-native/matchers';
+import './consoleGuard';
 
 Object.assign(globalThis, {
   IS_REACT_ACT_ENVIRONMENT: true,
@@ -21,8 +22,14 @@ jest.mock('expo-speech-recognition', () => ({
     abort: jest.fn(),
     stop: jest.fn(),
     start: jest.fn(),
-    requestPermissionsAsync: jest.fn(async () => ({ granted: true, status: 'granted' })),
-    getPermissionsAsync: jest.fn(async () => ({ granted: true, status: 'granted' })),
+    requestPermissionsAsync: jest.fn(async () => ({
+      granted: true,
+      status: 'granted',
+    })),
+    getPermissionsAsync: jest.fn(async () => ({
+      granted: true,
+      status: 'granted',
+    })),
   },
   useSpeechRecognitionEvent: jest.fn(),
 }));

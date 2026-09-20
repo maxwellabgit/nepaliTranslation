@@ -1,7 +1,7 @@
 /**
- * App-level end-to-end (source). Walks Auto → Conversation → Learn → History
- * with optional services unconfigured, and asserts offline ads never hit the network.
- * Device Maestro flows live under mobile/.maestro/ (Slice 12 expands coverage).
+ * AppShell integration test (not production-composition E2E).
+ * Uses stand-in panes to prove mounted-state retention, hard-stop on tab
+ * switch, overlays, and offline ad policy. Real-screen composition is H1.
  */
 import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
@@ -30,18 +30,18 @@ function AutoPane({
 }) {
   const [text, setText] = useState('');
   return (
-    <View testID="e2e-auto">
-      <Text testID="e2e-auto-active">{active ? 'on' : 'off'}</Text>
+    <View testID="shell-auto">
+      <Text testID="shell-auto-active">{active ? 'on' : 'off'}</Text>
       <TextInput
-        testID="e2e-auto-input"
+        testID="shell-auto-input"
         value={text}
         onChangeText={setText}
         accessibilityLabel="Translate input"
       />
-      <Pressable testID="e2e-open-history" onPress={onOpenHistory}>
+      <Pressable testID="shell-open-history" onPress={onOpenHistory}>
         <Text>History</Text>
       </Pressable>
-      <Pressable testID="e2e-open-settings" onPress={onOpenSettings}>
+      <Pressable testID="shell-open-settings" onPress={onOpenSettings}>
         <Text>Settings</Text>
       </Pressable>
     </View>
@@ -51,10 +51,10 @@ function AutoPane({
 function ConversationPane({ active }: { active: boolean; neuralReady: boolean }) {
   const [note, setNote] = useState('thread');
   return (
-    <View testID="e2e-conversation">
-      <Text testID="e2e-conversation-active">{active ? 'on' : 'off'}</Text>
+    <View testID="shell-conversation">
+      <Text testID="shell-conversation-active">{active ? 'on' : 'off'}</Text>
       <TextInput
-        testID="e2e-conversation-note"
+        testID="shell-conversation-note"
         value={note}
         onChangeText={setNote}
         accessibilityLabel="Conversation note"
@@ -66,10 +66,10 @@ function ConversationPane({ active }: { active: boolean; neuralReady: boolean })
 function LearnPane({ active }: { active: boolean }) {
   const [pos, setPos] = useState('vowel-0');
   return (
-    <View testID="e2e-learn">
-      <Text testID="e2e-learn-active">{active ? 'on' : 'off'}</Text>
+    <View testID="shell-learn">
+      <Text testID="shell-learn-active">{active ? 'on' : 'off'}</Text>
       <TextInput
-        testID="e2e-learn-pos"
+        testID="shell-learn-pos"
         value={pos}
         onChangeText={setPos}
         accessibilityLabel="Lesson position"
@@ -85,8 +85,8 @@ function HistoryOverlay({
   onSelect: (item: HistoryItem) => void;
 }) {
   return (
-    <View testID="e2e-history">
-      <Pressable testID="e2e-close-history" onPress={onClose}>
+    <View testID="shell-history">
+      <Pressable testID="shell-close-history" onPress={onClose}>
         <Text>Close</Text>
       </Pressable>
     </View>
@@ -101,15 +101,15 @@ function SettingsOverlay({
   neuralReady: boolean;
 }) {
   return (
-    <View testID="e2e-settings">
-      <Pressable testID="e2e-close-settings" onPress={onClose}>
+    <View testID="shell-settings">
+      <Pressable testID="shell-close-settings" onPress={onClose}>
         <Text>Close</Text>
       </Pressable>
     </View>
   );
 }
 
-async function renderApp(onHardStop = jest.fn()) {
+async function renderShell(onHardStop = jest.fn()) {
   await render(
     <AppShell
       neuralReady={false}
@@ -120,52 +120,52 @@ async function renderApp(onHardStop = jest.fn()) {
       LearnPane={(p) => <LearnPane {...p} />}
       HistoryOverlay={(p) => <HistoryOverlay {...p} />}
       SettingsOverlay={(p) => <SettingsOverlay {...p} />}
-      MeaningOverlay={() => <View testID="e2e-meaning" />}
+      MeaningOverlay={() => <View testID="shell-meaning" />}
     />,
   );
   return onHardStop;
 }
 
-describe('app E2E (offline core + soft-fail ads)', () => {
+describe('AppShell integration (mounted panes + offline ads)', () => {
   it('walks Auto → Conversation → Learn without wiping pane state', async () => {
-    const hardStop = await renderApp();
+    const hardStop = await renderShell();
     expect(screen.getByTestId('tab-bar')).toBeTruthy();
-    expect(screen.getByTestId('e2e-auto-active').props.children).toBe('on');
+    expect(screen.getByTestId('shell-auto-active').props.children).toBe('on');
 
-    await fireEvent.changeText(screen.getByTestId('e2e-auto-input'), 'hello');
+    await fireEvent.changeText(screen.getByTestId('shell-auto-input'), 'hello');
     await fireEvent.press(screen.getByTestId('tab-conversation'));
     expect(hardStop).toHaveBeenCalled();
     await fireEvent.changeText(
-      screen.getByTestId('e2e-conversation-note'),
+      screen.getByTestId('shell-conversation-note'),
       'keep-thread',
     );
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
-    await fireEvent.changeText(screen.getByTestId('e2e-learn-pos'), 'cons-3');
+    await fireEvent.changeText(screen.getByTestId('shell-learn-pos'), 'cons-3');
 
     await fireEvent.press(screen.getByTestId('tab-auto'));
-    expect(screen.getByTestId('e2e-auto-input').props.value).toBe('hello');
+    expect(screen.getByTestId('shell-auto-input').props.value).toBe('hello');
 
     await fireEvent.press(screen.getByTestId('tab-conversation'));
-    expect(screen.getByTestId('e2e-conversation-note').props.value).toBe(
+    expect(screen.getByTestId('shell-conversation-note').props.value).toBe(
       'keep-thread',
     );
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
-    expect(screen.getByTestId('e2e-learn-pos').props.value).toBe('cons-3');
+    expect(screen.getByTestId('shell-learn-pos').props.value).toBe('cons-3');
   });
 
   it('opens History and Settings overlays then returns to Auto', async () => {
-    await renderApp();
+    await renderShell();
 
-    await fireEvent.press(screen.getByTestId('e2e-open-history'));
+    await fireEvent.press(screen.getByTestId('shell-open-history'));
     expect(screen.getByTestId('overlay-history')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('e2e-close-history'));
+    await fireEvent.press(screen.getByTestId('shell-close-history'));
     expect(screen.queryByTestId('overlay-history')).toBeNull();
 
-    await fireEvent.press(screen.getByTestId('e2e-open-settings'));
+    await fireEvent.press(screen.getByTestId('shell-open-settings'));
     expect(screen.getByTestId('overlay-settings')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('e2e-close-settings'));
+    await fireEvent.press(screen.getByTestId('shell-close-settings'));
     expect(screen.queryByTestId('overlay-settings')).toBeNull();
   });
 
