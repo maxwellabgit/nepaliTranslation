@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { AuthProvider } from '../features/auth/AuthProvider';
+import { EntitlementProvider } from '../features/entitlements/EntitlementProvider';
 import { migrateLegacyReviewQueue } from '../storage/contributionOutbox';
 
 type Props = {
@@ -13,12 +14,14 @@ function LegacyOutboxMigration() {
   return null;
 }
 
-/** Optional identity. Missing Supabase config leaves children usable. */
+/** Optional identity + entitlements. Missing Supabase leaves children usable. */
 export function AppProviders({ children }: Props) {
   return (
     <AuthProvider>
-      <LegacyOutboxMigration />
-      {children}
+      <EntitlementProvider>
+        <LegacyOutboxMigration />
+        {children}
+      </EntitlementProvider>
     </AuthProvider>
   );
 }

@@ -132,27 +132,27 @@ Deno.serve(async (req) => {
         })),
       );
       if (consensus.status === "resolved" && consensus.rewardEligible) {
-        await fetch(`${url}/rest/v1/rpc/service_apply_contribution_reward`, {
+        const kind =
+          body.action === "edit" ? "unknown_correction" : "unknown_confirm";
+        await fetch(`${url}/rest/v1/rpc/service_apply_scheduled_reward`, {
           method: "POST",
           headers,
           body: JSON.stringify({
             p_user_id: user.id,
+            p_kind: kind,
             p_source_id: `task:${bundle.task_id}`,
-            p_credits: 2,
-            p_minutes: 15,
           }),
         });
       }
     }
   } else if (knownPass === true) {
-    await fetch(`${url}/rest/v1/rpc/service_apply_contribution_reward`, {
+    await fetch(`${url}/rest/v1/rpc/service_apply_scheduled_reward`, {
       method: "POST",
       headers,
       body: JSON.stringify({
         p_user_id: user.id,
+        p_kind: "known_check",
         p_source_id: `known:${body.assignment_id}`,
-        p_credits: 2,
-        p_minutes: 15,
       }),
     });
   }

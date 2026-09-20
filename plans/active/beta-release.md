@@ -37,7 +37,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 03 — Sign in with Apple, consent, and deletion (independent review PASS; agent-gates `35465801990` and backend-gate `35465801979` green)
 - [x] Slice 04 — Unified correction sheet and offline outbox (independent review PASS after CI; agent-gates `35481941650` and backend-gate `35481941665` green)
 - [x] Slice 05 — Contribution queue, hidden checks, and consensus (assignment_id fix; CI `35482928755` / `35482928694` green; contributionsEnabled still false)
-- [ ] Slice 06 — Reward ledger and entitlement service
+- [ ] Slice 06 — Reward ledger and entitlement service (in progress)
 - [ ] Slice 07 — Learn alphabet
 - [ ] Slice 08 — AdMob adapter and ad middleware
 - [ ] Slice 09 — StoreKit subscription through RevenueCat
@@ -48,7 +48,16 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 05 — Contribution queue, hidden checks, and consensus**
+**Current slice: 06 — Reward ledger and entitlement service**
+
+- Branch: `cursor/beta-06-reward-ledger` (stacked on Slice 05 tip `4931fa2`)
+- Scope: UTC daily caps (60 contribution / 12 video), `service_apply_scheduled_reward`, trusted-time (monotonic; wall skew cannot mint), `decideAdPresentation`, `EntitlementProvider` + cache, submit path uses schedule RPC while client envelope stays opaque.
+- Local mobile gate (2026-09-19): lint (2 pre-existing warnings), typecheck, test:unit 13 suites / 39 tests, verify:translate, expo-doctor 21/21.
+- Independent review: round 1–2 FAIL (cap-before-duplicate; wall/mono clock mint) → fixed; round 3 **PASS**.
+- Backend gate: Docker/supabase still unavailable locally; proof will be `backend-gate` CI after push.
+- Ads remain mocked/off (Slice 08).
+
+**Previous: Slice 05** complete (review PASS after opacity + band lease; CI green).
 
 - Branch: `cursor/beta-05-contribution-queue` (stacked on Slice 04)
 - Scope: consensus module + submit-contribution + assignment ratio test + ContributionCard (flag off by default).
@@ -168,12 +177,25 @@ cd mobile
 npm run lint / typecheck / test:unit / verify:translate  # green (32 tests)
 # agent-gates 35482604781; backend-gate 35482604776 (pre-fix)
 # follow-up: lease returns assignment_id + ownership pgTAP
+# acceptance fix CI: agent-gates 35483222552 / backend-gate 35483222563
+```
+
+### Slice 06 (local, 2026-09-19)
+```text
+cd mobile
+npm run lint          # exit 0 (2 pre-existing warnings)
+npm run typecheck     # exit 0
+npm run test:unit -- --runInBand   # 13 suites / 39 tests passed
+npm run verify:translate           # OK
+npx expo-doctor                    # 21/21 passed
+# docker / supabase CLI / deno: not available; backend-gate CI is proof for
+# migration 20260919230000_reward_caps.sql + 07_reward_caps.test.sql
+# independent-reviewer: PASS after cap-vs-duplicate + trusted-clock fixes
 ```
 
 ## Remaining work
 
-- Slice 05 review round 1 FAIL (missing assignment_id) → fixed; CI green after allowlist test update. Full edit/skip UI and lease ratio wiring into SQL remain polish for a follow-up if needed.
-- Next: Slice 06 reward ledger / entitlements on `cursor/beta-06-reward-ledger`.
+- Slice 06: push + backend-gate CI green, then Slice 07 Learn alphabet.
 - Human gates remain: Apple capability, Supabase Apple provider, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
