@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Constants from 'expo-constants';
 import { AccountSection } from '../features/auth/AccountSection';
+import { ContributionCard } from '../features/contribution/ContributionCard';
 import { useAuth } from '../features/auth/AuthProvider';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { requestAccountDeletion } from '../features/auth/deleteAccount';
@@ -114,6 +115,8 @@ export function SettingsScreen({
           })();
         }}
       />
+
+      <ContributionCard />
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>

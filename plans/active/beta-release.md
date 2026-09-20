@@ -48,14 +48,17 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 04 — Unified correction sheet and offline outbox**
+**Current slice: 05 — Contribution queue, hidden checks, and consensus**
 
-- Branch: `cursor/beta-04-correction-outbox` (stacked on Slice 03)
-- Scope: CorrectionSheet + contribution outbox; remove reviewSync endpoint/secret and Meaning Review password; implement submit-translation-report + sync-contribution-outbox.
+- Branch: `cursor/beta-05-contribution-queue` (stacked on Slice 04)
+- Scope: consensus module + submit-contribution + assignment ratio test + ContributionCard (flag off by default).
+- Human gates: legal consent still draft; contributionsEnabled remains false.
+
+**Previous: Slice 04** complete (review PASS; CI green).
+
+- Branch: `cursor/beta-04-correction-outbox`
 - Review: product wiring PASS; Done blocked until CI → agent-gates `35481941650` and backend-gate `35481941665` green → **PASS**.
 - Commit: `e67a2a4`.
-
-**Previous: Slice 03** complete (review PASS; CI green).
 
 - Branch: `cursor/beta-03-apple-auth`
 - Scope: optional Apple identity, versioned draft consent, resumable delete-account. No login wall on translate/history/settings/learn. No live Apple/Supabase project secrets in the bundle.
