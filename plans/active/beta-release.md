@@ -38,7 +38,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 04 — Unified correction sheet and offline outbox (independent review PASS after CI; agent-gates `35481941650` and backend-gate `35481941665` green)
 - [x] Slice 05 — Contribution queue, hidden checks, and consensus (assignment_id fix; CI `35482928755` / `35482928694` green; contributionsEnabled still false)
 - [x] Slice 06 — Reward ledger and entitlement service (review PASS; agent-gates `35483996952` + backend-gate `35483996973` green)
-- [ ] Slice 07 — Learn alphabet
+- [x] Slice 07 — Learn alphabet (review PASS; agent-gates `35484367709` + backend-gate `35484367702` green)
 - [ ] Slice 08 — AdMob adapter and ad middleware
 - [ ] Slice 09 — StoreKit subscription through RevenueCat
 - [ ] Slice 10 — Protected admin console
@@ -48,15 +48,17 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current slice: 07 — Learn alphabet**
+**Current slice: 08 — AdMob adapter and ad middleware**
 
-- Branch: `cursor/beta-07-learn-alphabet` (stacked on Slice 06 tip)
-- Scope: third mounted Learn tab; bundled Nepali alphabet (vowels/consonants/conjuncts); quiz schema tests; lesson position AsyncStorage; missing Nepali voice banner; no login required.
-- Local mobile gate: lint (2 pre-existing warnings), typecheck, test:unit 15 suites / 45 tests, verify:translate, expo-doctor 21/21 (Commands paste below).
-- Human gate: bilingual Nepali content sign-off not claimed (Blockers).
-- Review: round 1 FAIL (Commands unpasted) → Commands + LearnScreen RTL added; re-review pending.
+- Branch: `cursor/beta-08-admob` (stacked on Slice 07)
+- Scope: AdMob adapter + middleware using `decideAdPresentation`; zero network ad calls offline; Conversation/keyboard/audio blocked; physical device proof human-gated.
 
-**Previous: Slice 06** complete (review PASS; CI green after reward_schedule column fix).
+**Previous: Slice 07** complete (review PASS; CI green).
+
+- Branch: `cursor/beta-07-learn-alphabet`
+- Scope: third Learn tab, alphabet + quiz, lesson position, no-voice honesty.
+- Review: FAIL → **PASS**. CI: agent-gates `35484367709`, backend-gate `35484367702`. Commit: `585358e`.
+- Human gate: bilingual alphabet sign-off.
 
 - Branch: `cursor/beta-06-reward-ledger`
 - Scope: UTC daily caps (60 contribution / 12 video), schedule RPC, trusted-time, decideAdPresentation, EntitlementProvider.
@@ -196,20 +198,17 @@ npm run lint / typecheck / test:unit (39) / verify:translate / expo-doctor  # gr
 # independent-reviewer PASS
 ```
 
-### Slice 07 (local, 2026-09-19)
+### Slice 07 (local + CI, 2026-09-19)
 ```text
 cd mobile
-npm run lint          # exit 0 (2 pre-existing warnings)
-npm run typecheck     # exit 0
-npm run test:unit -- --runInBand   # 15 suites / 45 tests (after LearnScreen RTL)
-npm run verify:translate           # OK
-npx expo-doctor                    # 21/21 passed
-# bilingual Nepali alphabet content sign-off: human gate (not claimed)
+npm run lint / typecheck / test:unit (45) / verify:translate / expo-doctor  # green
+# agent-gates 35484367709 green; backend-gate 35484367702 green
+# independent-reviewer PASS; bilingual sign-off human-gated
 ```
 
 ## Remaining work
 
-- Slice 07: independent review after Commands paste + LearnScreen RTL; push + agent-gates; then Slice 08 AdMob.
+- Slice 08 AdMob on `cursor/beta-08-admob` (device/AdMob console human-gated).
 - Human gates remain: Apple capability, Supabase Apple provider, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
