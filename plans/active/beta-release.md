@@ -35,7 +35,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] Slice 01 — Test harness and UI primitives (independent review PASS)
 - [x] Slice 02 — Supabase schema, RLS, and API skeleton (independent review PASS; backend-gate CI green)
 - [x] Slice 03 — Sign in with Apple, consent, and deletion (independent review PASS; agent-gates `35465801990` and backend-gate `35465801979` green)
-- [ ] Slice 04 — Unified correction sheet and offline outbox
+- [x] Slice 04 — Unified correction sheet and offline outbox (independent review PASS after CI; agent-gates `35481941650` and backend-gate `35481941665` green)
 - [ ] Slice 05 — Contribution queue, hidden checks, and consensus
 - [ ] Slice 06 — Reward ledger and entitlement service
 - [ ] Slice 07 — Learn alphabet
@@ -52,7 +52,8 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 - Branch: `cursor/beta-04-correction-outbox` (stacked on Slice 03)
 - Scope: CorrectionSheet + contribution outbox; remove reviewSync endpoint/secret and Meaning Review password; implement submit-translation-report + sync-contribution-outbox.
-- Human gates (not claimed): legal consent still draft; contributionsEnabled remains false.
+- Review: product wiring PASS; Done blocked until CI → agent-gates `35481941650` and backend-gate `35481941665` green → **PASS**.
+- Commit: `e67a2a4`.
 
 **Previous: Slice 03** complete (review PASS; CI green).
 
@@ -154,13 +155,13 @@ npm run typecheck     # exit 0
 npm run test:unit -- --runInBand   # 10 suites / 31 tests passed
 npm run verify:translate           # OK
 npx expo-doctor                    # 21/21 passed
-# backend-gate CI required for migration 20260919210000 + reports_test.ts
+# agent-gates 35481941650 green; backend-gate 35481941665 green
 ```
 
 ## Remaining work
 
-- Finish Slice 04 independent review + green CI, then Slice 05 contribution queue.
-- Slice 03–04 human gates stay open: Apple capability, Supabase Apple provider, legal consent, physical device.
+- Next slice: 05 contribution queue on `cursor/beta-05-contribution-queue`.
+- Human gates stay open: Apple capability, Supabase Apple provider, legal consent, physical device.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
