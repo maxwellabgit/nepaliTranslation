@@ -46,7 +46,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ### PR #2 foundation hardening (work on `main`)
 
-- [ ] H0 — Truthful, reproducible gates (gates green locally; independent review pending)
+- [x] H0 — Truthful, reproducible gates (independent review PASS)
 - [ ] H1 — Production-composition integration harness
 - [ ] H2 — Correction metadata and reliable offline outbox
 - [ ] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards
@@ -65,14 +65,15 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H0 — Truthful, reproducible gates** (on `main`)
+**Current: H0 — Truthful, reproducible gates** — **PASS** (independent review); next is H1 (not started)
 
 - Scope: clean-checkout `verify:beta` (lexicon first), rename fake E2E → AppShell integration, delete synthetic AppState probe, CI = same `verify:beta` + coverage ratchet, console fail-on, SafeArea from `react-native-safe-area-context`, `--max-warnings 0`, MeaningReview hook deps.
 - Proof (2026-09-20): deleted `meaningLexicon.json`, then `npm run verify:beta` exit 0 (15 unit / 49 tests + 1 integration / 3 tests; translate OK; expo-doctor 21/21). `npm run test:coverage:beta` wrote `mobile/coverage/beta-critical-baseline.json`.
-- Commit: `5685a80` (`test: make beta proof clean-checkout reproducible`); lock sync `b168f1b`.
-- PR #2 title/body updated (no fake-pane “E2E” claim). Branch `cursor/beta-08-admob` = `b168f1b` for CI; local `main` same tip (direct `origin/main` push still gated).
-- CI: agent-gates `35544780519` **green** (`npm ci` + `verify:beta` + coverage ratchet). Backend-gate flaked once on Supabase CLI GitHub rate limit (`35544782822`); not an H0 code regression.
-- **Stop before H1** until independent review PASS.
+- Commits: `5685a80` (H0), `b168f1b` (lock sync), `0227970` (ExecPlan CI). Tip on `cursor/beta-08-admob` = `0227970` (local `main` same; `origin/main` push still gated).
+- PR #2 title/body updated (no fake-pane “E2E” claim).
+- CI: agent-gates `35544780519` / tip `35544884515` **green**. Backend tip green after rate-limit flake.
+- Independent review: FAIL (PR E2E claim + CI) → repaired → **PASS**. H1 not started.
+- **Stop before H1.**
 
 Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until their owning milestone:
 
