@@ -3,7 +3,9 @@ import {
   bearerToken,
   errorResponse,
   json,
+  mapRpcError,
   requestIdFrom,
+  statusForError,
 } from "../_shared/http.ts";
 
 const bodySchema = z.object({
@@ -31,6 +33,22 @@ Deno.serve(async (req) => {
   const user = await userRes.json() as { id?: string };
   if (!user.id) return errorResponse("unauthorized", 401, requestId);
 
+  // Server is source of truth: reject client versions that do not match app_config.
+  const currentRes = await fetch(`${url}/rest/v1/rpc/service_current_consent_version`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${service}`,
+      apikey: service,
+      "content-type": "application/json",
+    },
+    body: "{}",
+  });
+  if (!currentRes.ok) return errorResponse("unavailable", 503, requestId);
+  const currentVersion = await currentRes.json() as string | null;
+  if (!currentVersion || parsed.data.consent_version !== currentVersion) {
+    return errorResponse("consent_outdated", 403, requestId);
+  }
+
   const save = await fetch(`${url}/rest/v1/rpc/service_record_consent`, {
     method: "POST",
     headers: {
@@ -40,10 +58,14 @@ Deno.serve(async (req) => {
     },
     body: JSON.stringify({
       p_user_id: user.id,
-      p_version: parsed.data.consent_version,
+      p_version: currentVersion,
       p_age_confirmed: true,
     }),
   });
-  if (!save.ok) return errorResponse("unavailable", 503, requestId);
-  return json({ saved: true, consent_version: parsed.data.consent_version }, 200, requestId);
+  if (!save.ok) {
+    const errText = await save.text();
+    const code = mapRpcError(errText) ?? "unavailable";
+    return errorResponse(code, statusForError(code), requestId);
+  }
+  return json({ saved: true, consent_version: currentVersion }, 200, requestId);
 });

@@ -3,7 +3,9 @@ import {
   bearerToken,
   errorResponse,
   json,
+  mapRpcError,
   requestIdFrom,
+  statusForError,
 } from "../_shared/http.ts";
 
 Deno.serve(async (req) => {
@@ -25,6 +27,22 @@ Deno.serve(async (req) => {
 
   const parsed = translationReportBatchSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return errorResponse("invalid_payload", 400, requestId);
+
+  // Fail the whole batch if consent is absent/outdated (server-authoritative).
+  const consentRes = await fetch(`${url}/rest/v1/rpc/service_assert_contribution_consent`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${service}`,
+      apikey: service,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ p_user_id: user.id }),
+  });
+  if (!consentRes.ok) {
+    const errText = await consentRes.text();
+    const code = mapRpcError(errText) ?? "unavailable";
+    return errorResponse(code, statusForError(code), requestId);
+  }
 
   const synced: string[] = [];
   const failed: Array<{ idempotency_key: string; reason: string }> = [];
@@ -53,7 +71,9 @@ Deno.serve(async (req) => {
         }),
       });
       if (!insert.ok) {
-        failed.push({ idempotency_key: body.idempotency_key, reason: "unavailable" });
+        const errText = await insert.text();
+        const code = mapRpcError(errText) ?? "unavailable";
+        failed.push({ idempotency_key: body.idempotency_key, reason: code });
         continue;
       }
       synced.push(body.idempotency_key);

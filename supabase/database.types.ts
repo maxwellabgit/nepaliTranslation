@@ -106,10 +106,12 @@ export type Database = {
           rewarded_ads_enabled: boolean;
           paywall_enabled: boolean;
           learn_enabled: boolean;
+          contribution_consent_version: string;
           updated_at: string;
         };
         Insert: {
           version: number;
+          contribution_consent_version?: string;
         };
         Update: {
           contributions_enabled?: boolean;
@@ -118,6 +120,7 @@ export type Database = {
           rewarded_ads_enabled?: boolean;
           paywall_enabled?: boolean;
           learn_enabled?: boolean;
+          contribution_consent_version?: string;
         };
         Relationships: [];
       };

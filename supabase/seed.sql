@@ -105,4 +105,34 @@ insert into private.contribution_tasks (
   'known',
   'synthetic-seed',
   'it2-dist-200m'
+),
+(
+  'd0d0d0d0-d0d0-40d0-80d0-d0d0d0d0d0d0',
+  'SYNUNK01 please pass the salt',
+  'कृपया नून दिनुहोस्',
+  'en-ne',
+  'formal',
+  'deva',
+  'unknown',
+  null,
+  'open',
+  'standard',
+  'synthetic-seed',
+  'it2-dist-200m'
 );
+
+-- H3: seeded users have current consent + age for contribution RPC tests.
+update public.profiles
+set
+  consent_version = '2026-09-19.draft',
+  consented_at = now(),
+  age_confirmed_at = now(),
+  updated_at = now()
+where user_id in (
+  '11111111-1111-4111-8111-111111111111',
+  '22222222-2222-4222-8222-222222222222'
+);
+
+update public.app_config
+set contribution_consent_version = '2026-09-19.draft'
+where id = 1;

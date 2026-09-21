@@ -3,7 +3,9 @@ import {
   bearerToken,
   errorResponse,
   json,
+  mapRpcError,
   requestIdFrom,
+  statusForError,
 } from "../_shared/http.ts";
 
 Deno.serve(async (req) => {
@@ -44,11 +46,16 @@ Deno.serve(async (req) => {
       p_script: body.script,
       p_surface: body.surface,
       p_idempotency_key: body.idempotency_key,
+      // Client-claimed consent is ignored for authorization; DB asserts profile.
       p_consent_version: body.consent_version,
       p_metadata: body.metadata ?? {},
     }),
   });
-  if (!insert.ok) return errorResponse("unavailable", 503, requestId);
+  if (!insert.ok) {
+    const errText = await insert.text();
+    const code = mapRpcError(errText) ?? "unavailable";
+    return errorResponse(code, statusForError(code), requestId);
+  }
   const rows = await insert.json() as Array<{ report_id: string; inserted: boolean }>;
   const row = Array.isArray(rows) ? rows[0] : null;
   if (!row?.report_id) return errorResponse("unavailable", 503, requestId);

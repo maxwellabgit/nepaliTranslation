@@ -3,7 +3,9 @@ import {
   bearerToken,
   errorResponse,
   json,
+  mapRpcError,
   requestIdFrom,
+  statusForError,
 } from "../_shared/http.ts";
 
 Deno.serve(async (req) => {
@@ -32,7 +34,11 @@ Deno.serve(async (req) => {
     },
     body: JSON.stringify({ p_user_id: user.id }),
   });
-  if (!leaseRes.ok) return errorResponse("unavailable", 503, requestId);
+  if (!leaseRes.ok) {
+    const errText = await leaseRes.text();
+    const code = mapRpcError(errText) ?? "unavailable";
+    return errorResponse(code, statusForError(code), requestId);
+  }
   const payload = await leaseRes.json() as Record<string, unknown> | null;
   if (!payload || payload.assignment === null) {
     return json({ assignment: null }, 200, requestId);

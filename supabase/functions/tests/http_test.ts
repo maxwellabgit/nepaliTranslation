@@ -1,6 +1,12 @@
 import { assertEquals } from "jsr:@std/assert@1";
 import { buildAccountSummary, contributionSubmitSchema } from "../_shared/schemas.ts";
-import { allowRate, errorBody, requestIdFrom } from "../_shared/http.ts";
+import {
+  allowRate,
+  errorBody,
+  mapRpcError,
+  requestIdFrom,
+  statusForError,
+} from "../_shared/http.ts";
 
 Deno.test("account summary uses stable nullable fields", () => {
   const summary = buildAccountSummary({
@@ -39,4 +45,17 @@ Deno.test("rate limit blocks the call past the window budget", () => {
   assertEquals(allowRate("u1", 2, 1000, 10, store), true);
   assertEquals(allowRate("u1", 2, 1000, 20, store), false);
   assertEquals(allowRate("u1", 2, 1000, 1001, store), true);
+});
+
+Deno.test("RPC consent errors map to stable client codes", () => {
+  assertEquals(mapRpcError('ERROR: consent_required'), "consent_required");
+  assertEquals(mapRpcError('ERROR: consent_outdated'), "consent_outdated");
+  assertEquals(mapRpcError('ERROR: age_required'), "age_required");
+  assertEquals(mapRpcError('ERROR: rate_limited'), "rate_limited");
+  assertEquals(statusForError("consent_required"), 403);
+  assertEquals(statusForError("rate_limited"), 429);
+  assertEquals(
+    JSON.stringify(errorBody("consent_outdated", "r1")).includes("raw"),
+    false,
+  );
 });

@@ -49,7 +49,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] H0 — Truthful, reproducible gates (independent review PASS)
 - [x] H1 — Production-composition integration harness (gates green; review pending)
 - [x] H2 — Correction metadata and reliable offline outbox (independent review PASS)
-- [ ] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards
+- [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
 - [ ] H4 — Apple identity/deletion + remove founder-only UI
 - [ ] H5 — Learn, reward visibility, accessibility, UI consistency
 - [ ] H6 — Real AdMob + cryptographically verified SSV
@@ -65,12 +65,19 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H2 — Correction metadata and reliable offline outbox** (on `main`)
+**Current: H3 — Atomic server-side consent, consensus, receipts, multi-user rewards** (on `main`)
+
+- Scope: forward migration `20260920200000_h3_atomic_consensus.sql` — `app_config.contribution_consent_version`; report idempotency `(reporter_id, idempotency_key)`; reward idempotency `(user_id, source_type, source_id)`; receipts linked to submission/ledger; DB rate-limit buckets; private SQL normalize/similarity with oversized→null; `service_submit_contribution_atomic` (service-role transactional); consent gates on report/outbox/lease/submit; Edge wrappers map `consent_required` / `consent_outdated` / `age_required`; ContributionCard complete; FeatureConfigService loads `app_config` with safe defaults.
+- Proof: `npm run verify:beta` + `test:coverage:beta` (contribution 51.82/47.11/53.55). Docker unavailable locally — backend proof is `.github/workflows/backend-gate.yml` after push (pgTAP 08–10 + Deno http consent mapping).
+- Commit: `fix: make contribution validation and rewards atomic`
+- Next: independent review; do **not** start H4 in this session. Push updates PR branch `cursor/beta-08-admob`.
+
+**Previous: H2 — Correction metadata and reliable offline outbox** (on `main`)
 
 - Scope: HistoryItem direction/formality/script/translationMethod/modelVersion (legacy never invents formal+deva); UUID idempotency + local fingerprint; serialized outbox mutations; states draft|queued|syncing|retry|synced|rejected; exponential retry ≤15m + jitter; mutex flush via LifecycleCoordinator; Contributions & rewards screen; CorrectionSheet Save/Submit/Cancel + label pickers.
 - Proof: `npm run verify:beta` + `test:coverage:beta` (contribution + contributionSync coverage up vs H0 baseline).
 - Commit: `fix: make correction outbox durable and accurately labeled`
-- Next: H3 after independent review. Do **not** start H3 in this session beyond review.
+- Independent review **PASS**.
 
 **Previous: H1 — Production-composition integration harness** (on `main`)
 
@@ -92,19 +99,19 @@ Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until t
 - [x] Real app composition integration tests (H1)
 - [ ] Maestro beyond tab smoke (H6/Slice 12)
 - [ ] Production AdMob + SSV crypto (H6)
-- [ ] ContributionCard submit (H2/H3)
+- [x] ContributionCard submit (H3)
 - [x] Outbox retry after network failure (H2)
-- [ ] Server-side consent gate (H3)
-- [ ] Per-user idempotency + multi-user rewards (H3)
-- [ ] Consensus rewards all eligible (H3)
-- [ ] Atomic submit path (H3)
-- [ ] Model similarity in consensus (H3)
+- [x] Server-side consent gate (H3)
+- [x] Per-user idempotency + multi-user rewards (H3)
+- [x] Consensus rewards all eligible (H3)
+- [x] Atomic submit path (H3)
+- [x] Model similarity in consensus (H3)
 - [x] History formality/script metadata (H2)
 - [ ] Fresh Apple credential on deletion (H4)
 - [ ] Remove Meaning Review from production Settings (H4)
 
 ### P1 (before external TestFlight)
-- [x] Load server feature flags (H1 FeatureConfigService; remote still defaults until H3)
+- [x] Load server feature flags (H3 FeatureConfigService loads `app_config`; fail soft to defaults; Learn stays on)
 - [ ] Entitlement UI (H5)
 - [ ] Auth error + consent UI (H4/H5)
 - [ ] Learn landing + reward summary (H5)
@@ -284,6 +291,19 @@ npm run test:coverage:beta
 #   so `npm ci` matches package.json (CI fix after 35544430973)
 ```
 
+### H3 (local, 2026-09-20, on `main`)
+```text
+cd mobile
+npm run verify:beta
+# lint max-warnings 0, typecheck, test:unit 23 suites / 74 tests,
+# test:integration 2 suites / 11 tests, verify:translate OK, expo-doctor 21/21
+npm run test:coverage:beta
+# contribution 51.82/47.11/53.55 — ratchet OK
+# docker / supabase start: engine not running
+# backend proof: push → .github/workflows/backend-gate.yml
+#   (pgTAP 08_h3_consent_idempotency, 09_h3_atomic_consensus, 10_h3_scoring_parity)
+```
+
 ### H2 (local, 2026-09-20, on `main`)
 ```text
 cd mobile
@@ -310,7 +330,7 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H2** independent review **PASS** → next is H3 (not started).
+- **H3** mobile gates green; backend-gate CI + independent review pending → next is H4 after both pass.
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 

@@ -59,8 +59,33 @@ export function createProductionServices(): AppServices {
     },
     featureConfig: {
       loadFlags: async () => {
-        // Remote load lands in H3; bundled safe defaults for H1.
-        return { ...DEFAULT_FEATURE_FLAGS, learnEnabled: true };
+        const sb = getSupabase();
+        if (!sb) {
+          return { ...DEFAULT_FEATURE_FLAGS, learnEnabled: true };
+        }
+        try {
+          const { data, error } = await sb
+            .from('app_config')
+            .select(
+              'contributions_enabled, rewards_enabled, network_ads_enabled, rewarded_ads_enabled, paywall_enabled, learn_enabled',
+            )
+            .eq('id', 1)
+            .maybeSingle();
+          if (error || !data) {
+            return { ...DEFAULT_FEATURE_FLAGS, learnEnabled: true };
+          }
+          return {
+            contributionsEnabled: Boolean(data.contributions_enabled),
+            rewardsEnabled: Boolean(data.rewards_enabled),
+            networkAdsEnabled: Boolean(data.network_ads_enabled),
+            rewardedAdsEnabled: Boolean(data.rewarded_ads_enabled),
+            paywallEnabled: Boolean(data.paywall_enabled),
+            // Learn stays available even if remote learn_enabled is false.
+            learnEnabled: true,
+          };
+        } catch {
+          return { ...DEFAULT_FEATURE_FLAGS, learnEnabled: true };
+        }
       },
     },
     contribution: {

@@ -1,25 +1,18 @@
-import { resolveConsensus, scoreKnownSubmission } from "../_shared/consensus.ts";
-import { normalizeForScore, similarity } from "../_shared/scoring.ts";
 import { contributionSubmitSchema } from "../_shared/schemas.ts";
 import {
   bearerToken,
   errorResponse,
   json,
+  mapRpcError,
   requestIdFrom,
+  statusForError,
 } from "../_shared/http.ts";
 
-type Bundle = {
-  assignment_id: string;
-  user_id: string;
-  leased_until: string;
-  completed_at: string | null;
-  task_id: string;
-  task_type: "known_check" | "unknown";
-  model_output: string;
-  references: string[];
-  contributor_state: string;
-};
-
+/**
+ * Thin Edge wrapper around service_submit_contribution_atomic.
+ * All consensus / reward mutations happen inside one DB transaction.
+ * Never logs raw response text.
+ */
 Deno.serve(async (req) => {
   const requestId = requestIdFrom(req);
   if (req.method !== "POST") return errorResponse("invalid_payload", 405, requestId);
@@ -41,126 +34,40 @@ Deno.serve(async (req) => {
   if (!parsed.success) return errorResponse("invalid_payload", 400, requestId);
   const body = parsed.data;
 
-  const headers = {
-    authorization: `Bearer ${service}`,
-    apikey: service,
-    "content-type": "application/json",
-  };
-
-  const bundleRes = await fetch(`${url}/rest/v1/rpc/service_get_assignment_bundle`, {
+  const res = await fetch(`${url}/rest/v1/rpc/service_submit_contribution_atomic`, {
     method: "POST",
-    headers,
-    body: JSON.stringify({
-      p_user_id: user.id,
-      p_assignment_id: body.assignment_id,
-    }),
-  });
-  if (!bundleRes.ok) return errorResponse("unavailable", 503, requestId);
-  const bundle = await bundleRes.json() as Bundle | null;
-  if (!bundle?.assignment_id) return errorResponse("not_found", 404, requestId);
-  if (bundle.completed_at) {
-    return json({
-      status: "already_submitted",
-      reward_label: "Earn 1–6 credits after validation",
-    }, 200, requestId);
-  }
-  if (new Date(bundle.leased_until).getTime() < Date.now()) {
-    return errorResponse("not_found", 404, requestId);
-  }
-
-  const raw = body.response_text?.trim() ?? "";
-  const normalized = normalizeForScore(
-    body.action === "looks_correct" ? bundle.model_output : raw,
-  );
-  const modelSim = similarity(normalized, bundle.model_output);
-
-  let decision = "pending";
-  let knownPass: boolean | null = null;
-  if (bundle.task_type === "known_check" && body.action !== "skip" && body.action !== "report_task") {
-    const scored = scoreKnownSubmission(normalized, bundle.references ?? []);
-    knownPass = scored.pass;
-    decision = scored.pass ? "known_pass" : "known_fail";
-    await fetch(`${url}/rest/v1/rpc/service_bump_known_stats`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ p_user_id: user.id, p_passed: scored.pass }),
-    });
-  }
-
-  const record = await fetch(`${url}/rest/v1/rpc/service_record_submission`, {
-    method: "POST",
-    headers,
+    headers: {
+      authorization: `Bearer ${service}`,
+      apikey: service,
+      "content-type": "application/json",
+    },
     body: JSON.stringify({
       p_user_id: user.id,
       p_assignment_id: body.assignment_id,
       p_action: body.action,
-      p_raw_response: raw || normalized,
-      p_normalized_response: normalized,
-      p_model_similarity: modelSim,
-      p_decision_status: decision,
+      p_response_text: body.response_text ?? null,
       p_idempotency_key: body.idempotency_key,
     }),
   });
-  if (!record.ok) {
-    const errText = await record.text();
-    if (errText.includes("not_found") || record.status === 404) {
-      return errorResponse("not_found", 404, requestId);
-    }
-    return errorResponse("unavailable", 503, requestId);
+
+  if (!res.ok) {
+    const errText = await res.text();
+    const code = mapRpcError(errText) ?? "unavailable";
+    return errorResponse(code, statusForError(code), requestId);
   }
 
-  let consensus: ReturnType<typeof resolveConsensus> = { status: "pending" };
-  if (bundle.task_type === "unknown" && (body.action === "looks_correct" || body.action === "edit")) {
-    const votesRes = await fetch(`${url}/rest/v1/rpc/service_list_task_votes`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ p_task_id: bundle.task_id }),
-    });
-    if (votesRes.ok) {
-      const votesJson = await votesRes.json() as Array<{
-        user_id: string;
-        band: "normal" | "probation";
-        normalized_response: string;
-        model_similarity: number | null;
-      }>;
-      consensus = resolveConsensus(
-        (Array.isArray(votesJson) ? votesJson : []).map((v) => ({
-          userId: v.user_id,
-          band: v.band,
-          normalizedResponse: v.normalized_response,
-          modelSimilarity: v.model_similarity,
-        })),
-      );
-      if (consensus.status === "resolved" && consensus.rewardEligible) {
-        const kind =
-          body.action === "edit" ? "unknown_correction" : "unknown_confirm";
-        await fetch(`${url}/rest/v1/rpc/service_apply_scheduled_reward`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            p_user_id: user.id,
-            p_kind: kind,
-            p_source_id: `task:${bundle.task_id}`,
-          }),
-        });
-      }
-    }
-  } else if (knownPass === true) {
-    await fetch(`${url}/rest/v1/rpc/service_apply_scheduled_reward`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        p_user_id: user.id,
-        p_kind: "known_check",
-        p_source_id: `known:${body.assignment_id}`,
-      }),
-    });
-  }
+  const payload = await res.json() as {
+    receipt_id?: string;
+    status?: string;
+    reward_label?: string;
+    reward?: null;
+  };
 
   // Identical client envelope for every outcome — no known/unknown leak.
   return json({
-    status: "received",
-    reward_label: "Earn 1–6 credits after validation",
+    receipt_id: payload.receipt_id ?? null,
+    status: payload.status ?? "received",
+    reward_label: payload.reward_label ?? "Earn 1–6 credits after validation",
     reward: null,
   }, 200, requestId);
 });
