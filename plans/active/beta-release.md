@@ -52,7 +52,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
 - [x] H4 — Apple identity/deletion + remove founder-only UI (independent review PASS)
 - [x] H5 — Learn, reward visibility, accessibility, UI consistency (independent review PASS)
-- [x] H6 — Real AdMob + cryptographically verified SSV (gates green; review repair pushed)
+- [x] H6 — Real AdMob + cryptographically verified SSV (independent review PASS; device human-gated)
 - [ ] Merge foundation only after every H0–H6 merge gate passes
 
 ### Later slices (separate PRs after foundation)
@@ -70,8 +70,9 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
 - Proof (post-review-repair, tip `4e345e1`): agent-gates SUCCESS; backend-gate `35552584664` SUCCESS (pgTAP incl. 11_h6_rewarded_ssv + Deno SSV). Coverage floors: auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.42/82.79, contributionSync 90.32/74.6.
 - Repair vs independent review FAIL: BufferSource typecheck; AdSlot persists 12m/24m cooldowns; HomeScreen `speaking` suppress; SSV ledger replay + authenticated-revoke pgTAP; `extensions.gen_random_bytes` under empty search_path.
+- Independent review **PASS** ([review](8d8c4127-d38c-46a7-8414-9f9cc9a01dc6)) on tip `4e345e1` (+ docs `42cad58`).
 - Human gate (**blocked, not passed**): EAS development build on physical iPhone — consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, entitlement suppression. Remote ads flags stay off until that gate.
-- Next: independent re-review for PASS; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`.
+- Next: do **not** merge PR #2 / do **not** start Slice 09 until remaining human/merge gates for foundation are accepted. Pushed to `cursor/beta-08-admob`.
 
 **Previous: H5 — Learn/reward UX and UI consistency** (on `main`)
 
@@ -387,8 +388,8 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H6** source + review repairs complete; agent-gates + backend-gate `35552584664` green on tip `4e345e1`. Independent re-review pending. Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
-- Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass (including independent review of H6).
+- **H6** complete for agent/CI scope (independent review PASS; agent-gates + backend-gate `35552584664` green). Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
+- Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates (including remaining human gates as required by §12) are accepted.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob (H6 blocked), RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
