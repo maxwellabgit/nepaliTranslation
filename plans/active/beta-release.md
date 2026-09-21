@@ -51,7 +51,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] H2 — Correction metadata and reliable offline outbox (independent review PASS)
 - [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
 - [x] H4 — Apple identity/deletion + remove founder-only UI (independent review PASS)
-- [ ] H5 — Learn, reward visibility, accessibility, UI consistency
+- [x] H5 — Learn, reward visibility, accessibility, UI consistency (independent review PASS)
 - [ ] H6 — Real AdMob + cryptographically verified SSV
 - [ ] Merge foundation only after every H0–H6 merge gate passes
 
@@ -65,7 +65,16 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H4 — Apple identity/deletion + remove founder-only UI** (on `main`)
+**Current: H5 — Learn/reward UX and UI consistency** (on `main`)
+
+- Scope: first tab label `Translate` (mode key stays `auto`); Learn landing with Nepali alphabet + Help improve translations cards; alphabet detail (sections, large glyph, IAST dental/retroflex, normal/slow speak, quiz uniqueness, progress, completion, Back + speech hard-stop); `RewardSummaryCard` (lifetime credits, pending, Ad-free until); Contributions screen uses AppHeader/AppButton + ContributionCard + reward summary; CorrectionSheet keyboard avoidance; AppPrimitives for Learn primary actions.
+- Proof: `npm run verify:beta` + `test:coverage:beta` (ratchet OK).
+- Commit: `feat: finish Learn and reward-facing beta UX`
+- Independent review **PASS** ([review](f75e6b8e-2757-4b4d-bc41-c3e6a9efdbd0)).
+- Human gate (blocked, not passed): bilingual reviewer sign-off of exact alphabet romanizations / section titles / dental–retroflex cues.
+- Next: do **not** start H6 until this session ends. Pushed to `cursor/beta-08-admob`.
+
+**Previous: H4 — Apple identity/deletion + remove founder-only UI** (on `main`)
 
 - Scope: official `AppleAuthenticationButton` when available; `expo-secure-store` for stable Apple user id only (never auth codes in AsyncStorage); `expo-crypto` nonces (hashed→Apple, raw→Supabase); deletion via `refreshAsync`/interactive reauth → fresh code → `delete-account` before purge; revoke listener → guest without wiping history; clear secure identity + contribution/reward caches after success; Meaning Review removed from production App/AppShell/Settings; account-summary load after sign-in + Settings mount; removed dishonest `NSPhotoLibraryUsageDescription`.
 - Proof: `npm run verify:beta` + `test:coverage:beta` (auth 58.09/48.55/60 — ratchet OK).
@@ -121,14 +130,14 @@ Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until t
 
 ### P1 (before external TestFlight)
 - [x] Load server feature flags (H3 FeatureConfigService loads `app_config`; fail soft to defaults; Learn stays on)
-- [ ] Entitlement UI (H5)
+- [x] Entitlement UI (H5)
 - [x] Auth error + consent UI (H4/H5) — H4: AuthStatusBanner + deletion retry/pause alerts; H5 may still polish consent UX
-- [ ] Learn landing + reward summary (H5)
-- [ ] Alphabet roman disambiguation + bilingual sign-off (H5 + human)
+- [x] Learn landing + reward summary (H5)
+- [ ] Alphabet roman disambiguation + bilingual sign-off (H5 code done; bilingual human gate blocked)
 - [x] Console/act noise free (H0)
 - [x] Coverage thresholds on changed files (H0 ratchet baseline recorded; 80/70 by H6)
 - [x] NSPhotoLibraryUsageDescription honesty (H4) — removed (no photo feature)
-- [ ] Tab label Translate (H5)
+- [x] Tab label Translate (H5)
 
 **Previous: Slice 08** foundation on `cursor/beta-08-admob` / now integrated on `main` tip.
 
@@ -313,6 +322,17 @@ npm run test:coverage:beta
 #   (pgTAP 08–10; first push failed 03/06 lease assertions → e40d92a fix)
 ```
 
+### H5 (local, 2026-09-20, on `main`)
+```text
+cd mobile
+npm run verify:beta
+# lint max-warnings 0, typecheck, test:unit 26 suites / 105 tests,
+# test:integration 2 suites / 12 tests, verify:translate OK, expo-doctor 21/21
+npm run test:coverage:beta
+# Coverage ratchet OK (no decrease vs H0 baseline)
+# Human gate blocked: bilingual alphabet roman/section/place sign-off
+```
+
 ### H4 (local, 2026-09-20, on `main`)
 ```text
 cd mobile
@@ -351,15 +371,15 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H4** complete (independent review PASS). Next milestone is **H5** — do not start in the H4 session after push.
+- **H5** complete (independent review PASS). Next milestone is **H6** — do not start in the H5 session after push.
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
-- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
+- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob, RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. Backend proof is `.github/workflows/backend-gate.yml`.
 - Slice 03 human gates (not claimed): Apple Sign in capability on the App ID, Supabase Apple provider, legal review of consent version `2026-09-19.draft`, physical-device sign-in and account deletion. Missing `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET` blocks deletion before any purge. Deleting the app account does not cancel an Apple subscription.
 - **H4 human gate (blocked, not passed):** real iPhone Apple sign-in, credential revoke, cancel refresh, and delete-account with configured Apple/Supabase credentials. Do not claim device proof from Jest fakes.
-- Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles.
+- Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles. **H5 refreshed the IAST dental/retroflex cues; sign-off remains blocked, not passed.**
 - Slice 08 human gates (not claimed): AdMob app registration, banner/rewarded unit IDs, `react-native-google-mobile-ads` in a native/dev client, physical-device ad load proof.
 - Device Maestro (`mobile/.maestro/smoke_tabs.yaml`): Maestro CLI + running iOS app not available on this Windows agent — human / Slice 12 gate.

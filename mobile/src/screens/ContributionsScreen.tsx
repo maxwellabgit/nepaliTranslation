@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import {
   Alert,
-  Pressable,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,8 +17,14 @@ import {
   type ContributionDraft,
 } from '../storage/contributionOutbox';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
+import { ContributionCard } from '../features/contribution/ContributionCard';
 import { flushPendingDrafts } from '../services/contributionSync';
-import { EmptyState } from '../components/AppPrimitives';
+import {
+  AppButton,
+  AppHeader,
+  EmptyState,
+} from '../components/AppPrimitives';
+import { RewardSummaryCard } from '../learn/RewardSummaryCard';
 import { colors } from '../theme';
 
 type Props = {
@@ -82,23 +89,25 @@ export function ContributionsScreen({ onClose }: Props) {
   };
 
   return (
-    <View style={styles.root} testID="contributions-screen">
-      <View style={styles.topBar}>
-        <Pressable
-          onPress={onClose}
-          hitSlop={12}
-          style={styles.topBtn}
-          accessibilityRole="button"
-          accessibilityLabel="Close contributions"
-          testID="contributions-close"
-        >
-          <Text style={styles.topBtnText}>←</Text>
-        </Pressable>
-        <Text style={styles.title}>Contributions & rewards</Text>
-        <View style={styles.topBtn} />
-      </View>
+    <KeyboardAvoidingView
+      style={styles.root}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      testID="contributions-screen"
+    >
+      <AppHeader
+        title="Contributions & rewards"
+        onBack={onClose}
+        testID="contributions-header"
+      />
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
+        <RewardSummaryCard active testID="contributions-reward-summary" />
+
+        <ContributionCard />
+
         <View style={styles.counts} testID="contribution-counts">
           <CountRow label="Draft" value={counts.draft} />
           <CountRow label="Waiting to sync" value={counts.waitingToSync} />
@@ -140,34 +149,31 @@ export function ContributionsScreen({ onClose }: Props) {
                   draft.status === 'retry' ||
                   draft.status === 'rejected' ||
                   draft.status === 'queued') && (
-                  <Pressable
+                  <AppButton
+                    label="Edit"
+                    variant="ghost"
                     onPress={() => setEditDraft(draft)}
                     testID={`contribution-edit-${draft.id}`}
-                    accessibilityRole="button"
                     accessibilityLabel="Edit contribution"
-                  >
-                    <Text style={styles.link}>Edit</Text>
-                  </Pressable>
+                  />
                 )}
                 {(draft.status === 'retry' || draft.status === 'rejected') && (
-                  <Pressable
+                  <AppButton
+                    label="Retry"
+                    variant="ghost"
                     onPress={() => void onRetry(draft)}
                     testID={`contribution-retry-${draft.id}`}
-                    accessibilityRole="button"
                     accessibilityLabel="Retry contribution"
-                  >
-                    <Text style={styles.link}>Retry</Text>
-                  </Pressable>
+                  />
                 )}
                 {draft.status !== 'synced' && draft.status !== 'syncing' && (
-                  <Pressable
+                  <AppButton
+                    label="Delete"
+                    variant="danger"
                     onPress={() => onDelete(draft)}
                     testID={`contribution-delete-${draft.id}`}
-                    accessibilityRole="button"
                     accessibilityLabel="Delete contribution"
-                  >
-                    <Text style={[styles.link, styles.danger]}>Delete</Text>
-                  </Pressable>
+                  />
                 )}
               </View>
             </View>
@@ -189,7 +195,7 @@ export function ContributionsScreen({ onClose }: Props) {
         onClose={() => setEditDraft(null)}
         onSaved={() => void reload()}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -206,38 +212,20 @@ function CountRow({ label, value }: { label: string; value: number }) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-  },
-  topBtn: {
-    width: 56,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  topBtnText: { fontSize: 22, color: colors.textSecondary },
-  title: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 17,
-    fontWeight: '600',
-    color: colors.text,
-  },
   scroll: { padding: 16, paddingBottom: 40, gap: 12 },
   counts: {
     backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 14,
     gap: 8,
+    borderWidth: 1,
+    borderColor: colors.divider,
   },
   countRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    minHeight: 28,
   },
   countLabel: { fontSize: 15, color: colors.textSecondary },
   countValue: { fontSize: 16, fontWeight: '700', color: colors.text },
@@ -253,6 +241,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 14,
     gap: 6,
+    borderWidth: 1,
+    borderColor: colors.divider,
   },
   status: {
     fontSize: 12,
@@ -263,7 +253,5 @@ const styles = StyleSheet.create({
   src: { fontSize: 14, color: colors.textSecondary },
   dst: { fontSize: 16, color: colors.text, fontWeight: '500' },
   error: { fontSize: 12, color: colors.danger },
-  rowActions: { flexDirection: 'row', gap: 16, marginTop: 6 },
-  link: { fontSize: 14, fontWeight: '700', color: colors.blue, minHeight: 36 },
-  danger: { color: colors.danger },
+  rowActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 },
 });

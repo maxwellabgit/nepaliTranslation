@@ -7,7 +7,7 @@ import {
 } from '../alphabet';
 
 describe('alphabet schema', () => {
-  it('has vowels, consonants, and conjuncts with unique ids', () => {
+  it('has vowels, consonants, and conjuncts with unique ids and romans', () => {
     expect(validateAlphabetSchema()).toEqual([]);
     expect(ALPHABET_SECTIONS.map((s) => s.id)).toEqual([
       'vowels',
@@ -16,6 +16,17 @@ describe('alphabet schema', () => {
     ]);
     expect(ALPHABET_SECTIONS[0].glyphs.length).toBeGreaterThanOrEqual(10);
     expect(ALPHABET_SECTIONS[1].glyphs.length).toBeGreaterThanOrEqual(30);
+  });
+
+  it('distinguishes dental vs retroflex with IAST underdot notation', () => {
+    const cons = ALPHABET_SECTIONS[1].glyphs;
+    const retro = cons.find((g) => g.dewanagari === 'ट');
+    const dental = cons.find((g) => g.dewanagari === 'त');
+    expect(retro?.roman).toBe('ṭa');
+    expect(retro?.place).toBe('retroflex');
+    expect(dental?.roman).toBe('ta');
+    expect(dental?.place).toBe('dental');
+    expect(retro?.roman).not.toBe(dental?.roman);
   });
 
   it('advances within a section then to the next section', () => {
@@ -35,18 +46,21 @@ describe('alphabet schema', () => {
     });
   });
 
-  it('builds a quiz with the correct answer among four choices', () => {
-    const glyph = ALPHABET_SECTIONS[0].glyphs[0];
+  it('builds a quiz with unique choices and exactly one correct answer', () => {
+    const section = ALPHABET_SECTIONS[1];
+    const glyph = section.glyphs.find((g) => g.dewanagari === 'ट')!;
     let seed = 1;
     const rng = () => {
       seed = (seed * 7 + 3) % 1000;
       return seed / 1000;
     };
-    const quiz = buildRomanQuiz(glyph, ALPHABET_SECTIONS[0].glyphs, rng);
-    expect(quiz.prompt).toBe(glyph.dewanagari);
+    const quiz = buildRomanQuiz(glyph, section.glyphs, rng);
+    expect(quiz.prompt).toBe('ट');
+    expect(quiz.answer).toBe('ṭa');
     expect(quiz.choices).toHaveLength(4);
-    expect(quiz.choices).toContain(quiz.answer);
+    expect(new Set(quiz.choices).size).toBe(4);
+    expect(quiz.choices.filter((c) => c === quiz.answer)).toHaveLength(1);
     expect(gradeQuizChoice(quiz.answer, quiz.answer)).toBe(true);
-    expect(gradeQuizChoice('nope', quiz.answer)).toBe(false);
+    expect(gradeQuizChoice('ta', quiz.answer)).toBe(false);
   });
 });

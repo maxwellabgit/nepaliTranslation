@@ -98,6 +98,10 @@ describe('NepTranslateApp production composition', () => {
     await waitFor(() => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
+    await fireEvent.press(screen.getByTestId('learn-open-alphabet'));
+    await waitFor(() => {
+      expect(screen.getByTestId('learn-progress')).toBeTruthy();
+    });
     const before = screen.getByTestId('learn-progress').props.children;
     await fireEvent.press(screen.getByTestId('learn-next'));
     await waitFor(() => {
@@ -201,6 +205,8 @@ describe('NepTranslateApp production composition', () => {
     await waitFor(() => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
+    expect(screen.getByTestId('learn-card-alphabet')).toBeTruthy();
+    expect(screen.getByLabelText('Translate tab')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('tab-auto'));
     await fireEvent.press(screen.getByLabelText('History'));
     expect(screen.getByTestId('overlay-history')).toBeTruthy();

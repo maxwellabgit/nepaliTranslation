@@ -154,11 +154,11 @@ export function AppShell({
           onPress={() => switchMode('auto')}
           accessibilityRole="tab"
           accessibilityState={{ selected: mode === 'auto' }}
-          accessibilityLabel="Auto tab"
+          accessibilityLabel="Translate tab"
           testID="tab-auto"
         >
           <Text style={[styles.tabLabel, mode === 'auto' && styles.tabLabelOn]}>
-            Auto
+            Translate
           </Text>
           <Text style={[styles.tabHint, mode === 'auto' && styles.tabHintOn]}>
             Type or speak
@@ -221,12 +221,23 @@ export function AppShell({
             />
           ) : overlay === 'settings' ? (
             <SettingsOverlay
-              onClose={() => setOverlay(null)}
-              onOpenContributions={() => setOverlay('contributions')}
+              onClose={() => {
+                onHardStop();
+                setOverlay(null);
+              }}
+              onOpenContributions={() => {
+                onHardStop();
+                setOverlay('contributions');
+              }}
               neuralReady={neuralReady}
             />
           ) : (
-            <ContributionsOverlay onClose={() => setOverlay(null)} />
+            <ContributionsOverlay
+              onClose={() => {
+                onHardStop();
+                setOverlay(null);
+              }}
+            />
           )}
         </View>
       ) : null}

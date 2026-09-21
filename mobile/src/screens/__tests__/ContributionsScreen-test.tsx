@@ -5,7 +5,9 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react-native';
+import { AppProviders } from '../../app/AppProviders';
 import { ContributionsScreen } from '../ContributionsScreen';
+import { createTestServices } from '../../services/createTestServices';
 import { enqueueDraft } from '../../storage/contributionOutbox';
 
 describe('ContributionsScreen', () => {
@@ -40,7 +42,11 @@ describe('ContributionsScreen', () => {
     });
 
     await act(async () => {
-      render(<ContributionsScreen onClose={jest.fn()} />);
+      render(
+        <AppProviders services={createTestServices({ offline: true })}>
+          <ContributionsScreen onClose={jest.fn()} />
+        </AppProviders>,
+      );
     });
 
     await waitFor(() => {
@@ -48,6 +54,10 @@ describe('ContributionsScreen', () => {
     });
     expect(screen.getByTestId('count-Waiting to sync').props.children).toBe(1);
     expect(screen.getByTestId('count-Needs attention').props.children).toBe(1);
+    expect(screen.getByTestId('contributions-reward-summary')).toBeTruthy();
+    expect(screen.getByTestId('reward-lifetime-credits')).toBeTruthy();
+    expect(screen.getByTestId('reward-pending-count')).toBeTruthy();
+    expect(screen.getByTestId('reward-ad-free-until')).toBeTruthy();
     expect(screen.getAllByLabelText('Delete contribution').length).toBeGreaterThan(
       0,
     );

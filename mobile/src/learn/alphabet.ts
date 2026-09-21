@@ -5,11 +5,17 @@
 
 export type AlphabetSectionId = 'vowels' | 'consonants' | 'conjuncts';
 
+/** Articulation place for dental vs retroflex pairs (IAST underdot). */
+export type ArticulationPlace = 'dental' | 'retroflex';
+
 export type AlphabetGlyph = {
   id: string;
   dewanagari: string;
+  /** Unambiguous IAST roman used for display and quiz answers. */
   roman: string;
   nameEn: string;
+  /** Set on dental/retroflex consonant pairs so the UI can label them. */
+  place?: ArticulationPlace;
 };
 
 export type AlphabetSection = {
@@ -54,16 +60,18 @@ export const ALPHABET_SECTIONS: AlphabetSection[] = [
       { id: 'ja', dewanagari: 'ज', roman: 'ja', nameEn: 'ja' },
       { id: 'jha', dewanagari: 'झ', roman: 'jha', nameEn: 'jha' },
       { id: 'nya', dewanagari: 'ञ', roman: 'nya', nameEn: 'nya' },
-      { id: 'ta', dewanagari: 'ट', roman: 'ta', nameEn: 'ṭa' },
-      { id: 'tha', dewanagari: 'ठ', roman: 'tha', nameEn: 'ṭha' },
-      { id: 'da', dewanagari: 'ड', roman: 'da', nameEn: 'ḍa' },
-      { id: 'dha', dewanagari: 'ढ', roman: 'dha', nameEn: 'ḍha' },
-      { id: 'na', dewanagari: 'ण', roman: 'na', nameEn: 'ṇa' },
-      { id: 'ta2', dewanagari: 'त', roman: 'ta', nameEn: 'ta' },
-      { id: 'tha2', dewanagari: 'थ', roman: 'tha', nameEn: 'tha' },
-      { id: 'da2', dewanagari: 'द', roman: 'da', nameEn: 'da' },
-      { id: 'dha2', dewanagari: 'ध', roman: 'dha', nameEn: 'dha' },
-      { id: 'na2', dewanagari: 'न', roman: 'na', nameEn: 'na' },
+      // Retroflex row — IAST underdot (ṭ ḍ ṇ) distinguishes from dental.
+      { id: 'ta', dewanagari: 'ट', roman: 'ṭa', nameEn: 'ṭa', place: 'retroflex' },
+      { id: 'tha', dewanagari: 'ठ', roman: 'ṭha', nameEn: 'ṭha', place: 'retroflex' },
+      { id: 'da', dewanagari: 'ड', roman: 'ḍa', nameEn: 'ḍa', place: 'retroflex' },
+      { id: 'dha', dewanagari: 'ढ', roman: 'ḍha', nameEn: 'ḍha', place: 'retroflex' },
+      { id: 'na', dewanagari: 'ण', roman: 'ṇa', nameEn: 'ṇa', place: 'retroflex' },
+      // Dental row — plain IAST without underdot.
+      { id: 'ta2', dewanagari: 'त', roman: 'ta', nameEn: 'ta', place: 'dental' },
+      { id: 'tha2', dewanagari: 'थ', roman: 'tha', nameEn: 'tha', place: 'dental' },
+      { id: 'da2', dewanagari: 'द', roman: 'da', nameEn: 'da', place: 'dental' },
+      { id: 'dha2', dewanagari: 'ध', roman: 'dha', nameEn: 'dha', place: 'dental' },
+      { id: 'na2', dewanagari: 'न', roman: 'na', nameEn: 'na', place: 'dental' },
       { id: 'pa', dewanagari: 'प', roman: 'pa', nameEn: 'pa' },
       { id: 'pha', dewanagari: 'फ', roman: 'pha', nameEn: 'pha' },
       { id: 'ba', dewanagari: 'ब', roman: 'ba', nameEn: 'ba' },
@@ -74,8 +82,8 @@ export const ALPHABET_SECTIONS: AlphabetSection[] = [
       { id: 'la', dewanagari: 'ल', roman: 'la', nameEn: 'la' },
       { id: 'wa', dewanagari: 'व', roman: 'wa', nameEn: 'wa' },
       { id: 'sha', dewanagari: 'श', roman: 'sha', nameEn: 'sha' },
-      { id: 'ssa', dewanagari: 'ष', roman: 'ssa', nameEn: 'ṣa' },
-      { id: 'sa', dewanagari: 'स', roman: 'sa', nameEn: 'sa' },
+      { id: 'ssa', dewanagari: 'ष', roman: 'ṣa', nameEn: 'ṣa', place: 'retroflex' },
+      { id: 'sa', dewanagari: 'स', roman: 'sa', nameEn: 'sa', place: 'dental' },
       { id: 'ha', dewanagari: 'ह', roman: 'ha', nameEn: 'ha' },
     ],
   },
@@ -151,12 +159,24 @@ export function buildRomanQuiz(
   pool: AlphabetGlyph[],
   rng: () => number,
 ): { prompt: string; answer: string; choices: string[] } {
+  const answer = glyph.roman;
   const distractors = new Set<string>();
-  const others = pool.filter((g) => g.id !== glyph.id && g.roman !== glyph.roman);
+  const others = pool.filter((g) => g.id !== glyph.id && g.roman !== answer);
+  // Prefer opposite-place lookalikes when available (dental ↔ retroflex).
+  const preferred = others.filter(
+    (g) => g.place && glyph.place && g.place !== glyph.place,
+  );
+  const rest = others.filter((g) => !preferred.includes(g));
+  const ordered = [...preferred, ...rest];
+  for (const candidate of ordered) {
+    if (distractors.size >= 3) break;
+    distractors.add(candidate.roman);
+  }
+  // Shuffle remaining pool picks if still short.
   while (distractors.size < 3 && others.length > 0) {
     const pick = others[Math.floor(rng() * others.length)];
     if (pick) distractors.add(pick.roman);
-    if (distractors.size >= others.length) break;
+    if (distractors.size >= Math.min(3, others.length)) break;
   }
   // Pad with distinct placeholders only if the pool is tiny (tests).
   const pad = ['xx', 'yy', 'zz'];
@@ -164,16 +184,22 @@ export function buildRomanQuiz(
   while (distractors.size < 3) {
     distractors.add(pad[p++] ?? `x${distractors.size}`);
   }
-  const choices = [glyph.roman, ...distractors].slice(0, 4);
+  const choices = [answer, ...distractors].slice(0, 4);
+  // Enforce uniqueness (no duplicate visible answers).
+  const unique = Array.from(new Set(choices));
+  while (unique.length < 4) {
+    unique.push(pad[unique.length] ?? `pad${unique.length}`);
+  }
+  const finalChoices = unique.slice(0, 4);
   // Fisher–Yates with provided rng
-  for (let i = choices.length - 1; i > 0; i -= 1) {
+  for (let i = finalChoices.length - 1; i > 0; i -= 1) {
     const j = Math.floor(rng() * (i + 1));
-    [choices[i], choices[j]] = [choices[j], choices[i]];
+    [finalChoices[i], finalChoices[j]] = [finalChoices[j], finalChoices[i]];
   }
   return {
     prompt: glyph.dewanagari,
-    answer: glyph.roman,
-    choices,
+    answer,
+    choices: finalChoices,
   };
 }
 
@@ -188,12 +214,24 @@ export function validateAlphabetSchema(sections = ALPHABET_SECTIONS): string[] {
   if (sections.length < 3) errors.push('expected vowels, consonants, conjuncts');
   for (const section of sections) {
     if (!section.glyphs.length) errors.push(`${section.id}: empty`);
+    const romans = new Set<string>();
     for (const g of section.glyphs) {
       if (!g.dewanagari.trim()) errors.push(`${g.id}: missing dewanagari`);
       if (!g.roman.trim()) errors.push(`${g.id}: missing roman`);
       if (ids.has(g.id)) errors.push(`duplicate id ${g.id}`);
       ids.add(g.id);
+      if (romans.has(g.roman)) {
+        errors.push(`${section.id}: duplicate roman "${g.roman}"`);
+      }
+      romans.add(g.roman);
     }
   }
   return errors;
+}
+
+/** Human-readable place label for VoiceOver / UI. */
+export function placeLabel(place: ArticulationPlace | undefined): string | null {
+  if (place === 'dental') return 'Dental';
+  if (place === 'retroflex') return 'Retroflex';
+  return null;
 }
