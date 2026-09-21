@@ -39,7 +39,7 @@ An **offline, on-device iOS app** that translates **English ↔ Nepali** in real
 
 ## Goals (this iteration — App Store / TestFlight beta)
 - [x] Single coherent offline product story for core translate
-- [x] Auto + Conversation UI; Formal / देवनागरी toggles
+- [x] Translate, Camera, and Learn; Formal / देवनागरी choices
 - [x] Gold-standard benchmark scaffold + curation guide
 - [ ] Durable beta release lane (ExecPlan + DONE gates) — Slice 00
 - [ ] Test harness before feature work — Slice 01

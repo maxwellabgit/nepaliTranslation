@@ -103,7 +103,7 @@ async function renderShell(onHardStop = jest.fn()) {
       neuralReady={false}
       mtWarmStatus={null}
       onHardStop={onHardStop}
-      AutoPane={(p) => <AutoPane {...p} />}
+      TranslatePane={(p) => <AutoPane {...p} />}
       CameraPane={() => <CameraPane />}
       LearnPane={(p) => <LearnPane {...p} />}
       HistoryOverlay={(p) => <HistoryOverlay {...p} />}
@@ -129,14 +129,14 @@ describe('AppShell integration (mounted panes + offline ads)', () => {
     expect(screen.queryByTestId('camera-preview')).toBeNull();
     await fireEvent.changeText(screen.getByTestId('shell-learn-pos'), 'cons-3');
 
-    await fireEvent.press(screen.getByTestId('tab-auto'));
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     expect(screen.getByTestId('shell-auto-input').props.value).toBe('hello');
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
     expect(screen.getByTestId('shell-learn-pos').props.value).toBe('cons-3');
   });
 
-  it('opens History and Settings overlays then returns to Auto', async () => {
+  it('opens History and Settings overlays then returns to Translate', async () => {
     await renderShell();
 
     await fireEvent.press(screen.getByTestId('shell-open-history'));

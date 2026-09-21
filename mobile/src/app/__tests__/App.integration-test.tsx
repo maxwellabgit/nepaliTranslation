@@ -66,7 +66,7 @@ describe('NepTranslateApp production composition', () => {
   it('guest cold launch with Supabase unavailable shows Translate, no login wall', async () => {
     await renderApp(createTestServices({ offline: true, authConfigured: false }));
     expect(screen.getByTestId('app-shell')).toBeTruthy();
-    expect(screen.getByTestId('pane-auto')).toBeTruthy();
+    expect(screen.getByTestId('pane-translate')).toBeTruthy();
     expect(screen.getByTestId('translate-input')).toBeTruthy();
     expect(screen.queryByTestId('sign-in-apple')).toBeNull();
     expect(screen.queryByText(/sign in to translate/i)).toBeNull();
@@ -120,7 +120,7 @@ describe('NepTranslateApp production composition', () => {
     });
     expect(screen.getByTestId('learn-roman-a').props.children).toBe('a');
 
-    await fireEvent.press(screen.getByTestId('tab-auto'));
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     expect(screen.getByTestId('translate-output')).toBeTruthy();
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
@@ -200,7 +200,7 @@ describe('NepTranslateApp production composition', () => {
       flags: { networkAdsEnabled: true, rewardedAdsEnabled: true },
     });
     await renderApp(services);
-    expect(screen.getByTestId('tab-auto')).toBeTruthy();
+    expect(screen.getByTestId('tab-translate')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('tab-camera'));
     expect(screen.getByTestId('camera-permission')).toBeTruthy();
     expect(screen.queryByTestId('sign-in-apple')).toBeNull();
@@ -211,7 +211,7 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     expect(screen.getByTestId('learn-earn-rewards')).toBeTruthy();
     expect(screen.getByLabelText('Translate tab')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('tab-auto'));
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     await fireEvent.press(screen.getByLabelText('History'));
     expect(screen.getByTestId('overlay-history')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('history-close'));

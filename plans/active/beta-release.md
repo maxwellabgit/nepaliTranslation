@@ -69,7 +69,19 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: Translate / Camera / Learn information architecture**
+**Current: production readiness, slice 1 — trustworthy gates**
+
+Reviewed baseline `b682525`. This slice restores the quality signal before any further product work. Camera rendering, OCR honesty, Translate state completeness, and the Windows testing ground stay in later slices.
+
+- Expo Doctor was 20/21 because `mobile/.easignore` used unanchored `ios/` and `android/`, which also ignored `modules/neptranslate-ocr`. Those patterns are now `/ios/` and `/android/`.
+- `mobile/.maestro/smoke_tabs.yaml` targeted deleted `tab-conversation`. It now walks Translate, Camera, and Learn.
+- The shell mode key is `translate` (`tab-translate`, `pane-translate`). Persisted preference keys and the ad-policy surface id `conversation` are unchanged so stored data and policy tests keep their meaning.
+- Node `DEP0190`: coverage and translate verify scripts pass one command string to the shell instead of a shell plus a separate argument list.
+- `npm run verify:ci` is the single CI entry: lexicon, lint, typecheck, unit, integration, translation verify, Expo Doctor, coverage ratchet, and web export.
+- Integration isolation: each test clears the camera fixture, secure-store memory, and AsyncStorage. Jest timeout is 20s and Testing Library’s async timeout is 8s so a cold run is not a 5s failure.
+- Local proof: `npm run verify:ci` passed three times in a row (each run: lint, typecheck, 198 unit tests, 14 integration tests, translation verify, Expo Doctor 21/21, coverage ratchet, web export). No `DEP0190` warning on the translation scripts. Three GitHub Actions runs are still open because this change is uncommitted. Device Maestro is still unrun. Do not start TestFlight.
+
+**Previous: Translate / Camera / Learn information architecture**
 
 - Policy updated: on-device camera OCR is in scope. Images stay in temporary cache and are deleted after retake, exit, or successful processing. Photo-library permission stays off.
 - Translate absorbs pass-the-phone. Conversation tab is gone. Tabs are Translate, Camera, Learn.

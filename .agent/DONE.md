@@ -23,7 +23,7 @@ Apply on every beta slice PR. Slice-specific extras are below.
 - [ ] `plans/active/beta-release.md` Progress / Commands / Remaining work updated
 - [ ] Core translate path still has **no** hard dependency on Supabase, AdMob, RevenueCat, or admin
 - [ ] No production secret, tunnel URL, test password (`1234`), service role, or embedded review-sync secret introduced
-- [ ] Optional-service failure leaves Auto, Conversation, History, Settings, and Learn alphabet usable
+- [ ] Optional-service failure leaves Translate, Camera, History, Settings, and Learn usable
 - [ ] No claim of physical-device / airplane-mode / StoreKit / AdMob proof from source-only tests
 - [ ] Human blockers (Apple, Supabase, AdMob, RevenueCat, legal, bilingual, device) recorded honestly when reached
 
@@ -59,10 +59,10 @@ If Docker cannot run locally, the same gate must run in GitHub Actions and the l
 ## Lane 2 — ui-bugs
 
 - [ ] Each finding is either **fixed** with a repro note, or **won't-fix** with a device-only blocker
-- [ ] Auto and Conversation: mode switch still hard-stops audio (`App.tsx`)
+- [ ] Translate, Camera, and Learn: leaving a tab still hard-stops audio (`App.tsx`)
 - [ ] Formal / Informal and देवनागरी toggles still match INTENT
 - [ ] Loading, empty, error, and “MT not ready” states still exist
-- [ ] Independent reviewer walked Home, Conversation, History, Settings, Meaning Review in source
+- [ ] Independent reviewer walked Translate, Camera, Learn, History, and Settings in source
 
 Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device proof unless a human did it.
 
@@ -79,7 +79,7 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 
 - [ ] Warm-up still does not brick the UI when neural is slow/failing
 - [ ] Cancel / hard-stop still stops STT + TTS + in-flight MT
-- [ ] Conversation pass rules still match `src/conversation/passLogic.ts`
+- [ ] Pass-the-phone rules still match `src/translate/passLogic.ts`
 - [ ] Phrasebook / fallback path still works when neural is not ready
 - [ ] `npx tsc --noEmit` + `npm run verify:translate`
 
@@ -149,7 +149,7 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 ### Slice 08 — AdMob
 
 - [ ] Policy table tests; zero AdMob calls offline
-- [ ] No ads in Conversation / keyboard / audio / under entitlement
+- [ ] No ads while listening, typing, or under an ad-free entitlement
 - [ ] SSV verification fixtures; physical device proof or honest blocker
 
 ### Slice 09 — RevenueCat / StoreKit

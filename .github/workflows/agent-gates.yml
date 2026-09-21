@@ -49,7 +49,5 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
-      - name: verify:beta (same command as local)
-        run: npm run verify:beta
-      - name: coverage ratchet
-        run: npm run test:coverage:beta
+      - name: verify:ci (lint, types, unit, integration, coverage, doctor, web export)
+        run: npm run verify:ci

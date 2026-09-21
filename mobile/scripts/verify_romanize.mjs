@@ -13,16 +13,7 @@ const root = join(__dirname, '..');
 const out = join(__dirname, '_roman_bundle.cjs');
 
 const build = spawnSync(
-  process.platform === 'win32' ? 'npx.cmd' : 'npx',
-  [
-    '--yes',
-    'esbuild',
-    'src/mt/onDeviceTranslate.ts',
-    '--bundle',
-    '--platform=node',
-    '--format=cjs',
-    `--outfile=${out}`,
-  ],
+  `npx --yes esbuild src/mt/onDeviceTranslate.ts --bundle --platform=node --format=cjs --outfile="${out}"`,
   { cwd: root, encoding: 'utf8', shell: true },
 );
 if (build.status !== 0) {

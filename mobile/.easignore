@@ -1,10 +1,12 @@
-# Also applied when packing from mobile/ (belt and suspenders)
+# Also applied when packing from mobile/ (belt and suspenders).
+# Anchor native folders to the app root so modules/*/ios and modules/*/android
+# stay in the archive and pass Expo Doctor.
 node_modules/
 .expo/
 dist/
 web-build/
-ios/
-android/
+/ios/
+/android/
 assets/models/
 *.bin
 *.gguf

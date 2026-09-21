@@ -29,15 +29,9 @@ const H6_MIN_LINES = 80;
 const H6_MIN_BRANCHES = 70;
 
 function runCoverage() {
+  // One command string: Node DEP0190 warns when shell:true is combined with an args array.
   const result = spawnSync(
-    'npx',
-    [
-      'jest',
-      '--coverage',
-      '--coverageReporters=json-summary',
-      '--runInBand',
-      '--testPathIgnorePatterns=integration-test',
-    ],
+    'npx jest --coverage --coverageReporters=json-summary --runInBand --testPathIgnorePatterns=integration-test',
     {
       cwd: mobileRoot,
       encoding: 'utf8',

@@ -7,7 +7,7 @@ import { hardStopAudio } from './hardStopAudio';
 import { colors } from '../theme';
 import type { HistoryItem } from '../storage/phrasebook';
 
-export type AppMode = 'auto' | 'camera' | 'learn';
+export type AppMode = 'translate' | 'camera' | 'learn';
 export type AppOverlay =
   | 'history'
   | 'settings'
@@ -49,7 +49,7 @@ type ContributionsOverlayProps = {
 };
 
 type Props = {
-  AutoPane: (props: PaneProps) => ReactNode;
+  TranslatePane: (props: PaneProps) => ReactNode;
   CameraPane: (props: CameraPaneProps) => ReactNode;
   LearnPane: (props: LearnPaneProps) => ReactNode;
   HistoryOverlay: (props: HistoryOverlayProps) => ReactNode;
@@ -62,7 +62,7 @@ type Props = {
 };
 
 export function AppShell({
-  AutoPane,
+  TranslatePane,
   CameraPane,
   LearnPane,
   HistoryOverlay,
@@ -72,7 +72,7 @@ export function AppShell({
   mtWarmStatus,
   onHardStop = hardStopAudio,
 }: Props) {
-  const [mode, setMode] = useState<AppMode>('auto');
+  const [mode, setMode] = useState<AppMode>('translate');
   const [overlay, setOverlay] = useState<AppOverlay>(null);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
@@ -90,17 +90,17 @@ export function AppShell({
         {/* Translate and Learn stay mounted. Camera unmounts when its tab is
             inactive so only one camera preview can exist. */}
         <View
-          style={[styles.pane, mode !== 'auto' && styles.paneHidden]}
-          pointerEvents={mode === 'auto' ? 'auto' : 'none'}
-          accessibilityElementsHidden={mode !== 'auto'}
+          style={[styles.pane, mode !== 'translate' && styles.paneHidden]}
+          pointerEvents={mode === 'translate' ? 'auto' : 'none'}
+          accessibilityElementsHidden={mode !== 'translate'}
           importantForAccessibility={
-            mode === 'auto' ? 'auto' : 'no-hide-descendants'
+            mode === 'translate' ? 'auto' : 'no-hide-descendants'
           }
-          testID="pane-auto"
+          testID="pane-translate"
         >
-          <AutoPane
+          <TranslatePane
             key={seedKey}
-            active={mode === 'auto'}
+            active={mode === 'translate'}
             seed={seed}
             neuralReady={neuralReady}
             mtWarmStatus={mtWarmStatus}
@@ -140,19 +140,19 @@ export function AppShell({
 
       <View style={styles.tabBar} testID="tab-bar">
         <Pressable
-          style={[styles.tab, mode === 'auto' && styles.tabOn]}
-          onPress={() => switchMode('auto')}
+          style={[styles.tab, mode === 'translate' && styles.tabOn]}
+          onPress={() => switchMode('translate')}
           accessibilityRole="tab"
-          accessibilityState={{ selected: mode === 'auto' }}
+          accessibilityState={{ selected: mode === 'translate' }}
           accessibilityLabel="Translate tab"
-          testID="tab-auto"
+          testID="tab-translate"
         >
           <Ionicons
             name="language-outline"
             size={18}
-            color={mode === 'auto' ? '#fff' : colors.text}
+            color={mode === 'translate' ? '#fff' : colors.text}
           />
-          <Text style={[styles.tabLabel, mode === 'auto' && styles.tabLabelOn]}>
+          <Text style={[styles.tabLabel, mode === 'translate' && styles.tabLabelOn]}>
             Translate
           </Text>
         </Pressable>
@@ -201,7 +201,7 @@ export function AppShell({
                 onHardStop();
                 setSeed(item);
                 setSeedKey((k) => k + 1);
-                setMode('auto');
+                setMode('translate');
                 setOverlay(null);
               }}
             />

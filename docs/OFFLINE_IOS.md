@@ -43,7 +43,7 @@ Fine-tuned checkpoints from [`training/`](../training/) follow the same export �
 1. Prepare ggml Whisper + ONNX IT2 artifacts under `mobile/assets/models/` (or implement first-launch download).
 2. `npx eas build --platform ios --profile production` from `mobile/`.
 3. `npx eas submit --platform ios --latest` → install via TestFlight.
-4. Verify offline: airplane mode, Normal + Conversation, Formal / Informal on EN→NE.
+4. Verify offline: airplane mode, Translate and Camera, Formal / Informal on EN→NE.
 
 App setup details: [`mobile/README.md`](../mobile/README.md).
 

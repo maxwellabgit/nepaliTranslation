@@ -1,5 +1,10 @@
 import '@testing-library/react-native/matchers';
+import { configure } from '@testing-library/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import './consoleGuard';
+import { setCameraTestFixture } from '../camera/testFixture';
+
+configure({ asyncUtilTimeout: 8000 });
 
 Object.assign(globalThis, {
   IS_REACT_ACT_ENVIRONMENT: true,
@@ -69,6 +74,7 @@ jest.mock('expo-apple-authentication', () => {
 
 jest.mock('expo-secure-store', () => {
   const mem = new Map<string, string>();
+  (globalThis as { __nepSecureStore?: Map<string, string> }).__nepSecureStore = mem;
   return {
     getItemAsync: jest.fn(async (key: string) => mem.get(key) ?? null),
     setItemAsync: jest.fn(async (key: string, value: string) => {
@@ -217,3 +223,9 @@ jest.mock('expo-camera', () => {
 });
 
 jest.mock('../features/subscription', () => ({}), { virtual: true });
+
+beforeEach(async () => {
+  setCameraTestFixture(null);
+  (globalThis as { __nepSecureStore?: Map<string, string> }).__nepSecureStore?.clear();
+  await AsyncStorage.clear();
+});

@@ -23,7 +23,7 @@ function FakeAuto({
         testID="auto-input"
         value={text}
         onChangeText={setText}
-        accessibilityLabel="Auto input"
+        accessibilityLabel="Translate input"
       />
       <Pressable
         testID="open-history"
@@ -82,7 +82,7 @@ async function renderShell(onHardStop = jest.fn()) {
       neuralReady={false}
       mtWarmStatus={null}
       onHardStop={onHardStop}
-      AutoPane={(p) => <FakeAuto {...p} />}
+      TranslatePane={(p) => <FakeAuto {...p} />}
       CameraPane={() => <FakeCamera />}
       LearnPane={(p) => <FakeLearn {...p} />}
       HistoryOverlay={(p) => <FakeHistory {...p} />}
@@ -99,7 +99,7 @@ describe('AppShell tabs and overlays', () => {
 
     await fireEvent.press(screen.getByTestId('tab-camera'));
     expect(screen.getByTestId('camera-preview')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('tab-auto'));
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     expect(screen.queryByTestId('camera-preview')).toBeNull();
     expect(screen.getByTestId('auto-input').props.value).toBe('hello-auto');
 
@@ -111,7 +111,7 @@ describe('AppShell tabs and overlays', () => {
     const onHardStop = await renderShell();
     await fireEvent.press(screen.getByTestId('tab-camera'));
     expect(onHardStop).toHaveBeenCalledTimes(1);
-    await fireEvent.press(screen.getByTestId('tab-auto'));
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     expect(onHardStop).toHaveBeenCalledTimes(2);
     await fireEvent.press(screen.getByTestId('tab-learn'));
     expect(onHardStop).toHaveBeenCalledTimes(3);
@@ -121,7 +121,7 @@ describe('AppShell tabs and overlays', () => {
     await renderShell();
     await fireEvent.press(screen.getByTestId('tab-learn'));
     await fireEvent.changeText(screen.getByTestId('learn-mark'), 'keep-lesson');
-    await fireEvent.press(screen.getByTestId('tab-auto'));
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     expect(screen.queryByTestId('learn-mark')).toBeNull();
     await fireEvent.press(screen.getByTestId('tab-learn'));
     expect(screen.getByTestId('learn-mark').props.value).toBe('keep-lesson');

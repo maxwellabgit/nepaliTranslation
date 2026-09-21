@@ -77,7 +77,7 @@ export function NepTranslateApp({
       <AppShell
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}
-        AutoPane={(props) => <TranslateScreen {...props} />}
+        TranslatePane={(props) => <TranslateScreen {...props} />}
         CameraPane={() => <CameraScreen active />}
         LearnPane={(props) => <LearnScreen {...props} />}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
