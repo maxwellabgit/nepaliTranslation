@@ -89,7 +89,12 @@ export class TranslationEngine {
           : this.translateFallback(req);
 
       const cancelled = requestId !== this.seq;
-      if (!cancelled) this.state = 'ready';
+      if (!cancelled) {
+        this.state = 'ready';
+        console.info(
+          `[translate] method=${result.method} direction=${result.direction} neural=${this.neuralReady} in=${JSON.stringify(req.text)} out=${JSON.stringify(result.text)}`,
+        );
+      }
       return { ...result, requestId, cancelled };
     } catch {
       try {

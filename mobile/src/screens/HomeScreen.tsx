@@ -27,6 +27,7 @@ import {
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
+import { RewardSummaryCard } from '../learn/RewardSummaryCard';
 import { AdSlot } from '../features/ads/AdSlot';
 import { addHistory, type HistoryItem } from '../storage/phrasebook';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
@@ -582,40 +583,47 @@ export function HomeScreen({
         </Pressable>
       </View>
 
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>Type or speak</Text>
-        <View
-          style={styles.langSwitch}
-          accessibilityRole="radiogroup"
-          accessibilityLabel="Input language"
+      <View style={styles.langRow}>
+        <Pressable
+          onPress={() => setSourceSideSafe('en')}
+          style={[styles.langPill, sourceSide === 'en' && styles.langPillOn]}
+          accessibilityRole="radio"
+          accessibilityState={{ selected: sourceSide === 'en' }}
+          accessibilityLabel="English"
         >
-          <Pressable
-            onPress={() => setSourceSideSafe('en')}
-            style={[styles.langOpt, sourceSide === 'en' && styles.langOptOn]}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: sourceSide === 'en' }}
-            accessibilityLabel="English"
-          >
-            <Text
-              style={[styles.langOptText, sourceSide === 'en' && styles.langOptTextOn]}
-            >
-              English
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setSourceSideSafe('ne')}
-            style={[styles.langOpt, sourceSide === 'ne' && styles.langOptOn]}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: sourceSide === 'ne' }}
-            accessibilityLabel="Nepali"
-          >
-            <Text
-              style={[styles.langOptText, sourceSide === 'ne' && styles.langOptTextOn]}
-            >
-              Nepali
-            </Text>
-          </Pressable>
-        </View>
+          <Text style={[styles.langPillText, sourceSide === 'en' && styles.langPillTextOn]}>
+            English
+          </Text>
+          <Text style={[styles.langPillHint, sourceSide === 'en' && styles.langPillTextOn]}>
+            {sourceSide === 'en' ? 'From' : 'To'}
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setSourceSideSafe(sourceSide === 'en' ? 'ne' : 'en')}
+          style={styles.swapBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Swap languages"
+        >
+          <Text style={styles.swapGlyph}>⇄</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setSourceSideSafe('ne')}
+          style={[styles.langPill, sourceSide === 'ne' && styles.langPillOn]}
+          accessibilityRole="radio"
+          accessibilityState={{ selected: sourceSide === 'ne' }}
+          accessibilityLabel="Nepali"
+        >
+          <Text style={[styles.langPillText, sourceSide === 'ne' && styles.langPillTextOn]}>
+            Nepali
+          </Text>
+          <Text style={[styles.langPillHint, sourceSide === 'ne' && styles.langPillTextOn]}>
+            {sourceSide === 'ne' ? 'From' : 'To'}
+          </Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.rewardsWrap}>
+        <RewardSummaryCard active={active} />
       </View>
 
       <View style={styles.composerWrap}>
@@ -734,7 +742,7 @@ export function HomeScreen({
           accessibilityState={{ selected: devaOn }}
           accessibilityLabel="Devanagari"
         >
-          <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>देवनागरी</Text>
+          <Text style={[styles.chipText, devaOn && styles.chipTextOn]}>अ देवनागरी</Text>
         </Pressable>
         <Pressable
           onPress={() => {
@@ -745,7 +753,7 @@ export function HomeScreen({
           accessibilityState={{ selected: !devaOn }}
           accessibilityLabel="Roman Nepali"
         >
-          <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Roman</Text>
+          <Text style={[styles.chipText, !devaOn && styles.chipTextOn]}>Aa Roman</Text>
         </Pressable>
       </View>
 
@@ -790,6 +798,11 @@ export function HomeScreen({
                 />
               </Pressable>
             </View>
+            {targetLang === 'ne' && script === 'deva' ? (
+              <Text style={styles.romanLine} testID="translate-roman">
+                {formatNepaliScript(output, 'roman')}
+              </Text>
+            ) : null}
             <View style={styles.resultActions}>
               <Pressable onPress={() => void onCopy()} hitSlop={8}>
                 <Text style={styles.actionLabel}>
@@ -897,6 +910,49 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
     color: colors.crimson,
   },
+  langRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  langPill: {
+    flex: 1,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  langPillOn: {
+    backgroundColor: colors.crimson,
+    borderColor: colors.crimson,
+  },
+  langPillText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  langPillHint: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    marginTop: 1,
+  },
+  langPillTextOn: { color: '#fff' },
+  swapBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  swapGlyph: { fontSize: 16, color: colors.crimson, fontWeight: '700' },
+  rewardsWrap: { paddingHorizontal: 16, paddingTop: 10 },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -1011,9 +1067,8 @@ const styles = StyleSheet.create({
     borderRadius: MIC_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1.5,
-    borderColor: colors.divider,
+    backgroundColor: colors.crimson,
+    borderColor: colors.crimson,
     shadowColor: '#1A1410',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
@@ -1041,7 +1096,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.crimson,
+    backgroundColor: '#fff',
   },
   micDotOn: {
     backgroundColor: '#fff',
@@ -1049,7 +1104,7 @@ const styles = StyleSheet.create({
   micGlyph: {
     fontSize: 11,
     fontWeight: '800',
-    color: colors.text,
+    color: '#fff',
     letterSpacing: 0.2,
   },
   micGlyphOn: {
@@ -1114,6 +1169,12 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
   },
   resultNe: { fontSize: 30, lineHeight: 42 },
+  romanLine: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.textSecondary,
+    marginTop: -4,
+  },
   resultActions: {
     flexDirection: 'row',
     flexWrap: 'wrap',

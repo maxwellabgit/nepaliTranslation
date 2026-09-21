@@ -12,7 +12,7 @@ import { enqueueDraft } from '../../storage/contributionOutbox';
 const mockRefresh = jest.fn(async () => undefined);
 
 jest.mock('../../features/entitlements/EntitlementProvider', () => ({
-  useEntitlement: () => ({
+  useEntitlementOptional: () => ({
     ready: true,
     earnedAdFreeUntilMs: Date.parse('2026-10-01T12:00:00.000Z'),
     lifetimeCredits: 7,
@@ -48,13 +48,16 @@ describe('RewardSummaryCard', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('reward-lifetime-credits').props.children).toBe(
-        '7',
-      );
+      expect(screen.getByTestId('reward-lifetime-credits').props.children).toEqual([
+        7,
+        ' credits',
+      ]);
     });
-    expect(screen.getByTestId('reward-pending-count').props.children).toBe('1');
-    expect(screen.getByTestId('reward-ad-free-until').props.children).not.toBe(
-      'Not active',
+    expect(screen.getByTestId('reward-pending-count').props.children).toBe(
+      '1 correction waiting.',
+    );
+    expect(screen.getByTestId('reward-ad-free-until').props.children).toMatch(
+      /^Ad-free for /,
     );
     expect(mockRefresh).toHaveBeenCalled();
   });

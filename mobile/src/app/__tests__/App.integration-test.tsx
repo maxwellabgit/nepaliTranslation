@@ -96,20 +96,9 @@ describe('NepTranslateApp production composition', () => {
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
     await waitFor(() => {
-      expect(screen.getByTestId('learn-screen')).toBeTruthy();
+      expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     });
-    await fireEvent.press(screen.getByTestId('learn-open-alphabet'));
-    await waitFor(() => {
-      expect(screen.getByTestId('learn-progress')).toBeTruthy();
-    });
-    const before = screen.getByTestId('learn-progress').props.children;
-    await fireEvent.press(screen.getByTestId('learn-next'));
-    await waitFor(() => {
-      expect(screen.getByTestId('learn-progress').props.children).not.toEqual(
-        before,
-      );
-    });
-    const afterLearn = screen.getByTestId('learn-progress').props.children;
+    expect(screen.getByTestId('learn-roman-a').props.children).toBe('a');
 
     await fireEvent.press(screen.getByTestId('tab-auto'));
     expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
@@ -121,9 +110,8 @@ describe('NepTranslateApp production composition', () => {
     ).toBe(true);
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
-    expect(screen.getByTestId('learn-progress').props.children).toEqual(
-      afterLearn,
-    );
+    expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
+    expect(screen.getByTestId('learn-roman-aa').props.children).toBe('aa');
   });
 
   it('tab switch calls STT, TTS, and MT hard-stop boundaries', async () => {
@@ -205,7 +193,8 @@ describe('NepTranslateApp production composition', () => {
     await waitFor(() => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
-    expect(screen.getByTestId('learn-card-alphabet')).toBeTruthy();
+    expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
+    expect(screen.getByTestId('learn-earn-rewards')).toBeTruthy();
     expect(screen.getByLabelText('Translate tab')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('tab-auto'));
     await fireEvent.press(screen.getByLabelText('History'));

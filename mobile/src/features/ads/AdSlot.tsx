@@ -3,9 +3,8 @@ import {
   useMemo,
   useRef,
   useState,
-  type ComponentType,
 } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { colors } from '../../theme';
 import { useServices } from '../../services/ServiceContext';
@@ -23,6 +22,7 @@ import { HouseAd } from './HouseAd';
 import type { AdSurface } from '../entitlements/decideAdPresentation';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
+import { NativeOrPlaceholderBanner } from './NativeBanner';
 
 type Props = {
   surface: AdSurface;
@@ -232,25 +232,6 @@ export function AdSlot({
   return null;
 }
 
-function NativeOrPlaceholderBanner({ unitId }: { unitId: string }) {
-  let Banner: ComponentType<{ unitId: string; size: string }> | null = null;
-  let size = 'ANCHORED_ADAPTIVE_BANNER';
-  try {
-    const ads = require('react-native-google-mobile-ads') as {
-      BannerAd: ComponentType<{ unitId: string; size: string }>;
-      BannerAdSize: { ANCHORED_ADAPTIVE_BANNER: string };
-    };
-    Banner = ads.BannerAd;
-    size = ads.BannerAdSize.ANCHORED_ADAPTIVE_BANNER;
-  } catch {
-    Banner = null;
-  }
-  if (!Banner) {
-    return <Text style={styles.bannerText}>Ad</Text>;
-  }
-  return <Banner unitId={unitId} size={size} />;
-}
-
 const styles = StyleSheet.create({
   banner: {
     alignItems: 'center',
@@ -259,5 +240,4 @@ const styles = StyleSheet.create({
     borderTopColor: colors.divider,
     paddingVertical: 4,
   },
-  bannerText: { color: colors.textSecondary, fontSize: 12, padding: 10 },
 });
