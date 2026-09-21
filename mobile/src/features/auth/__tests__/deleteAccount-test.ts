@@ -2,7 +2,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { performAccountDeletion } from '../deleteAccount';
+import { performAccountDeletion, appleCredentialMatchesUser } from '../deleteAccount';
 import { saveAppleUserId, loadAppleUserId, clearAppleIdentity } from '../appleIdentity';
 import { getSupabase } from '../../../services/supabase';
 import {
@@ -33,6 +33,7 @@ jest.mock('../../../config/env', () => ({
 
 const mockSignInWithIdToken = jest.fn();
 const mockGetSession = jest.fn();
+const mockGetUser = jest.fn();
 const mockSignOut = jest.fn();
 
 function seedSecureStore() {
@@ -84,6 +85,21 @@ beforeEach(async () => {
   mockGetSession.mockResolvedValue({
     data: { session: { access_token: 'tok', user: { id: 'user-1' } } },
   });
+  mockGetUser.mockResolvedValue({
+    data: {
+      user: {
+        id: 'user-1',
+        identities: [
+          {
+            provider: 'apple',
+            id: 'apple.reauth.user',
+            identity_data: { sub: 'apple.reauth.user' },
+          },
+        ],
+      },
+    },
+    error: null,
+  });
   mockSignInWithIdToken.mockResolvedValue({
     data: { user: { id: 'user-1' } },
     error: null,
@@ -91,6 +107,7 @@ beforeEach(async () => {
   (getSupabase as jest.Mock).mockReturnValue({
     auth: {
       getSession: mockGetSession,
+      getUser: mockGetUser,
       signInWithIdToken: mockSignInWithIdToken,
       signOut: mockSignOut,
     },
@@ -260,10 +277,6 @@ describe('performAccountDeletion', () => {
       fullName: null,
       email: null,
     });
-    mockSignInWithIdToken.mockResolvedValue({
-      data: { user: { id: 'user-1' } },
-      error: null,
-    });
     const fetchImpl = jest.fn(async (_url: string, init?: RequestInit) => {
       expect(String(init?.body)).toContain('REAUTH_FRESH_CODE');
       return new Response(JSON.stringify({ deleted: true }), { status: 200 });
@@ -276,17 +289,15 @@ describe('performAccountDeletion', () => {
     expect(result.ok).toBe(true);
     expect(AppleAuthentication.refreshAsync).not.toHaveBeenCalled();
     expect(AppleAuthentication.signInAsync).toHaveBeenCalled();
+    // Must not switch session via signInWithIdToken during deletion reauth.
+    expect(mockSignInWithIdToken).not.toHaveBeenCalled();
   });
 
-  test('wrong Apple account on reauth does not purge', async () => {
+  test('wrong Apple account on reauth does not purge or switch session', async () => {
     (AppleAuthentication.signInAsync as jest.Mock).mockResolvedValue({
       user: 'other.apple',
       authorizationCode: 'CODE',
       identityToken: 'id-token',
-    });
-    mockSignInWithIdToken.mockResolvedValue({
-      data: { user: { id: 'other-user' } },
-      error: null,
     });
     const fetchImpl = jest.fn();
     const result = await performAccountDeletion(
@@ -297,6 +308,7 @@ describe('performAccountDeletion', () => {
       expect.objectContaining({ ok: false, code: 'wrong_apple_account' }),
     );
     expect(fetchImpl).not.toHaveBeenCalled();
+    expect(mockSignInWithIdToken).not.toHaveBeenCalled();
   });
 
   test('retry after revoke failure resumes by sending a fresh code again', async () => {
@@ -342,6 +354,35 @@ describe('performAccountDeletion', () => {
     expect(second.ok).toBe(true);
     expect(String(fetchImpl.mock.calls[0][1]?.body)).toContain('CODE_1');
     expect(String(fetchImpl.mock.calls[1][1]?.body)).toContain('CODE_2');
+  });
+});
+
+describe('appleCredentialMatchesUser', () => {
+  test('matches Apple sub on the current user only', () => {
+    expect(
+      appleCredentialMatchesUser(
+        'apple.u',
+        {
+          id: 'user-1',
+          identities: [
+            { provider: 'apple', id: 'apple.u', identity_data: { sub: 'apple.u' } },
+          ],
+        },
+        'user-1',
+      ),
+    ).toBe(true);
+    expect(
+      appleCredentialMatchesUser(
+        'other.apple',
+        {
+          id: 'user-1',
+          identities: [
+            { provider: 'apple', id: 'apple.u', identity_data: { sub: 'apple.u' } },
+          ],
+        },
+        'user-1',
+      ),
+    ).toBe(false);
   });
 });
 

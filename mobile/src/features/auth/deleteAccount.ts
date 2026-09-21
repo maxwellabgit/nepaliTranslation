@@ -42,6 +42,35 @@ type FreshCodeResult =
   | { ok: true; authorizationCode: string }
   | { ok: false; code: DeletionFailureCode; message: string };
 
+type IdentityLike = {
+  provider?: string;
+  id?: string;
+  identity_id?: string;
+  identity_data?: { sub?: string } | null;
+};
+
+/**
+ * Compare Apple credential.user to the signed-in Supabase user's Apple identity.
+ * Does not call signInWithIdToken — avoids switching sessions on mismatch.
+ */
+export function appleCredentialMatchesUser(
+  appleUserId: string,
+  user: { id: string; identities?: IdentityLike[] | null } | null | undefined,
+  expectedUserId: string,
+): boolean {
+  if (!user || user.id !== expectedUserId || !appleUserId) return false;
+  const appleIds = (user.identities ?? []).filter((i) => i.provider === 'apple');
+  if (appleIds.length === 0) return false;
+  return appleIds.some((identity) => {
+    const sub = identity.identity_data?.sub;
+    return (
+      identity.id === appleUserId ||
+      identity.identity_id === appleUserId ||
+      sub === appleUserId
+    );
+  });
+}
+
 async function obtainFreshAuthorizationCode(
   userId: string,
   deps: DeletionDeps,
@@ -58,7 +87,6 @@ async function obtainFreshAuthorizationCode(
   }
 
   const storedAppleUser = await loadAppleUserId(userId);
-  const nonce = await createAuthNonce();
 
   try {
     if (storedAppleUser) {
@@ -77,7 +105,9 @@ async function obtainFreshAuthorizationCode(
       return { ok: true, authorizationCode: credential.authorizationCode };
     }
 
-    // Missing local Apple user id: require interactive reauth; never purge solely for that.
+    // Missing local Apple user id: interactive reauth; never purge solely for that.
+    // Verify against the current session without signInWithIdToken (session must not switch).
+    const nonce = await createAuthNonce();
     const credential = await signInApple({
       requestedScopes: [
         AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
@@ -85,27 +115,23 @@ async function obtainFreshAuthorizationCode(
       ],
       nonce: nonce.hashed,
     });
-    if (!credential.identityToken) {
+    if (!credential.user) {
       return {
         ok: false,
         code: 'missing_authorization_code',
         message:
-          'Apple did not return an identity token. Deletion paused. No local translation history was cleared.',
+          'Apple did not return a user identifier. Deletion paused. No local translation history was cleared.',
       };
     }
-    const { data, error } = await supabase.auth.signInWithIdToken({
-      provider: 'apple',
-      token: credential.identityToken,
-      nonce: nonce.raw,
-    });
-    if (error || !data.user) {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData.user) {
       return {
         ok: false,
-        code: 'unavailable',
-        message: 'Could not verify Apple account with the server. Deletion paused.',
+        code: 'unauthorized',
+        message: 'Sign in again, then retry account deletion.',
       };
     }
-    if (data.user.id !== userId) {
+    if (!appleCredentialMatchesUser(credential.user, userData.user, userId)) {
       return {
         ok: false,
         code: 'wrong_apple_account',
@@ -113,9 +139,7 @@ async function obtainFreshAuthorizationCode(
           'That Apple ID does not match the signed-in account. Deletion paused. No data was purged.',
       };
     }
-    if (credential.user) {
-      await saveAppleUserId(userId, credential.user);
-    }
+    await saveAppleUserId(userId, credential.user);
     if (!credential.authorizationCode) {
       return {
         ok: false,
