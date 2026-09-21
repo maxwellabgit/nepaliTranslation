@@ -1,0 +1,7 @@
+node_modules/
+dist/
+runs/
+public/hosted-app/
+src-tauri/target/
+*.log
+.DS_Store

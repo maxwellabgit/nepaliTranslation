@@ -16,6 +16,7 @@ import {
 import type { AppServices } from './src/services/contracts';
 import { createProductionServices } from './src/services/productionServices';
 import type { RuntimePorts } from './src/runtime/ports';
+import { resolveBootRuntime } from './src/runtime/resolveBootRuntime';
 
 export type NepTranslateAppProps = {
   /** Test-only service injection. Production default supplies real adapters. */
@@ -93,5 +94,12 @@ export function NepTranslateApp({
 }
 
 export default function App() {
-  return <NepTranslateApp services={createProductionServices()} />;
+  const harnessRuntime = resolveBootRuntime();
+  return (
+    <NepTranslateApp
+      services={createProductionServices()}
+      runtime={harnessRuntime}
+      skipWarmUp={Boolean(harnessRuntime)}
+    />
+  );
 }

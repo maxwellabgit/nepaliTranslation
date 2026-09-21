@@ -69,7 +69,13 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 5 — Design system + secondary journeys**
+**Current: production readiness, slice 6 — Windows testing ground**
+
+Private engineering harness under `testing-ground/` (Tauri 2 scaffold + Vite). Hosts the real Expo web export (`mobile/dist`) in a phone-stage iframe with viewport presets 375×812 / 390×844 / 430×932 / 768×1024. Right-side console tabs: Overview, Timeline, State, Fixtures. Bridge: `window.__NEPTRANSLATE_TG__` + host helper; mobile `resolveBootRuntime.web.ts` wires `createTestRuntime`. Translate modes labeled honestly: fast fallback, recorded, local-neural (Windows stub — no native parity claim). Scenario controls load/step/run/cancel/reset/seed/export. Artifacts: `%LOCALAPPDATA%\NepTranslateTestingGround\runs\<run-id>\` preferred; Node fallback `testing-ground/runs/`.
+
+**Honesty / blockers:** Vite frontend is the exit gate (`npm run build`). `tauri build` needs Rust toolchain + Windows linker; scaffold exists either way. Not a consumer Windows app. Playwright suite is slice 7 — not this slice.
+
+**Previous: production readiness, slice 5 — Design system + secondary journeys**
 
 Unify semantic theme tokens (light/dark via `getTheme` / `useTheme` / `ThemeProvider`), EN+NE i18n catalogs under `mobile/src/i18n/`, and reusable `EmptyState` / `StatusBanner`. History, Settings, Learn, and Contributions use tokens + catalog strings; Settings/Contributions show offline banners when `network.isOffline()`. Translate screen largely untouched (catalog exists; not fully migrated).
 
@@ -497,8 +503,39 @@ npm run verify:translate
 # UI lang preference Settings control: not shipped (defaults en; ne catalog tested)
 ```
 
+### Production readiness slice 6 — Windows testing ground (local, 2026-09-21)
+```text
+cd mobile
+npx tsc --noEmit
+# TSC_EXIT=0
+npx expo export --platform web
+# EXPORT_EXIT=0 (includes resolveBootRuntime.web bridge)
+
+cd ../testing-ground
+npm install
+# (legacy-peer-deps via .npmrc)
+npm run prepare:hosted
+# Wrote public/hosted-app (rewrote absolute asset URLs + TG boot script)
+npm run build
+# tsc --noEmit + vite build OK (dist/)
+npm run test:artifacts
+# [write-artifact-smoke] OK testing-ground/runs/smoke-<id>/
+#   manifest.json, events.jsonl, final-snapshot.json, summary.json
+
+powershell -ExecutionPolicy Bypass -File .\scripts\Ready-TestingGround.ps1 -SkipExpoExport
+# READY_EXIT=0; Node v22.13.1; cargo/rustc 1.98.1 present on this machine
+cd src-tauri; cargo check
+# CARGO_CHECK=0 (Tauri 2 scaffold compiles)
+
+# Exit gate met: Vite frontend builds; readiness script exists; Node artifact writer works.
+# tauri build: scaffold + cargo check OK here; full NSIS package not claimed as gate.
+# Independent review: PASS (nits: command postMessage not consumed in mobile yet; LOCALAPPDATA writer is Node fallback today).
+# Not done this slice: Playwright scenario suite (slice 7).
+```
+
 ## Remaining work
 
+- **Production readiness slice 6 (testing ground)** — Vite + readiness script + Node artifact writer are the gate; full Tauri packaged exe optional if Rust present; Playwright is slice 7.
 - **Production readiness slice 5 (design/i18n)** — source + unit/integration/verify proof above. Remaining nits: Translate/Camera still on light `colors` StyleSheets; no Settings UI-lang toggle yet; dark Appearance not visually QA’d on device.
 - **Production readiness slice 4 (camera)** — source + unit/integration proof above; device OCR/overlay + CocoaPods beside Ads remain human-gated on a Mac/iPhone.
 - **H6** complete for agent/CI scope (independent review PASS; agent-gates + backend-gate `35552584664` green). Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
