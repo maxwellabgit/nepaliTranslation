@@ -211,6 +211,32 @@ describe('NepTranslateApp production composition', () => {
     await fireEvent.press(screen.getByLabelText('Settings'));
     expect(screen.getByTestId('overlay-settings')).toBeTruthy();
     expect(screen.getByTestId('account-section')).toBeTruthy();
+    expect(screen.getByTestId('settings-quality')).toBeTruthy();
+    expect(screen.getByText(/Translation may be imperfect/i)).toBeTruthy();
+    expect(screen.getByTestId('settings-privacy')).toBeTruthy();
+    expect(screen.getByText(/not saved to your photo library/i)).toBeTruthy();
+  });
+
+  it('signed-out guest reaches Camera and Learn without a login wall when auth is configured', async () => {
+    await renderApp(
+      createTestServices({ offline: true, authConfigured: true }),
+    );
+    expect(screen.getByTestId('pane-translate')).toBeTruthy();
+    expect(screen.queryByTestId('sign-in-apple')).toBeNull();
+
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    expect(screen.getByTestId('pane-camera')).toBeTruthy();
+    expect(screen.getByTestId('camera-permission')).toBeTruthy();
+    expect(screen.getByText(/Camera OCR runs on this phone/i)).toBeTruthy();
+    expect(screen.queryByTestId('sign-in-apple')).toBeNull();
+    expect(screen.queryByText(/sign in to (translate|use camera|learn)/i)).toBeNull();
+
+    await fireEvent.press(screen.getByTestId('tab-learn'));
+    await waitFor(() => {
+      expect(screen.getByTestId('learn-screen')).toBeTruthy();
+    });
+    expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
+    expect(screen.queryByTestId('sign-in-apple')).toBeNull();
   });
 
   it('saves a correction draft that survives app relaunch', async () => {

@@ -206,7 +206,7 @@ export function CameraScreen({ active }: Props) {
       {!granted && !showResult ? (
         <View style={styles.center} testID="camera-permission">
           <Text style={styles.body}>
-            Camera access stays on this phone. Photos are deleted after you retake, leave, or finish.
+            Camera OCR runs on this phone. Captures are temporary and are deleted after you retake, leave, or finish — nothing is saved to your photo library.
           </Text>
           <Pressable
             onPress={() => void requestPermission()}

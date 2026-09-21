@@ -69,7 +69,20 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 7 — Playwright product scenarios**
+**Current: production readiness, slices 8–12 — device proof docs, certification, soft-fail audit, release runbook**
+
+Windows-completable program work is done through production-readiness slice 7. This pass lands source/docs for slices 8–12 with honest Blocked states for human gates.
+
+| Prod slice | Deliverable | State |
+|------------|-------------|-------|
+| **8** Native iPhone proof | `docs/DEVICE_PROOF.md` + ExecPlan commands/checklist | **BLOCKED** — physical iPhone + Apple developer session |
+| **9** A11y / privacy / quality certification | Settings quality + privacy copy; Camera permission reinforced; `docs/CERTIFICATION.md` | **Source Done** (VoiceOver / Dynamic Type / contrast visual = device-only) |
+| **10** Optional online soft-fail | Audit + tighter guest Camera/Learn integration; ads offline already covered | **Source Done**; human gates remain (AdMob EAS, Apple Sign-In device, legal consent, RevenueCat = beta Slice 09+) |
+| **11–12** TestFlight / App Store | `docs/RELEASE_RUNBOOK.md` | **BLOCKED** — founder Apple Connect / legal / bilingual sign-off; no submission claimed |
+
+Tip note: do **not** invent EAS/pod/device metrics. Subscription product remains beta program Slice 09+ (deferred). Reduce Motion: no new animation invented.
+
+**Previous: production readiness, slice 7 — Playwright product scenarios**
 
 Automates 10 of 12 product scenarios against the real Expo web export in `testing-ground/` via Playwright + TG recorded runtime (`window.__NEPTRANSLATE_TG__` → `createTestRuntime`). Catalog: `testing-ground/scenarios/catalog.ts`. Blockers for live mic / live camera+ML Kit: `scenarios/blockers.md` (honest — not device parity). Artifact writer appends `events.jsonl` + `summary.json` under `testing-ground/runs/pw-*` (`TG_FORCE_LOCAL_RUNS=1`). Phase machines reject illegal transitions (unit contract). npm script: `test:scenarios`.
 
@@ -567,15 +580,39 @@ cd src-tauri; cargo check
 # Not done this slice: Playwright scenario suite (slice 7).
 ```
 
+### Production readiness slices 8–12 (local, 2026-09-21)
+```text
+cd mobile
+npx tsc --noEmit
+# TSC_EXIT=0
+npx jest --runInBand src/i18n/__tests__/i18n-test.ts src/app/__tests__/App.integration-test.tsx
+# 2 suites / 18 tests passed
+# (quality+privacy i18n; Settings overlay copy; signed-out Camera/Learn no login wall)
+npm run verify:translate
+# VERIFY_EXIT=0
+
+# Docs added (no device metrics invented):
+#   docs/DEVICE_PROOF.md     — BLOCKED physical iPhone + Apple developer
+#   docs/CERTIFICATION.md    — source vs device checklist
+#   docs/RELEASE_RUNBOOK.md  — BLOCKED founder Connect / legal / bilingual
+# Code: Settings quality+privacy sections; Camera permission on-device note;
+#   integration guest Camera/Learn when authConfigured.
+# Not claimed: EAS build, pod install, Maestro on device, TestFlight, App Store submit.
+# Reduce Motion: skipped (no new animation).
+# RevenueCat: still beta Slice 09+.
+```
+
 ## Remaining work
 
+- **Production readiness slices 8 / 11–12** — human-gated only (`docs/DEVICE_PROOF.md`, `docs/RELEASE_RUNBOOK.md`). Founder: Apple Connect, legal, bilingual sign-off, EAS → TestFlight → external cohort.
+- **Production readiness slices 9–10** — source deliverables landed (Settings copy, CERTIFICATION, soft-fail tests). Device VoiceOver / Dynamic Type / AdMob EAS / Apple Sign-In still open.
 - **Production readiness slice 7 (Playwright scenarios)** — 10/12 automated on Expo web + TG recorded runtime; 2 blocked (live mic, live camera/ML Kit). Not device proof.
 - **Production readiness slice 6 (testing ground)** — Vite + readiness script + Node artifact writer are the gate; full Tauri packaged exe optional if Rust present.
 - **Production readiness slice 5 (design/i18n)** — source + unit/integration/verify proof above. Remaining nits: Translate/Camera still on light `colors` StyleSheets; no Settings UI-lang toggle yet; dark Appearance not visually QA’d on device.
 - **Production readiness slice 4 (camera)** — source + unit/integration proof above; device OCR/overlay + CocoaPods beside Ads remain human-gated on a Mac/iPhone.
 - **H6** complete for agent/CI scope (independent review PASS; agent-gates + backend-gate `35552584664` green). Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
-- Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates (including remaining human gates as required by §12) are accepted.
-- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob (H6 blocked), RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.
+- Do **not** merge PR #2 / do **not** start beta Slice 09 (RevenueCat) until H0–H6 merge gates (including remaining human gates as required by §12) are accepted.
+- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob (H6 blocked), RevenueCat (beta Slice 09+), bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight / App Store submission.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
@@ -585,4 +622,7 @@ cd src-tauri; cargo check
 - Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles. **H5 refreshed the IAST dental/retroflex cues; sign-off remains blocked, not passed.**
 - Slice 08 human gates (not claimed): AdMob app registration, banner/rewarded unit IDs, `react-native-google-mobile-ads` in a native/dev client, physical-device ad load proof.
 - **H6 human gate (blocked, not passed):** EAS development build on a physical iPhone using AdMob **test** ads — prove consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, and entitlement suppression. Do not claim device proof from Jest. Keep `network_ads_enabled` / `rewarded_ads_enabled` off until that gate.
+- **Prod slice 8 (device proof):** BLOCKED — physical iPhone + Apple developer session. See `docs/DEVICE_PROOF.md`.
+- **Prod slices 11–12 (TestFlight / App Store):** BLOCKED — founder Apple Connect / legal / bilingual sign-off. See `docs/RELEASE_RUNBOOK.md`. No submission claimed.
 - Device Maestro (`mobile/.maestro/smoke_tabs.yaml`): Maestro CLI + running iOS app not available on this Windows agent — human / Slice 12 gate.
+- RevenueCat / StoreKit ad-free subscription: still beta program **Slice 09+** (not part of this production-readiness source pass).

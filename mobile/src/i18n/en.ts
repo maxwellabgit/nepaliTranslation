@@ -39,6 +39,12 @@ export const en = {
   'settings.reportAdFallbackTitle': 'Report an ad',
   'settings.reportAdFallbackBody':
     'Email support@neptranslate.app with “Inappropriate ad report” in the subject.',
+  'settings.quality': 'Translation quality',
+  'settings.qualityBody':
+    'Translation may be imperfect. On a result, tap Mark incorrect to suggest a better translation.',
+  'settings.privacy': 'Privacy',
+  'settings.privacyBody':
+    'Camera translation runs on this device. Captures are temporary and are not saved to your photo library.',
   'settings.about': 'About',
   'settings.aboutReady':
     'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.',

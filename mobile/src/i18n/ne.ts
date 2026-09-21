@@ -44,6 +44,12 @@ export const ne: Record<MessageKey, string> = {
   'settings.reportAdFallbackTitle': 'विज्ञापन रिपोर्ट',
   'settings.reportAdFallbackBody':
     'विषयमा “Inappropriate ad report” लेखेर support@neptranslate.app मा इमेल पठाउनुहोस्।',
+  'settings.quality': 'अनुवाद गुणस्तर',
+  'settings.qualityBody':
+    'अनुवाद अपूर्ण हुन सक्छ। नतिजामा Mark incorrect थिचेर राम्रो अनुवाद सुझाउन सकिन्छ।',
+  'settings.privacy': 'गोपनीयता',
+  'settings.privacyBody':
+    'क्यामेरा अनुवाद यस यन्त्रमै चल्छ। तस्बिर अस्थायी हुन् र फोटो लाइब्रेरीमा बचत हुँदैनन्।',
   'settings.about': 'बारेमा',
   'settings.aboutReady':
     'NepTranslate ले यस यन्त्रमै IndicTrans2 चलाएर अंग्रेजी ↔ नेपाली अनुवाद गर्छ। मोडेल स्थापनासँगै आउँछ — अनुवादका लागि नेटवर्क चाहिँदैन। बोली Apple ले चिन्छ र नेटवर्क चाहिन सक्छ।',

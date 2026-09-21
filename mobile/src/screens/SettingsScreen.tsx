@@ -209,6 +209,20 @@ export function SettingsScreen({
           </Pressable>
         ) : null}
 
+        <View style={dynamic.section} testID="settings-quality">
+          <Text style={dynamic.sectionLabel}>
+            {t('settings.quality', lang)}
+          </Text>
+          <Text style={dynamic.body}>{t('settings.qualityBody', lang)}</Text>
+        </View>
+
+        <View style={dynamic.section} testID="settings-privacy">
+          <Text style={dynamic.sectionLabel}>
+            {t('settings.privacy', lang)}
+          </Text>
+          <Text style={dynamic.body}>{t('settings.privacyBody', lang)}</Text>
+        </View>
+
         <View style={dynamic.section} testID="settings-ads-privacy">
           <Text style={dynamic.sectionLabel}>
             {t('settings.adsPrivacy', lang)}
