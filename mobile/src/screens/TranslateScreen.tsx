@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Image,
   Keyboard,
@@ -14,7 +14,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
 import { AdSlot } from '../features/ads/AdSlot';
 import { MT_WARM_FAILED } from '../mt/mtStatus';
-import { colors } from '../theme';
+import { t, useUiLang, type UiLang } from '../i18n';
+import { useTheme } from '../theme';
 import type { HistoryItem } from '../storage/phrasebook';
 import { CreditsGauge } from '../translate/CreditsGauge';
 import { OptionsSheet } from '../translate/OptionsSheet';
@@ -36,32 +37,36 @@ type Props = {
   onOpenSettings: () => void;
 };
 
-function statusCopy(phase: string, reason: string | null): string | null {
+function statusCopy(
+  phase: string,
+  reason: string | null,
+  lang: UiLang,
+): string | null {
   switch (phase) {
     case 'requestingPermission':
-      return 'Need microphone access to speak.';
+      return t('translate.status.needMic', lang);
     case 'listening':
-      return 'Listening…';
+      return t('translate.status.listening', lang);
     case 'finalizingTranscript':
-      return 'Finishing speech…';
+      return t('translate.status.finalizing', lang);
     case 'translating':
-      return 'Translating…';
+      return t('translate.status.translating', lang);
     case 'recoverableError':
       if (reason === 'permission_denied') {
-        return 'Microphone permission denied. Type instead, or enable access in Settings.';
+        return t('translate.status.micDenied', lang);
       }
       if (reason === 'empty_result') {
-        return 'No translation for that text. Try different wording.';
+        return t('translate.status.emptyResult', lang);
       }
       if (reason === 'stt_error' || reason === 'stt_unavailable') {
-        return 'Speech recognition failed. Type instead or try again.';
+        return t('translate.status.sttFailed', lang);
       }
-      return 'Translation failed. Retry the turn or try again.';
+      return t('translate.status.translateFailed', lang);
     case 'unavailable':
       if (reason === 'stt_unsupported') {
-        return 'On-device speech is unavailable for this language. You can still type.';
+        return t('translate.status.sttUnsupported', lang);
       }
-      return 'Speech is unavailable on this device. You can still type.';
+      return t('translate.status.speechUnavailable', lang);
     default:
       return null;
   }
@@ -75,6 +80,8 @@ export function TranslateScreen({
   onOpenHistory,
   onOpenSettings,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const session = useTranslationSession({ active, seed });
   const { state, uiPhase } = session;
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -86,7 +93,114 @@ export function TranslateScreen({
   const showFailure = mtWarmStatus === MT_WARM_FAILED;
   const passEnabled = canPassPhone(state.draft, latestFrom(state), state.activeSide);
   const busy = state.translating || uiPhase.phase === 'listening';
-  const status = statusCopy(uiPhase.phase, uiPhase.reasonCode);
+  const status = statusCopy(uiPhase.phase, uiPhase.reasonCode, lang);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        root: { flex: 1, backgroundColor: theme.colors.bg },
+        header: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: 8,
+          paddingTop: 4,
+        },
+        iconBtn: {
+          width: 44,
+          height: 44,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        brandBlock: { flex: 1, alignItems: 'center', gap: 2 },
+        mark: { width: 28, height: 28, borderRadius: 6 },
+        brand: { fontSize: 20, fontWeight: '700' },
+        brandNep: { color: theme.colors.crimson },
+        brandRest: { color: theme.colors.text },
+        langRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+          paddingHorizontal: 20,
+          paddingVertical: 8,
+        },
+        langPill: {
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 16,
+          backgroundColor: theme.colors.surface,
+        },
+        langOn: { backgroundColor: theme.colors.crimson },
+        langText: { fontWeight: '700', color: theme.colors.text },
+        langTextOn: { color: theme.colors.onPrimary },
+        failure: {
+          textAlign: 'center',
+          color: theme.colors.danger,
+          fontSize: 13,
+          paddingHorizontal: 20,
+        },
+        statusRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 12,
+          paddingHorizontal: 16,
+          paddingVertical: 6,
+        },
+        statusText: {
+          flexShrink: 1,
+          textAlign: 'center',
+          color: theme.colors.text,
+          fontSize: 13,
+        },
+        statusDismiss: {
+          fontWeight: '700',
+          color: theme.colors.crimson,
+          fontSize: 13,
+        },
+        scroll: { flex: 1 },
+        scrollContent: { padding: 16, gap: 12, flexGrow: 1 },
+        hero: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 220,
+        },
+        speak: {
+          width: 148,
+          height: 148,
+          borderRadius: 74,
+          backgroundColor: theme.colors.crimson,
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+        },
+        speakListening: { backgroundColor: theme.colors.text },
+        speakOff: { opacity: 0.45 },
+        speakEn: {
+          color: theme.colors.onPrimary,
+          fontWeight: '800',
+          fontSize: 18,
+        },
+        speakNe: { color: theme.colors.onPrimary, fontSize: 14 },
+        dock: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+          paddingBottom: 8,
+        },
+        pass: {
+          paddingHorizontal: 18,
+          paddingVertical: 12,
+          borderRadius: 20,
+          backgroundColor: theme.colors.text,
+        },
+        passOff: { opacity: 0.4 },
+        passText: { color: theme.colors.onPrimary, fontWeight: '800' },
+      }),
+    [theme],
+  );
 
   useEffect(() => {
     const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
@@ -105,12 +219,25 @@ export function TranslateScreen({
   const speechUnavailable = uiPhase.phase === 'unavailable';
   const speakLabel =
     uiPhase.phase === 'listening'
-      ? 'Stop listening'
+      ? t('translate.stopA11y', lang)
       : uiPhase.phase === 'requestingPermission'
-        ? 'Requesting microphone'
+        ? t('translate.requestingMicA11y', lang)
         : speechUnavailable
-          ? 'Speech unavailable — type instead'
-          : 'Speak to translate';
+          ? t('translate.speechUnavailableA11y', lang)
+          : t('translate.speakA11y', lang);
+
+  const speakVisibleEn =
+    uiPhase.phase === 'listening'
+      ? t('translate.listening', lang)
+      : t('translate.speak', lang);
+  const speakVisibleNe =
+    uiPhase.phase === 'listening'
+      ? t('translate.listeningNe', lang)
+      : t('translate.speakNe', lang);
+  const passLabel =
+    state.activeSide === 'en'
+      ? t('translate.pass', lang)
+      : t('translate.passNe', lang);
 
   const speakButton = (testID: string) => (
     <Pressable
@@ -139,14 +266,10 @@ export function TranslateScreen({
       <Ionicons
         name={uiPhase.phase === 'listening' ? 'stop' : 'mic'}
         size={28}
-        color="#fff"
+        color={theme.colors.onPrimary}
       />
-      <Text style={styles.speakEn}>
-        {uiPhase.phase === 'listening' ? 'Listening' : 'Speak'}
-      </Text>
-      <Text style={styles.speakNe}>
-        {uiPhase.phase === 'listening' ? 'सुन्दै…' : 'बोल्नुहोस्'}
-      </Text>
+      <Text style={styles.speakEn}>{speakVisibleEn}</Text>
+      <Text style={styles.speakNe}>{speakVisibleNe}</Text>
     </Pressable>
   );
 
@@ -160,11 +283,11 @@ export function TranslateScreen({
         <Pressable
           onPress={onOpenHistory}
           accessibilityRole="button"
-          accessibilityLabel="History"
+          accessibilityLabel={t('translate.historyA11y', lang)}
           testID="open-history"
           style={styles.iconBtn}
         >
-          <Ionicons name="time-outline" size={22} color={colors.text} />
+          <Ionicons name="time-outline" size={22} color={theme.colors.text} />
         </Pressable>
         <View style={styles.brandBlock}>
           <Image source={require('../../assets/icon.png')} style={styles.mark} />
@@ -176,11 +299,11 @@ export function TranslateScreen({
         <Pressable
           onPress={onOpenSettings}
           accessibilityRole="button"
-          accessibilityLabel="Settings"
+          accessibilityLabel={t('translate.settingsA11y', lang)}
           testID="open-settings"
           style={styles.iconBtn}
         >
-          <Ionicons name="settings-outline" size={22} color={colors.text} />
+          <Ionicons name="settings-outline" size={22} color={theme.colors.text} />
         </Pressable>
       </View>
 
@@ -190,10 +313,10 @@ export function TranslateScreen({
           style={[styles.langPill, state.activeSide === 'en' && styles.langOn]}
           accessibilityRole="radio"
           accessibilityState={{ selected: state.activeSide === 'en' }}
-          accessibilityLabel="English"
+          accessibilityLabel={t('translate.sideEn', lang)}
         >
           <Text style={[styles.langText, state.activeSide === 'en' && styles.langTextOn]}>
-            English
+            {t('translate.sideEn', lang)}
           </Text>
         </Pressable>
         <Pressable
@@ -204,19 +327,19 @@ export function TranslateScreen({
             })
           }
           accessibilityRole="button"
-          accessibilityLabel="Swap languages"
+          accessibilityLabel={t('translate.swapA11y', lang)}
         >
-          <Ionicons name="swap-horizontal" size={20} color={colors.crimson} />
+          <Ionicons name="swap-horizontal" size={20} color={theme.colors.crimson} />
         </Pressable>
         <Pressable
           onPress={() => session.dispatch({ type: 'setSide', side: 'ne' })}
           style={[styles.langPill, state.activeSide === 'ne' && styles.langOn]}
           accessibilityRole="radio"
           accessibilityState={{ selected: state.activeSide === 'ne' }}
-          accessibilityLabel="Nepali"
+          accessibilityLabel={t('translate.sideNe', lang)}
         >
           <Text style={[styles.langText, state.activeSide === 'ne' && styles.langTextOn]}>
-            Nepali
+            {t('translate.sideNe', lang)}
           </Text>
         </Pressable>
       </View>
@@ -225,8 +348,8 @@ export function TranslateScreen({
 
       {showFailure ? (
         <Text style={styles.failure} testID="mt-failure">
-          {MT_WARM_FAILED}
-          {!neuralReady ? ' Offline phrasebook still works.' : ''}
+          {t('translate.mtWarmFailed', lang)}
+          {!neuralReady ? t('translate.phrasebookHint', lang) : ''}
         </Text>
       ) : null}
 
@@ -237,20 +360,24 @@ export function TranslateScreen({
             <Pressable
               onPress={session.clearError}
               accessibilityRole="button"
-              accessibilityLabel="Dismiss error"
+              accessibilityLabel={t('translate.dismissErrorA11y', lang)}
               testID="translate-status-dismiss"
             >
-              <Text style={styles.statusDismiss}>Dismiss</Text>
+              <Text style={styles.statusDismiss}>
+                {t('translate.dismissError', lang)}
+              </Text>
             </Pressable>
           ) : null}
           {uiPhase.phase === 'listening' ? (
             <Pressable
               onPress={session.cancelListen}
               accessibilityRole="button"
-              accessibilityLabel="Cancel listening"
+              accessibilityLabel={t('translate.cancelListenA11y', lang)}
               testID="translate-cancel-listen"
             >
-              <Text style={styles.statusDismiss}>Cancel</Text>
+              <Text style={styles.statusDismiss}>
+                {t('translate.cancelListen', lang)}
+              </Text>
             </Pressable>
           ) : null}
         </View>
@@ -300,14 +427,12 @@ export function TranslateScreen({
             onPress={session.pass}
             disabled={!passEnabled || busy}
             accessibilityRole="button"
-            accessibilityLabel={state.activeSide === 'en' ? 'Pass' : 'पास'}
+            accessibilityLabel={passLabel}
             accessibilityState={{ disabled: !passEnabled || busy }}
             testID="pass-phone"
             style={[styles.pass, (!passEnabled || busy) && styles.passOff]}
           >
-            <Text style={styles.passText}>
-              {state.activeSide === 'en' ? 'Pass' : 'पास'}
-            </Text>
+            <Text style={styles.passText}>{passLabel}</Text>
           </Pressable>
         </View>
       )}
@@ -345,88 +470,3 @@ export function TranslateScreen({
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingTop: 4,
-  },
-  iconBtn: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandBlock: { flex: 1, alignItems: 'center', gap: 2 },
-  mark: { width: 28, height: 28, borderRadius: 6 },
-  brand: { fontSize: 20, fontWeight: '700' },
-  brandNep: { color: colors.crimson },
-  brandRest: { color: colors.text },
-  langRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-  },
-  langPill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
-    backgroundColor: colors.surface,
-  },
-  langOn: { backgroundColor: colors.crimson },
-  langText: { fontWeight: '700', color: colors.text },
-  langTextOn: { color: '#fff' },
-  failure: {
-    textAlign: 'center',
-    color: colors.danger,
-    fontSize: 13,
-    paddingHorizontal: 20,
-  },
-  statusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-  },
-  statusText: { flexShrink: 1, textAlign: 'center', color: colors.text, fontSize: 13 },
-  statusDismiss: { fontWeight: '700', color: colors.crimson, fontSize: 13 },
-  scroll: { flex: 1 },
-  scrollContent: { padding: 16, gap: 12, flexGrow: 1 },
-  hero: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 220 },
-  speak: {
-    width: 148,
-    height: 148,
-    borderRadius: 74,
-    backgroundColor: colors.crimson,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 2,
-  },
-  speakListening: { backgroundColor: colors.text },
-  speakOff: { opacity: 0.45 },
-  speakEn: { color: '#fff', fontWeight: '800', fontSize: 18 },
-  speakNe: { color: '#fff', fontSize: 14 },
-  dock: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    paddingBottom: 8,
-  },
-  pass: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 20,
-    backgroundColor: colors.text,
-  },
-  passOff: { opacity: 0.4 },
-  passText: { color: '#fff', fontWeight: '800' },
-});

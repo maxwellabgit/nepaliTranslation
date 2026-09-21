@@ -2,11 +2,12 @@ import { useCallback, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 import { AppButton } from '../../components/AppPrimitives';
+import { t, useUiLang } from '../../i18n';
 import { useAuth } from '../auth/AuthProvider';
 import { useEntitlement } from '../entitlements/EntitlementProvider';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { useServices } from '../../services/ServiceContext';
-import { resolveAdUnitConfig, REWARDED_CTA_LABEL } from './adConfig';
+import { resolveAdUnitConfig } from './adConfig';
 import { executeAdPlan, planAdPlacement } from './adMiddleware';
 import {
   acceptProvisionalGrant,
@@ -24,7 +25,7 @@ type Props = {
 
 /**
  * Signed-in optional rewarded CTA. Never auto-loads.
- * Client callback → provisional 10 min; permanent grant only via verified SSV.
+ * Client callback → provisional grant; permanent grant only via verified SSV.
  */
 export function RewardedAdButton({
   offline: offlineProp,
@@ -34,14 +35,19 @@ export function RewardedAdButton({
   const entitlement = useEntitlement();
   const flags = useFeatureFlags();
   const services = useServices();
+  const lang = useUiLang();
   const [busy, setBusy] = useState(false);
+  const cta = t('ads.rewardedCta', lang);
 
   const offline = offlineProp ?? services.network.isOffline();
 
   const onPress = useCallback(async () => {
     if (busy) return;
     if (auth.status !== 'signed-in' || !auth.userId) {
-      Alert.alert('Sign in required', 'Sign in to earn ad-free time from an optional ad.');
+      Alert.alert(
+        t('ads.signInRequiredTitle', lang),
+        t('ads.signInRequiredBody', lang),
+      );
       return;
     }
     setBusy(true);
@@ -108,6 +114,7 @@ export function RewardedAdButton({
     flags.networkAdsEnabled,
     flags.rewardedAdsEnabled,
     hasSubscription,
+    lang,
     offline,
     services.ads,
   ]);
@@ -117,11 +124,11 @@ export function RewardedAdButton({
 
   return (
     <AppButton
-      label={REWARDED_CTA_LABEL}
+      label={cta}
       variant="secondary"
       onPress={() => void onPress()}
       disabled={busy || offline}
-      accessibilityLabel={REWARDED_CTA_LABEL}
+      accessibilityLabel={cta}
       testID="rewarded-ad-cta"
       style={styles.btn}
     />

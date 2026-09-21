@@ -19,11 +19,36 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 30_000 },
   use: {
-    ...devices['Desktop Chrome'],
     baseURL: 'http://127.0.0.1:5173',
     trace: 'on-first-retry',
-    viewport: { width: 1280, height: 900 },
   },
+  projects: [
+    {
+      name: 'desktop',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 900 },
+      },
+    },
+    {
+      name: 'ipad-11',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 768, height: 1024 },
+        hasTouch: true,
+        isMobile: true,
+      },
+    },
+    {
+      name: 'ipad-13',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1024, height: 1366 },
+        hasTouch: true,
+        isMobile: true,
+      },
+    },
+  ],
   webServer: {
     // Dev server serves public/hosted-app; preview only serves dist/ after build.
     command: 'npm run prepare:hosted && npx vite --host 127.0.0.1 --port 5173',

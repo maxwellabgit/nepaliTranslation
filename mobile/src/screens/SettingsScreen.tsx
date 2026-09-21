@@ -133,6 +133,20 @@ export function SettingsScreen({
           color: theme.colors.text,
           fontWeight: '600',
         },
+        langChip: {
+          minHeight: 44,
+          minWidth: 44,
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          justifyContent: 'center',
+        },
+        langChipOn: {
+          borderColor: theme.colors.forest,
+          backgroundColor: theme.colors.forestSoft,
+        },
       }),
     [theme],
   );
@@ -145,7 +159,7 @@ export function SettingsScreen({
           hitSlop={12}
           style={styles.topBtn}
           accessibilityRole="button"
-          accessibilityLabel="Close settings"
+          accessibilityLabel={t('settings.closeA11y', lang)}
           testID="settings-close"
         >
           <Text style={dynamic.topBtnText}>←</Text>
@@ -167,7 +181,7 @@ export function SettingsScreen({
           <Text style={dynamic.sectionLabel}>{t('settings.language', lang)}</Text>
           <View style={styles.langRow}>
             <Pressable
-              style={[styles.langChip, lang === 'en' && styles.langChipOn]}
+              style={[dynamic.langChip, lang === 'en' && dynamic.langChipOn]}
               onPress={() => setUiLang('en')}
               accessibilityRole="button"
               accessibilityState={{ selected: lang === 'en' }}
@@ -177,7 +191,7 @@ export function SettingsScreen({
               <Text style={dynamic.body}>{t('settings.languageEn', lang)}</Text>
             </Pressable>
             <Pressable
-              style={[styles.langChip, lang === 'ne' && styles.langChipOn]}
+              style={[dynamic.langChip, lang === 'ne' && dynamic.langChipOn]}
               onPress={() => setUiLang('ne')}
               accessibilityRole="button"
               accessibilityState={{ selected: lang === 'ne' }}
@@ -302,7 +316,9 @@ export function SettingsScreen({
             <Text style={dynamic.meta} testID="settings-consent-version">
               {auth.consentVersion === CONTRIBUTION_CONSENT_VERSION
                 ? t('settings.consentCurrent', lang)
-                : `Consent ${auth.consentVersion}`}
+                : t('settings.consentVersion', lang, {
+                    version: auth.consentVersion,
+                  })}
             </Text>
           ) : null}
         </View>
@@ -353,19 +369,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     marginTop: 4,
-  },
-  langChip: {
-    minHeight: 44,
-    minWidth: 44,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#D0D5DD',
-    justifyContent: 'center',
-  },
-  langChipOn: {
-    borderColor: '#0B6E4F',
-    backgroundColor: '#E8F5F0',
   },
 });

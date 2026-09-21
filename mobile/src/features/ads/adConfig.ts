@@ -90,7 +90,8 @@ export const NETWORK_BANNER_COOLDOWN_MS = 12 * 60 * 1000;
 export const PROVISIONAL_AD_FREE_MS = 10 * 60 * 1000;
 export const PROVISIONAL_EXPIRE_MS = 15 * 60 * 1000;
 
-export const HOUSE_AD_COPY = 'Prefer no ads? Ad-free is $0.49/month.';
+/** English fallbacks; UI prefers `t('ads.*')` via HouseAd / RewardedAdButton. */
+export const HOUSE_AD_COPY = 'Prefer no ads? Ad-free is $0.99/month.';
 export const HOUSE_AD_DISMISS = 'Not now';
 export const REWARDED_CTA_LABEL =
-  'Watch one optional ad for 10 ad-free minutes';
+  'Watch one optional ad for 15 ad-free minutes';

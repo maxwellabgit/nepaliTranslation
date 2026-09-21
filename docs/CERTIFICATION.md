@@ -8,7 +8,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 |------|--------|--------|
 | “Translation may be imperfect” + path to **Mark incorrect** | **Source-proven** | Settings quality copy; Mark incorrect on Translate results |
 | Informal Nepali register = तिमी (not तँ) in UI catalogs | **Source-proven** | `mobile/src/i18n/ne.ts` + i18n unit tests |
-| Full bilingual UI (EN / नेपाली) via persisted selector | **Not done** | F2 — `useUiLang` still English-only |
+| Full bilingual UI (EN / नेपाली) via persisted selector | **Source-proven** | F2 — `UiLangProvider` + Settings selector + catalogued chrome |
 | Exact bundled models pass four-class gold ship eval | **Not done** | F9 — thresholds pre-declared; never edit gold |
 | Gold eval / device translation quality claim | Device / human | Never claim ship quality from Windows alone |
 
@@ -43,8 +43,8 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 |------|--------|--------|
 | Meaningful accessibility labels on primary controls | **Source-proven** | Tabs, Speak, Pass, Mark incorrect, Camera overlays, etc. |
 | VoiceOver full walkthrough | **Device-only** | iPhone + iPad |
-| Dynamic Type / larger text | **Device-only** / F2 | Many fixed StyleSheet sizes today |
-| Contrast (light + dark) | Partial / F2 | Tokens exist; `userInterfaceStyle` still light-fixed in places |
+| Dynamic Type / larger text | **Partial / F2** | Min 44pt targets + labels; full Dynamic Type scale remains device-gated |
+| Contrast (light + dark) | **Source-proven** (major screens) | `userInterfaceStyle: automatic`; useTheme on Translate/Camera/shell/Settings |
 | Reduce Motion | Device | Gate product motion when added |
 | Offline core usable | **Source-proven** | |
 

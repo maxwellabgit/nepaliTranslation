@@ -33,7 +33,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 - [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
-- [ ] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts
+- [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — verify:ci green; review pending
 - [ ] **F3** — Consented speech/photo ingestion and private storage
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
@@ -56,23 +56,18 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 | Area | Change |
 |------|--------|
-| UI lang | Persisted `uiLang` in prefs; `UiLangProvider`; Settings English/नेपाली chips |
-| Theme | `userInterfaceStyle: automatic` |
-| Layout | `sizeClass` phone / tablet11 / tablet13; AppShell content max-width |
-| TG | iPad 13 viewport preset `1024x1366` |
-| Tests | uiLang persistence; sizeClass; prefs default includes uiLang |
+| UI lang | Persisted `uiLang` (AsyncStorage prefs); `UiLangProvider` before auth; Settings English/नेपाली chips switch chrome immediately |
+| Catalog | Expanded `en`/`ne` for tabs, Translate, Camera, Learn rewards, ads, auth; `t()` param interpolation |
+| Screens | AppShell, Translate (+ composer/options/turns), Camera, RewardSummary, HouseAd, RewardedAd, AccountSection use `t()` + `useTheme()` |
+| Theme | `userInterfaceStyle: automatic`; scheme-aware StatusBar; major screens off static light `colors` |
+| Layout | `sizeClass` phone / tablet11 / tablet13; content max-width; Camera capture/result stays portrait-dark |
+| a11y | Min 44pt on tabs, Speak/Pass, Camera shutter/retake; labels on primary controls |
+| TG | Playwright projects: desktop + iPad 11 (`768×1024`) + iPad 13 (`1024×1366`); touch-target smoke on iPad |
+| Tests | `uiLang-test`, `sizeClass-test`, `catalogCoverage-test` (banned EN chrome), i18n key parity |
 
-**Honesty:** Translate/Camera still have many hardcoded EN strings (catalog migration continues). Dark mode tokens exist; not every StyleSheet migrated. Device Dynamic Type / VoiceOver = F10.
+**Honesty:** Full Dynamic Type scaling and VoiceOver walkthrough remain device-gated (F10). AlphabetLesson quiz copy still has some EN literals (Learn landing uses catalogued RewardSummary). House ad / rewarded CTA copy now matches INTENT ($0.99 / 15 min); provisional grant ms constants still F4/F5. Age checkbox now 18+ in UI (full consent migration is F3).
 
-| Area | Change |
-|------|--------|
-| STT | Routed through RuntimePorts; `requiresOnDeviceRecognition: true`; `getSttSupport` fail-closed; typed translate works when unavailable |
-| Logs | Removed raw `console.info` source/output from TranslationEngine |
-| Diagnostics | Sensitive EN/NE fixture tests; banned keys |
-| Models | Pinned revision + SHA-256 in manifest; `hfResolveUrl` no longer uses `main`; EAS verify |
-| Camera | Downsampled preview; generation cancel; distinct `error` phase + copy; keep preview on recoverable fail |
-
-**Honesty:** Physical on-device STT locale install + real IPA hash proof remain device-gated (F10). Manifest pins are real HF revisions/hashes from the release snapshot used at F1 time.
+**Previous: F1 — privacy / offline-core** — independent review PASS (`05adf43`); merged PR #4.
 
 **Previous: F0 — durable product contract** — merged PR #3 (`a5d9013`).
 
@@ -80,29 +75,25 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 - Repository contract still contradicted founder V1 decisions until F0 (price, age, media upload, interstitial, reward TZ, rewarded minutes).
 - Google warns interstitials may be unsuitable for utility apps — keep `automatic_interstitial_enabled` remotely off until deliberate go/no-go.
+- Early F2 scaffold had catalog keys + Settings selector but AppShell/Translate/Camera still hardcoded EN until this repair.
 
 ## Commands that actually ran (paste)
 
 ```text
-# F1 — privacy / offline-core (branch cursor/v1-f1-privacy-core)
+# F2 — bilingual UI / theme / layouts (branch cursor/v1-f2-ui)
+# Independent-review repair: wire AppShell/Translate/Camera to catalog+theme;
+# catalogCoverage-test; ne MessageKey parity; TG 1024x1366; StatusBar from scheme
 cd mobile
-npm run lint          # pass
-npm run typecheck     # pass
-npm run test:unit -- --runInBand
-# Test Suites: 53 passed; Tests: 232 passed
-npm run test:integration -- --runInBand
-# Test Suites: 2 passed; Tests: 19 passed
-# includes: keeps typed translation working when on-device speech is unsupported
-npm run verify:translate  # OK
-npm run verify:ci         # exit 0 (~58s): lint, typecheck, unit, integration,
-# verify:translate, expo-doctor, coverage ratchet OK, export:web
-# Independent review: PASS ([review](657f28dc-3e8f-4c4d-aa48-c996eec5fa1b))
+npm run verify:ci
+# exit 0 (~50s): lint, typecheck, unit 56 suites / 240 tests (incl. catalogCoverage),
+# integration 2 suites / 19 tests, verify:translate OK, expo-doctor,
+# coverage ratchet OK, export:web
 ```
 
 ## Remaining work
 
-1. Commit remaining preview max-edge clamp + ExecPlan paste (working tree); PR/merge F1 when founder asks.
-2. Do **not** start F2 until F1 is merged.
+1. Independent review of F2 → PASS required before merge.
+2. Do **not** start F3 until F2 is merged.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
@@ -110,3 +101,4 @@ npm run verify:ci         # exit 0 (~58s): lint, typecheck, unit, integration,
 - App Store Connect $0.99 subscription product + legal Privacy/Terms URLs
 - Bilingual human sign-off; external TestFlight cohort
 - Automatic interstitial enablement is a deliberate release go/no-go, not implied by code landing
+- Full Dynamic Type + VoiceOver pass (F10 device matrix)

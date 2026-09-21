@@ -2,7 +2,6 @@ import type { MessageKey } from './en';
 
 /**
  * Nepali UI catalog (informal तिमी register where second person appears).
- * Secondary surfaces only for this slice.
  */
 export const ne: Record<MessageKey, string> = {
   'common.cancel': 'रद्द',
@@ -10,12 +9,103 @@ export const ne: Record<MessageKey, string> = {
   'common.delete': 'मेटाउनुहोस्',
   'common.edit': 'सम्पादन',
   'common.retry': 'फेरि प्रयास',
+  'common.dismiss': 'हटाउनुहोस्',
+  'common.close': 'बन्द',
   'common.offline': 'तिमी अफलाइन छौ',
   'common.offlineDetail':
     'यस यन्त्रमा अनुवाद अझै चल्छ। सिंक र पुरस्कारका लागि नेटवर्क चाहिन्छ।',
   'common.loading': 'लोड हुँदै…',
   'common.error': 'केही गडबड भयो',
   'common.empty': 'अहिले केही छैन',
+  'common.play': 'बजाउनुहोस्',
+  'common.copy': 'कपी',
+
+  'tabs.translate': 'अनुवाद',
+  'tabs.camera': 'क्यामेरा',
+  'tabs.learn': 'सिकाइ',
+  'tabs.translateA11y': 'अनुवाद ट्याब',
+  'tabs.cameraA11y': 'क्यामेरा ट्याब',
+  'tabs.learnA11y': 'सिकाइ ट्याब',
+
+  'translate.historyA11y': 'इतिहास',
+  'translate.settingsA11y': 'सेटिङ',
+  'translate.sideEn': 'अंग्रेजी',
+  'translate.sideNe': 'नेपाली',
+  'translate.swapA11y': 'भाषा साट्नुहोस्',
+  'translate.speak': 'Speak',
+  'translate.listening': 'Listening',
+  'translate.speakNe': 'बोल्नुहोस्',
+  'translate.listeningNe': 'सुन्दै…',
+  'translate.speakA11y': 'बोलेर अनुवाद गर्नुहोस्',
+  'translate.stopA11y': 'सुन्न रोक्नुहोस्',
+  'translate.requestingMicA11y': 'माइक्रोफोन माग्दै',
+  'translate.speechUnavailableA11y': 'बोली उपलब्ध छैन — टाइप गर',
+  'translate.pass': 'Pass',
+  'translate.passNe': 'पास',
+  'translate.dismissError': 'हटाउनुहोस्',
+  'translate.dismissErrorA11y': 'त्रुटि हटाउनुहोस्',
+  'translate.cancelListen': 'रद्द',
+  'translate.cancelListenA11y': 'सुन्न रद्द गर्नुहोस्',
+  'translate.orType': 'वा टाइप गर',
+  'translate.placeholderEn': 'Type to translate...',
+  'translate.placeholderNe': 'टाइप गर्नुहोस्...',
+  'translate.inputA11y': 'अनुवाद इनपुट',
+  'translate.optionsA11y': 'अनुवाद विकल्प',
+  'translate.optionsTitle': 'विकल्प',
+  'translate.formal': 'औपचारिक नेपाली',
+  'translate.informal': 'अनौपचारिक नेपाली',
+  'translate.devanagari': 'देवनागरी',
+  'translate.roman': 'रोमन नेपाली',
+  'translate.playA11y': 'अनुवाद सुनाउनुहोस्',
+  'translate.copyA11y': 'अनुवाद कपी गर्नुहोस्',
+  'translate.retryA11y': 'अनुवाद फेरि प्रयास',
+  'translate.retryBusyA11y': 'अनुवाद हुँदा फेरि प्रयास उपलब्ध छैन',
+  'translate.markIncorrect': 'गलत चिन्ह लगाउनुहोस्',
+  'translate.markIncorrectA11y': 'गलत चिन्ह लगाउनुहोस्',
+  'translate.phrasebookHint': ' अफलाइन वाक्यपुस्तिका अझै काम गर्छ।',
+  'translate.status.needMic': 'बोल्न माइक्रोफोन अनुमति चाहिन्छ।',
+  'translate.status.listening': 'सुन्दै…',
+  'translate.status.finalizing': 'बोली टुङ्ग्याउँदै…',
+  'translate.status.translating': 'अनुवाद हुँदै…',
+  'translate.status.micDenied':
+    'माइक्रोफोन अनुमति अस्वीकृत। टाइप गर, वा सेटिङमा अनुमति खोल।',
+  'translate.status.emptyResult':
+    'त्यस पाठको अनुवाद भएन। अर्को शब्द प्रयास गर।',
+  'translate.status.sttFailed':
+    'बोली पहिचान असफल। टाइप गर वा फेरि प्रयास गर।',
+  'translate.status.translateFailed':
+    'अनुवाद असफल। फेरि प्रयास गर।',
+  'translate.status.sttUnsupported':
+    'यस भाषाका लागि यन्त्रमै बोली उपलब्ध छैन। तिमी अझै टाइप गर्न सक्छौ।',
+  'translate.status.speechUnavailable':
+    'यस यन्त्रमा बोली उपलब्ध छैन। तिमी अझै टाइप गर्न सक्छौ।',
+  'translate.mtWarmFailed': 'मोडेल उपलब्ध छैन · वाक्य प्रयोग हुँदै',
+
+  'camera.title': 'क्यामेरा',
+  'camera.directionA11y': 'अनुवाद दिशा',
+  'camera.directionNeEn': 'नेपाली → अंग्रेजी',
+  'camera.directionEnNe': 'अंग्रेजी → नेपाली',
+  'camera.privacyNote':
+    'क्यामेरा OCR यस फोनमै चल्छ। तस्बिर अस्थायी हुन् र फेरि खिच्दा, छाड्दा, वा सकिएपछि मेटिन्छन् — फोटो लाइब्रेरीमा बचत हुँदैन।',
+  'camera.allow': 'क्यामेरा अनुमति',
+  'camera.capture': 'खिच्नुहोस्',
+  'camera.captureA11y': 'तस्बिर खिच्नुहोस्',
+  'camera.reading': 'पढ्दै…',
+  'camera.translating': 'अनुवाद हुँदै…',
+  'camera.retake': 'फेरि खिच्नुहोस्',
+  'camera.retakeA11y': 'फेरि तस्बिर खिच्नुहोस्',
+  'camera.translation': 'अनुवाद',
+  'camera.error.capture': 'खिच्न सकिएन। फेरि प्रयास गर।',
+  'camera.error.ocr':
+    'यस तस्बिरबाट पाठ पढ्न सकिएन। लेखाइ नजिकबाट फेरि प्रयास गर।',
+  'camera.error.translate':
+    'पाठ भेटियो तर अनुवाद असफल। फेरि खिच्नुहोस् वा प्रयास गर।',
+  'camera.error.model':
+    'यन्त्रमै अनुवाद तयार छैन। केही बेरमा फेरि प्रयास गर।',
+  'camera.error.noText': 'पाठ भेटिएन। लेखाइ नजिकबाट फेरि प्रयास गर।',
+  'camera.error.lowConfidence': 'पाठ स्पष्ट भएन, अनुवाद गर्न सकिएन।',
+  'camera.error.generic': 'यस तस्बिरमा समस्या भयो। फेरि प्रयास गर।',
+  'camera.passagesFound': '{count} खण्ड भेटियो',
 
   'history.title': 'इतिहास',
   'history.close': 'इतिहास बन्द गर्नुहोस्',
@@ -30,8 +120,10 @@ export const ne: Record<MessageKey, string> = {
   'history.toTraining': 'तालिममा',
   'history.submittedA11y': 'तालिम डाटामा पहिल्यै छ',
   'history.toTrainingA11y': 'तालिमका लागि सुधार सुझाउनुहोस्',
+  'history.restoreA11y': 'अनुवाद पुनर्स्थापना',
 
   'settings.title': 'सेटिङ',
+  'settings.closeA11y': 'सेटिङ बन्द',
   'settings.language': 'एप भाषा',
   'settings.languageEn': 'English',
   'settings.languageNe': 'नेपाली',
@@ -62,6 +154,7 @@ export const ne: Record<MessageKey, string> = {
   'settings.modelReady': 'मोडेल तयार',
   'settings.modelPending': 'मोडेल पर्खँदै',
   'settings.consentCurrent': 'सहमति अद्यावधिक',
+  'settings.consentVersion': 'सहमति {version}',
   'settings.speech': 'यस यन्त्रमा बोली',
   'settings.speechEn': 'अंग्रेजी आवाज इनपुट · उपलब्ध',
   'settings.speechNeAvailable': 'नेपाली आवाज इनपुट · उपलब्ध',
@@ -77,11 +170,33 @@ export const ne: Record<MessageKey, string> = {
   'settings.offlineBanner':
     'खाता र सिंकका लागि नेटवर्क चाहिन्छ। अनुवाद र सिकाइ अफलाइन उपलब्ध छन्।',
 
+  'learn.earnRewards': 'पुरस्कार कमाउनुहोस्',
   'learn.earnRewardsA11y': 'पुरस्कार कमाउनुहोस्',
+  'learn.rewardsHeading': 'पुरस्कार',
+  'learn.rewardsBody':
+    'एप प्रयोग गर, अनुवाद सुधारमा सहयोग गर, पुरस्कार कमाउ।',
+  'learn.credits': '{count} क्रेडिट',
+  'learn.adFreeInactive': 'विज्ञापन-मुक्त सक्रिय छैन',
+  'learn.adFreeMins': '{mins} मिनेट विज्ञापन-मुक्त',
+  'learn.adFreeHours': '{hours} घण्टा विज्ञापन-मुक्त',
+  'learn.adFreeHoursMins': '{hours} घण्टा {mins} मिनेट विज्ञापन-मुक्त',
+  'learn.pendingHelp': 'सहयोगी सुधारले थप विज्ञापन-मुक्त समय दिन्छ।',
+  'learn.pendingWaiting': '{count} सुधार पर्खँदै।',
+  'learn.pendingWaitingOne': '१ सुधार पर्खँदै।',
   'learn.noVoiceTitle': 'नेपाली आवाज छैन',
   'learn.noVoiceDetail':
     'तिमी अक्षर अफलाइन सिक्न सक्छौ। सुनाइका लागि यस iPhone मा नेपाली आवाज चाहिन्छ।',
   'learn.offlineOk': 'अक्षर पाठ पूर्ण अफलाइन चल्छ — लगइन चाहिँदैन।',
+  'learn.speak': 'बोल',
+  'learn.speakUnavailable': 'बोली उपलब्ध छैन',
+  'learn.speakA11y': 'अक्षर सामान्य गतिमा सुनाउनुहोस्',
+  'learn.speakSlowA11y': 'अक्षर बिस्तारै सुनाउनुहोस्',
+  'learn.nextLetter': 'अर्को अक्षर',
+  'learn.nextLetterA11y': 'अर्को अक्षर',
+  'learn.restart': 'अक्षर सुरुबाट',
+  'learn.restartA11y': 'अक्षर सुरुबाट',
+  'learn.finishedDetail':
+    'तिमी सबै खण्ड सक्यौ। जुनसुकै बेला फेरि सुरु गर्न सकिन्छ — प्रगति यस यन्त्रमै रहन्छ।',
 
   'contributions.title': 'योगदान र पुरस्कार',
   'contributions.emptyTitle': 'अहिलेसम्म योगदान छैन',
@@ -108,4 +223,31 @@ export const ne: Record<MessageKey, string> = {
   'contributions.deleteA11y': 'योगदान मेटाउनुहोस्',
   'contributions.offlineBanner':
     'तिमी अफलाइन छौ। मस्यौदा यन्त्रमै रहन्छ; अनलाइन हुँदा सिंक फेरि सुरु हुन्छ।',
+  'contributions.signInPrompt': 'योगदान पठाउन Apple बाट साइन इन गर।',
+  'contributions.correctionTitle': 'राम्रो अनुवाद सुझाउनुहोस्',
+  'contributions.correctionPlaceholder': 'राम्रो अनुवाद टाइप गर',
+  'contributions.submit': 'योगदान पठाउनुहोस्',
+  'contributions.saveDraft': 'मस्यौदा बचत',
+
+  'auth.signInApple': 'Apple बाट साइन इन',
+  'auth.signInUnavailable':
+    'यस यन्त्रमा Apple साइन इन उपलब्ध छैन। अनुवाद अफलाइन अझै चल्छ।',
+  'auth.signOut': 'साइन आउट',
+  'auth.copyUserIdA11y': 'सहायता युजर ID कपी',
+  'auth.ageConfirm': 'म १८ वर्ष वा माथि छु भनी पुष्टि गर्छु',
+  'auth.saveConsent': 'सहमति बचत',
+  'auth.consentSaved': 'सहमति बचत भयो',
+  'auth.deleteAccount': 'खाता मेटाउनुहोस्',
+  'auth.deleteAccountTitle': 'खाता मेटाउने?',
+  'auth.deleteAccountBody':
+    'यसले तिमीको खाता र योगदान डाटा मेटाउन तालिका बनाउँछ। यसले Apple सदस्यता रद्द गर्दैन — Settings → Apple ID → Subscriptions बाट व्यवस्थापन गर। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
+  'auth.deleting': 'मेटाउँदै…',
+  'auth.retryDeleteA11y': 'खाता मेटाउन फेरि प्रयास',
+
+  'ads.houseCopy': 'विज्ञापन नचाहिने? विज्ञापन-मुक्त $०.९९/महिना।',
+  'ads.houseDismiss': 'अहिले होइन',
+  'ads.rewardedCta': '१५ मिनेट विज्ञापन-मुक्तका लागि वैकल्पिक विज्ञापन हेर',
+  'ads.signInRequiredTitle': 'साइन इन चाहिन्छ',
+  'ads.signInRequiredBody':
+    'वैकल्पिक विज्ञापनबाट विज्ञापन-मुक्त समय कमाउन साइन इन गर।',
 };

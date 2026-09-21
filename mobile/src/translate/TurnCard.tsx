@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
 import * as Clipboard from 'expo-clipboard';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { formatNepaliScript } from '../mt/onDeviceTranslate';
-import { colors } from '../theme';
+import { t, useUiLang } from '../i18n';
+import { useTheme } from '../theme';
 import { useRuntime } from '../runtime/RuntimeContext';
 import { isRetryableTurn, type SessionTurn } from './translationSessionReducer';
 import type { NepaliScript } from '../mt/onDeviceTranslate';
@@ -25,6 +27,8 @@ export function TurnCard({
   onRetry,
   onMarkIncorrect,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const runtime = useRuntime();
   const targetIsNepali = turn.from === 'en';
   const shown =
@@ -36,6 +40,48 @@ export function TurnCard({
       ? formatNepaliScript(turn.translation, 'roman')
       : '';
   const canRetry = isRetryableTurn(turn, turns);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        card: {
+          backgroundColor: theme.colors.surface,
+          borderRadius: 12,
+          padding: 14,
+          gap: 6,
+        },
+        source: { fontSize: 15, color: theme.colors.textSecondary },
+        translation: {
+          fontSize: 22,
+          fontWeight: '700',
+          color: theme.colors.text,
+        },
+        roman: { fontSize: 14, color: theme.colors.textSecondary },
+        actions: {
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 16,
+          marginTop: 6,
+        },
+        action: {
+          fontSize: 13,
+          fontWeight: '700',
+          color: theme.colors.crimson,
+          minHeight: 44,
+          textAlignVertical: 'center',
+        },
+        actionOff: {
+          fontSize: 13,
+          fontWeight: '700',
+          color: theme.colors.textSecondary,
+          opacity: 0.5,
+          minHeight: 44,
+          textAlignVertical: 'center',
+        },
+        mark: { color: theme.colors.text },
+      }),
+    [theme],
+  );
 
   return (
     <View style={styles.card} testID={isLatest ? 'translate-turn' : undefined}>
@@ -61,17 +107,17 @@ export function TurnCard({
             });
           }}
           accessibilityRole="button"
-          accessibilityLabel="Speak translation aloud"
+          accessibilityLabel={t('translate.playA11y', lang)}
         >
-          <Text style={styles.action}>Play</Text>
+          <Text style={styles.action}>{t('common.play', lang)}</Text>
         </Pressable>
         <Pressable
           onPress={() => void Clipboard.setStringAsync(shown)}
           accessibilityRole="button"
-          accessibilityLabel="Copy translation"
+          accessibilityLabel={t('translate.copyA11y', lang)}
           testID={isLatest ? 'translate-copy' : undefined}
         >
-          <Text style={styles.action}>Copy</Text>
+          <Text style={styles.action}>{t('common.copy', lang)}</Text>
         </Pressable>
         {canRetry ? (
           <Pressable
@@ -79,41 +125,31 @@ export function TurnCard({
             disabled={busy}
             accessibilityRole="button"
             accessibilityLabel={
-              busy ? 'Retry unavailable while translating' : 'Retry translation'
+              busy
+                ? t('translate.retryBusyA11y', lang)
+                : t('translate.retryA11y', lang)
             }
             accessibilityState={{ disabled: busy }}
             testID={isLatest ? 'translate-retry' : undefined}
           >
-            <Text style={[styles.action, busy && styles.actionOff]}>Retry</Text>
+            <Text style={[styles.action, busy && styles.actionOff]}>
+              {t('common.retry', lang)}
+            </Text>
           </Pressable>
         ) : null}
         {isLatest && onMarkIncorrect ? (
           <Pressable
             onPress={onMarkIncorrect}
             accessibilityRole="button"
-            accessibilityLabel="Mark incorrect"
+            accessibilityLabel={t('translate.markIncorrectA11y', lang)}
             testID="mark-incorrect"
           >
-            <Text style={[styles.action, styles.mark]}>Mark incorrect</Text>
+            <Text style={[styles.action, styles.mark]}>
+              {t('translate.markIncorrect', lang)}
+            </Text>
           </Pressable>
         ) : null}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 14,
-    gap: 6,
-  },
-  source: { fontSize: 15, color: colors.textSecondary },
-  translation: { fontSize: 22, fontWeight: '700', color: colors.text },
-  roman: { fontSize: 14, color: colors.textSecondary },
-  actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginTop: 6 },
-  action: { fontSize: 13, fontWeight: '700', color: colors.crimson },
-  actionOff: { fontSize: 13, fontWeight: '700', color: colors.textSecondary, opacity: 0.5 },
-  mark: { color: colors.text },
-});

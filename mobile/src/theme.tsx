@@ -1,8 +1,7 @@
 /**
  * NepTranslate design tokens — crimson/saffron brand, mint conversation surface.
- * Light is the production default; dark tokens exist for Appearance / ThemeProvider.
- * Secondary screens that call useTheme() pick up the active scheme; many StyleSheet
- * call sites still bind the light `colors` export (not a full dark-mode polish).
+ * ThemeProvider + useTheme() drive light/dark from system Appearance when
+ * app.json userInterfaceStyle is automatic.
  */
 import {
   createContext,

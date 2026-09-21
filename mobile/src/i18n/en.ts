@@ -1,16 +1,107 @@
-/** English UI catalog — secondary surfaces (History, Settings, Learn, Contributions). */
+/** English UI catalog — product chrome, errors, ads, contribution. */
 export const en = {
   'common.cancel': 'Cancel',
   'common.clear': 'Clear',
   'common.delete': 'Delete',
   'common.edit': 'Edit',
   'common.retry': 'Retry',
+  'common.dismiss': 'Dismiss',
+  'common.close': 'Close',
   'common.offline': 'You are offline',
   'common.offlineDetail':
     'Core translation still works on this device. Sync and rewards need a network.',
   'common.loading': 'Loading…',
   'common.error': 'Something went wrong',
   'common.empty': 'Nothing here yet',
+  'common.play': 'Play',
+  'common.copy': 'Copy',
+
+  'tabs.translate': 'Translate',
+  'tabs.camera': 'Camera',
+  'tabs.learn': 'Learn',
+  'tabs.translateA11y': 'Translate tab',
+  'tabs.cameraA11y': 'Camera tab',
+  'tabs.learnA11y': 'Learn tab',
+
+  'translate.historyA11y': 'History',
+  'translate.settingsA11y': 'Settings',
+  'translate.sideEn': 'English',
+  'translate.sideNe': 'Nepali',
+  'translate.swapA11y': 'Swap languages',
+  'translate.speak': 'Speak',
+  'translate.listening': 'Listening',
+  'translate.speakNe': 'बोल्नुहोस्',
+  'translate.listeningNe': 'सुन्दै…',
+  'translate.speakA11y': 'Speak to translate',
+  'translate.stopA11y': 'Stop listening',
+  'translate.requestingMicA11y': 'Requesting microphone',
+  'translate.speechUnavailableA11y': 'Speech unavailable — type instead',
+  'translate.pass': 'Pass',
+  'translate.passNe': 'पास',
+  'translate.dismissError': 'Dismiss',
+  'translate.dismissErrorA11y': 'Dismiss error',
+  'translate.cancelListen': 'Cancel',
+  'translate.cancelListenA11y': 'Cancel listening',
+  'translate.orType': 'or type',
+  'translate.placeholderEn': 'Type to translate...',
+  'translate.placeholderNe': 'टाइप गर्नुहोस्...',
+  'translate.inputA11y': 'Translate input',
+  'translate.optionsA11y': 'Translation options',
+  'translate.optionsTitle': 'Options',
+  'translate.formal': 'Formal Nepali',
+  'translate.informal': 'Informal Nepali',
+  'translate.devanagari': 'Devanagari',
+  'translate.roman': 'Roman Nepali',
+  'translate.playA11y': 'Speak translation aloud',
+  'translate.copyA11y': 'Copy translation',
+  'translate.retryA11y': 'Retry translation',
+  'translate.retryBusyA11y': 'Retry unavailable while translating',
+  'translate.markIncorrect': 'Mark incorrect',
+  'translate.markIncorrectA11y': 'Mark incorrect',
+  'translate.phrasebookHint': ' Offline phrasebook still works.',
+  'translate.status.needMic': 'Need microphone access to speak.',
+  'translate.status.listening': 'Listening…',
+  'translate.status.finalizing': 'Finishing speech…',
+  'translate.status.translating': 'Translating…',
+  'translate.status.micDenied':
+    'Microphone permission denied. Type instead, or enable access in Settings.',
+  'translate.status.emptyResult':
+    'No translation for that text. Try different wording.',
+  'translate.status.sttFailed':
+    'Speech recognition failed. Type instead or try again.',
+  'translate.status.translateFailed':
+    'Translation failed. Retry the turn or try again.',
+  'translate.status.sttUnsupported':
+    'On-device speech is unavailable for this language. You can still type.',
+  'translate.status.speechUnavailable':
+    'Speech is unavailable on this device. You can still type.',
+  'translate.mtWarmFailed': 'Model unavailable · using phrases',
+
+  'camera.title': 'Camera',
+  'camera.directionA11y': 'Translation direction',
+  'camera.directionNeEn': 'Nepali → English',
+  'camera.directionEnNe': 'English → Nepali',
+  'camera.privacyNote':
+    'Camera OCR runs on this phone. Captures are temporary and are deleted after you retake, leave, or finish — nothing is saved to your photo library.',
+  'camera.allow': 'Allow camera',
+  'camera.capture': 'Capture',
+  'camera.captureA11y': 'Capture photo',
+  'camera.reading': 'Reading…',
+  'camera.translating': 'Translating…',
+  'camera.retake': 'Retake',
+  'camera.retakeA11y': 'Retake photo',
+  'camera.translation': 'Translation',
+  'camera.error.capture': 'Capture failed. Try again.',
+  'camera.error.ocr':
+    'Could not read text from this photo. Try again closer to the writing.',
+  'camera.error.translate':
+    'Text was found, but translation failed. Retake or try again.',
+  'camera.error.model':
+    'On-device translation is not ready. Try again in a moment.',
+  'camera.error.noText': 'No text found. Try again closer to the writing.',
+  'camera.error.lowConfidence': 'The text was too unclear to translate.',
+  'camera.error.generic': 'Something went wrong with this photo. Try again.',
+  'camera.passagesFound': '{count} passages found',
 
   'history.title': 'History',
   'history.close': 'Close history',
@@ -25,8 +116,10 @@ export const en = {
   'history.toTraining': 'To training',
   'history.submittedA11y': 'Already in training data',
   'history.toTrainingA11y': 'Suggest correction for training',
+  'history.restoreA11y': 'Restore translation',
 
   'settings.title': 'Settings',
+  'settings.closeA11y': 'Close settings',
   'settings.language': 'App language',
   'settings.languageEn': 'English',
   'settings.languageNe': 'नेपाली',
@@ -57,6 +150,7 @@ export const en = {
   'settings.modelReady': 'model ready',
   'settings.modelPending': 'model pending',
   'settings.consentCurrent': 'Consent current',
+  'settings.consentVersion': 'Consent {version}',
   'settings.speech': 'Speech on this device',
   'settings.speechEn': 'English voice input · available',
   'settings.speechNeAvailable': 'Nepali voice input · available',
@@ -72,11 +166,33 @@ export const en = {
   'settings.offlineBanner':
     'Optional account and sync features need a network. Translation and Learn stay available offline.',
 
+  'learn.earnRewards': 'Earn rewards',
   'learn.earnRewardsA11y': 'Earn rewards',
+  'learn.rewardsHeading': 'Rewards',
+  'learn.rewardsBody':
+    'Use the app, help improve translations, earn rewards.',
+  'learn.credits': '{count} credits',
+  'learn.adFreeInactive': 'Ad-free not active',
+  'learn.adFreeMins': 'Ad-free for {mins}m',
+  'learn.adFreeHours': 'Ad-free for {hours}h',
+  'learn.adFreeHoursMins': 'Ad-free for {hours}h {mins}m',
+  'learn.pendingHelp': 'Helpful corrections earn extra ad-free time.',
+  'learn.pendingWaiting': '{count} corrections waiting.',
+  'learn.pendingWaitingOne': '1 correction waiting.',
   'learn.noVoiceTitle': 'Nepali voice not installed',
   'learn.noVoiceDetail':
     'You can still learn the alphabet offline. Spoken audio needs a Nepali voice on this iPhone.',
   'learn.offlineOk': 'Alphabet lessons work fully offline — no login required.',
+  'learn.speak': 'Speak',
+  'learn.speakUnavailable': 'Speak unavailable',
+  'learn.speakA11y': 'Speak letter at normal speed',
+  'learn.speakSlowA11y': 'Speak letter slowly',
+  'learn.nextLetter': 'Next letter',
+  'learn.nextLetterA11y': 'Next letter',
+  'learn.restart': 'Restart alphabet',
+  'learn.restartA11y': 'Restart alphabet',
+  'learn.finishedDetail':
+    'You finished every section. Restart anytime — progress stays on this device.',
 
   'contributions.title': 'Contributions & rewards',
   'contributions.emptyTitle': 'No contributions yet',
@@ -103,6 +219,33 @@ export const en = {
   'contributions.deleteA11y': 'Delete contribution',
   'contributions.offlineBanner':
     'You are offline. Drafts stay on this device; sync resumes when you are back online.',
+  'contributions.signInPrompt': 'Sign in with Apple to submit contributions.',
+  'contributions.correctionTitle': 'Suggest a better translation',
+  'contributions.correctionPlaceholder': 'Type a better translation',
+  'contributions.submit': 'Submit contribution',
+  'contributions.saveDraft': 'Save draft',
+
+  'auth.signInApple': 'Sign in with Apple',
+  'auth.signInUnavailable':
+    'Sign in with Apple is not available on this device. Translation still works offline.',
+  'auth.signOut': 'Sign out',
+  'auth.copyUserIdA11y': 'Copy support user ID',
+  'auth.ageConfirm': 'I confirm I am 18 or older',
+  'auth.saveConsent': 'Save consent',
+  'auth.consentSaved': 'Consent saved',
+  'auth.deleteAccount': 'Delete account',
+  'auth.deleteAccountTitle': 'Delete account',
+  'auth.deleteAccountBody':
+    'This schedules deletion of your account and contribution data. It does not cancel an Apple subscription — manage that in Settings → Apple ID → Subscriptions. Translation on this device is unchanged.',
+  'auth.deleting': 'Deleting…',
+  'auth.retryDeleteA11y': 'Retry account deletion',
+
+  'ads.houseCopy': 'Prefer no ads? Ad-free is $0.99/month.',
+  'ads.houseDismiss': 'Not now',
+  'ads.rewardedCta': 'Watch one optional ad for 15 ad-free minutes',
+  'ads.signInRequiredTitle': 'Sign in required',
+  'ads.signInRequiredBody':
+    'Sign in to earn ad-free time from an optional ad.',
 } as const;
 
 export type MessageKey = keyof typeof en;
