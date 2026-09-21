@@ -1,15 +1,15 @@
 import { render, fireEvent, screen, waitFor } from '@testing-library/react-native';
-import { HomeScreen } from '../HomeScreen';
+import { TranslateScreen } from '../TranslateScreen';
 
 jest.mock('expo-clipboard', () => ({
   setStringAsync: jest.fn(async () => undefined),
   getStringAsync: jest.fn(async () => ''),
 }));
 
-describe('HomeScreen Mark incorrect entry', () => {
+describe('TranslateScreen Mark incorrect entry', () => {
   test('Mark incorrect opens the correction sheet', async () => {
     await render(
-      <HomeScreen
+      <TranslateScreen
         active
         neuralReady={false}
         mtWarmStatus={null}

@@ -1,0 +1,7 @@
+appId: com.neptranslate.app
+---
+- launchApp
+- tapOn: "Learn tab"
+- assertVisible: "अ"
+- assertVisible: "Earn rewards"
+- assertNotVisible: "Offline"

@@ -18,6 +18,8 @@ import { sharedTranslationEngine } from '../../mt/TranslationEngine';
 import { createTestServices } from '../../services/createTestServices';
 import { listDrafts } from '../../storage/contributionOutbox';
 import { clearHistory, loadHistory } from '../../storage/phrasebook';
+import { setCameraTestFixture } from '../../camera/testFixture';
+import { INSCRIPTION_FIXTURE } from '../../camera/inscriptionFixture';
 
 jest.mock('../../../App', () => jest.requireActual('../../../App'));
 
@@ -58,6 +60,7 @@ describe('NepTranslateApp production composition', () => {
     (sharedTranslationEngine.cancelAll as jest.Mock).mockClear();
     (hardStopRecognition as jest.Mock).mockClear();
     (Speech.stop as jest.Mock).mockClear();
+    setCameraTestFixture(null);
   });
 
   it('guest cold launch with Supabase unavailable shows Translate, no login wall', async () => {
@@ -82,17 +85,34 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.getByLabelText('Speak translation aloud')).toBeTruthy();
   });
 
-  it('keeps Translate input, Conversation controls, and Learn position across tabs', async () => {
+  it('keeps a translation, moves Speak to the bottom, and returns to English after one pass each', async () => {
     await renderApp();
+    expect(screen.getByTestId('speak-hero')).toBeTruthy();
+    expect(screen.getByText('बोल्नुहोस्')).toBeTruthy();
+    expect(screen.queryByTestId('speak-dock')).toBeNull();
+    expect(screen.queryByTestId('tab-conversation')).toBeNull();
+
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
     await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
     await waitFor(() => {
       expect(screen.getByTestId('translate-output')).toBeTruthy();
     });
+    expect(screen.queryByTestId('speak-hero')).toBeNull();
+    expect(screen.getByTestId('speak-dock')).toBeTruthy();
 
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
-    expect(screen.getByLabelText('Formal Nepali')).toBeTruthy();
-    await fireEvent.press(screen.getByLabelText('Informal Nepali'));
+    await fireEvent.press(screen.getByTestId('pass-phone'));
+    expect(screen.getByLabelText('पास')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'नमस्ते');
+    await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
+    await waitFor(() => {
+      expect(screen.getAllByText('नमस्ते').length).toBeGreaterThan(1);
+    });
+    await fireEvent.press(screen.getByTestId('pass-phone'));
+    expect(screen.getByLabelText('Pass')).toBeTruthy();
+    expect(screen.getByLabelText('English').props.accessibilityState?.selected).toBe(
+      true,
+    );
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
     await waitFor(() => {
@@ -101,13 +121,7 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.getByTestId('learn-roman-a').props.children).toBe('a');
 
     await fireEvent.press(screen.getByTestId('tab-auto'));
-    expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
-
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
-    expect(
-      screen.getByLabelText('Informal Nepali').props.accessibilityState
-        ?.selected,
-    ).toBe(true);
+    expect(screen.getByTestId('translate-output')).toBeTruthy();
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
@@ -116,7 +130,7 @@ describe('NepTranslateApp production composition', () => {
 
   it('tab switch calls STT, TTS, and MT hard-stop boundaries', async () => {
     await renderApp();
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
+    await fireEvent.press(screen.getByTestId('tab-camera'));
     expect(hardStopRecognition).toHaveBeenCalled();
     expect(Speech.stop).toHaveBeenCalled();
     expect(sharedTranslationEngine.cancelAll).toHaveBeenCalled();
@@ -187,8 +201,9 @@ describe('NepTranslateApp production composition', () => {
     });
     await renderApp(services);
     expect(screen.getByTestId('tab-auto')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
-    expect(screen.getByLabelText('Pass the phone')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    expect(screen.getByTestId('camera-permission')).toBeTruthy();
+    expect(screen.queryByTestId('sign-in-apple')).toBeNull();
     await fireEvent.press(screen.getByTestId('tab-learn'));
     await waitFor(() => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
@@ -247,5 +262,26 @@ describe('NepTranslateApp production composition', () => {
       expect(screen.getByTestId('ad-slot-house-translate_result')).toBeTruthy();
     });
     expect(services.ads.networkCalls()).toEqual([]);
+  });
+
+  it('shows inscription overlays in a collapsed drawer without signing in', async () => {
+    setCameraTestFixture(INSCRIPTION_FIXTURE);
+    await renderApp(createTestServices({ offline: true, authConfigured: false }));
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    await waitFor(() => {
+      expect(screen.getByTestId('camera-overlay-s1')).toBeTruthy();
+    });
+    expect(screen.getByTestId('camera-overlay-s2')).toBeTruthy();
+    expect(screen.getByTestId('camera-overlay-s3')).toBeTruthy();
+    expect(screen.getByTestId('camera-drawer').props.accessibilityState?.expanded).toBe(
+      false,
+    );
+    expect(screen.getByText('Hail to Lord Shiva.')).toBeTruthy();
+    expect(screen.queryByTestId('sign-in-apple')).toBeNull();
+    expect(screen.queryByTestId('camera-preview')).toBeNull();
+
+    await fireEvent.press(screen.getByTestId('tab-learn'));
+    expect(screen.queryByTestId('camera-overlay-s1')).toBeNull();
+    expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
   });
 });

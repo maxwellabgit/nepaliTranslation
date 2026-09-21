@@ -22,13 +22,14 @@ Models ship bundled under `mobile/assets/models/` or download on first launch. S
 
 | Mode | Use |
 |------|-----|
-| **Auto** | Type or speak (equal UI). Language auto-detected; output is the other language. |
-| **Conversation** | Pass the phone. Speak → **Pass** (English) / **पास** (Nepali). Longer listening; last 5 bubbles can **Retry**. |
+| **Translate** | Type, speak, and pass the phone on one screen. **Pass** flips the language. Last 5 turns can **Retry**. Formal / script live in the options sheet. |
+| **Camera** | Point at Nepali or English text. Recognition and translation stay on the phone. Photos are deleted after retake, exit, or processing. |
+| **Learn** | Offline Nepali alphabet. No account required. |
 
 ### Toggles (light switches)
 
 - **Formal** — switch **ON** = formal Nepali (`तपाईं`); off = informal (`तिमी`).
-- **देवनागरी** — switch **ON** = Devanagari; off = Roman Nepali. Always on Auto; on Conversation when the Nepali side holds the phone.
+- **देवनागरी** — switch **ON** = Devanagari; off = Roman Nepali. Both live in the Translate options sheet.
 
 ---
 

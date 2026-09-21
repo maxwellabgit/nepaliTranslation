@@ -13,7 +13,7 @@ Windows (dev)  →  EAS cloud build  →  TestFlight  →  iPhone
 
 | Layer | Choice | Notes |
 |-------|--------|--------|
-| App shell | Expo (`mobile/`) | Normal + Conversation UI; EAS for iOS IPA |
+| App shell | Expo (`mobile/`) | Translate, Camera, and Learn; EAS for iOS IPA |
 | Speech-to-text (EN) | Apple recognition (`expo-speech-recognition`) | Streaming, free, shipped today |
 | Speech-to-text (NE) | [whisper.rn](https://github.com/mybigday/whisper.rn) | Bundle `Dragneel/whisper-small-nepali` → ggml q5_1 (~190 MB, Apache-2.0). Validated 2026-08: CER 21% on FLEURS ne_np vs 100%+ for stock Whisper — stock is unusable, the fine-tune is required. Convert: `whisper.cpp/models/convert-h5-to-ggml.py` + `whisper-quantize q5_1`; score with `benchmarks/eval_whisper_nepali.py`. |
 | Translation | ONNX Runtime for React Native (shipped) | IndicTrans2 dist-200M INT8, both directions bundled |
@@ -75,6 +75,10 @@ Any on-device MT build must meet or beat the frozen gold baseline before shippin
 ## Out of scope (v1)
 
 - PC hybrid backend, tunnels, cloud translation APIs
-- Camera / OCR
+- Cloud OCR, or reading photos from the library
 - Hindi or other Nepal languages as product languages
 - Speaker diarization (“Speaker 1 / 2”) — single-stream transcript is enough for v1
+
+## Camera translation
+
+Camera translation is on-device and offline-first. The preview uses the camera permission only. Captured images stay in temporary cache and are deleted after retake, leaving the Camera tab, or successful processing. The app does not request photo-library access. Latin and Devanagari text are recognized on the phone; sentences are translated with the same on-device engine as typed and spoken text. ML Kit’s script models add substantial size (about 38 MB each). Measure the release IPA before shipping.

@@ -1,22 +1,22 @@
 # INTENT
-Last updated: 2026-09-19
+Last updated: 2026-09-21
 
 ## North Star
 An **offline, on-device iOS app** that translates **English ↔ Nepali** in real time for live conversation and everyday text. All speech recognition and translation for the core loop run on the iPhone. Developed on Windows; shipped to iPhone via Expo EAS → TestFlight / App Store.
 
-**Optional online services** (account, contributions, rewards, ads, subscription, admin) may use Supabase, AdMob, and RevenueCat. They must never be required for core translation, Conversation, History, Settings, or Nepali alphabet learning. A failure in any optional service must leave the offline core usable.
+**Optional online services** (account, contributions, rewards, ads, subscription, admin) may use Supabase, AdMob, and RevenueCat. They must never be required for core translation, Camera, History, Settings, or Nepali alphabet learning. A failure in any optional service must leave the offline core usable.
 
 ## Product
 **NepTranslate** — Nepali-first translation companion.
 
 ### Modes (product UI)
-1. **Translate (Auto)** — Type or speak (equal prominence). Auto-detect Nepali or English; translate to the other language.
-2. **Conversation** — Pass the phone. Speak with longer continuous listening; tap **Pass** / **पास** to finalize translation and flip to the other side. Chat bubbles; retry last turns.
+1. **Translate** — Typing, speaking, translations, and multi-turn exchange on one screen. Empty state centers a bilingual Speak control. After a turn, Speak and Pass sit at the bottom. Pass flips the active language without leaving the screen. Retry covers the last five turns.
+2. **Camera** — On-device photo translation. ML Kit reads Latin and Devanagari on the phone. Images stay in temporary cache and are deleted after retake, exit, or successful processing. No photo-library access unless a later feature imports existing images.
 3. **Learn** — Bundled Nepali alphabet (vowels, consonants, common conjuncts) with Apple TTS when a Nepali voice is available. Offline and login-free. Contribution entry is secondary and may prompt for Sign in with Apple only when needed.
 
 ### Toggles (light switches)
-- **Formal** — ON = formal Nepali; OFF = informal.
-- **देवनागरी** — ON = Devanagari; OFF = Roman Nepali (Auto always; Conversation on Nepali side).
+- **Formal** — ON = formal Nepali; OFF = informal. Chosen from the Translate options sheet, not a permanent chip row.
+- **देवनागरी** — ON = Devanagari; OFF = Roman Nepali. Same options sheet.
 
 ### Optional services (not core)
 - **Identity** — Supabase Auth + Sign in with Apple. Required only to submit contributions or receive contribution / rewarded-ad rewards.
@@ -31,7 +31,7 @@ An **offline, on-device iOS app** that translates **English ↔ Nepali** in real
 - Surfaces: **Expo iOS app** (`mobile/`) first. Android / Google Play are out of scope for this release.
 - Inference: on-device STT + on-device MT for the product translate path. No cloud translation; no model-family change in the App Store beta program.
 - Learn beta: Nepali alphabet only — no English course, streak economy, or broad curriculum.
-- Output: text (+ optional TTS). No camera / OCR in this release.
+- Output: text (+ optional TTS) and on-device camera OCR for signs and inscriptions. OCR and translation stay on the phone.
 - Quality gate: private **gold standard** set — ~100 high-quality samples per eval class (formal EN→NE, informal EN→NE, NE→EN Devanagari, Roman NE→EN).
 - **Contributor known checks** are a separately curated quality-control set. They must **never** be copied from `benchmarks/gold/`, training holdouts, or private evaluation answers.
 - Audience: general, target 13+ (not Kids category). No citizenship checks or nationality claims.
@@ -60,16 +60,17 @@ An **offline, on-device iOS app** that translates **English ↔ Nepali** in real
 - Must not: require login, ads, contribution, or payment for core translation or alphabet lessons
 - Must not: require a PC, tunnel, or cloud API for translation/STT in the product path
 - Must not: put Supabase service keys, RevenueCat secret keys, AdMob secrets, webhook secrets, or admin credentials in the app bundle
-- Must not: camera translate; smart glasses / Halo / Multipeer
+- Must not: send camera images or OCR text to a server; smart glasses / Halo / Multipeer
+- Must not: request photo-library permission for the camera translation path
 - Must not: trust the client to create credits, extend ad-free time, change trust, or mark corrections valid
 - Must not: use model similarity alone as proof of correctness
 - Must not: edit `benchmarks/gold/` references to raise scores, or use gold as contributor known checks
-- Must not: forced interstitials, launch ads, ads in Conversation, ads while listening/speaking, or ads over the keyboard
+- Must not: forced interstitials, launch ads, ads on Camera, ads while listening/speaking, or ads over the keyboard
 
 ## Not Doing (this release)
 - PC hybrid Whisper/IndicTrans2 servers / cloud product MT
 - Web/Safari demo as a product surface
-- Camera OCR
+- Cloud OCR or a photo-library importer
 - Hindi or other Nepal languages as product languages
 - Smart glasses / Brilliant Halo
 - Swift-only rewrite (Expo is the app shell; native modules OK for inference)
@@ -81,7 +82,7 @@ An **offline, on-device iOS app** that translates **English ↔ Nepali** in real
 
 ## Definition of Done (product coherence + beta readiness)
 - Docs and INTENT describe offline core + optional online services clearly
-- App keeps Auto + Conversation behavior; Learn alphabet is offline
+- App keeps Translate (including pass-the-phone exchange) + on-device Camera + offline Learn
 - No temporary sync secret / reviewer password in the production path
 - Gold bench remains a private holdout; contributor known checks are separate
 - Feature flags can disable contributions, rewards, network banners, rewarded ads, and paywall without an app update

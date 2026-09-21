@@ -46,7 +46,7 @@ export function RewardSummaryCard({ active = true, testID }: Props) {
   const adFreeLabel = adFreePhrase(
     entitlement?.earnedAdFreeUntilMs ?? null,
     adFreeActive,
-    entitlement?.trustedNow() ?? Date.now(),
+    entitlement?.trustedNow() ?? 0,
   );
 
   return (

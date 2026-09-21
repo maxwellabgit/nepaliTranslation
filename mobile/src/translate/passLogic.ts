@@ -1,8 +1,8 @@
 /**
- * Small helpers for Conversation pass-the-phone UX.
+ * Pass-the-phone helpers for the unified Translate screen.
  */
 
-/** Pass needs either live interim speech or a completed turn from this side. */
+/** Pass needs either a draft or a completed turn from this side. */
 export function canPassPhone(
   interim: string,
   latestFrom: 'en' | 'ne' | null,

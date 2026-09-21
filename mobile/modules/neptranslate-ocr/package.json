@@ -1,0 +1,11 @@
+{
+  "name": "neptranslate-ocr",
+  "version": "1.0.0",
+  "description": "On-device Latin and Devanagari text recognition for NepTranslate.",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "expo": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}

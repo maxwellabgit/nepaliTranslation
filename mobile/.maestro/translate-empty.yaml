@@ -1,0 +1,6 @@
+appId: com.neptranslate.app
+---
+- launchApp
+- assertVisible: "Speak"
+- assertVisible: "बोल्नुहोस्"
+- assertNotVisible: "Conversation"

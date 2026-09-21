@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { AppProviders } from './src/app/AppProviders';
 import { AppShell } from './src/app/AppShell';
-import { HomeScreen } from './src/screens/HomeScreen';
-import { ConversationScreen } from './src/screens/ConversationScreen';
+import { TranslateScreen } from './src/screens/TranslateScreen';
+import { CameraScreen } from './src/screens/CameraScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { LearnScreen } from './src/screens/LearnScreen';
@@ -77,8 +77,8 @@ export function NepTranslateApp({
       <AppShell
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}
-        AutoPane={(props) => <HomeScreen {...props} />}
-        ConversationPane={(props) => <ConversationScreen {...props} />}
+        AutoPane={(props) => <TranslateScreen {...props} />}
+        CameraPane={() => <CameraScreen active />}
         LearnPane={(props) => <LearnScreen {...props} />}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}

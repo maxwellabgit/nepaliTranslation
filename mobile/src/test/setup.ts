@@ -204,4 +204,16 @@ jest.mock('../services/supabase', () => ({
   getSupabase: jest.fn(() => null),
   bindAuthRefresh: jest.fn(),
 }));
+jest.mock('expo-camera', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    CameraView: (props: object) => React.createElement(View, props),
+    useCameraPermissions: () => [
+      { granted: false, canAskAgain: true },
+      jest.fn(async () => ({ granted: false, canAskAgain: true })),
+    ],
+  };
+});
+
 jest.mock('../features/subscription', () => ({}), { virtual: true });

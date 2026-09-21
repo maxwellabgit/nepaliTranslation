@@ -62,12 +62,12 @@ Not autonomous (human-gated, still valid): TestFlight on a physical iPhone; over
 
 ## Hard rules
 
-- Scope: EN↔NE only, Expo iOS, on-device STT+MT for the product path, no camera, no PC/cloud inference for core translate.
+- Scope: EN↔NE only, Expo iOS, on-device STT+MT and on-device camera OCR for the product path, no PC/cloud inference for core translate or OCR. Camera images stay in temporary cache and are deleted after retake, exit, or successful processing. Do not request photo-library access unless importing existing images is added later.
 - One model family (IndicTrans2 dist-200M), not four register models. Informal = **तिमी**, not तँ.
 - Never train on `benchmarks/gold/`. Never edit gold references to raise a score.
 - **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated backend/admin seed data only.
 - Expo SDK **57** docs only for this release: https://docs.expo.dev/versions/v57.0.0/
-- Login is required for contributions and rewards only — never for translation, history, settings, or Learn alphabet.
+- Login is required for contributions and rewards only — never for translation, camera, history, settings, or Learn alphabet.
 - Never upload ordinary translation history, microphone audio, speech transcripts, or clipboard automatically.
 - Never put service/secret keys in the app bundle or admin browser code.
 - Compiling is not Done. See `.agent/DONE.md`.

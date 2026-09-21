@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["NeptranslateOcrModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.neptranslateocr.NeptranslateOcrModule"]
+  }
+}

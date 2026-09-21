@@ -47,19 +47,8 @@ function AutoPane({
   );
 }
 
-function ConversationPane({ active }: { active: boolean; neuralReady: boolean }) {
-  const [note, setNote] = useState('thread');
-  return (
-    <View testID="shell-conversation">
-      <Text testID="shell-conversation-active">{active ? 'on' : 'off'}</Text>
-      <TextInput
-        testID="shell-conversation-note"
-        value={note}
-        onChangeText={setNote}
-        accessibilityLabel="Conversation note"
-      />
-    </View>
-  );
+function CameraPane() {
+  return <View testID="camera-preview" />;
 }
 
 function LearnPane({ active }: { active: boolean }) {
@@ -115,7 +104,7 @@ async function renderShell(onHardStop = jest.fn()) {
       mtWarmStatus={null}
       onHardStop={onHardStop}
       AutoPane={(p) => <AutoPane {...p} />}
-      ConversationPane={(p) => <ConversationPane {...p} />}
+      CameraPane={() => <CameraPane />}
       LearnPane={(p) => <LearnPane {...p} />}
       HistoryOverlay={(p) => <HistoryOverlay {...p} />}
       SettingsOverlay={(p) => <SettingsOverlay {...p} />}
@@ -126,29 +115,22 @@ async function renderShell(onHardStop = jest.fn()) {
 }
 
 describe('AppShell integration (mounted panes + offline ads)', () => {
-  it('walks Auto → Conversation → Learn without wiping pane state', async () => {
+  it('unmounts Camera when leaving and keeps Translate text', async () => {
     const hardStop = await renderShell();
     expect(screen.getByTestId('tab-bar')).toBeTruthy();
-    expect(screen.getByTestId('shell-auto-active').props.children).toBe('on');
+    expect(screen.queryByTestId('tab-conversation')).toBeNull();
 
     await fireEvent.changeText(screen.getByTestId('shell-auto-input'), 'hello');
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
+    await fireEvent.press(screen.getByTestId('tab-camera'));
     expect(hardStop).toHaveBeenCalled();
-    await fireEvent.changeText(
-      screen.getByTestId('shell-conversation-note'),
-      'keep-thread',
-    );
+    expect(screen.getByTestId('camera-preview')).toBeTruthy();
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
+    expect(screen.queryByTestId('camera-preview')).toBeNull();
     await fireEvent.changeText(screen.getByTestId('shell-learn-pos'), 'cons-3');
 
     await fireEvent.press(screen.getByTestId('tab-auto'));
     expect(screen.getByTestId('shell-auto-input').props.value).toBe('hello');
-
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
-    expect(screen.getByTestId('shell-conversation-note').props.value).toBe(
-      'keep-thread',
-    );
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
     expect(screen.getByTestId('shell-learn-pos').props.value).toBe('cons-3');

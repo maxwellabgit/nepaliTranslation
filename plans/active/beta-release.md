@@ -1,7 +1,7 @@
 # beta-release: App Store / TestFlight release candidate program
 
 ## Goal
-Ship an iOS external TestFlight beta, then a public App Store release candidate, without breaking offline EN↔NE translation. Core translate, Conversation, History, Settings, and Learn stay usable without login; Supabase / ads / subscription are optional services that must fail soft.
+Ship an iOS external TestFlight beta, then a public App Store release candidate, without breaking offline EN↔NE translation. Core translate, Camera, History, Settings, and Learn stay usable without login; Supabase / ads / subscription are optional services that must fail soft.
 
 ## Context (paths, commands, constraints)
 
@@ -63,9 +63,20 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [ ] Slice 12 — Integrated E2E, performance, and polish loop
 - [ ] Slice 13 — TestFlight and App Store release
 
+## Decision log
+
+- 2026-09-21: Camera is in the product. Translate absorbs Conversation (one screen for typing, speaking, and pass-the-phone). Tabs are Translate, Camera, and Learn. Camera OCR is on-device only; captures are temporary and deleted after retake, exit, or successful processing. Photo-library permission stays off. ML Kit script-model size is unmeasured until an EAS IPA exists.
+
 ## Progress
 
-**Current: H0–H6 foundation complete on tip `065f02a`** (PR branch `cursor/beta-08-admob`)
+**Current: Translate / Camera / Learn information architecture**
+
+- Policy updated: on-device camera OCR is in scope. Images stay in temporary cache and are deleted after retake, exit, or successful processing. Photo-library permission stays off.
+- Translate absorbs pass-the-phone. Conversation tab is gone. Tabs are Translate, Camera, Learn.
+- Proof so far: `tsc`, `eslint --max-warnings 0`, `test:unit` (195), `test:integration` (14), `verify:translate`.
+- Not proven: CocoaPods resolution of `GoogleMLKit/TextRecognition` and `TextRecognitionDevanagari` at `~> 8.0` beside Google Mobile Ads (Windows has no `pod install`), physical-device Maestro flows in `mobile/.maestro/`, and release IPA size (about 38 MB per script, unmeasured).
+
+**Previous: H0–H6 foundation complete on tip `065f02a`** (PR branch `cursor/beta-08-admob`)
 
 - Agent/CI merge-gate substance: **met** (verify:beta, coverage floors, backend-gate incl. SSV, Meaning Review off production routes, server consent, multi-user consensus rewards, AdMob+SSV source with ads flags off).
 - Merge-gate honesty: PR #2 + this ExecPlan updated to match tip (previous FAIL was stale PR body claiming H1–H6 unproven).

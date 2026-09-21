@@ -37,19 +37,8 @@ function FakeAuto({
   );
 }
 
-function FakeConversation({ active }: { active: boolean; neuralReady: boolean }) {
-  const [note, setNote] = useState('thread-alive');
-  return (
-    <View testID="fake-conversation">
-      <Text testID="conversation-active">{active ? 'active' : 'inactive'}</Text>
-      <TextInput
-        testID="conversation-note"
-        value={note}
-        onChangeText={setNote}
-        accessibilityLabel="Conversation note"
-      />
-    </View>
-  );
+function FakeCamera() {
+  return <View testID="camera-preview" />;
 }
 
 function FakeLearn({ active }: { active: boolean }) {
@@ -94,7 +83,7 @@ async function renderShell(onHardStop = jest.fn()) {
       mtWarmStatus={null}
       onHardStop={onHardStop}
       AutoPane={(p) => <FakeAuto {...p} />}
-      ConversationPane={(p) => <FakeConversation {...p} />}
+      CameraPane={() => <FakeCamera />}
       LearnPane={(p) => <FakeLearn {...p} />}
       HistoryOverlay={(p) => <FakeHistory {...p} />}
       SettingsOverlay={() => <View testID="fake-settings" />}
@@ -105,26 +94,22 @@ async function renderShell(onHardStop = jest.fn()) {
 }
 
 describe('AppShell tabs and overlays', () => {
-  test('keeps Conversation mounted across tab switches (does not wipe state)', async () => {
+  test('unmounts Camera and keeps Translate text across tabs', async () => {
     await renderShell();
 
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
-    await fireEvent.changeText(
-      screen.getByTestId('conversation-note'),
-      'keep-me',
-    );
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    expect(screen.getByTestId('camera-preview')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('tab-auto'));
-    // Hidden panes use display:none, so RTL cannot query them — but state remains.
-    expect(screen.queryByTestId('conversation-note')).toBeNull();
+    expect(screen.queryByTestId('camera-preview')).toBeNull();
     expect(screen.getByTestId('auto-input').props.value).toBe('hello-auto');
 
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
-    expect(screen.getByTestId('conversation-note').props.value).toBe('keep-me');
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    expect(screen.getByTestId('camera-preview')).toBeTruthy();
   });
 
   test('invokes hard stop when switching tabs', async () => {
     const onHardStop = await renderShell();
-    await fireEvent.press(screen.getByTestId('tab-conversation'));
+    await fireEvent.press(screen.getByTestId('tab-camera'));
     expect(onHardStop).toHaveBeenCalledTimes(1);
     await fireEvent.press(screen.getByTestId('tab-auto'));
     expect(onHardStop).toHaveBeenCalledTimes(2);

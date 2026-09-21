@@ -1,0 +1,9 @@
+appId: com.neptranslate.app
+---
+- launchApp
+- tapOn: "Camera tab"
+- assertVisible: "Camera"
+- assertVisible:
+    text: "Allow camera"
+    optional: true
+- assertNotVisible: "Conversation"

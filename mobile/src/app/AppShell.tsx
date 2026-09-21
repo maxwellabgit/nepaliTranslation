@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -6,7 +7,7 @@ import { hardStopAudio } from './hardStopAudio';
 import { colors } from '../theme';
 import type { HistoryItem } from '../storage/phrasebook';
 
-export type AppMode = 'auto' | 'conversation' | 'learn';
+export type AppMode = 'auto' | 'camera' | 'learn';
 export type AppOverlay =
   | 'history'
   | 'settings'
@@ -23,9 +24,8 @@ type PaneProps = {
   mtWarmStatus: string | null;
 };
 
-type ConversationPaneProps = {
+type CameraPaneProps = {
   active: boolean;
-  neuralReady: boolean;
 };
 
 type LearnPaneProps = {
@@ -50,7 +50,7 @@ type ContributionsOverlayProps = {
 
 type Props = {
   AutoPane: (props: PaneProps) => ReactNode;
-  ConversationPane: (props: ConversationPaneProps) => ReactNode;
+  CameraPane: (props: CameraPaneProps) => ReactNode;
   LearnPane: (props: LearnPaneProps) => ReactNode;
   HistoryOverlay: (props: HistoryOverlayProps) => ReactNode;
   SettingsOverlay: (props: SettingsOverlayProps) => ReactNode;
@@ -63,7 +63,7 @@ type Props = {
 
 export function AppShell({
   AutoPane,
-  ConversationPane,
+  CameraPane,
   LearnPane,
   HistoryOverlay,
   SettingsOverlay,
@@ -87,9 +87,8 @@ export function AppShell({
     <SafeAreaView style={styles.root} testID="app-shell">
       <StatusBar style="dark" />
       <View style={styles.body}>
-        {/* Panes stay mounted so a tab tap does not wipe Auto input, the
-            Conversation thread, or Learn lesson position. Inactive panes use
-            display:none and ignore pointer/STT events. */}
+        {/* Translate and Learn stay mounted. Camera unmounts when its tab is
+            inactive so only one camera preview can exist. */}
         <View
           style={[styles.pane, mode !== 'auto' && styles.paneHidden]}
           pointerEvents={mode === 'auto' ? 'auto' : 'none'}
@@ -115,20 +114,11 @@ export function AppShell({
             }}
           />
         </View>
-        <View
-          style={[styles.pane, mode !== 'conversation' && styles.paneHidden]}
-          pointerEvents={mode === 'conversation' ? 'auto' : 'none'}
-          accessibilityElementsHidden={mode !== 'conversation'}
-          importantForAccessibility={
-            mode === 'conversation' ? 'auto' : 'no-hide-descendants'
-          }
-          testID="pane-conversation"
-        >
-          <ConversationPane
-            active={mode === 'conversation'}
-            neuralReady={neuralReady}
-          />
-        </View>
+        {mode === 'camera' ? (
+          <View style={styles.pane} testID="pane-camera">
+            <CameraPane active />
+          </View>
+        ) : null}
         <View
           style={[styles.pane, mode !== 'learn' && styles.paneHidden]}
           pointerEvents={mode === 'learn' ? 'auto' : 'none'}
@@ -157,36 +147,30 @@ export function AppShell({
           accessibilityLabel="Translate tab"
           testID="tab-auto"
         >
+          <Ionicons
+            name="language-outline"
+            size={18}
+            color={mode === 'auto' ? '#fff' : colors.text}
+          />
           <Text style={[styles.tabLabel, mode === 'auto' && styles.tabLabelOn]}>
             Translate
           </Text>
-          <Text style={[styles.tabHint, mode === 'auto' && styles.tabHintOn]}>
-            Type or speak
-          </Text>
         </Pressable>
         <Pressable
-          style={[styles.tab, mode === 'conversation' && styles.tabOn]}
-          onPress={() => switchMode('conversation')}
+          style={[styles.tab, mode === 'camera' && styles.tabOn]}
+          onPress={() => switchMode('camera')}
           accessibilityRole="tab"
-          accessibilityState={{ selected: mode === 'conversation' }}
-          accessibilityLabel="Conversation tab"
-          testID="tab-conversation"
+          accessibilityState={{ selected: mode === 'camera' }}
+          accessibilityLabel="Camera tab"
+          testID="tab-camera"
         >
-          <Text
-            style={[
-              styles.tabLabel,
-              mode === 'conversation' && styles.tabLabelOn,
-            ]}
-          >
-            Conversation
-          </Text>
-          <Text
-            style={[
-              styles.tabHint,
-              mode === 'conversation' && styles.tabHintOn,
-            ]}
-          >
-            Speak · Pass
+          <Ionicons
+            name="camera-outline"
+            size={18}
+            color={mode === 'camera' ? '#fff' : colors.text}
+          />
+          <Text style={[styles.tabLabel, mode === 'camera' && styles.tabLabelOn]}>
+            Camera
           </Text>
         </Pressable>
         <Pressable
@@ -197,11 +181,13 @@ export function AppShell({
           accessibilityLabel="Learn tab"
           testID="tab-learn"
         >
+          <Ionicons
+            name="book-outline"
+            size={18}
+            color={mode === 'learn' ? '#fff' : colors.text}
+          />
           <Text style={[styles.tabLabel, mode === 'learn' && styles.tabLabelOn]}>
             Learn
-          </Text>
-          <Text style={[styles.tabHint, mode === 'learn' && styles.tabHintOn]}>
-            Alphabet
           </Text>
         </Pressable>
       </View>
@@ -291,11 +277,4 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   tabLabelOn: { color: '#fff' },
-  tabHint: {
-    marginTop: 2,
-    fontSize: 10,
-    color: colors.textSecondary,
-    fontWeight: '500',
-  },
-  tabHintOn: { color: 'rgba(255,255,255,0.85)' },
 });

@@ -14,6 +14,7 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
         "NSSpeechRecognitionUsageDescription": "NepTranslate uses speech recognition to translate what you say.",
+        "NSCameraUsageDescription": "NepTranslate uses the camera to translate Nepali and English text you point at. Photos stay on this device and are deleted after you retake, leave, or finish.",
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
@@ -33,7 +34,8 @@
         "RECORD_AUDIO",
         "INTERNET",
         "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS"
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA"
       ]
     },
     "web": {
@@ -59,7 +61,15 @@
       "./plugins/withIt2Models",
       "expo-font",
       "expo-apple-authentication",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "NepTranslate uses the camera to translate Nepali and English text you point at. Photos stay on this device and are deleted after you retake, leave, or finish.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "extra": {
       "eas": {
