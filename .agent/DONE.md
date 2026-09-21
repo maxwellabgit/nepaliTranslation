@@ -5,27 +5,30 @@
 Shared (every lane that touches `mobile/`):
 
 - [ ] `cd mobile && npm ci`
-- [ ] `cd mobile && npm run lint` (once Slice 01 scripts exist; until then `npx tsc --noEmit` + existing verify)
-- [ ] `cd mobile && npm run typecheck` (or `npx tsc --noEmit` before Slice 01)
-- [ ] `cd mobile && npm run test:unit -- --runInBand` (Slice 01+)
+- [ ] `cd mobile && npm run lint`
+- [ ] `cd mobile && npm run typecheck`
+- [ ] `cd mobile && npm run test:unit -- --runInBand`
 - [ ] `cd mobile && npm run verify:translate` — **mandatory even when the feature seems unrelated**
-- [ ] `cd mobile && npx expo-doctor` (Slice 01+)
+- [ ] `cd mobile && npx expo-doctor`
+- [ ] Prefer `cd mobile && npm run verify:ci` when the slice owns the full mobile gate
 - [ ] Diff contains no unrelated files and no gold-reference edits under `benchmarks/gold/`
 - [ ] Contributor known checks / seeds were **not** copied from `benchmarks/gold/`
-- [ ] ExecPlan updated (`plans/active/<lane>.md`)
+- [ ] ExecPlan updated (`plans/active/<lane>.md` or `plans/active/beta-release.md`)
 - [ ] `/independent-reviewer` reported no material findings
 
-## Beta-wide gates (App Store / TestFlight program)
+## V1-wide gates (Production finalization F0–F10)
 
-Apply on every beta slice PR. Slice-specific extras are below.
+Apply on every V1 finalization PR. Slice-specific extras are below.
 
-- [ ] Only **one** beta slice in the PR; branch name `cursor/beta-XX-short-name`
+- [ ] Only **one** V1 slice in the PR; branch name `cursor/v1-fN-short-name`
 - [ ] `plans/active/beta-release.md` Progress / Commands / Remaining work updated
 - [ ] Core translate path still has **no** hard dependency on Supabase, AdMob, RevenueCat, or admin
 - [ ] No production secret, tunnel URL, test password (`1234`), service role, or embedded review-sync secret introduced
 - [ ] Optional-service failure leaves Translate, Camera, History, Settings, and Learn usable
-- [ ] No claim of physical-device / airplane-mode / StoreKit / AdMob proof from source-only tests
-- [ ] Human blockers (Apple, Supabase, AdMob, RevenueCat, legal, bilingual, device) recorded honestly when reached
+- [ ] Contract matches INTENT: $0.99/month; banners idle Translate + Learn only; interstitial 15 min / ≤3 NY day; rewarded 15 min; credit = 5 min; >20 words = 2 credits; 5 PM America/New_York close; no clawback; 18+ media consent; 30-day deletion
+- [ ] Feature flags remain independently disableable (text/speech/photo contributions, banners, rewarded, interstitial, paywall, telemetry, deletion processing)
+- [ ] No claim of physical-device / airplane-mode / StoreKit / AdMob / interstitial proof from source-only tests
+- [ ] Human blockers (Apple, Supabase, AdMob, RevenueCat, legal, bilingual, device, iPad) recorded honestly when reached
 
 ### Standard backend gate (slices that touch `supabase/`)
 
@@ -43,7 +46,7 @@ If Docker cannot run locally, the same gate must run in GitHub Actions and the l
 
 - [ ] Unit/Vitest (or equivalent) green
 - [ ] Non-admin JWT receives 403 from every admin operation
-- [ ] Playwright (or labeled CI) for triage/export paths when those pages exist
+- [ ] Playwright (or labeled CI) for triage/export/deletion paths when those pages exist
 - [ ] No service key in browser code
 
 ---
@@ -90,92 +93,110 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 - [ ] Export path still ends at `mobile/assets/models/` (see `docs/OFFLINE_IOS.md`)
 - [ ] Gold eval vs frozen baseline if weights exist; otherwise explicit GPU/artifact blocker
 - [ ] No new PC/cloud inference in the product path
+- [ ] Release artifacts pinned by revision + SHA-256 when shipping
 
 ---
 
-## Beta slices (dependency order — do not combine)
+## Production V1 slices (dependency order — do not combine)
 
-### Slice 00 — product contract
+### F0 — product contract
 
-- [ ] `plans/active/beta-release.md` exists with PLANS.md sections
-- [ ] INTENT / AGENTS / DONE describe offline core + optional services + known-check ban on gold
-- [ ] Baseline commit + proof commands recorded
+- [ ] INTENT / AGENTS / DONE / ExecPlan / CERTIFICATION / DEVICE_PROOF / RELEASE_RUNBOOK describe the V1 boundary in section 1 of the finalization plan
+- [ ] $0.99/month, ad placements, interstitial rules, 15-minute rewarded grant, 18+ media consent, automatic post-consent upload, indefinite retention until withdrawal/deletion, 30-day purge, 5 PM NY reward close, one/two-credit rule, no clawback, bilingual UI, iPhone+iPad
+- [ ] Independent feature flags listed with defaults off until gates pass
+- [ ] Repository rules no longer contradict implementation (no $0.49, no 13+-only contribution story as the media rule, no “never auto-upload” absolute for consented adults)
 - [ ] **No runtime code changed**
 
-### Slice 01 — test harness / UI primitives
+### F1 — privacy / offline-core repair
 
-- [ ] Standard mobile gate scripts exist and CI runs them
-- [ ] Tab persistence / hard-stop / History clear / Mark incorrect entry tests exist
-- [ ] `verify:translate` output unchanged vs baseline expectations
+- [ ] STT routed through RuntimePorts with `requiresOnDeviceRecognition: true`; fail closed on missing locales
+- [ ] Typed translation proven when speech unsupported
+- [ ] No raw source/output console logging; diagnostics banned-key + sensitive-fixture tests green
+- [ ] Model downloads pinned (immutable revision + SHA-256 manifest); EAS fails on mismatch
+- [ ] Camera preview downsampled; generation cancel; distinct error states
+- [ ] Mobile shared gate + focused tests green
 
-### Slice 02 — Supabase schema / RLS / API skeleton
+### F2 — bilingual UI / theme / layouts
 
-- [ ] Backend gate green (local or CI Docker)
-- [ ] pgTAP: anon cannot touch private; user A ≠ user B; no client ledger inserts
-- [ ] Leased known-check API JSON exposes no known/reference fields
-- [ ] Similarity fixtures cover Devanagari, punctuation, Roman case, empty/short, register, negation
+- [ ] Persisted UI language English | नेपाली changes entire UI immediately (guest OK)
+- [ ] Production strings catalogued; uncatalogued-string test for targeted screens
+- [ ] `userInterfaceStyle` automatic; light/dark coherent on major screens
+- [ ] Phone + iPad size classes; Camera portrait capture/result preserved
+- [ ] Playwright iPad viewports; Dynamic Type visibility checks or honest blockers
 
-### Slice 03 — Apple auth / consent / deletion
+### F3 — contribution consent + media ingestion
 
-- [ ] Guest launch has no mandatory login wall
-- [ ] Contribution actions require sign-in; translate/Learn do not
-- [ ] Delete-account path implemented with resumable failure; Apple revoke recorded or human-gated
-- [ ] Physical device results recorded honestly (or listed as blocker)
+- [ ] Forward-only migration: consent/adult/deletion fields + media table/storage
+- [ ] Private buckets; signed upload; RLS denies cross-user media reads
+- [ ] Guests / under-18 / declined / flag-off upload nothing
+- [ ] Post-consent auto upload with offline retry; core translate never waits
+- [ ] Consent copy covers required topics; backend + client tests green
 
-### Slice 04 — correction sheet / outbox
+### F4 — reward close / alerts / deletion jobs
 
-- [ ] Mark incorrect + To training share one sheet; no silent history upload
-- [ ] Idempotent sync; legacy queue → local drafts tagged `legacy-v1` until explicit consent
-- [ ] Temporary review endpoint/secret and `1234` reviewer path removed from production bundle
+- [ ] Reward window from America/New_York 5:00 PM boundaries (DST tests)
+- [ ] >20 words → 2 credits; ≤20 → 1; immutable pre-edit count
+- [ ] Pending/approved at close grant once; pre-close reject → zero; late reject → alert, no clawback
+- [ ] Rewarded video schedule = 15 minutes; SSV expectations updated
+- [ ] Deletion job: disable uploads, purge within 30 days, admin alert, user-visible status
+- [ ] Backend gate green
 
-### Slice 05 — contribution queue / consensus
+### F5 — advertising complete
 
-- [ ] Assignment ratio / lease / ownership tests with seeded RNG
-- [ ] Consensus never uses model similarity alone
-- [ ] Client cannot identify known tasks before submit
+- [ ] Banner / rewarded / interstitial unit IDs; prod rejects Google test IDs
+- [ ] `decideInterstitialPresentation` covers all forbidden states + 15 min + 3/NY day
+- [ ] Banners only idle Translate + Learn landing
+- [ ] SDK owns interstitial dismiss; remote emergency disable
+- [ ] Policy tests + physical-device or honest blocker
 
-### Slice 06 — reward ledger / entitlements
+### F6 — RevenueCat / StoreKit
 
-- [ ] Grants atomic, capped, idempotent; stack from `max(now, expiry)`
-- [ ] Trusted-time policy; clock skew cannot mint time
-- [ ] `decideAdPresentation` tests (ads still mocked/off OK)
+- [ ] $0.99/month product + Expo-compatible SDK; public key only in app
+- [ ] PurchaseService port; fake + production adapters
+- [ ] Webhook verified + idempotent (no 501)
+- [ ] Bilingual paywall; Restore; Manage; offline cache; deletion warns about Apple billing
+- [ ] Sandbox / TestFlight matrix recorded or human-gated
 
-### Slice 07 — Learn alphabet
+### F7 — admin console
 
-- [ ] Third mounted tab; hard-stop + lesson position preserved
-- [ ] Alphabet schema/quiz tests; works with Supabase down / offline mocks
-- [ ] Missing Nepali voice handled honestly; bilingual human sign-off recorded or blocked
+- [ ] Dashboard, review queue (incl. media preview), alerts, deletion queue, dataset staging, flags
+- [ ] Server allowlist; revoked admin loses access next request
+- [ ] Non-admin 403 everywhere; no service key in browser; media access audited
 
-### Slice 08 — AdMob
+### F8 — observability / legal / security
 
-- [ ] Policy table tests; zero AdMob calls offline
-- [ ] No ads while listening, typing, or under an ad-free entitlement
-- [ ] SSV verification fixtures; physical device proof or honest blocker
+- [ ] Telemetry schema + scrubber tests (no raw content)
+- [ ] Live Privacy / Terms / support / deletion / app-ads.txt or explicit blockers
+- [ ] App Store privacy labels match runtime
+- [ ] 13 dependency advisories triaged SDK-57-compatibly with owners
+- [ ] Secret scan / audit / model-hash checks in CI as specified
 
-### Slice 09 — RevenueCat / StoreKit
+### F9 — model certification + automation
 
-- [ ] Fake purchases adapter covers paywall states
-- [ ] Webhook auth + idempotency tests
-- [ ] Sandbox/TestFlight matrix recorded or human-gated
+- [ ] Exact release artifacts evaluated on frozen gold (four classes); thresholds pre-declared
+- [ ] Playwright extended for UI lang, consent, rewards, ads, IAP adapters, deletion, iPad, dark mode
+- [ ] Playwright browser install cached in CI
+- [ ] Maestro expanded for native counterparts or honest blockers
 
-### Slice 10 — admin console
+### F10 — device / TestFlight / release
 
-- [ ] Server-side allowlist; revoked admin loses access next request
-- [ ] Export hash stability; known-reference versioning
-- [ ] Deploy / callback URL human-gated
+- [ ] iPhone + iPad matrix filled in DEVICE_PROOF
+- [ ] Internal then external TestFlight (25–50); interstitial go/no-go explicit
+- [ ] Seven consecutive external days with no open P0/P1
+- [ ] Freeze build / hashes / flags / privacy / rollback rehearsal
+- [ ] Public submission only after go/no-go checklist in RELEASE_RUNBOOK
 
-### Slice 11 — privacy / security / store surfaces
+---
 
-- [ ] Live Privacy / Terms / support / deletion / app-ads.txt URLs or explicit blockers
-- [ ] Secret scan clean; log redaction test with sensitive fixtures
-- [ ] Account deletion reachable within three Settings taps
+## Release go/no-go (public App Store)
 
-### Slice 12 — E2E / performance / polish
+Production V1 is Done only when:
 
-- [ ] Required Maestro flows exist; defects fixed with regression + review
-- [ ] Performance targets measured before claimed
-
-### Slice 13 — TestFlight / App Store
-
-- [ ] Marketing version / build bumped; release DoD entirely checked
-- [ ] Seven consecutive external-TestFlight days with no open P0/P1 (human evidence)
+- [ ] F0–F10 merged with green CI and independent review
+- [ ] Exact model artifacts pass frozen evaluation and physical-device performance gates
+- [ ] iPhone and iPad matrices pass on the same TestFlight build
+- [ ] RevenueCat, StoreKit, AdMob, UMP, Apple Sign-In, Supabase media storage, deletion, and admin operations pass with production-like configuration
+- [ ] Privacy/Terms/support URLs and App Store privacy answers are live and accurate
+- [ ] Bilingual UI and alphabet content receive human sign-off
+- [ ] No P0/P1 defects remain and external TestFlight completes seven clean consecutive days
+- [ ] Rollback rehearsed using remote flags without disabling the offline core
