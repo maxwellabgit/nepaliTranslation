@@ -68,9 +68,9 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current: H3 — Atomic server-side consent, consensus, receipts, multi-user rewards** (on `main`)
 
 - Scope: forward migration `20260920200000_h3_atomic_consensus.sql` — `app_config.contribution_consent_version`; report idempotency `(reporter_id, idempotency_key)`; reward idempotency `(user_id, source_type, source_id)`; receipts linked to submission/ledger; DB rate-limit buckets; private SQL normalize/similarity with oversized→null; `service_submit_contribution_atomic` (service-role transactional); consent gates on report/outbox/lease/submit; Edge wrappers map `consent_required` / `consent_outdated` / `age_required`; ContributionCard complete; FeatureConfigService loads `app_config` with safe defaults.
-- Proof: `npm run verify:beta` + `test:coverage:beta` (contribution 51.82/47.11/53.55). Docker unavailable locally — backend proof is `.github/workflows/backend-gate.yml` after push (pgTAP 08–10 + Deno http consent mapping).
-- Commit: `fix: make contribution validation and rewards atomic`
-- Next: independent review; do **not** start H4 in this session. Push updates PR branch `cursor/beta-08-admob`.
+- Proof: `npm run verify:beta` + `test:coverage:beta` (contribution 51.82/47.11/53.55). Docker unavailable locally — backend proof: backend-gate `35548244403` green (pgTAP 08–10 + Deno + concurrent reward); agent-gates `35548244418` green.
+- Commit: `86245ad` `fix: make contribution validation and rewards atomic` (+ `e40d92a` pgTAP lease/seed follow-up).
+- Next: independent review; do **not** start H4 in this session. Pushed to `cursor/beta-08-admob`.
 
 **Previous: H2 — Correction metadata and reliable offline outbox** (on `main`)
 
@@ -300,8 +300,8 @@ npm run verify:beta
 npm run test:coverage:beta
 # contribution 51.82/47.11/53.55 — ratchet OK
 # docker / supabase start: engine not running
-# backend proof: push → .github/workflows/backend-gate.yml
-#   (pgTAP 08_h3_consent_idempotency, 09_h3_atomic_consensus, 10_h3_scoring_parity)
+# backend-gate 35548244403 green; agent-gates 35548244418 green
+#   (pgTAP 08–10; first push failed 03/06 lease assertions → e40d92a fix)
 ```
 
 ### H2 (local, 2026-09-20, on `main`)
@@ -330,7 +330,7 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H3** mobile gates green; backend-gate CI + independent review pending → next is H4 after both pass.
+- **H3** mobile + backend CI green; independent review pending → next is H4 after review PASS.
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 
