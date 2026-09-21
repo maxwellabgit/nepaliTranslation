@@ -12,6 +12,7 @@ import type { AppServices } from '../services/contracts';
 import { RuntimeProvider } from '../runtime/RuntimeContext';
 import type { RuntimePorts } from '../runtime/ports';
 import { ThemeProvider } from '../theme';
+import { UiLangProvider } from '../i18n';
 import { FeatureConfigProvider } from './FeatureConfigProvider';
 import { LifecycleCoordinator } from './LifecycleCoordinator';
 
@@ -42,6 +43,7 @@ export function AppProviders({ children, services, runtime }: Props) {
     <SafeAreaProvider initialMetrics={INITIAL_SAFE_AREA}>
       <ThemeProvider>
         <ServiceProvider services={services}>
+          <UiLangProvider>
           <RuntimeProvider runtime={runtime}>
             <AuthProvider>
               <EntitlementProvider>
@@ -54,6 +56,7 @@ export function AppProviders({ children, services, runtime }: Props) {
               </EntitlementProvider>
             </AuthProvider>
           </RuntimeProvider>
+          </UiLangProvider>
         </ServiceProvider>
       </ThemeProvider>
     </SafeAreaProvider>

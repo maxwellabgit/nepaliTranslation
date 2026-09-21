@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { hardStopAudio } from './hardStopAudio';
 import { colors } from '../theme';
+import { contentMaxWidth, useSizeClass } from '../layout/sizeClass';
 import type { HistoryItem } from '../storage/phrasebook';
 
 export type AppMode = 'translate' | 'camera' | 'learn';
@@ -76,6 +77,8 @@ export function AppShell({
   const [overlay, setOverlay] = useState<AppOverlay>(null);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
+  const size = useSizeClass();
+  const maxWidth = contentMaxWidth(size);
 
   const switchMode = (next: AppMode) => {
     if (next === mode) return;
@@ -86,7 +89,7 @@ export function AppShell({
   return (
     <SafeAreaView style={styles.root} testID="app-shell">
       <StatusBar style="dark" />
-      <View style={styles.body}>
+      <View style={[styles.body, maxWidth ? { maxWidth, alignSelf: 'center', width: '100%' } : null]}>
         {/* Translate and Learn stay mounted. Camera unmounts when its tab is
             inactive so only one camera preview can exist. */}
         <View

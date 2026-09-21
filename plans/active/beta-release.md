@@ -32,7 +32,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 ## Milestones
 
 - [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
-- [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — verify:ci green; review pending
+- [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
 - [ ] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts
 - [ ] **F3** — Consented speech/photo ingestion and private storage
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
@@ -48,11 +48,21 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: **V1 final boundary supersedes beta monetization/privacy text.** Full-business V1: $0.99/month ad-free; banners only idle Translate + Learn landing; automatic interstitial after 15 foreground-active minutes, max 3 per America/New_York day, SDK-owned dismiss, remotely disableable (off until device + external-beta gates); rewarded video = 15 ad-free minutes; 1 credit = 5 minutes; >20 original words = 2 credits; reward close 5:00 PM America/New_York; pending at close earns once; late rejection → alert only, no clawback; contribution requires Sign in with Apple + 18+ + versioned consent; post-consent speech/photo auto-upload; indefinite retention until withdrawal/deletion; 30-day purge; telemetry OK without raw content; bilingual UI; genuine iPhone+iPad. Feature flags independent; defaults off until gates pass.
 - 2026-09-21: Camera remains in product; Translate absorbs Conversation; tabs Translate / Camera / Learn. Guests keep temporary on-device captures only; consented adults may upload eligible media when flags allow.
 - 2026-09-21: Foundation tip `9b17ac9` is **not** a complete monetized production V1 until F0–F10 + go/no-go.
-- 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256 manifest (`mobile/assets/models/it2-release-manifest.json`). EAS fetch fails on mismatch.
+- 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256. Tracked manifest: `mobile/src/mt/onnx/it2-release-manifest.json` (weights under `assets/models/` stay gitignored). EAS fetch fails on mismatch.
 
 ## Progress
 
-**Current: F1 — Privacy / offline-core repair**
+**Current: F2 — Bilingual UI, theme, responsive layouts**
+
+| Area | Change |
+|------|--------|
+| UI lang | Persisted `uiLang` in prefs; `UiLangProvider`; Settings English/नेपाली chips |
+| Theme | `userInterfaceStyle: automatic` |
+| Layout | `sizeClass` phone / tablet11 / tablet13; AppShell content max-width |
+| TG | iPad 13 viewport preset `1024x1366` |
+| Tests | uiLang persistence; sizeClass; prefs default includes uiLang |
+
+**Honesty:** Translate/Camera still have many hardcoded EN strings (catalog migration continues). Dark mode tokens exist; not every StyleSheet migrated. Device Dynamic Type / VoiceOver = F10.
 
 | Area | Change |
 |------|--------|
@@ -74,15 +84,25 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 ## Commands that actually ran (paste)
 
 ```text
-# F1
-cd mobile && npm run verify:ci
-# typecheck, lint, unit 232, integration 18, verify:translate, expo-doctor 21/21, coverage OK, export:web
+# F1 — privacy / offline-core (branch cursor/v1-f1-privacy-core)
+cd mobile
+npm run lint          # pass
+npm run typecheck     # pass
+npm run test:unit -- --runInBand
+# Test Suites: 53 passed; Tests: 232 passed
+npm run test:integration -- --runInBand
+# Test Suites: 2 passed; Tests: 19 passed
+# includes: keeps typed translation working when on-device speech is unsupported
+npm run verify:translate  # OK
+npm run verify:ci         # exit 0 (~58s): lint, typecheck, unit, integration,
+# verify:translate, expo-doctor, coverage ratchet OK, export:web
+# Independent review: PASS ([review](657f28dc-3e8f-4c4d-aa48-c996eec5fa1b))
 ```
 
 ## Remaining work
 
-1. Independent review of F1 → PASS required before merge.
-2. Start **F2** — bilingual UI, theme, iPad layouts.
+1. Commit remaining preview max-edge clamp + ExecPlan paste (working tree); PR/merge F1 when founder asks.
+2. Do **not** start F2 until F1 is merged.
 
 ## Blockers (concrete; cannot be solved from this repo)
 

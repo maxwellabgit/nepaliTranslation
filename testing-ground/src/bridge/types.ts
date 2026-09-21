@@ -2,7 +2,12 @@
 
 export type TranslateModeId = 'fast-fallback' | 'recorded' | 'local-neural';
 
-export type ViewportPresetId = '375x812' | '390x844' | '430x932' | '768x1024';
+export type ViewportPresetId =
+  | '375x812'
+  | '390x844'
+  | '430x932'
+  | '768x1024'
+  | '1024x1366';
 
 export type ViewportPreset = {
   id: ViewportPresetId;

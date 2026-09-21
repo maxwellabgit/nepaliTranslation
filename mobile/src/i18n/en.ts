@@ -27,6 +27,10 @@ export const en = {
   'history.toTrainingA11y': 'Suggest correction for training',
 
   'settings.title': 'Settings',
+  'settings.language': 'App language',
+  'settings.languageEn': 'English',
+  'settings.languageNe': 'नेपाली',
+  'settings.languageA11y': 'Choose app language',
   'settings.contributions': 'Contributions & rewards',
   'settings.contributionsDetail':
     'View drafts, sync status, and retry uploads on this device.',

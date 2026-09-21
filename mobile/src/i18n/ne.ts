@@ -32,6 +32,10 @@ export const ne: Record<MessageKey, string> = {
   'history.toTrainingA11y': 'तालिमका लागि सुधार सुझाउनुहोस्',
 
   'settings.title': 'सेटिङ',
+  'settings.language': 'एप भाषा',
+  'settings.languageEn': 'English',
+  'settings.languageNe': 'नेपाली',
+  'settings.languageA11y': 'एप भाषा छान्नुहोस्',
   'settings.contributions': 'योगदान र पुरस्कार',
   'settings.contributionsDetail':
     'यस यन्त्रमा मस्यौदा, सिंक अवस्था, र पुनः अपलोड हेर्नुहोस्।',
