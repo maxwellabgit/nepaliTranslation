@@ -68,10 +68,10 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current: H6 — Real AdMob + cryptographically verified SSV** (on `main`)
 
 - Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
-- Proof (post-review-repair): `npm run verify:beta` exit 0; `npm run test:coverage:beta` exit 0 — auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.42/82.79, contributionSync 90.32/74.6. Local `deno check` + `admob_ssv_test` 10/10 ok. pgTAP `11_h6_rewarded_ssv.test.sql` added; `service_create_rewarded_session` uses `extensions.gen_random_bytes` under empty search_path (CI fix).
-- Repair vs independent review FAIL: BufferSource typecheck; AdSlot persists 12m/24m cooldowns; HomeScreen `speaking` suppress; SSV ledger replay + authenticated-revoke pgTAP; session RPC pgcrypto qualify.
+- Proof (post-review-repair, tip `4e345e1`): agent-gates SUCCESS; backend-gate `35552584664` SUCCESS (pgTAP incl. 11_h6_rewarded_ssv + Deno SSV). Coverage floors: auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.42/82.79, contributionSync 90.32/74.6.
+- Repair vs independent review FAIL: BufferSource typecheck; AdSlot persists 12m/24m cooldowns; HomeScreen `speaking` suppress; SSV ledger replay + authenticated-revoke pgTAP; `extensions.gen_random_bytes` under empty search_path.
 - Human gate (**blocked, not passed**): EAS development build on physical iPhone — consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, entitlement suppression. Remote ads flags stay off until that gate.
-- Next: wait for backend-gate green on tip + independent re-review; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`.
+- Next: independent re-review for PASS; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`.
 
 **Previous: H5 — Learn/reward UX and UI consistency** (on `main`)
 
@@ -330,18 +330,11 @@ npm run test:coverage:beta
 #   (pgTAP 08–10; first push failed 03/06 lease assertions → e40d92a fix)
 ```
 
-### H6 (local, post-review-repair, on `main`)
+### H6 (tip `4e345e1`, on `main` / `cursor/beta-08-admob`)
 ```text
-cd mobile
-npm run verify:beta
-# lint max-warnings 0, typecheck, test:unit, test:integration,
-# verify:translate OK, expo-doctor 21/21 — EXIT 0
-npm run test:coverage:beta
-# auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95,
-# ads 84.42/82.79, contributionSync 90.32/74.6 — H6 floors OK — EXIT 0
-npx -p deno deno check supabase/functions/_shared/admobSsv.ts  # OK
-npx -p deno deno test --allow-env supabase/functions/tests/admob_ssv_test.ts  # 10/10
-# pgTAP 11_h6_rewarded_ssv.test.sql added — proven on backend-gate CI
+agent-gates: SUCCESS (verify:beta + coverage floors)
+backend-gate 35552584664: SUCCESS
+  pgTAP (incl. 11_h6_rewarded_ssv) + Deno admob_ssv_test + concurrent reward
 # Human gate blocked: physical iPhone AdMob test ads / SSV / house / entitlement
 ```
 
@@ -394,7 +387,7 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H6** source + review repairs complete (mobile gates green; local Deno SSV 10/10; pgTAP ledger replay added). Independent re-review + backend-gate green required before Done. Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
+- **H6** source + review repairs complete; agent-gates + backend-gate `35552584664` green on tip `4e345e1`. Independent re-review pending. Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass (including independent review of H6).
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob (H6 blocked), RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.
 
