@@ -2,7 +2,12 @@ import {
   decideAdPresentation,
   type AdDecision,
   type AdSurface,
+  type DecideAdPresentationInput,
 } from '../entitlements/decideAdPresentation';
+import {
+  HOUSE_BANNER_COOLDOWN_MS,
+  NETWORK_BANNER_COOLDOWN_MS,
+} from './adConfig';
 
 export type AdNetworkCall = {
   kind: 'banner_load' | 'banner_show' | 'rewarded_load' | 'rewarded_show';
@@ -11,47 +16,55 @@ export type AdNetworkCall = {
 };
 
 /**
- * Narrow adapter surface. Real AdMob (react-native-google-mobile-ads) plugs in
- * behind this in a dev build; tests and Expo Go use the mock.
+ * Narrow adapter surface. Real AdMob plugs in behind this in a native build;
+ * tests and Expo Go use the mock.
  */
 export type AdAdapter = {
   loadBanner: (unitId: string) => Promise<void>;
   showBanner: (unitId: string) => Promise<void>;
-  loadRewarded: (unitId: string) => Promise<void>;
+  loadRewarded: (unitId: string, opts?: RewardedLoadOpts) => Promise<void>;
   showRewarded: (unitId: string) => Promise<void>;
   showHouseAd: (surface: AdSurface) => void;
   /** Test/observability: network-bound AdMob invocations only. */
   networkCalls: () => AdNetworkCall[];
 };
 
+export type RewardedLoadOpts = {
+  userId?: string;
+  customData?: string;
+};
+
 export type AdPlan =
   | { action: 'none'; reason: string }
   | { action: 'house'; surface: AdSurface }
   | { action: 'banner'; unitId: string }
+  | { action: 'rewarded'; unitId: string }
   | { action: 'blocked_offline_network' };
 
-export function planAdPlacement(input: {
-  surface: AdSurface;
-  networkAdsEnabled: boolean;
-  hasSubscription: boolean;
-  earnedAdFreeUntilMs: number | null;
-  trustedNowMs: number | null;
-  offline: boolean;
+export type PlanAdPlacementInput = DecideAdPresentationInput & {
   bannerUnitId: string;
-}): AdPlan {
+  rewardedUnitId?: string;
+};
+
+export function planAdPlacement(input: PlanAdPlacementInput): AdPlan {
   const decision: AdDecision = decideAdPresentation({
-    surface: input.surface,
-    networkAdsEnabled: input.networkAdsEnabled,
-    hasSubscription: input.hasSubscription,
-    earnedAdFreeUntilMs: input.earnedAdFreeUntilMs,
-    trustedNowMs: input.trustedNowMs,
-    offline: input.offline,
+    ...input,
+    networkBannerCooldownMs:
+      input.networkBannerCooldownMs ?? NETWORK_BANNER_COOLDOWN_MS,
+    houseBannerCooldownMs:
+      input.houseBannerCooldownMs ?? HOUSE_BANNER_COOLDOWN_MS,
   });
   if (!decision.show) {
     return { action: 'none', reason: decision.reason };
   }
   if (decision.kind === 'house') {
     return { action: 'house', surface: input.surface };
+  }
+  if (decision.kind === 'rewarded') {
+    const unitId = input.rewardedUnitId ?? '';
+    if (!unitId) return { action: 'none', reason: 'missing_rewarded_unit' };
+    if (input.offline) return { action: 'blocked_offline_network' };
+    return { action: 'rewarded', unitId };
   }
   if (input.offline) {
     // Defense in depth: never schedule a network load while offline.
@@ -64,6 +77,7 @@ export function planAdPlacement(input: {
 export async function executeAdPlan(
   plan: AdPlan,
   adapter: AdAdapter,
+  rewardedOpts?: RewardedLoadOpts,
 ): Promise<{ executed: string }> {
   switch (plan.action) {
     case 'none':
@@ -77,6 +91,10 @@ export async function executeAdPlan(
       await adapter.loadBanner(plan.unitId);
       await adapter.showBanner(plan.unitId);
       return { executed: 'banner' };
+    case 'rewarded':
+      await adapter.loadRewarded(plan.unitId, rewardedOpts);
+      await adapter.showRewarded(plan.unitId);
+      return { executed: 'rewarded' };
     default: {
       const _exhaustive: never = plan;
       return _exhaustive;
@@ -105,21 +123,4 @@ export function createMockAdAdapter(): AdAdapter {
     },
     networkCalls: () => [...network],
   };
-}
-
-/** Pure SSV payload checks (fixtures). Secrets stay server-side. */
-export function verifyAdmobSsvShape(payload: Record<string, unknown>): {
-  ok: boolean;
-  reason?: string;
-} {
-  const required = ['ad_network', 'ad_unit', 'reward_amount', 'reward_item', 'timestamp', 'transaction_id', 'user_id', 'signature', 'key_id'];
-  for (const key of required) {
-    if (payload[key] == null || payload[key] === '') {
-      return { ok: false, reason: `missing_${key}` };
-    }
-  }
-  if (typeof payload.timestamp !== 'string' && typeof payload.timestamp !== 'number') {
-    return { ok: false, reason: 'bad_timestamp' };
-  }
-  return { ok: true };
 }

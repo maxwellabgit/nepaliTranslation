@@ -1,70 +1,127 @@
-import { decideAdPresentation } from '../decideAdPresentation';
+import { decideAdPresentation } from '../../entitlements/decideAdPresentation';
 
-describe('decideAdPresentation', () => {
+describe('decideAdPresentation H6 priorities', () => {
   const base = {
     networkAdsEnabled: true,
+    rewardedAdsEnabled: true,
     hasSubscription: false,
     earnedAdFreeUntilMs: null as number | null,
-    trustedNowMs: 1_000,
+    trustedNowMs: 10_000,
     offline: false,
+    canRequestAds: true,
+    appActive: true,
+    modalVisible: false,
+    keyboardVisible: false,
+    listening: false,
+    speaking: false,
+    translating: false,
+    lastNetworkBannerAtMs: null as number | null,
+    lastHouseBannerAtMs: null as number | null,
+    nowMs: 10_000,
+    surface: 'translate_result' as const,
   };
 
-  it('never shows on conversation, keyboard, audio, or translating', () => {
-    for (const surface of [
-      'conversation',
-      'keyboard',
-      'audio',
-      'translating',
-    ] as const) {
-      expect(decideAdPresentation({ ...base, surface })).toEqual({
-        show: false,
-        reason: 'blocked_surface',
-      });
-    }
-  });
-
-  it('hides for subscription and earned ad-free', () => {
+  it('subscription or earned window → none', () => {
     expect(
-      decideAdPresentation({
-        ...base,
-        surface: 'home',
-        hasSubscription: true,
-      }),
+      decideAdPresentation({ ...base, hasSubscription: true }),
     ).toEqual({ show: false, reason: 'subscription' });
     expect(
       decideAdPresentation({
         ...base,
-        surface: 'home',
-        earnedAdFreeUntilMs: 2_000,
+        earnedAdFreeUntilMs: 20_000,
       }),
     ).toEqual({ show: false, reason: 'earned_ad_free' });
   });
 
-  it('uses house ads offline and banner online when allowed', () => {
+  it('inactive / modal / keyboard / audio / translating / conversation → none', () => {
+    expect(decideAdPresentation({ ...base, appActive: false })).toEqual({
+      show: false,
+      reason: 'inactive',
+    });
+    expect(decideAdPresentation({ ...base, modalVisible: true })).toEqual({
+      show: false,
+      reason: 'modal',
+    });
+    expect(decideAdPresentation({ ...base, keyboardVisible: true })).toEqual({
+      show: false,
+      reason: 'keyboard',
+    });
+    expect(decideAdPresentation({ ...base, listening: true })).toEqual({
+      show: false,
+      reason: 'audio',
+    });
+    expect(decideAdPresentation({ ...base, translating: true })).toEqual({
+      show: false,
+      reason: 'translating',
+    });
     expect(
-      decideAdPresentation({ ...base, surface: 'history', offline: true }),
-    ).toEqual({ show: true, kind: 'house' });
-    expect(decideAdPresentation({ ...base, surface: 'settings' })).toEqual({
+      decideAdPresentation({ ...base, surface: 'conversation' }),
+    ).toEqual({ show: false, reason: 'conversation' });
+  });
+
+  it('offline house with 24-minute cooldown', () => {
+    expect(decideAdPresentation({ ...base, offline: true })).toEqual({
       show: true,
-      kind: 'banner',
+      kind: 'house',
+    });
+    expect(
+      decideAdPresentation({
+        ...base,
+        offline: true,
+        lastHouseBannerAtMs: 10_000 - 60_000,
+        nowMs: 10_000,
+      }),
+    ).toEqual({ show: false, reason: 'house_cooldown' });
+  });
+
+  it('UMP blocks → house online', () => {
+    expect(
+      decideAdPresentation({ ...base, canRequestAds: false }),
+    ).toEqual({ show: true, kind: 'house' });
+  });
+
+  it('eligible online banner with 12-minute cooldown', () => {
+    expect(decideAdPresentation(base)).toEqual({ show: true, kind: 'banner' });
+    expect(
+      decideAdPresentation({
+        ...base,
+        lastNetworkBannerAtMs: 10_000 - 60_000,
+        nowMs: 10_000,
+      }),
+    ).toEqual({ show: false, reason: 'banner_cooldown' });
+  });
+
+  it('rewarded only after explicit tap', () => {
+    expect(
+      decideAdPresentation({
+        ...base,
+        explicitRewardedRequest: true,
+      }),
+    ).toEqual({ show: true, kind: 'rewarded' });
+    expect(
+      decideAdPresentation({
+        ...base,
+        explicitRewardedRequest: true,
+        offline: true,
+      }),
+    ).toEqual({ show: false, reason: 'rewarded_offline' });
+  });
+
+  it('disallows non-placement surfaces and quiz', () => {
+    expect(decideAdPresentation({ ...base, surface: 'home' })).toEqual({
+      show: false,
+      reason: 'placement',
+    });
+    expect(decideAdPresentation({ ...base, surface: 'quiz' })).toEqual({
+      show: false,
+      reason: 'quiz',
     });
   });
 
-  it('respects feature flag off', () => {
+  it('unknown trusted time does not suppress as earned', () => {
     expect(
       decideAdPresentation({
         ...base,
-        surface: 'learn',
-        networkAdsEnabled: false,
-      }),
-    ).toEqual({ show: false, reason: 'flag_off' });
-  });
-
-  it('does not treat unknown trusted time as earned ad-free', () => {
-    expect(
-      decideAdPresentation({
-        ...base,
-        surface: 'home',
         earnedAdFreeUntilMs: 9_999_999,
         trustedNowMs: null,
       }),

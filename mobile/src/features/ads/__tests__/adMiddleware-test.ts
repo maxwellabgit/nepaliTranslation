@@ -2,8 +2,8 @@ import {
   createMockAdAdapter,
   executeAdPlan,
   planAdPlacement,
-  verifyAdmobSsvShape,
 } from '../adMiddleware';
+import { GOOGLE_TEST_BANNER_UNIT, GOOGLE_TEST_REWARDED_UNIT } from '../adConfig';
 
 describe('adMiddleware', () => {
   const base = {
@@ -11,17 +11,20 @@ describe('adMiddleware', () => {
     hasSubscription: false,
     earnedAdFreeUntilMs: null as number | null,
     trustedNowMs: 1_000 as number | null,
-    bannerUnitId: 'ca-app-pub-test/banner',
+    bannerUnitId: GOOGLE_TEST_BANNER_UNIT,
+    rewardedUnitId: GOOGLE_TEST_REWARDED_UNIT,
+    canRequestAds: true,
+    nowMs: 1_000,
+    surface: 'translate_result' as const,
   };
 
   it('never schedules network AdMob calls while offline', async () => {
     const adapter = createMockAdAdapter();
     const plan = planAdPlacement({
       ...base,
-      surface: 'home',
       offline: true,
     });
-    expect(plan).toEqual({ action: 'house', surface: 'home' });
+    expect(plan).toEqual({ action: 'house', surface: 'translate_result' });
     await executeAdPlan(plan, adapter);
     expect(adapter.networkCalls()).toEqual([]);
   });
@@ -46,7 +49,6 @@ describe('adMiddleware', () => {
     await executeAdPlan(
       planAdPlacement({
         ...base,
-        surface: 'history',
         offline: false,
         hasSubscription: true,
       }),
@@ -55,7 +57,6 @@ describe('adMiddleware', () => {
     await executeAdPlan(
       planAdPlacement({
         ...base,
-        surface: 'settings',
         offline: false,
         earnedAdFreeUntilMs: 5_000,
         trustedNowMs: 1_000,
@@ -67,10 +68,14 @@ describe('adMiddleware', () => {
 
   it('loads a banner online when allowed', async () => {
     const adapter = createMockAdAdapter();
-    const plan = planAdPlacement({ ...base, surface: 'learn', offline: false });
+    const plan = planAdPlacement({
+      ...base,
+      surface: 'learn_landing',
+      offline: false,
+    });
     expect(plan).toEqual({
       action: 'banner',
-      unitId: 'ca-app-pub-test/banner',
+      unitId: GOOGLE_TEST_BANNER_UNIT,
     });
     await executeAdPlan(plan, adapter);
     expect(adapter.networkCalls().map((c) => c.kind)).toEqual([
@@ -79,20 +84,32 @@ describe('adMiddleware', () => {
     ]);
   });
 
-  it('validates AdMob SSV fixture shape without trusting the client', () => {
-    expect(
-      verifyAdmobSsvShape({
-        ad_network: '5450213213286189855',
-        ad_unit: '123',
-        reward_amount: '1',
-        reward_item: 'credit',
-        timestamp: '1700000000',
-        transaction_id: 'tx1',
-        user_id: 'u1',
-        signature: 'sig',
-        key_id: '1',
-      }).ok,
-    ).toBe(true);
-    expect(verifyAdmobSsvShape({ ad_network: 'x' }).ok).toBe(false);
+  it('rewarded plan requires explicit request and never runs offline', async () => {
+    const adapter = createMockAdAdapter();
+    const plan = planAdPlacement({
+      ...base,
+      offline: false,
+      rewardedAdsEnabled: true,
+      explicitRewardedRequest: true,
+    });
+    expect(plan.action).toBe('rewarded');
+    await executeAdPlan(plan, adapter, {
+      userId: 'u1',
+      customData: 'sess',
+    });
+    expect(adapter.networkCalls().map((c) => c.kind)).toEqual([
+      'rewarded_load',
+      'rewarded_show',
+    ]);
+
+    const offline = planAdPlacement({
+      ...base,
+      offline: true,
+      rewardedAdsEnabled: true,
+      explicitRewardedRequest: true,
+    });
+    expect(offline.action).toBe('none');
+    await executeAdPlan(offline, adapter);
+    expect(adapter.networkCalls().length).toBe(2);
   });
 });

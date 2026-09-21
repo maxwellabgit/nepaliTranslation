@@ -27,6 +27,7 @@ import {
 } from '../mt/onDeviceTranslate';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
+import { AdSlot } from '../features/ads/AdSlot';
 import { addHistory, type HistoryItem } from '../storage/phrasebook';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
 import { loadPrefs, savePrefs } from '../storage/prefs';
@@ -90,6 +91,7 @@ export function HomeScreen({
   const [listening, setListening] = useState(false);
   const [copiedFlash, setCopiedFlash] = useState(false);
   const [correctionOpen, setCorrectionOpen] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [neSttOk, setNeSttOk] = useState(true);
   const [neVoiceOk, setNeVoiceOk] = useState(true);
   const [stage, setStage] = useState<StageFocus>('input');
@@ -316,6 +318,19 @@ export function HomeScreen({
       hardStopRecognition();
       sharedTranslationEngine.cancelAll();
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () =>
+      setKeyboardVisible(true),
+    );
+    const hide = Keyboard.addListener('keyboardDidHide', () =>
+      setKeyboardVisible(false),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
     };
   }, []);
 
@@ -786,6 +801,14 @@ export function HomeScreen({
                 </Text>
               </Pressable>
             </View>
+            <AdSlot
+              surface="translate_result"
+              eligible={showResult && active}
+              keyboardVisible={keyboardVisible}
+              listening={listening}
+              modalVisible={correctionOpen}
+              appActive={active}
+            />
           </View>
         ) : null}
       </ScrollView>

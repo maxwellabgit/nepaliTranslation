@@ -11,6 +11,11 @@ const mockFetchNext = jest.fn();
 const mockSubmit = jest.fn();
 const mockRefresh = jest.fn(async () => undefined);
 const flagState = { contributionsEnabled: true };
+const authState = {
+  status: 'signed-in' as 'signed-in' | 'guest',
+  authConfigured: true,
+  userId: 'user-1' as string | null,
+};
 
 jest.mock('../contributionApi', () => ({
   fetchNextContribution: (...args: unknown[]) => mockFetchNext(...args),
@@ -20,9 +25,9 @@ jest.mock('../contributionApi', () => ({
 
 jest.mock('../../auth/AuthProvider', () => ({
   useAuth: () => ({
-    status: 'signed-in',
-    authConfigured: true,
-    userId: 'user-1',
+    status: authState.status,
+    authConfigured: authState.authConfigured,
+    userId: authState.userId,
   }),
 }));
 
@@ -76,6 +81,9 @@ describe('ContributionCard H3', () => {
   beforeEach(() => {
     cleanup();
     flagState.contributionsEnabled = true;
+    authState.status = 'signed-in';
+    authState.authConfigured = true;
+    authState.userId = 'user-1';
     mockFetchNext.mockReset();
     mockSubmit.mockReset();
     mockRefresh.mockReset();
@@ -166,5 +174,112 @@ describe('ContributionCard H3', () => {
       expect(view.getByText(/expired/i)).toBeTruthy();
     });
     expect(view.getByTestId('contribution-load')).toBeTruthy();
+  });
+
+  test('load shows sign-in message when not signed in', async () => {
+    authState.status = 'guest';
+    authState.userId = null;
+    mockFetchNext.mockResolvedValue({ ok: false, reason: 'sign_in' });
+    const view = await render(<ContributionCard />);
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-load'));
+    });
+    await waitFor(() => {
+      expect(view.getByTestId('contribution-message').props.children).toMatch(
+        /Sign in with Apple/i,
+      );
+    });
+  });
+
+  test('load handles consent and age gate messages', async () => {
+    mockFetchNext.mockResolvedValueOnce({ ok: false, reason: 'consent' });
+    let view = await render(<ContributionCard />);
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-load'));
+    });
+    await waitFor(() => {
+      expect(view.getByTestId('contribution-message').props.children).toMatch(
+        /consent/i,
+      );
+    });
+
+    mockFetchNext.mockResolvedValueOnce({ ok: false, reason: 'age' });
+    view = await render(<ContributionCard />);
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-load'));
+    });
+    await waitFor(() => {
+      expect(view.getByTestId('contribution-message').props.children).toMatch(
+        /13 or older/i,
+      );
+    });
+  });
+
+  test('empty queue shows no tasks message', async () => {
+    mockFetchNext.mockResolvedValue({ ok: true, assignment: null });
+    const view = await render(<ContributionCard />);
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-load'));
+    });
+    await waitFor(() => {
+      expect(view.getByTestId('contribution-message').props.children).toBe(
+        'No tasks available right now.',
+      );
+    });
+  });
+
+  test('submit retry reuses idempotency key', async () => {
+    mockSubmit.mockResolvedValueOnce({ ok: false, reason: 'rate_limited' });
+    const view = await loadReadyCard();
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-skip'));
+    });
+    await waitFor(() => {
+      expect(view.getByTestId('contribution-retry')).toBeTruthy();
+    });
+    mockSubmit.mockResolvedValueOnce({
+      ok: true,
+      receipt_id: 'rec-2',
+      status: 'received',
+      reward_label: 'Pending',
+    });
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-retry'));
+    });
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenLastCalledWith(
+        expect.objectContaining({ idempotencyKey: 'idem-test-key-01' }),
+      );
+    });
+  });
+
+  test('successful edit submits corrected text', async () => {
+    mockSubmit.mockResolvedValue({
+      ok: true,
+      receipt_id: 'rec-edit',
+      status: 'received',
+      reward_label: 'Earn credits',
+    });
+    const view = await loadReadyCard();
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-edit'));
+    });
+    await act(async () => {
+      fireEvent.changeText(
+        view.getByTestId('contribution-edit-input'),
+        'नमस्कार',
+      );
+    });
+    await act(async () => {
+      fireEvent.press(view.getByTestId('contribution-submit-edit'));
+    });
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'edit',
+          responseText: 'नमस्कार',
+        }),
+      );
+    });
   });
 });

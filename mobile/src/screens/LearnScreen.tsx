@@ -10,6 +10,8 @@ import { AppButton, AppCard } from '../components/AppPrimitives';
 import { colors } from '../theme';
 import { AlphabetLesson } from '../learn/AlphabetLesson';
 import { RewardSummaryCard } from '../learn/RewardSummaryCard';
+import { AdSlot } from '../features/ads/AdSlot';
+import { RewardedAdButton } from '../features/ads/RewardedAdButton';
 
 type Props = {
   active: boolean;
@@ -63,6 +65,8 @@ export function LearnScreen({ active, onOpenContributions }: Props) {
         />
       </AppCard>
 
+      <AdSlot surface="learn_landing" eligible={view === 'landing'} />
+
       <AppCard style={styles.card} testID="learn-card-contribute">
         <Text style={styles.cardTitle} maxFontSizeMultiplier={1.4}>
           Help improve translations
@@ -74,6 +78,7 @@ export function LearnScreen({ active, onOpenContributions }: Props) {
         <View style={styles.summaryWrap}>
           <RewardSummaryCard active={active && view === 'landing'} />
         </View>
+        <RewardedAdButton />
         <AppButton
           label="Open contributions"
           variant="secondary"

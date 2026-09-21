@@ -18,6 +18,82 @@ describe('auth policy', () => {
     expect(next.status).toBe('guest');
     expect(next.alert).toBeNull();
     expect(isAppleCancel({ code: 'ERR_REQUEST_CANCELED' })).toBe(true);
+    expect(isAppleCancel({ code: 'ERR_CANCELED' })).toBe(true);
+    expect(isAppleCancel({ message: 'User canceled the sign-in flow' })).toBe(
+      true,
+    );
+    expect(isAppleCancel({ code: 'OTHER' })).toBe(false);
+  });
+
+  test('apple_cancelled while signed-in returns to signed-in', () => {
+    const signed = authReducer(INITIAL_AUTH, {
+      type: 'ready_session',
+      userId: 'user-1',
+    });
+    const signing = authReducer(signed, { type: 'start_sign_in' });
+    const next = authReducer(signing, { type: 'apple_cancelled' });
+    expect(next.status).toBe('signed-in');
+    expect(next.userId).toBe('user-1');
+  });
+
+  test('dismiss_alert clears error and restores guest or signed-in', () => {
+    const failed = authReducer(INITIAL_AUTH, {
+      type: 'sign_in_failed',
+      message: 'fail',
+    });
+    expect(authReducer(failed, { type: 'dismiss_alert' }).status).toBe('guest');
+
+    const signedFailed = authReducer(
+      { ...INITIAL_AUTH, status: 'error', userId: 'u1', error: 'x', alert: 'x' },
+      { type: 'dismiss_alert' },
+    );
+    expect(signedFailed.status).toBe('signed-in');
+    expect(signedFailed.alert).toBeNull();
+  });
+
+  test('account_summary updates consent fields', () => {
+    const signed = authReducer(INITIAL_AUTH, {
+      type: 'ready_session',
+      userId: 'user-1',
+    });
+    const next = authReducer(signed, {
+      type: 'account_summary',
+      consentVersion: '2026-09-19.draft',
+      ageConfirmed: true,
+    });
+    expect(next.consentVersion).toBe('2026-09-19.draft');
+    expect(next.ageConfirmed).toBe(true);
+  });
+
+  test('deletion_complete and signed_out reset to guest', () => {
+    const signed = authReducer(INITIAL_AUTH, {
+      type: 'ready_session',
+      userId: 'user-1',
+    });
+    expect(authReducer(signed, { type: 'deletion_complete' }).status).toBe(
+      'guest',
+    );
+    expect(authReducer(signed, { type: 'signed_out' }).userId).toBeNull();
+  });
+
+  test('deletion_cancelled returns to signed-in', () => {
+    const deleting = authReducer(
+      authReducer(INITIAL_AUTH, { type: 'ready_session', userId: 'u1' }),
+      { type: 'start_deletion' },
+    );
+    const next = authReducer(deleting, { type: 'deletion_cancelled' });
+    expect(next.status).toBe('signed-in');
+    expect(next.deletionRetryPending).toBe(false);
+  });
+
+  test('unknown action returns previous state', () => {
+    const signed = authReducer(INITIAL_AUTH, {
+      type: 'ready_session',
+      userId: 'user-1',
+    });
+    expect(
+      authReducer(signed, { type: 'unknown' } as unknown as { type: 'ready_guest' }),
+    ).toBe(signed);
   });
 
   test('revoked session stays guest and keeps local history', () => {

@@ -239,4 +239,24 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.queryByTestId('overlay-meaning')).toBeNull();
     expect(screen.queryByText(/Developer tool/i)).toBeNull();
   });
+
+  it('renders real ad policy result with fake SDK (offline house, no network)', async () => {
+    const services = createTestServices({
+      offline: true,
+      flags: { networkAdsEnabled: true },
+      canRequestAds: true,
+    });
+    await renderApp(services);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
+    await waitFor(() => {
+      expect(screen.getByTestId('translate-output').props.children).toBe(
+        'नमस्ते',
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('ad-slot-house-translate_result')).toBeTruthy();
+    });
+    expect(services.ads.networkCalls()).toEqual([]);
+  });
 });

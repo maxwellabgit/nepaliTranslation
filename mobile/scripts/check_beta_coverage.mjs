@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Coverage ratchet for critical beta groups.
- * Records a baseline on first green run; later runs fail on any decrease.
+ * H6 merge gate: every group ≥80% lines and ≥70% branches (and no decrease).
  */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -23,6 +23,10 @@ const GROUPS = [
   'src/features/ads/',
   'src/services/contributionSync.ts',
 ];
+
+/** H6 absolute floors (merge gate). */
+const H6_MIN_LINES = 80;
+const H6_MIN_BRANCHES = 70;
 
 function runCoverage() {
   const result = spawnSync(
@@ -132,9 +136,21 @@ for (const group of GROUPS) {
       failed = true;
     }
   }
+  if (c.lines + 0.01 < H6_MIN_LINES) {
+    console.error(`H6 floor ${group} lines: ${c.lines} < ${H6_MIN_LINES}`);
+    failed = true;
+  }
+  if (c.branches + 0.01 < H6_MIN_BRANCHES) {
+    console.error(
+      `H6 floor ${group} branches: ${c.branches} < ${H6_MIN_BRANCHES}`,
+    );
+    failed = true;
+  }
 }
 
 console.log('Current critical coverage:');
 console.log(JSON.stringify(rounded, null, 2));
 if (failed) process.exit(1);
-console.log('Coverage ratchet OK (no decrease vs baseline).');
+console.log(
+  `Coverage OK (ratchet + H6 floors ${H6_MIN_LINES}% lines / ${H6_MIN_BRANCHES}% branches).`,
+);

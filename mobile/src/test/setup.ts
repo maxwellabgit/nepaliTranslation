@@ -118,6 +118,54 @@ jest.mock('onnxruntime-react-native', () => ({
   Tensor: jest.fn(),
 }));
 
+jest.mock('react-native-google-mobile-ads', () => {
+  const React = require('react');
+  const { View, Text } = require('react-native');
+  return {
+    __esModule: true,
+    default: () => ({
+      initialize: jest.fn(async () => undefined),
+    }),
+    MobileAds: () => ({
+      initialize: jest.fn(async () => undefined),
+    }),
+    AdsConsent: {
+      gatherConsent: jest.fn(async () => ({
+        canRequestAds: false,
+        privacyOptionsRequirementStatus: 'NOT_REQUIRED',
+      })),
+      showPrivacyOptionsForm: jest.fn(async () => undefined),
+    },
+    AdsConsentPrivacyOptionsRequirementStatus: {
+      REQUIRED: 'REQUIRED',
+      NOT_REQUIRED: 'NOT_REQUIRED',
+      UNKNOWN: 'UNKNOWN',
+    },
+    TestIds: {
+      BANNER: 'ca-app-pub-3940256099942544/2934735716',
+      REWARDED: 'ca-app-pub-3940256099942544/1712485313',
+      ADAPTIVE_BANNER: 'ca-app-pub-3940256099942544/2435281174',
+    },
+    BannerAdSize: {
+      ANCHORED_ADAPTIVE_BANNER: 'ANCHORED_ADAPTIVE_BANNER',
+    },
+    BannerAd: ({ unitId }: { unitId: string }) =>
+      React.createElement(
+        View,
+        { testID: 'mock-banner-ad' },
+        React.createElement(Text, null, unitId),
+      ),
+    RewardedAd: {
+      createForAdRequest: jest.fn(() => ({
+        load: jest.fn(async () => undefined),
+        show: jest.fn(async () => undefined),
+        addAdEventListener: jest.fn(() => jest.fn()),
+      })),
+    },
+    RewardedAdEventType: { LOADED: 'loaded', EARNED_REWARD: 'earned_reward' },
+  };
+});
+
 jest.mock('../mt/TranslationEngine', () => ({
   sharedTranslationEngine: {
     warmUp: jest.fn(async () => undefined),

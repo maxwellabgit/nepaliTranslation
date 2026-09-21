@@ -1,6 +1,6 @@
 import * as Network from 'expo-network';
 import { DEFAULT_FEATURE_FLAGS } from '../app/featureFlags';
-import { createMockAdAdapter } from '../features/ads/adMiddleware';
+import { createProductionAdService } from '../features/ads/AdService';
 import { flushPendingDrafts } from './contributionSync';
 import { getSupabase } from './supabase';
 import type { AppServices } from './contracts';
@@ -15,11 +15,11 @@ function stateIsOffline(state: {
 }
 
 /**
- * Production adapters. Ads stay on the mock until H6 installs native AdMob;
- * network ads remain flag-off by default.
+ * Production adapters. Native AdMob via AdService; network ads stay flag-off
+ * until the human device gate enables remote flags.
  */
 export function createProductionServices(): AppServices {
-  const adAdapter = createMockAdAdapter();
+  const ads = createProductionAdService();
   let lastAuthError: string | null = null;
   const netListeners = new Set<(offline: boolean) => void>();
   let offline = false;
@@ -30,7 +30,6 @@ export function createProductionServices(): AppServices {
     for (const listener of netListeners) listener(offline);
   };
 
-  // Best-effort initial read + live subscription. Soft-fail leaves offline=false.
   void Network.getNetworkStateAsync()
     .then((state) => setOffline(stateIsOffline(state)))
     .catch(() => undefined);
@@ -40,8 +39,11 @@ export function createProductionServices(): AppServices {
       setOffline(stateIsOffline(state));
     });
   } catch {
-    /* soft-fail: foreground / sign-in flush still run */
+    /* soft-fail */
   }
+
+  // UMP before ads; soft-fail leaves canRequestAds false → house only.
+  void ads.prepareConsentAndSdk();
 
   return {
     auth: {
@@ -80,7 +82,6 @@ export function createProductionServices(): AppServices {
             networkAdsEnabled: Boolean(data.network_ads_enabled),
             rewardedAdsEnabled: Boolean(data.rewarded_ads_enabled),
             paywallEnabled: Boolean(data.paywall_enabled),
-            // Learn stays available even if remote learn_enabled is false.
             learnEnabled: true,
           };
         } catch {
@@ -103,9 +104,6 @@ export function createProductionServices(): AppServices {
         };
       },
     },
-    ads: {
-      adapter: adAdapter,
-      networkCalls: () => adAdapter.networkCalls(),
-    },
+    ads,
   };
 }

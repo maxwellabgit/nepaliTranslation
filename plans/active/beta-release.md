@@ -52,7 +52,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
 - [x] H4 — Apple identity/deletion + remove founder-only UI (independent review PASS)
 - [x] H5 — Learn, reward visibility, accessibility, UI consistency (independent review PASS)
-- [ ] H6 — Real AdMob + cryptographically verified SSV
+- [x] H6 — Real AdMob + cryptographically verified SSV (gates green; review pending)
 - [ ] Merge foundation only after every H0–H6 merge gate passes
 
 ### Later slices (separate PRs after foundation)
@@ -65,7 +65,15 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H5 — Learn/reward UX and UI consistency** (on `main`)
+**Current: H6 — Real AdMob + cryptographically verified SSV** (on `main`)
+
+- Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
+- Proof: `npm run verify:beta` + `test:coverage:beta` (H6 floors OK: auth 85.82/76.76, contribution 85.78/79.3, entitlements 91.97/82.61, ads 86.01/83.15, contributionSync 90.32/74.6).
+- Commit: `feat: complete native ads and verified rewarded grants`
+- Human gate (**blocked, not passed**): EAS development build on physical iPhone — consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, entitlement suppression. Remote ads flags stay off until that gate.
+- Next: independent review; do **not** merge PR #2 / do **not** start Slice 09 in this session. Pushed to `cursor/beta-08-admob`.
+
+**Previous: H5 — Learn/reward UX and UI consistency** (on `main`)
 
 - Scope: first tab label `Translate` (mode key stays `auto`); Learn landing with Nepali alphabet + Help improve translations cards; alphabet detail (sections, large glyph, IAST dental/retroflex, normal/slow speak, quiz uniqueness, progress, completion, Back + speech hard-stop); `RewardSummaryCard` (lifetime credits, pending, Ad-free until); Contributions screen uses AppHeader/AppButton + ContributionCard + reward summary; CorrectionSheet keyboard avoidance; AppPrimitives for Learn primary actions.
 - Proof: `npm run verify:beta` + `test:coverage:beta` (ratchet OK).
@@ -116,7 +124,7 @@ Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until t
 - [x] Rename fake E2E; keep as AppShell integration until H1 real composition (H0)
 - [x] Real app composition integration tests (H1)
 - [ ] Maestro beyond tab smoke (H6/Slice 12)
-- [ ] Production AdMob + SSV crypto (H6)
+- [x] Production AdMob + SSV crypto (H6 — source + crypto tests; device proof human-gated)
 - [x] ContributionCard submit (H3)
 - [x] Outbox retry after network failure (H2)
 - [x] Server-side consent gate (H3)
@@ -135,7 +143,7 @@ Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until t
 - [x] Learn landing + reward summary (H5)
 - [ ] Alphabet roman disambiguation + bilingual sign-off (H5 code done; bilingual human gate blocked)
 - [x] Console/act noise free (H0)
-- [x] Coverage thresholds on changed files (H0 ratchet baseline recorded; 80/70 by H6)
+- [x] Coverage thresholds on changed files (H0 ratchet baseline recorded; 80/70 by H6 — **met**)
 - [x] NSPhotoLibraryUsageDescription honesty (H4) — removed (no photo feature)
 - [x] Tab label Translate (H5)
 
@@ -322,6 +330,19 @@ npm run test:coverage:beta
 #   (pgTAP 08–10; first push failed 03/06 lease assertions → e40d92a fix)
 ```
 
+### H6 (local, 2026-09-20, on `main`)
+```text
+cd mobile
+npm run verify:beta
+# lint max-warnings 0, typecheck, test:unit, test:integration,
+# verify:translate OK, expo-doctor 21/21
+npm run test:coverage:beta
+# auth 85.82/76.76, contribution 85.78/79.3, entitlements 91.97/82.61,
+# ads 86.01/83.15, contributionSync 90.32/74.6 — H6 floors OK
+# deno not available locally — backend-gate CI proves admob_ssv_test + migration
+# Human gate blocked: physical iPhone AdMob test ads / SSV / house / entitlement
+```
+
 ### H5 (local, 2026-09-20, on `main`)
 ```text
 cd mobile
@@ -371,9 +392,9 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H5** complete (independent review PASS). Next milestone is **H6** — do not start in the H5 session after push.
-- Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
-- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob, RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.
+- **H6** source complete (gates green). Independent review pending this session. Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
+- Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass (including independent review of H6).
+- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob (H6 blocked), RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
@@ -382,4 +403,5 @@ npm run verify:beta
 - **H4 human gate (blocked, not passed):** real iPhone Apple sign-in, credential revoke, cancel refresh, and delete-account with configured Apple/Supabase credentials. Do not claim device proof from Jest fakes.
 - Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles. **H5 refreshed the IAST dental/retroflex cues; sign-off remains blocked, not passed.**
 - Slice 08 human gates (not claimed): AdMob app registration, banner/rewarded unit IDs, `react-native-google-mobile-ads` in a native/dev client, physical-device ad load proof.
+- **H6 human gate (blocked, not passed):** EAS development build on a physical iPhone using AdMob **test** ads — prove consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, and entitlement suppression. Do not claim device proof from Jest. Keep `network_ads_enabled` / `rewarded_ads_enabled` off until that gate.
 - Device Maestro (`mobile/.maestro/smoke_tabs.yaml`): Maestro CLI + running iOS app not available on this Windows agent — human / Slice 12 gate.

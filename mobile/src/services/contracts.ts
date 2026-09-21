@@ -1,5 +1,5 @@
-import type { FeatureFlags } from '../app/featureFlags';
 import type { AdAdapter } from '../features/ads/adMiddleware';
+import type { FeatureFlags } from '../app/featureFlags';
 import type { FlushResult } from './contributionSync';
 
 /** Optional online identity boundary. */
@@ -34,10 +34,18 @@ export type NetworkService = {
   subscribe: (listener: (offline: boolean) => void) => () => void;
 };
 
-/** Ad SDK boundary (mock in tests / Expo Go). */
+export type ConsentState = {
+  canRequestAds: boolean;
+  privacyOptionsRequired: boolean;
+};
+
+/** Ad SDK boundary. Production uses real adapter; mocks are test-only. */
 export type AdService = {
   adapter: AdAdapter;
   networkCalls: () => ReturnType<AdAdapter['networkCalls']>;
+  prepareConsentAndSdk: () => Promise<ConsentState>;
+  getConsentState: () => ConsentState;
+  showPrivacyOptions: () => Promise<void>;
 };
 
 export type AppServices = {

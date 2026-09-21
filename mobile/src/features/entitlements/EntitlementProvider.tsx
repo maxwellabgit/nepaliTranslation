@@ -165,3 +165,8 @@ export function useEntitlement(): EntitlementState {
   }
   return ctx;
 }
+
+/** Soft-fail for screens that may render outside the provider in unit tests. */
+export function useEntitlementOptional(): EntitlementState | null {
+  return useContext(EntitlementContext);
+}

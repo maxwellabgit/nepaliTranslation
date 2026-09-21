@@ -1,0 +1,130 @@
+import { useCallback, useState } from 'react';
+import { Alert, StyleSheet } from 'react-native';
+
+import { AppButton } from '../../components/AppPrimitives';
+import { useAuth } from '../auth/AuthProvider';
+import { useEntitlement } from '../entitlements/EntitlementProvider';
+import { useFeatureFlags } from '../../app/FeatureConfigProvider';
+import { useServices } from '../../services/ServiceContext';
+import { resolveAdUnitConfig, REWARDED_CTA_LABEL } from './adConfig';
+import { executeAdPlan, planAdPlacement } from './adMiddleware';
+import {
+  acceptProvisionalGrant,
+  createProvisionalGrant,
+  loadProvisionalGrant,
+  saveProvisionalGrant,
+  supportMessageForExpiredProvisional,
+} from './provisionalGrant';
+import { requestRewardedSession } from './rewardedSession';
+
+type Props = {
+  offline?: boolean;
+  hasSubscription?: boolean;
+};
+
+/**
+ * Signed-in optional rewarded CTA. Never auto-loads.
+ * Client callback → provisional 10 min; permanent grant only via verified SSV.
+ */
+export function RewardedAdButton({
+  offline: offlineProp,
+  hasSubscription = false,
+}: Props) {
+  const auth = useAuth();
+  const entitlement = useEntitlement();
+  const flags = useFeatureFlags();
+  const services = useServices();
+  const [busy, setBusy] = useState(false);
+
+  const offline = offlineProp ?? services.network.isOffline();
+
+  const onPress = useCallback(async () => {
+    if (busy) return;
+    if (auth.status !== 'signed-in' || !auth.userId) {
+      Alert.alert('Sign in required', 'Sign in to earn ad-free time from an optional ad.');
+      return;
+    }
+    setBusy(true);
+    try {
+      const units = resolveAdUnitConfig();
+      const consent = services.ads.getConsentState();
+      const plan = planAdPlacement({
+        surface: 'contribution_result',
+        networkAdsEnabled: flags.networkAdsEnabled,
+        rewardedAdsEnabled: flags.rewardedAdsEnabled,
+        hasSubscription,
+        earnedAdFreeUntilMs: entitlement.earnedAdFreeUntilMs,
+        trustedNowMs: entitlement.trustedNow(),
+        offline,
+        canRequestAds: consent.canRequestAds,
+        explicitRewardedRequest: true,
+        bannerUnitId: units.bannerUnitId,
+        rewardedUnitId: units.rewardedUnitId,
+        nowMs: Date.now(),
+      });
+      if (plan.action !== 'rewarded') {
+        Alert.alert('Ad unavailable', 'Optional ads are not available right now.');
+        return;
+      }
+
+      const session = await requestRewardedSession();
+      if (!session.ok) {
+        Alert.alert('Ad unavailable', 'Could not start a rewarded session.');
+        return;
+      }
+
+      await executeAdPlan(plan, services.ads.adapter, {
+        userId: auth.userId,
+        customData: session.session.sessionToken,
+      });
+
+      // Provisional local window after client reward callback path.
+      const now = Date.now();
+      const current = await loadProvisionalGrant();
+      const next = createProvisionalGrant(session.session.sessionToken, now);
+      const accepted = acceptProvisionalGrant(current, next, now);
+      if (!accepted.ok) {
+        Alert.alert(
+          'Reward pending',
+          'A previous optional ad reward is still verifying.',
+        );
+        return;
+      }
+      await saveProvisionalGrant(accepted.grant);
+      await entitlement.refresh();
+    } catch {
+      Alert.alert('Ad unavailable', supportMessageForExpiredProvisional());
+    } finally {
+      setBusy(false);
+    }
+  }, [
+    auth.status,
+    auth.userId,
+    busy,
+    entitlement,
+    flags.networkAdsEnabled,
+    flags.rewardedAdsEnabled,
+    hasSubscription,
+    offline,
+    services.ads,
+  ]);
+
+  if (auth.status !== 'signed-in') return null;
+  if (!flags.rewardedAdsEnabled) return null;
+
+  return (
+    <AppButton
+      label={REWARDED_CTA_LABEL}
+      variant="secondary"
+      onPress={() => void onPress()}
+      disabled={busy || offline}
+      accessibilityLabel={REWARDED_CTA_LABEL}
+      testID="rewarded-ad-cta"
+      style={styles.btn}
+    />
+  );
+}
+
+const styles = StyleSheet.create({
+  btn: { marginTop: 8 },
+});

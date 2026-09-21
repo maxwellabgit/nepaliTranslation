@@ -25,6 +25,8 @@ import {
   EmptyState,
 } from '../components/AppPrimitives';
 import { RewardSummaryCard } from '../learn/RewardSummaryCard';
+import { AdSlot } from '../features/ads/AdSlot';
+import { RewardedAdButton } from '../features/ads/RewardedAdButton';
 import { colors } from '../theme';
 
 type Props = {
@@ -105,8 +107,15 @@ export function ContributionsScreen({ onClose }: Props) {
         keyboardShouldPersistTaps="handled"
       >
         <RewardSummaryCard active testID="contributions-reward-summary" />
+        <RewardedAdButton />
 
         <ContributionCard />
+
+        <AdSlot
+          surface="contribution_result"
+          eligible={counts.validated > 0 || counts.pendingValidation > 0}
+          modalVisible={Boolean(editDraft)}
+        />
 
         <View style={styles.counts} testID="contribution-counts">
           <CountRow label="Draft" value={counts.draft} />

@@ -1,6 +1,6 @@
 import { DEFAULT_FEATURE_FLAGS, type FeatureFlags } from '../app/featureFlags';
 import { createMockAdAdapter } from '../features/ads/adMiddleware';
-import type { AppServices } from './contracts';
+import type { AppServices, ConsentState } from './contracts';
 import type { FlushResult } from './contributionSync';
 
 export type TestServicesOptions = {
@@ -9,6 +9,8 @@ export type TestServicesOptions = {
   authConfigured?: boolean;
   authError?: string | null;
   flushResult?: FlushResult;
+  canRequestAds?: boolean;
+  privacyOptionsRequired?: boolean;
 };
 
 /** Deterministic fakes for production-composition integration tests. */
@@ -17,10 +19,15 @@ export function createTestServices(
 ): AppServices & {
   setOffline: (offline: boolean) => void;
   setAuthError: (message: string | null) => void;
+  setConsent: (state: ConsentState) => void;
 } {
   const adAdapter = createMockAdAdapter();
   let offline = options.offline ?? false;
   let authError = options.authError ?? null;
+  let consent: ConsentState = {
+    canRequestAds: options.canRequestAds ?? false,
+    privacyOptionsRequired: options.privacyOptionsRequired ?? false,
+  };
   const netListeners = new Set<(offline: boolean) => void>();
   const flags: FeatureFlags = {
     ...DEFAULT_FEATURE_FLAGS,
@@ -31,6 +38,7 @@ export function createTestServices(
   const services: AppServices & {
     setOffline: (v: boolean) => void;
     setAuthError: (m: string | null) => void;
+    setConsent: (s: ConsentState) => void;
   } = {
     auth: {
       isConfigured: () => options.authConfigured ?? false,
@@ -62,6 +70,9 @@ export function createTestServices(
     ads: {
       adapter: adAdapter,
       networkCalls: () => adAdapter.networkCalls(),
+      prepareConsentAndSdk: async () => consent,
+      getConsentState: () => consent,
+      showPrivacyOptions: async () => undefined,
     },
     setOffline: (next) => {
       offline = next;
@@ -69,6 +80,9 @@ export function createTestServices(
     },
     setAuthError: (message) => {
       authError = message;
+    },
+    setConsent: (next) => {
+      consent = next;
     },
   };
   return services;

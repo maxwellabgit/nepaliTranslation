@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Alert,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -15,8 +16,12 @@ import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { recordContributionConsent } from '../features/auth/recordConsent';
 import { saveLocalConsent } from '../storage/contributionConsent';
 import { flushPendingDrafts } from '../services/contributionSync';
+import { useServices } from '../services/ServiceContext';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
 import { colors } from '../theme';
+
+const INAPPROPRIATE_AD_HELP =
+  'mailto:support@neptranslate.app?subject=Inappropriate%20ad%20report';
 
 type Props = {
   onClose: () => void;
@@ -47,6 +52,8 @@ export function SettingsScreen({
     neTts: boolean;
   } | null>(null);
   const auth = useAuth();
+  const services = useServices();
+  const consent = services.ads.getConsentState();
 
   const refreshAccountSummary = auth.refreshAccountSummary;
   const authStatus = auth.status;
@@ -118,6 +125,35 @@ export function SettingsScreen({
           </Text>
         </Pressable>
       ) : null}
+
+      <View style={styles.section} testID="settings-ads-privacy">
+        <Text style={styles.sectionLabel}>Ads & privacy</Text>
+        {consent.privacyOptionsRequired ? (
+          <Pressable
+            onPress={() => void services.ads.showPrivacyOptions()}
+            accessibilityRole="button"
+            accessibilityLabel="Ad privacy options"
+            testID="settings-ad-privacy-options"
+          >
+            <Text style={styles.link}>Privacy options</Text>
+          </Pressable>
+        ) : null}
+        <Pressable
+          onPress={() => {
+            void Linking.openURL(INAPPROPRIATE_AD_HELP).catch(() => {
+              Alert.alert(
+                'Report an ad',
+                'Email support@neptranslate.app with “Inappropriate ad report” in the subject.',
+              );
+            });
+          }}
+          accessibilityRole="link"
+          accessibilityLabel="Report an inappropriate ad"
+          testID="settings-report-inappropriate-ad"
+        >
+          <Text style={styles.link}>Report an inappropriate ad</Text>
+        </Pressable>
+      </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>
@@ -212,6 +248,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     color: colors.text,
+  },
+  link: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.forest,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
   meta: {
     marginTop: 4,

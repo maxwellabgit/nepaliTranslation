@@ -5,10 +5,9 @@
  */
 import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { AppShell } from '../AppShell';
-import { AdSlot } from '../../features/ads/AdSlot';
 import {
   createMockAdAdapter,
   executeAdPlan,
@@ -173,13 +172,14 @@ describe('AppShell integration (mounted panes + offline ads)', () => {
     const adapter = createMockAdAdapter();
     await executeAdPlan(
       planAdPlacement({
-        surface: 'home',
+        surface: 'translate_result',
         networkAdsEnabled: true,
         hasSubscription: false,
         earnedAdFreeUntilMs: null,
         trustedNowMs: 1,
         offline: true,
         bannerUnitId: 'ca-app-pub-test/banner',
+        nowMs: 1,
       }),
       adapter,
     );
@@ -192,22 +192,10 @@ describe('AppShell integration (mounted panes + offline ads)', () => {
         trustedNowMs: 1,
         offline: false,
         bannerUnitId: 'ca-app-pub-test/banner',
+        nowMs: 1,
       }),
       adapter,
     );
-    expect(adapter.networkCalls()).toEqual([]);
-
-    await render(
-      <AdSlot
-        surface="history"
-        offline
-        networkAdsEnabled
-        adapter={adapter}
-      />,
-    );
-    await waitFor(() => {
-      expect(screen.getByTestId('ad-slot-house-history')).toBeTruthy();
-    });
     expect(adapter.networkCalls()).toEqual([]);
   });
 });
