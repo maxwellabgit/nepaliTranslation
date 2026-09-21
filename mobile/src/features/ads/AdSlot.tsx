@@ -83,6 +83,10 @@ export function AdSlot({
       setLabel(null);
       return;
     }
+    if (entitlement?.hasActiveEarnedAdFree?.()) {
+      setLabel('none:earned_ad_free');
+      return;
+    }
     let cancelled = false;
     void (async () => {
       const plan = planAdPlacement({
@@ -120,6 +124,7 @@ export function AdSlot({
     dismissed,
     earnedAdFreeUntilMs,
     eligible,
+    entitlement,
     flags.networkAdsEnabled,
     hasSubscription,
     keyboardVisible,

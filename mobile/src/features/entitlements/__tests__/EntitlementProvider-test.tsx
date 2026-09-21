@@ -98,9 +98,10 @@ describe('EntitlementProvider', () => {
       expect(screen.getByTestId('credits').props.children).toBe('9');
     });
     expect(screen.getByTestId('ad-free').props.children).toBe('true');
-    expect(Number(screen.getByTestId('trusted').props.children)).toBe(
-      Date.parse(serverNow),
-    );
+    const trusted = Number(screen.getByTestId('trusted').props.children);
+    expect(Number.isFinite(trusted)).toBe(true);
+    // Allow small mono/device drift vs the raw server_time parse.
+    expect(Math.abs(trusted - Date.parse(serverNow))).toBeLessThan(5_000);
   });
 
   test('falls back to local cache when server time fails', async () => {

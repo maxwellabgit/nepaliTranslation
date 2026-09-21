@@ -23,7 +23,8 @@ export type AdAdapter = {
   loadBanner: (unitId: string) => Promise<void>;
   showBanner: (unitId: string) => Promise<void>;
   loadRewarded: (unitId: string, opts?: RewardedLoadOpts) => Promise<void>;
-  showRewarded: (unitId: string) => Promise<void>;
+  /** Resolves with earned=true only after the client reward callback (EARNED_REWARD). */
+  showRewarded: (unitId: string) => Promise<{ earned: boolean }>;
   showHouseAd: (surface: AdSurface) => void;
   /** Test/observability: network-bound AdMob invocations only. */
   networkCalls: () => AdNetworkCall[];
@@ -91,10 +92,13 @@ export async function executeAdPlan(
       await adapter.loadBanner(plan.unitId);
       await adapter.showBanner(plan.unitId);
       return { executed: 'banner' };
-    case 'rewarded':
+    case 'rewarded': {
       await adapter.loadRewarded(plan.unitId, rewardedOpts);
-      await adapter.showRewarded(plan.unitId);
-      return { executed: 'rewarded' };
+      const result = await adapter.showRewarded(plan.unitId);
+      return {
+        executed: result.earned ? 'rewarded' : 'rewarded_not_earned',
+      };
+    }
     default: {
       const _exhaustive: never = plan;
       return _exhaustive;
@@ -117,6 +121,7 @@ export function createMockAdAdapter(): AdAdapter {
     },
     async showRewarded(unitId) {
       network.push({ kind: 'rewarded_show', unitId, atMs: Date.now() });
+      return { earned: true };
     },
     showHouseAd(surface) {
       house.push(surface);

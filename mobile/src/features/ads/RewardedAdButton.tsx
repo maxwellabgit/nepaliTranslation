@@ -76,22 +76,25 @@ export function RewardedAdButton({
       await executeAdPlan(plan, services.ads.adapter, {
         userId: auth.userId,
         customData: session.session.sessionToken,
+      }).then(async (result) => {
+        // Provisional only after client EARNED_REWARD — never from show() alone.
+        if (result.executed !== 'rewarded') {
+          return;
+        }
+        const now = Date.now();
+        const current = await loadProvisionalGrant();
+        const next = createProvisionalGrant(session.session.sessionToken, now);
+        const accepted = acceptProvisionalGrant(current, next, now);
+        if (!accepted.ok) {
+          Alert.alert(
+            'Reward pending',
+            'A previous optional ad reward is still verifying.',
+          );
+          return;
+        }
+        await saveProvisionalGrant(accepted.grant);
+        await entitlement.refresh();
       });
-
-      // Provisional local window after client reward callback path.
-      const now = Date.now();
-      const current = await loadProvisionalGrant();
-      const next = createProvisionalGrant(session.session.sessionToken, now);
-      const accepted = acceptProvisionalGrant(current, next, now);
-      if (!accepted.ok) {
-        Alert.alert(
-          'Reward pending',
-          'A previous optional ad reward is still verifying.',
-        );
-        return;
-      }
-      await saveProvisionalGrant(accepted.grant);
-      await entitlement.refresh();
     } catch {
       Alert.alert('Ad unavailable', supportMessageForExpiredProvisional());
     } finally {

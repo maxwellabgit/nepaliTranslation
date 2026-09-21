@@ -156,11 +156,21 @@ jest.mock('react-native-google-mobile-ads', () => {
         React.createElement(Text, null, unitId),
       ),
     RewardedAd: {
-      createForAdRequest: jest.fn(() => ({
-        load: jest.fn(async () => undefined),
-        show: jest.fn(async () => undefined),
-        addAdEventListener: jest.fn(() => jest.fn()),
-      })),
+      createForAdRequest: jest.fn(() => {
+        const listeners = new Map<string, () => void>();
+        return {
+          load: jest.fn(async () => {
+            listeners.get('loaded')?.();
+          }),
+          show: jest.fn(async () => {
+            listeners.get('earned_reward')?.();
+          }),
+          addAdEventListener: jest.fn((event: string, cb: () => void) => {
+            listeners.set(event, cb);
+            return jest.fn();
+          }),
+        };
+      }),
     },
     RewardedAdEventType: { LOADED: 'loaded', EARNED_REWARD: 'earned_reward' },
   };

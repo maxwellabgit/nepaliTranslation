@@ -64,7 +64,9 @@ export function createProductionAdService(): AdService {
   let sdkReady = false;
   let rewardedRef: {
     show: () => Promise<void>;
+    addAdEventListener: (event: string, cb: () => void) => () => void;
   } | null = null;
+  let earnedEventType = 'earned_reward';
 
   const adapter: AdAdapter = {
     async loadBanner(unitId) {
@@ -78,6 +80,7 @@ export function createProductionAdService(): AdService {
       network.push({ kind: 'rewarded_load', unitId, atMs: Date.now() });
       const native = await tryLoadNative();
       if (!native || !sdkReady) return;
+      earnedEventType = native.RewardedAdEventType.EARNED_REWARD;
       const ad = native.RewardedAd.createForAdRequest(unitId, {
         serverSideVerificationOptions: {
           userId: opts?.userId,
@@ -98,10 +101,22 @@ export function createProductionAdService(): AdService {
     },
     async showRewarded(unitId) {
       network.push({ kind: 'rewarded_show', unitId, atMs: Date.now() });
-      if (rewardedRef) {
-        await rewardedRef.show();
-        rewardedRef = null;
-      }
+      const ad = rewardedRef;
+      rewardedRef = null;
+      if (!ad) return { earned: false };
+      return await new Promise<{ earned: boolean }>((resolve) => {
+        let earned = false;
+        const unsub = ad.addAdEventListener(earnedEventType, () => {
+          earned = true;
+        });
+        void ad
+          .show()
+          .catch(() => undefined)
+          .finally(() => {
+            unsub();
+            resolve({ earned });
+          });
+      });
     },
     showHouseAd(_surface: AdSurface) {
       /* UI renders house copy */

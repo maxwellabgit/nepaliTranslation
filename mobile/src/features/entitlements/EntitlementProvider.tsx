@@ -10,6 +10,13 @@ import {
 
 import { useAuth } from '../auth/AuthProvider';
 import { getSupabase } from '../../services/supabase';
+import {
+  loadProvisionalGrant,
+  provisionalEarnedUntilMs,
+  reconcileProvisional,
+  saveProvisionalGrant,
+  type ProvisionalGrant,
+} from '../ads/provisionalGrant';
 
 import {
   clearCachedEntitlement,
@@ -25,10 +32,11 @@ import {
 
 type EntitlementState = {
   ready: boolean;
+  /** Effective ad-free until: max(server earned, provisional local). */
   earnedAdFreeUntilMs: number | null;
   lifetimeCredits: number;
   version: number;
-  /** True when earned window is still ahead of trusted now. */
+  /** True when earned window is still ahead of trusted now (or provisional device now). */
   hasActiveEarnedAdFree: () => boolean;
   /** Null until a successful server_time sync in this process. */
   trustedNow: () => number | null;
@@ -61,21 +69,30 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
   const [cache, setCache] = useState<CachedEntitlement>(EMPTY);
   // In-process only — never restore monoAtSyncMs across restarts (it resets).
   const [clock, setClock] = useState<TrustedClock | null>(null);
+  const [provisional, setProvisional] = useState<ProvisionalGrant | null>(null);
   const [ready, setReady] = useState(false);
 
   const refresh = useCallback(async () => {
     if (status !== 'signed-in' || !userId) {
       setCache(EMPTY);
       setClock(null);
+      setProvisional(null);
       await clearCachedEntitlement();
+      await saveProvisionalGrant(null);
       setReady(true);
       return;
     }
+
+    const nowMs = Date.now();
+    let localProv = reconcileProvisional(await loadProvisionalGrant(), nowMs);
+    await saveProvisionalGrant(localProv);
+
     const client = getSupabase();
     if (!client) {
       const local = await loadCachedEntitlement();
       if (local) setCache(local);
-      // Keep clock null offline — cannot claim ad-free without server time.
+      setProvisional(localProv);
+      // Keep clock null offline — cannot claim server ad-free without server time.
       setReady(true);
       return;
     }
@@ -95,6 +112,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
       if (timeRes.error || timeRes.data == null) {
         const local = await loadCachedEntitlement();
         if (local) setCache(local);
+        setProvisional(localProv);
         setReady(true);
         return;
       }
@@ -102,6 +120,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
       if (!Number.isFinite(parsed)) {
         const local = await loadCachedEntitlement();
         if (local) setCache(local);
+        setProvisional(localProv);
         setReady(true);
         return;
       }
@@ -110,17 +129,34 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
       const until = data?.earned_ad_free_until
         ? Date.parse(String(data.earned_ad_free_until))
         : null;
+      const serverUntil = Number.isFinite(until) ? until : null;
+
+      // Reconcile provisional once server earned window covers the session.
+      if (
+        localProv &&
+        !localProv.verified &&
+        serverUntil != null &&
+        serverUntil >= localProv.untilMs
+      ) {
+        localProv = reconcileProvisional(localProv, deviceNow, {
+          verifiedSessionToken: localProv.sessionToken,
+        });
+        await saveProvisionalGrant(localProv);
+      }
+
       const next: CachedEntitlement = {
-        earnedAdFreeUntilMs: Number.isFinite(until) ? until : null,
+        earnedAdFreeUntilMs: serverUntil,
         lifetimeCredits: data?.lifetime_credits ?? 0,
         version: data?.version ?? 0,
         syncedAtMs: deviceNow,
       };
       setCache(next);
+      setProvisional(localProv);
       await saveCachedEntitlement(next);
     } catch {
       const local = await loadCachedEntitlement();
       if (local) setCache(local);
+      setProvisional(localProv);
     } finally {
       setReady(true);
     }
@@ -130,26 +166,38 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
     void (async () => {
       const local = await loadCachedEntitlement();
       if (local) setCache(local);
+      const prov = await loadProvisionalGrant();
+      if (prov) setProvisional(reconcileProvisional(prov, Date.now()));
       await refresh();
     })();
   }, [refresh]);
 
   const value = useMemo<EntitlementState>(() => {
-    const expiry = cache.earnedAdFreeUntilMs;
+    const serverExpiry = cache.earnedAdFreeUntilMs;
+    const provisionalUntil = provisional?.untilMs ?? null;
+    const combinedUntil =
+      serverExpiry == null
+        ? provisionalUntil
+        : provisionalUntil == null
+          ? serverExpiry
+          : Math.max(serverExpiry, provisionalUntil);
     return {
       ready,
-      earnedAdFreeUntilMs: expiry,
+      earnedAdFreeUntilMs: combinedUntil,
       lifetimeCredits: cache.lifetimeCredits,
       version: cache.version,
       hasActiveEarnedAdFree: () => {
-        const now = readTrustedNow(clock);
-        if (now === null || expiry === null) return false;
-        return expiry > now;
+        const now = Date.now();
+        const provActive = provisionalEarnedUntilMs(provisional, now);
+        if (provActive != null && provActive > now) return true;
+        const trusted = readTrustedNow(clock);
+        if (trusted == null || serverExpiry == null) return false;
+        return serverExpiry > trusted;
       },
       trustedNow: () => readTrustedNow(clock),
       refresh,
     };
-  }, [cache, clock, ready, refresh]);
+  }, [cache, clock, provisional, ready, refresh]);
 
   return (
     <EntitlementContext.Provider value={value}>

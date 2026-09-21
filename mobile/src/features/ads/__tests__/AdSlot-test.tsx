@@ -9,6 +9,7 @@ jest.mock('../../entitlements/EntitlementProvider', () => ({
   useEntitlementOptional: () => ({
     earnedAdFreeUntilMs: null,
     trustedNow: () => 1_000,
+    hasActiveEarnedAdFree: () => false,
   }),
 }));
 
