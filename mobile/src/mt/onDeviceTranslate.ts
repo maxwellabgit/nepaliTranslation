@@ -9,6 +9,7 @@ import {
 } from './romanize';
 import { meaningLexicon, normKey } from './meaningLexicon';
 import { splitSentences } from './sentences';
+import { cleanTranslationText } from './cleanText';
 
 export type Direction = 'en-ne' | 'ne-en';
 export type Formality = 'formal' | 'informal';
@@ -717,7 +718,7 @@ export function translateOnDevice(
   const formality = opts.formality ?? 'formal';
   const script = opts.script ?? 'deva';
 
-  const raw = (text || '').trim();
+  const raw = cleanTranslationText(text || '');
   if (!raw) {
     return { text: '', method: 'phrase', direction: preferred };
   }

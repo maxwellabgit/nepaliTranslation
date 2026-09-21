@@ -7,6 +7,7 @@ import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { hardStopRecognition } from '../stt/sttSupport';
 import { addHistory } from '../storage/phrasebook';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
+import { cleanTranslationText } from '../mt/cleanText';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import type { HistoryItem } from '../storage/phrasebook';
 import {
@@ -99,7 +100,7 @@ export function useTranslationSession({ active, seed }: Options) {
   const submit = useCallback(async () => {
     if (!activeRef.current) return;
     const current = stateRef.current;
-    const text = current.draft.trim();
+    const text = cleanTranslationText(current.draft);
     if (!text) return;
     const requestId = ++requestRef.current;
     dispatch({ type: 'setTranslating', translating: true });
@@ -131,13 +132,15 @@ export function useTranslationSession({ active, seed }: Options) {
       if (!isRetryableTurn(turn, stateRef.current.turns)) return;
       const requestId = ++requestRef.current;
       dispatch({ type: 'setTranslating', translating: true });
-      const result = await translateSide(turn.source, turn.from);
+      const source = cleanTranslationText(turn.source);
+      const result = await translateSide(source, turn.from);
       if (!activeRef.current || result.cancelled || requestId !== requestRef.current) {
         dispatch({ type: 'setTranslating', translating: false });
         return;
       }
       const next: SessionTurn = {
         ...turn,
+        source,
         translation: result.text,
         method: result.method,
         direction: result.direction,

@@ -14,6 +14,7 @@ import {
 } from './onDeviceTranslate';
 import { splitSentences } from './sentences';
 import { romanToDevanagari } from './romanize';
+import { cleanTranslationText } from './cleanText';
 import { sharedIndicTransOnnx } from './onnx/IndicTransOnnx';
 import type { ModelDownloadProgress } from './onnx/modelAssets';
 
@@ -81,24 +82,28 @@ export class TranslationEngine {
 
   async translate(req: TranslateRequest): Promise<EngineTranslateResult> {
     const requestId = ++this.seq;
+    const cleanedReq: TranslateRequest = {
+      ...req,
+      text: cleanTranslationText(req.text),
+    };
     this.state = 'translating';
     try {
       const result =
         this.neuralReady && sharedIndicTransOnnx.isReady()
-          ? await this.translateNeural(req)
-          : this.translateFallback(req);
+          ? await this.translateNeural(cleanedReq)
+          : this.translateFallback(cleanedReq);
 
       const cancelled = requestId !== this.seq;
       if (!cancelled) {
         this.state = 'ready';
         console.info(
-          `[translate] method=${result.method} direction=${result.direction} neural=${this.neuralReady} in=${JSON.stringify(req.text)} out=${JSON.stringify(result.text)}`,
+          `[translate] method=${result.method} direction=${result.direction} neural=${this.neuralReady} in=${JSON.stringify(cleanedReq.text)} out=${JSON.stringify(result.text)}`,
         );
       }
       return { ...result, requestId, cancelled };
     } catch {
       try {
-        const fallback = this.translateFallback(req);
+        const fallback = this.translateFallback(cleanedReq);
         const cancelled = requestId !== this.seq;
         if (!cancelled) this.state = 'ready';
         return { ...fallback, requestId, cancelled };
