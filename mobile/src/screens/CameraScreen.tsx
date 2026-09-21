@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { t, useUiLang, type UiLang } from '../i18n';
+import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import { buildCorrelation, previewText } from '../camera/correlate';
 import { deleteCapture } from '../camera/deleteCapture';
@@ -81,7 +82,8 @@ export function CameraScreen({ active }: Props) {
           backgroundColor: theme.colors.crimson,
           borderRadius: 12,
           paddingHorizontal: 16,
-          paddingVertical: 10,
+          minHeight: MIN_TOUCH,
+          justifyContent: 'center',
         },
         allowText: { color: theme.colors.onPrimary, fontWeight: '700' },
         previewWrap: { flex: 1 },
@@ -93,10 +95,18 @@ export function CameraScreen({ active }: Props) {
           backgroundColor: theme.colors.onPrimary,
           borderRadius: 24,
           paddingHorizontal: 18,
-          paddingVertical: 10,
+          minHeight: MIN_TOUCH,
+          minWidth: MIN_TOUCH,
+          alignItems: 'center',
+          justifyContent: 'center',
         },
         // Shutter plate is always light; keep dark ink for contrast in both schemes.
         shutterText: { fontWeight: '800', color: '#1A1410' },
+        retakeBtn: {
+          minHeight: MIN_TOUCH,
+          justifyContent: 'center',
+          paddingHorizontal: 8,
+        },
         errorPreview: { width: '100%', height: 180, backgroundColor: '#2A2420' },
         result: { flex: 1 },
         photo: { flex: 1, backgroundColor: '#2A2420' },
@@ -137,7 +147,7 @@ export function CameraScreen({ active }: Props) {
         rowText: { color: theme.colors.onPrimary, flex: 1 },
         retake: {
           color: theme.colors.onPrimary,
-          padding: 16,
+          paddingVertical: 12,
           fontWeight: '700',
         },
       }),
@@ -410,6 +420,7 @@ export function CameraScreen({ active }: Props) {
           </Text>
           <Pressable
             testID="camera-retake"
+            style={styles.retakeBtn}
             onPress={onRetake}
             accessibilityRole="button"
             accessibilityLabel={t('camera.retakeA11y', lang)}
@@ -453,7 +464,9 @@ export function CameraScreen({ active }: Props) {
                 <Pressable
                   key={sentence.id}
                   testID={`camera-overlay-${sentence.id}`}
-                  accessibilityLabel={`Sentence ${sentenceIndex} source`}
+                  accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
+                    n: sentenceIndex,
+                  })}
                   onPress={() => setSelected(sentence.id)}
                   style={[
                     styles.overlay,
@@ -489,7 +502,9 @@ export function CameraScreen({ active }: Props) {
                 <Pressable
                   key={sentence.id}
                   testID={`camera-row-${sentence.id}`}
-                  accessibilityLabel={`Sentence ${sentenceIndex} translation`}
+                  accessibilityLabel={t('camera.sentenceTranslationA11y', lang, {
+                    n: sentenceIndex,
+                  })}
                   onPress={() => setSelected(sentence.id)}
                   style={styles.row}
                 >
@@ -504,6 +519,7 @@ export function CameraScreen({ active }: Props) {
           </View>
           <Pressable
             testID="camera-retake"
+            style={styles.retakeBtn}
             onPress={onRetake}
             accessibilityRole="button"
             accessibilityLabel={t('camera.retakeA11y', lang)}

@@ -106,6 +106,8 @@ export const ne: Record<MessageKey, string> = {
   'camera.error.lowConfidence': 'पाठ स्पष्ट भएन, अनुवाद गर्न सकिएन।',
   'camera.error.generic': 'यस तस्बिरमा समस्या भयो। फेरि प्रयास गर।',
   'camera.passagesFound': '{count} खण्ड भेटियो',
+  'camera.sentenceSourceA11y': 'वाक्य {n} स्रोत',
+  'camera.sentenceTranslationA11y': 'वाक्य {n} अनुवाद',
 
   'history.title': 'इतिहास',
   'history.close': 'इतिहास बन्द गर्नुहोस्',

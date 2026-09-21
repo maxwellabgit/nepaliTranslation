@@ -102,6 +102,8 @@ export const en = {
   'camera.error.lowConfidence': 'The text was too unclear to translate.',
   'camera.error.generic': 'Something went wrong with this photo. Try again.',
   'camera.passagesFound': '{count} passages found',
+  'camera.sentenceSourceA11y': 'Sentence {n} source',
+  'camera.sentenceTranslationA11y': 'Sentence {n} translation',
 
   'history.title': 'History',
   'history.close': 'Close history',

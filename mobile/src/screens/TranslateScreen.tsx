@@ -15,6 +15,7 @@ import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
 import { AdSlot } from '../features/ads/AdSlot';
 import { MT_WARM_FAILED } from '../mt/mtStatus';
 import { t, useUiLang, type UiLang } from '../i18n';
+import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import type { HistoryItem } from '../storage/phrasebook';
 import { CreditsGauge } from '../translate/CreditsGauge';
@@ -192,9 +193,11 @@ export function TranslateScreen({
         },
         pass: {
           paddingHorizontal: 18,
-          paddingVertical: 12,
+          minHeight: MIN_TOUCH,
           borderRadius: 20,
           backgroundColor: theme.colors.text,
+          alignItems: 'center',
+          justifyContent: 'center',
         },
         passOff: { opacity: 0.4 },
         passText: { color: theme.colors.onPrimary, fontWeight: '800' },
