@@ -47,11 +47,15 @@ describe('cameraPhase machine', () => {
     s = reduceCameraPhase(s, { type: 'RECOGNIZE_STARTED' });
     s = reduceCameraPhase(s, { type: 'RECOGNIZE_EMPTY' });
     expect(s).toEqual({ phase: 'empty', reasonCode: 'no_text' });
+    s = reduceCameraPhase(s, { type: 'CAPTURE' });
+    expect(s.phase).toBe('captured');
 
     s = reduceCameraPhase(initialCameraPhase(true), { type: 'CAPTURE' });
     s = reduceCameraPhase(s, { type: 'RECOGNIZE_STARTED' });
     s = reduceCameraPhase(s, { type: 'RECOGNIZE_LOW_CONFIDENCE' });
     expect(s.phase).toBe('lowConfidence');
+    s = reduceCameraPhase(s, { type: 'CAPTURE' });
+    expect(s.phase).toBe('captured');
 
     s = reduceCameraPhase(initialCameraPhase(true), { type: 'CAPTURE' });
     s = reduceCameraPhase(s, { type: 'FAIL', reasonCode: 'ocr_crash' });

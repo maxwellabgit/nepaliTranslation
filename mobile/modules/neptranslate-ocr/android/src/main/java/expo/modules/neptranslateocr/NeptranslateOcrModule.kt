@@ -28,24 +28,40 @@ class NeptranslateOcrModule : Module() {
     }
   }
 
-  private fun blocks(text: com.google.mlkit.vision.text.Text, language: String): List<Map<String, Any>> {
+  private fun blocks(text: com.google.mlkit.vision.text.Text, language: String): List<Map<String, Any?>> {
     return text.textBlocks.map { block ->
+      val lineMaps = block.lines.map { line ->
+        mapOf(
+          "text" to line.text,
+          "confidence" to lineConfidence(line.confidence),
+          "frame" to frame(line.boundingBox),
+          "cornerPoints" to points(line.cornerPoints)
+        )
+      }
       mapOf(
         "text" to block.text,
         "language" to language,
-        "confidence" to 0.9,
+        // TextBlock has no confidence API; average known line scores only.
+        "confidence" to averageConfidence(block.lines.map { lineConfidence(it.confidence) }),
         "frame" to frame(block.boundingBox),
         "cornerPoints" to points(block.cornerPoints),
-        "lines" to block.lines.map { line ->
-          mapOf(
-            "text" to line.text,
-            "confidence" to 0.9,
-            "frame" to frame(line.boundingBox),
-            "cornerPoints" to points(line.cornerPoints)
-          )
-        }
+        "lines" to lineMaps
       )
     }
+  }
+
+  /**
+   * ML Kit returns 0 when confidence is unavailable (older Play services).
+   * Treat that as unknown rather than inventing a high score.
+   */
+  private fun lineConfidence(raw: Float): Float? {
+    return if (raw > 0f) raw else null
+  }
+
+  private fun averageConfidence(values: List<Float?>): Float? {
+    val known = values.filterNotNull()
+    if (known.isEmpty()) return null
+    return known.average().toFloat()
   }
 
   private fun frame(box: android.graphics.Rect?): Map<String, Int> {

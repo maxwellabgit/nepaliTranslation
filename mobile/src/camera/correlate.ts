@@ -1,4 +1,5 @@
 import { colorForSentence } from './sentenceColors';
+import { dedupeOcrDocument } from './dedupeOcr';
 import { segmentOcr, type SegmentResult } from './segmentSentences';
 import type { CorrelatedSentence, OcrDocument } from './ocrTypes';
 
@@ -25,7 +26,7 @@ export function buildCorrelation(
 ):
   | { ok: true; sentences: CorrelatedSentence[]; language: 'en' | 'ne' }
   | { ok: false; reason: 'empty' | 'low-confidence' } {
-  const segmented = segmentOcr(doc);
+  const segmented = segmentOcr(dedupeOcrDocument(doc));
   if (!segmented.ok) return segmented;
   return {
     ok: true,

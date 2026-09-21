@@ -56,7 +56,11 @@ export function reduceCameraPhase(
     case 'PERMISSION_DENIED':
       return { phase: 'permission', reasonCode: 'permission_denied' };
     case 'CAPTURE':
-      if (state.phase === 'live') {
+      if (
+        state.phase === 'live' ||
+        state.phase === 'empty' ||
+        state.phase === 'lowConfidence'
+      ) {
         return { phase: 'captured', reasonCode: null };
       }
       return state;

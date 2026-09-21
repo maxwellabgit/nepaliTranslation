@@ -42,17 +42,18 @@ public class NeptranslateOcrModule: Module {
 
   private static func blocks(from result: Text?, language: String = "en") -> [[String: Any]] {
     guard let result else { return [] }
+    // ML Kit Text Recognition on iOS does not expose confidence; do not invent one.
     return result.blocks.map { block in
       [
         "text": block.text,
         "language": language,
-        "confidence": 0.9,
+        "confidence": NSNull(),
         "frame": frame(block.frame),
         "cornerPoints": points(block.cornerPoints),
-        "lines": block.lines.map { line in
+        "lines": block.lines.map { line -> [String: Any] in
           [
             "text": line.text,
-            "confidence": 0.9,
+            "confidence": NSNull(),
             "frame": frame(line.frame),
             "cornerPoints": points(line.cornerPoints),
           ]

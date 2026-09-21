@@ -7,8 +7,8 @@ import { hardStopRecognition } from '../stt/sttSupport';
 import type { RuntimePorts } from './ports';
 
 /**
- * Production iOS adapters. Camera permission/capture stay on CameraScreen until
- * slice 4 wires the capture port to expo-camera; OCR already goes through this port.
+ * Production iOS adapters. CameraScreen still owns expo-camera permission/capture UI;
+ * OCR + translation go through these ports (slice 4).
  */
 export function createProductionRuntime(): RuntimePorts {
   let idSeq = 0;

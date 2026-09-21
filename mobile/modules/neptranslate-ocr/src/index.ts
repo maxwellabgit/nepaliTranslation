@@ -6,14 +6,14 @@ export type OcrLine = {
   text: string;
   frame: OcrFrame;
   cornerPoints: OcrPoint[];
-  confidence: number;
+  confidence: number | null;
 };
 export type OcrBlock = {
   text: string;
   language: 'en' | 'ne' | 'unknown';
   frame: OcrFrame;
   cornerPoints: OcrPoint[];
-  confidence: number;
+  confidence: number | null;
   lines: OcrLine[];
 };
 export type OcrDocument = {

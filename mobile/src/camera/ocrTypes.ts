@@ -11,7 +11,8 @@ export type OcrLine = {
   text: string;
   frame: OcrFrame;
   cornerPoints: OcrPoint[];
-  confidence: number;
+  /** Null/omitted when the native OCR engine does not report confidence. */
+  confidence: number | null;
 };
 
 export type OcrBlock = {
@@ -19,7 +20,8 @@ export type OcrBlock = {
   language: 'en' | 'ne' | 'unknown';
   frame: OcrFrame;
   cornerPoints: OcrPoint[];
-  confidence: number;
+  /** Null/omitted when the native OCR engine does not report confidence. */
+  confidence: number | null;
   lines: OcrLine[];
 };
 

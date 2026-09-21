@@ -69,7 +69,13 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 3 — Translate interaction states**
+**Current: production readiness, slice 4 — Camera correctness**
+
+Slice 3 Translate interaction work remains on tip; this slice is camera-only. Production capture no longer uses `INSCRIPTION_TRANSLATIONS` (Jest fixture path only). Result view keeps an in-memory preview after `deleteCapture`, overlays use rotation + union of all sentence frames, sentence geometry preserves line spans, Latin/Devanagari OCR blocks are deduped, overlays/drawer show sentence indices + VoiceOver labels, and native OCR stops inventing 0.9 confidence (iOS null; Android real line confidence or null).
+
+Proof (local): `npx tsc --noEmit`, eslint on touched files, camera/phase unit tests (12), inscription integration, `npm run verify:translate` — all green. CocoaPods + device OCR unproven on Windows. Independent review: requirements 1–10 in source PASS; prior FAIL was missing Commands paste (now recorded).
+
+**Previous: production readiness, slice 3 — Translate interaction states**
 
 Slice 2 closed on tip `f41d9b7`. This slice wires the Translate phase machine into the session, surfaces listening/permission/error status, honest credit thresholds, copy, and cancel.
 
@@ -438,8 +444,32 @@ npm run verify:beta
 # gitignore: training/artifacts, review_sync credentials, tools/*.exe
 ```
 
+### Production readiness slice 4 — Camera correctness (local, 2026-09-21)
+```text
+cd mobile
+npx tsc --noEmit
+# exit 0
+npx eslint --max-warnings 0 \
+  src/screens/CameraScreen.tsx \
+  src/camera/dedupeOcr.ts src/camera/segmentSentences.ts src/camera/correlate.ts \
+  src/camera/overlayGeometry.ts src/camera/ocrTypes.ts src/camera/readCapturePreview.ts \
+  src/camera/__tests__/correlate-test.ts \
+  src/runtime/machines/cameraPhase.ts src/runtime/createProductionRuntime.ts \
+  src/runtime/machines/__tests__/cameraPhase-test.ts
+# exit 0
+npx jest --runInBand src/camera/__tests__/correlate-test.ts \
+  src/runtime/machines/__tests__/cameraPhase-test.ts
+# 2 suites / 12 tests passed
+npx jest --runInBand src/app/__tests__/App.integration-test.tsx -t "inscription"
+# 1 passed (inscription overlays + fixture translations)
+npm run verify:translate
+# OK
+# CocoaPods / ML Kit iOS resolve + physical-device OCR overlays: not run (Windows)
+```
+
 ## Remaining work
 
+- **Production readiness slice 4 (camera)** — source + unit/integration proof above; device OCR/overlay + CocoaPods beside Ads remain human-gated on a Mac/iPhone.
 - **H6** complete for agent/CI scope (independent review PASS; agent-gates + backend-gate `35552584664` green). Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates (including remaining human gates as required by §12) are accepted.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob (H6 blocked), RevenueCat, bilingual Learn sign-off (H5 blocked), Maestro device run, TestFlight.

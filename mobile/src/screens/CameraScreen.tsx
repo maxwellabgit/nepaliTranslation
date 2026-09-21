@@ -1,43 +1,107 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { colors } from '../theme';
 import { buildCorrelation, previewText } from '../camera/correlate';
 import { deleteCapture } from '../camera/deleteCapture';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
-import { mapFrameToView } from '../camera/overlayGeometry';
+import { mapSentenceFramesToView } from '../camera/overlayGeometry';
+import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
+import { useRuntime } from '../runtime/RuntimeContext';
+import {
+  initialCameraPhase,
+  isCameraBusy,
+  reduceCameraPhase,
+  type CameraPhaseEvent,
+  type CameraPhaseState,
+} from '../runtime/machines/cameraPhase';
 
 type Props = {
   active: boolean;
 };
 
-type Phase =
-  | 'permission'
-  | 'live'
-  | 'captured'
-  | 'recognizing'
-  | 'translating'
-  | 'result'
-  | 'empty'
-  | 'low-confidence';
-
 export function CameraScreen({ active }: Props) {
+  const runtime = useRuntime();
   const [permission, requestPermission] = useCameraPermissions();
-  const [phase, setPhase] = useState<Phase>('permission');
+  const granted = permission?.granted === true;
+  const [phaseState, setPhaseState] = useState<CameraPhaseState>(() =>
+    initialCameraPhase(false),
+  );
   const [sentences, setSentences] = useState<CorrelatedSentence[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [direction, setDirection] = useState<'ne-en' | 'en-ne'>('ne-en');
   const [captureUri, setCaptureUri] = useState<string | null>(null);
+  const [previewUri, setPreviewUri] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
+  const captureUriRef = useRef<string | null>(null);
   const [imageSize, setImageSize] = useState({ width: 800, height: 1200 });
+  const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
   const [viewSize, setViewSize] = useState({ width: 1, height: 1 });
 
+  const phase = phaseState.phase;
+
+  const dispatch = (event: CameraPhaseEvent) => {
+    setPhaseState((prev) => reduceCameraPhase(prev, event));
+  };
+
+  useEffect(() => {
+    captureUriRef.current = captureUri;
+  }, [captureUri]);
+
+  useEffect(() => {
+    if (granted && phase === 'permission') {
+      dispatch({ type: 'PERMISSION_GRANTED' });
+    } else if (!granted && phase !== 'permission' && phase !== 'result') {
+      dispatch({ type: 'PERMISSION_NEEDED' });
+    }
+  }, [granted, phase]);
+
+  useEffect(() => {
+    return () => {
+      deleteCapture(captureUriRef.current, 'exit');
+      captureUriRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!active) {
+      deleteCapture(captureUriRef.current, 'exit');
+      captureUriRef.current = null;
+      setCaptureUri(null);
+      setPreviewUri(null);
+      setSentences([]);
+      setSelected(null);
+      setDrawerOpen(false);
+      setPhaseState(initialCameraPhase(granted));
+      return;
+    }
+
+    const fixture = getCameraTestFixture();
+    if (!fixture) return;
+    setImageSize({ width: fixture.width, height: fixture.height });
+    setRotation(fixture.rotation ?? 0);
+    const built = buildCorrelation(
+      fixture,
+      (text) => INSCRIPTION_TRANSLATIONS[text] ?? '',
+    );
+    if (!built.ok) {
+      setPhaseState({
+        phase: built.reason === 'empty' ? 'empty' : 'lowConfidence',
+        reasonCode: built.reason === 'empty' ? 'no_text' : 'low_confidence',
+      });
+      return;
+    }
+    setSentences(built.sentences);
+    setDrawerOpen(false);
+    setPhaseState({ phase: 'result', reasonCode: null });
+  }, [active, granted]);
+
   const onCapture = async () => {
-    setPhase('captured');
+    if (isCameraBusy(phase) || phase === 'result') return;
+    dispatch({ type: 'CAPTURE' });
     let uri: string | null = null;
     try {
       const photo = await cameraRef.current?.takePictureAsync();
@@ -46,78 +110,80 @@ export function CameraScreen({ active }: Props) {
       uri = null;
     }
     if (!uri) {
-      setPhase('empty');
+      dispatch({ type: 'FAIL', reasonCode: 'capture_failed' });
       return;
     }
+    dispatch({ type: 'CAPTURED' });
     setCaptureUri(uri);
-    setPhase('recognizing');
+    captureUriRef.current = uri;
+    const preview = await readCapturePreviewUri(uri);
+    setPreviewUri(preview);
+    dispatch({ type: 'RECOGNIZE_STARTED' });
     try {
-      const ocr = (await import('neptranslate-ocr')) as {
-        recognizeText: (
-          path: string,
-        ) => Promise<import('../camera/ocrTypes').OcrDocument>;
-      };
-      const doc = await ocr.recognizeText(uri);
+      const doc = await runtime.ocr.recognize(uri);
       setImageSize({ width: doc.width, height: doc.height });
-      setPhase('translating');
-      const built = buildCorrelation(
-        doc,
-        (text) => INSCRIPTION_TRANSLATIONS[text] ?? text,
-      );
+      setRotation(doc.rotation ?? 0);
+
+      const built = buildCorrelation(doc, () => '');
       if (!built.ok) {
         deleteCapture(uri, 'processed');
-        setPhase(built.reason === 'empty' ? 'empty' : 'low-confidence');
+        captureUriRef.current = null;
+        setCaptureUri(null);
+        setPreviewUri(null);
+        dispatch(
+          built.reason === 'empty'
+            ? { type: 'RECOGNIZE_EMPTY' }
+            : { type: 'RECOGNIZE_LOW_CONFIDENCE' },
+        );
         return;
       }
-      const translated = [];
+
+      dispatch({ type: 'TRANSLATE_STARTED' });
+      const translated: CorrelatedSentence[] = [];
       for (const sentence of built.sentences) {
-        const preferred = direction;
-        const result = await sharedTranslationEngine.translate({
+        const result = await runtime.translation.translate({
           text: sentence.text,
-          preferred,
+          preferred: direction,
           formality: 'formal',
           script: 'deva',
           forcePreferred: true,
         });
         translated.push({
           ...sentence,
-          translation: result.text || sentence.translation,
+          translation: result.text ?? '',
         });
       }
       setSentences(translated);
       setDrawerOpen(false);
       deleteCapture(uri, 'processed');
-      setPhase('result');
+      captureUriRef.current = null;
+      setCaptureUri(null);
+      // Keep previewUri for the result photo until retake/exit.
+      dispatch({ type: 'RESULT' });
     } catch {
       deleteCapture(uri, 'processed');
-      setPhase('empty');
+      captureUriRef.current = null;
+      setCaptureUri(null);
+      setPreviewUri(null);
+      dispatch({ type: 'FAIL', reasonCode: 'ocr_failed' });
     }
   };
 
-  useEffect(() => {
-    return () => {
-      deleteCapture(captureUri, 'exit');
-    };
-  }, [captureUri]);
-
-  useEffect(() => {
-    const fixture = getCameraTestFixture();
-    if (!fixture) return;
-    setImageSize({ width: fixture.width, height: fixture.height });
-    const built = buildCorrelation(fixture, (text) => INSCRIPTION_TRANSLATIONS[text] ?? text);
-    if (!built.ok) {
-      setPhase(built.reason === 'empty' ? 'empty' : 'low-confidence');
-      return;
-    }
-    setSentences(built.sentences);
+  const onRetake = () => {
+    deleteCapture(captureUriRef.current, 'retake');
+    captureUriRef.current = null;
+    setCaptureUri(null);
+    setPreviewUri(null);
+    setSentences([]);
+    setSelected(null);
     setDrawerOpen(false);
-    setPhase('result');
-    deleteCapture(captureUri, 'processed');
-  }, [captureUri]);
+    dispatch({ type: 'RETAKE' });
+    if (!granted) {
+      setPhaseState({ phase: 'permission', reasonCode: null });
+    }
+  };
 
   if (!active) return null;
-
-  const granted = permission?.granted === true;
 
   const showResult = phase === 'result';
 
@@ -158,6 +224,7 @@ export function CameraScreen({ active }: Props) {
           <Pressable
             style={styles.shutter}
             testID="camera-shutter"
+            disabled={isCameraBusy(phase)}
             onPress={() => void onCapture()}
           >
             <Text style={styles.shutterText}>Capture</Text>
@@ -170,7 +237,7 @@ export function CameraScreen({ active }: Props) {
           No text found. Try again closer to the writing.
         </Text>
       ) : null}
-      {phase === 'low-confidence' ? (
+      {phase === 'lowConfidence' ? (
         <Text style={styles.body} testID="camera-low-confidence">
           The text was too unclear to translate.
         </Text>
@@ -188,15 +255,29 @@ export function CameraScreen({ active }: Props) {
               })
             }
           >
-            {sentences.map((sentence) => {
-              const frame = sentence.frames[0];
-              if (!frame) return null;
-              const mapped = mapFrameToView(frame, imageSize, viewSize);
+            {previewUri ? (
+              <Image
+                testID="camera-photo-image"
+                source={{ uri: previewUri }}
+                style={StyleSheet.absoluteFill}
+                resizeMode="contain"
+                accessibilityIgnoresInvertColors
+              />
+            ) : null}
+            {sentences.map((sentence, index) => {
+              const sentenceIndex = index + 1;
+              const mapped = mapSentenceFramesToView(
+                sentence.frames,
+                imageSize,
+                rotation,
+                viewSize,
+              );
+              if (!mapped) return null;
               return (
                 <Pressable
                   key={sentence.id}
                   testID={`camera-overlay-${sentence.id}`}
-                  accessibilityLabel={sentence.text}
+                  accessibilityLabel={`Sentence ${sentenceIndex} source`}
                   onPress={() => setSelected(sentence.id)}
                   style={[
                     styles.overlay,
@@ -209,7 +290,9 @@ export function CameraScreen({ active }: Props) {
                       opacity: selected === sentence.id ? 0.55 : 0.35,
                     },
                   ]}
-                />
+                >
+                  <Text style={styles.overlayIndex}>{sentenceIndex}</Text>
+                </Pressable>
               );
             })}
             <Text style={styles.found}>{sentences.length} passages found</Text>
@@ -222,29 +305,26 @@ export function CameraScreen({ active }: Props) {
             <Pressable onPress={() => setDrawerOpen((open) => !open)}>
               <Text style={styles.drawerTitle}>Translation</Text>
             </Pressable>
-            {sentences.map((sentence) => (
-              <Pressable
-                key={sentence.id}
-                testID={`camera-row-${sentence.id}`}
-                onPress={() => setSelected(sentence.id)}
-                style={styles.row}
-              >
-                <View style={[styles.swatch, { backgroundColor: sentence.color }]} />
-                <Text style={styles.rowText}>
-                  {drawerOpen ? sentence.translation : previewText(sentence.translation)}
-                </Text>
-              </Pressable>
-            ))}
+            {sentences.map((sentence, index) => {
+              const sentenceIndex = index + 1;
+              return (
+                <Pressable
+                  key={sentence.id}
+                  testID={`camera-row-${sentence.id}`}
+                  accessibilityLabel={`Sentence ${sentenceIndex} translation`}
+                  onPress={() => setSelected(sentence.id)}
+                  style={styles.row}
+                >
+                  <Text style={styles.rowIndex}>{sentenceIndex}</Text>
+                  <View style={[styles.swatch, { backgroundColor: sentence.color }]} />
+                  <Text style={styles.rowText}>
+                    {drawerOpen ? sentence.translation : previewText(sentence.translation)}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
-          <Pressable
-            testID="camera-retake"
-            onPress={() => {
-              deleteCapture(captureUri, 'retake');
-              setCaptureUri(null);
-              setSentences([]);
-              setPhase(granted ? 'live' : 'permission');
-            }}
-          >
+          <Pressable testID="camera-retake" onPress={onRetake}>
             <Text style={styles.retake}>Retake</Text>
           </Pressable>
         </View>
@@ -282,7 +362,21 @@ const styles = StyleSheet.create({
   shutterText: { fontWeight: '800', color: colors.text },
   result: { flex: 1 },
   photo: { flex: 1, backgroundColor: '#2A2420' },
-  overlay: { position: 'absolute', borderRadius: 4 },
+  overlay: {
+    position: 'absolute',
+    borderRadius: 4,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    padding: 2,
+  },
+  overlayIndex: {
+    color: '#fff',
+    fontWeight: '800',
+    fontSize: 12,
+    textShadowColor: 'rgba(0,0,0,0.6)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
   found: { position: 'absolute', right: 12, bottom: 12, color: '#fff' },
   drawer: {
     backgroundColor: '#2C2622',
@@ -291,6 +385,7 @@ const styles = StyleSheet.create({
   },
   drawerTitle: { color: '#fff', fontWeight: '700' },
   row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
+  rowIndex: { color: '#fff', fontWeight: '800', minWidth: 16 },
   swatch: { width: 12, height: 12, borderRadius: 2 },
   rowText: { color: '#fff', flex: 1 },
   retake: { color: '#fff', padding: 16, fontWeight: '700' },
