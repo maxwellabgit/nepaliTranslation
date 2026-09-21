@@ -1,20 +1,20 @@
-# Device proof (physical iPhone)
+# Device proof (physical iPhone + iPad)
 
-**Status: BLOCKED — needs physical iPhone + Apple developer session**
+**Status: BLOCKED — needs physical iPhone/iPad + Apple developer session**
 
-Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only.
+Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md).
 
 ## What Windows already proved
 
 | Gate | Evidence |
 |------|----------|
 | Typecheck / lint | `cd mobile && npx tsc --noEmit`, `npm run lint` |
-| Unit + integration | `npm run test:unit`, `npm run test:integration` (guest Translate / Camera / Learn; offline house ads; Mark incorrect) |
+| Unit + integration | `npm run test:unit`, `npm run test:integration` |
 | Translation quality scripts | `npm run verify:translate` |
-| Full CI entry | `npm run verify:ci` (lexicon, lint, typecheck, unit, integration, verify:translate, Expo Doctor, coverage ratchet, web export) |
-| Playwright product scenarios | `cd testing-ground && npm run test:scenarios` (10/12 automated on Expo web + TG recorded runtime; live mic and live camera+ML Kit skipped) |
+| Full CI entry | `npm run verify:ci` |
+| Playwright product scenarios | `cd testing-ground && npm run test:scenarios` (10/12 on Expo web + TG recorded runtime; live mic and live camera+ML Kit skipped) |
 
-Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight install, Maestro on device, mic/camera interrupt, memory under real inference.
+Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight install, Maestro on device, mic/camera interrupt, memory under real inference, StoreKit, live AdMob interstitial, media upload against production-like storage.
 
 ## Exact commands (human)
 
@@ -24,7 +24,7 @@ From a machine with Expo account + Apple Developer access (`mobile/`):
 cd mobile
 npx eas login
 npx eas build --platform ios --profile development
-# Install the development build on a physical iPhone (QR / internal distribution).
+# Install the development build on physical iPhone and iPad (QR / internal distribution).
 ```
 
 Internal TestFlight (after a store-oriented build):
@@ -33,7 +33,7 @@ Internal TestFlight (after a store-oriented build):
 cd mobile
 npx eas build --platform ios --profile preview   # or production
 npx eas submit --platform ios --latest
-# App Store Connect → TestFlight → Internal Testing → install on device
+# App Store Connect → TestFlight → Internal Testing → install on devices
 ```
 
 Maestro on device (app already installed; Maestro CLI on PATH):
@@ -46,16 +46,45 @@ maestro test .maestro/camera-tab.yaml
 maestro test .maestro/learn-alphabet.yaml
 ```
 
+## Device matrix (fill on device — leave unchecked until proven)
+
+- [ ] Oldest supported iPhone / iOS combination
+- [ ] Current standard iPhone
+- [ ] Current large-screen iPhone
+- [ ] 11-inch iPad
+- [ ] 13-inch iPad
+- [ ] Latest public iOS/iPadOS
+- [ ] Oldest supported OS on at least one phone and one tablet
+
 ## Checklist (fill on device — leave unchecked until proven)
 
-- [ ] CocoaPods resolves `GoogleMLKit/TextRecognition` + `TextRecognitionDevanagari` beside Google Mobile Ads (`pod install` / EAS build log)
-- [ ] Bundled ONNX / Whisper model hashes match release notes (or documented first-launch fetch)
-- [ ] Mic purpose string shown: `NSMicrophoneUsageDescription` / speech recognition string match `app.json`
-- [ ] Camera purpose string shown: on-device OCR; photos deleted after retake / leave / finish
+### Native resolve + models
+
+- [ ] CocoaPods resolves ML Kit OCR (Latin + Devanagari), Google Mobile Ads, RevenueCat, ONNX Runtime, Apple Sign-In, speech recognition together
+- [ ] Bundled ONNX / speech model **SHA-256** match release manifest (F1/F9 pins)
+- [ ] Cold/warm latency, peak RAM, install size, Camera memory, thermal, long-session notes recorded
+
+### Offline core
+
+- [ ] Mic / speech purpose strings match `app.json`; on-device recognition enforced; unavailable locales fail closed with typed path still usable
+- [ ] Camera purpose string: on-device OCR; temporary files deleted after retake / leave / finish
 - [ ] Background / interrupt: leave app mid-listen and mid-TTS; audio hard-stops; no stuck “listening”
-- [ ] Memory: Translate + Camera OCR + Learn TTS under real device pressure without jetsam during a short session
-- [ ] Airplane mode: Translate typing + Camera OCR path still usable; ads stay house / none (no network AdMob)
-- [ ] Maestro smoke tabs green on the installed build
+- [ ] Airplane mode: Translate typing + Camera OCR + Learn usable; ads stay house / none
+- [ ] Maestro smoke tabs green on the installed build (phone + iPad)
+
+### Accessibility / UI
+
+- [ ] VoiceOver, Voice Control, Dynamic Type, contrast, dark mode, Reduce Motion
+- [ ] English and नेपाली UI switch; Learn alphabet bilingual human sign-off
+- [ ] iPad layouts: no clipped primary controls; Camera capture/result portrait OK
+
+### Optional services (when flags enabled in internal testing)
+
+- [ ] Sign in with Apple: sign-in / cancel / revoke / delete-account; deletion request shows 30-day deadline
+- [ ] Post-consent speech + Camera upload; guest/non-consent uploads nothing
+- [ ] AdMob banner (idle Translate + Learn only), rewarded (15 min after SSV), interstitial (policy + SDK dismiss) — interstitial only if deliberately enabled
+- [ ] RevenueCat / StoreKit: purchase, cancel, restore, expire, billing retry, offline launch, second-device restore
+- [ ] Subscription suppresses every ad format immediately
 
 ## Related
 
