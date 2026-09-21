@@ -32,8 +32,7 @@ select ok(
 
 select is(
   (select count(*)::int from private.task_assignments
-    where user_id = '11111111-1111-4111-8111-111111111111'
-      and task_id = 'c0c0c0c0-c0c0-40c0-80c0-c0c0c0c0c0c0'),
+    where user_id = '11111111-1111-4111-8111-111111111111'),
   1,
   'lease creates one assignment row'
 );

@@ -25,25 +25,12 @@ select ok(
 );
 
 -- Band-share preference is exercised by leasing when both pools exist.
--- Seed one unknown task so preference has somewhere to land.
-insert into private.contribution_tasks (
-  id, source_text, model_output, direction, formality, script,
-  task_type, state, reward_class, provenance
-) values (
-  'd0d0d0d0-d0d0-40d0-80d0-d0d0d0d0d0d0',
-  'SYNQC02 spare unknown sample',
-  'नमूना',
-  'en-ne',
-  'formal',
-  'deva',
-  'unknown',
-  'open',
-  'standard',
-  'synthetic'
-);
-
+-- Seed already includes known + unknown open tasks (H3).
 select ok(
-  (select count(*)::int from private.contribution_tasks where state = 'open') >= 2,
+  (select count(*)::int from private.contribution_tasks
+    where state = 'open' and task_type = 'known_check') >= 1
+  and (select count(*)::int from private.contribution_tasks
+    where state = 'open' and task_type = 'unknown') >= 1,
   'open pool has known and unknown tasks for band leasing'
 );
 
