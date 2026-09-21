@@ -41,7 +41,7 @@ describe('getSttSupport fail-closed', () => {
     await expect(getSttSupport()).resolves.toEqual({ en: false, ne: false });
   });
 
-  test('prefers installedLocales for on-device', async () => {
+  test('uses installedLocales for on-device English', async () => {
     mod.getSupportedLocales = jest.fn(async () => ({
       locales: ['en-US', 'ne-NP', 'hi-IN'],
       installedLocales: ['en-US'],
@@ -49,11 +49,11 @@ describe('getSttSupport fail-closed', () => {
     await expect(getSttSupport()).resolves.toEqual({ en: true, ne: false });
   });
 
-  test('uses supported locales when installed list empty but supported present', async () => {
+  test('empty installedLocales → both false even when locales are present', async () => {
     mod.getSupportedLocales = jest.fn(async () => ({
       locales: ['en-GB', 'ne-NP'],
       installedLocales: [],
     }));
-    await expect(getSttSupport()).resolves.toEqual({ en: true, ne: true });
+    await expect(getSttSupport()).resolves.toEqual({ en: false, ne: false });
   });
 });

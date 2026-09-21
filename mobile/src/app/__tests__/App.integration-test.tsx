@@ -125,6 +125,42 @@ describe('NepTranslateApp production composition', () => {
     });
   });
 
+  it('keeps typed translation working when on-device speech is unsupported', async () => {
+    const { getSttSupport } = require('../../stt/sttSupport') as {
+      getSttSupport: jest.Mock;
+    };
+    getSttSupport.mockResolvedValue({ en: false, ne: false });
+
+    const runtime = createTestRuntime({
+      translations: [
+        {
+          match: (req) => req.text.toLowerCase() === 'hello',
+          result: {
+            text: 'नमस्ते',
+            method: 'phrase',
+            direction: 'en-ne',
+          },
+        },
+      ],
+    });
+    await renderApp(createTestServices({ offline: true }), runtime);
+
+    await waitFor(() => {
+      expect(screen.getByText(/speech is unavailable/i)).toBeTruthy();
+    });
+    expect(screen.getByTestId('speak-hero').props.accessibilityState?.disabled).toBe(
+      true,
+    );
+
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
+    await waitFor(() => {
+      expect(screen.getByTestId('translate-output').props.children).toBe(
+        'नमस्ते',
+      );
+    });
+  });
+
   it('shows permission denial when Speak is blocked', async () => {
     const runtime = createTestRuntime({ speechPermission: 'denied' });
     await renderApp(createTestServices({ offline: true }), runtime);

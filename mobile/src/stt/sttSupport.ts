@@ -9,7 +9,8 @@ import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
  * Nepali mic or speaker UI.
  *
  * F1: fail closed. Missing / empty / throwing locale probes never claim
- * English or Nepali STT is available.
+ * English or Nepali STT is available. Only `installedLocales` count as
+ * on-device; cloud `locales` alone are insufficient.
  */
 
 export function hardStopRecognition(): void {
@@ -41,7 +42,7 @@ export function resetSttSupportCache(): void {
 
 /**
  * Cached once per app run. Fails closed: unknown / empty / error → both false.
- * Prefers `installedLocales` (on-device) when the probe returns any.
+ * Uses installedLocales only (on-device). Empty installed ⇒ unavailable.
  */
 export function getSttSupport(): Promise<SttSupport> {
   if (!sttPromise) {
@@ -60,15 +61,10 @@ export function getSttSupport(): Promise<SttSupport> {
         const installed = (res.installedLocales ?? []).map((l) =>
           l.toLowerCase(),
         );
-        const supported = (res.locales ?? []).map((l) => l.toLowerCase());
-        // Prefer installed (offline/on-device). Fall back to supported only when
-        // installed list is present but we still need a probe signal — empty
-        // installed with empty supported remains unavailable.
-        const pool = installed.length > 0 ? installed : supported;
-        if (!pool.length) return { ...UNAVAILABLE };
+        if (!installed.length) return { ...UNAVAILABLE };
         return {
-          en: pool.some((l) => l.startsWith('en')),
-          ne: pool.some((l) => l.startsWith('ne')),
+          en: installed.some((l) => l.startsWith('en')),
+          ne: installed.some((l) => l.startsWith('ne')),
         };
       } catch {
         return { ...UNAVAILABLE };
