@@ -69,7 +69,15 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 4 — Camera correctness**
+**Current: production readiness, slice 5 — Design system + secondary journeys**
+
+Unify semantic theme tokens (light/dark via `getTheme` / `useTheme` / `ThemeProvider`), EN+NE i18n catalogs under `mobile/src/i18n/`, and reusable `EmptyState` / `StatusBanner`. History, Settings, Learn, and Contributions use tokens + catalog strings; Settings/Contributions show offline banners when `network.isOffline()`. Translate screen largely untouched (catalog exists; not fully migrated).
+
+**Honesty:** Dark-mode tokens resolve and ThemeProvider follows Appearance, but most StyleSheet call sites outside these secondary screens still bind the light `colors` export — not a full dark-mode polish on every screen. UI lang defaults to English (`useUiLang`); Nepali catalog is covered by unit tests and ready when a Settings preference ships. Informal Nepali uses तिमी, not तँ.
+
+Proof (local): see Commands paste for slice 5 below.
+
+**Previous: production readiness, slice 4 — Camera correctness**
 
 Slice 3 Translate interaction work remains on tip; this slice is camera-only. Production capture no longer uses `INSCRIPTION_TRANSLATIONS` (Jest fixture path only). Result view keeps an in-memory preview after `deleteCapture`, overlays use rotation + union of all sentence frames, sentence geometry preserves line spans, Latin/Devanagari OCR blocks are deduped, overlays/drawer show sentence indices + VoiceOver labels, and native OCR stops inventing 0.9 confidence (iOS null; Android real line confidence or null).
 
@@ -467,8 +475,31 @@ npm run verify:translate
 # CocoaPods / ML Kit iOS resolve + physical-device OCR overlays: not run (Windows)
 ```
 
+### Production readiness slice 5 — Design system + secondary journeys (local, 2026-09-21)
+```text
+cd mobile
+npx tsc --noEmit
+# TSC_EXIT=0
+npx eslint --max-warnings 0 \
+  src/theme.tsx src/i18n src/components/EmptyState.tsx src/components/StatusBanner.tsx \
+  src/components/AppPrimitives.tsx src/screens/HistoryScreen.tsx src/screens/SettingsScreen.tsx \
+  src/screens/LearnScreen.tsx src/screens/ContributionsScreen.tsx src/app/AppProviders.tsx \
+  src/__tests__/theme-test.ts src/i18n/__tests__/i18n-test.ts \
+  src/components/__tests__/EmptyState-test.tsx
+# ESLINT_EXIT=0
+npm run test:unit
+# 51 suites / 222 tests passed (incl. theme, i18n, EmptyState)
+npm run test:integration
+# 2 suites / 17 tests passed
+npm run verify:translate
+# OK
+# Dark mode: tokens + ThemeProvider only — not a full visual polish on Translate/Camera
+# UI lang preference Settings control: not shipped (defaults en; ne catalog tested)
+```
+
 ## Remaining work
 
+- **Production readiness slice 5 (design/i18n)** — source + unit/integration/verify proof above. Remaining nits: Translate/Camera still on light `colors` StyleSheets; no Settings UI-lang toggle yet; dark Appearance not visually QA’d on device.
 - **Production readiness slice 4 (camera)** — source + unit/integration proof above; device OCR/overlay + CocoaPods beside Ads remain human-gated on a Mac/iPhone.
 - **H6** complete for agent/CI scope (independent review PASS; agent-gates + backend-gate `35552584664` green). Physical AdMob device proof remains a **human-gated blocker** (flags stay off).
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates (including remaining human gates as required by §12) are accepted.

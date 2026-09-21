@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Linking,
@@ -18,7 +18,9 @@ import { saveLocalConsent } from '../storage/contributionConsent';
 import { flushPendingDrafts } from '../services/contributionSync';
 import { useServices } from '../services/ServiceContext';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
-import { colors } from '../theme';
+import { StatusBanner } from '../components/StatusBanner';
+import { t, useNetworkOffline, useUiLang } from '../i18n';
+import { useTheme } from '../theme';
 
 const INAPPROPRIATE_AD_HELP =
   'mailto:support@neptranslate.app?subject=Inappropriate%20ad%20report';
@@ -47,6 +49,9 @@ export function SettingsScreen({
   onOpenContributions,
   neuralReady = false,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
+  const offline = useNetworkOffline();
   const [speechCaps, setSpeechCaps] = useState<{
     neStt: boolean;
     neTts: boolean;
@@ -70,201 +75,226 @@ export function SettingsScreen({
     }
   }, [authStatus, refreshAccountSummary]);
 
+  const dynamic = useMemo(
+    () =>
+      StyleSheet.create({
+        root: { flex: 1, backgroundColor: theme.colors.bg },
+        topBar: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: theme.colors.surface,
+          paddingVertical: 10,
+          paddingHorizontal: theme.spacing.xs,
+        },
+        topBtnText: { fontSize: 22, color: theme.colors.textSecondary },
+        title: {
+          flex: 1,
+          textAlign: 'center',
+          fontSize: theme.typography.title.fontSize,
+          fontWeight: '600',
+          color: theme.colors.text,
+        },
+        section: {
+          marginTop: theme.spacing.xl,
+          marginHorizontal: theme.spacing.lg,
+          padding: theme.spacing.lg,
+          backgroundColor: theme.colors.surface,
+          borderRadius: theme.radii.xl,
+          gap: theme.spacing.sm,
+        },
+        sectionLabel: {
+          fontSize: theme.typography.label.fontSize,
+          fontWeight: theme.typography.label.fontWeight,
+          letterSpacing: theme.typography.label.letterSpacing,
+          textTransform: 'uppercase',
+          color: theme.colors.textSecondary,
+        },
+        body: {
+          fontSize: theme.typography.body.fontSize,
+          lineHeight: theme.typography.body.lineHeight,
+          color: theme.colors.text,
+        },
+        link: {
+          fontSize: theme.typography.body.fontSize,
+          lineHeight: theme.typography.body.lineHeight,
+          color: theme.colors.forest,
+          fontWeight: '600',
+          textDecorationLine: 'underline',
+        },
+        meta: {
+          marginTop: 4,
+          fontSize: theme.typography.caption.fontSize,
+          color: theme.colors.textPlaceholder,
+        },
+        capRow: {
+          fontSize: 14,
+          lineHeight: 20,
+          color: theme.colors.text,
+          fontWeight: '600',
+        },
+      }),
+    [theme],
+  );
+
   return (
-    <View style={styles.root}>
-      <View style={styles.topBar}>
+    <View style={dynamic.root} testID="settings-screen">
+      <View style={dynamic.topBar}>
         <Pressable onPress={onClose} hitSlop={12} style={styles.topBtn}>
-          <Text style={styles.topBtnText}>←</Text>
+          <Text style={dynamic.topBtnText}>←</Text>
         </Pressable>
-        <Text style={styles.title}>Settings</Text>
+        <Text style={dynamic.title}>{t('settings.title', lang)}</Text>
         <View style={styles.topBtn} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll}>
-      <AccountSection
-        authConfigured={auth.authConfigured}
-        status={auth.status}
-        userId={auth.userId}
-        consentVersion={auth.consentVersion}
-        ageConfirmed={auth.ageConfirmed}
-        deletionRetryPending={auth.deletionRetryPending}
-        onSignIn={() => void auth.signInWithApple()}
-        onSignOut={() => void auth.signOut()}
-        onSaveConsent={() => {
-          void recordContributionConsent().then((result) => {
-            if (!result.ok) {
-              Alert.alert(
-                'Consent not saved',
-                'Contribution consent was not recorded. Translation on this device is unchanged.',
-              );
-              return;
-            }
-            void saveLocalConsent(true);
-            void flushPendingDrafts();
-            void auth.refreshAccountSummary();
-          });
-        }}
-        onDeleteAccount={() => {
-          void auth.deleteAccount();
-        }}
-      />
-
-      <ContributionCard />
-
-      {onOpenContributions ? (
-        <Pressable
-          style={styles.section}
-          onPress={onOpenContributions}
-          accessibilityRole="button"
-          accessibilityLabel="Open contributions and rewards"
-          testID="settings-open-contributions"
-        >
-          <Text style={styles.sectionLabel}>Contributions & rewards</Text>
-          <Text style={styles.body}>
-            View drafts, sync status, and retry uploads on this device.
-          </Text>
-        </Pressable>
+      {offline ? (
+        <StatusBanner
+          tone="offline"
+          message={t('settings.offlineBanner', lang)}
+          testID="settings-offline-banner"
+        />
       ) : null}
 
-      <View style={styles.section} testID="settings-ads-privacy">
-        <Text style={styles.sectionLabel}>Ads & privacy</Text>
-        {consent.privacyOptionsRequired ? (
-          <Pressable
-            onPress={() => void services.ads.showPrivacyOptions()}
-            accessibilityRole="button"
-            accessibilityLabel="Ad privacy options"
-            testID="settings-ad-privacy-options"
-          >
-            <Text style={styles.link}>Privacy options</Text>
-          </Pressable>
-        ) : null}
-        <Pressable
-          onPress={() => {
-            void Linking.openURL(INAPPROPRIATE_AD_HELP).catch(() => {
-              Alert.alert(
-                'Report an ad',
-                'Email support@neptranslate.app with “Inappropriate ad report” in the subject.',
-              );
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <AccountSection
+          authConfigured={auth.authConfigured}
+          status={auth.status}
+          userId={auth.userId}
+          consentVersion={auth.consentVersion}
+          ageConfirmed={auth.ageConfirmed}
+          deletionRetryPending={auth.deletionRetryPending}
+          onSignIn={() => void auth.signInWithApple()}
+          onSignOut={() => void auth.signOut()}
+          onSaveConsent={() => {
+            void recordContributionConsent().then((result) => {
+              if (!result.ok) {
+                Alert.alert(
+                  t('settings.consentNotSavedTitle', lang),
+                  t('settings.consentNotSavedBody', lang),
+                );
+                return;
+              }
+              void saveLocalConsent(true);
+              void flushPendingDrafts();
+              void auth.refreshAccountSummary();
             });
           }}
-          accessibilityRole="link"
-          accessibilityLabel="Report an inappropriate ad"
-          testID="settings-report-inappropriate-ad"
-        >
-          <Text style={styles.link}>Report an inappropriate ad</Text>
-        </Pressable>
-      </View>
+          onDeleteAccount={() => {
+            void auth.deleteAccount();
+          }}
+        />
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>About</Text>
-        <Text style={styles.body}>
-          {neuralReady
-            ? 'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.'
-            : 'NepTranslate includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.'}
-        </Text>
-        <Text style={styles.meta}>
-          v{APP_VERSION}
-          {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''}
-          {neuralReady ? ' · model ready' : ' · model pending'}
-        </Text>
-        {auth.consentVersion ? (
-          <Text style={styles.meta} testID="settings-consent-version">
-            Consent {auth.consentVersion === CONTRIBUTION_CONSENT_VERSION ? 'current' : auth.consentVersion}
-          </Text>
+        <ContributionCard />
+
+        {onOpenContributions ? (
+          <Pressable
+            style={dynamic.section}
+            onPress={onOpenContributions}
+            accessibilityRole="button"
+            accessibilityLabel={t('settings.contributionsA11y', lang)}
+            testID="settings-open-contributions"
+          >
+            <Text style={dynamic.sectionLabel}>
+              {t('settings.contributions', lang)}
+            </Text>
+            <Text style={dynamic.body}>
+              {t('settings.contributionsDetail', lang)}
+            </Text>
+          </Pressable>
         ) : null}
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Speech on this device</Text>
-        {speechCaps ? (
-          <>
-            <Text style={styles.capRow}>
-              English voice input · available
-            </Text>
-            <Text style={styles.capRow}>
-              Nepali voice input ·{' '}
-              {speechCaps.neStt ? 'available' : 'not supported by this device'}
-            </Text>
-            <Text style={styles.capRow}>
-              Nepali spoken aloud ·{' '}
-              {speechCaps.neTts ? 'available' : 'no Nepali voice installed'}
-            </Text>
-            {!speechCaps.neStt || !speechCaps.neTts ? (
-              <Text style={styles.meta}>
-                iPhones don't ship Nepali speech services. Typing and reading
-                translations work fully offline.
+        <View style={dynamic.section} testID="settings-ads-privacy">
+          <Text style={dynamic.sectionLabel}>
+            {t('settings.adsPrivacy', lang)}
+          </Text>
+          {consent.privacyOptionsRequired ? (
+            <Pressable
+              onPress={() => void services.ads.showPrivacyOptions()}
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.privacyOptionsA11y', lang)}
+              testID="settings-ad-privacy-options"
+            >
+              <Text style={dynamic.link}>
+                {t('settings.privacyOptions', lang)}
               </Text>
-            ) : null}
-          </>
-        ) : (
-          <Text style={styles.meta}>Checking…</Text>
-        )}
-      </View>
+            </Pressable>
+          ) : null}
+          <Pressable
+            onPress={() => {
+              void Linking.openURL(INAPPROPRIATE_AD_HELP).catch(() => {
+                Alert.alert(
+                  t('settings.reportAdFallbackTitle', lang),
+                  t('settings.reportAdFallbackBody', lang),
+                );
+              });
+            }}
+            accessibilityRole="link"
+            accessibilityLabel={t('settings.reportAdA11y', lang)}
+            testID="settings-report-inappropriate-ad"
+          >
+            <Text style={dynamic.link}>{t('settings.reportAd', lang)}</Text>
+          </Pressable>
+        </View>
+
+        <View style={dynamic.section}>
+          <Text style={dynamic.sectionLabel}>{t('settings.about', lang)}</Text>
+          <Text style={dynamic.body}>
+            {neuralReady
+              ? t('settings.aboutReady', lang)
+              : t('settings.aboutPending', lang)}
+          </Text>
+          <Text style={dynamic.meta}>
+            v{APP_VERSION}
+            {BUILD_NUMBER ? ` (${BUILD_NUMBER})` : ''}
+            {' · '}
+            {neuralReady
+              ? t('settings.modelReady', lang)
+              : t('settings.modelPending', lang)}
+          </Text>
+          {auth.consentVersion ? (
+            <Text style={dynamic.meta} testID="settings-consent-version">
+              {auth.consentVersion === CONTRIBUTION_CONSENT_VERSION
+                ? t('settings.consentCurrent', lang)
+                : `Consent ${auth.consentVersion}`}
+            </Text>
+          ) : null}
+        </View>
+
+        <View style={dynamic.section}>
+          <Text style={dynamic.sectionLabel}>{t('settings.speech', lang)}</Text>
+          {speechCaps ? (
+            <>
+              <Text style={dynamic.capRow}>{t('settings.speechEn', lang)}</Text>
+              <Text style={dynamic.capRow}>
+                {speechCaps.neStt
+                  ? t('settings.speechNeAvailable', lang)
+                  : t('settings.speechNeUnavailable', lang)}
+              </Text>
+              <Text style={dynamic.capRow}>
+                {speechCaps.neTts
+                  ? t('settings.ttsNeAvailable', lang)
+                  : t('settings.ttsNeUnavailable', lang)}
+              </Text>
+              {!speechCaps.neStt || !speechCaps.neTts ? (
+                <Text style={dynamic.meta}>
+                  {t('settings.speechNote', lang)}
+                </Text>
+              ) : null}
+            </>
+          ) : (
+            <Text style={dynamic.meta}>{t('settings.checking', lang)}</Text>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-  },
   topBtn: {
     width: 56,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  topBtnText: { fontSize: 22, color: colors.textSecondary },
-  title: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text,
-  },
   scroll: { paddingBottom: 32 },
-  section: {
-    marginTop: 20,
-    marginHorizontal: 16,
-    padding: 16,
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    gap: 8,
-  },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: colors.textSecondary,
-  },
-  body: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: colors.text,
-  },
-  link: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: colors.forest,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
-  },
-  meta: {
-    marginTop: 4,
-    fontSize: 12,
-    color: colors.textPlaceholder,
-  },
-  capRow: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: colors.text,
-    fontWeight: '600',
-  },
 });

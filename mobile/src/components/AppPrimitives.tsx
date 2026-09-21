@@ -150,14 +150,7 @@ export function LoadingState({ title, detail, testID }: StateProps) {
   );
 }
 
-export function EmptyState({ title, detail, testID }: StateProps) {
-  return (
-    <View style={styles.state} testID={testID ?? 'empty-state'}>
-      <Text style={styles.stateTitle}>{title}</Text>
-      {detail ? <Text style={styles.stateDetail}>{detail}</Text> : null}
-    </View>
-  );
-}
+export { EmptyState } from './EmptyState';
 
 export function ErrorState({ title, detail, testID }: StateProps) {
   return (

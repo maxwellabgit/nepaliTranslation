@@ -11,6 +11,7 @@ import { ServiceProvider } from '../services/ServiceContext';
 import type { AppServices } from '../services/contracts';
 import { RuntimeProvider } from '../runtime/RuntimeContext';
 import type { RuntimePorts } from '../runtime/ports';
+import { ThemeProvider } from '../theme';
 import { FeatureConfigProvider } from './FeatureConfigProvider';
 import { LifecycleCoordinator } from './LifecycleCoordinator';
 
@@ -39,20 +40,22 @@ function LegacyOutboxMigration() {
 export function AppProviders({ children, services, runtime }: Props) {
   return (
     <SafeAreaProvider initialMetrics={INITIAL_SAFE_AREA}>
-      <ServiceProvider services={services}>
-        <RuntimeProvider runtime={runtime}>
-          <AuthProvider>
-            <EntitlementProvider>
-              <FeatureConfigProvider>
-                <LegacyOutboxMigration />
-                <LifecycleCoordinator />
-                <AuthStatusBanner />
-                {children}
-              </FeatureConfigProvider>
-            </EntitlementProvider>
-          </AuthProvider>
-        </RuntimeProvider>
-      </ServiceProvider>
+      <ThemeProvider>
+        <ServiceProvider services={services}>
+          <RuntimeProvider runtime={runtime}>
+            <AuthProvider>
+              <EntitlementProvider>
+                <FeatureConfigProvider>
+                  <LegacyOutboxMigration />
+                  <LifecycleCoordinator />
+                  <AuthStatusBanner />
+                  {children}
+                </FeatureConfigProvider>
+              </EntitlementProvider>
+            </AuthProvider>
+          </RuntimeProvider>
+        </ServiceProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

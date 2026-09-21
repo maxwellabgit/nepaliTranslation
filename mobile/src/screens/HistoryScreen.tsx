@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Alert,
   Animated,
@@ -22,8 +22,9 @@ import {
   trainingKeyFor,
 } from '../storage/trainingContrib';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
-import { EmptyState } from '../components/AppPrimitives';
-import { colors } from '../theme';
+import { EmptyState } from '../components/EmptyState';
+import { t, useUiLang } from '../i18n';
+import { useTheme } from '../theme';
 
 type Props = {
   onClose: () => void;
@@ -36,9 +37,13 @@ const DELETE_WIDTH = 84;
 function SwipeableRow({
   children,
   onDelete,
+  deleteA11y,
+  dangerColor,
 }: {
   children: ReactNode;
   onDelete: () => void;
+  deleteA11y: string;
+  dangerColor: string;
 }) {
   const tx = useRef(new Animated.Value(0)).current;
   const openRef = useRef(false);
@@ -55,7 +60,6 @@ function SwipeableRow({
 
   const pan = useRef(
     PanResponder.create({
-      // Claim only clearly horizontal drags so vertical list scroll still works.
       onMoveShouldSetPanResponder: (_e, g) =>
         Math.abs(g.dx) > 14 && Math.abs(g.dx) > Math.abs(g.dy) * 1.6,
       onPanResponderMove: (_e, g) => {
@@ -73,12 +77,12 @@ function SwipeableRow({
 
   return (
     <View style={styles.swipeWrap}>
-      <View style={styles.deleteUnder}>
+      <View style={[styles.deleteUnder, { backgroundColor: dangerColor }]}>
         <Pressable
           onPress={onDelete}
           style={styles.deleteBtn}
           accessibilityRole="button"
-          accessibilityLabel="Delete from history"
+          accessibilityLabel={deleteA11y}
         >
           <Ionicons name="trash" size={22} color="#fff" />
         </Pressable>
@@ -94,6 +98,8 @@ function SwipeableRow({
 }
 
 export function HistoryScreen({ onClose, onSelect }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [sentKeys, setSentKeys] = useState<Set<string>>(new Set());
   const [correctionItem, setCorrectionItem] = useState<HistoryItem | null>(null);
@@ -114,30 +120,94 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
     setCorrectionItem(item);
   };
 
+  const dynamic = useMemo(
+    () =>
+      StyleSheet.create({
+        root: { flex: 1, backgroundColor: theme.colors.bg },
+        topBar: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: theme.colors.surface,
+          paddingVertical: 10,
+          paddingHorizontal: theme.spacing.xs,
+        },
+        topBtnText: { fontSize: 22, color: theme.colors.textSecondary },
+        clearText: {
+          fontSize: 14,
+          color: theme.colors.blue,
+          fontWeight: '600',
+        },
+        title: {
+          flex: 1,
+          textAlign: 'center',
+          fontSize: theme.typography.title.fontSize,
+          fontWeight: theme.typography.title.fontWeight,
+          color: theme.colors.text,
+        },
+        list: { padding: theme.spacing.md, paddingBottom: 40 },
+        row: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: theme.colors.surface,
+          borderRadius: theme.radii.xl,
+          padding: 14,
+          gap: 10,
+        },
+        src: {
+          fontSize: 15,
+          color: theme.colors.textSecondary,
+          marginBottom: 4,
+        },
+        dst: {
+          fontSize: 18,
+          color: theme.colors.text,
+          fontWeight: '500',
+        },
+        trainBtn: {
+          paddingHorizontal: 10,
+          paddingVertical: 8,
+          borderRadius: theme.radii.md,
+          backgroundColor: theme.colors.forestSoft,
+        },
+        trainBtnOff: {
+          backgroundColor: theme.colors.divider,
+        },
+        trainText: {
+          fontSize: 12,
+          fontWeight: '700',
+          color: theme.colors.forest,
+        },
+        trainTextOff: {
+          color: theme.colors.textPlaceholder,
+        },
+      }),
+    [theme],
+  );
+
   return (
-    <View style={styles.root}>
-      <View style={styles.topBar}>
+    <View style={dynamic.root} testID="history-screen">
+      <View style={dynamic.topBar}>
         <Pressable
           onPress={onClose}
           hitSlop={12}
           style={styles.topBtn}
           accessibilityRole="button"
-          accessibilityLabel="Close history"
+          accessibilityLabel={t('history.close', lang)}
           testID="history-close"
         >
-          <Text style={styles.topBtnText}>←</Text>
+          <Text style={dynamic.topBtnText}>←</Text>
         </Pressable>
-        <Text style={styles.title}>History</Text>
+        <Text style={dynamic.title}>{t('history.title', lang)}</Text>
         <Pressable
           onPress={() => {
             if (history.length === 0) return;
             Alert.alert(
-              'Clear history',
-              'Remove all translations from this device?',
+              t('history.clearConfirmTitle', lang),
+              t('history.clearConfirmBody', lang),
               [
-                { text: 'Cancel', style: 'cancel' },
+                { text: t('common.cancel', lang), style: 'cancel' },
                 {
-                  text: 'Clear',
+                  text: t('common.clear', lang),
                   style: 'destructive',
                   onPress: () => {
                     void (async () => {
@@ -152,25 +222,31 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
           hitSlop={12}
           style={styles.topBtn}
           accessibilityRole="button"
-          accessibilityLabel="Clear history"
+          accessibilityLabel={t('history.clearA11y', lang)}
         >
-          <Text style={styles.clearText}>Clear</Text>
+          <Text style={dynamic.clearText}>{t('history.clear', lang)}</Text>
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView contentContainerStyle={dynamic.list}>
         {history.length === 0 ? (
           <EmptyState
-            title="No translations yet"
-            detail="Translations you make will show up here."
+            kind="empty"
+            title={t('history.emptyTitle', lang)}
+            detail={t('history.emptyDetail', lang)}
             testID="history-empty"
           />
         ) : (
           history.map((item) => {
             const sent = sentKeys.has(trainingKeyFor(item));
             return (
-              <SwipeableRow key={item.id} onDelete={() => void onDeleteItem(item)}>
-                <View style={styles.row}>
+              <SwipeableRow
+                key={item.id}
+                onDelete={() => void onDeleteItem(item)}
+                deleteA11y={t('history.deleteA11y', lang)}
+                dangerColor={theme.colors.danger}
+              >
+                <View style={dynamic.row}>
                   <Pressable
                     style={styles.rowBody}
                     onPress={() => onSelect(item)}
@@ -178,26 +254,30 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
                     accessibilityRole="button"
                     accessibilityLabel={`Restore ${item.source}`}
                   >
-                    <Text style={styles.src} numberOfLines={2}>
+                    <Text style={dynamic.src} numberOfLines={2}>
                       {item.source}
                     </Text>
-                    <Text style={styles.dst} numberOfLines={2}>
+                    <Text style={dynamic.dst} numberOfLines={2}>
                       {item.translation}
                     </Text>
                   </Pressable>
                   <Pressable
                     onPress={() => onSendToTraining(item)}
                     disabled={sent}
-                    style={[styles.trainBtn, sent && styles.trainBtnOff]}
+                    style={[dynamic.trainBtn, sent && dynamic.trainBtnOff]}
                     accessibilityRole="button"
                     accessibilityLabel={
-                      sent ? 'Already in training data' : 'Suggest correction for training'
+                      sent
+                        ? t('history.submittedA11y', lang)
+                        : t('history.toTrainingA11y', lang)
                     }
                   >
                     <Text
-                      style={[styles.trainText, sent && styles.trainTextOff]}
+                      style={[dynamic.trainText, sent && dynamic.trainTextOff]}
                     >
-                      {sent ? 'Submitted' : 'To training'}
+                      {sent
+                        ? t('history.submitted', lang)
+                        : t('history.toTraining', lang)}
                     </Text>
                   </Pressable>
                 </View>
@@ -224,30 +304,12 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-  },
   topBtn: {
     width: 56,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  topBtnText: { fontSize: 22, color: colors.textSecondary },
-  clearText: { fontSize: 14, color: colors.blue, fontWeight: '600' },
-  title: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.text,
-  },
-  list: { padding: 12, paddingBottom: 40 },
   swipeWrap: {
     marginBottom: 10,
     borderRadius: 16,
@@ -259,7 +321,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.danger,
     borderRadius: 16,
     alignItems: 'flex-end',
     justifyContent: 'center',
@@ -270,32 +331,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 14,
-    gap: 10,
-  },
   rowBody: { flex: 1 },
-  src: { fontSize: 15, color: colors.textSecondary, marginBottom: 4 },
-  dst: { fontSize: 18, color: colors.text, fontWeight: '500' },
-  trainBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 12,
-    backgroundColor: colors.forestSoft,
-  },
-  trainBtnOff: {
-    backgroundColor: colors.divider,
-  },
-  trainText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.forest,
-  },
-  trainTextOff: {
-    color: colors.textPlaceholder,
-  },
 });
