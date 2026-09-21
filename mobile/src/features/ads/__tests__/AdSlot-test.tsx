@@ -5,12 +5,14 @@ import { ServiceProvider } from '../../../services/ServiceContext';
 import { createTestServices } from '../../../services/createTestServices';
 import { GOOGLE_TEST_BANNER_UNIT } from '../adConfig';
 
+const entitlementMock = {
+  earnedAdFreeUntilMs: null as number | null,
+  trustedNow: () => 1_000,
+  hasActiveEarnedAdFree: () => false,
+};
+
 jest.mock('../../entitlements/EntitlementProvider', () => ({
-  useEntitlementOptional: () => ({
-    earnedAdFreeUntilMs: null,
-    trustedNow: () => 1_000,
-    hasActiveEarnedAdFree: () => false,
-  }),
+  useEntitlementOptional: () => entitlementMock,
 }));
 
 jest.mock('../../../app/FeatureConfigProvider', () => ({
@@ -25,6 +27,10 @@ jest.mock('../../../app/FeatureConfigProvider', () => ({
 }));
 
 describe('AdSlot', () => {
+  beforeEach(() => {
+    entitlementMock.earnedAdFreeUntilMs = null;
+    entitlementMock.hasActiveEarnedAdFree = () => false;
+  });
   test('renders house ad when offline', async () => {
     const adapter = createMockAdAdapter();
     const services = createTestServices({ offline: true, canRequestAds: true });
@@ -113,5 +119,27 @@ describe('AdSlot', () => {
     });
     expect(adapter.networkCalls()).toEqual([]);
     expect(GOOGLE_TEST_BANNER_UNIT).toBeTruthy();
+  });
+
+  test('suppresses ads when provisional/earned ad-free is active', async () => {
+    entitlementMock.hasActiveEarnedAdFree = () => true;
+    const adapter = createMockAdAdapter();
+    const services = createTestServices({
+      offline: true,
+      canRequestAds: true,
+      flags: { networkAdsEnabled: true },
+    });
+    services.ads.adapter = adapter;
+    await act(async () => {
+      render(
+        <ServiceProvider services={services}>
+          <AdSlot surface="translate_result" adapter={adapter} eligible />
+        </ServiceProvider>,
+      );
+    });
+    await waitFor(() => {
+      expect(screen.queryByTestId('ad-slot-house-translate_result')).toBeNull();
+    });
+    expect(adapter.networkCalls()).toEqual([]);
   });
 });

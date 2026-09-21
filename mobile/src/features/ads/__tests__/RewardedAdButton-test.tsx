@@ -128,4 +128,31 @@ describe('RewardedAdButton', () => {
       expect(services.ads.networkCalls().length).toBeGreaterThan(0);
     });
   });
+
+  test('does not provisional-grant when reward was not earned', async () => {
+    const { saveProvisionalGrant } = jest.requireMock('../provisionalGrant') as {
+      saveProvisionalGrant: jest.Mock;
+    };
+    saveProvisionalGrant.mockClear();
+    const services = createTestServices({
+      canRequestAds: true,
+      offline: false,
+      flags: { rewardedAdsEnabled: true, networkAdsEnabled: true },
+    });
+    services.ads.adapter.showRewarded = jest.fn(async () => ({ earned: false }));
+    await act(async () => {
+      render(
+        <ServiceProvider services={services}>
+          <RewardedAdButton offline={false} />
+        </ServiceProvider>,
+      );
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
+    });
+    await waitFor(() => {
+      expect(services.ads.adapter.showRewarded).toHaveBeenCalled();
+    });
+    expect(saveProvisionalGrant).not.toHaveBeenCalled();
+  });
 });

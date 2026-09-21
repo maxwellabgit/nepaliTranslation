@@ -68,10 +68,11 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current: H6 — Real AdMob + cryptographically verified SSV** (on `main`)
 
 - Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
-- Proof: `npm run verify:beta` + `test:coverage:beta` (H6 floors OK: auth 85.82/76.76, contribution 85.78/79.3, entitlements 91.97/82.61, ads 86.01/83.15, contributionSync 90.32/74.6).
-- Commits: `21a2729` `feat: complete native ads and verified rewarded grants`; `063ecde` `fix: wire provisional ad-free and EARNED_REWARD gate` (independent review FAIL → repaired: provisional suppresses ads; provisional only after EARNED_REWARD; EntitlementProvider trusted-time assertion drift).
+- Proof (post-repair, 2026-09-20): `npm run verify:beta` exit 0; `npm run test:coverage:beta` exit 0 — auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.17/84.24, contributionSync 90.32/74.6.
+- Commits: `21a2729` feat; `063ecde` provisional/EARNED_REWARD fix; follow-up tests + ExecPlan gate paste.
+- Independent review: FAIL → repaired → re-review asked for fresh gates (now recorded). Source findings closed.
 - Human gate (**blocked, not passed**): EAS development build on physical iPhone — consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, entitlement suppression. Remote ads flags stay off until that gate.
-- Next: re-check independent review after repair; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`.
+- Next: do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`. Backend CI for `admob_ssv_test` + migration is the Deno proof (local Deno unavailable).
 
 **Previous: H5 — Learn/reward UX and UI consistency** (on `main`)
 
@@ -330,16 +331,15 @@ npm run test:coverage:beta
 #   (pgTAP 08–10; first push failed 03/06 lease assertions → e40d92a fix)
 ```
 
-### H6 (local, 2026-09-20, on `main`)
+### H6 (local, 2026-09-20, on `main` — post-repair)
 ```text
 cd mobile
 npm run verify:beta
 # lint max-warnings 0, typecheck, test:unit, test:integration,
-# verify:translate OK, expo-doctor 21/21
+# verify:translate OK, expo-doctor 21/21 — EXIT 0
 npm run test:coverage:beta
-# auth 85.82/76.76, contribution 85.78/79.3, entitlements 91.97/82.61,
-# ads 86.01/83.15, contributionSync 90.32/74.6 — H6 floors OK
-# deno not available locally — backend-gate CI proves admob_ssv_test + migration
+# auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95,
+# ads 84.17/84.24, contributionSync 90.32/74.6 — H6 floors OK — EXIT 0
 # Human gate blocked: physical iPhone AdMob test ads / SSV / house / entitlement
 ```
 
