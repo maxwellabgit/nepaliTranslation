@@ -68,10 +68,10 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current: H6 — Real AdMob + cryptographically verified SSV** (on `main`)
 
 - Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
-- Proof (post-review-repair): `npm run verify:beta` exit 0; `npm run test:coverage:beta` exit 0 — auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.42/82.79, contributionSync 90.32/74.6. Local `deno check` + `admob_ssv_test` 10/10 ok. pgTAP `11_h6_rewarded_ssv.test.sql` added (CI).
-- Repair vs independent review FAIL: BufferSource typecheck; AdSlot persists 12m/24m cooldowns; HomeScreen `speaking` suppress; SSV ledger replay + authenticated-revoke pgTAP.
+- Proof (post-review-repair): `npm run verify:beta` exit 0; `npm run test:coverage:beta` exit 0 — auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.42/82.79, contributionSync 90.32/74.6. Local `deno check` + `admob_ssv_test` 10/10 ok. pgTAP `11_h6_rewarded_ssv.test.sql` added; `service_create_rewarded_session` uses `extensions.gen_random_bytes` under empty search_path (CI fix).
+- Repair vs independent review FAIL: BufferSource typecheck; AdSlot persists 12m/24m cooldowns; HomeScreen `speaking` suppress; SSV ledger replay + authenticated-revoke pgTAP; session RPC pgcrypto qualify.
 - Human gate (**blocked, not passed**): EAS development build on physical iPhone — consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, entitlement suppression. Remote ads flags stay off until that gate.
-- Next: independent re-review; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`. Backend-gate must go green on this push.
+- Next: wait for backend-gate green on tip + independent re-review; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`.
 
 **Previous: H5 — Learn/reward UX and UI consistency** (on `main`)
 

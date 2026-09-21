@@ -36,7 +36,7 @@ begin
   if p_ttl_seconds is null or p_ttl_seconds < 60 or p_ttl_seconds > 3600 then
     raise exception 'invalid_payload' using errcode = '22023';
   end if;
-  v_token := encode(gen_random_bytes(24), 'hex');
+  v_token := encode(extensions.gen_random_bytes(24), 'hex');
   v_expires := now() + make_interval(secs => p_ttl_seconds);
   insert into private.rewarded_ad_sessions (user_id, session_token, expires_at)
   values (p_user_id, v_token, v_expires);
