@@ -91,7 +91,8 @@ export function reduceTranslatePhase(
         state.phase === 'idle' ||
         state.phase === 'success' ||
         state.phase === 'finalizingTranscript' ||
-        state.phase === 'recoverableError'
+        state.phase === 'recoverableError' ||
+        state.phase === 'unavailable'
       ) {
         return { phase: 'translating', reasonCode: null };
       }

@@ -22,6 +22,25 @@ type Props = {
   active: boolean;
 };
 
+function cameraErrorCopy(reason: string | null): string {
+  switch (reason) {
+    case 'capture_failed':
+      return 'Capture failed. Try again.';
+    case 'ocr_failed':
+      return 'Could not read text from this photo. Try again closer to the writing.';
+    case 'translate_failed':
+      return 'Text was found, but translation failed. Retake or try again.';
+    case 'model_failed':
+      return 'On-device translation is not ready. Try again in a moment.';
+    case 'no_text':
+      return 'No text found. Try again closer to the writing.';
+    case 'low_confidence':
+      return 'The text was too unclear to translate.';
+    default:
+      return 'Something went wrong with this photo. Try again.';
+  }
+}
+
 export function CameraScreen({ active }: Props) {
   const runtime = useRuntime();
   const [permission, requestPermission] = useCameraPermissions();
@@ -37,6 +56,7 @@ export function CameraScreen({ active }: Props) {
   const [previewUri, setPreviewUri] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const captureUriRef = useRef<string | null>(null);
+  const requestGenRef = useRef(0);
   const [imageSize, setImageSize] = useState({ width: 800, height: 1200 });
   const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
   const [viewSize, setViewSize] = useState({ width: 1, height: 1 });
@@ -45,6 +65,10 @@ export function CameraScreen({ active }: Props) {
 
   const dispatch = (event: CameraPhaseEvent) => {
     setPhaseState((prev) => reduceCameraPhase(prev, event));
+  };
+
+  const bumpGeneration = () => {
+    requestGenRef.current += 1;
   };
 
   useEffect(() => {
@@ -61,6 +85,7 @@ export function CameraScreen({ active }: Props) {
 
   useEffect(() => {
     return () => {
+      bumpGeneration();
       deleteCapture(captureUriRef.current, 'exit');
       captureUriRef.current = null;
     };
@@ -68,6 +93,8 @@ export function CameraScreen({ active }: Props) {
 
   useEffect(() => {
     if (!active) {
+      bumpGeneration();
+      runtime.translation.cancelAll();
       deleteCapture(captureUriRef.current, 'exit');
       captureUriRef.current = null;
       setCaptureUri(null);
@@ -97,18 +124,21 @@ export function CameraScreen({ active }: Props) {
     setSentences(built.sentences);
     setDrawerOpen(false);
     setPhaseState({ phase: 'result', reasonCode: null });
-  }, [active, granted]);
+  }, [active, granted, runtime.translation]);
 
   const onCapture = async () => {
     if (isCameraBusy(phase) || phase === 'result') return;
+    const gen = ++requestGenRef.current;
     dispatch({ type: 'CAPTURE' });
     let uri: string | null = null;
     try {
-      const photo = await cameraRef.current?.takePictureAsync();
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.7 });
+      if (gen !== requestGenRef.current) return;
       uri = photo?.uri ?? null;
     } catch {
       uri = null;
     }
+    if (gen !== requestGenRef.current) return;
     if (!uri) {
       dispatch({ type: 'FAIL', reasonCode: 'capture_failed' });
       return;
@@ -117,10 +147,12 @@ export function CameraScreen({ active }: Props) {
     setCaptureUri(uri);
     captureUriRef.current = uri;
     const preview = await readCapturePreviewUri(uri);
+    if (gen !== requestGenRef.current) return;
     setPreviewUri(preview);
     dispatch({ type: 'RECOGNIZE_STARTED' });
     try {
       const doc = await runtime.ocr.recognize(uri);
+      if (gen !== requestGenRef.current) return;
       setImageSize({ width: doc.width, height: doc.height });
       setRotation(doc.rotation ?? 0);
 
@@ -129,7 +161,7 @@ export function CameraScreen({ active }: Props) {
         deleteCapture(uri, 'processed');
         captureUriRef.current = null;
         setCaptureUri(null);
-        setPreviewUri(null);
+        // Keep preview on recoverable empty / low-confidence so the user can retake.
         dispatch(
           built.reason === 'empty'
             ? { type: 'RECOGNIZE_EMPTY' }
@@ -141,18 +173,36 @@ export function CameraScreen({ active }: Props) {
       dispatch({ type: 'TRANSLATE_STARTED' });
       const translated: CorrelatedSentence[] = [];
       for (const sentence of built.sentences) {
-        const result = await runtime.translation.translate({
-          text: sentence.text,
-          preferred: direction,
-          formality: 'formal',
-          script: 'deva',
-          forcePreferred: true,
-        });
-        translated.push({
-          ...sentence,
-          translation: result.text ?? '',
-        });
+        if (gen !== requestGenRef.current) return;
+        try {
+          const result = await runtime.translation.translate({
+            text: sentence.text,
+            preferred: direction,
+            formality: 'formal',
+            script: 'deva',
+            forcePreferred: true,
+          });
+          if (gen !== requestGenRef.current) return;
+          translated.push({
+            ...sentence,
+            translation: result.text ?? '',
+          });
+        } catch (err) {
+          if (gen !== requestGenRef.current) return;
+          const message = err instanceof Error ? err.message : String(err);
+          const reason =
+            /model|onnx|neural|not ready/i.test(message)
+              ? 'model_failed'
+              : 'translate_failed';
+          // Preserve preview on recoverable translate failure.
+          deleteCapture(uri, 'processed');
+          captureUriRef.current = null;
+          setCaptureUri(null);
+          dispatch({ type: 'FAIL', reasonCode: reason });
+          return;
+        }
       }
+      if (gen !== requestGenRef.current) return;
       setSentences(translated);
       setDrawerOpen(false);
       deleteCapture(uri, 'processed');
@@ -161,15 +211,18 @@ export function CameraScreen({ active }: Props) {
       // Keep previewUri for the result photo until retake/exit.
       dispatch({ type: 'RESULT' });
     } catch {
+      if (gen !== requestGenRef.current) return;
       deleteCapture(uri, 'processed');
       captureUriRef.current = null;
       setCaptureUri(null);
-      setPreviewUri(null);
+      // Preserve preview on recoverable OCR failure.
       dispatch({ type: 'FAIL', reasonCode: 'ocr_failed' });
     }
   };
 
   const onRetake = () => {
+    bumpGeneration();
+    runtime.translation.cancelAll();
     deleteCapture(captureUriRef.current, 'retake');
     captureUriRef.current = null;
     setCaptureUri(null);
@@ -186,6 +239,10 @@ export function CameraScreen({ active }: Props) {
   if (!active) return null;
 
   const showResult = phase === 'result';
+  const showError =
+    phase === 'empty' || phase === 'lowConfidence' || phase === 'error'
+      ? cameraErrorCopy(phaseState.reasonCode)
+      : null;
 
   return (
     <View style={styles.root} testID="camera-screen">
@@ -218,7 +275,11 @@ export function CameraScreen({ active }: Props) {
         </View>
       ) : null}
 
-      {granted && !showResult ? (
+      {granted &&
+      !showResult &&
+      phase !== 'empty' &&
+      phase !== 'lowConfidence' &&
+      phase !== 'error' ? (
         <View style={styles.previewWrap} testID="camera-live">
           <CameraView ref={cameraRef} style={styles.preview} facing="back" active={active} />
           <Pressable
@@ -227,20 +288,44 @@ export function CameraScreen({ active }: Props) {
             disabled={isCameraBusy(phase)}
             onPress={() => void onCapture()}
           >
-            <Text style={styles.shutterText}>Capture</Text>
+            <Text style={styles.shutterText}>
+              {phase === 'recognizing'
+                ? 'Reading…'
+                : phase === 'translating'
+                  ? 'Translating…'
+                  : 'Capture'}
+            </Text>
           </Pressable>
         </View>
       ) : null}
 
-      {phase === 'empty' ? (
-        <Text style={styles.body} testID="camera-empty">
-          No text found. Try again closer to the writing.
-        </Text>
-      ) : null}
-      {phase === 'lowConfidence' ? (
-        <Text style={styles.body} testID="camera-low-confidence">
-          The text was too unclear to translate.
-        </Text>
+      {showError ? (
+        <View style={styles.center} testID="camera-error">
+          {previewUri ? (
+            <Image
+              testID="camera-error-preview"
+              source={{ uri: previewUri }}
+              style={styles.errorPreview}
+              resizeMode="contain"
+              accessibilityIgnoresInvertColors
+            />
+          ) : null}
+          <Text
+            style={styles.body}
+            testID={
+              phase === 'lowConfidence'
+                ? 'camera-low-confidence'
+                : phase === 'error'
+                  ? 'camera-error-message'
+                  : 'camera-empty'
+            }
+          >
+            {showError}
+          </Text>
+          <Pressable testID="camera-retake" onPress={onRetake}>
+            <Text style={styles.retake}>Retake</Text>
+          </Pressable>
+        </View>
       ) : null}
 
       {showResult ? (
@@ -360,6 +445,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   shutterText: { fontWeight: '800', color: colors.text },
+  errorPreview: { width: '100%', height: 180, backgroundColor: '#2A2420' },
   result: { flex: 1 },
   photo: { flex: 1, backgroundColor: '#2A2420' },
   overlay: {

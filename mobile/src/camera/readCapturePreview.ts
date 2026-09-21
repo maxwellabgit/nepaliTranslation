@@ -1,11 +1,30 @@
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { File } from 'expo-file-system';
 
-/** Read a capture into an in-memory data URI so the file can be deleted after OCR. */
+const MAX_PREVIEW_EDGE = 1280;
+
+/**
+ * Downsample a capture (max edge ~1280) then return an in-memory data URI
+ * so the temporary file can be deleted after OCR / exit.
+ */
 export async function readCapturePreviewUri(uri: string): Promise<string | null> {
   try {
-    const base64 = await new File(uri).base64();
+    let sourceUri = uri;
+    try {
+      const result = await manipulateAsync(
+        uri,
+        [{ resize: { width: MAX_PREVIEW_EDGE } }],
+        { compress: 0.7, format: SaveFormat.JPEG },
+      );
+      sourceUri = result.uri;
+    } catch {
+      // Fall back to original capture if manipulator is unavailable.
+      sourceUri = uri;
+    }
+
+    const base64 = await new File(sourceUri).base64();
     if (!base64) return null;
-    const lower = uri.toLowerCase();
+    const lower = sourceUri.toLowerCase();
     const mime = lower.endsWith('.png')
       ? 'image/png'
       : lower.endsWith('.webp')

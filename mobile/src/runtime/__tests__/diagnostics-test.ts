@@ -68,4 +68,40 @@ describe('diagnostic redaction', () => {
     expect(evt.atMs).toBe(100);
     expect(evt.id).toMatch(/^evt-/);
   });
+
+  test('sensitive English and Nepali fixtures never appear in bus events or JSON', () => {
+    const sensitive = [
+      'Please meet me at 742 Evergreen Terrace tomorrow',
+      'मेरो पासवर्ड SecretNepali123 हो',
+      'नमस्ते मेरो नाम राम हो र मेरो ठेगाना काठमाडौं हो',
+      'private medical note: diabetes diagnosis',
+    ];
+    const runtime = createTestRuntime({ nowMs: 7 });
+    const bus = createDiagnosticBus(runtime.clock, runtime.ids);
+
+    for (const sample of sensitive) {
+      const redacted = redactTranslateEvent({
+        event: 'translate.success',
+        adapter: 'unit',
+        sourceText: sample,
+        clock: runtime.clock,
+        ids: runtime.ids,
+      });
+      bus.emit(redacted);
+      assertNoBannedFields(redacted);
+      const json = JSON.stringify(redacted);
+      expect(json).not.toContain(sample);
+      for (const token of sample.split(/\s+/).filter((t) => t.length > 4)) {
+        expect(json.toLowerCase()).not.toContain(token.toLowerCase());
+      }
+      expect(redacted.payloadLength).toBe(sample.length);
+      expect(redacted.contentHash).toBe(contentHash(sample));
+    }
+
+    const dumped = JSON.stringify(bus.events());
+    for (const sample of sensitive) {
+      expect(dumped).not.toContain(sample);
+      expect(dumped).not.toMatch(/Evergreen|SecretNepali|काठमाडौं|diabetes/i);
+    }
+  });
 });

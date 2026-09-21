@@ -59,7 +59,12 @@ describe('cameraPhase machine', () => {
 
     s = reduceCameraPhase(initialCameraPhase(true), { type: 'CAPTURE' });
     s = reduceCameraPhase(s, { type: 'FAIL', reasonCode: 'ocr_crash' });
-    expect(s).toEqual({ phase: 'empty', reasonCode: 'ocr_crash' });
+    expect(s).toEqual({ phase: 'error', reasonCode: 'ocr_crash' });
+
+    s = reduceCameraPhase(s, { type: 'CAPTURE' });
+    expect(s.phase).toBe('captured');
+    s = reduceCameraPhase(s, { type: 'FAIL', reasonCode: 'ocr_crash' });
+    expect(s.phase).toBe('error');
 
     s = reduceCameraPhase(s, { type: 'RETAKE' });
     expect(s.phase).toBe('live');

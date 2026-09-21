@@ -31,8 +31,8 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Milestones
 
-- [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merge pending
-- [ ] **F1** — STT privacy, raw logging, model reproducibility, Camera stability
+- [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
+- [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — verify:ci green; review pending
 - [ ] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts
 - [ ] **F3** — Consented speech/photo ingestion and private storage
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
@@ -48,34 +48,23 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: **V1 final boundary supersedes beta monetization/privacy text.** Full-business V1: $0.99/month ad-free; banners only idle Translate + Learn landing; automatic interstitial after 15 foreground-active minutes, max 3 per America/New_York day, SDK-owned dismiss, remotely disableable (off until device + external-beta gates); rewarded video = 15 ad-free minutes; 1 credit = 5 minutes; >20 original words = 2 credits; reward close 5:00 PM America/New_York; pending at close earns once; late rejection → alert only, no clawback; contribution requires Sign in with Apple + 18+ + versioned consent; post-consent speech/photo auto-upload; indefinite retention until withdrawal/deletion; 30-day purge; telemetry OK without raw content; bilingual UI; genuine iPhone+iPad. Feature flags independent; defaults off until gates pass.
 - 2026-09-21: Camera remains in product; Translate absorbs Conversation; tabs Translate / Camera / Learn. Guests keep temporary on-device captures only; consented adults may upload eligible media when flags allow.
 - 2026-09-21: Foundation tip `9b17ac9` is **not** a complete monetized production V1 until F0–F10 + go/no-go.
+- 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256 manifest (`mobile/assets/models/it2-release-manifest.json`). EAS fetch fails on mismatch.
 
 ## Progress
 
-**Current: F0 — Rewrite the durable product contract**
+**Current: F1 — Privacy / offline-core repair**
 
-Docs-only slice. Align repository rules with the final V1 boundary before any runtime work.
+| Area | Change |
+|------|--------|
+| STT | Routed through RuntimePorts; `requiresOnDeviceRecognition: true`; `getSttSupport` fail-closed; typed translate works when unavailable |
+| Logs | Removed raw `console.info` source/output from TranslationEngine |
+| Diagnostics | Sensitive EN/NE fixture tests; banned keys |
+| Models | Pinned revision + SHA-256 in manifest; `hfResolveUrl` no longer uses `main`; EAS verify |
+| Camera | Downsampled preview; generation cancel; distinct `error` phase + copy; keep preview on recoverable fail |
 
-| Doc | Change |
-|-----|--------|
-| `.governance/INTENT.md` | Full V1 product boundary (monetization, ads, rewards, media consent, flags, iPad, bilingual) |
-| `AGENTS.md` | F0–F10 lane table; hard rules match INTENT |
-| `.agent/DONE.md` | F0–F10 + release go/no-go checklists |
-| `plans/active/beta-release.md` | This ExecPlan retargeted to V1 finalization |
-| `docs/CERTIFICATION.md` | Privacy/ads/subscription/a11y gates match V1 |
-| `docs/DEVICE_PROOF.md` | iPhone + iPad matrix; interstitial/media/IAP device gates |
-| `docs/RELEASE_RUNBOOK.md` | Internal → external → public with interstitial go/no-go |
+**Honesty:** Physical on-device STT locale install + real IPA hash proof remain device-gated (F10). Manifest pins are real HF revisions/hashes from the release snapshot used at F1 time.
 
-**Honesty:** Runtime still implements the *old* beta boundary ($0.49 stubs, UTC rewards, no interstitial, text-only consent draft, `useUiLang` English-only, etc.). F0 does **not** change runtime. F1+ close those gaps. Do not claim V1 shipped from docs alone.
-
-**Independent review:** PASS ([review](7962827d-64f2-4889-b5fb-88dcec1dc95b)) — docs/rules only; full V1 boundary present; no material findings.
-
-**Previous foundation (closed):** beta 00–08 / H0–H6 + Windows readiness 1–12 at `9b17ac9`. Proof log abbreviated below; full history remains in git.
-
-### Foundation snapshot (`9b17ac9`)
-
-- Mobile `verify:ci` green; Expo Doctor 21/21; testing-ground Vite build; Playwright 10/12 scenarios.
-- Translate / Camera / Learn IA; runtime ports + phase machines; AdMob banner/rewarded adapters (flags off); contribution outbox; Supabase RLS skeleton; SSV foundations.
-- Device, StoreKit, live AdMob interstitial, legal URLs, bilingual sign-off: **BLOCKED** (human).
+**Previous: F0 — durable product contract** — merged PR #3 (`a5d9013`).
 
 ## Surprises & discoveries
 
@@ -85,17 +74,15 @@ Docs-only slice. Align repository rules with the final V1 boundary before any ru
 ## Commands that actually ran (paste)
 
 ```text
-# F0 docs-only — no mobile runtime proof required
-git checkout -b cursor/v1-f0-product-contract
-git log -1 --oneline
-# 9b17ac9 docs: close Windows readiness program with honest device gates
-# Independent reviewer: PASS (docs/rules only; 0 runtime files)
+# F1
+cd mobile && npm run verify:ci
+# typecheck, lint, unit 232, integration 18, verify:translate, expo-doctor 21/21, coverage OK, export:web
 ```
 
 ## Remaining work
 
-1. Commit + PR/merge F0 → `main` (when founder asks).
-2. Start **F1** only — privacy / offline-core repairs (STT on-device, log scrub, model pins, Camera).
+1. Independent review of F1 → PASS required before merge.
+2. Start **F2** — bilingual UI, theme, iPad layouts.
 
 ## Blockers (concrete; cannot be solved from this repo)
 

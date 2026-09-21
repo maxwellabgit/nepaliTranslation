@@ -1,25 +1,38 @@
 import * as Speech from 'expo-speech';
-import {
-  ExpoSpeechRecognitionModule,
-} from 'expo-speech-recognition';
-import { sharedTranslationEngine } from '../mt/TranslationEngine';
+import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 import { hardStopRecognition } from '../stt/sttSupport';
-import type { RuntimePorts } from './ports';
+import { sharedTranslationEngine } from '../mt/TranslationEngine';
+import type { RuntimePorts, SpeechRecognitionEvent } from './ports';
 
 /**
  * Production iOS adapters. CameraScreen still owns expo-camera permission/capture UI;
- * OCR + translation go through these ports (slice 4).
+ * OCR + translation go through these ports (slice 4 / F1).
  */
 export function createProductionRuntime(): RuntimePorts {
   let idSeq = 0;
-  const speechListeners = new Set<
-    (event: {
-      kind: 'result' | 'end' | 'error';
-      transcript?: string;
-      isFinal?: boolean;
-      reason?: string;
-    }) => void
-  >();
+  const speechListeners = new Set<(event: SpeechRecognitionEvent) => void>();
+
+  const emitSpeech = (event: SpeechRecognitionEvent) => {
+    for (const listener of speechListeners) listener(event);
+  };
+
+  // Wire native expo-speech-recognition events into the port once per runtime.
+  const nativeSubs = [
+    ExpoSpeechRecognitionModule.addListener('result', (event) => {
+      emitSpeech({
+        kind: 'result',
+        transcript: event.results[0]?.transcript,
+        isFinal: event.isFinal,
+      });
+    }),
+    ExpoSpeechRecognitionModule.addListener('end', () => {
+      emitSpeech({ kind: 'end' });
+    }),
+    ExpoSpeechRecognitionModule.addListener('error', (event) => {
+      emitSpeech({ kind: 'error', reason: event.error ?? 'stt_error' });
+    }),
+  ];
+  void nativeSubs;
 
   return {
     translation: {
@@ -42,11 +55,10 @@ export function createProductionRuntime(): RuntimePorts {
             lang: opts.lang,
             interimResults: opts.interimResults ?? true,
             continuous: false,
+            requiresOnDeviceRecognition: opts.requiresOnDeviceRecognition ?? true,
           });
         } catch {
-          for (const l of speechListeners) {
-            l({ kind: 'error', reason: 'start_failed' });
-          }
+          emitSpeech({ kind: 'error', reason: 'start_failed' });
         }
       },
       stop: () => {

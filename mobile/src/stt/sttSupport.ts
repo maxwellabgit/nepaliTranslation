@@ -7,6 +7,9 @@ import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
  * Apple ships no Nepali speech recognizer and (on most devices) no Nepali
  * voice, so both must be checked — never assumed — before offering
  * Nepali mic or speaker UI.
+ *
+ * F1: fail closed. Missing / empty / throwing locale probes never claim
+ * English or Nepali STT is available.
  */
 
 export function hardStopRecognition(): void {
@@ -27,9 +30,19 @@ export type SttSupport = {
   ne: boolean;
 };
 
+const UNAVAILABLE: SttSupport = { en: false, ne: false };
+
 let sttPromise: Promise<SttSupport> | null = null;
 
-/** Cached once per app run. Fails open so a probe error never hides the mic. */
+/** Reset cached probe (unit tests only). */
+export function resetSttSupportCache(): void {
+  sttPromise = null;
+}
+
+/**
+ * Cached once per app run. Fails closed: unknown / empty / error → both false.
+ * Prefers `installedLocales` (on-device) when the probe returns any.
+ */
 export function getSttSupport(): Promise<SttSupport> {
   if (!sttPromise) {
     sttPromise = (async () => {
@@ -41,19 +54,24 @@ export function getSttSupport(): Promise<SttSupport> {
           }>;
         };
         if (typeof mod.getSupportedLocales !== 'function') {
-          return { en: true, ne: true };
+          return { ...UNAVAILABLE };
         }
         const res = await mod.getSupportedLocales({});
-        const all = [...(res.locales ?? []), ...(res.installedLocales ?? [])].map(
-          (l) => l.toLowerCase(),
+        const installed = (res.installedLocales ?? []).map((l) =>
+          l.toLowerCase(),
         );
-        if (!all.length) return { en: true, ne: true };
+        const supported = (res.locales ?? []).map((l) => l.toLowerCase());
+        // Prefer installed (offline/on-device). Fall back to supported only when
+        // installed list is present but we still need a probe signal — empty
+        // installed with empty supported remains unavailable.
+        const pool = installed.length > 0 ? installed : supported;
+        if (!pool.length) return { ...UNAVAILABLE };
         return {
-          en: all.some((l) => l.startsWith('en')),
-          ne: all.some((l) => l.startsWith('ne')),
+          en: pool.some((l) => l.startsWith('en')),
+          ne: pool.some((l) => l.startsWith('ne')),
         };
       } catch {
-        return { en: true, ne: true };
+        return { ...UNAVAILABLE };
       }
     })();
   }

@@ -40,6 +40,13 @@ describe('NepTranslateApp production composition', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
     await clearHistory();
+    const stt = require('../../stt/sttSupport') as {
+      getSttSupport: jest.Mock;
+      resetSttSupportCache?: () => void;
+    };
+    stt.resetSttSupportCache?.();
+    stt.getSttSupport.mockReset();
+    stt.getSttSupport.mockResolvedValue({ en: true, ne: true });
     (sharedTranslationEngine.translate as jest.Mock).mockImplementation(
       async (req: { text: string; preferred?: string }) => {
         const t = req.text.trim().toLowerCase();
@@ -121,17 +128,25 @@ describe('NepTranslateApp production composition', () => {
   it('shows permission denial when Speak is blocked', async () => {
     const runtime = createTestRuntime({ speechPermission: 'denied' });
     await renderApp(createTestServices({ offline: true }), runtime);
+    await waitFor(() => {
+      expect(screen.queryByText(/speech is unavailable/i)).toBeNull();
+      expect(screen.getByTestId('speak-hero').props.accessibilityState?.disabled).not.toBe(
+        true,
+      );
+    });
     await fireEvent.press(screen.getByTestId('speak-hero'));
     await waitFor(() => {
-      expect(screen.getByTestId('translate-status')).toBeTruthy();
+      expect(screen.getByText(/Microphone permission denied/i)).toBeTruthy();
     });
-    expect(screen.getByText(/Microphone permission denied/i)).toBeTruthy();
     expect(screen.getByTestId('translate-status-dismiss')).toBeTruthy();
   });
 
   it('surfaces a recoverable error when translation fails', async () => {
     const runtime = createTestRuntime({ translateError: 'boom' });
     await renderApp(createTestServices({ offline: true }), runtime);
+    await waitFor(() => {
+      expect(screen.queryByText(/speech is unavailable/i)).toBeNull();
+    });
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
     await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
     await waitFor(() => {

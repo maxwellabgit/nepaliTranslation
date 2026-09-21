@@ -10,6 +10,7 @@ export type CameraPhase =
   | 'result'
   | 'empty'
   | 'lowConfidence'
+  | 'error'
   | 'unavailable';
 
 export type CameraPhaseEvent =
@@ -59,7 +60,8 @@ export function reduceCameraPhase(
       if (
         state.phase === 'live' ||
         state.phase === 'empty' ||
-        state.phase === 'lowConfidence'
+        state.phase === 'lowConfidence' ||
+        state.phase === 'error'
       ) {
         return { phase: 'captured', reasonCode: null };
       }
@@ -100,7 +102,7 @@ export function reduceCameraPhase(
         state.phase === 'recognizing' ||
         state.phase === 'translating'
       ) {
-        return { phase: 'empty', reasonCode: event.reasonCode };
+        return { phase: 'error', reasonCode: event.reasonCode };
       }
       return state;
     case 'RETAKE':

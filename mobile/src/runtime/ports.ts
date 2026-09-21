@@ -30,20 +30,30 @@ export type TranslationPort = {
 
 export type SpeechPermission = 'granted' | 'denied' | 'undetermined';
 
+export type SpeechRecognitionStartOpts = {
+  lang: string;
+  interimResults?: boolean;
+  /**
+   * Prefer on-device recognition. Production defaults this to true.
+   * Fail closed when the locale is not installed for offline use.
+   */
+  requiresOnDeviceRecognition?: boolean;
+};
+
+export type SpeechRecognitionEvent = {
+  kind: 'result' | 'end' | 'error';
+  transcript?: string;
+  isFinal?: boolean;
+  reason?: string;
+};
+
 export type SpeechRecognitionPort = {
   requestPermission: () => Promise<SpeechPermission>;
-  start: (opts: { lang: string; interimResults?: boolean }) => void;
+  start: (opts: SpeechRecognitionStartOpts) => void;
   stop: () => void;
   abort: () => void;
   /** Subscribe to final/interim transcripts. Returns unsubscribe. */
-  subscribe: (
-    listener: (event: {
-      kind: 'result' | 'end' | 'error';
-      transcript?: string;
-      isFinal?: boolean;
-      reason?: string;
-    }) => void,
-  ) => () => void;
+  subscribe: (listener: (event: SpeechRecognitionEvent) => void) => () => void;
 };
 
 export type SpeechSynthesisPort = {

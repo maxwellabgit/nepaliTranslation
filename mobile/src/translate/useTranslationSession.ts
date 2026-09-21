@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-import {
-  ExpoSpeechRecognitionModule,
-  useSpeechRecognitionEvent,
-} from 'expo-speech-recognition';
-import { hardStopRecognition } from '../stt/sttSupport';
+import { getSttSupport, hardStopRecognition } from '../stt/sttSupport';
 import { addHistory } from '../storage/phrasebook';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
 import { cleanTranslationText } from '../mt/cleanText';
@@ -13,13 +9,11 @@ import { useRuntime } from '../runtime/RuntimeContext';
 import {
   initialTranslatePhase,
   reduceTranslatePhase,
-  type TranslatePhaseState,
 } from '../runtime/machines/translatePhase';
 import {
   initialSession,
   isRetryableTurn,
   reduceSession,
-  type SessionState,
   type SessionTurn,
   type Side,
 } from './translationSessionReducer';
@@ -58,6 +52,7 @@ export function useTranslationSession({ active, seed }: Options) {
   const activeRef = useRef(active);
   activeRef.current = active;
   const requestRef = useRef(0);
+  const sttSupportRef = useRef<{ en: boolean; ne: boolean } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,6 +65,31 @@ export function useTranslationSession({ active, seed }: Options) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void getSttSupport().then((support) => {
+      if (cancelled) return;
+      sttSupportRef.current = support;
+      const side = stateRef.current.activeSide;
+      if (!support[side]) {
+        dispatchPhase({ type: 'MARK_UNAVAILABLE', reasonCode: 'stt_unsupported' });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const support = sttSupportRef.current;
+    if (!support) return;
+    if (!support[state.activeSide]) {
+      dispatchPhase({ type: 'MARK_UNAVAILABLE', reasonCode: 'stt_unsupported' });
+    } else if (uiRef.current.phase === 'unavailable') {
+      dispatchPhase({ type: 'RESET' });
+    }
+  }, [state.activeSide]);
 
   useEffect(() => {
     if (active) return;
@@ -155,6 +175,33 @@ export function useTranslationSession({ active, seed }: Options) {
     }
   }, [remember, translateSide, runtime.ids]);
 
+  useEffect(() => {
+    return runtime.speechRecognition.subscribe((event) => {
+      if (!activeRef.current) return;
+      if (event.kind === 'result') {
+        if (!stateRef.current.listening) return;
+        const text = event.transcript ?? '';
+        if (text) dispatch({ type: 'setDraft', text });
+        return;
+      }
+      if (event.kind === 'end') {
+        if (!stateRef.current.listening) return;
+        dispatch({ type: 'setListening', listening: false });
+        dispatchPhase({ type: 'TRANSCRIPT_FINAL' });
+        void submit();
+        return;
+      }
+      if (event.kind === 'error') {
+        if (!stateRef.current.listening) return;
+        dispatch({ type: 'setListening', listening: false });
+        dispatchPhase({
+          type: 'TRANSLATE_FAILED',
+          reasonCode: event.reason ?? 'stt_error',
+        });
+      }
+    });
+  }, [runtime.speechRecognition, submit]);
+
   const pass = useCallback(() => {
     hardStopRecognition();
     runtime.speechRecognition.abort();
@@ -216,6 +263,15 @@ export function useTranslationSession({ active, seed }: Options) {
       return;
     }
     if (stateRef.current.translating) return;
+
+    const support = sttSupportRef.current ?? (await getSttSupport());
+    sttSupportRef.current = support;
+    const side = stateRef.current.activeSide;
+    if (!support[side]) {
+      dispatchPhase({ type: 'MARK_UNAVAILABLE', reasonCode: 'stt_unsupported' });
+      return;
+    }
+
     dispatchPhase({ type: 'SPEAK' });
     const perm = await runtime.speechRecognition.requestPermission();
     if (!activeRef.current) return;
@@ -227,35 +283,16 @@ export function useTranslationSession({ active, seed }: Options) {
     dispatch({ type: 'setListening', listening: true });
     dispatchPhase({ type: 'LISTENING_STARTED' });
     try {
-      ExpoSpeechRecognitionModule.start({
+      runtime.speechRecognition.start({
         lang: stateRef.current.activeSide === 'en' ? 'en-US' : 'ne-NP',
         interimResults: true,
-        continuous: false,
+        requiresOnDeviceRecognition: true,
       });
     } catch {
       dispatch({ type: 'setListening', listening: false });
       dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'stt_unavailable' });
     }
   }, [cancelListen, runtime.speechRecognition]);
-
-  useSpeechRecognitionEvent('result', (event) => {
-    if (!activeRef.current || !stateRef.current.listening) return;
-    const text = event.results[0]?.transcript ?? '';
-    if (text) dispatch({ type: 'setDraft', text });
-  });
-
-  useSpeechRecognitionEvent('end', () => {
-    if (!stateRef.current.listening) return;
-    dispatch({ type: 'setListening', listening: false });
-    dispatchPhase({ type: 'TRANSCRIPT_FINAL' });
-    void submit();
-  });
-
-  useSpeechRecognitionEvent('error', () => {
-    if (!stateRef.current.listening) return;
-    dispatch({ type: 'setListening', listening: false });
-    dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'stt_error' });
-  });
 
   const setFormality = useCallback((formalOn: boolean) => {
     dispatch({ type: 'setFormality', formality: formalOn ? 'formal' : 'informal' });
@@ -294,4 +331,5 @@ export function useTranslationSession({ active, seed }: Options) {
   };
 }
 
-export type { SessionState, TranslatePhaseState };
+export type { SessionState } from './translationSessionReducer';
+export type { TranslatePhaseState } from '../runtime/machines/translatePhase';
