@@ -11,6 +11,11 @@ import { loadPrefs, savePrefs } from '../storage/prefs';
 import type { HistoryItem } from '../storage/phrasebook';
 import { useRuntime } from '../runtime/RuntimeContext';
 import {
+  initialTranslatePhase,
+  reduceTranslatePhase,
+  type TranslatePhaseState,
+} from '../runtime/machines/translatePhase';
+import {
   initialSession,
   isRetryableTurn,
   reduceSession,
@@ -41,8 +46,15 @@ export function useTranslationSession({ active, seed }: Options) {
         : null,
     ),
   );
+  const [uiPhase, dispatchPhase] = useReducer(
+    reduceTranslatePhase,
+    undefined,
+    initialTranslatePhase,
+  );
   const stateRef = useRef(state);
   stateRef.current = state;
+  const uiRef = useRef(uiPhase);
+  uiRef.current = uiPhase;
   const activeRef = useRef(active);
   activeRef.current = active;
   const requestRef = useRef(0);
@@ -63,9 +75,13 @@ export function useTranslationSession({ active, seed }: Options) {
     if (active) return;
     requestRef.current += 1;
     hardStopRecognition();
+    runtime.speechRecognition.abort();
+    runtime.speechSynthesis.stop();
+    runtime.translation.cancelAll();
     dispatch({ type: 'setListening', listening: false });
     dispatch({ type: 'cancelPass' });
-  }, [active]);
+    dispatchPhase({ type: 'INTERRUPT' });
+  }, [active, runtime]);
 
   const translateSide = useCallback(
     async (text: string, from: Side) => {
@@ -103,74 +119,124 @@ export function useTranslationSession({ active, seed }: Options) {
 
   const submit = useCallback(async () => {
     if (!activeRef.current) return;
+    if (stateRef.current.translating) return;
     const current = stateRef.current;
     const text = cleanTranslationText(current.draft);
     if (!text) return;
     const requestId = ++requestRef.current;
     dispatch({ type: 'setTranslating', translating: true });
-    const result = await translateSide(text, current.activeSide);
-    if (!activeRef.current || result.cancelled || requestId !== requestRef.current) {
-      dispatch({ type: 'setTranslating', translating: false });
-      return;
-    }
-    const turn: SessionTurn = {
-      id: runtime.ids.nextId('t'),
-      from: current.activeSide,
-      source: text,
-      translation: result.text,
-      method: result.method,
-      direction: result.direction,
-    };
-    dispatch({ type: 'commitTurn', turn, keepDraft: true });
-    remember(turn);
-  }, [remember, translateSide, runtime.ids]);
-
-  const pass = useCallback(() => {
-    hardStopRecognition();
-    dispatch({ type: 'setListening', listening: false });
-    dispatch({ type: 'pass' });
-  }, []);
-
-  const retry = useCallback(
-    async (turn: SessionTurn) => {
-      if (!isRetryableTurn(turn, stateRef.current.turns)) return;
-      const requestId = ++requestRef.current;
-      dispatch({ type: 'setTranslating', translating: true });
-      const source = cleanTranslationText(turn.source);
-      const result = await translateSide(source, turn.from);
+    dispatchPhase({ type: 'TRANSLATE_STARTED' });
+    try {
+      const result = await translateSide(text, current.activeSide);
       if (!activeRef.current || result.cancelled || requestId !== requestRef.current) {
         dispatch({ type: 'setTranslating', translating: false });
+        dispatchPhase({ type: 'CANCEL' });
         return;
       }
-      const next: SessionTurn = {
-        ...turn,
-        source,
+      if (!result.text.trim()) {
+        dispatch({ type: 'setTranslating', translating: false });
+        dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'empty_result' });
+        return;
+      }
+      const turn: SessionTurn = {
+        id: runtime.ids.nextId('t'),
+        from: current.activeSide,
+        source: text,
         translation: result.text,
         method: result.method,
         direction: result.direction,
       };
-      dispatch({ type: 'replaceTurn', id: turn.id, turn: next });
-      remember(next);
+      dispatch({ type: 'commitTurn', turn, keepDraft: false });
+      dispatchPhase({ type: 'TRANSLATE_SUCCEEDED' });
+      remember(turn);
+    } catch {
+      dispatch({ type: 'setTranslating', translating: false });
+      dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'translate_error' });
+    }
+  }, [remember, translateSide, runtime.ids]);
+
+  const pass = useCallback(() => {
+    hardStopRecognition();
+    runtime.speechRecognition.abort();
+    runtime.speechSynthesis.stop();
+    dispatch({ type: 'setListening', listening: false });
+    dispatch({ type: 'pass' });
+    dispatchPhase({ type: 'RESET' });
+  }, [runtime]);
+
+  const retry = useCallback(
+    async (turn: SessionTurn) => {
+      if (!isRetryableTurn(turn, stateRef.current.turns)) return;
+      if (stateRef.current.translating) return;
+      const requestId = ++requestRef.current;
+      dispatch({ type: 'setTranslating', translating: true });
+      dispatchPhase({ type: 'RETRY' });
+      try {
+        const source = cleanTranslationText(turn.source);
+        const result = await translateSide(source, turn.from);
+        if (!activeRef.current || result.cancelled || requestId !== requestRef.current) {
+          dispatch({ type: 'setTranslating', translating: false });
+          dispatchPhase({ type: 'CANCEL' });
+          return;
+        }
+        if (!result.text.trim()) {
+          dispatch({ type: 'setTranslating', translating: false });
+          dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'empty_result' });
+          return;
+        }
+        const next: SessionTurn = {
+          ...turn,
+          source,
+          translation: result.text,
+          method: result.method,
+          direction: result.direction,
+        };
+        dispatch({ type: 'replaceTurn', id: turn.id, turn: next });
+        dispatchPhase({ type: 'TRANSLATE_SUCCEEDED' });
+        remember(next);
+      } catch {
+        dispatch({ type: 'setTranslating', translating: false });
+        dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'translate_error' });
+      }
     },
     [remember, translateSide],
   );
 
+  const cancelListen = useCallback(() => {
+    hardStopRecognition();
+    runtime.speechRecognition.abort();
+    dispatch({ type: 'setListening', listening: false });
+    dispatchPhase({ type: 'CANCEL' });
+  }, [runtime]);
+
   const toggleListen = useCallback(async () => {
     if (!activeRef.current) return;
-    if (stateRef.current.listening) {
-      hardStopRecognition();
-      dispatch({ type: 'setListening', listening: false });
+    if (stateRef.current.listening || uiRef.current.phase === 'listening') {
+      cancelListen();
       return;
     }
-    const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
-    if (!perm.granted || !activeRef.current) return;
+    if (stateRef.current.translating) return;
+    dispatchPhase({ type: 'SPEAK' });
+    const perm = await runtime.speechRecognition.requestPermission();
+    if (!activeRef.current) return;
+    if (perm !== 'granted') {
+      dispatchPhase({ type: 'PERMISSION_DENIED' });
+      return;
+    }
+    dispatchPhase({ type: 'PERMISSION_GRANTED' });
     dispatch({ type: 'setListening', listening: true });
-    ExpoSpeechRecognitionModule.start({
-      lang: stateRef.current.activeSide === 'en' ? 'en-US' : 'ne-NP',
-      interimResults: true,
-      continuous: false,
-    });
-  }, []);
+    dispatchPhase({ type: 'LISTENING_STARTED' });
+    try {
+      ExpoSpeechRecognitionModule.start({
+        lang: stateRef.current.activeSide === 'en' ? 'en-US' : 'ne-NP',
+        interimResults: true,
+        continuous: false,
+      });
+    } catch {
+      dispatch({ type: 'setListening', listening: false });
+      dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'stt_unavailable' });
+    }
+  }, [cancelListen, runtime.speechRecognition]);
 
   useSpeechRecognitionEvent('result', (event) => {
     if (!activeRef.current || !stateRef.current.listening) return;
@@ -181,7 +247,14 @@ export function useTranslationSession({ active, seed }: Options) {
   useSpeechRecognitionEvent('end', () => {
     if (!stateRef.current.listening) return;
     dispatch({ type: 'setListening', listening: false });
+    dispatchPhase({ type: 'TRANSCRIPT_FINAL' });
     void submit();
+  });
+
+  useSpeechRecognitionEvent('error', () => {
+    if (!stateRef.current.listening) return;
+    dispatch({ type: 'setListening', listening: false });
+    dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'stt_error' });
   });
 
   const setFormality = useCallback((formalOn: boolean) => {
@@ -202,16 +275,23 @@ export function useTranslationSession({ active, seed }: Options) {
     });
   }, []);
 
+  const clearError = useCallback(() => {
+    dispatchPhase({ type: 'RESET' });
+  }, []);
+
   return {
     state,
+    uiPhase,
     dispatch,
     submit,
     pass,
     retry,
     toggleListen,
+    cancelListen,
+    clearError,
     setFormality,
     setScript,
   };
 }
 
-export type { SessionState };
+export type { SessionState, TranslatePhaseState };

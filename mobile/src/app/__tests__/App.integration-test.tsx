@@ -41,7 +41,7 @@ describe('NepTranslateApp production composition', () => {
     await AsyncStorage.clear();
     await clearHistory();
     (sharedTranslationEngine.translate as jest.Mock).mockImplementation(
-      async (req: { text: string }) => {
+      async (req: { text: string; preferred?: string }) => {
         const t = req.text.trim().toLowerCase();
         if (t === 'hello') {
           return {
@@ -51,10 +51,18 @@ describe('NepTranslateApp production composition', () => {
             cancelled: false,
           };
         }
+        if (t === 'नमस्ते' || t.includes('नमस्ते')) {
+          return {
+            text: 'Hello',
+            method: 'phrase',
+            direction: 'ne-en',
+            cancelled: false,
+          };
+        }
         return {
           text: '',
           method: 'lexicon',
-          direction: 'en-ne',
+          direction: req.preferred ?? 'en-ne',
           cancelled: false,
         };
       },
@@ -110,6 +118,27 @@ describe('NepTranslateApp production composition', () => {
     });
   });
 
+  it('shows permission denial when Speak is blocked', async () => {
+    const runtime = createTestRuntime({ speechPermission: 'denied' });
+    await renderApp(createTestServices({ offline: true }), runtime);
+    await fireEvent.press(screen.getByTestId('speak-hero'));
+    await waitFor(() => {
+      expect(screen.getByTestId('translate-status')).toBeTruthy();
+    });
+    expect(screen.getByText(/Microphone permission denied/i)).toBeTruthy();
+    expect(screen.getByTestId('translate-status-dismiss')).toBeTruthy();
+  });
+
+  it('surfaces a recoverable error when translation fails', async () => {
+    const runtime = createTestRuntime({ translateError: 'boom' });
+    await renderApp(createTestServices({ offline: true }), runtime);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
+    await waitFor(() => {
+      expect(screen.getByText(/Translation failed/i)).toBeTruthy();
+    });
+  });
+
   it('keeps a translation, moves Speak to the bottom, and returns to English after one pass each', async () => {
     await renderApp();
     expect(screen.getByTestId('speak-hero')).toBeTruthy();
@@ -131,7 +160,7 @@ describe('NepTranslateApp production composition', () => {
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'नमस्ते');
     await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
     await waitFor(() => {
-      expect(screen.getAllByText('नमस्ते').length).toBeGreaterThan(1);
+      expect(screen.getByTestId('translate-output').props.children).toBe('Hello');
     });
     await fireEvent.press(screen.getByTestId('pass-phone'));
     expect(screen.getByLabelText('Pass')).toBeTruthy();

@@ -69,7 +69,11 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 2 — Done on tip `f41d9b7`**
+**Current: production readiness, slice 3 — Translate interaction states**
+
+Slice 2 closed on tip `f41d9b7`. This slice wires the Translate phase machine into the session, surfaces listening/permission/error status, honest credit thresholds, copy, and cancel.
+
+**Previous: production readiness, slice 2 — Done on tip `f41d9b7`**
 
 Slice 1 closed on tip `5317e19` / docs `bb887ae`. Slice 2 adds typed device ports, Translate/Camera phase machines, redacted diagnostics, and `waitForIdle`. Independent review PASS after repair.
 

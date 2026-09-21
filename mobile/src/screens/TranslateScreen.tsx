@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Image,
   Keyboard,
@@ -36,22 +36,54 @@ type Props = {
   onOpenSettings: () => void;
 };
 
+function statusCopy(phase: string, reason: string | null): string | null {
+  switch (phase) {
+    case 'requestingPermission':
+      return 'Need microphone access to speak.';
+    case 'listening':
+      return 'Listening…';
+    case 'finalizingTranscript':
+      return 'Finishing speech…';
+    case 'translating':
+      return 'Translating…';
+    case 'recoverableError':
+      if (reason === 'permission_denied') {
+        return 'Microphone permission denied. Type instead, or enable access in Settings.';
+      }
+      if (reason === 'empty_result') {
+        return 'No translation for that text. Try different wording.';
+      }
+      if (reason === 'stt_error' || reason === 'stt_unavailable') {
+        return 'Speech recognition failed. Type instead or try again.';
+      }
+      return 'Translation failed. Retry the turn or try again.';
+    case 'unavailable':
+      return 'Speech is unavailable on this device. You can still type.';
+    default:
+      return null;
+  }
+}
+
 export function TranslateScreen({
   seed,
+  neuralReady = false,
   mtWarmStatus = null,
   active = true,
   onOpenHistory,
   onOpenSettings,
 }: Props) {
   const session = useTranslationSession({ active, seed });
-  const { state } = session;
+  const { state, uiPhase } = session;
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [correctionOpen, setCorrectionOpen] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
   const phase = sessionPhase(state);
   const latest = state.turns[state.turns.length - 1];
   const showFailure = mtWarmStatus === MT_WARM_FAILED;
   const passEnabled = canPassPhone(state.draft, latestFrom(state), state.activeSide);
+  const busy = state.translating || uiPhase.phase === 'listening';
+  const status = statusCopy(uiPhase.phase, uiPhase.reasonCode);
 
   useEffect(() => {
     const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
@@ -62,17 +94,46 @@ export function TranslateScreen({
     };
   }, []);
 
+  useEffect(() => {
+    if (phase === 'empty') return;
+    scrollRef.current?.scrollToEnd({ animated: true });
+  }, [state.turns.length, phase]);
+
+  const speakLabel =
+    uiPhase.phase === 'listening'
+      ? 'Stop listening'
+      : uiPhase.phase === 'requestingPermission'
+        ? 'Requesting microphone'
+        : 'Speak to translate';
+
   const speakButton = (testID: string) => (
     <Pressable
       onPress={() => void session.toggleListen()}
-      style={styles.speak}
+      disabled={state.translating && uiPhase.phase !== 'listening'}
+      style={[
+        styles.speak,
+        uiPhase.phase === 'listening' && styles.speakListening,
+        state.translating && uiPhase.phase !== 'listening' && styles.speakOff,
+      ]}
       accessibilityRole="button"
-      accessibilityLabel="Speak to translate"
+      accessibilityLabel={speakLabel}
+      accessibilityState={{
+        disabled: state.translating && uiPhase.phase !== 'listening',
+        busy: uiPhase.phase === 'listening' || state.translating,
+      }}
       testID={testID}
     >
-      <Ionicons name="mic" size={28} color="#fff" />
-      <Text style={styles.speakEn}>Speak</Text>
-      <Text style={styles.speakNe}>बोल्नुहोस्</Text>
+      <Ionicons
+        name={uiPhase.phase === 'listening' ? 'stop' : 'mic'}
+        size={28}
+        color="#fff"
+      />
+      <Text style={styles.speakEn}>
+        {uiPhase.phase === 'listening' ? 'Listening' : 'Speak'}
+      </Text>
+      <Text style={styles.speakNe}>
+        {uiPhase.phase === 'listening' ? 'सुन्दै…' : 'बोल्नुहोस्'}
+      </Text>
     </Pressable>
   );
 
@@ -150,10 +211,38 @@ export function TranslateScreen({
       {showFailure ? (
         <Text style={styles.failure} testID="mt-failure">
           {MT_WARM_FAILED}
+          {!neuralReady ? ' Offline phrasebook still works.' : ''}
         </Text>
       ) : null}
 
+      {status ? (
+        <View style={styles.statusRow} testID="translate-status">
+          <Text style={styles.statusText}>{status}</Text>
+          {uiPhase.phase === 'recoverableError' ? (
+            <Pressable
+              onPress={session.clearError}
+              accessibilityRole="button"
+              accessibilityLabel="Dismiss error"
+              testID="translate-status-dismiss"
+            >
+              <Text style={styles.statusDismiss}>Dismiss</Text>
+            </Pressable>
+          ) : null}
+          {uiPhase.phase === 'listening' ? (
+            <Pressable
+              onPress={session.cancelListen}
+              accessibilityRole="button"
+              accessibilityLabel="Cancel listening"
+              testID="translate-cancel-listen"
+            >
+              <Text style={styles.statusDismiss}>Cancel</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
+
       <ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
@@ -168,6 +257,7 @@ export function TranslateScreen({
               turns={state.turns}
               script={state.script}
               isLatest={turn.id === latest?.id}
+              busy={busy}
               onRetry={(item) => void session.retry(item)}
               onMarkIncorrect={
                 turn.id === latest?.id ? () => setCorrectionOpen(true) : undefined
@@ -193,11 +283,12 @@ export function TranslateScreen({
           {speakButton('speak-dock')}
           <Pressable
             onPress={session.pass}
-            disabled={!passEnabled}
+            disabled={!passEnabled || busy}
             accessibilityRole="button"
             accessibilityLabel={state.activeSide === 'en' ? 'Pass' : 'पास'}
+            accessibilityState={{ disabled: !passEnabled || busy }}
             testID="pass-phone"
-            style={[styles.pass, !passEnabled && styles.passOff]}
+            style={[styles.pass, (!passEnabled || busy) && styles.passOff]}
           >
             <Text style={styles.passText}>
               {state.activeSide === 'en' ? 'Pass' : 'पास'}
@@ -282,6 +373,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     paddingHorizontal: 20,
   },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+  },
+  statusText: { flexShrink: 1, textAlign: 'center', color: colors.text, fontSize: 13 },
+  statusDismiss: { fontWeight: '700', color: colors.crimson, fontSize: 13 },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 12, flexGrow: 1 },
   hero: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 220 },
@@ -294,6 +395,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 2,
   },
+  speakListening: { backgroundColor: colors.text },
+  speakOff: { opacity: 0.45 },
   speakEn: { color: '#fff', fontWeight: '800', fontSize: 18 },
   speakNe: { color: '#fff', fontSize: 14 },
   dock: {
