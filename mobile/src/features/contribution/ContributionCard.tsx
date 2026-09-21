@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../auth/AuthProvider';
 import { fetchNextContribution, type PublicContribution } from './contributionApi';
-import { DEFAULT_FEATURE_FLAGS } from '../../app/featureFlags';
+import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { colors } from '../../theme';
 
 /**
@@ -11,11 +11,12 @@ import { colors } from '../../theme';
  */
 export function ContributionCard() {
   const auth = useAuth();
+  const flags = useFeatureFlags();
   const [task, setTask] = useState<PublicContribution | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  if (!DEFAULT_FEATURE_FLAGS.contributionsEnabled) {
+  if (!flags.contributionsEnabled) {
     return (
       <View style={styles.box} testID="contribution-card-off">
         <Text style={styles.title}>Contributions</Text>

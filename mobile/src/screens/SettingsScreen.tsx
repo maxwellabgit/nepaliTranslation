@@ -19,12 +19,14 @@ import {
   loadAppleAuthorizationCode,
 } from '../features/auth/appleAuthCode';
 import { saveLocalConsent } from '../storage/contributionConsent';
+import { flushPendingDrafts } from '../services/contributionSync';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
 import { colors } from '../theme';
 
 type Props = {
   onClose: () => void;
   onOpenMeaningReview: () => void;
+  onOpenContributions?: () => void;
   neuralReady?: boolean;
 };
 
@@ -44,6 +46,7 @@ const BUILD_NUMBER =
 export function SettingsScreen({
   onClose,
   onOpenMeaningReview,
+  onOpenContributions,
   neuralReady = false,
 }: Props) {
   const [advanced, setAdvanced] = useState(false);
@@ -92,6 +95,7 @@ export function SettingsScreen({
             void saveLocalConsent(true);
             setAgeConfirmed(true);
             setConsentVersion(CONTRIBUTION_CONSENT_VERSION);
+            void flushPendingDrafts();
           });
         }}
         onDeleteAccount={() => {
@@ -117,6 +121,21 @@ export function SettingsScreen({
       />
 
       <ContributionCard />
+
+      {onOpenContributions ? (
+        <Pressable
+          style={styles.section}
+          onPress={onOpenContributions}
+          accessibilityRole="button"
+          accessibilityLabel="Open contributions and rewards"
+          testID="settings-open-contributions"
+        >
+          <Text style={styles.sectionLabel}>Contributions & rewards</Text>
+          <Text style={styles.body}>
+            View drafts, sync status, and retry uploads on this device.
+          </Text>
+        </Pressable>
+      ) : null}
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>About</Text>

@@ -45,9 +45,26 @@ jest.mock('expo-apple-authentication', () => ({
   isAvailableAsync: jest.fn(async () => false),
 }));
 
-jest.mock('expo-crypto', () => ({
-  CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
-  digestStringAsync: jest.fn(async () => 'hashed-nonce'),
+jest.mock('expo-crypto', () => {
+  let uuidSeq = 0;
+  return {
+    CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
+    digestStringAsync: jest.fn(async () => 'hashed-nonce'),
+    randomUUID: jest.fn(() => {
+      uuidSeq += 1;
+      const n = String(uuidSeq).padStart(12, '0');
+      return `00000000-0000-4000-8000-${n}`;
+    }),
+  };
+});
+
+jest.mock('expo-network', () => ({
+  getNetworkStateAsync: jest.fn(async () => ({
+    isConnected: true,
+    isInternetReachable: true,
+    type: 'WIFI',
+  })),
+  addNetworkStateListener: jest.fn(() => ({ remove: jest.fn() })),
 }));
 
 jest.mock('onnxruntime-react-native', () => ({

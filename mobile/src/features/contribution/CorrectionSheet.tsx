@@ -13,12 +13,11 @@ import {
   CONTRIBUTION_CONSENT_SUMMARY,
   CONTRIBUTION_CONSENT_VERSION,
 } from '../auth/consent';
-import { DEFAULT_FEATURE_FLAGS } from '../../app/featureFlags';
-import {
-  loadLocalConsent,
-} from '../../storage/contributionConsent';
+import { useFeatureFlags } from '../../app/FeatureConfigProvider';
+import { loadLocalConsent } from '../../storage/contributionConsent';
 import {
   enqueueDraft,
+  type ContributionDraft,
   type OutboxSurface,
 } from '../../storage/contributionOutbox';
 import { buildCorrectionDraftFields } from '../../storage/liveIncorrect';
@@ -31,11 +30,16 @@ type Props = {
   source: string;
   translation: string;
   sourceLang: 'en' | 'ne';
-  formality: Formality;
-  script: NepaliScript;
+  formality?: Formality | null;
+  script?: NepaliScript | null;
   surface: OutboxSurface;
+  translationMethod?: string | null;
+  modelVersion?: string | null;
+  /** Resume an existing draft after the auth gate. */
+  existingDraft?: ContributionDraft | null;
   onClose: () => void;
   onSaved?: () => void;
+  onNeedAuth?: () => void;
 };
 
 export function CorrectionSheet({
@@ -43,31 +47,57 @@ export function CorrectionSheet({
   source,
   translation,
   sourceLang,
-  formality,
-  script,
+  formality: formalityProp = null,
+  script: scriptProp = null,
   surface,
+  translationMethod = null,
+  modelVersion = null,
+  existingDraft = null,
   onClose,
   onSaved,
+  onNeedAuth,
 }: Props) {
   const auth = useAuth();
+  const flags = useFeatureFlags();
   const [correction, setCorrection] = useState('');
+  const [formality, setFormality] = useState<Formality | null>(null);
+  const [script, setScript] = useState<NepaliScript | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [consentVersion, setConsentVersion] = useState<string | null>(null);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [draftIdempotencyKey, setDraftIdempotencyKey] = useState<
+    string | undefined
+  >(undefined);
 
   useEffect(() => {
     if (!visible) return;
-    setCorrection('');
     setMessage(null);
+    if (existingDraft) {
+      setCorrection(existingDraft.correction_text ?? '');
+      setFormality(existingDraft.formality);
+      setScript(existingDraft.script);
+      setDraftIdempotencyKey(existingDraft.idempotency_key);
+    } else {
+      setCorrection('');
+      setFormality(formalityProp ?? null);
+      setScript(scriptProp ?? null);
+      setDraftIdempotencyKey(undefined);
+    }
     void loadLocalConsent().then((c) => {
       setConsentVersion(c?.consent_version ?? null);
       setAgeConfirmed(Boolean(c?.age_confirmed));
     });
-  }, [visible]);
+  }, [visible, existingDraft, formalityProp, scriptProp]);
+
+  const labelsMissing = !formality || !script;
 
   const save = async (wantSubmit: boolean) => {
     if (busy) return;
+    if (wantSubmit && labelsMissing) {
+      setMessage('Select formality and script before submitting.');
+      return;
+    }
     const fields = buildCorrectionDraftFields({
       source,
       translation,
@@ -75,6 +105,8 @@ export function CorrectionSheet({
       formality,
       script,
       surface,
+      translationMethod,
+      modelVersion,
     });
     if (!fields) {
       setMessage('Nothing to save.');
@@ -88,43 +120,57 @@ export function CorrectionSheet({
         consentVersion,
         ageConfirmed,
       });
-      const contributionsOn = DEFAULT_FEATURE_FLAGS.contributionsEnabled;
-      let status: 'draft' | 'pending' = 'draft';
+      const contributionsOn = flags.contributionsEnabled;
+      let status: 'draft' | 'queued' = 'draft';
       let note: string | null = null;
+      let needAuth = false;
 
       if (wantSubmit) {
+        if (labelsMissing) {
+          setMessage('Select formality and script before submitting.');
+          return;
+        }
         if (!contributionsOn) {
           note =
             'Saved on this device. Contribution upload is off until review finishes.';
         } else if (!gate.ok) {
+          needAuth = true;
           note =
             gate.reason === 'sign_in'
-              ? 'Saved on this device. Sign in with Apple in Settings to upload.'
+              ? 'Saved on this device. Sign in with Apple to submit, then tap Submit contribution again.'
               : gate.reason === 'consent' || gate.reason === 'age'
-                ? 'Saved on this device. Save contribution consent in Settings to upload.'
+                ? 'Saved on this device. Save contribution consent in Settings, then tap Submit contribution again.'
                 : 'Saved on this device. Upload is unavailable right now.';
         } else {
-          status = 'pending';
+          status = 'queued';
         }
       }
 
-      await enqueueDraft({
+      const draft = await enqueueDraft({
         ...fields,
+        idempotency_key: draftIdempotencyKey,
         correction_text: correction.trim() || null,
+        formality,
+        script,
         consent_version:
-          status === 'pending' ? CONTRIBUTION_CONSENT_VERSION : consentVersion,
+          status === 'queued' ? CONTRIBUTION_CONSENT_VERSION : consentVersion,
         status,
       });
+      setDraftIdempotencyKey(draft.idempotency_key);
 
-      if (status === 'pending') {
+      if (status === 'queued') {
         void flushPendingDrafts();
         setMessage('Queued for upload when online.');
+        onSaved?.();
+        onClose();
       } else {
         setMessage(note ?? 'Draft saved on this device.');
-      }
-      onSaved?.();
-      if (status === 'pending' || !wantSubmit) {
-        onClose();
+        onSaved?.();
+        if (!wantSubmit) {
+          onClose();
+        } else if (needAuth) {
+          onNeedAuth?.();
+        }
       }
     } finally {
       setBusy(false);
@@ -150,6 +196,91 @@ export function CorrectionSheet({
             multiline
             testID="correction-input"
           />
+          {labelsMissing ? (
+            <View testID="correction-label-pickers">
+              <Text style={styles.label}>Formality (required to submit)</Text>
+              <View style={styles.chipRow}>
+                <Pressable
+                  style={[
+                    styles.chip,
+                    formality === 'formal' && styles.chipOn,
+                  ]}
+                  onPress={() => setFormality('formal')}
+                  testID="correction-formality-formal"
+                  accessibilityRole="button"
+                  accessibilityLabel="Formal"
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      formality === 'formal' && styles.chipTextOn,
+                    ]}
+                  >
+                    Formal
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.chip,
+                    formality === 'informal' && styles.chipOn,
+                  ]}
+                  onPress={() => setFormality('informal')}
+                  testID="correction-formality-informal"
+                  accessibilityRole="button"
+                  accessibilityLabel="Informal"
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      formality === 'informal' && styles.chipTextOn,
+                    ]}
+                  >
+                    Informal
+                  </Text>
+                </Pressable>
+              </View>
+              <Text style={styles.label}>Script (required to submit)</Text>
+              <View style={styles.chipRow}>
+                <Pressable
+                  style={[styles.chip, script === 'deva' && styles.chipOn]}
+                  onPress={() => setScript('deva')}
+                  testID="correction-script-deva"
+                  accessibilityRole="button"
+                  accessibilityLabel="Devanagari"
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      script === 'deva' && styles.chipTextOn,
+                    ]}
+                  >
+                    Devanagari
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.chip, script === 'roman' && styles.chipOn]}
+                  onPress={() => setScript('roman')}
+                  testID="correction-script-roman"
+                  accessibilityRole="button"
+                  accessibilityLabel="Roman"
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      script === 'roman' && styles.chipTextOn,
+                    ]}
+                  >
+                    Roman
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            <Text style={styles.meta} testID="correction-labels-set">
+              {formality === 'formal' ? 'Formal' : 'Informal'} ·{' '}
+              {script === 'deva' ? 'Devanagari' : 'Roman'}
+            </Text>
+          )}
           <Text style={styles.meta}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
           {message ? <Text style={styles.note}>{message}</Text> : null}
           <View style={styles.actions}>
@@ -162,24 +293,24 @@ export function CorrectionSheet({
               <Text style={styles.link}>Cancel</Text>
             </Pressable>
             <Pressable
-              style={styles.button}
+              style={styles.buttonSecondary}
               onPress={() => void save(false)}
               disabled={busy}
               accessibilityRole="button"
-              accessibilityLabel="Save correction draft"
+              accessibilityLabel="Save on this device"
               testID="correction-save-draft"
             >
-              <Text style={styles.buttonText}>Save draft</Text>
+              <Text style={styles.buttonSecondaryText}>Save on this device</Text>
             </Pressable>
             <Pressable
               style={styles.button}
               onPress={() => void save(true)}
               disabled={busy}
               accessibilityRole="button"
-              accessibilityLabel="Submit correction"
+              accessibilityLabel="Submit contribution"
               testID="correction-submit"
             >
-              <Text style={styles.buttonText}>Submit</Text>
+              <Text style={styles.buttonText}>Submit contribution</Text>
             </Pressable>
           </View>
         </View>
@@ -223,14 +354,38 @@ const styles = StyleSheet.create({
   },
   meta: { fontSize: 12, color: colors.textPlaceholder, lineHeight: 18 },
   note: { fontSize: 14, color: colors.blue, lineHeight: 20 },
+  chipRow: { flexDirection: 'row', gap: 8, marginTop: 4 },
+  chip: {
+    minHeight: 40,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.bg,
+  },
+  chipOn: {
+    backgroundColor: colors.text,
+    borderColor: colors.text,
+  },
+  chipText: { fontSize: 14, fontWeight: '600', color: colors.text },
+  chipTextOn: { color: '#fff' },
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
+    flexWrap: 'wrap',
     gap: 10,
     marginTop: 8,
   },
-  link: { fontSize: 15, fontWeight: '700', color: colors.textSecondary, minHeight: 44, textAlignVertical: 'center' },
+  link: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    minHeight: 44,
+    textAlignVertical: 'center',
+  },
   button: {
     minHeight: 44,
     borderRadius: 12,
@@ -239,5 +394,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  buttonText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+  buttonSecondary: {
+    minHeight: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.bg,
+  },
+  buttonSecondaryText: {
+    color: colors.text,
+    fontWeight: '700',
+    fontSize: 14,
+  },
 });

@@ -1,4 +1,4 @@
-import { DEFAULT_FEATURE_FLAGS } from '../../app/featureFlags';
+import { getRuntimeFeatureFlags } from '../../app/featureFlags';
 import { canSubmitContribution } from '../auth/consent';
 import { readPublicEnv } from '../../config/env';
 import { getSupabase } from '../../services/supabase';
@@ -22,7 +22,7 @@ export async function fetchNextContribution(input: {
   | { ok: true; assignment: PublicContribution | null }
   | { ok: false; reason: 'unavailable' | 'sign_in' | 'consent' | 'age' | 'disabled' }
 > {
-  if (!DEFAULT_FEATURE_FLAGS.contributionsEnabled) {
+  if (!getRuntimeFeatureFlags().contributionsEnabled) {
     return { ok: false, reason: 'disabled' };
   }
   const consent = await loadLocalConsent();

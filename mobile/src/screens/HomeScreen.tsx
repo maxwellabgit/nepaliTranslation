@@ -28,6 +28,7 @@ import {
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
 import { addHistory, type HistoryItem } from '../storage/phrasebook';
+import { MODEL_VERSION } from '../storage/contributionOutbox';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import {
   getSttSupport,
@@ -150,6 +151,11 @@ export function HomeScreen({
                 translation: result.text,
                 sourceLang: optsRef.current.preferred === 'en-ne' ? 'en' : 'ne',
                 targetLang: optsRef.current.preferred === 'en-ne' ? 'ne' : 'en',
+                direction: optsRef.current.preferred,
+                formality: optsRef.current.formality,
+                script: optsRef.current.script,
+                translationMethod: 'neural',
+                modelVersion: MODEL_VERSION,
               });
             });
         }
@@ -159,7 +165,12 @@ export function HomeScreen({
   );
 
   const saveHistoryFor = useCallback(
-    (t: string, translation: string, dir: 'en-ne' | 'ne-en') => {
+    (
+      t: string,
+      translation: string,
+      dir: 'en-ne' | 'ne-en',
+      method: 'phrase' | 'lexicon' | 'neural' = 'neural',
+    ) => {
       if (!translation.trim()) return;
       const sl = dir === 'en-ne' ? 'en' : 'ne';
       const tl = dir === 'en-ne' ? 'ne' : 'en';
@@ -168,6 +179,11 @@ export function HomeScreen({
         translation,
         sourceLang: sl,
         targetLang: tl,
+        direction: dir,
+        formality: optsRef.current.formality,
+        script: optsRef.current.script,
+        translationMethod: method,
+        modelVersion: MODEL_VERSION,
       });
     },
     [],
@@ -190,7 +206,12 @@ export function HomeScreen({
       const detected: SourceSide = result.direction === 'ne-en' ? 'ne' : 'en';
       setSourceSide((prev) => (prev === detected ? prev : detected));
       if (opts?.save && opts.source) {
-        saveHistoryFor(opts.source, result.text, result.direction);
+        saveHistoryFor(
+          opts.source,
+          result.text,
+          result.direction,
+          result.method,
+        );
       }
     },
     [saveHistoryFor],
@@ -598,6 +619,8 @@ export function HomeScreen({
             autoCorrect
             maxLength={MAX_INPUT_CHARS}
             editable={!listening}
+            accessibilityLabel="Translate input"
+            testID="translate-input"
           />
           {input.trim() ? (
             <Pressable
@@ -727,6 +750,7 @@ export function HomeScreen({
                   targetLang === 'ne' && script === 'deva' && styles.resultNe,
                 ]}
                 selectable
+                testID="translate-output"
               >
                 {displayOutput}
               </Text>
@@ -803,6 +827,7 @@ export function HomeScreen({
         script={script}
         surface="live_translate"
         onClose={() => setCorrectionOpen(false)}
+        onNeedAuth={onOpenSettings}
       />
     </KeyboardAvoidingView>
   );

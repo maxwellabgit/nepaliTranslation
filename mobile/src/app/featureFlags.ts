@@ -19,3 +19,17 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   paywallEnabled: false,
   learnEnabled: false,
 };
+
+/** Module cache for non-React callers (contributionApi). Provider keeps this in sync. */
+let runtimeFeatureFlags: FeatureFlags = {
+  ...DEFAULT_FEATURE_FLAGS,
+  learnEnabled: true,
+};
+
+export function setRuntimeFeatureFlags(flags: FeatureFlags): void {
+  runtimeFeatureFlags = { ...flags, learnEnabled: true };
+}
+
+export function getRuntimeFeatureFlags(): FeatureFlags {
+  return runtimeFeatureFlags;
+}

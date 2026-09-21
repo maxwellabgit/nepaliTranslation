@@ -34,9 +34,10 @@ function mulberrySeed(seed: number): () => number {
 
 type Props = {
   active: boolean;
+  onOpenContributions?: () => void;
 };
 
-export function LearnScreen({ active }: Props) {
+export function LearnScreen({ active, onOpenContributions }: Props) {
   const [position, setPosition] = useState<LessonPosition>({
     sectionId: 'vowels',
     glyphIndex: 0,
@@ -109,6 +110,22 @@ export function LearnScreen({ active }: Props) {
       <Text style={styles.subtitle}>
         Nepali alphabet · offline · no account needed
       </Text>
+
+      {onOpenContributions ? (
+        <Pressable
+          style={styles.contribEntry}
+          onPress={onOpenContributions}
+          accessibilityRole="button"
+          accessibilityLabel="Open contributions and rewards"
+          testID="learn-open-contributions"
+        >
+          <Text style={styles.contribTitle}>Contributions & rewards</Text>
+          <Text style={styles.contribBody}>
+            Drafts, sync status, and retry — optional, sign-in only when
+            submitting.
+          </Text>
+        </Pressable>
+      ) : null}
 
       {neVoice === false ? (
         <View style={styles.banner} testID="learn-no-voice">
@@ -226,6 +243,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textSecondary,
     marginBottom: 16,
+  },
+  contribEntry: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.divider,
+  },
+  contribTitle: { fontSize: 16, fontWeight: '700', color: colors.text },
+  contribBody: {
+    marginTop: 4,
+    fontSize: 13,
+    color: colors.textSecondary,
+    lineHeight: 18,
   },
   banner: {
     backgroundColor: colors.pasteBg,

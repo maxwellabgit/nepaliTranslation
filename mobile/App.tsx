@@ -7,20 +7,42 @@ import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { MeaningReviewScreen } from './src/screens/MeaningReviewScreen';
 import { LearnScreen } from './src/screens/LearnScreen';
+import { ContributionsScreen } from './src/screens/ContributionsScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import {
   MT_WARM_DOWNLOADING,
   MT_WARM_FAILED,
   MT_WARM_PREPARING,
 } from './src/mt/mtStatus';
+import type { AppServices } from './src/services/contracts';
+import { createProductionServices } from './src/services/productionServices';
 
-export default function App() {
+export type NepTranslateAppProps = {
+  /** Test-only service injection. Production default supplies real adapters. */
+  services?: AppServices;
+  /** Skip MT warm-up in integration tests when the engine is already mocked. */
+  skipWarmUp?: boolean;
+};
+
+/**
+ * Real composition root: providers + AppShell + production screens.
+ * Default export supplies production services for Expo registration.
+ */
+export function NepTranslateApp({
+  services,
+  skipWarmUp = false,
+}: NepTranslateAppProps = {}) {
   const [neuralReady, setNeuralReady] = useState(false);
   const [mtWarmStatus, setMtWarmStatus] = useState<string | null>(
-    MT_WARM_PREPARING,
+    skipWarmUp ? null : MT_WARM_PREPARING,
   );
 
   useEffect(() => {
+    if (skipWarmUp) {
+      setNeuralReady(sharedTranslationEngine.isNeuralReady());
+      setMtWarmStatus(null);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       setMtWarmStatus(MT_WARM_PREPARING);
@@ -49,10 +71,10 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [skipWarmUp]);
 
   return (
-    <AppProviders>
+    <AppProviders services={services}>
       <AppShell
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}
@@ -62,7 +84,12 @@ export default function App() {
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}
         MeaningOverlay={(props) => <MeaningReviewScreen {...props} />}
+        ContributionsOverlay={(props) => <ContributionsScreen {...props} />}
       />
     </AppProviders>
   );
+}
+
+export default function App() {
+  return <NepTranslateApp services={createProductionServices()} />;
 }

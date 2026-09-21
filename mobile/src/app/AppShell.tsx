@@ -7,7 +7,12 @@ import { colors } from '../theme';
 import type { HistoryItem } from '../storage/phrasebook';
 
 export type AppMode = 'auto' | 'conversation' | 'learn';
-export type AppOverlay = 'history' | 'settings' | 'meaning' | null;
+export type AppOverlay =
+  | 'history'
+  | 'settings'
+  | 'meaning'
+  | 'contributions'
+  | null;
 
 type PaneProps = {
   active: boolean;
@@ -26,6 +31,7 @@ type ConversationPaneProps = {
 
 type LearnPaneProps = {
   active: boolean;
+  onOpenContributions: () => void;
 };
 
 type HistoryOverlayProps = {
@@ -36,10 +42,15 @@ type HistoryOverlayProps = {
 type SettingsOverlayProps = {
   onClose: () => void;
   onOpenMeaningReview: () => void;
+  onOpenContributions: () => void;
   neuralReady: boolean;
 };
 
 type MeaningOverlayProps = {
+  onClose: () => void;
+};
+
+type ContributionsOverlayProps = {
   onClose: () => void;
 };
 
@@ -50,6 +61,7 @@ type Props = {
   HistoryOverlay: (props: HistoryOverlayProps) => ReactNode;
   SettingsOverlay: (props: SettingsOverlayProps) => ReactNode;
   MeaningOverlay: (props: MeaningOverlayProps) => ReactNode;
+  ContributionsOverlay: (props: ContributionsOverlayProps) => ReactNode;
   neuralReady: boolean;
   mtWarmStatus: string | null;
   /** Injected for tests; defaults to production hardStopAudio. */
@@ -63,6 +75,7 @@ export function AppShell({
   HistoryOverlay,
   SettingsOverlay,
   MeaningOverlay,
+  ContributionsOverlay,
   neuralReady,
   mtWarmStatus,
   onHardStop = hardStopAudio,
@@ -133,7 +146,13 @@ export function AppShell({
           }
           testID="pane-learn"
         >
-          <LearnPane active={mode === 'learn'} />
+          <LearnPane
+            active={mode === 'learn'}
+            onOpenContributions={() => {
+              onHardStop();
+              setOverlay('contributions');
+            }}
+          />
         </View>
       </View>
 
@@ -212,8 +231,11 @@ export function AppShell({
             <SettingsOverlay
               onClose={() => setOverlay(null)}
               onOpenMeaningReview={() => setOverlay('meaning')}
+              onOpenContributions={() => setOverlay('contributions')}
               neuralReady={neuralReady}
             />
+          ) : overlay === 'contributions' ? (
+            <ContributionsOverlay onClose={() => setOverlay(null)} />
           ) : (
             <MeaningOverlay onClose={() => setOverlay('settings')} />
           )}

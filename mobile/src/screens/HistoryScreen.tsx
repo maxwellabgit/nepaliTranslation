@@ -174,6 +174,9 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
                   <Pressable
                     style={styles.rowBody}
                     onPress={() => onSelect(item)}
+                    testID={`history-item-${item.id}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Restore ${item.source}`}
                   >
                     <Text style={styles.src} numberOfLines={2}>
                       {item.source}
@@ -208,8 +211,10 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         source={correctionItem?.source ?? ''}
         translation={correctionItem?.translation ?? ''}
         sourceLang={correctionItem?.sourceLang ?? 'en'}
-        formality="formal"
-        script="deva"
+        formality={correctionItem?.formality ?? null}
+        script={correctionItem?.script ?? null}
+        translationMethod={correctionItem?.translationMethod ?? null}
+        modelVersion={correctionItem?.modelVersion ?? null}
         surface="history"
         onClose={() => setCorrectionItem(null)}
         onSaved={() => void reload()}

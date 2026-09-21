@@ -47,8 +47,8 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 ### PR #2 foundation hardening (work on `main`)
 
 - [x] H0 — Truthful, reproducible gates (independent review PASS)
-- [ ] H1 — Production-composition integration harness
-- [ ] H2 — Correction metadata and reliable offline outbox
+- [x] H1 — Production-composition integration harness (gates green; review pending)
+- [x] H2 — Correction metadata and reliable offline outbox (independent review PASS)
 - [ ] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards
 - [ ] H4 — Apple identity/deletion + remove founder-only UI
 - [ ] H5 — Learn, reward visibility, accessibility, UI consistency
@@ -65,36 +65,46 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H0 — Truthful, reproducible gates** — **PASS** (independent review); next is H1 (not started)
+**Current: H2 — Correction metadata and reliable offline outbox** (on `main`)
+
+- Scope: HistoryItem direction/formality/script/translationMethod/modelVersion (legacy never invents formal+deva); UUID idempotency + local fingerprint; serialized outbox mutations; states draft|queued|syncing|retry|synced|rejected; exponential retry ≤15m + jitter; mutex flush via LifecycleCoordinator; Contributions & rewards screen; CorrectionSheet Save/Submit/Cancel + label pickers.
+- Proof: `npm run verify:beta` + `test:coverage:beta` (contribution + contributionSync coverage up vs H0 baseline).
+- Commit: `fix: make correction outbox durable and accurately labeled`
+- Next: H3 after independent review. Do **not** start H3 in this session beyond review.
+
+**Previous: H1 — Production-composition integration harness** (on `main`)
+
+- Scope: `AppServices` contracts, `NepTranslateApp`, injectable `AppProviders`, `LifecycleCoordinator`, `FeatureConfigProvider`, `AuthStatusBanner`, `App.integration-test.tsx` (8 flows on real screens).
+- Proof: `npm run verify:beta` + `test:coverage:beta` (auth coverage up vs H0 baseline).
+- Commit: `test: exercise the real app composition`
+- Next: H2 after independent review.
+
+**Previous: H0 — Truthful, reproducible gates** — **PASS**
 
 - Scope: clean-checkout `verify:beta` (lexicon first), rename fake E2E → AppShell integration, delete synthetic AppState probe, CI = same `verify:beta` + coverage ratchet, console fail-on, SafeArea from `react-native-safe-area-context`, `--max-warnings 0`, MeaningReview hook deps.
-- Proof (2026-09-20): deleted `meaningLexicon.json`, then `npm run verify:beta` exit 0 (15 unit / 49 tests + 1 integration / 3 tests; translate OK; expo-doctor 21/21). `npm run test:coverage:beta` wrote `mobile/coverage/beta-critical-baseline.json`.
-- Commits: `5685a80` (H0), `b168f1b` (lock sync), `0227970` (ExecPlan CI). Tip on `cursor/beta-08-admob` = `0227970` (local `main` same; `origin/main` push still gated).
-- PR #2 title/body updated (no fake-pane “E2E” claim).
-- CI: agent-gates `35544780519` / tip `35544884515` **green**. Backend tip green after rate-limit flake.
-- Independent review: FAIL (PR E2E claim + CI) → repaired → **PASS**. H1 not started.
-- **Stop before H1.**
+- Commits: `5685a80` (H0), `b168f1b` (lock sync), `0227970` / `d26933d` (ExecPlan). Independent review **PASS**.
 
 Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until their owning milestone:
 
 ### P0 (must before foundation merge)
 - [x] Clean-checkout `verify:beta` (H0)
 - [x] Rename fake E2E; keep as AppShell integration until H1 real composition (H0)
+- [x] Real app composition integration tests (H1)
 - [ ] Maestro beyond tab smoke (H6/Slice 12)
 - [ ] Production AdMob + SSV crypto (H6)
 - [ ] ContributionCard submit (H2/H3)
-- [ ] Outbox retry after network failure (H2)
+- [x] Outbox retry after network failure (H2)
 - [ ] Server-side consent gate (H3)
 - [ ] Per-user idempotency + multi-user rewards (H3)
 - [ ] Consensus rewards all eligible (H3)
 - [ ] Atomic submit path (H3)
 - [ ] Model similarity in consensus (H3)
-- [ ] History formality/script metadata (H2)
+- [x] History formality/script metadata (H2)
 - [ ] Fresh Apple credential on deletion (H4)
 - [ ] Remove Meaning Review from production Settings (H4)
 
 ### P1 (before external TestFlight)
-- [ ] Load server feature flags (H1+)
+- [x] Load server feature flags (H1 FeatureConfigService; remote still defaults until H3)
 - [ ] Entitlement UI (H5)
 - [ ] Auth error + consent UI (H4/H5)
 - [ ] Learn landing + reward summary (H5)
@@ -274,6 +284,19 @@ npm run test:coverage:beta
 #   so `npm ci` matches package.json (CI fix after 35544430973)
 ```
 
+### H2 (local, 2026-09-20, on `main`)
+```text
+cd mobile
+npm run verify:beta
+# lint max-warnings 0, typecheck, test:unit 21 suites / 66+ tests,
+# test:integration 2 suites / 11 tests, verify:translate OK, expo-doctor 21/21
+npm run test:coverage:beta
+# contribution 45.76/43.12/47.75, contributionSync 82.35/71.43/88.71
+# Coverage ratchet OK (no decrease vs H0 baseline)
+# Independent review: FAIL (production NetworkService stub) → fixed expo-network
+#   + LifecycleCoordinator offline→online test → PASS
+```
+
 ### Slice 08 (local + cleanup/E2E, 2026-09-19)
 ```text
 cd mobile
@@ -287,7 +310,7 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H0** independent review → then H1 production-composition harness (not started).
+- **H2** independent review **PASS** → next is H3 (not started).
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 
