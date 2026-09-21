@@ -69,9 +69,9 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 - Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
 - Proof: `npm run verify:beta` + `test:coverage:beta` (H6 floors OK: auth 85.82/76.76, contribution 85.78/79.3, entitlements 91.97/82.61, ads 86.01/83.15, contributionSync 90.32/74.6).
-- Commit: `feat: complete native ads and verified rewarded grants`
+- Commits: `21a2729` `feat: complete native ads and verified rewarded grants`; `063ecde` `fix: wire provisional ad-free and EARNED_REWARD gate` (independent review FAIL → repaired: provisional suppresses ads; provisional only after EARNED_REWARD; EntitlementProvider trusted-time assertion drift).
 - Human gate (**blocked, not passed**): EAS development build on physical iPhone — consent, banner load/failure, reward callback, SSV arrival, dismissal, backgrounding, offline house ad, entitlement suppression. Remote ads flags stay off until that gate.
-- Next: independent review; do **not** merge PR #2 / do **not** start Slice 09 in this session. Pushed to `cursor/beta-08-admob`.
+- Next: re-check independent review after repair; do **not** merge PR #2 / do **not** start Slice 09. Pushed to `cursor/beta-08-admob`.
 
 **Previous: H5 — Learn/reward UX and UI consistency** (on `main`)
 
