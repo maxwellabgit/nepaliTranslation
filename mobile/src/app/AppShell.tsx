@@ -147,7 +147,14 @@ export function AppShell({
   return (
     <SafeAreaView style={styles.root} testID="app-shell">
       <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
-      <View style={[styles.body, maxWidth ? { maxWidth, alignSelf: 'center', width: '100%' } : null]}>
+      <View
+        style={[
+          styles.body,
+          mode === 'camera' || !maxWidth
+            ? null
+            : { maxWidth, alignSelf: 'center', width: '100%' },
+        ]}
+      >
         {/* Translate and Learn stay mounted. Camera unmounts when its tab is
             inactive so only one camera preview can exist. */}
         <View

@@ -187,10 +187,25 @@ export const ne: Record<MessageKey, string> = {
   'learn.noVoiceDetail':
     'तिमी अक्षर अफलाइन सिक्न सक्छौ। सुनाइका लागि यस iPhone मा नेपाली आवाज चाहिन्छ।',
   'learn.offlineOk': 'अक्षर पाठ पूर्ण अफलाइन चल्छ — लगइन चाहिँदैन।',
+  'learn.title': 'नेपाली अक्षर',
+  'learn.offlineSubtitle': 'अफलाइन · खाता चाहिँदैन',
+  'learn.sections': 'खण्डहरू',
+  'learn.sectionA11y': '{section} खण्ड',
+  'learn.loading': 'पाठ लोड हुँदै…',
+  'learn.completeTitle': 'अक्षर सकियो',
+  'learn.speechError': 'बोली त्रुटि',
+  'learn.speechErrorDetail': 'यस यन्त्रमा उच्चारण बजाउन सकिएन।',
   'learn.speak': 'बोल',
+  'learn.speakSlow': 'बिस्तारै',
   'learn.speakUnavailable': 'बोली उपलब्ध छैन',
   'learn.speakA11y': 'अक्षर सामान्य गतिमा सुनाउनुहोस्',
   'learn.speakSlowA11y': 'अक्षर बिस्तारै सुनाउनुहोस्',
+  'learn.quizPrompt': 'कुन रोमन मिल्छ?',
+  'learn.quizCorrect': 'सही',
+  'learn.quizTryAgain': 'फेरि प्रयास',
+  'learn.choiceA11y': 'विकल्प {choice}',
+  'learn.letterA11y': 'अक्षर {letter}, रोमन {roman}',
+  'learn.letterPlaceA11y': 'अक्षर {letter}, रोमन {roman}, {place}',
   'learn.nextLetter': 'अर्को अक्षर',
   'learn.nextLetterA11y': 'अर्को अक्षर',
   'learn.restart': 'अक्षर सुरुबाट',
@@ -228,7 +243,82 @@ export const ne: Record<MessageKey, string> = {
   'contributions.correctionPlaceholder': 'राम्रो अनुवाद टाइप गर',
   'contributions.submit': 'योगदान पठाउनुहोस्',
   'contributions.saveDraft': 'मस्यौदा बचत',
+  'contributions.sourceLabel': 'स्रोत',
+  'contributions.currentLabel': 'हालको अनुवाद',
+  'contributions.yourCorrection': 'तिम्रो सुधार (ऐच्छिक)',
+  'contributions.formalityRequired': 'औपचारिकता (पठाउन आवश्यक)',
+  'contributions.scriptRequired': 'लिपि (पठाउन आवश्यक)',
+  'contributions.formal': 'औपचारिक',
+  'contributions.informal': 'अनौपचारिक',
+  'contributions.deva': 'देवनागरी',
+  'contributions.roman': 'रोमन',
+  'contributions.cancelA11y': 'सुधार रद्द',
+  'contributions.saveDevice': 'यस यन्त्रमा बचत',
+  'contributions.saveDeviceA11y': 'यस यन्त्रमा बचत',
+  'contributions.submitA11y': 'योगदान पठाउनुहोस्',
+  'contributions.needLabels':
+    'पठाउनु अघि औपचारिकता र लिपि छान्नुहोस्।',
+  'contributions.nothingToSave': 'बचत गर्ने केही छैन।',
+  'contributions.uploadOff':
+    'यस यन्त्रमा बचत भयो। समीक्षा सकिएसम्म योगदान अपलोड बन्द छ।',
+  'contributions.needSignIn':
+    'यस यन्त्रमा बचत भयो। पठाउन Apple बाट साइन इन गर, त्यसपछि फेरि Submit थिच।',
+  'contributions.needConsent':
+    'यस यन्त्रमा बचत भयो। सेटिङमा योगदान सहमति बचत गर, त्यसपछि फेरि Submit थिच।',
+  'contributions.uploadUnavailable':
+    'यस यन्त्रमा बचत भयो। अहिले अपलोड उपलब्ध छैन।',
+  'contributions.queued': 'अनलाइन हुँदा अपलोड कतारमा।',
+  'contributions.draftSaved': 'मस्यौदा यस यन्त्रमा बचत भयो।',
+  'contributions.cancel': 'रद्द',
+  'contributions.cardTitle': 'समीक्षा योगदान गर',
+  'contributions.cardOffDetail':
+    'यस बिल्डमा योगदान समीक्षा बन्द छ। अनुवाद अफलाइन अझै चल्छ।',
+  'contributions.signInSettings':
+    'योगदान गर्न सेटिङमा Apple बाट साइन इन गर।',
+  'contributions.consentSettings':
+    'पहिले सेटिङमा योगदान सहमति बचत गर।',
+  'contributions.ageConfirmSettings':
+    'सेटिङमा तिमी १८ वर्ष वा माथि छौ भनी पुष्टि गर।',
+  'contributions.unavailable': 'अहिले योगदान उपलब्ध छैन।',
+  'contributions.noTasks': 'अहिले कुनै कार्य उपलब्ध छैन।',
+  'contributions.missingAssignment':
+    'यस कार्यमा असाइनमेन्ट छैन। नयाँ लोड गर।',
+  'contributions.editRequired':
+    'पठाउनु अघि सम्पादित अनुवाद लेख।',
+  'contributions.leaseExpired':
+    'यो कार्य सकियो। जारी राख्न नयाँ लोड गर।',
+  'contributions.updateConsent':
+    'सेटिङमा योगदान सहमति अपडेट गर, त्यसपछि फेरि प्रयास गर।',
+  'contributions.sendFailed': 'पठाउन सकिएन। Retry थिचेर फेरि प्रयास गर।',
+  'contributions.modelLabel': 'मोडेल आउटपुट',
+  'contributions.editPlaceholder': 'तिम्रो सुधारिएको अनुवाद',
+  'contributions.editInputA11y': 'सम्पादित अनुवाद',
+  'contributions.sending': 'पठाउँदै…',
+  'contributions.statusReceived': 'प्राप्त — प्रमाणीकरण पर्खँदै',
+  'contributions.statusValidated':
+    'प्रमाणित — योग्य हुँदा क्रेडिट लागू',
+  'contributions.statusDisputed': 'एडमिन समीक्षा चाहिन्छ',
+  'contributions.looksCorrect': 'सहि देखिन्छ',
+  'contributions.submitEdit': 'सम्पादन पठाउनुहोस्',
+  'contributions.submitEditA11y': 'सम्पादित अनुवाद पठाउनुहोस्',
+  'contributions.editTranslation': 'अनुवाद सम्पादन',
+  'contributions.skip': 'छाड्नुहोस्',
+  'contributions.skipA11y': 'कार्य छाड्नुहोस्',
+  'contributions.report': 'कार्य रिपोर्ट',
+  'contributions.reportA11y': 'कार्य रिपोर्ट',
+  'contributions.retry': 'फेरि प्रयास',
+  'contributions.retrySubmitA11y': 'योगदान पठाउन फेरि प्रयास',
+  'contributions.loadTask': 'कार्य लोड',
+  'contributions.loadNew': 'नयाँ कार्य लोड',
+  'contributions.loadAnother': 'अर्को लोड',
+  'contributions.loadA11y': 'योगदान कार्य लोड',
 
+  'auth.account': 'खाता',
+  'auth.notConfigured':
+    'यस बिल्डमा साइन इन कन्फिगर छैन। अनुवाद, इतिहास र सेटिङ अझै चल्छन्।',
+  'auth.supportUserId': 'सहायता युजर ID',
+  'auth.consentDraftMeta':
+    'मस्यौदा {version}। सङ्कलन अघि कानुनी समीक्षा चाहिन्छ।',
   'auth.signInApple': 'Apple बाट साइन इन',
   'auth.signInUnavailable':
     'यस यन्त्रमा Apple साइन इन उपलब्ध छैन। अनुवाद अफलाइन अझै चल्छ।',

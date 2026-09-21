@@ -92,9 +92,8 @@ npm run verify:ci
 
 ## Remaining work
 
-1. Independent review of F2 → **FAIL** ([review](26816749-a62e-490e-ac39-0caafe3151d3)): CorrectionSheet / ContributionCard still EN (+ light `colors`); ContributionCard still “13 or older”; Playwright iPad config present but not run/pasted; CERTIFICATION overclaims full bilingual UI.
-2. Repair IR findings or record honest DONE gaps before merge.
-3. Do **not** start F3 until F2 is merged.
+1. Independent review of F2 → re-check after AlphabetLesson catalog+theme wire (prior FAIL on Learn alphabet EN/light-only + CERTIFICATION overclaim).
+2. Do **not** start F3 until F2 is merged.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
