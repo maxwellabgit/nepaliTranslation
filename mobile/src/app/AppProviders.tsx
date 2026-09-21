@@ -9,6 +9,8 @@ import { EntitlementProvider } from '../features/entitlements/EntitlementProvide
 import { migrateLegacyReviewQueue } from '../storage/contributionOutbox';
 import { ServiceProvider } from '../services/ServiceContext';
 import type { AppServices } from '../services/contracts';
+import { RuntimeProvider } from '../runtime/RuntimeContext';
+import type { RuntimePorts } from '../runtime/ports';
 import { FeatureConfigProvider } from './FeatureConfigProvider';
 import { LifecycleCoordinator } from './LifecycleCoordinator';
 
@@ -22,6 +24,8 @@ type Props = {
   children: ReactNode;
   /** Injected fakes for production-composition tests. */
   services?: AppServices;
+  /** Device/runtime ports (STT, TTS, MT, OCR, clock). */
+  runtime?: RuntimePorts;
 };
 
 function LegacyOutboxMigration() {
@@ -32,20 +36,22 @@ function LegacyOutboxMigration() {
 }
 
 /** Optional identity + entitlements + services. Missing Supabase leaves children usable. */
-export function AppProviders({ children, services }: Props) {
+export function AppProviders({ children, services, runtime }: Props) {
   return (
     <SafeAreaProvider initialMetrics={INITIAL_SAFE_AREA}>
       <ServiceProvider services={services}>
-        <AuthProvider>
-          <EntitlementProvider>
-            <FeatureConfigProvider>
-              <LegacyOutboxMigration />
-              <LifecycleCoordinator />
-              <AuthStatusBanner />
-              {children}
-            </FeatureConfigProvider>
-          </EntitlementProvider>
-        </AuthProvider>
+        <RuntimeProvider runtime={runtime}>
+          <AuthProvider>
+            <EntitlementProvider>
+              <FeatureConfigProvider>
+                <LegacyOutboxMigration />
+                <LifecycleCoordinator />
+                <AuthStatusBanner />
+                {children}
+              </FeatureConfigProvider>
+            </EntitlementProvider>
+          </AuthProvider>
+        </RuntimeProvider>
       </ServiceProvider>
     </SafeAreaProvider>
   );

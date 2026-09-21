@@ -3,13 +3,13 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
-import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { hardStopRecognition } from '../stt/sttSupport';
 import { addHistory } from '../storage/phrasebook';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
 import { cleanTranslationText } from '../mt/cleanText';
 import { loadPrefs, savePrefs } from '../storage/prefs';
 import type { HistoryItem } from '../storage/phrasebook';
+import { useRuntime } from '../runtime/RuntimeContext';
 import {
   initialSession,
   isRetryableTurn,
@@ -29,6 +29,7 @@ function directionFor(side: Side): 'en-ne' | 'ne-en' {
 }
 
 export function useTranslationSession({ active, seed }: Options) {
+  const runtime = useRuntime();
   const [state, dispatch] = useReducer(reduceSession, seed, (item) =>
     initialSession(
       item
@@ -66,16 +67,19 @@ export function useTranslationSession({ active, seed }: Options) {
     dispatch({ type: 'cancelPass' });
   }, [active]);
 
-  const translateSide = useCallback(async (text: string, from: Side) => {
-    const current = stateRef.current;
-    return sharedTranslationEngine.translate({
-      text,
-      preferred: directionFor(from),
-      formality: current.formality,
-      script: current.script,
-      forcePreferred: true,
-    });
-  }, []);
+  const translateSide = useCallback(
+    async (text: string, from: Side) => {
+      const current = stateRef.current;
+      return runtime.translation.translate({
+        text,
+        preferred: directionFor(from),
+        formality: current.formality,
+        script: current.script,
+        forcePreferred: true,
+      });
+    },
+    [runtime.translation],
+  );
 
   const remember = useCallback((turn: SessionTurn) => {
     if (!turn.translation.trim()) return;
@@ -110,7 +114,7 @@ export function useTranslationSession({ active, seed }: Options) {
       return;
     }
     const turn: SessionTurn = {
-      id: `t-${requestId}`,
+      id: runtime.ids.nextId('t'),
       from: current.activeSide,
       source: text,
       translation: result.text,
@@ -119,7 +123,7 @@ export function useTranslationSession({ active, seed }: Options) {
     };
     dispatch({ type: 'commitTurn', turn, keepDraft: true });
     remember(turn);
-  }, [remember, translateSide]);
+  }, [remember, translateSide, runtime.ids]);
 
   const pass = useCallback(() => {
     hardStopRecognition();

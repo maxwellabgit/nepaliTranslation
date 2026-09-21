@@ -15,10 +15,13 @@ import {
 } from './src/mt/mtStatus';
 import type { AppServices } from './src/services/contracts';
 import { createProductionServices } from './src/services/productionServices';
+import type { RuntimePorts } from './src/runtime/ports';
 
 export type NepTranslateAppProps = {
   /** Test-only service injection. Production default supplies real adapters. */
   services?: AppServices;
+  /** Deterministic device/runtime ports for tests and the Windows harness. */
+  runtime?: RuntimePorts;
   /** Skip MT warm-up in integration tests when the engine is already mocked. */
   skipWarmUp?: boolean;
 };
@@ -29,6 +32,7 @@ export type NepTranslateAppProps = {
  */
 export function NepTranslateApp({
   services,
+  runtime,
   skipWarmUp = false,
 }: NepTranslateAppProps = {}) {
   const [neuralReady, setNeuralReady] = useState(false);
@@ -73,7 +77,7 @@ export function NepTranslateApp({
   }, [skipWarmUp]);
 
   return (
-    <AppProviders services={services}>
+    <AppProviders services={services} runtime={runtime}>
       <AppShell
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}

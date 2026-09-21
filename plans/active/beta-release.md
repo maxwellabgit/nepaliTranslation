@@ -69,7 +69,19 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 1 — Done on tip `5317e19`**
+**Current: production readiness, slice 2 — Done (pending push tip)**
+
+Slice 1 closed on tip `5317e19` / docs `bb887ae`. Slice 2 adds typed device ports, Translate/Camera phase machines, redacted diagnostics, and `waitForIdle`. Independent review PASS after repair.
+
+- `mobile/src/runtime/ports.ts` — translation, speech recognition/synthesis, camera, OCR, clock, ids, connectivity.
+- Production + test adapters; `RuntimeProvider` (memoized) beside existing `AppServices`.
+- `useTranslationSession` translates through the runtime port; integration proves a recorded adapter.
+- Phase machines cover idle/permission/listening/translating/error and camera capture/OCR/result paths.
+- Diagnostics reject banned content keys; events carry length + content hash only.
+- Proof: `npm run verify:ci` green (lint, typecheck, unit 211, integration 15 including recorded-adapter Hello→नमस्ते, verify:translate, Expo Doctor 21/21, coverage ratchet, web export). Camera UI still owns expo-camera until slice 4; speech UI still uses expo-speech-recognition events until slice 3 finishes the mic FSM wiring.
+- Next: slice 3 — finish Translate interaction states.
+
+**Previous: production readiness, slice 1 — Done on tip `5317e19`**
 
 Reviewed baseline `b682525`. Slice 1 restores the quality signal before any further product work.
 

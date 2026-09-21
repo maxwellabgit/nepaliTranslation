@@ -16,6 +16,7 @@ import { NepTranslateApp } from '../../../App';
 import { hardStopRecognition } from '../../stt/sttSupport';
 import { sharedTranslationEngine } from '../../mt/TranslationEngine';
 import { createTestServices } from '../../services/createTestServices';
+import { createTestRuntime } from '../../runtime/createTestRuntime';
 import { listDrafts } from '../../storage/contributionOutbox';
 import { clearHistory, loadHistory } from '../../storage/phrasebook';
 import { setCameraTestFixture } from '../../camera/testFixture';
@@ -25,10 +26,11 @@ jest.mock('../../../App', () => jest.requireActual('../../../App'));
 
 async function renderApp(
   services = createTestServices({ offline: true }),
+  runtime = undefined as ReturnType<typeof createTestRuntime> | undefined,
 ) {
   await act(async () => {
     render(
-      <NepTranslateApp services={services} skipWarmUp />,
+      <NepTranslateApp services={services} runtime={runtime} skipWarmUp />,
     );
   });
   return services;
@@ -83,6 +85,29 @@ describe('NepTranslateApp production composition', () => {
     });
     expect(screen.getByTestId('mark-incorrect')).toBeTruthy();
     expect(screen.getByLabelText('Speak translation aloud')).toBeTruthy();
+  });
+
+  it('translates through a recorded runtime adapter without the neural engine', async () => {
+    const runtime = createTestRuntime({
+      translations: [
+        {
+          match: (req) => req.text.toLowerCase() === 'hello',
+          result: {
+            text: 'नमस्ते',
+            method: 'phrase',
+            direction: 'en-ne',
+          },
+        },
+      ],
+    });
+    await renderApp(createTestServices({ offline: true }), runtime);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
+    await waitFor(() => {
+      expect(screen.getByTestId('translate-output').props.children).toBe(
+        'नमस्ते',
+      );
+    });
   });
 
   it('keeps a translation, moves Speak to the bottom, and returns to English after one pass each', async () => {
