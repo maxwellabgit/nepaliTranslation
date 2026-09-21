@@ -3,5 +3,7 @@ dist/
 runs/
 public/hosted-app/
 src-tauri/target/
+playwright-report/
+test-results/
 *.log
 .DS_Store

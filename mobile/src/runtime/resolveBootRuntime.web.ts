@@ -2,6 +2,9 @@
  * Web: read window.__NEPTRANSLATE_TG__ (testing-ground host) and build
  * deterministic adapters via createTestRuntime. Product iOS path is untouched.
  */
+import { setCameraTestFixture } from '../camera/testFixture';
+import { INSCRIPTION_FIXTURE } from '../camera/inscriptionFixture';
+import type { OcrDocument } from '../camera/ocrTypes';
 import { createTestRuntime, type TestRuntimeOptions } from './createTestRuntime';
 import type { RuntimePorts, TranslateRequest } from './ports';
 
@@ -22,6 +25,8 @@ type TgBoot = {
   cameraPermission?: TestRuntimeOptions['cameraPermission'];
   translations?: TgFixture[];
   transcripts?: string[];
+  /** Jest/TG-only OCR fixture. `'inscription'` loads the bundled inscription sample. */
+  ocrFixture?: OcrDocument | 'inscription' | null;
 };
 
 function readTgBoot(): TgBoot | null {
@@ -31,9 +36,24 @@ function readTgBoot(): TgBoot | null {
   return boot;
 }
 
+function applyOcrFixture(boot: TgBoot): void {
+  if (boot.ocrFixture === undefined) return;
+  if (boot.ocrFixture === null) {
+    setCameraTestFixture(null);
+    return;
+  }
+  if (boot.ocrFixture === 'inscription') {
+    setCameraTestFixture(INSCRIPTION_FIXTURE);
+    return;
+  }
+  setCameraTestFixture(boot.ocrFixture);
+}
+
 export function resolveBootRuntime(): RuntimePorts | undefined {
   const boot = readTgBoot();
   if (!boot) return undefined;
+
+  applyOcrFixture(boot);
 
   const mode = boot.translateMode ?? 'fast-fallback';
   const translations = (boot.translations ?? []).map((fixture) => ({

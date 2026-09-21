@@ -69,11 +69,17 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: production readiness, slice 6 — Windows testing ground**
+**Current: production readiness, slice 7 — Playwright product scenarios**
+
+Automates 10 of 12 product scenarios against the real Expo web export in `testing-ground/` via Playwright + TG recorded runtime (`window.__NEPTRANSLATE_TG__` → `createTestRuntime`). Catalog: `testing-ground/scenarios/catalog.ts`. Blockers for live mic / live camera+ML Kit: `scenarios/blockers.md` (honest — not device parity). Artifact writer appends `events.jsonl` + `summary.json` under `testing-ground/runs/pw-*` (`TG_FORCE_LOCAL_RUNS=1`). Phase machines reject illegal transitions (unit contract). npm script: `test:scenarios`.
+
+**Honesty / blockers:** Do **not** claim all 12 scenarios pass on device. Scenarios 11–12 are `test.skip` / blocked. Scenario 07 uses TG `ocrFixture: 'inscription'` only — not native OCR. Web export is the harness surface; physical iPhone Maestro/TestFlight remain later gates.
+
+**Previous: production readiness, slice 6 — Windows testing ground**
 
 Private engineering harness under `testing-ground/` (Tauri 2 scaffold + Vite). Hosts the real Expo web export (`mobile/dist`) in a phone-stage iframe with viewport presets 375×812 / 390×844 / 430×932 / 768×1024. Right-side console tabs: Overview, Timeline, State, Fixtures. Bridge: `window.__NEPTRANSLATE_TG__` + host helper; mobile `resolveBootRuntime.web.ts` wires `createTestRuntime`. Translate modes labeled honestly: fast fallback, recorded, local-neural (Windows stub — no native parity claim). Scenario controls load/step/run/cancel/reset/seed/export. Artifacts: `%LOCALAPPDATA%\NepTranslateTestingGround\runs\<run-id>\` preferred; Node fallback `testing-ground/runs/`.
 
-**Honesty / blockers:** Vite frontend is the exit gate (`npm run build`). `tauri build` needs Rust toolchain + Windows linker; scaffold exists either way. Not a consumer Windows app. Playwright suite is slice 7 — not this slice.
+**Honesty / blockers:** Vite frontend is the exit gate (`npm run build`). `tauri build` needs Rust toolchain + Windows linker; scaffold exists either way. Not a consumer Windows app. Playwright suite landed in slice 7.
 
 **Previous: production readiness, slice 5 — Design system + secondary journeys**
 
@@ -503,6 +509,34 @@ npm run verify:translate
 # UI lang preference Settings control: not shipped (defaults en; ne catalog tested)
 ```
 
+### Production readiness slice 7 — Playwright scenarios (local, 2026-09-21)
+```text
+cd mobile
+npx tsc --noEmit
+# TSC_EXIT=0
+npx jest src/runtime/machines/__tests__/translatePhase-test.ts src/runtime/machines/__tests__/cameraPhase-test.ts --runInBand
+# 2 suites / 9 tests (illegal-transition contract included)
+npm run verify:translate
+# OK (phrase/lexicon/register/romanize)
+npx expo export --platform web
+# EXPORT_EXIT=0 (open-history, settings-close, ocrFixture bridge)
+
+cd ../testing-ground
+npm install
+npx playwright install chromium
+npm run test:scenarios
+# 12 passed, 2 skipped (11 live mic, 12 live camera OCR)
+# artifacts → testing-ground/runs/pw-<iso>/
+#   manifest.json, events.jsonl, final-snapshot.json, summary.json
+
+# Automated: 01 cold Speak, 02 Hello→नमस्ते, 03 tabs, 04 history, 05 learn glyph,
+#   06 camera tab (permission or live — expo-camera web; TG cameraPermission unused by UI),
+#   07 OCR fixture (not native), 08 pass-phone, 09 settings, 10 speech permission denied
+# Blocked: 11 live mic STT, 12 live camera+ML Kit — scenarios/blockers.md
+# Independent review: repaired verify:translate + scenario 06 honesty (was FAIL on missing gate)
+# Not claimed: device Maestro / TestFlight / native OCR parity
+```
+
 ### Production readiness slice 6 — Windows testing ground (local, 2026-09-21)
 ```text
 cd mobile
@@ -535,7 +569,8 @@ cd src-tauri; cargo check
 
 ## Remaining work
 
-- **Production readiness slice 6 (testing ground)** — Vite + readiness script + Node artifact writer are the gate; full Tauri packaged exe optional if Rust present; Playwright is slice 7.
+- **Production readiness slice 7 (Playwright scenarios)** — 10/12 automated on Expo web + TG recorded runtime; 2 blocked (live mic, live camera/ML Kit). Not device proof.
+- **Production readiness slice 6 (testing ground)** — Vite + readiness script + Node artifact writer are the gate; full Tauri packaged exe optional if Rust present.
 - **Production readiness slice 5 (design/i18n)** — source + unit/integration/verify proof above. Remaining nits: Translate/Camera still on light `colors` StyleSheets; no Settings UI-lang toggle yet; dark Appearance not visually QA’d on device.
 - **Production readiness slice 4 (camera)** — source + unit/integration proof above; device OCR/overlay + CocoaPods beside Ads remain human-gated on a Mac/iPhone.
 - **H6** complete for agent/CI scope (independent review PASS; agent-gates + backend-gate `35552584664` green). Physical AdMob device proof remains a **human-gated blocker** (flags stay off).

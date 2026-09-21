@@ -27,6 +27,26 @@ export type RecordedTranslateFixture = {
   direction?: 'en-ne' | 'ne-en';
 };
 
+/** Minimal OCR document shape shared with mobile `OcrDocument` (TG → web boot). */
+export type TgOcrDocument = {
+  width: number;
+  height: number;
+  rotation?: 0 | 90 | 180 | 270;
+  blocks: Array<{
+    text: string;
+    language?: string;
+    confidence?: number | null;
+    frame: { x: number; y: number; width: number; height: number };
+    cornerPoints?: Array<{ x: number; y: number }>;
+    lines?: Array<{
+      text: string;
+      confidence?: number | null;
+      frame: { x: number; y: number; width: number; height: number };
+      cornerPoints?: Array<{ x: number; y: number }>;
+    }>;
+  }>;
+};
+
 export type TestingGroundBootConfig = {
   /** Eng-only marker so the hosted app knows it is not App Store product mode. */
   harness: 'neptranslate-testing-ground';
@@ -37,6 +57,11 @@ export type TestingGroundBootConfig = {
   cameraPermission?: 'granted' | 'denied' | 'undetermined';
   translations?: RecordedTranslateFixture[];
   transcripts?: string[];
+  /**
+   * Jest/TG camera fixture only. `'inscription'` uses the bundled sample.
+   * Not native ML Kit parity on Windows.
+   */
+  ocrFixture?: TgOcrDocument | 'inscription' | null;
   seed?: string;
   runId?: string;
 };

@@ -139,7 +139,14 @@ export function SettingsScreen({
   return (
     <View style={dynamic.root} testID="settings-screen">
       <View style={dynamic.topBar}>
-        <Pressable onPress={onClose} hitSlop={12} style={styles.topBtn}>
+        <Pressable
+          onPress={onClose}
+          hitSlop={12}
+          style={styles.topBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Close settings"
+          testID="settings-close"
+        >
           <Text style={dynamic.topBtnText}>←</Text>
         </Pressable>
         <Text style={dynamic.title}>{t('settings.title', lang)}</Text>

@@ -1,7 +1,7 @@
 /**
- * Node fallback artifact writer.
- * Writes under testing-ground/runs/<run-id>/ (TG_FORCE_LOCAL_RUNS=1)
- * or %LOCALAPPDATA%\\NepTranslateTestingGround\\runs\\<run-id>\\ on Windows.
+ * Scenario run artifacts for Playwright / Node.
+ * Prefer %LOCALAPPDATA%\\NepTranslateTestingGround\\runs\\ on Windows;
+ * force testing-ground/runs/ with TG_FORCE_LOCAL_RUNS=1.
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const pkgRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-function sanitizeRunId(runId) {
+export function sanitizeRunId(runId) {
   const cleaned = String(runId)
     .replace(/[^a-zA-Z0-9._-]+/g, '_')
     .slice(0, 80);
@@ -74,6 +74,7 @@ export function writeRunArtifacts(input) {
     eventCount: input.summary?.eventCount ?? events.length,
     status: input.summary?.status ?? 'ok',
     notes: input.summary?.notes ?? [],
+    scenarios: input.summary?.scenarios ?? [],
   };
 
   fs.writeFileSync(files.manifest, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
@@ -86,6 +87,94 @@ export function writeRunArtifacts(input) {
   fs.writeFileSync(files.summary, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 
   return { runId, dir, files, root };
+}
+
+/** Create or reopen a run directory for incremental scenario appends. */
+export function openScenarioRun(input = {}) {
+  const runId = sanitizeRunId(
+    input.runId ?? `pw-${new Date().toISOString().replace(/[:.]/g, '-')}`,
+  );
+  const forceLocal = input.forceLocal ?? process.env.TG_FORCE_LOCAL_RUNS === '1';
+  const root = resolveRunsRoot({ forceLocal });
+  const dir = path.join(root, runId);
+  fs.mkdirSync(dir, { recursive: true });
+
+  const files = {
+    manifest: path.join(dir, 'manifest.json'),
+    events: path.join(dir, 'events.jsonl'),
+    snapshot: path.join(dir, 'final-snapshot.json'),
+    summary: path.join(dir, 'summary.json'),
+  };
+
+  if (!fs.existsSync(files.manifest)) {
+    writeRunArtifacts({
+      runId,
+      forceLocal,
+      manifest: {
+        createdAt: new Date().toISOString(),
+        platform: process.platform,
+        translateMode: input.translateMode ?? 'recorded',
+        seed: input.seed ?? 'pw-scenarios',
+        viewport: input.viewport ?? { width: 390, height: 844, id: '390x844' },
+      },
+      events: [
+        {
+          at: new Date().toISOString(),
+          kind: 'suite.start',
+          detail: 'playwright scenarios',
+        },
+      ],
+      snapshot: {
+        capturedAt: new Date().toISOString(),
+        bootConfig: { harness: 'neptranslate-testing-ground' },
+        scenario: { name: 'suite', status: 'running', stepIndex: 0, seed: 'pw' },
+      },
+      summary: {
+        finishedAt: new Date().toISOString(),
+        status: 'running',
+        notes: ['playwright'],
+        scenarios: [],
+      },
+    });
+  }
+
+  return { runId, dir, files, root, forceLocal };
+}
+
+export function appendScenarioEvent(run, event) {
+  const row = {
+    at: event.at ?? new Date().toISOString(),
+    kind: event.kind,
+    detail: event.detail,
+    scenario: event.scenario,
+    status: event.status,
+  };
+  fs.appendFileSync(run.files.events, `${JSON.stringify(row)}\n`, 'utf8');
+  return row;
+}
+
+export function finalizeScenarioRun(run, { status = 'ok', scenarios = [], notes = [] } = {}) {
+  const eventsRaw = fs.existsSync(run.files.events)
+    ? fs.readFileSync(run.files.events, 'utf8').trim()
+    : '';
+  const eventCount = eventsRaw ? eventsRaw.split('\n').length : 0;
+  const summary = {
+    runId: run.runId,
+    finishedAt: new Date().toISOString(),
+    eventCount,
+    status,
+    notes,
+    scenarios,
+  };
+  fs.writeFileSync(run.files.summary, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
+  const snapshot = {
+    runId: run.runId,
+    capturedAt: new Date().toISOString(),
+    bootConfig: { harness: 'neptranslate-testing-ground' },
+    scenario: { name: 'suite', status, stepIndex: scenarios.length, seed: 'pw' },
+  };
+  fs.writeFileSync(run.files.snapshot, `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
+  return summary;
 }
 
 const isMain =

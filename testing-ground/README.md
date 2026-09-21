@@ -12,13 +12,14 @@
   - **recorded** — fixture translations only
   - **local-neural** — stub on Windows; does **not** claim IndicTrans2 / native iOS parity
 - Scenario controls: load, step, run, cancel, reset, seed, export (export downloads a JSON bundle in the browser; Node writer creates the on-disk layout).
+- **Playwright** (`npm run test:scenarios`) automates product scenarios against `/hosted-app/` with the TG recorded runtime. See `scenarios/catalog.ts` and `scenarios/blockers.md`.
 
 ## Artifact paths
 
 | Environment | Path |
 |-------------|------|
 | Windows desktop (preferred) | `%LOCALAPPDATA%\NepTranslateTestingGround\runs\<run-id>\` |
-| Node / Vite when Tauri FS is unavailable | `testing-ground/runs/<run-id>/` (`TG_FORCE_LOCAL_RUNS=1`) |
+| Node / Vite / Playwright (`TG_FORCE_LOCAL_RUNS=1`) | `testing-ground/runs/<run-id>/` |
 
 Each run directory contains:
 
@@ -53,6 +54,26 @@ cd testing-ground
 npm run test:artifacts
 ```
 
+## Playwright product scenarios (slice 7)
+
+Prerequisites: Chromium for Playwright, and a fresh Expo web export.
+
+```powershell
+cd mobile
+npx expo export --platform web
+
+cd ..\testing-ground
+npm install
+npx playwright install chromium
+npm run test:scenarios
+```
+
+`test:scenarios` runs `prepare:hosted` then Vite on `http://127.0.0.1:5173` (serves `public/hosted-app`), injects `__NEPTRANSLATE_TG__` (recorded Hello→नमस्ते, optional OCR fixture), and writes artifacts under `testing-ground/runs/pw-*/`.
+
+**Automated (10):** cold Speak, typed Hello→नमस्ते, tab switch, history, learn glyph, camera tab (permission or live on web), camera OCR *fixture*, pass-the-phone, settings, speech-permission-denied.
+
+**Blocked (2):** live mic STT; live camera + ML Kit — see `scenarios/blockers.md`. Do not claim device parity.
+
 ## Tauri 2 shell (optional)
 
 Requires the Rust toolchain (`cargo`, `rustc`) and Windows build tools for `tauri build`.
@@ -68,7 +89,7 @@ If `cargo` is missing, the Vite frontend and readiness script still work. Docume
 ## Mobile bridge (minimal)
 
 - `mobile/src/runtime/resolveBootRuntime.ts` — native no-op
-- `mobile/src/runtime/resolveBootRuntime.web.ts` — reads `__NEPTRANSLATE_TG__`, returns `createTestRuntime(...)`
+- `mobile/src/runtime/resolveBootRuntime.web.ts` — reads `__NEPTRANSLATE_TG__`, returns `createTestRuntime(...)`, optional `ocrFixture`
 - `mobile/App.tsx` — uses `resolveBootRuntime()` on the default export (web only resolves the `.web` module)
 
 Re-export the web app after changing the bridge:
@@ -80,8 +101,8 @@ cd ..\testing-ground
 npm run prepare:hosted
 ```
 
-## Out of scope (later slices)
+## Out of scope
 
-- Full Playwright scenario suite (slice 7)
 - Claiming neural parity with iPhone ONNX
 - Shipping this shell to end users
+- Treating Playwright greens as physical-device Maestro / TestFlight proof

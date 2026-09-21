@@ -81,4 +81,29 @@ describe('translatePhase machine', () => {
       expect(() => reduceTranslatePhase(initialTranslatePhase(), event)).not.toThrow();
     }
   });
+
+  test('rejects illegal transitions (impossible iOS states stay put)', () => {
+    const idle = initialTranslatePhase();
+    expect(reduceTranslatePhase(idle, { type: 'PERMISSION_GRANTED' }).phase).toBe(
+      'idle',
+    );
+    expect(reduceTranslatePhase(idle, { type: 'TRANSCRIPT_FINAL' }).phase).toBe(
+      'idle',
+    );
+    expect(reduceTranslatePhase(idle, { type: 'TRANSLATE_SUCCEEDED' }).phase).toBe(
+      'idle',
+    );
+
+    let listening = reduceTranslatePhase(idle, { type: 'SPEAK' });
+    listening = reduceTranslatePhase(listening, { type: 'PERMISSION_GRANTED' });
+    expect(listening.phase).toBe('listening');
+    // Cannot skip to success from listening.
+    expect(
+      reduceTranslatePhase(listening, { type: 'TRANSLATE_SUCCEEDED' }).phase,
+    ).toBe('listening');
+    // Second SPEAK while listening is a no-op (must cancel first).
+    expect(reduceTranslatePhase(listening, { type: 'SPEAK' }).phase).toBe(
+      'listening',
+    );
+  });
 });

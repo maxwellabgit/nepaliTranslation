@@ -148,6 +148,7 @@ export function TranslateScreen({
           onPress={onOpenHistory}
           accessibilityRole="button"
           accessibilityLabel="History"
+          testID="open-history"
           style={styles.iconBtn}
         >
           <Ionicons name="time-outline" size={22} color={colors.text} />
@@ -163,6 +164,7 @@ export function TranslateScreen({
           onPress={onOpenSettings}
           accessibilityRole="button"
           accessibilityLabel="Settings"
+          testID="open-settings"
           style={styles.iconBtn}
         >
           <Ionicons name="settings-outline" size={22} color={colors.text} />

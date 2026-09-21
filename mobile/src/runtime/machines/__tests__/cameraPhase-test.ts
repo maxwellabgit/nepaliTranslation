@@ -88,4 +88,32 @@ describe('cameraPhase machine', () => {
       expect(() => reduceCameraPhase(base, event)).not.toThrow();
     }
   });
+
+  test('rejects illegal transitions (impossible iOS states stay put)', () => {
+    const live = initialCameraPhase(true);
+    expect(reduceCameraPhase(live, { type: 'RESULT' }).phase).toBe('live');
+    expect(reduceCameraPhase(live, { type: 'TRANSLATE_STARTED' }).phase).toBe(
+      'live',
+    );
+    expect(reduceCameraPhase(live, { type: 'RECOGNIZE_STARTED' }).phase).toBe(
+      'live',
+    );
+
+    const permission = initialCameraPhase(false);
+    expect(permission.phase).toBe('permission');
+    // Capture before grant is illegal.
+    expect(reduceCameraPhase(permission, { type: 'CAPTURE' }).phase).toBe(
+      'permission',
+    );
+    expect(reduceCameraPhase(permission, { type: 'RESULT' }).phase).toBe(
+      'permission',
+    );
+
+    let captured = reduceCameraPhase(live, { type: 'CAPTURE' });
+    expect(captured.phase).toBe('captured');
+    // Cannot jump to result without recognize/translate.
+    expect(reduceCameraPhase(captured, { type: 'RESULT' }).phase).toBe(
+      'captured',
+    );
+  });
 });

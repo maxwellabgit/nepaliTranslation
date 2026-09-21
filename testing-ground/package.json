@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "prepare:hosted": "node ./scripts/prepare-hosted-app.mjs",
     "test:artifacts": "node ./scripts/write-artifact-smoke.mjs",
+    "test:scenarios": "playwright test",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build"
@@ -19,6 +20,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.0",
     "@tauri-apps/cli": "^2.4.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
