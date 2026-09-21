@@ -50,7 +50,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] H1 — Production-composition integration harness (gates green; review pending)
 - [x] H2 — Correction metadata and reliable offline outbox (independent review PASS)
 - [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
-- [x] H4 — Apple identity/deletion + remove founder-only UI (gates green; independent review pending)
+- [x] H4 — Apple identity/deletion + remove founder-only UI (independent review PASS)
 - [ ] H5 — Learn, reward visibility, accessibility, UI consistency
 - [ ] H6 — Real AdMob + cryptographically verified SSV
 - [ ] Merge foundation only after every H0–H6 merge gate passes
@@ -68,10 +68,11 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 **Current: H4 — Apple identity/deletion + remove founder-only UI** (on `main`)
 
 - Scope: official `AppleAuthenticationButton` when available; `expo-secure-store` for stable Apple user id only (never auth codes in AsyncStorage); `expo-crypto` nonces (hashed→Apple, raw→Supabase); deletion via `refreshAsync`/interactive reauth → fresh code → `delete-account` before purge; revoke listener → guest without wiping history; clear secure identity + contribution/reward caches after success; Meaning Review removed from production App/AppShell/Settings; account-summary load after sign-in + Settings mount; removed dishonest `NSPhotoLibraryUsageDescription`.
-- Proof: `npm run verify:beta` + `test:coverage:beta` (auth 57.63/47.19/59.26 — ratchet OK).
-- Commit: `fix: complete Apple identity and deletion lifecycle`
+- Proof: `npm run verify:beta` + `test:coverage:beta` (auth 58.09/48.55/60 — ratchet OK).
+- Commits: `70cd0b3` `fix: complete Apple identity and deletion lifecycle`; follow-up reauth session-switch fix.
+- Independent review **PASS** (after reauth fix: no `signInWithIdToken` on deletion reauth).
 - Human gate (blocked, not passed): physical iPhone Apple sign-in, revoke, cancel, and delete-account with configured Apple/Supabase credentials.
-- Next: independent review; do **not** start H5 in this session. Pushed to `cursor/beta-08-admob`.
+- Next: do **not** start H5 until this session ends; H5 is the next milestone. Pushed to `cursor/beta-08-admob`.
 
 **Previous: H3 — Atomic server-side consent, consensus, receipts, multi-user rewards** (on `main`)
 
@@ -316,10 +317,11 @@ npm run test:coverage:beta
 ```text
 cd mobile
 npm run verify:beta
-# lint max-warnings 0, typecheck, test:unit 25 suites / 95 tests,
+# lint max-warnings 0, typecheck, test:unit 25 suites / 96 tests,
 # test:integration 2 suites / 12 tests, verify:translate OK, expo-doctor 21/21
 npm run test:coverage:beta
-# auth 57.63/47.19/59.26 — ratchet OK (up vs H0 baseline)
+# auth 58.09/48.55/60 — ratchet OK (up vs H0 baseline)
+# Independent review PASS after reauth session-switch fix
 # Human gate blocked: physical iPhone Apple sign-in / revoke / cancel / delete-account
 ```
 
@@ -349,7 +351,7 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H4** mobile gates green; independent review pending → next is H5 after review PASS.
+- **H4** complete (independent review PASS). Next milestone is **H5** — do not start in the H4 session after push.
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
 - Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 
