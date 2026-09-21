@@ -47,13 +47,13 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 ### PR #2 foundation hardening (work on `main`)
 
 - [x] H0 — Truthful, reproducible gates (independent review PASS)
-- [x] H1 — Production-composition integration harness (gates green; review pending)
+- [x] H1 — Production-composition integration harness (independent review PASS; landed with H2 tip)
 - [x] H2 — Correction metadata and reliable offline outbox (independent review PASS)
-- [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
-- [x] H4 — Apple identity/deletion + remove founder-only UI (independent review PASS)
-- [x] H5 — Learn, reward visibility, accessibility, UI consistency (independent review PASS)
-- [x] H6 — Real AdMob + cryptographically verified SSV (independent review PASS; device human-gated)
-- [ ] Merge foundation only after every H0–H6 merge gate passes
+- [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (independent review PASS; backend CI green)
+- [x] H4 — Apple identity/deletion + remove founder-only UI (independent review PASS; device Apple human-gated)
+- [x] H5 — Learn, reward visibility, accessibility, UI consistency (independent review PASS; bilingual sign-off human-gated)
+- [x] H6 — Real AdMob + cryptographically verified SSV (independent review PASS; device AdMob human-gated; ads flags off)
+- [ ] Merge foundation — honesty gate repaired; merge when founder accepts named human gates below
 
 ### Later slices (separate PRs after foundation)
 
@@ -65,7 +65,19 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H6 — Real AdMob + cryptographically verified SSV** (on `main`)
+**Current: H0–H6 foundation complete on tip `065f02a`** (PR branch `cursor/beta-08-admob`)
+
+- Agent/CI merge-gate substance: **met** (verify:beta, coverage floors, backend-gate incl. SSV, Meaning Review off production routes, server consent, multi-user consensus rewards, AdMob+SSV source with ads flags off).
+- Merge-gate honesty: PR #2 + this ExecPlan updated to match tip (previous FAIL was stale PR body claiming H1–H6 unproven).
+- **Do not start Slice 09 / TestFlight** until founder merges foundation and opens Slice 09 intentionally.
+- Named human/device gates still open (allowed under §12 while remote flags stay off):
+  - Physical iPhone Apple sign-in / revoke / cancel / delete-account
+  - Physical AdMob EAS matrix (keep network/rewarded ads flags off)
+  - Legal consent copy beyond `2026-09-19.draft` (keep contributions/rewards off until approved)
+  - Bilingual alphabet romanization / dental–retroflex sign-off
+  - Device Maestro beyond tab smoke (Slice 12)
+
+**Previous: H6 — Real AdMob + cryptographically verified SSV** (on `main`)
 
 - Scope: `react-native-google-mobile-ads` + Expo config plugin; env-specific app/unit IDs (test mandatory outside production; production rejects test IDs); production `AdService` (UMP first, ads only when `canRequestAds`; no ATT/IDFA); expanded `decideAdPresentation` priorities + allowed placements; house copy; rewarded CTA + server session token in SSV custom_data; provisional 10-min local grant (one unresolved; 15-min expiry); `admob-ssv` ECDSA verify + `create-rewarded-session`; Settings privacy-options + inappropriate-ad help; H6 coverage floors 80%/70%.
 - Proof (post-review-repair, tip `4e345e1`): agent-gates SUCCESS; backend-gate `35552584664` SUCCESS (pgTAP incl. 11_h6_rewarded_ssv + Deno SSV). Coverage floors: auth 85.82/76.76, contribution 85.78/79.3, entitlements 90.57/78.95, ads 84.42/82.79, contributionSync 90.32/74.6.
