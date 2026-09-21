@@ -107,6 +107,14 @@ function b64ToBytes(b64: string): Uint8Array {
   return out;
 }
 
+/** Deno/WebCrypto types require BufferSource; sliced ArrayBuffer avoids SharedArrayBuffer. */
+function toBufferSource(bytes: Uint8Array): ArrayBuffer {
+  return bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  ) as ArrayBuffer;
+}
+
 /** Convert ECDSA DER signature to WebCrypto P-256 raw (r||s, 64 bytes). */
 export function derEcdsaToRaw(der: Uint8Array): Uint8Array {
   // Expect SEQUENCE { INTEGER r, INTEGER s }
@@ -145,7 +153,7 @@ async function importSpkiKey(base64: string): Promise<CryptoKey> {
   const spki = b64ToBytes(base64);
   return crypto.subtle.importKey(
     'spki',
-    spki,
+    toBufferSource(spki),
     { name: 'ECDSA', namedCurve: 'P-256' },
     false,
     ['verify'],
@@ -187,8 +195,8 @@ export async function verifyAdmobSsv(
   const valid = await crypto.subtle.verify(
     { name: 'ECDSA', hash: 'SHA-256' },
     cryptoKey,
-    rawSig,
-    data,
+    toBufferSource(rawSig),
+    toBufferSource(data),
   );
   if (!valid) return { ok: false, reason: 'bad_signature' };
 

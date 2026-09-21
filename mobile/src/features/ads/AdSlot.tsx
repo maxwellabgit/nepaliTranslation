@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../theme';
@@ -9,6 +15,10 @@ import {
   planAdPlacement,
   type AdAdapter,
 } from './adMiddleware';
+import {
+  loadBannerCooldowns,
+  recordBannerShown,
+} from './bannerCooldown';
 import { HouseAd } from './HouseAd';
 import type { AdSurface } from '../entitlements/decideAdPresentation';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
@@ -25,6 +35,7 @@ type Props = {
   translating?: boolean;
   appActive?: boolean;
   canRequestAds?: boolean;
+  /** Optional override; when omitted, AdSlot loads/persists shared cooldowns. */
   lastNetworkBannerAtMs?: number | null;
   lastHouseBannerAtMs?: number | null;
   onShown?: (kind: 'banner' | 'house') => void;
@@ -37,6 +48,7 @@ type Props = {
 /**
  * Soft-fail ad slot. Missing SDK / flag off / offline / entitlement → house or none.
  * Never required for translate / Learn. networkAdsEnabled stays false until human gate.
+ * Enforces 12m network / 24m house cooldowns via persisted timestamps.
  */
 export function AdSlot({
   surface,
@@ -49,8 +61,8 @@ export function AdSlot({
   translating = false,
   appActive = true,
   canRequestAds: canRequestAdsProp,
-  lastNetworkBannerAtMs = null,
-  lastHouseBannerAtMs = null,
+  lastNetworkBannerAtMs: lastNetworkProp,
+  lastHouseBannerAtMs: lastHouseProp,
   onShown,
   onDismissHouse,
   adapter: injected,
@@ -61,6 +73,13 @@ export function AdSlot({
   const flags = useFeatureFlags();
   const [label, setLabel] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
+  const [storedNetworkAt, setStoredNetworkAt] = useState<number | null>(null);
+  const [storedHouseAt, setStoredHouseAt] = useState<number | null>(null);
+  const [cooldownsReady, setCooldownsReady] = useState(
+    lastNetworkProp !== undefined && lastHouseProp !== undefined,
+  );
+  /** Keeps the current impression visible when recording cooldown would re-plan to none. */
+  const shownKindRef = useRef<'banner' | 'house' | null>(null);
 
   const offline = offlineProp ?? services.network.isOffline();
   const canRequestAds =
@@ -68,6 +87,11 @@ export function AdSlot({
   const adapter = injected ?? services.ads.adapter;
   const earnedAdFreeUntilMs = entitlement?.earnedAdFreeUntilMs ?? null;
   const trustedNowMs = entitlement?.trustedNow() ?? null;
+
+  const lastNetworkBannerAtMs =
+    lastNetworkProp !== undefined ? lastNetworkProp : storedNetworkAt;
+  const lastHouseBannerAtMs =
+    lastHouseProp !== undefined ? lastHouseProp : storedHouseAt;
 
   const units = useMemo(() => {
     try {
@@ -79,11 +103,31 @@ export function AdSlot({
   }, []);
 
   useEffect(() => {
-    if (!eligible || dismissed || !units) {
+    if (lastNetworkProp !== undefined && lastHouseProp !== undefined) {
+      setCooldownsReady(true);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      const loaded = await loadBannerCooldowns();
+      if (cancelled) return;
+      setStoredNetworkAt(loaded.lastNetworkBannerAtMs);
+      setStoredHouseAt(loaded.lastHouseBannerAtMs);
+      setCooldownsReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [lastHouseProp, lastNetworkProp]);
+
+  useEffect(() => {
+    if (!eligible || dismissed || !units || !cooldownsReady) {
+      shownKindRef.current = null;
       setLabel(null);
       return;
     }
     if (entitlement?.hasActiveEarnedAdFree?.()) {
+      shownKindRef.current = null;
       setLabel('none:earned_ad_free');
       return;
     }
@@ -110,9 +154,31 @@ export function AdSlot({
       });
       const result = await executeAdPlan(plan, adapter);
       if (cancelled) return;
+      if (result.executed === 'house' || result.executed === 'banner') {
+        const kind = result.executed;
+        shownKindRef.current = kind;
+        setLabel(kind);
+        if (lastNetworkProp === undefined || lastHouseProp === undefined) {
+          const next = await recordBannerShown(kind);
+          if (!cancelled) {
+            setStoredNetworkAt(next.lastNetworkBannerAtMs);
+            setStoredHouseAt(next.lastHouseBannerAtMs);
+          }
+        }
+        onShown?.(kind);
+        return;
+      }
+      // After we record a show, re-plan hits cooldown — keep the impression up.
+      if (
+        (result.executed === 'none:banner_cooldown' ||
+          result.executed === 'none:house_cooldown') &&
+        shownKindRef.current
+      ) {
+        setLabel(shownKindRef.current);
+        return;
+      }
+      shownKindRef.current = null;
       setLabel(result.executed);
-      if (result.executed === 'house') onShown?.('house');
-      if (result.executed === 'banner') onShown?.('banner');
     })();
     return () => {
       cancelled = true;
@@ -121,6 +187,7 @@ export function AdSlot({
     adapter,
     appActive,
     canRequestAds,
+    cooldownsReady,
     dismissed,
     earnedAdFreeUntilMs,
     eligible,
@@ -129,7 +196,9 @@ export function AdSlot({
     hasSubscription,
     keyboardVisible,
     lastHouseBannerAtMs,
+    lastHouseProp,
     lastNetworkBannerAtMs,
+    lastNetworkProp,
     listening,
     modalVisible,
     offline,

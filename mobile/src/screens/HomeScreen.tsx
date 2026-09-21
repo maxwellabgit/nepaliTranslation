@@ -89,6 +89,7 @@ export function HomeScreen({
   const [input, setInput] = useState(seed?.source ?? '');
   const [output, setOutput] = useState(seed?.translation ?? '');
   const [listening, setListening] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const [copiedFlash, setCopiedFlash] = useState(false);
   const [correctionOpen, setCorrectionOpen] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
@@ -460,6 +461,8 @@ export function HomeScreen({
 
       listeningRef.current = true;
       setListening(true);
+      Speech.stop();
+      setSpeaking(false);
       setOutput('');
       const lang = optsRef.current.preferred === 'ne-en' ? 'ne-NP' : 'en-US';
       ignoreEndUntilRef.current = Date.now() + 400;
@@ -507,9 +510,13 @@ export function HomeScreen({
     const text = displayOutput.trim();
     if (!text) return;
     Speech.stop();
+    setSpeaking(true);
     Speech.speak(text, {
       language: targetLang === 'en' ? 'en-US' : 'ne-NP',
       rate: 0.95,
+      onDone: () => setSpeaking(false),
+      onStopped: () => setSpeaking(false),
+      onError: () => setSpeaking(false),
     });
   };
 
@@ -806,6 +813,7 @@ export function HomeScreen({
               eligible={showResult && active}
               keyboardVisible={keyboardVisible}
               listening={listening}
+              speaking={speaking}
               modalVisible={correctionOpen}
               appActive={active}
             />
