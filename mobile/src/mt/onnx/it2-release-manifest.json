@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "family": "IndicTrans2-dist-200M-ONNX-int8",
+  "bundles": {
+    "en-indic": {
+      "folder": "it2_en_indic",
+      "repo": "hari31416/indictrans2-en-indic-dist-200M-ONNX-int8",
+      "revision": "1eaa43a3fb76f382f1b22c76e56f6ab4926ad68b",
+      "files": [
+        {
+          "filename": "encoder_model.onnx",
+          "size": 831399,
+          "sha256": "87c3d6c6fbc48d9d7081927f3bd59915d5443a06cb63460e0d3705bae74de5a9"
+        },
+        {
+          "filename": "encoder_model.onnx.data",
+          "size": 73791488,
+          "sha256": "71a4d119514411a3cb3f9d76d2d88d5c4eac7c8e907397d62d5b29e2468a0c16"
+        },
+        {
+          "filename": "decoder_model.onnx",
+          "size": 2037502,
+          "sha256": "58c0fafb7ba0f343acba8643a386fab08143d49ef24472cefaecc87080f44e75"
+        },
+        {
+          "filename": "decoder_with_past_model.onnx",
+          "size": 1850479,
+          "sha256": "a2e9a87ff7563f5fc87fe8102188be37fb66771cf30970e649ca67be7f895497"
+        },
+        {
+          "filename": "decoder_shared.onnx.data",
+          "size": 203048944,
+          "sha256": "902314746ac629ae2ff584709c03eecdb0b3f7be4fb70ce0ff1bfbe66f14e574"
+        },
+        {
+          "filename": "tokenizer_src.json",
+          "size": 3906621,
+          "sha256": "ac1930c411028ba3a7929f35bc7f62d2e5e837ca24150b661de4f4606469eeca"
+        },
+        {
+          "filename": "tokenizer_tgt.json",
+          "size": 23869629,
+          "sha256": "51b05cd37636765e158146534d54452be558df32c6ab06ba4caeecdd0266a580"
+        },
+        {
+          "filename": "tokenizer_meta.json",
+          "size": 70,
+          "sha256": "9f18574a040d815695f98ac53e7d8ca18ae38b90a339eb59301690fccfc62437"
+        },
+        {
+          "filename": "generation_config.json",
+          "size": 163,
+          "sha256": "6c8b29ae72e680d5a2d9e849567f6f556d3f4e9bbd42434964a646f49b556972"
+        }
+      ]
+    },
+    "indic-en": {
+      "folder": "it2_indic_en",
+      "repo": "hari31416/indictrans2-indic-en-dist-200M-ONNX-int8",
+      "revision": "a7ecdc0ba73148c6e1d051ca372332471d8aff4f",
+      "files": [
+        {
+          "filename": "encoder_model.onnx",
+          "size": 831436,
+          "sha256": "79dd1c3d9f90f8bbd48effcc2d150616ac3a97525c8081481f14cd5095567ca6"
+        },
+        {
+          "filename": "encoder_model.onnx.data",
+          "size": 120068096,
+          "sha256": "6c402df00dfc45a69607e0231e1e5fd884508b19ca664836c94dd61bfa1ba137"
+        },
+        {
+          "filename": "decoder_model.onnx",
+          "size": 1585382,
+          "sha256": "845cdbaf0ee97d3c8ddff249a2e2d6e475d7ae1781157fcc6d0d651405bb8dd6"
+        },
+        {
+          "filename": "decoder_with_past_model.onnx",
+          "size": 1398395,
+          "sha256": "bcc818db56bc681fab2d50ca31b99dbcb5f82abbce4dccc92946edf5906fa86e"
+        },
+        {
+          "filename": "decoder_shared.onnx.data",
+          "size": 110052040,
+          "sha256": "abe939ce4d60bcbb9744790640188686c8af084083eb50d63bdbb7266a325d9a"
+        },
+        {
+          "filename": "tokenizer_src.json",
+          "size": 23876630,
+          "sha256": "d15ba1265a61b3b66122aab74e888442093a2c711f51b0f9896108661e1d346c"
+        },
+        {
+          "filename": "tokenizer_tgt.json",
+          "size": 3899748,
+          "sha256": "053e948b03403ad9adc43a08e7e5c5d83854fffeddf1aae85e3ca82258698575"
+        },
+        {
+          "filename": "tokenizer_meta.json",
+          "size": 70,
+          "sha256": "3e4a3e3131ae95cfd8a84d0de5ca1b00a06752fcebae44b3e641c909166d7d1d"
+        },
+        {
+          "filename": "generation_config.json",
+          "size": 163,
+          "sha256": "6c8b29ae72e680d5a2d9e849567f6f556d3f4e9bbd42434964a646f49b556972"
+        }
+      ]
+    }
+  }
+}

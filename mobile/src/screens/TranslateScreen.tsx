@@ -58,6 +58,9 @@ function statusCopy(phase: string, reason: string | null): string | null {
       }
       return 'Translation failed. Retry the turn or try again.';
     case 'unavailable':
+      if (reason === 'stt_unsupported') {
+        return 'On-device speech is unavailable for this language. You can still type.';
+      }
       return 'Speech is unavailable on this device. You can still type.';
     default:
       return null;
@@ -99,26 +102,36 @@ export function TranslateScreen({
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [state.turns.length, phase]);
 
+  const speechUnavailable = uiPhase.phase === 'unavailable';
   const speakLabel =
     uiPhase.phase === 'listening'
       ? 'Stop listening'
       : uiPhase.phase === 'requestingPermission'
         ? 'Requesting microphone'
-        : 'Speak to translate';
+        : speechUnavailable
+          ? 'Speech unavailable — type instead'
+          : 'Speak to translate';
 
   const speakButton = (testID: string) => (
     <Pressable
       onPress={() => void session.toggleListen()}
-      disabled={state.translating && uiPhase.phase !== 'listening'}
+      disabled={
+        speechUnavailable ||
+        (state.translating && uiPhase.phase !== 'listening')
+      }
       style={[
         styles.speak,
         uiPhase.phase === 'listening' && styles.speakListening,
-        state.translating && uiPhase.phase !== 'listening' && styles.speakOff,
+        (speechUnavailable ||
+          (state.translating && uiPhase.phase !== 'listening')) &&
+          styles.speakOff,
       ]}
       accessibilityRole="button"
       accessibilityLabel={speakLabel}
       accessibilityState={{
-        disabled: state.translating && uiPhase.phase !== 'listening',
+        disabled:
+          speechUnavailable ||
+          (state.translating && uiPhase.phase !== 'listening'),
         busy: uiPhase.phase === 'listening' || state.translating,
       }}
       testID={testID}

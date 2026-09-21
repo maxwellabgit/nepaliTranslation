@@ -74,7 +74,7 @@ export function createTestRuntime(options: TestRuntimeOptions = {}): RuntimePort
     },
     speechRecognition: {
       requestPermission: async () => speechPermission,
-      start: () => undefined,
+      start: (_opts) => undefined,
       stop: () => {
         for (const l of speechListeners) l({ kind: 'end' });
       },

@@ -96,9 +96,6 @@ export class TranslationEngine {
       const cancelled = requestId !== this.seq;
       if (!cancelled) {
         this.state = 'ready';
-        console.info(
-          `[translate] method=${result.method} direction=${result.direction} neural=${this.neuralReady} in=${JSON.stringify(cleanedReq.text)} out=${JSON.stringify(result.text)}`,
-        );
       }
       return { ...result, requestId, cancelled };
     } catch {

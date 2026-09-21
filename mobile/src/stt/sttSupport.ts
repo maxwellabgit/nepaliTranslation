@@ -7,6 +7,10 @@ import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
  * Apple ships no Nepali speech recognizer and (on most devices) no Nepali
  * voice, so both must be checked — never assumed — before offering
  * Nepali mic or speaker UI.
+ *
+ * F1: fail closed. Missing / empty / throwing locale probes never claim
+ * English or Nepali STT is available. Only `installedLocales` count as
+ * on-device; cloud `locales` alone are insufficient.
  */
 
 export function hardStopRecognition(): void {
@@ -27,9 +31,19 @@ export type SttSupport = {
   ne: boolean;
 };
 
+const UNAVAILABLE: SttSupport = { en: false, ne: false };
+
 let sttPromise: Promise<SttSupport> | null = null;
 
-/** Cached once per app run. Fails open so a probe error never hides the mic. */
+/** Reset cached probe (unit tests only). */
+export function resetSttSupportCache(): void {
+  sttPromise = null;
+}
+
+/**
+ * Cached once per app run. Fails closed: unknown / empty / error → both false.
+ * Uses installedLocales only (on-device). Empty installed ⇒ unavailable.
+ */
 export function getSttSupport(): Promise<SttSupport> {
   if (!sttPromise) {
     sttPromise = (async () => {
@@ -41,19 +55,19 @@ export function getSttSupport(): Promise<SttSupport> {
           }>;
         };
         if (typeof mod.getSupportedLocales !== 'function') {
-          return { en: true, ne: true };
+          return { ...UNAVAILABLE };
         }
         const res = await mod.getSupportedLocales({});
-        const all = [...(res.locales ?? []), ...(res.installedLocales ?? [])].map(
-          (l) => l.toLowerCase(),
+        const installed = (res.installedLocales ?? []).map((l) =>
+          l.toLowerCase(),
         );
-        if (!all.length) return { en: true, ne: true };
+        if (!installed.length) return { ...UNAVAILABLE };
         return {
-          en: all.some((l) => l.startsWith('en')),
-          ne: all.some((l) => l.startsWith('ne')),
+          en: installed.some((l) => l.startsWith('en')),
+          ne: installed.some((l) => l.startsWith('ne')),
         };
       } catch {
-        return { en: true, ne: true };
+        return { ...UNAVAILABLE };
       }
     })();
   }

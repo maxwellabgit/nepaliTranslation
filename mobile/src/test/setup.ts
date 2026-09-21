@@ -27,6 +27,11 @@ jest.mock('expo-speech-recognition', () => ({
     abort: jest.fn(),
     stop: jest.fn(),
     start: jest.fn(),
+    addListener: jest.fn(() => ({ remove: jest.fn() })),
+    getSupportedLocales: jest.fn(async () => ({
+      locales: [],
+      installedLocales: [],
+    })),
     requestPermissionsAsync: jest.fn(async () => ({
       granted: true,
       status: 'granted',
@@ -37,6 +42,16 @@ jest.mock('expo-speech-recognition', () => ({
     })),
   },
   useSpeechRecognitionEvent: jest.fn(),
+}));
+
+jest.mock('expo-image-manipulator', () => ({
+  SaveFormat: { JPEG: 'jpeg', PNG: 'png' },
+  manipulateAsync: jest.fn(async (uri: string) => ({
+    uri,
+    width: 1280,
+    height: 960,
+    base64: 'dGVzdA==',
+  })),
 }));
 
 jest.mock('expo-clipboard', () => ({
@@ -89,9 +104,29 @@ jest.mock('expo-secure-store', () => {
 
 jest.mock('expo-crypto', () => {
   let uuidSeq = 0;
+  const toHex = (buf: ArrayBuffer) => {
+    const bytes = new Uint8Array(buf);
+    let out = '';
+    for (let i = 0; i < bytes.length; i++) {
+      out += bytes[i]!.toString(16).padStart(2, '0');
+    }
+    return out;
+  };
   return {
     CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
     digestStringAsync: jest.fn(async (_alg: string, data: string) => `sha256:${data}`),
+    digest: jest.fn(async (_alg: string, data: BufferSource) => {
+      const bytes =
+        data instanceof ArrayBuffer
+          ? new Uint8Array(data)
+          : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+      // Deterministic mock digest (not cryptographic) for unit tests.
+      const out = new Uint8Array(32);
+      for (let i = 0; i < out.length; i++) {
+        out[i] = bytes[i % Math.max(bytes.length, 1)]! ^ (i * 31);
+      }
+      return out.buffer;
+    }),
     getRandomBytesAsync: jest.fn(async (n: number) => {
       const out = new Uint8Array(n);
       for (let i = 0; i < n; i++) out[i] = (i * 17 + 3) % 256;
@@ -107,6 +142,7 @@ jest.mock('expo-crypto', () => {
       const n = String(uuidSeq).padStart(12, '0');
       return `00000000-0000-4000-8000-${n}`;
     }),
+    __toHex: toHex,
   };
 });
 
@@ -198,10 +234,8 @@ jest.mock('../mt/TranslationEngine', () => ({
 
 jest.mock('../stt/sttSupport', () => ({
   hardStopRecognition: jest.fn(),
-  getSttSupport: jest.fn(async () => ({
-    available: false,
-    permission: 'denied',
-  })),
+  getSttSupport: jest.fn(async () => ({ en: true, ne: true })),
+  resetSttSupportCache: jest.fn(),
   hasNepaliVoice: jest.fn(async () => false),
 }));
 

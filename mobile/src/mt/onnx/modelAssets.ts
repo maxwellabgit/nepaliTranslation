@@ -5,16 +5,37 @@
  * 1. Packaged with the IPA/APK under Paths.bundle/models/ (preferred — no wait)
  * 2. Already copied under documentDirectory/models/
  * 3. Seed documents from the packaged bundle (offline copy)
- * 4. Last resort: download INT8 graphs from Hugging Face
+ * 4. Last resort: download INT8 graphs from Hugging Face (pinned revision + SHA-256)
  */
+import * as Crypto from 'expo-crypto';
 import { Directory, File, Paths } from 'expo-file-system';
 import { Platform } from 'react-native';
+import releaseManifest from './it2-release-manifest.json';
 
 export type It2DirectionBundle = 'en-indic' | 'indic-en';
 
+export type It2PinnedFile = {
+  filename: string;
+  size: number;
+  sha256: string;
+};
+
+export type It2BundlePin = {
+  folder: string;
+  repo: string;
+  revision: string;
+  files: It2PinnedFile[];
+};
+
+export const IT2_RELEASE_MANIFEST = releaseManifest as {
+  schemaVersion: number;
+  family: string;
+  bundles: Record<It2DirectionBundle, It2BundlePin>;
+};
+
 export const IT2_HF_REPOS: Record<It2DirectionBundle, string> = {
-  'en-indic': 'hari31416/indictrans2-en-indic-dist-200M-ONNX-int8',
-  'indic-en': 'hari31416/indictrans2-indic-en-dist-200M-ONNX-int8',
+  'en-indic': IT2_RELEASE_MANIFEST.bundles['en-indic'].repo,
+  'indic-en': IT2_RELEASE_MANIFEST.bundles['indic-en'].repo,
 };
 
 export const IT2_REQUIRED_FILES = [
@@ -30,8 +51,8 @@ export const IT2_REQUIRED_FILES = [
 ] as const;
 
 const DIR_NAME: Record<It2DirectionBundle, string> = {
-  'en-indic': 'it2_en_indic',
-  'indic-en': 'it2_indic_en',
+  'en-indic': IT2_RELEASE_MANIFEST.bundles['en-indic'].folder,
+  'indic-en': IT2_RELEASE_MANIFEST.bundles['indic-en'].folder,
 };
 
 /** Writable cache used by ORT on both platforms. */
@@ -56,6 +77,54 @@ function fileIn(dir: Directory, name: string): File {
   return new File(dir, name);
 }
 
+function pinFor(kind: It2DirectionBundle, fileName: string): It2PinnedFile {
+  const pin = IT2_RELEASE_MANIFEST.bundles[kind].files.find(
+    (f) => f.filename === fileName,
+  );
+  if (!pin) {
+    throw new Error(`Missing IT2 pin for ${kind}/${fileName}`);
+  }
+  return pin;
+}
+
+function bytesToHex(buf: ArrayBuffer): string {
+  const bytes = new Uint8Array(buf);
+  let out = '';
+  for (let i = 0; i < bytes.length; i++) {
+    out += bytes[i]!.toString(16).padStart(2, '0');
+  }
+  return out;
+}
+
+/** SHA-256 hex of a local file (content integrity for pinned downloads). */
+export async function sha256File(file: File): Promise<string> {
+  const bytes = await file.bytes();
+  const digest = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA256, bytes);
+  return bytesToHex(digest);
+}
+
+export async function verifyPinnedFile(
+  kind: It2DirectionBundle,
+  file: File,
+  fileName: string,
+): Promise<void> {
+  const pin = pinFor(kind, fileName);
+  if (!file.exists || file.size <= 0) {
+    throw new Error(`Missing model file: ${kind}/${fileName}`);
+  }
+  if (pin.size > 0 && file.size !== pin.size) {
+    throw new Error(
+      `Size mismatch for ${kind}/${fileName}: got ${file.size}, expected ${pin.size}`,
+    );
+  }
+  const hash = await sha256File(file);
+  if (hash.toLowerCase() !== pin.sha256.toLowerCase()) {
+    throw new Error(
+      `SHA-256 mismatch for ${kind}/${fileName}: got ${hash}, expected ${pin.sha256}`,
+    );
+  }
+}
+
 async function dirIsComplete(dir: Directory): Promise<boolean> {
   if (!dir.exists) return false;
   for (const name of IT2_REQUIRED_FILES) {
@@ -77,7 +146,6 @@ export async function packagedIsComplete(kind: It2DirectionBundle): Promise<bool
   }
 }
 
-
 /**
  * Directory ORT should load from for this direction.
  * Prefer packaged iOS bundle paths; on Android prefer documents cache
@@ -98,8 +166,8 @@ export async function resolveModelDirectory(
   throw new Error(`ONNX bundle not available for ${kind}`);
 }
 
-function hfResolveUrl(repo: string, fileName: string): string {
-  return `https://huggingface.co/${repo}/resolve/main/${fileName}?download=true`;
+export function hfResolveUrl(repo: string, revision: string, fileName: string): string {
+  return `https://huggingface.co/${repo}/resolve/${revision}/${fileName}?download=true`;
 }
 
 async function trySeedFromPackage(kind: It2DirectionBundle): Promise<boolean> {
@@ -132,6 +200,7 @@ export type ModelDownloadProgress = {
  * Ensure one direction's INT8 bundle is usable by ORT.
  * Packaged IPA/APK models win — no network. Falls back to a Hugging Face
  * download only when the binary was built without bundled models.
+ * Downloads are pinned to an immutable revision and verified by SHA-256.
  */
 export async function ensureIt2Bundle(
   kind: It2DirectionBundle,
@@ -179,12 +248,23 @@ export async function ensureIt2Bundle(
     dir.create({ intermediates: true, idempotent: true });
   }
 
-  const repo = IT2_HF_REPOS[kind];
+  const bundle = IT2_RELEASE_MANIFEST.bundles[kind];
   const total = IT2_REQUIRED_FILES.length;
   for (let i = 0; i < IT2_REQUIRED_FILES.length; i++) {
-    const fileName = IT2_REQUIRED_FILES[i];
+    const fileName = IT2_REQUIRED_FILES[i]!;
     const dest = fileIn(dir, fileName);
-    if (dest.exists && dest.size > 0) continue;
+    if (dest.exists && dest.size > 0) {
+      try {
+        await verifyPinnedFile(kind, dest, fileName);
+        continue;
+      } catch {
+        try {
+          dest.delete();
+        } catch {
+          /* soft-fail delete before re-download */
+        }
+      }
+    }
 
     onProgress?.({
       kind,
@@ -193,19 +273,19 @@ export async function ensureIt2Bundle(
       total,
       phase: 'download',
     });
-    const url = hfResolveUrl(repo, fileName);
+    const url = hfResolveUrl(bundle.repo, bundle.revision, fileName);
     const downloaded = await File.downloadFileAsync(url, dest, {
       idempotent: true,
     });
     if (!downloaded.exists || downloaded.size <= 0) {
       throw new Error(
-        `Model not bundled and download failed for ${repo}/${fileName}`,
+        `Model not bundled and download failed for ${bundle.repo}@${bundle.revision}/${fileName}`,
       );
     }
+    await verifyPinnedFile(kind, downloaded, fileName);
   }
 
   if (!(await bundleIsComplete(kind))) {
     throw new Error(`Incomplete ONNX bundle: ${kind}`);
   }
 }
-
