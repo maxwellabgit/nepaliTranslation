@@ -10,7 +10,6 @@ export type AppMode = 'auto' | 'conversation' | 'learn';
 export type AppOverlay =
   | 'history'
   | 'settings'
-  | 'meaning'
   | 'contributions'
   | null;
 
@@ -41,13 +40,8 @@ type HistoryOverlayProps = {
 
 type SettingsOverlayProps = {
   onClose: () => void;
-  onOpenMeaningReview: () => void;
   onOpenContributions: () => void;
   neuralReady: boolean;
-};
-
-type MeaningOverlayProps = {
-  onClose: () => void;
 };
 
 type ContributionsOverlayProps = {
@@ -60,7 +54,6 @@ type Props = {
   LearnPane: (props: LearnPaneProps) => ReactNode;
   HistoryOverlay: (props: HistoryOverlayProps) => ReactNode;
   SettingsOverlay: (props: SettingsOverlayProps) => ReactNode;
-  MeaningOverlay: (props: MeaningOverlayProps) => ReactNode;
   ContributionsOverlay: (props: ContributionsOverlayProps) => ReactNode;
   neuralReady: boolean;
   mtWarmStatus: string | null;
@@ -74,7 +67,6 @@ export function AppShell({
   LearnPane,
   HistoryOverlay,
   SettingsOverlay,
-  MeaningOverlay,
   ContributionsOverlay,
   neuralReady,
   mtWarmStatus,
@@ -230,14 +222,11 @@ export function AppShell({
           ) : overlay === 'settings' ? (
             <SettingsOverlay
               onClose={() => setOverlay(null)}
-              onOpenMeaningReview={() => setOverlay('meaning')}
               onOpenContributions={() => setOverlay('contributions')}
               neuralReady={neuralReady}
             />
-          ) : overlay === 'contributions' ? (
-            <ContributionsOverlay onClose={() => setOverlay(null)} />
           ) : (
-            <MeaningOverlay onClose={() => setOverlay('settings')} />
+            <ContributionsOverlay onClose={() => setOverlay(null)} />
           )}
         </View>
       ) : null}

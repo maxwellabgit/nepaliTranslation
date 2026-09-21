@@ -5,7 +5,6 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { ConversationScreen } from './src/screens/ConversationScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
-import { MeaningReviewScreen } from './src/screens/MeaningReviewScreen';
 import { LearnScreen } from './src/screens/LearnScreen';
 import { ContributionsScreen } from './src/screens/ContributionsScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
@@ -83,7 +82,6 @@ export function NepTranslateApp({
         LearnPane={(props) => <LearnScreen {...props} />}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}
-        MeaningOverlay={(props) => <MeaningReviewScreen {...props} />}
         ContributionsOverlay={(props) => <ContributionsScreen {...props} />}
       />
     </AppProviders>

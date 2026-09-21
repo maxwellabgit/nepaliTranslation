@@ -30,3 +30,7 @@ export async function saveLocalConsent(ageConfirmed: boolean): Promise<LocalCons
   await AsyncStorage.setItem(KEY, JSON.stringify(value));
   return value;
 }
+
+export async function clearLocalConsent(): Promise<void> {
+  await AsyncStorage.removeItem(KEY);
+}

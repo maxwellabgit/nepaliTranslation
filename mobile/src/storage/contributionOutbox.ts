@@ -592,3 +592,8 @@ export async function migrateLegacyReviewQueue(): Promise<number> {
   await AsyncStorage.removeItem(LEGACY_QUEUE_KEY);
   return converted;
 }
+
+/** Clear contribution outbox caches after completed account deletion. */
+export async function clearContributionCaches(): Promise<void> {
+  await AsyncStorage.multiRemove([OUTBOX_KEY, LEGACY_QUEUE_KEY]);
+}

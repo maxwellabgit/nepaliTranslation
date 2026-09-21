@@ -97,7 +97,6 @@ function SettingsOverlay({
   onClose,
 }: {
   onClose: () => void;
-  onOpenMeaningReview: () => void;
   onOpenContributions: () => void;
   neuralReady: boolean;
 }) {
@@ -121,7 +120,6 @@ async function renderShell(onHardStop = jest.fn()) {
       LearnPane={(p) => <LearnPane {...p} />}
       HistoryOverlay={(p) => <HistoryOverlay {...p} />}
       SettingsOverlay={(p) => <SettingsOverlay {...p} />}
-      MeaningOverlay={() => <View testID="shell-meaning" />}
       ContributionsOverlay={() => <View testID="shell-contributions" />}
     />,
   );

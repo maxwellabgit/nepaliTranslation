@@ -14,7 +14,6 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
         "NSSpeechRecognitionUsageDescription": "NepTranslate uses speech recognition to translate what you say.",
-        "NSPhotoLibraryUsageDescription": "NepTranslate does not need your photo library for translation. This description is required because included iOS frameworks reference photo-library APIs; NepTranslate will not access your photos unless you explicitly choose to share an image in a future update.",
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
@@ -59,7 +58,8 @@
       "onnxruntime-react-native",
       "./plugins/withIt2Models",
       "expo-font",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {

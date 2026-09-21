@@ -50,7 +50,7 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 - [x] H1 — Production-composition integration harness (gates green; review pending)
 - [x] H2 — Correction metadata and reliable offline outbox (independent review PASS)
 - [x] H3 — Atomic server-side consent, consensus, receipts, multi-user rewards (gates green; backend CI + independent review pending)
-- [ ] H4 — Apple identity/deletion + remove founder-only UI
+- [x] H4 — Apple identity/deletion + remove founder-only UI (gates green; independent review pending)
 - [ ] H5 — Learn, reward visibility, accessibility, UI consistency
 - [ ] H6 — Real AdMob + cryptographically verified SSV
 - [ ] Merge foundation only after every H0–H6 merge gate passes
@@ -65,7 +65,15 @@ Beta-wide + current-slice checklist in `.agent/DONE.md`. Slice 00 specifically: 
 
 ## Progress
 
-**Current: H3 — Atomic server-side consent, consensus, receipts, multi-user rewards** (on `main`)
+**Current: H4 — Apple identity/deletion + remove founder-only UI** (on `main`)
+
+- Scope: official `AppleAuthenticationButton` when available; `expo-secure-store` for stable Apple user id only (never auth codes in AsyncStorage); `expo-crypto` nonces (hashed→Apple, raw→Supabase); deletion via `refreshAsync`/interactive reauth → fresh code → `delete-account` before purge; revoke listener → guest without wiping history; clear secure identity + contribution/reward caches after success; Meaning Review removed from production App/AppShell/Settings; account-summary load after sign-in + Settings mount; removed dishonest `NSPhotoLibraryUsageDescription`.
+- Proof: `npm run verify:beta` + `test:coverage:beta` (auth 57.63/47.19/59.26 — ratchet OK).
+- Commit: `fix: complete Apple identity and deletion lifecycle`
+- Human gate (blocked, not passed): physical iPhone Apple sign-in, revoke, cancel, and delete-account with configured Apple/Supabase credentials.
+- Next: independent review; do **not** start H5 in this session. Pushed to `cursor/beta-08-admob`.
+
+**Previous: H3 — Atomic server-side consent, consensus, receipts, multi-user rewards** (on `main`)
 
 - Scope: forward migration `20260920200000_h3_atomic_consensus.sql` — `app_config.contribution_consent_version`; report idempotency `(reporter_id, idempotency_key)`; reward idempotency `(user_id, source_type, source_id)`; receipts linked to submission/ledger; DB rate-limit buckets; private SQL normalize/similarity with oversized→null; `service_submit_contribution_atomic` (service-role transactional); consent gates on report/outbox/lease/submit; Edge wrappers map `consent_required` / `consent_outdated` / `age_required`; ContributionCard complete; FeatureConfigService loads `app_config` with safe defaults.
 - Proof: `npm run verify:beta` + `test:coverage:beta` (contribution 51.82/47.11/53.55). Docker unavailable locally — backend proof: backend-gate `35548244403` green (pgTAP 08–10 + Deno + concurrent reward); agent-gates `35548244418` green.
@@ -107,18 +115,18 @@ Unchecked P0/P1 findings from the hardening plan (Section 3) remain open until t
 - [x] Atomic submit path (H3)
 - [x] Model similarity in consensus (H3)
 - [x] History formality/script metadata (H2)
-- [ ] Fresh Apple credential on deletion (H4)
-- [ ] Remove Meaning Review from production Settings (H4)
+- [x] Fresh Apple credential on deletion (H4)
+- [x] Remove Meaning Review from production Settings (H4)
 
 ### P1 (before external TestFlight)
 - [x] Load server feature flags (H3 FeatureConfigService loads `app_config`; fail soft to defaults; Learn stays on)
 - [ ] Entitlement UI (H5)
-- [ ] Auth error + consent UI (H4/H5)
+- [x] Auth error + consent UI (H4/H5) — H4: AuthStatusBanner + deletion retry/pause alerts; H5 may still polish consent UX
 - [ ] Learn landing + reward summary (H5)
 - [ ] Alphabet roman disambiguation + bilingual sign-off (H5 + human)
 - [x] Console/act noise free (H0)
 - [x] Coverage thresholds on changed files (H0 ratchet baseline recorded; 80/70 by H6)
-- [ ] NSPhotoLibraryUsageDescription honesty (H4/H11)
+- [x] NSPhotoLibraryUsageDescription honesty (H4) — removed (no photo feature)
 - [ ] Tab label Translate (H5)
 
 **Previous: Slice 08** foundation on `cursor/beta-08-admob` / now integrated on `main` tip.
@@ -304,6 +312,17 @@ npm run test:coverage:beta
 #   (pgTAP 08–10; first push failed 03/06 lease assertions → e40d92a fix)
 ```
 
+### H4 (local, 2026-09-20, on `main`)
+```text
+cd mobile
+npm run verify:beta
+# lint max-warnings 0, typecheck, test:unit 25 suites / 95 tests,
+# test:integration 2 suites / 12 tests, verify:translate OK, expo-doctor 21/21
+npm run test:coverage:beta
+# auth 57.63/47.19/59.26 — ratchet OK (up vs H0 baseline)
+# Human gate blocked: physical iPhone Apple sign-in / revoke / cancel / delete-account
+```
+
 ### H2 (local, 2026-09-20, on `main`)
 ```text
 cd mobile
@@ -330,14 +349,15 @@ npm run verify:beta
 
 ## Remaining work
 
-- **H3** mobile + backend CI green; independent review pending → next is H4 after review PASS.
+- **H4** mobile gates green; independent review pending → next is H5 after review PASS.
 - Do **not** merge PR #2 / do **not** start Slice 09 until H0–H6 merge gates pass.
-- Human gates remain: Apple, Supabase Apple, legal consent, physical device, AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
+- Human gates remain: Apple, Supabase Apple, legal consent, physical device (H4 Apple identity/deletion blocked), AdMob, RevenueCat, bilingual Learn sign-off, Maestro device run, TestFlight.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Docker Desktop engine is not running, so `supabase start` / pgTAP cannot run on this machine. Backend proof is `.github/workflows/backend-gate.yml`.
 - Slice 03 human gates (not claimed): Apple Sign in capability on the App ID, Supabase Apple provider, legal review of consent version `2026-09-19.draft`, physical-device sign-in and account deletion. Missing `APPLE_CLIENT_ID` / `APPLE_CLIENT_SECRET` blocks deletion before any purge. Deleting the app account does not cancel an Apple subscription.
+- **H4 human gate (blocked, not passed):** real iPhone Apple sign-in, credential revoke, cancel refresh, and delete-account with configured Apple/Supabase credentials. Do not claim device proof from Jest fakes.
 - Slice 07 human gate (not claimed): bilingual Nepali sign-off of bundled alphabet romanizations and section titles.
 - Slice 08 human gates (not claimed): AdMob app registration, banner/rewarded unit IDs, `react-native-google-mobile-ads` in a native/dev client, physical-device ad load proof.
 - Device Maestro (`mobile/.maestro/smoke_tabs.yaml`): Maestro CLI + running iOS app not available on this Windows agent — human / Slice 12 gate.

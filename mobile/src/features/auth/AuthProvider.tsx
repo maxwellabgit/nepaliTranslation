@@ -1,40 +1,56 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   type ReactNode,
 } from 'react';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import * as Crypto from 'expo-crypto';
 import {
   authReducer,
   INITIAL_AUTH,
   isAppleCancel,
-  randomNonce,
+  keepsLocalHistory,
+  mergeAppleFullName,
   type AuthState,
 } from './authPolicy';
+import { createAuthNonce } from './authNonce';
 import { bindAuthRefresh, getSupabase } from '../../services/supabase';
 import { readPublicEnv } from '../../config/env';
-import { saveAppleAuthorizationCode } from './appleAuthCode';
+import { saveAppleUserId, clearAppleIdentity } from './appleIdentity';
+import { fetchAccountSummary } from './accountSummary';
+import { performAccountDeletion } from './deleteAccount';
 
 type AuthContextValue = AuthState & {
   authConfigured: boolean;
   signInWithApple: () => Promise<void>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
+  refreshAccountSummary: () => Promise<void>;
   clearAlert: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-async function hashedNonce(raw: string): Promise<string> {
-  return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, raw);
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, INITIAL_AUTH);
   const authConfigured = readPublicEnv().authConfigured;
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  const refreshAccountSummary = useCallback(async () => {
+    if (!stateRef.current.userId) return;
+    const result = await fetchAccountSummary();
+    if (!result.ok) return;
+    dispatch({
+      type: 'account_summary',
+      consentVersion: result.summary.consentVersion,
+      ageConfirmed: result.summary.ageConfirmed,
+    });
+  }, []);
 
   useEffect(() => {
     const supabase = getSupabase();
@@ -65,11 +81,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'ready_session', userId: session.user.id });
       }
     });
+
+    // Apple credential revocation → guest; keep local translation history.
+    const revokeSub = AppleAuthentication.addRevokeListener(() => {
+      void (async () => {
+        void keepsLocalHistory('credential_revoked');
+        const uid = stateRef.current.userId;
+        if (uid) await clearAppleIdentity(uid);
+        await supabase.auth.signOut();
+        dispatch({ type: 'session_revoked' });
+      })();
+    });
+
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
+      revokeSub.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (state.status === 'signed-in' && state.userId) {
+      void refreshAccountSummary();
+    }
+  }, [state.status, state.userId, refreshAccountSummary]);
 
   const signInWithApple = async () => {
     const supabase = getSupabase();
@@ -81,14 +116,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     dispatch({ type: 'start_sign_in' });
-    const rawNonce = randomNonce();
     try {
+      const nonce = await createAuthNonce();
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
-        nonce: await hashedNonce(rawNonce),
+        nonce: nonce.hashed,
       });
       if (!credential.identityToken) {
         dispatch({
@@ -100,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'apple',
         token: credential.identityToken,
-        nonce: rawNonce,
+        nonce: nonce.raw,
       });
       if (error || !data.user) {
         dispatch({
@@ -109,19 +144,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
         return;
       }
-      const given = credential.fullName?.givenName;
-      const family = credential.fullName?.familyName;
-      const fullName = [given, family].filter(Boolean).join(' ');
-      if (fullName || credential.email) {
+      if (credential.user) {
+        await saveAppleUserId(data.user.id, credential.user);
+      }
+      const existingName =
+        typeof data.user.user_metadata?.full_name === 'string'
+          ? data.user.user_metadata.full_name
+          : null;
+      const fullName = mergeAppleFullName(
+        existingName,
+        credential.fullName?.givenName,
+        credential.fullName?.familyName,
+      );
+      const email = credential.email;
+      if (
+        (fullName && fullName !== existingName) ||
+        email
+      ) {
         await supabase.auth.updateUser({
           data: {
             ...(fullName ? { full_name: fullName } : {}),
-            ...(credential.email ? { email: credential.email } : {}),
+            ...(email ? { email } : {}),
           },
         });
-      }
-      if (credential.authorizationCode) {
-        await saveAppleAuthorizationCode(data.user.id, credential.authorizationCode);
       }
       dispatch({ type: 'ready_session', userId: data.user.id });
     } catch (error) {
@@ -143,15 +188,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'signed_out' });
   };
 
+  const deleteAccount = async () => {
+    const userId = stateRef.current.userId;
+    if (!userId) {
+      dispatch({
+        type: 'deletion_paused',
+        message: 'Sign in again, then retry account deletion.',
+      });
+      return;
+    }
+    dispatch({ type: 'start_deletion' });
+    const result = await performAccountDeletion({ userId });
+    if (result.ok) {
+      const supabase = getSupabase();
+      await supabase?.auth.signOut();
+      dispatch({ type: 'deletion_complete' });
+      return;
+    }
+    if (result.code === 'cancelled') {
+      dispatch({ type: 'deletion_cancelled' });
+      return;
+    }
+    dispatch({ type: 'deletion_paused', message: result.message });
+  };
+
   const value = useMemo<AuthContextValue>(
     () => ({
       ...state,
       authConfigured,
       signInWithApple,
       signOut,
+      deleteAccount,
+      refreshAccountSummary,
       clearAlert: () => dispatch({ type: 'dismiss_alert' }),
     }),
-    [state, authConfigured],
+    [state, authConfigured, refreshAccountSummary],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -166,6 +237,8 @@ export function useAuth(): AuthContextValue {
     authConfigured: false,
     signInWithApple: async () => undefined,
     signOut: async () => undefined,
+    deleteAccount: async () => undefined,
+    refreshAccountSummary: async () => undefined,
     clearAlert: () => undefined,
   };
 }

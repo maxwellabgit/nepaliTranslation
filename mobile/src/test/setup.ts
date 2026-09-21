@@ -39,17 +39,63 @@ jest.mock('expo-clipboard', () => ({
   getStringAsync: jest.fn(async () => ''),
 }));
 
-jest.mock('expo-apple-authentication', () => ({
-  signInAsync: jest.fn(),
-  AppleAuthenticationScope: { FULL_NAME: 0, EMAIL: 1 },
-  isAvailableAsync: jest.fn(async () => false),
-}));
+jest.mock('expo-apple-authentication', () => {
+  const React = require('react');
+  const { Pressable, Text } = require('react-native');
+  return {
+    signInAsync: jest.fn(),
+    refreshAsync: jest.fn(),
+    isAvailableAsync: jest.fn(async () => true),
+    addRevokeListener: jest.fn(() => ({ remove: jest.fn() })),
+    AppleAuthenticationScope: { FULL_NAME: 0, EMAIL: 1 },
+    AppleAuthenticationButtonType: { SIGN_IN: 0, CONTINUE: 1 },
+    AppleAuthenticationButtonStyle: { BLACK: 0, WHITE: 1, WHITE_OUTLINE: 2 },
+    AppleAuthenticationButton: ({ onPress, accessibilityLabel }: {
+      onPress?: () => void;
+      accessibilityLabel?: string;
+    }) =>
+      React.createElement(
+        Pressable,
+        {
+          onPress,
+          accessibilityRole: 'button',
+          accessibilityLabel: accessibilityLabel ?? 'Sign in with Apple',
+          testID: 'apple-auth-button',
+        },
+        React.createElement(Text, null, 'Sign in with Apple'),
+      ),
+  };
+});
+
+jest.mock('expo-secure-store', () => {
+  const mem = new Map<string, string>();
+  return {
+    getItemAsync: jest.fn(async (key: string) => mem.get(key) ?? null),
+    setItemAsync: jest.fn(async (key: string, value: string) => {
+      mem.set(key, value);
+    }),
+    deleteItemAsync: jest.fn(async (key: string) => {
+      mem.delete(key);
+    }),
+    AFTER_FIRST_UNLOCK: 0,
+  };
+});
 
 jest.mock('expo-crypto', () => {
   let uuidSeq = 0;
   return {
     CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
-    digestStringAsync: jest.fn(async () => 'hashed-nonce'),
+    digestStringAsync: jest.fn(async (_alg: string, data: string) => `sha256:${data}`),
+    getRandomBytesAsync: jest.fn(async (n: number) => {
+      const out = new Uint8Array(n);
+      for (let i = 0; i < n; i++) out[i] = (i * 17 + 3) % 256;
+      return out;
+    }),
+    getRandomBytes: jest.fn((n: number) => {
+      const out = new Uint8Array(n);
+      for (let i = 0; i < n; i++) out[i] = (i * 17 + 3) % 256;
+      return out;
+    }),
     randomUUID: jest.fn(() => {
       uuidSeq += 1;
       const n = String(uuidSeq).padStart(12, '0');

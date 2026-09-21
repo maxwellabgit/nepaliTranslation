@@ -3,6 +3,7 @@ export type AuthStatus =
   | 'guest'
   | 'signing-in'
   | 'signed-in'
+  | 'deleting'
   | 'error';
 
 export type AuthState = {
@@ -11,6 +12,11 @@ export type AuthState = {
   error: string | null;
   /** Set once for a real failure. Cancel never sets this. */
   alert: string | null;
+  /** Consent version from account-summary when available. */
+  consentVersion: string | null;
+  ageConfirmed: boolean;
+  /** True when deletion paused and the user can retry. */
+  deletionRetryPending: boolean;
 };
 
 export const INITIAL_AUTH: AuthState = {
@@ -18,6 +24,9 @@ export const INITIAL_AUTH: AuthState = {
   userId: null,
   error: null,
   alert: null,
+  consentVersion: null,
+  ageConfirmed: false,
+  deletionRetryPending: false,
 };
 
 export type AuthAction =
@@ -28,39 +37,105 @@ export type AuthAction =
   | { type: 'sign_in_failed'; message: string }
   | { type: 'signed_out' }
   | { type: 'session_revoked' }
-  | { type: 'dismiss_alert' };
+  | { type: 'dismiss_alert' }
+  | {
+      type: 'account_summary';
+      consentVersion: string | null;
+      ageConfirmed: boolean;
+    }
+  | { type: 'start_deletion' }
+  | { type: 'deletion_cancelled' }
+  | { type: 'deletion_paused'; message: string }
+  | { type: 'deletion_complete' };
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'ready_guest':
-      return { status: 'guest', userId: null, error: null, alert: null };
+      return {
+        ...INITIAL_AUTH,
+        status: 'guest',
+      };
     case 'ready_session':
       return {
+        ...state,
         status: 'signed-in',
         userId: action.userId,
         error: null,
         alert: null,
+        deletionRetryPending: false,
       };
     case 'start_sign_in':
       return { ...state, status: 'signing-in', error: null, alert: null };
     case 'apple_cancelled':
-      return { status: 'guest', userId: null, error: null, alert: null };
+      return {
+        ...state,
+        status: state.userId ? 'signed-in' : 'guest',
+        error: null,
+        alert: null,
+      };
     case 'sign_in_failed':
       return {
+        ...state,
         status: 'error',
         userId: null,
         error: action.message,
         alert: action.message,
+        consentVersion: null,
+        ageConfirmed: false,
+        deletionRetryPending: false,
       };
     case 'signed_out':
     case 'session_revoked':
-      return { status: 'guest', userId: null, error: null, alert: null };
+      return {
+        ...INITIAL_AUTH,
+        status: 'guest',
+      };
     case 'dismiss_alert':
       return {
         ...state,
         alert: null,
-        status: state.status === 'error' ? 'guest' : state.status,
+        status:
+          state.status === 'error'
+            ? state.userId
+              ? 'signed-in'
+              : 'guest'
+            : state.status,
         error: null,
+      };
+    case 'account_summary':
+      return {
+        ...state,
+        consentVersion: action.consentVersion,
+        ageConfirmed: action.ageConfirmed,
+      };
+    case 'start_deletion':
+      return {
+        ...state,
+        status: 'deleting',
+        error: null,
+        alert: null,
+        deletionRetryPending: false,
+      };
+    case 'deletion_cancelled':
+      return {
+        ...state,
+        status: 'signed-in',
+        error: null,
+        alert: null,
+        deletionRetryPending: false,
+      };
+    case 'deletion_paused':
+      return {
+        ...state,
+        status: 'signed-in',
+        error: action.message,
+        alert: action.message,
+        deletionRetryPending: true,
+      };
+    case 'deletion_complete':
+      return {
+        ...INITIAL_AUTH,
+        status: 'guest',
       };
     default:
       return state;
@@ -78,17 +153,18 @@ export function isAppleCancel(error: { code?: string; message?: string }): boole
 
 /** Revoked or signed-out sessions must not wipe on-device translation history. */
 export function keepsLocalHistory(
-  _action: 'signed_out' | 'session_revoked',
+  _action: 'signed_out' | 'session_revoked' | 'credential_revoked',
 ): boolean {
   return true;
 }
 
-export function randomNonce(byteLength = 32): string {
-  const bytes = new Uint8Array(byteLength);
-  if (typeof globalThis.crypto?.getRandomValues === 'function') {
-    globalThis.crypto.getRandomValues(bytes);
-  } else {
-    for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-  }
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+/** Capture full name only when Apple provides it (first authorization). */
+export function mergeAppleFullName(
+  existing: string | null | undefined,
+  given: string | null | undefined,
+  family: string | null | undefined,
+): string | null {
+  const next = [given, family].filter(Boolean).join(' ').trim();
+  if (next) return next;
+  return existing?.trim() || null;
 }

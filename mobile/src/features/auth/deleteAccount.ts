@@ -1,31 +1,251 @@
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { readPublicEnv } from '../../config/env';
 import { getSupabase } from '../../services/supabase';
+import { clearCachedEntitlement } from '../entitlements/entitlementCache';
+import { clearLocalConsent } from '../../storage/contributionConsent';
+import { clearContributionCaches } from '../../storage/contributionOutbox';
+import {
+  clearAppleIdentity,
+  loadAppleUserId,
+  saveAppleUserId,
+} from './appleIdentity';
+import { createAuthNonce } from './authNonce';
+import { isAppleCancel } from './authPolicy';
+
+export type DeletionFailureCode =
+  | 'cancelled'
+  | 'unavailable'
+  | 'unauthorized'
+  | 'wrong_apple_account'
+  | 'missing_authorization_code'
+  | 'deletion_incomplete'
+  | 'apple_unconfigured'
+  | 'apple_revoke_failed';
 
 export type DeletionClientResult =
   | { ok: true }
-  | { ok: false; code: 'unavailable' | 'unauthorized' | 'deletion_incomplete' };
+  | {
+      ok: false;
+      code: DeletionFailureCode;
+      /** Server-reported completed steps when deletion paused mid-flight. */
+      completed?: string[];
+      message: string;
+    };
 
-/** Does not touch on-device translation history. */
-export async function requestAccountDeletion(input: {
-  authorizationCode?: string;
-}): Promise<DeletionClientResult> {
+export type DeletionDeps = {
+  refreshApple?: typeof AppleAuthentication.refreshAsync;
+  signInApple?: typeof AppleAuthentication.signInAsync;
+  fetchImpl?: typeof fetch;
+};
+
+type FreshCodeResult =
+  | { ok: true; authorizationCode: string }
+  | { ok: false; code: DeletionFailureCode; message: string };
+
+async function obtainFreshAuthorizationCode(
+  userId: string,
+  deps: DeletionDeps,
+): Promise<FreshCodeResult> {
+  const refreshApple = deps.refreshApple ?? AppleAuthentication.refreshAsync;
+  const signInApple = deps.signInApple ?? AppleAuthentication.signInAsync;
+  const supabase = getSupabase();
+  if (!supabase) {
+    return {
+      ok: false,
+      code: 'unavailable',
+      message: 'Sign-in is not configured. Account deletion cannot run.',
+    };
+  }
+
+  const storedAppleUser = await loadAppleUserId(userId);
+  const nonce = await createAuthNonce();
+
+  try {
+    if (storedAppleUser) {
+      const credential = await refreshApple({
+        user: storedAppleUser,
+        requestedScopes: [],
+      });
+      if (!credential.authorizationCode) {
+        return {
+          ok: false,
+          code: 'missing_authorization_code',
+          message:
+            'Apple did not return a fresh authorization code. Deletion paused before any server purge. Retry when ready.',
+        };
+      }
+      return { ok: true, authorizationCode: credential.authorizationCode };
+    }
+
+    // Missing local Apple user id: require interactive reauth; never purge solely for that.
+    const credential = await signInApple({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+      nonce: nonce.hashed,
+    });
+    if (!credential.identityToken) {
+      return {
+        ok: false,
+        code: 'missing_authorization_code',
+        message:
+          'Apple did not return an identity token. Deletion paused. No local translation history was cleared.',
+      };
+    }
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'apple',
+      token: credential.identityToken,
+      nonce: nonce.raw,
+    });
+    if (error || !data.user) {
+      return {
+        ok: false,
+        code: 'unavailable',
+        message: 'Could not verify Apple account with the server. Deletion paused.',
+      };
+    }
+    if (data.user.id !== userId) {
+      return {
+        ok: false,
+        code: 'wrong_apple_account',
+        message:
+          'That Apple ID does not match the signed-in account. Deletion paused. No data was purged.',
+      };
+    }
+    if (credential.user) {
+      await saveAppleUserId(userId, credential.user);
+    }
+    if (!credential.authorizationCode) {
+      return {
+        ok: false,
+        code: 'missing_authorization_code',
+        message:
+          'Apple did not return a fresh authorization code. Deletion paused before any server purge. Retry when ready.',
+      };
+    }
+    return { ok: true, authorizationCode: credential.authorizationCode };
+  } catch (error) {
+    const err = error as { code?: string; message?: string };
+    if (isAppleCancel(err)) {
+      return {
+        ok: false,
+        code: 'cancelled',
+        message: 'Deletion cancelled. Nothing changed.',
+      };
+    }
+    return {
+      ok: false,
+      code: 'unavailable',
+      message: 'Apple credential refresh failed. Deletion paused. Retry when ready.',
+    };
+  }
+}
+
+/**
+ * Confirm → fresh Apple credential → delete-account immediately.
+ * Server exchanges+revokes before purge. Client clears identity caches only after success.
+ * Cancelled refresh changes nothing. Missing code / exchange / revoke pauses before purge.
+ */
+export async function performAccountDeletion(
+  input: { userId: string },
+  deps: DeletionDeps = {},
+): Promise<DeletionClientResult> {
   const env = readPublicEnv();
   const supabase = getSupabase();
-  if (!env.authConfigured || !supabase) return { ok: false, code: 'unavailable' };
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) return { ok: false, code: 'unauthorized' };
-  const res = await fetch(`${env.supabaseUrl}/functions/v1/delete-account`, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${token}`,
-      apikey: env.supabaseAnonKey,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      authorization_code: input.authorizationCode,
-    }),
-  });
-  if (res.ok) return { ok: true };
-  return { ok: false, code: 'deletion_incomplete' };
+  if (!env.authConfigured || !supabase) {
+    return {
+      ok: false,
+      code: 'unavailable',
+      message: 'Account deletion is not configured in this build.',
+    };
+  }
+  const { data: sessionData } = await supabase.auth.getSession();
+  const token = sessionData.session?.access_token;
+  if (!token) {
+    return {
+      ok: false,
+      code: 'unauthorized',
+      message: 'Sign in again, then retry account deletion.',
+    };
+  }
+
+  const fresh = await obtainFreshAuthorizationCode(input.userId, deps);
+  if (!fresh.ok) {
+    return {
+      ok: false,
+      code: fresh.code,
+      message: fresh.message,
+    };
+  }
+
+  const fetchImpl = deps.fetchImpl ?? fetch;
+  let res: Response;
+  try {
+    res = await fetchImpl(`${env.supabaseUrl}/functions/v1/delete-account`, {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${token}`,
+        apikey: env.supabaseAnonKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        authorization_code: fresh.authorizationCode,
+      }),
+    });
+  } catch {
+    return {
+      ok: false,
+      code: 'deletion_incomplete',
+      message:
+        'Could not reach the deletion service. Deletion paused before purge. Retry when online.',
+    };
+  }
+
+  if (res.ok) {
+    await clearAppleIdentity(input.userId);
+    await clearLocalConsent();
+    await clearCachedEntitlement();
+    await clearContributionCaches();
+    return { ok: true };
+  }
+
+  let completed: string[] | undefined;
+  let serverCode: string | undefined;
+  try {
+    const body = (await res.json()) as {
+      error?: { code?: string };
+      completed?: string[];
+    };
+    serverCode = body.error?.code;
+    completed = Array.isArray(body.completed) ? body.completed : undefined;
+  } catch {
+    // ignore parse errors
+  }
+
+  if (serverCode === 'apple_unconfigured') {
+    return {
+      ok: false,
+      code: 'apple_unconfigured',
+      completed,
+      message:
+        'Apple account revocation is not configured on the server. Deletion paused before purge. Retry after Apple secrets are set.',
+    };
+  }
+  if (serverCode === 'apple_revoke_failed') {
+    return {
+      ok: false,
+      code: 'apple_revoke_failed',
+      completed,
+      message:
+        'Apple token revocation failed. Deletion paused before purge. Retry when ready.',
+    };
+  }
+  return {
+    ok: false,
+    code: 'deletion_incomplete',
+    completed,
+    message:
+      'Account deletion did not finish. Translation history on this device was not cleared. Retry when ready.',
+  };
 }

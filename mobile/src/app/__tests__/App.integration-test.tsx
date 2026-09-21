@@ -223,4 +223,14 @@ describe('NepTranslateApp production composition', () => {
     // Translate still usable.
     expect(screen.getByTestId('translate-input')).toBeTruthy();
   });
+
+  it('production Settings has no Meaning Review route or control', async () => {
+    await renderApp();
+    await fireEvent.press(screen.getByLabelText('Settings'));
+    expect(screen.getByTestId('overlay-settings')).toBeTruthy();
+    expect(screen.queryByLabelText('Open Meaning Review')).toBeNull();
+    expect(screen.queryByText('Meaning Review')).toBeNull();
+    expect(screen.queryByTestId('overlay-meaning')).toBeNull();
+    expect(screen.queryByText(/Developer tool/i)).toBeNull();
+  });
 });
