@@ -21,6 +21,8 @@ const TARGETS = [
   'app/AppShell.tsx',
   'screens/TranslateScreen.tsx',
   'screens/CameraScreen.tsx',
+  'features/contribution/CorrectionSheet.tsx',
+  'features/contribution/ContributionCard.tsx',
 ] as const;
 
 /** Phrases that must come from t('…') — not string literals in these files. */
@@ -40,6 +42,8 @@ const BANNED: string[] = [
   'Camera OCR runs on this phone',
   'Nepali → English',
   'English → Nepali',
+  '13 or older',
+  'Sign in with Apple in Settings to contribute',
 ];
 
 function stripNoise(source: string): string {
@@ -56,7 +60,7 @@ function stripNoise(source: string): string {
 }
 
 describe('i18n catalog coverage (F2 chrome)', () => {
-  test('AppShell, TranslateScreen, and CameraScreen avoid banned hardcoded English', () => {
+  test('F2 chrome and contribution sheets avoid banned hardcoded English', () => {
     const hits: string[] = [];
     for (const rel of TARGETS) {
       const full = path.join(ROOT, rel);

@@ -130,12 +130,9 @@ export function AccountSection({
 
   return (
     <View style={styles.section} testID="account-section">
-      <Text style={styles.sectionLabel}>Account</Text>
+      <Text style={styles.sectionLabel}>{t('auth.account', lang)}</Text>
       {!authConfigured ? (
-        <Text style={styles.body}>
-          Sign-in is not configured in this build. Translation, history, and
-          settings still work.
-        </Text>
+        <Text style={styles.body}>{t('auth.notConfigured', lang)}</Text>
       ) : null}
       {authConfigured && !signedIn && appleAvailable ? (
         <View testID="sign-in-apple">
@@ -165,7 +162,7 @@ export function AccountSection({
       ) : null}
       {signedIn ? (
         <>
-          <Text style={styles.body}>Support user ID</Text>
+          <Text style={styles.body}>{t('auth.supportUserId', lang)}</Text>
           <Text style={styles.mono} testID="support-user-id">
             {userId}
           </Text>
@@ -191,8 +188,9 @@ export function AccountSection({
       <Text style={styles.sectionLabel}>{t('settings.contributions', lang)}</Text>
       <Text style={styles.body}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
       <Text style={styles.meta}>
-        Draft {CONTRIBUTION_CONSENT_VERSION}. Legal review required before
-        collection.
+        {t('auth.consentDraftMeta', lang, {
+          version: CONTRIBUTION_CONSENT_VERSION,
+        })}
       </Text>
       <Pressable
         onPress={() => setAge((v) => !v)}

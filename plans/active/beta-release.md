@@ -58,14 +58,14 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 |------|--------|
 | UI lang | Persisted `uiLang` (AsyncStorage prefs); `UiLangProvider` before auth; Settings English/नेपाली chips switch chrome immediately |
 | Catalog | Expanded `en`/`ne` for tabs, Translate, Camera, Learn rewards, ads, auth; `t()` param interpolation |
-| Screens | AppShell, Translate (+ composer/options/turns), Camera, RewardSummary, HouseAd, RewardedAd, AccountSection use `t()` + `useTheme()` |
-| Theme | `userInterfaceStyle: automatic`; scheme-aware StatusBar; major screens off static light `colors` |
+| Screens | AppShell, Translate (+ composer/options/turns), Camera, RewardSummary, HouseAd, RewardedAd, AccountSection, CorrectionSheet, ContributionCard, AlphabetLesson use `t()` + `useTheme()` |
+| Theme | `userInterfaceStyle: automatic`; scheme-aware StatusBar; major screens + contribution sheets off static light `colors` |
 | Layout | `sizeClass` phone / tablet11 / tablet13; content max-width; Camera capture/result stays portrait-dark |
 | a11y | Min 44pt on tabs, Speak/Pass, Camera shutter/retake; labels on primary controls |
 | TG | Playwright projects: desktop + iPad 11 (`768×1024`) + iPad 13 (`1024×1366`); touch-target smoke on iPad |
-| Tests | `uiLang-test`, `sizeClass-test`, `catalogCoverage-test` (banned EN chrome), i18n key parity |
+| Tests | `uiLang-test`, `sizeClass-test`, `catalogCoverage-test` (banned EN chrome + CorrectionSheet/ContributionCard), i18n key parity |
 
-**Honesty:** Full Dynamic Type scaling and VoiceOver walkthrough remain device-gated (F10). AlphabetLesson quiz copy still has some EN literals (Learn landing uses catalogued RewardSummary). House ad / rewarded CTA copy now matches INTENT ($0.99 / 15 min); provisional grant ms constants still F4/F5. Age checkbox now 18+ in UI (full consent migration is F3).
+**Honesty:** Full Dynamic Type scaling and VoiceOver walkthrough remain device-gated (F10). Contribution age copy is **18+** (INTENT); full consent migration remains F3. CERTIFICATION bilingual UI row is Partial / F2 chrome wired. Provisional grant ms constants remain F4/F5.
 
 **Previous: F1 — privacy / offline-core** — independent review PASS (`05adf43`); merged PR #4.
 
@@ -76,23 +76,28 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - Repository contract still contradicted founder V1 decisions until F0 (price, age, media upload, interstitial, reward TZ, rewarded minutes).
 - Google warns interstitials may be unsuitable for utility apps — keep `automatic_interstitial_enabled` remotely off until deliberate go/no-go.
 - Early F2 scaffold had catalog keys + Settings selector but AppShell/Translate/Camera still hardcoded EN until this repair.
+- ContributionCard still said “13 or older” after F2 chrome wire; repaired to catalogued 18+.
+- First Playwright iPad attempt failed (Chromium missing in sandbox); `npx playwright install chromium` then re-run passed.
 
 ## Commands that actually ran (paste)
 
 ```text
-# F2 — bilingual UI / theme / layouts (branch cursor/v1-f2-ui)
-# Independent-review repair: wire AppShell/Translate/Camera to catalog+theme;
-# catalogCoverage-test; ne MessageKey parity; TG 1024x1366; StatusBar from scheme
+# F2 IR repair — contribution sheets + 18+ + catalogCoverage + CERTIFICATION
 cd mobile
 npm run verify:ci
-# exit 0 (~50s): lint, typecheck, unit 56 suites / 240 tests (incl. catalogCoverage),
+# exit 0 (~46s): lint, typecheck, unit 56 suites / 240 tests (incl. catalogCoverage),
 # integration 2 suites / 19 tests, verify:translate OK, expo-doctor,
 # coverage ratchet OK, export:web
+
+cd testing-ground
+npx playwright install chromium   # first attempt: browser missing in sandbox cache
+npx playwright test --project=ipad-11 --grep "smoke|tabs|translate"
+# 1 passed (3.5s): 03 tab switch Translate / Camera / Learn [ipad-11]
 ```
 
 ## Remaining work
 
-1. Independent review of F2 → re-check after AlphabetLesson catalog+theme wire (prior FAIL on Learn alphabet EN/light-only + CERTIFICATION overclaim).
+1. Independent review of F2 (parent runs independent-reviewer) after contribution-sheet catalog+theme + 18+ repair.
 2. Do **not** start F3 until F2 is merged.
 
 ## Blockers (concrete; cannot be solved from this repo)
