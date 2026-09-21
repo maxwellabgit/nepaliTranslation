@@ -82,22 +82,25 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 ## Commands that actually ran (paste)
 
 ```text
-# F2 IR repair — contribution sheets + 18+ + catalogCoverage + CERTIFICATION
+# F2 tip f20c5ca — proven on this agent
 cd mobile
 npm run verify:ci
-# exit 0 (~46s): lint, typecheck, unit 56 suites / 240 tests (incl. catalogCoverage),
-# integration 2 suites / 19 tests, verify:translate OK, expo-doctor,
-# coverage ratchet OK, export:web
+# exit 0 (~44s): lint, typecheck, unit 56/240, integration 2/19,
+# verify:translate OK, expo-doctor 21/21, coverage OK, export:web
 
 cd testing-ground
-npx playwright install chromium   # first attempt: browser missing in sandbox cache
-npx playwright test --project=ipad-11 --grep "smoke|tabs|translate"
-# 1 passed (3.5s): 03 tab switch Translate / Camera / Learn [ipad-11]
+npx playwright install chromium
+npx playwright test scenarios/product-scenarios.spec.ts --project=ipad-11 -g "03 tab switch"
+# 1 passed (~3.3s)
+npx playwright test scenarios/product-scenarios.spec.ts --project=ipad-11 -g "primary tab touch"
+# 1 passed (~3.1s) — tabs + speak-hero ≥44px
+npx playwright test scenarios/product-scenarios.spec.ts --project=ipad-13 -g "03 tab switch"
+# 1 passed (~3.2s)
 ```
 
 ## Remaining work
 
-1. Independent review of F2 (parent runs independent-reviewer) after contribution-sheet catalog+theme + 18+ repair.
+1. Founder: PR/merge F2 after independent review PASS on tip `f20c5ca`.
 2. Do **not** start F3 until F2 is merged.
 
 ## Blockers (concrete; cannot be solved from this repo)
