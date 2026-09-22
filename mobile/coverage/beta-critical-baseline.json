@@ -1,32 +1,32 @@
 {
   "src/features/auth/": {
-    "statements": 16.56,
-    "branches": 23.2,
-    "lines": 18.25
+    "statements": 78.38,
+    "branches": 70.62,
+    "lines": 81.27
   },
   "src/features/contribution/": {
-    "statements": 21.84,
-    "branches": 9.09,
-    "lines": 22.5
+    "statements": 84.59,
+    "branches": 79.34,
+    "lines": 86.69
   },
   "src/features/entitlements/": {
-    "statements": 18.52,
-    "branches": 30.14,
-    "lines": 20.62
+    "statements": 89.52,
+    "branches": 83.33,
+    "lines": 91.33
   },
   "src/features/ads/": {
-    "statements": 50.94,
-    "branches": 40,
-    "lines": 54
+    "statements": 85.37,
+    "branches": 76.34,
+    "lines": 87.11
   },
   "src/features/subscription/": {
-    "statements": 84.03,
-    "branches": 73.52,
-    "lines": 88.54
+    "statements": 80.75,
+    "branches": 72.19,
+    "lines": 85.65
   },
   "src/services/contributionSync.ts": {
-    "statements": 3.33,
-    "branches": 0,
-    "lines": 3.57
+    "statements": 83.82,
+    "branches": 74.6,
+    "lines": 90.32
   }
 }
