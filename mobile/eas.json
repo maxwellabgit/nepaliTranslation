@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": ">= 16.0.0",
-    "appVersionSource": "local"
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -20,18 +20,40 @@
         "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
       }
     },
-    "production": {
+    "testflight": {
+      "distribution": "store",
+      "channel": "testflight-internal",
       "autoIncrement": true,
       "ios": {
-        "image": "latest",
+        "image": "sdk-57",
         "resourceClass": "m-medium"
       },
       "env": {
-        "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true",
+        "EXPO_PUBLIC_ADS_ENV": "test",
+        "EXPO_PUBLIC_RELEASE_CHANNEL": "testflight-internal"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "ios": {
+        "image": "sdk-57",
+        "resourceClass": "m-medium"
+      },
+      "env": {
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true",
+        "EXPO_PUBLIC_RELEASE_CHANNEL": "production"
       }
     }
   },
   "submit": {
+    "testflight": {
+      "ios": {
+        "ascAppId": "6792574384",
+        "appleTeamId": "BSQ5SYHX54",
+        "bundleIdentifier": "com.neptranslate.app"
+      }
+    },
     "production": {
       "ios": {
         "ascAppId": "6792574384",
