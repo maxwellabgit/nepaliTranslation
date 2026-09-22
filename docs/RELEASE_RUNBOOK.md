@@ -1,8 +1,10 @@
 # Release runbook (TestFlight → App Store)
 
-**Status: BLOCKED — founder Apple Connect / legal / bilingual sign-off / F1–F10 completion**
+**Status: BLOCKED — founder Apple Connect / legal / bilingual sign-off / physical device matrix**
 
 Do not claim App Store submission from this document or from Windows CI. Use this as the human sequence after V1 slices F0–F9 source gates and device proof ([`DEVICE_PROOF.md`](./DEVICE_PROOF.md)). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md).
+
+**F10 honesty:** Internal/external TestFlight, seven clean days, interstitial go/no-go, and public submission remain **human-gated**. An agent must not check those boxes from source alone.
 
 ## Product freeze (must match INTENT)
 
@@ -15,10 +17,63 @@ Do not claim App Store submission from this document or from Windows CI. Use thi
 
 ## Sequence
 
-1. **Internal TestFlight** — Exact build with all optional feature flags **off**, then enable one subsystem at a time (auth → text contributions → media → rewards → banners/rewarded → paywall). Smoke: Translate, Camera, Learn, History, Settings; airplane mode; Mark incorrect; iPhone + iPad.
-2. **External TestFlight cohort** — 25–50 bilingual EN/NE reviewers. Enable contribution collection only after final legal approval. Enable **automatic interstitial only** after banner/rewarded stability and an explicit go/no-go (utility-app risk).
-3. **Stability gate** — Seven consecutive days with no open P0/P1, deletion deadline breaches, privacy leaks, crash regressions, or reward ledger inconsistencies.
-4. **Phased public** — Freeze version/build, model hashes, migrations, flags, privacy labels, screenshots, descriptions, review notes, support contact, rollback instructions. Submit the exact tested build. Prefer phased release if Connect supports it.
+1. **Internal TestFlight** — Exact build with all optional feature flags **off**, then enable one subsystem at a time (auth → text contributions → media → rewards → banners/rewarded → paywall). Smoke: Translate, Camera, Learn, History, Settings; airplane mode; Mark incorrect; iPhone + iPad. Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) matrix on this build.
+2. **External TestFlight cohort** — 25–50 bilingual EN/NE reviewers. Enable contribution collection only after final legal approval. Enable **automatic interstitial only** after banner/rewarded stability and an explicit go/no-go (utility-app risk) — see section below.
+3. **Stability gate** — Seven consecutive days with no open P0/P1, deletion deadline breaches, privacy leaks, crash regressions, or reward ledger inconsistencies. Use the day log below.
+4. **Freeze + phased public** — Complete the freeze worksheet, rehearse rollback, then submit the **exact** tested build. Prefer phased release if Connect supports it.
+
+## Interstitial go/no-go (explicit)
+
+Automatic interstitial stays **off** until a human records a decision. Default for public launch: **leave off**.
+
+| Decision | Owner | Date | Build | Notes |
+|----------|-------|------|-------|-------|
+| [ ] Keep `automatic_interstitial_enabled` **off** for public V1 | | | | Recommended until external cohort is clean |
+| [ ] Enable for external TestFlight only | | | | Max 3 / America/New_York day; SDK dismiss; remote kill switch verified |
+| [ ] Enable for App Store phased release | | | | Only after seven clean external days + support review |
+
+Do not treat code landing or Playwright as interstitial enablement.
+
+## Seven-day external stability log
+
+Record one row per America/New_York calendar day during external TestFlight. Leave empty until humans run the cohort.
+
+| Day (NY date) | Build | Open P0/P1 | Deletion SLA OK | Privacy/crash OK | Reward ledger OK | Sign-off |
+|---------------|-------|------------|-----------------|------------------|------------------|----------|
+| 1 | | [ ] none | [ ] | [ ] | [ ] | |
+| 2 | | [ ] none | [ ] | [ ] | [ ] | |
+| 3 | | [ ] none | [ ] | [ ] | [ ] | |
+| 4 | | [ ] none | [ ] | [ ] | [ ] | |
+| 5 | | [ ] none | [ ] | [ ] | [ ] | |
+| 6 | | [ ] none | [ ] | [ ] | [ ] | |
+| 7 | | [ ] none | [ ] | [ ] | [ ] | |
+
+Any open P0/P1 resets the seven-day counter.
+
+## Freeze worksheet (before App Store submit)
+
+Fill on the exact build that will be submitted. Do not submit if any required row is blank.
+
+| Item | Value / link |
+|------|----------------|
+| Version + build | |
+| Git SHA | |
+| IT2 ONNX SHA-256 (both directions) | must match release manifest + [`MODEL_CERT.md`](./MODEL_CERT.md) floors if gold eval ran |
+| Supabase migrations tip | |
+| Remote feature-flag snapshot | |
+| App Store privacy answers | from [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md) |
+| Screenshots / description / review notes | |
+| Support contact | |
+| Rollback rehearsal result | see below — date + flags flipped |
+
+## Rollback rehearsal (required before public)
+
+On a non-production or internal build with optional flags **on**:
+
+1. [ ] Flip remote flags to disable ads (including interstitial), contributions, media upload, rewards, and paywall.
+2. [ ] Confirm offline Translate, Camera, and Learn still work (airplane mode).
+3. [ ] Confirm no requirement to edit `benchmarks/gold/` or ship a new IPA solely to disable optional services.
+4. [ ] Record date, operator, and flag snapshot: ____
 
 ## Monitoring
 
@@ -31,7 +86,7 @@ Do not claim App Store submission from this document or from Windows CI. Use thi
 - Review retention, ad complaints, subscription conversion, translation/camera failure rates before interstitial go-live
 - Do not treat gold-benchmark edits as a release lever
 
-## Rollback
+## Rollback (production incident)
 
 - Pause external TestFlight / phased release in App Store Connect
 - Ship a hotfix build via EAS → submit → promote previous build if needed
@@ -57,14 +112,23 @@ Do not claim App Store submission from this document or from Windows CI. Use thi
 | RevenueCat subscription | Guest core unaffected | $0.99 product + sandbox / TestFlight matrix |
 | Admin console | Core unaffected | Allowlist ops; deletion queue SLA |
 
-## Founder actions before claiming release
+## Public App Store go/no-go checklist
+
+Production V1 public submission is allowed only when **all** are checked by a human:
 
 - [ ] F0–F10 merged with green CI and independent review
+- [ ] Exact model artifacts pass frozen evaluation **or** ship is explicitly blocked on missing weights ([`MODEL_CERT.md`](./MODEL_CERT.md))
+- [ ] iPhone and iPad matrices in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) pass on the **same** TestFlight build
+- [ ] RevenueCat, StoreKit, AdMob, UMP, Apple Sign-In, Supabase media storage, deletion, and admin operations pass with production-like configuration
+- [ ] Privacy/Terms/support URLs and App Store privacy answers are live and accurate
+- [ ] Bilingual UI and alphabet content receive human sign-off
+- [ ] External TestFlight: 25–50 reviewers; seven clean consecutive days (log above)
+- [ ] Interstitial go/no-go explicitly recorded
+- [ ] Freeze worksheet complete; rollback rehearsed with remote flags
+- [ ] Explicit final go for public submission — owner: ____ date: ____
+
+## Founder actions before claiming release
+
 - [ ] Apple Developer + App Store Connect session; $0.99 subscription live in sandbox
 - [ ] Legal: Privacy, Terms, support, retention/deletion, consent copy (18+, media)
-- [ ] Bilingual sign-off (UI + Learn alphabet)
-- [ ] Device matrix in DEVICE_PROOF complete on the same build
-- [ ] Internal then external TestFlight as above
-- [ ] Explicit interstitial go/no-go
-- [ ] Rollback rehearsed with remote flags
-- [ ] Explicit go/no-go for public submission
+- [ ] Complete public go/no-go checklist above
