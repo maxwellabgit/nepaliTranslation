@@ -74,19 +74,19 @@ python benchmarks/certify_ship_artifacts.py
 cd mobile && npx tsc --noEmit
 cd mobile && npx jest --runInBand src/features/subscription/__tests__/PurchaseService-test.ts
 cd mobile && npm run verify:translate
-cd mobile && npm run export:web
-cd testing-ground && npx playwright test
-# 67 passed, 8 skipped (after TG flag/cooldown/STT harness fixes)
-
-# CI: playwright-scenarios must `export:lexicon` before `export:web`
+# CI playwright-scenarios: export:lexicon then export:web; TG flag/cooldown/STT harness
+# PR #12 CI green on HEAD (playwright-scenarios, ship-cert, js-verify, …)
 ```
 
 ## Remaining work
 
-1. Wait for CI green on `265a071` (Playwright / js-verify). Independent review PASS on committed source (`05f22472`). Merge only after CI green → start F10.
+1. Independent review PASS on HEAD → merge F9 PR #12 → start F10.
 2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
 3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
 
+## Decision log (F9 review)
+
+- 2026-09-22: Independent review FAIL on `c017c61` — ExecPlan Remaining work cited nonexistent SHA `05f22472` and stale “wait for CI on 265a071”. Corrected before re-review.
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Exact four-class ONNX gold eval vs ship floors — **weights missing** on this agent host (`mobile/assets/models/it2_*`)
