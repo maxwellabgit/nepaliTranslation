@@ -21,10 +21,11 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Camera OCR on-device; temporary files deleted after retake/exit/processed | **Source-proven** | Guests never upload |
 | No photo-library permission for Camera path | **Source-proven** | |
 | Guest / non-consenting content stays local | **Source-proven** | |
-| Contribution requires Sign in with Apple + **18+** + versioned bilingual consent | **Partial / G2** | Withdrawal + full purge incomplete per audit |
-| Post-consent **photo** auto-upload + offline retry | **Partial** | Speech-media upload **deferred** from V1 disclosures (G0) |
-| Public review: up to 10/reviewer/NY day; exclusive lease; global retirement | **Not built / G1** | Current consensus tasks ≠ requested pool |
-| Indefinite retention until withdrawal/deletion; **30-day** purge of all linked data | **Partial / G2** | Audit: some unlink/retain paths remain |
+| Startup consent gate (T&C + Privacy + 18+) blocks product surfaces | **Not built / G2** | Owner directive 2026-09-22 |
+| Contribution requires Sign in with Apple + startup 18+ consent | **Partial / G2** | Withdrawal + full purge incomplete per audit |
+| Post-consent **photo + raw speech** upload + offline retry, account-linked | **Not built / G2** | Speech in V1 scope per owner directive; `contribution_speech_enabled` off until proof |
+| Public review: **global 10/day** at 5:00 PM NY rotation; all corpora eligible | **Not built / G1** | Current consensus tasks ≠ requested pool |
+| Indefinite retention until withdrawal/deletion; **30-day** purge of all linked data | **Partial / G2** | Every row must carry `user_id` |
 | Raw text/audio/photos never in third-party analytics | **Source-proven (scrubber)** | Live sink human-gated |
 | Login never required for Translate, Camera, Learn, History, Settings | **Source-proven** | Purchase/restore/contribution **do** require login (G0) |
 | Optional services fail soft | **Source-proven** | |

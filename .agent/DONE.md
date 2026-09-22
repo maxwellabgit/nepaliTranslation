@@ -25,7 +25,7 @@ Apply on every V1 finalization PR. Gate-specific extras are below.
 - [ ] Core translate path still has **no** hard dependency on Supabase, AdMob, RevenueCat, or admin
 - [ ] No production secret, tunnel URL, test password (`1234`), service role, or embedded review-sync secret introduced
 - [ ] Optional-service failure leaves Translate, Camera, History, Settings, and Learn usable
-- [ ] Contract matches INTENT + V1_G0_DECISIONS: $0.99/month; banners idle Translate + Learn only; interstitial **15 min since last successful impression** / ≤3 NY day; rewarded 15 min; credit = 5 min; >20 words = 2 credits; 5 PM America/New_York close; **up to 10** public reviews per reviewer per NY day; no clawback; sign-in before purchase/restore/contribution; speech-media upload **deferred** from V1 disclosures; photo consent + 30-day deletion
+- [ ] Contract matches INTENT + V1_G0_DECISIONS: $0.99/month; banners idle Translate + Learn only; interstitial **15 min since last successful impression** / ≤3 NY day; rewarded = 1 credit / 15 min; **1 credit = 15 minutes**; top-50%-longest = 2 credits; 5:00 PM America/New_York rotation; **global 10** public reviews per NY day; no clawback; sign-in before purchase/restore/contribution; **startup T&C + Privacy + 18+ gate**; raw speech + photo upload account-linked; 30-day purge on withdrawal/delete
 - [ ] Feature flags remain independently disableable (text/speech/photo contributions, banners, rewarded, interstitial, paywall, telemetry, deletion processing)
 - [ ] No claim of physical-device / airplane-mode / StoreKit / AdMob / interstitial / revenue proof from source-only tests
 - [ ] Human blockers (Apple, Supabase, AdMob, RevenueCat, legal, bilingual, device, iPad, hosted cron) recorded honestly when reached
@@ -103,26 +103,27 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 ### G0 — product contract freeze
 
 - [ ] INTENT / V1_G0_DECISIONS / DATA_CLASSIFICATION / AGENTS / DONE / ExecPlan / CERTIFICATION / RELEASE_RUNBOOK describe the corrected V1 boundary
-- [ ] Frozen: up to 10 public reviews per reviewer per NY day; corpus eligibility + benchmark retirement; sign-in before purchase/restore/contribution; speech-media deferred; interstitial = 15 min since last successful impression; TestFlight ads ≠ revenue; soft model-cert ≠ certified
+- [ ] Frozen: **global 10 samples/day** at 5:00 PM NY rotation; all training + benchmark corpora eligible; length-tier credits (top-50%-longest = 2, else 1); **1 credit = 15 minutes**; sign-in before purchase/restore/contribution; **startup consent gate (T&C + Privacy + 18+)**; raw speech-media upload **in V1** scope; account-linked collection; 30-day purge on withdrawal/delete; impression-based interstitial timer; TestFlight ads ≠ revenue; soft model-cert ≠ certified
 - [ ] Feature flag matrix defaults off; diagnostic internal TF keeps contribution/live ads/paywall off
 - [ ] **No runtime code changed**
 
-### G1 — public review pool
+### G1 — public review pool (global 10/day)
 
-- [ ] Source-item / daily-batch / assignment / submission migrations + RLS
-- [ ] Idempotent importer with included/excluded counts and reasons
-- [ ] Exclusive allocation; global retirement; skip/report/quarantine rules
-- [ ] Admin adjudication + inventory/runway; late-rejection alert; 5 PM grant once / no clawback
-- [ ] Concurrency + export exclusion tests; DST boundary tests
-- [ ] Backend gate green
+- [ ] `review_source_items` / `review_windows` / `review_submissions` / `review_credits` migrations + RLS
+- [ ] Idempotent importer of `datasets/` + `training/` + `benchmarks/` corpora with PII/dedup exclusion reasons and length-percentile snapshot
+- [ ] 5:00 PM America/New_York rotation function: close window, grant credits (1/2 by length tier), pre-select next 10 at random, publish
+- [ ] Admin adjudication: mark submission `unsatisfactory` before close; late-rejection alert (no clawback)
+- [ ] One submission per user per item per window; multiple users per item allowed
+- [ ] Backend gate green (or Docker-not-available blocker recorded)
 
-### G2 — consent / deletion truth
+### G2 — startup consent + account-linked deletion
 
-- [ ] Bilingual versioned 18+ consent with evidence fields
-- [ ] Withdrawal + account deletion request, admin alert, 30-day purge of **all** linked rows/objects
-- [ ] Privacy/permission copy matches photo auto-upload; no false “photos always stay on-device” for consented adults
-- [ ] Speech-media either fully proven or absent from disclosures (G0: deferred)
-- [ ] Staging lifecycle test or honest blocker
+- [ ] Startup consent screen: T&C + Privacy + 18+ checkboxes; blocks product surfaces until all three checked; bilingual; versioned
+- [ ] `user_consents` row on sign-in mirrors startup consent; version bump re-shows the screen
+- [ ] All optional-service tables (photos, speech media, submissions, corrections, translation contributions) carry `user_id`; guests upload nothing
+- [ ] Withdrawal + account-deletion request routes; admin alert; 30-day purge of every row / storage object linked to `user_id`
+- [ ] Raw speech capture URI + private-bucket signed upload + retry queue (flag `contribution_speech_enabled` off by default until proven)
+- [ ] Privacy Policy + permission strings + Settings copy disclose speech, photo, correction upload behavior
 
 ### G3 — monetization repair
 

@@ -10,10 +10,11 @@ Do not claim App Store submission or external RC from this document or from Wind
 
 - Ad-free subscription: **US $0.99/month** (StoreKit authoritative); **sign-in required** before purchase/restore; RevenueCat ID = Supabase UUID
 - Ads: banners idle Translate + Learn only; automatic interstitial **15 minutes since last successful impression** / ≤3 per America/New_York day / safe idle only / SDK dismiss / remotely disableable; TestFlight = **test ad units**
-- Rewarded video: **15** ad-free minutes after SSV; real SDK event contracts
-- Rewards: 1 credit = 5 minutes; >20 original words = 2 credits; close **5:00 PM America/New_York**; no clawback; late reject → alert only
-- Public review: **up to 10** exclusive assignments per eligible reviewer per NY review day; global retirement; no frozen gold
-- Contributions: 18+ bilingual versioned consent; **photo** auto-upload when flagged; **speech-media upload deferred** from V1 disclosures; withdrawal + 30-day purge of all linked data
+- Rewarded video: **1 credit / 15 ad-free minutes** after SSV; real SDK event contracts
+- Rewards: **1 credit = 15 minutes**; top-50%-longest samples at assignment = 2 credits; rotation **5:00 PM America/New_York**; admin can mark submissions unsatisfactory before close; no clawback; late reject → alert only
+- Public review: **global 10 items/day**, same set for every reviewer, refreshed at 5:00 PM America/New_York; all training + benchmark corpora eligible after PII/dedup; submissions never re-enter training/eval without a separate verified migration
+- Startup consent gate: every user acknowledges **T&C + Privacy Policy + "I am 18+"** before reaching any product surface
+- Contributions: signed-in only; **photo + raw speech + corrections** upload when flagged; account-linked; withdrawal + 30-day purge of all rows/objects tied to `user_id`
 - Platforms: iPhone **and** iPad; UI English **and** नेपाली
 
 ## Sequence

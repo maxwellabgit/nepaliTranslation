@@ -7,21 +7,21 @@ Make NepTranslate honestly ready for external TestFlight and then V1 — fixing 
 
 - **Audit tip:** `43f9bc6` (2026-09-22). F0–F10 source merged; **not** external RC.
 - **Contract freeze:** `.governance/V1_G0_DECISIONS.md`, `.governance/DATA_CLASSIFICATION.md`, `.governance/INTENT.md`.
-- **Branch policy:** exactly one gate per branch/PR: `cursor/v1-gN-short-name-5907` (or current agent suffix).
+- **Branch policy:** exactly one gate per branch/PR: `cursor/v1-gN-short-name-5907`.
 - **Operating protocol:** `AGENTS.md`, `.agent/LOOP.md`, `.agent/DONE.md`, this ExecPlan.
-- **Protected:** `mobile/src/mt/`, `mobile/src/stt/`, translation verify scripts, Expo SDK 57, `benchmarks/gold/` references.
-- **Prohibited:** invent device/TestFlight/revenue results; expose frozen gold for public review; claw back credits; guest purchase/restore; claim speech-media upload in V1 disclosures.
+- **Protected:** `mobile/src/mt/`, `mobile/src/stt/`, translation verify scripts, Expo SDK 57. `benchmarks/gold/` reference answers are read-only in code; V1 imports them into the review pool via a **copy** into `review_source_items` (never edits gold in place).
+- **Prohibited:** invent device/TestFlight/revenue results; claw back credits; guest purchase/restore; auto-promote review submissions back into `benchmarks/gold/` or training corpora.
 - **Prior program:** `plans/active/beta-release.md` (F0–F10) is **foundation / closed as ship program**. Do not reopen F-slices.
 
 ## Done when (copy the lane checklist from DONE.md)
 
-V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable docs only; no runtime code; a fresh session can state review cardinality, corpus rules, sign-in-before-purchase, speech deferred, interstitial impression timer, and that `43f9bc6` is not external RC.
+V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable docs only; no runtime code; a fresh session can state review cardinality (**global 10/day, 5 PM NY rotation**), corpus rules (**all training + benchmarks eligible**), credit rule (**1 credit = 15 minutes; top-50%-longest = 2**), sign-in-before-purchase, startup consent gate (T&C + Privacy + 18+), raw speech-media **in V1**, interstitial impression timer, and that `43f9bc6` is not external RC.
 
 ## Milestones
 
-- [ ] **G0** — Freeze corrected product contract (docs only) — pending independent review PASS + merge
-- [ ] **G1** — Public-review pool schema, importer, exclusive allocation, admin adjudication, 5 PM grants + late alerts
-- [ ] **G2** — Bilingual consent, withdrawal, truthful privacy copy, complete 30-day purge
+- [ ] **G0** — Freeze corrected product contract (docs only) — amended per owner directive; pending re-review + merge
+- [ ] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication
+- [ ] **G2** — Startup consent gate (T&C + Privacy + 18+), account-linked collection, raw speech + photo upload, withdrawal, 30-day purge
 - [ ] **G3** — Ads load/show via real SDK events; impression-based interstitial timer; RevenueCat↔Supabase UUID; sandbox matrix recorded or blocked
 - [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence
 - [ ] **G5** — Hosted scheduler proof, secrets, legal URLs, alerts, backups, kill switches
@@ -30,48 +30,60 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 
 ## Progress
 
-**Current: G0 — contract freeze (docs only)**
+**Current: G0 amended — contract freeze (docs only)**
 
 | Area | Change |
 |------|--------|
-| Decisions | `.governance/V1_G0_DECISIONS.md` — D1–D7 |
-| Data classes | `.governance/DATA_CLASSIFICATION.md` |
-| INTENT / AGENTS / DONE | Aligned to G0–G7; speech deferred; sign-in before purchase; up to 10/reviewer/day; impression timer |
-| ExecPlans | This file active; beta-release marked foundation-only |
-| CERTIFICATION / RELEASE_RUNBOOK | Honesty: not external RC; product freeze text updated |
+| Decisions | `.governance/V1_G0_DECISIONS.md` amended: D1 global 10/day + 5 PM rotation; D2 all corpora eligible + length-percentile tier; D4 startup consent gate + speech in V1; D6 1 credit = 15 min |
+| Data classes | `.governance/DATA_CLASSIFICATION.md` — training + benchmark rows all eligible for review; submissions never re-enter training/eval without a separate verification |
+| INTENT / AGENTS / DONE | Aligned to amended freeze |
+| ExecPlans | This file active; `beta-release.md` foundation-only |
+| CERTIFICATION / RELEASE_RUNBOOK | Will follow in G0 fix commit |
 
 ## Surprises & discoveries
 
-- Audit: `react-native-google-mobile-ads` v17 `load()` returns `void`; app `.catch` is a real breakage masked by mocks (fix in G3).
+- Audit: `react-native-google-mobile-ads` v17 `load()` returns `void`; app `.catch` throws (fix in G3).
 - Soft ship-cert CI can be green with missing ONNX weights — must not be treated as G4 Done.
-- Preliminary public-review runway ~649 items ≈ tens of reviewer-days — UI must say “up to 10.”
-- Independent review (first pass): FAIL — `docs/DEVICE_PROOF.md` still required post-consent speech upload; fixed to photo-only + speech deferred.
+- Owner directive reversed prior per-reviewer + benchmark-retirement decisions.
 
 ## Decision log
 
-- 2026-09-22: **G0 freeze** per audit — up to 10 per reviewer per NY day; corpus eligibility + benchmark retirement; sign-in before purchase/restore/contribution; raw speech-media **deferred** from V1 disclosures; interstitial = 15 min since last successful impression; F0–F10 not ship-ready; program = G0–G7.
+- 2026-09-22: **G0 first freeze** — up to 10 per reviewer per NY day; benchmark retirement; speech deferred; 1 credit = 5 min; >20 words → 2 credits.
+- 2026-09-22 (later): **G0 amended per owner directive.**
+  - Public review is **global 10 items/day**, all users see the same set.
+  - Rotation at **5:00 PM America/New_York**: close, grant credits, pick new 10 at random.
+  - Import **all** `datasets/` + `training/` + `benchmarks/` rows as `public_review_eligible=true` after PII/dedup; **do not** promote submissions back into training/eval without a separate verified migration.
+  - Length-tier credits: top 50% of `source_char_length_rank` at assignment → 2 credits; else 1 credit.
+  - **1 credit = 15 minutes** ad-free. Rewarded video = 1 credit.
+  - **Startup consent gate** required for every user: T&C + Privacy Policy + "I am 18+" checkboxes; blocks product surfaces until all three checked.
+  - **Raw speech-media upload is in V1**; disclosed in Privacy Policy; account-linked; 30-day purge on withdrawal / deletion.
 
 ## Commands that actually ran (paste)
 
 ```text
-git fetch origin && git pull origin main   # already at 43f9bc6
-# Docs-only gate: no mobile/admin/supabase runtime changes
-# Independent review FAIL on DEVICE_PROOF speech line → fixed
+git fetch origin && git pull origin main   # 43f9bc6
+git checkout -b cursor/v1-g0-contract-freeze-5907
+# G0 first freeze commit
+# Independent review FAIL on DEVICE_PROOF speech line → fix commit
+# Owner directive → G0 amended (this commit)
 ```
 
 ## Remaining work
 
-1. Independent review **PASS** (`79203fd`). Merge G0 when PR can be opened.
-2. **Blocker:** `ManagePullRequest` create failed with GitHub validation `must be a collaborator` — branch is pushed; human/collaborator must open PR from `cursor/v1-g0-contract-freeze-5907` → `main`, or grant collaborator access.
-3. G1: review pool + importer (do not start until G0 merged).
-4. Human blockers unchanged: device matrix, AdMob/RevenueCat consoles, legal hosting, ONNX weights on eval host, production cron.
+1. Independent re-review of amended G0. Merge when PR is openable (collaborator blocker unresolved).
+2. **G1** on branch `cursor/v1-g1-review-pool-5907`: schema, importer, rotation function, admin adjudication, backend tests.
+3. **G2** on branch `cursor/v1-g2-consent-deletion-5907`: startup consent screen, account-linked schemas, speech capture URI, retry queue, withdrawal + account-deletion 30-day purge, Privacy Policy strings.
+4. **G3** on branch `cursor/v1-g3-monetization-5907`: rewrite `AdService` around real SDK events, impression-based interstitial timer, RevenueCat identity, CustomerInfo refresh.
+5. **G4** on branch `cursor/v1-g4-model-device-5907`: attempt exact ONNX fetch + hash + four-class eval; on missing weights, record concrete blocker.
+6. **G5** on branch `cursor/v1-g5-ops-5907`: hosted scheduler cron for 5 PM rotation + 30-day purge; secrets/kill switches/legal URLs blockers.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
-- Exact ONNX weights under `mobile/assets/models/` for four-class eval
-- Physical iPhone/iPad proof
-- Production Supabase cron / scheduler provisioning and monitoring
-- Live Privacy/Terms/support/deletion/`app-ads.txt` hosting
-- App Store Connect + RevenueCat + AdMob production configuration
-- Legal review of bilingual consent before live collection
-- ManagePullRequest create failed once with collaborator validation — retry after fix commit
+- Exact ONNX weights under `mobile/assets/models/` for four-class eval (G4)
+- Physical iPhone/iPad proof (G4/G6)
+- Production Supabase cron / scheduler provisioning and monitoring (G5)
+- Live Privacy/Terms/support/deletion/`app-ads.txt` hosting (G5)
+- App Store Connect + RevenueCat + AdMob production configuration (G3/G5)
+- Legal review of bilingual startup consent + Privacy Policy before live collection (G2)
+- Docker Desktop not available on this agent host → `supabase db reset` runs in CI, not locally
+- `ManagePullRequest` create failed with GitHub `must be a collaborator` — branches are pushed; human must open PRs

@@ -38,8 +38,8 @@ Execute **exactly one** gate per branch/PR. Do not combine adjacent gates. Do no
 | Order | Slice / lane id | Goal | Branch pattern |
 |------:|-----------------|------|----------------|
 | **G0** | `v1-g0-contract` | Freeze corrected product contract (docs only) | `cursor/v1-g0-contract-freeze-*` |
-| **G1** | `v1-g1-review-pool` | Real public-review pool, importer, exclusive lease, admin adjudication | `cursor/v1-g1-review-pool-*` |
-| **G2** | `v1-g2-consent-deletion` | Bilingual consent, withdrawal, truthful privacy, 30-day purge | `cursor/v1-g2-consent-deletion-*` |
+| **G1** | `v1-g1-review-pool` | Global 10/day public-review pool, importer of all corpora, 5 PM rotation, admin adjudication | `cursor/v1-g1-review-pool-*` |
+| **G2** | `v1-g2-consent-deletion` | Startup T&C + Privacy + 18+ gate, raw speech + photo upload, withdrawal, 30-day purge | `cursor/v1-g2-consent-deletion-*` |
 | **G3** | `v1-g3-monetization` | Ads SDK events, impression timer, RevenueCat↔Supabase identity | `cursor/v1-g3-monetization-*` |
 | **G4** | `v1-g4-model-device` | Exact ONNX cert + physical iPhone/iPad evidence | `cursor/v1-g4-model-device-*` |
 | **G5** | `v1-g5-ops` | Hosted scheduler, secrets, legal URLs, alerts, backups | `cursor/v1-g5-ops-*` |
@@ -59,12 +59,14 @@ Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; o
 - Scope: EN↔NE only, Expo iOS/iPadOS, on-device STT+MT and on-device camera OCR for the product path, no PC/cloud inference for core translate or OCR. Temporary Camera files are deleted after retake, exit, or successful processing. Do not request photo-library access unless importing existing images is added later.
 - One model family (IndicTrans2 dist-200M), not four register models. Informal = **तिमी**, not तँ.
 - Never train on `benchmarks/gold/`. Never edit gold references to raise a score.
-- **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated **synthetic** backend/admin seed data only. Never expose active frozen benchmarks for public correction.
+- **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated **synthetic** backend/admin seed data only.
+- V1 public-review pool imports **all** training and benchmark corpora as eligible items (`public_review_eligible=true`) after PII/dedup. Public-review submissions must **not** be promoted back into `benchmarks/gold/` or training corpora until a separate verified migration is signed off.
 - Expo SDK **57** docs only for this release: https://docs.expo.dev/versions/v57.0.0/
+- Every user must accept the startup consent gate (T&C + Privacy Policy + "I am 18+") before reaching any product surface. Guests may then translate locally; signed-in users may additionally contribute.
 - Login is required for **purchase, restore, contribution/public review, and rewards** — never for translation, camera, history, settings, or Learn alphabet.
-- Ordinary guest / non-consenting translation history, microphone audio, transcripts, clipboard, and photos stay local. **After** 18+ versioned contribution consent, eligible **Camera photos** may upload automatically when flags allow. **Raw speech-media upload is deferred** from V1 disclosures. Never upload for guests, under-18, declined/outdated consent, signed-out, or flag-off states.
+- Guest / signed-out / consent-declined translation history, microphone audio, transcripts, clipboard, and photos stay local. After sign-in + startup consent, eligible **Camera photos**, **raw speech recordings**, and **public-review corrections** may upload when the matching flag is on. All uploaded data is tied to the signed-in `user_id`. Never upload for guests, signed-out, or flag-off states.
 - Never put service/secret keys in the app bundle or admin browser code.
-- Monetization boundary: **$0.99/month** ad-free subscription; banners only idle Translate + Learn landing; automatic interstitial **15 min since last successful impression** / max 3 per `America/New_York` day at safe idle transitions (SDK-owned dismiss; remotely disableable); rewarded video = **15** ad-free minutes; one credit = **five** minutes; >20 original words = two credits; reward close **5:00 PM America/New_York**; **up to 10** public reviews per reviewer per NY day; no credit clawback; no automatic training from contributions; RevenueCat identity = Supabase UUID.
+- Monetization boundary: **$0.99/month** ad-free subscription; banners only idle Translate + Learn landing; automatic interstitial **15 min since last successful impression** / max 3 per `America/New_York` day at safe idle transitions (SDK-owned dismiss; remotely disableable); rewarded video = **1 credit / 15 ad-free minutes**; **1 credit = 15 minutes**; top-50%-longest samples at assignment = 2 credits; reward grant at **5:00 PM America/New_York** rotation; **one global 10-item public-review window per NY day**; no credit clawback; no automatic training from contributions; RevenueCat identity = Supabase UUID.
 - Compiling is not Done. See `.agent/DONE.md`.
 - After implementation, run `/independent-reviewer` in a fresh context. Findings become work items.
 - Advance to the next V1 gate only with green gates and no material independent-review findings.
