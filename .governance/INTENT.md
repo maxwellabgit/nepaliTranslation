@@ -1,12 +1,12 @@
 # INTENT
-Last updated: 2026-09-22 (amended per owner directive)
+Last updated: 2026-09-22 (amended after external TestFlight audit at `71c85df`)
 
 ## North Star
 An **offline, on-device iOS / iPadOS app** that translates **English ↔ Nepali** in real time for live conversation and everyday text. Core speech recognition, machine translation, and Camera OCR run on the device. Developed on Windows; shipped via Expo EAS → TestFlight / App Store.
 
 **Optional online services** (account, consented contributions including speech + photo + public-review corrections, rewards, ads, subscription, admin, telemetry) may use Supabase, AdMob, and RevenueCat. They must never be required for core translation, Camera, History, Settings, or Nepali alphabet learning. A failure in any optional service must leave the offline core usable.
 
-**Program status:** Foundation through `9b17ac9` and source slices **F0–F10** (tip `43f9bc6`) are **not** ship-ready. A 2026-09-22 TestFlight finalization audit found blocking gaps in ads SDK contracts, RevenueCat identity, public-review pool, consent/deletion truthfulness, model/device certification, and hosted schedulers. Production V1 readiness is delivered by remediation gates **G0–G7** in [`plans/active/v1-testflight-finalization.md`](../plans/active/v1-testflight-finalization.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](./V1_G0_DECISIONS.md).
+**Program status:** Foundation through `9b17ac9`, source slices **F0–F10** (tip `43f9bc6`), and the follow-on gates **G0–G5** merged to `main` at `71c85df` are **not** ship-ready. A 2026-09-22 external TestFlight audit at that SHA found the integrated build red on GitHub `js-verify`, `playwright-scenarios`, and `supabase`, with additional live blockers in reward-ledger idempotency, 5 PM rotation ownership, reviewed-item retirement, mobile Review UX, admin adjudication, consent-write authorization, real speech-media capture, and neural EN→NE quality. Production V1 readiness is now delivered by remediation gates **R0–R9** in [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md); the audit runbook itself is archived at [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](../docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](./V1_G0_DECISIONS.md). The earlier G0–G7 plan (`plans/active/v1-testflight-finalization.md`) is retained as historical record and marked SUPERSEDED. Nothing labeled "implemented" in this repository has yet been proven "deployed and operating" on hosted infrastructure.
 
 ## Product
 **NepTranslate** — Nepali-first translation companion.
@@ -117,17 +117,19 @@ Flags must be remote-controllable without an app update. Disabling optional flag
 - Audience: general adult (**18+** startup gate); contribution collection requires 18+ acceptance. App is not Kids category. No citizenship checks.
 - Distribution: diagnostic internal TestFlight (optional features off) → evidence gates G1–G6 → small external cohort ≥ seven stable days → public App Store. No "beta," "test," or unfinished language in public App Store metadata.
 
-## Goals (TestFlight finalization — G0–G7)
-- [ ] **G0** Freeze product contract (docs only) — INTENT + V1_G0_DECISIONS + DATA_CLASSIFICATION (merge after independent review)
-- [ ] **G1** Real global-10 public-review pool, importer of all corpora, 5 PM rotation, admin adjudication
-- [ ] **G2** Startup consent gate (T&C + Privacy + 18+), account-linked collection, raw speech + photo upload, withdrawal, 30-day purge
-- [ ] **G3** Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity
-- [ ] **G4** Exact ONNX fetch/hash/four-class eval + physical iPhone/iPad proof
-- [ ] **G5** Hosted scheduler, secrets, legal URLs, telemetry, backups, kill switches
-- [ ] **G6** Internal TestFlight candidate with staged flag enablement
-- [ ] **G7** External cohort ≥ seven stable days + V1 go/no-go
+## Goals (TestFlight finalization — R0–R9)
+- [ ] **R0** Restore honest release baseline (fix js-verify / playwright / supabase-root-cause capture, camera copy, version bump 1.7.0, dedicated `testflight` EAS profile with test ads, build provenance surface)
+- [ ] **R1** Repair reward ledger idempotency, 5 PM NY rotation ownership, DST correctness, exactly-once close and grant, empty/under-10 pool behavior
+- [ ] **R2** Corpus registry with explicit provenance, importer with reject manifest, deduped content hashes, reviewed-item retirement, training/evaluation exclusion enforcement
+- [ ] **R3** Mobile Review workflow (Today's 10, confirm/edit/skip/report) + admin adjudication console + server-enforced eligibility
+- [ ] **R4** Consent authorization derived from `auth.uid()`, guest-to-signed-in mirroring, withdrawal, 30-day linked-data deletion with proof, real speech + photo capture
+- [ ] **R5** Interstitial safe opportunities, foreground-active timer since last impression, offline behavior, rewarded SSV, RevenueCat sandbox matrix, subscription product config
+- [ ] **R6** Neural EN→NE quality lift + new private uncontaminated holdout, without lowering frozen thresholds
+- [ ] **R7** Mobile / iPad UI polish and Windows testing-ground scenario coverage
+- [ ] **R8** Deploy migrations, Edge functions, cron, backups, legal URLs, alerts on staging + rehearsed rollback
+- [ ] **R9** Produce and test the production release candidate; device matrix; external cohort ≥ seven stable NY rotations
 
-Prior F0–F10 source slices remain historical foundation; do not reopen them as the ship program.
+Historical: F0–F10 (`plans/active/beta-release.md`) and G0–G7 (`plans/active/v1-testflight-finalization.md`) remain the recorded foundation; do **not** reopen them as the ship program.
 
 ## Constraints
 - Must: run fully offline for core translate after models are on device

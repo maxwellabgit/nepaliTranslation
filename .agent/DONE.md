@@ -13,15 +13,16 @@ Shared (every lane that touches `mobile/`):
 - [ ] Prefer `cd mobile && npm run verify:ci` when the slice owns the full mobile gate
 - [ ] Diff contains no unrelated files and no gold-reference edits under `benchmarks/gold/`
 - [ ] Contributor known checks / seeds were **not** copied from `benchmarks/gold/`
-- [ ] ExecPlan updated (`plans/active/<lane>.md` or `plans/active/v1-testflight-finalization.md`)
+- [ ] ExecPlan updated (`plans/active/<lane>.md` or `plans/active/v1-testflight-runbook.md`)
 - [ ] `/independent-reviewer` reported no material findings
 
-## V1-wide gates (TestFlight finalization G0–G7)
+## V1-wide gates (TestFlight finalization R0–R9)
 
-Apply on every V1 finalization PR. Gate-specific extras are below.
+Apply on every V1 finalization PR. Gate-specific extras are in `plans/active/v1-testflight-runbook.md`.
 
-- [ ] Only **one** V1 gate in the PR; branch name `cursor/v1-gN-short-name-*`
-- [ ] `plans/active/v1-testflight-finalization.md` Progress / Commands / Remaining work updated
+- [ ] Only **one** V1 remediation gate in the PR; branch name `cursor/v1-rN-short-name-*` (or `release/1.7.0-rc*` for R9)
+- [ ] `plans/active/v1-testflight-runbook.md` Progress / Commands / Remaining work updated
+- [ ] Distinguish "implemented in repo" from "deployed and proven on hosted infrastructure" in the PR body
 - [ ] Core translate path still has **no** hard dependency on Supabase, AdMob, RevenueCat, or admin
 - [ ] No production secret, tunnel URL, test password (`1234`), service role, or embedded review-sync secret introduced
 - [ ] Optional-service failure leaves Translate, Camera, History, Settings, and Learn usable

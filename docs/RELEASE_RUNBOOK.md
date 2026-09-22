@@ -1,10 +1,10 @@
 # Release runbook (TestFlight → App Store)
 
-**Status: BLOCKED — G0–G7 evidence incomplete; founder Apple Connect / legal / bilingual sign-off / physical device matrix / hosted ops**
+**Status: BLOCKED — R0–R9 evidence incomplete; founder Apple Connect / legal / bilingual sign-off / physical device matrix / hosted ops**
 
-Do not claim App Store submission or external RC from this document or from Windows CI. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-testflight-finalization.md`](../plans/active/v1-testflight-finalization.md).
+Do not claim App Store submission or external RC from this document or from Windows CI. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md). Audit trail: [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](./NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md).
 
-**Honesty:** Tip `43f9bc6` is suitable for **diagnostic internal TestFlight** with contribution, live ads, and paywall **off** — not as the external release candidate.
+**Honesty:** Neither `43f9bc6` nor `71c85df` (the G0–G5 stack merged to `main`) is an external release candidate. `71c85df` was audited 2026-09-22 and found red on `js-verify`, `playwright-scenarios`, and `supabase`. The first useful milestone is a **green R0+R1 diagnostic internal TestFlight** with contribution, live ads, paywall, telemetry, and deletion processing **off**, targeting **staging** services with **Google test ad units**.
 
 ## Product freeze (must match INTENT)
 
@@ -19,11 +19,31 @@ Do not claim App Store submission or external RC from this document or from Wind
 
 ## Sequence
 
-1. **G0–G5 evidence** — Contract freeze, review pool, consent/deletion, monetization repair, model/device cert, hosted ops (see ExecPlan).
-2. **Internal TestFlight (G6)** — Exact build with optional feature flags **off**, then enable one subsystem at a time (auth → review/text → photos → rewards → banners/rewarded → paywall). Smoke: Translate, Camera, Learn, History, Settings; airplane mode; Mark incorrect; iPhone + iPad. Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) on this build. Use **test ads** and **sandbox** purchases.
-3. **External TestFlight cohort (G7)** — Small bilingual EN/NE cohort. Enable contribution collection only after legal approval. Enable **automatic interstitial only** after explicit go/no-go.
-4. **Stability gate** — Seven consecutive America/New_York days with no open P0/P1, deletion deadline breaches, privacy leaks, crash regressions, or reward ledger inconsistencies.
-5. **Freeze + phased public** — Complete freeze worksheet, rehearse rollback, submit the **exact** tested build.
+1. **R0 (this branch class) + R1 evidence** — Green js-verify / playwright / supabase on the exact commit; camera copy accurate; version `1.7.0`; dedicated `testflight` EAS profile with test ads; build-provenance surface reachable in Settings; forward-only migration repairs reward idempotency / 5 PM ownership / DST / exactly-once close.
+2. **Internal TestFlight (bridge R1 → R4)** — Build R0+R1 commit with `testflight` profile, target **staging** Supabase, `EXPO_PUBLIC_ADS_ENV=test`, and remote flag snapshot below (see also `plans/active/v1-testflight-runbook.md`):
+
+   | Flag | First internal build |
+   |---|---:|
+   | `contribution_text_enabled` | false |
+   | `contribution_speech_enabled` | false |
+   | `contribution_photos_enabled` | false |
+   | `rewards_enabled` | false |
+   | `network_ads_enabled` | false |
+   | `rewarded_ads_enabled` | false |
+   | `automatic_interstitial_enabled` | false |
+   | `paywall_enabled` | false |
+   | `telemetry_enabled` | false |
+   | `deletion_processing_enabled` | false |
+   | `learn_enabled` | true |
+
+   Smoke: startup consent (EN + नेपाली), typed Translate, Camera, Learn, History, Settings, airplane mode, iPhone + iPad. Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) on this build. Physical-device / mic / camera / StoreKit / AdMob / interstitial / crash evidence live here, not in CI.
+
+3. **R2 → R5** — Enable one subsystem at a time for internal accounts (review + admin adjudication → speech + photo contribution → rewarded/interstitial ads → RevenueCat paywall). Prove each in the harness first, then on device, then flip on for a limited internal cohort. Preserve the previous kill-switch state for immediate rollback.
+4. **R6** — Neural EN→NE quality lift and new **private** uncontaminated holdout. Do not lower the frozen thresholds.
+5. **R7 + R8** — Mobile/iPad polish and Windows testing-ground coverage; deploy migrations/functions/cron/backups/legal URLs on staging and rehearse rollback.
+6. **External TestFlight cohort (R9)** — Small bilingual EN/NE cohort. Enable contribution collection only after legal approval. Enable **automatic interstitial only** after explicit go/no-go.
+7. **Stability gate** — Seven consecutive America/New_York days with no open P0/P1, deletion deadline breaches, privacy leaks, crash regressions, or reward ledger inconsistencies.
+8. **Freeze + phased public** — Complete freeze worksheet, rehearse rollback, submit the **exact** tested build with unique remote build number.
 
 ## Exact TestFlight go/no-go (external RC)
 

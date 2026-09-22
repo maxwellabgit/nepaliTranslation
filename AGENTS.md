@@ -1,6 +1,6 @@
 # NepTranslate — agent operating system
 
-Offline-first iOS / iPadOS English ↔ Nepali translator (`mobile/`). Intent lives in [`.governance/INTENT.md`](.governance/INTENT.md). Architecture lives in [`training/ARCHITECTURE.md`](training/ARCHITECTURE.md). Gold eval lives in [`benchmarks/gold/`](benchmarks/gold/). **Ship program:** TestFlight finalization gates **G0–G7** in [`plans/active/v1-testflight-finalization.md`](plans/active/v1-testflight-finalization.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](.governance/V1_G0_DECISIONS.md). Prior F0–F10 source work is foundation only (see [`plans/active/beta-release.md`](plans/active/beta-release.md)).
+Offline-first iOS / iPadOS English ↔ Nepali translator (`mobile/`). Intent lives in [`.governance/INTENT.md`](.governance/INTENT.md). Architecture lives in [`training/ARCHITECTURE.md`](training/ARCHITECTURE.md). Gold eval lives in [`benchmarks/gold/`](benchmarks/gold/). **Ship program (active):** TestFlight finalization remediation gates **R0–R9** in [`plans/active/v1-testflight-runbook.md`](plans/active/v1-testflight-runbook.md), driven by the 2026-09-22 external audit archived at [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](.governance/V1_G0_DECISIONS.md). Prior F0–F10 ([`plans/active/beta-release.md`](plans/active/beta-release.md)) and G0–G7 ([`plans/active/v1-testflight-finalization.md`](plans/active/v1-testflight-finalization.md), SUPERSEDED) are historical foundation only.
 
 A fresh agent must be able to enter this repo and know the product, the current lane, remaining work, and how to prove Done. Chat is disposable. These files are not.
 
@@ -31,26 +31,28 @@ Do **not** start lane 5 until lane 1 is clean. Do **not** claim translation qual
 
 ### Production V1 TestFlight finalization (dependency order)
 
-Full-business V1 readiness uses **one** living ExecPlan: `plans/active/v1-testflight-finalization.md`.
+Full-business V1 readiness uses **one** living ExecPlan: `plans/active/v1-testflight-runbook.md`. The 2026-09-22 external audit that opened this program is archived at `docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`.
 
-Execute **exactly one** gate per branch/PR. Do not combine adjacent gates. Do not start G1+ until G0 is merged and independent review is clean.
+Execute **exactly one** gate per branch/PR. Do not combine adjacent gates. Do not start R1+ until R0 is merged and independent review is clean. R0+R1 may be **stacked** for merging (the audit's exit rule) — but they still live on separate branches and separate PRs.
 
 | Order | Slice / lane id | Goal | Branch pattern |
 |------:|-----------------|------|----------------|
-| **G0** | `v1-g0-contract` | Freeze corrected product contract (docs only) | `cursor/v1-g0-contract-freeze-*` |
-| **G1** | `v1-g1-review-pool` | Global 10/day public-review pool, importer of all corpora, 5 PM rotation, admin adjudication | `cursor/v1-g1-review-pool-*` |
-| **G2** | `v1-g2-consent-deletion` | Startup T&C + Privacy + 18+ gate, raw speech + photo upload, withdrawal, 30-day purge | `cursor/v1-g2-consent-deletion-*` |
-| **G3** | `v1-g3-monetization` | Ads SDK events, impression timer, RevenueCat↔Supabase identity | `cursor/v1-g3-monetization-*` |
-| **G4** | `v1-g4-model-device` | Exact ONNX cert + physical iPhone/iPad evidence | `cursor/v1-g4-model-device-*` |
-| **G5** | `v1-g5-ops` | Hosted scheduler, secrets, legal URLs, alerts, backups | `cursor/v1-g5-ops-*` |
-| **G6** | `v1-g6-internal-tf` | Internal TestFlight candidate, staged flags | `cursor/v1-g6-internal-tf-*` |
-| **G7** | `v1-g7-external-v1` | External cohort ≥7 days + V1 go/no-go | `cursor/v1-g7-external-v1-*` |
+| **R0** | `v1-r0-release-baseline` | Restore honest release baseline: fix js-verify + playwright, capture supabase root cause, doc rewrites, camera copy, version 1.7.0, `testflight` EAS profile with test ads, build-provenance surface | `cursor/v1-r0-release-baseline-*` |
+| **R1** | `v1-r1-review-ledger-rotation` | Forward-only migration: reward ledger idempotency on `(user_id, source_type, source_id)`, 5 PM NY rotation ownership, DST, `p_as_of`, exactly-once close/grant, empty/under-10 pool behavior | `cursor/v1-r1-review-ledger-rotation-*` |
+| **R2** | `v1-r2-review-corpus-import` | Explicit corpus registry, importer with reject manifest, deduped content hashes, reviewed-item retirement, training/eval exclusion enforcement | `cursor/v1-r2-review-corpus-import-*` |
+| **R3** | `v1-r3-review-product-ui` | Mobile Review workflow (Today's 10, confirm/edit/skip/report) + admin adjudication console + server-enforced eligibility | `cursor/v1-r3-review-product-ui-*` |
+| **R4** | `v1-r4-consent-media-deletion` | Consent write authorization from `auth.uid()`, withdrawal, 30-day linked-data deletion with proof, real speech + photo capture | `cursor/v1-r4-consent-media-deletion-*` |
+| **R5** | `v1-r5-monetization-device-proof` | Interstitial safe opportunities, foreground timer since last impression, offline path, rewarded SSV, RevenueCat sandbox matrix | `cursor/v1-r5-monetization-device-proof-*` |
+| **R6** | `v1-r6-model-ship` | Neural EN→NE quality lift + new private uncontaminated holdout, without lowering frozen thresholds | `cursor/v1-r6-model-ship-*` |
+| **R7** | `v1-r7-ui-testing-ground` | Mobile / iPad UI polish and Windows testing-ground scenario coverage | `cursor/v1-r7-ui-testing-ground-*` |
+| **R8** | `v1-r8-production-ops` | Deploy migrations, Edge functions, cron, backups, legal URLs, alerts on staging + rehearsed rollback | `cursor/v1-r8-production-ops-*` |
+| **R9** | `release/1.7.0-rc*` | Produce and test the production release candidate; device matrix; external cohort ≥ seven stable NY rotations | `release/1.7.0-rc*` |
 
 **Dependency rule:** core translation must not depend on Supabase, AdMob, RevenueCat, or admin. Optional services fail soft.
 
-**Do not mix** a core quality lane (1–5) and a V1 finalization gate in the same PR.
+**Do not mix** a core quality lane (1–5) and a V1 remediation gate in the same PR.
 
-Prior F0–F10 (merged through `43f9bc6`) and beta foundation through `9b17ac9` remain source baseline. Do not reopen F-slices as the ship program; supersede conflicting boundary text with INTENT + G0 decisions.
+Prior F0–F10 (`plans/active/beta-release.md`, merged through `43f9bc6`), the G0–G7 program (`plans/active/v1-testflight-finalization.md`, merged to `main` at `71c85df` — **SUPERSEDED**, red at that SHA on js-verify/playwright/supabase), and the beta foundation through `9b17ac9` remain source baseline. Do not reopen those plans as the ship program; supersede conflicting boundary text with INTENT + V1_G0_DECISIONS + the R0–R9 runbook.
 
 Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; overnight GPU FT on the founder machine; Apple/Supabase/AdMob/RevenueCat console setup; legal copy; bilingual Nepali content sign-off; live interstitial enablement; hosted cron provisioning. Record those as blockers, do not invent results.
 
@@ -82,8 +84,10 @@ Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; o
 | `AGENTS.md` | How an AI behaves here |
 | `.agent/PLANS.md` | ExecPlan contract |
 | `plans/active/<lane>.md` | Where this mission is |
-| `plans/active/v1-testflight-finalization.md` | G0–G7 ship program + proof log |
+| `plans/active/v1-testflight-runbook.md` | R0–R9 ship program + proof log (active) |
+| `plans/active/v1-testflight-finalization.md` | Historical G0–G7 log (SUPERSEDED) |
 | `plans/active/beta-release.md` | Historical F0–F10 foundation log |
+| `docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md` | 2026-09-22 external audit that opened R0–R9 |
 | `benchmarks/gold/` + `mobile` verify scripts | How you prove translation quality |
 
 When a lesson should stick, add a short rule here or in `.cursor/rules/` — do not rely on chat memory.
