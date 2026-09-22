@@ -345,6 +345,26 @@ export const en = {
   'ads.signInRequiredTitle': 'Sign in required',
   'ads.signInRequiredBody':
     'Sign in to earn ad-free time from an optional ad.',
+
+  'paywall.title': 'NepTranslate Ad-Free',
+  'paywall.body':
+    'Remove banners, house ads, and automatic interstitials. Translation, Camera, and Learn stay free for everyone.',
+  'paywall.priceFallback': 'Price from the App Store',
+  'paywall.subscribe': 'Subscribe',
+  'paywall.subscribeA11y': 'Subscribe to ad-free',
+  'paywall.restore': 'Restore Purchases',
+  'paywall.restoreA11y': 'Restore previous purchases',
+  'paywall.manage': 'Manage Subscription',
+  'paywall.manageA11y': 'Manage Apple subscription',
+  'paywall.active': 'Ad-free is active on this account.',
+  'paywall.expired': 'Subscription expired. You can resubscribe anytime.',
+  'paywall.billingRetry':
+    'Billing needs attention in your Apple ID settings.',
+  'paywall.unavailable': 'Purchases are unavailable on this device right now.',
+  'paywall.restoreEmpty': 'No previous subscription found to restore.',
+  'settings.subscription': 'Subscription',
+  'settings.openPaywall': 'Ad-free subscription',
+  'settings.openPaywallA11y': 'Open ad-free subscription options',
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -53,27 +53,31 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F5 — independent review PASS (`657783b`); merge PR #8 → start F6**
+**Current: F6 — RevenueCat / StoreKit (IR findings fixed; re-review)**
 
 | Area | Change |
 |------|--------|
-| Banner placements | Idle Translate (`translate_idle`) + Learn landing only; removed result/contribution banners |
-| Interstitial | `decideInterstitialPresentation` (15m FG, ≤3 NY day, forbidden transitions); AdMob adapter; SDK dismiss; remote `automatic_interstitial_enabled` default off; Learn-only idle_after_task opportunity |
-| Config | Interstitial unit ID in `adConfig` / `app.config.js`; prod rejects Google test IDs |
-| Tests | Interstitial + banner placement policy suites; ads coverage ≥80% lines; integration expects idle house / no result ads |
+| PurchaseService | Fake + production soft-fail; `react-native-purchases`; public RC Apple key only; offline cache |
+| Paywall | Bilingual sheet (Subscribe / Restore / Manage); Settings + house-ad CTA; `paywall_enabled` |
+| Webhook | Bearer-verified; `service_apply_revenuecat_event` idempotent |
+| Ads | `hasSubscription` wired through AdSlot / Rewarded / InterstitialController; `cancelled` still entitled until `expires_at` |
+| Tests | Purchase/paywall unit + native mock + ad-suppress; pgTAP `14_f6_subscription` (info_schema exists check); Deno webhook shape |
+| Commands | unit/integration/`verify:translate`/`test:coverage:beta`/`tsc`/`eslint` green; CI supabase+js-verify green after pgTAP fix |
 
-**Previous: F4** — PASS (`5764410`); merged PR #7.
+**Previous: F5** — PASS (`657783b`); merged PR #8.
 
 ## Remaining work
 
-1. Merge F5 PR #8 → start F6 (RevenueCat / StoreKit).
+1. Independent re-review PASS → merge F6 → start F7.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
 - On-device STT (`expo-speech-recognition`) does not produce a durable audio file URI → speech auto-upload path is gated + outbox-ready but not wired to live mic capture
 - Physical iPhone / iPad proof, CocoaPods/ML Kit/AdMob/RevenueCat together
+- App Store Connect $0.99 subscription product + RevenueCat dashboard + webhook secret (human)
 - App Store Connect $0.99 subscription product + legal Privacy/Terms URLs (legal review before live media collection)
 - Bilingual human sign-off; external TestFlight cohort
 - Automatic interstitial enablement is a deliberate release go/no-go, not implied by code landing
+- StoreKit sandbox / TestFlight purchase-restore-expire matrix is human-gated
 - Full Dynamic Type + VoiceOver pass (F10 device matrix)

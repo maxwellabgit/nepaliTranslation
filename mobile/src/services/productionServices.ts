@@ -1,6 +1,7 @@
 import * as Network from 'expo-network';
 import { DEFAULT_FEATURE_FLAGS } from '../app/featureFlags';
 import { createProductionAdService } from '../features/ads/AdService';
+import { createProductionPurchaseService } from '../features/subscription/PurchaseService';
 import { flushPendingDrafts } from './contributionSync';
 import { flushPendingMedia } from './mediaSync';
 import { getSupabase } from './supabase';
@@ -39,6 +40,7 @@ function mapRemoteFlags(data: Record<string, unknown>) {
  */
 export function createProductionServices(): AppServices {
   const ads = createProductionAdService();
+  const purchases = createProductionPurchaseService();
   let lastAuthError: string | null = null;
   const netListeners = new Set<(offline: boolean) => void>();
   let offline = false;
@@ -63,6 +65,7 @@ export function createProductionServices(): AppServices {
 
   // UMP before ads; soft-fail leaves canRequestAds false → house only.
   void ads.prepareConsentAndSdk();
+  void purchases.configure();
 
   return {
     auth: {
@@ -118,5 +121,6 @@ export function createProductionServices(): AppServices {
       },
     },
     ads,
+    purchases,
   };
 }

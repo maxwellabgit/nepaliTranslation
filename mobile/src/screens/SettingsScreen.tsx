@@ -21,6 +21,7 @@ import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
 import { StatusBanner } from '../components/StatusBanner';
 import { t, useNetworkOffline, useSetUiLang, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
+import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 
 const INAPPROPRIATE_AD_HELP =
   'mailto:support@neptranslate.app?subject=Inappropriate%20ad%20report';
@@ -60,6 +61,7 @@ export function SettingsScreen({
   const auth = useAuth();
   const services = useServices();
   const consent = services.ads.getConsentState();
+  const subscription = useSubscriptionOptional();
 
   const refreshAccountSummary = auth.refreshAccountSummary;
   const authStatus = auth.status;
@@ -297,6 +299,22 @@ export function SettingsScreen({
             <Text style={dynamic.link}>{t('settings.reportAd', lang)}</Text>
           </Pressable>
         </View>
+
+        {subscription?.paywallEnabled ? (
+          <View style={dynamic.section} testID="settings-subscription">
+            <Text style={dynamic.sectionLabel}>
+              {t('settings.subscription', lang)}
+            </Text>
+            <Pressable
+              onPress={() => subscription.openPaywall()}
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.openPaywallA11y', lang)}
+              testID="settings-open-paywall"
+            >
+              <Text style={dynamic.link}>{t('settings.openPaywall', lang)}</Text>
+            </Pressable>
+          </View>
+        ) : null}
 
         <View style={dynamic.section}>
           <Text style={dynamic.sectionLabel}>{t('settings.about', lang)}</Text>

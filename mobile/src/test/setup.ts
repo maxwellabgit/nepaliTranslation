@@ -256,8 +256,6 @@ jest.mock('expo-camera', () => {
   };
 });
 
-jest.mock('../features/subscription', () => ({}), { virtual: true });
-
 beforeEach(async () => {
   setCameraTestFixture(null);
   (globalThis as { __nepSecureStore?: Map<string, string> }).__nepSecureStore?.clear();

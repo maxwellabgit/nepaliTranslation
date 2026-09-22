@@ -2,6 +2,7 @@ import type { AdAdapter } from '../features/ads/adMiddleware';
 import type { FeatureFlags } from '../app/featureFlags';
 import type { FlushResult } from './contributionSync';
 import type { MediaFlushResult } from './mediaSync';
+import type { PurchaseService } from '../features/subscription/PurchaseService';
 
 /** Optional online identity boundary. */
 export type AuthService = {
@@ -58,4 +59,5 @@ export type AppServices = {
   entitlement: EntitlementService;
   network: NetworkService;
   ads: AdService;
+  purchases: PurchaseService;
 };

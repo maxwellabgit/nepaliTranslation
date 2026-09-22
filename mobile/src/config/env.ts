@@ -4,6 +4,8 @@ export type PublicEnv = {
   supabaseUrl: string;
   supabaseAnonKey: string;
   authConfigured: boolean;
+  /** RevenueCat public Apple API key only — never a webhook/secret key. */
+  revenueCatAppleApiKey?: string;
 };
 
 function readExtra(): Record<string, unknown> {
@@ -45,5 +47,11 @@ export function readPublicEnv(
     supabaseUrl,
     supabaseAnonKey: looksSecret ? '' : supabaseAnonKey,
     authConfigured: Boolean(supabaseUrl && supabaseAnonKey && !looksSecret),
+    revenueCatAppleApiKey: (
+      env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY ??
+      (typeof extra.revenueCatAppleApiKey === 'string'
+        ? extra.revenueCatAppleApiKey
+        : '')
+    ).trim(),
   };
 }

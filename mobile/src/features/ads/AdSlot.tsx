@@ -21,6 +21,7 @@ import {
 import { HouseAd } from './HouseAd';
 import type { AdSurface } from '../entitlements/decideAdPresentation';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
+import { useSubscriptionOptional } from '../subscription/SubscriptionProvider';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { NativeOrPlaceholderBanner } from './NativeBanner';
 
@@ -40,6 +41,8 @@ type Props = {
   lastHouseBannerAtMs?: number | null;
   onShown?: (kind: 'banner' | 'house') => void;
   onDismissHouse?: () => void;
+  /** Opens bilingual paywall from house-ad CTA when paywall flag is on. */
+  onPreferNoAds?: () => void;
   adapter?: AdAdapter;
   /** When false, skip planning (e.g. no completed translate yet). */
   eligible?: boolean;
@@ -65,11 +68,13 @@ export function AdSlot({
   lastHouseBannerAtMs: lastHouseProp,
   onShown,
   onDismissHouse,
+  onPreferNoAds,
   adapter: injected,
   eligible = true,
 }: Props) {
   const services = useServices();
   const entitlement = useEntitlementOptional();
+  const subscription = useSubscriptionOptional();
   const flags = useFeatureFlags();
   const [label, setLabel] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -87,6 +92,8 @@ export function AdSlot({
   const adapter = injected ?? services.ads.adapter;
   const earnedAdFreeUntilMs = entitlement?.earnedAdFreeUntilMs ?? null;
   const trustedNowMs = entitlement?.trustedNow() ?? null;
+  const subscribed =
+    hasSubscription || Boolean(subscription?.hasSubscription());
 
   const lastNetworkBannerAtMs =
     lastNetworkProp !== undefined ? lastNetworkProp : storedNetworkAt;
@@ -136,7 +143,7 @@ export function AdSlot({
       const plan = planAdPlacement({
         surface,
         networkAdsEnabled: flags.networkAdsEnabled,
-        hasSubscription,
+        hasSubscription: subscribed,
         earnedAdFreeUntilMs,
         trustedNowMs,
         offline,
@@ -193,7 +200,7 @@ export function AdSlot({
     eligible,
     entitlement,
     flags.networkAdsEnabled,
-    hasSubscription,
+    subscribed,
     keyboardVisible,
     lastHouseBannerAtMs,
     lastHouseProp,
@@ -219,6 +226,12 @@ export function AdSlot({
           setDismissed(true);
           onDismissHouse?.();
         }}
+        onPreferNoAds={
+          onPreferNoAds ??
+          (flags.paywallEnabled
+            ? () => subscription?.openPaywall()
+            : undefined)
+        }
       />
     );
   }

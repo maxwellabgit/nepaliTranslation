@@ -19,6 +19,11 @@
     "branches": 40,
     "lines": 54
   },
+  "src/features/subscription/": {
+    "statements": 84.03,
+    "branches": 73.52,
+    "lines": 88.54
+  },
   "src/services/contributionSync.ts": {
     "statements": 3.33,
     "branches": 0,

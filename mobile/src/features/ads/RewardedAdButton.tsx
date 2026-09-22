@@ -5,6 +5,7 @@ import { AppButton } from '../../components/AppPrimitives';
 import { t, useUiLang } from '../../i18n';
 import { useAuth } from '../auth/AuthProvider';
 import { useEntitlement } from '../entitlements/EntitlementProvider';
+import { useSubscriptionOptional } from '../subscription/SubscriptionProvider';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { useServices } from '../../services/ServiceContext';
 import { resolveAdUnitConfig } from './adConfig';
@@ -33,6 +34,7 @@ export function RewardedAdButton({
 }: Props) {
   const auth = useAuth();
   const entitlement = useEntitlement();
+  const subscription = useSubscriptionOptional();
   const flags = useFeatureFlags();
   const services = useServices();
   const lang = useUiLang();
@@ -40,6 +42,8 @@ export function RewardedAdButton({
   const cta = t('ads.rewardedCta', lang);
 
   const offline = offlineProp ?? services.network.isOffline();
+  const subscribed =
+    hasSubscription || Boolean(subscription?.hasSubscription());
 
   const onPress = useCallback(async () => {
     if (busy) return;
@@ -58,7 +62,7 @@ export function RewardedAdButton({
         surface: 'contribution_result',
         networkAdsEnabled: flags.networkAdsEnabled,
         rewardedAdsEnabled: flags.rewardedAdsEnabled,
-        hasSubscription,
+        hasSubscription: subscribed,
         earnedAdFreeUntilMs: entitlement.earnedAdFreeUntilMs,
         trustedNowMs: entitlement.trustedNow(),
         offline,
@@ -113,7 +117,7 @@ export function RewardedAdButton({
     entitlement,
     flags.networkAdsEnabled,
     flags.rewardedAdsEnabled,
-    hasSubscription,
+    subscribed,
     lang,
     offline,
     services.ads,
@@ -121,6 +125,7 @@ export function RewardedAdButton({
 
   if (auth.status !== 'signed-in') return null;
   if (!flags.rewardedAdsEnabled) return null;
+  if (subscribed) return null;
 
   return (
     <AppButton

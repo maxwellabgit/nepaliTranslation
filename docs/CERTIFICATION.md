@@ -30,7 +30,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 
 | Item | Status | Notes |
 |------|--------|--------|
-| Subscription US **$0.99/month** removes every ad | **Not done** | F6 — contract updated in F0; runtime still stub/$0.49 era |
+| Subscription US **$0.99/month** removes every ad | **Partial / source-proven** | F6 PurchaseService + paywall + webhook; StoreKit/TestFlight matrix = human gate |
 | Banners only idle Translate + Learn landing | **Source-proven** | F5 — placements + policy tests; device AdMob = human gate |
 | Automatic interstitial: 15 foreground min, ≤3/NY day, safe idle only, SDK dismiss | **Partial / source-proven** | F5 policy + flag (default off); device + external-beta go/no-go still required |
 | Rewarded video opt-in; **15** ad-free minutes after SSV | **Partial / source-proven** | F4 schedule + SSV tests at 15 min; device AdMob proof = human gate |

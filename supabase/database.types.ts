@@ -96,6 +96,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      purchased_subscriptions: {
+        Row: {
+          user_id: string;
+          status: 'none' | 'active' | 'expired' | 'billing_retry' | 'cancelled';
+          product_id: string | null;
+          expires_at: string | null;
+          rc_app_user_id: string | null;
+          last_event_id: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          status?: 'none' | 'active' | 'expired' | 'billing_retry' | 'cancelled';
+          product_id?: string | null;
+          expires_at?: string | null;
+          rc_app_user_id?: string | null;
+          last_event_id?: string | null;
+        };
+        Update: {
+          status?: 'none' | 'active' | 'expired' | 'billing_retry' | 'cancelled';
+          product_id?: string | null;
+          expires_at?: string | null;
+          rc_app_user_id?: string | null;
+          last_event_id?: string | null;
+        };
+        Relationships: [];
+      };
       app_config: {
         Row: {
           id: number;
@@ -139,6 +166,17 @@ export type Database = {
     Functions: {
       service_lease_contribution_task: {
         Args: { p_user_id: string };
+        Returns: Json;
+      };
+      service_apply_revenuecat_event: {
+        Args: {
+          p_provider_event_id: string;
+          p_payload_hash: string;
+          p_app_user_id: string;
+          p_event_type: string;
+          p_product_id?: string | null;
+          p_expires_at?: string | null;
+        };
         Returns: Json;
       };
     };
