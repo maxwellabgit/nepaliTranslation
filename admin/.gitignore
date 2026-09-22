@@ -1,0 +1,6 @@
+# Admin SPA — never commit secrets; use VITE_SUPABASE_ANON_KEY only.
+node_modules/
+dist/
+.env
+.env.local
+*.local

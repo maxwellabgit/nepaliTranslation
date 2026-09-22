@@ -30,7 +30,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 
 | Item | Status | Notes |
 |------|--------|--------|
-| Subscription US **$0.99/month** removes every ad | **Partial / source-proven** | F6 PurchaseService + paywall + webhook; StoreKit/TestFlight matrix = human gate |
+| Subscription US **$0.99/month** removes every ad | **Partial / source-proven** | F6 — PurchaseService + paywall + webhook; cancelled entitled until expiry; StoreKit/TestFlight matrix = human gate |
 | Banners only idle Translate + Learn landing | **Source-proven** | F5 — placements + policy tests; device AdMob = human gate |
 | Automatic interstitial: 15 foreground min, ≤3/NY day, safe idle only, SDK dismiss | **Partial / source-proven** | F5 policy + flag (default off); device + external-beta go/no-go still required |
 | Rewarded video opt-in; **15** ad-free minutes after SSV | **Partial / source-proven** | F4 schedule + SSV tests at 15 min; device AdMob proof = human gate |
@@ -65,6 +65,15 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Camera OCR offline | Source path + fixture; **native OCR device-only** | |
 | Learn alphabet offline | **Source-proven** | |
 
+## Admin console (F7)
+
+| Item | Status | Notes |
+|------|--------|--------|
+| Dashboard / review / alerts / deletions / flags / dataset staging | **Source-proven** | `admin/` SPA + `admin-api` router; Vitest + Deno + pgTAP |
+| Server allowlist via `private.admin_users`; revoked loses next request | **Source-proven** | `service_assert_admin`; pgTAP revoked/unknown |
+| Non-admin 403; no service key in browser; media preview audited | **Source-proven** | Anon + JWT only; `admin_media_preview` → `audit_log` |
+| Live allowlist ops + Playwright signed-in triage | Human-gated | Insert/revoke operators in Supabase; Playwright not automated in F7 |
+
 ## Remaining human gates
 
 - AdMob EAS on physical iPhone/iPad (banner, rewarded, interstitial) with UMP
@@ -73,3 +82,4 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 - RevenueCat / StoreKit $0.99 sandbox + TestFlight matrix
 - Bilingual Learn alphabet + UI sign-off
 - Automatic interstitial deliberate go/no-go after external beta stability
+- Admin allowlist operators in production Supabase + signed-in Playwright triage

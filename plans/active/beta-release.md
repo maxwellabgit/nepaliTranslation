@@ -37,7 +37,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F3** — Consented speech/photo ingestion and private storage — independent review PASS (`efaae53`)
 - [x] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review PASS (`5764410`)
 - [x] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests — independent review PASS (`657783b`)
-- [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
+- [x] **F6** — RevenueCat / StoreKit $0.99 subscription — independent review PASS; merged PR #9
 - [ ] **F7** — Protected operational admin console
 - [ ] **F8** — Telemetry, legal/store surfaces, security, dependency triage
 - [ ] **F9** — Exact model certification + extended Windows automation
@@ -53,26 +53,27 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F6 — RevenueCat / StoreKit (IR findings fixed; re-review)**
+**Current: F7 — protected operational admin console (implementing → independent review)**
 
 | Area | Change |
 |------|--------|
-| PurchaseService | Fake + production soft-fail; `react-native-purchases`; public RC Apple key only; offline cache |
-| Paywall | Bilingual sheet (Subscribe / Restore / Manage); Settings + house-ad CTA; `paywall_enabled` |
-| Webhook | Bearer-verified; `service_apply_revenuecat_event` idempotent |
-| Ads | `hasSubscription` wired through AdSlot / Rewarded / InterstitialController; `cancelled` still entitled until `expires_at` |
-| Tests | Purchase/paywall unit + native mock + ad-suppress; pgTAP `14_f6_subscription` (info_schema exists check); Deno webhook shape |
-| Commands | unit/integration/`verify:translate`/`test:coverage:beta`/`tsc`/`eslint` green; CI supabase+js-verify green after pgTAP fix |
+| Migration | `20260922010000_f7_admin_ops.sql` — `service_assert_admin` + dashboard/review/alerts/deletions/flags/dataset/media-preview RPCs |
+| API | `admin-api` router: JWT → assert admin → service RPCs; media sign + audit; CORS soft via `ADMIN_ORIGIN` |
+| Admin SPA | `admin/` Vite+React — dashboard, review (+ signed preview), alerts, deletions, flags, dataset staging; anon+JWT only |
+| Tests | Deno `admin_api_test` (401/403/ok); pgTAP `15_f7_admin_ops`; Vitest API 403 handling; CI `backend-gate` admin job |
+| Commands | `cd admin && npm test`; `deno test … supabase/functions/tests`; pgTAP via CI when Docker unavailable locally |
 
-**Previous: F5** — PASS (`657783b`); merged PR #8.
+**Previous: F6** — PASS; merged PR #9 (`0fc3b1f`).
 
 ## Remaining work
 
-1. Independent re-review PASS → merge F6 → start F7.
+1. Independent review PASS → merge F7 → start F8.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
+- Playwright signed-in admin triage/export/deletion not automated in F7 (needs live allowlisted session)
+- Production `private.admin_users` allowlist insert/revoke remains human-gated
 - On-device STT (`expo-speech-recognition`) does not produce a durable audio file URI → speech auto-upload path is gated + outbox-ready but not wired to live mic capture
 - Physical iPhone / iPad proof, CocoaPods/ML Kit/AdMob/RevenueCat together
 - App Store Connect $0.99 subscription product + RevenueCat dashboard + webhook secret (human)

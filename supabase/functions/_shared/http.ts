@@ -56,6 +56,7 @@ export function mapRpcError(errText: string): ErrorCode | null {
   if (lower.includes("not_found") || lower.includes("p0002")) return "not_found";
   if (lower.includes("invalid_payload") || lower.includes("22023")) return "invalid_payload";
   if (lower.includes("unauthorized") || lower.includes("28000")) return "unauthorized";
+  if (lower.includes("forbidden") || lower.includes("42501")) return "forbidden";
   return null;
 }
 
