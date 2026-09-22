@@ -24,7 +24,7 @@ export type DeletionFailureCode =
   | 'apple_revoke_failed';
 
 export type DeletionClientResult =
-  | { ok: true }
+  | { ok: true; scheduled?: boolean; deletionDueAt?: string | null }
   | {
       ok: false;
       code: DeletionFailureCode;
@@ -228,12 +228,24 @@ export async function performAccountDeletion(
   }
 
   if (res.ok) {
+    let scheduled = false;
+    let deletionDueAt: string | null = null;
+    try {
+      const body = (await res.json()) as {
+        scheduled?: boolean;
+        deletion_due_at?: string | null;
+      };
+      scheduled = Boolean(body.scheduled);
+      deletionDueAt = body.deletion_due_at ?? null;
+    } catch {
+      // empty body on immediate-delete path
+    }
     await clearAppleIdentity(input.userId);
     await clearLocalConsent();
     await clearCachedEntitlement();
     await clearContributionCaches();
     await clearMediaOutbox();
-    return { ok: true };
+    return { ok: true, scheduled, deletionDueAt };
   }
 
   let completed: string[] | undefined;

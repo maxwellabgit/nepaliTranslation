@@ -7,6 +7,9 @@ export type AccountSummaryClient = {
   receiptCount: number;
   lifetimeCredits: number;
   earnedAdFreeUntil: string | null;
+  deletionRequestedAt: string | null;
+  deletionDueAt: string | null;
+  nyRewardCloseAt: string | null;
 };
 
 export type AccountSummaryResult =
@@ -38,6 +41,9 @@ export async function fetchAccountSummary(): Promise<AccountSummaryResult> {
       receipt_count?: number;
       lifetime_credits?: number;
       earned_ad_free_until?: string | null;
+      deletion_requested_at?: string | null;
+      deletion_due_at?: string | null;
+      ny_reward_close_at?: string | null;
     };
     return {
       ok: true,
@@ -48,6 +54,9 @@ export async function fetchAccountSummary(): Promise<AccountSummaryResult> {
         lifetimeCredits:
           typeof body.lifetime_credits === 'number' ? body.lifetime_credits : 0,
         earnedAdFreeUntil: body.earned_ad_free_until ?? null,
+        deletionRequestedAt: body.deletion_requested_at ?? null,
+        deletionDueAt: body.deletion_due_at ?? null,
+        nyRewardCloseAt: body.ny_reward_close_at ?? null,
       },
     };
   } catch {

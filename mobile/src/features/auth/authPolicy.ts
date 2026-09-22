@@ -17,6 +17,8 @@ export type AuthState = {
   ageConfirmed: boolean;
   /** True when deletion paused and the user can retry. */
   deletionRetryPending: boolean;
+  /** ISO timestamp when scheduled deletion completes (30-day path). */
+  deletionDueAt: string | null;
 };
 
 export const INITIAL_AUTH: AuthState = {
@@ -27,6 +29,7 @@ export const INITIAL_AUTH: AuthState = {
   consentVersion: null,
   ageConfirmed: false,
   deletionRetryPending: false,
+  deletionDueAt: null,
 };
 
 export type AuthAction =
@@ -42,11 +45,13 @@ export type AuthAction =
       type: 'account_summary';
       consentVersion: string | null;
       ageConfirmed: boolean;
+      deletionDueAt?: string | null;
     }
   | { type: 'start_deletion' }
   | { type: 'deletion_cancelled' }
   | { type: 'deletion_paused'; message: string }
-  | { type: 'deletion_complete' };
+  | { type: 'deletion_complete' }
+  | { type: 'deletion_scheduled'; deletionDueAt: string; message: string };
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
@@ -107,6 +112,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         consentVersion: action.consentVersion,
         ageConfirmed: action.ageConfirmed,
+        deletionDueAt: action.deletionDueAt ?? null,
       };
     case 'start_deletion':
       return {
@@ -136,6 +142,13 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
       return {
         ...INITIAL_AUTH,
         status: 'guest',
+      };
+    case 'deletion_scheduled':
+      return {
+        ...INITIAL_AUTH,
+        status: 'guest',
+        alert: action.message,
+        deletionDueAt: action.deletionDueAt,
       };
     default:
       return state;

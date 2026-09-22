@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - "cursor/beta-*"
+      - "cursor/v1-*"
 
 jobs:
   supabase:

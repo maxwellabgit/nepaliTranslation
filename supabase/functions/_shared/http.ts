@@ -12,7 +12,8 @@ export type ErrorCode =
   | "consent_outdated"
   | "age_required"
   | "lease_expired"
-  | "flag_disabled";
+  | "flag_disabled"
+  | "deletion_pending";
 
 export function json(body: unknown, status = 200, requestId?: string): Response {
   const headers: Record<string, string> = {
@@ -49,6 +50,7 @@ export function mapRpcError(errText: string): ErrorCode | null {
   if (lower.includes("consent_outdated")) return "consent_outdated";
   if (lower.includes("age_required")) return "age_required";
   if (lower.includes("flag_disabled")) return "flag_disabled";
+  if (lower.includes("deletion_pending")) return "deletion_pending";
   if (lower.includes("rate_limited")) return "rate_limited";
   if (lower.includes("lease_expired")) return "lease_expired";
   if (lower.includes("not_found") || lower.includes("p0002")) return "not_found";
@@ -66,6 +68,7 @@ export function statusForError(code: ErrorCode): number {
     case "consent_outdated":
     case "age_required":
     case "flag_disabled":
+    case "deletion_pending":
       return 403;
     case "invalid_payload":
       return 400;

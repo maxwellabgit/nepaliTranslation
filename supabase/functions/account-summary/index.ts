@@ -10,6 +10,8 @@ type ProfileRow = {
   consent_version: string | null;
   consented_at: string | null;
   age_confirmed_at: string | null;
+  deletion_requested_at: string | null;
+  deletion_due_at: string | null;
 };
 
 async function authedGet(url: string, token: string, apikey: string) {
@@ -40,7 +42,7 @@ Deno.serve(async (req) => {
   if (!userRes.ok) return errorResponse("unauthorized", 401, requestId);
 
   const profileRes = await authedGet(
-    `${url}/rest/v1/profiles?select=consent_version,consented_at,age_confirmed_at`,
+    `${url}/rest/v1/profiles?select=consent_version,consented_at,age_confirmed_at,deletion_requested_at,deletion_due_at`,
     token,
     anon,
   );
@@ -72,6 +74,21 @@ Deno.serve(async (req) => {
   const profile = profiles[0];
   const entitlement = entitlements[0];
 
+  const closeRes = await fetch(`${url}/rest/v1/rpc/service_ny_reward_window_close`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${token}`,
+      apikey: anon,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ p_ts: new Date().toISOString() }),
+  });
+  let nyRewardCloseAt: string | null = null;
+  if (closeRes.ok) {
+    const closeBody = await closeRes.json() as string;
+    nyRewardCloseAt = typeof closeBody === "string" ? closeBody : null;
+  }
+
   return json(
     buildAccountSummary({
       consent_version: profile?.consent_version,
@@ -80,6 +97,9 @@ Deno.serve(async (req) => {
       receipt_count: receipts.length,
       lifetime_credits: entitlement?.lifetime_credits ?? 0,
       earned_ad_free_until: entitlement?.earned_ad_free_until,
+      deletion_requested_at: profile?.deletion_requested_at,
+      deletion_due_at: profile?.deletion_due_at,
+      ny_reward_close_at: nyRewardCloseAt,
     }),
     200,
     requestId,

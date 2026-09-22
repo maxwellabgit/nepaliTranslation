@@ -176,13 +176,14 @@ export const ne: Record<MessageKey, string> = {
   'learn.earnRewardsA11y': 'पुरस्कार कमाउनुहोस्',
   'learn.rewardsHeading': 'पुरस्कार',
   'learn.rewardsBody':
-    'एप प्रयोग गर, अनुवाद सुधारमा सहयोग गर, पुरस्कार कमाउ।',
+    'योगदानले दैनिक न्यूयोर्क ५ बजे बन्दपछि १–२ क्रेडिट (प्रत्येक ५ मिनेट) दिन्छ।',
   'learn.credits': '{count} क्रेडिट',
   'learn.adFreeInactive': 'विज्ञापन-मुक्त सक्रिय छैन',
   'learn.adFreeMins': '{mins} मिनेट विज्ञापन-मुक्त',
   'learn.adFreeHours': '{hours} घण्टा विज्ञापन-मुक्त',
   'learn.adFreeHoursMins': '{hours} घण्टा {mins} मिनेट विज्ञापन-मुक्त',
-  'learn.pendingHelp': 'सहयोगी सुधारले थप विज्ञापन-मुक्त समय दिन्छ।',
+  'learn.pendingHelp':
+    'पर्खिरहेका योगदान योग्य भए अर्को न्यूयोर्क ५ बजे बन्दमा प्रदान हुन्छ।',
   'learn.pendingWaiting': '{count} सुधार पर्खँदै।',
   'learn.pendingWaitingOne': '१ सुधार पर्खँदै।',
   'learn.noVoiceTitle': 'नेपाली आवाज छैन',
@@ -332,7 +333,12 @@ export const ne: Record<MessageKey, string> = {
   'auth.deleteAccount': 'खाता मेटाउनुहोस्',
   'auth.deleteAccountTitle': 'खाता मेटाउने?',
   'auth.deleteAccountBody':
-    'यसले तिमीको खाता र योगदान डाटा मेटाउन तालिका बनाउँछ। यसले Apple सदस्यता रद्द गर्दैन — Settings → Apple ID → Subscriptions बाट व्यवस्थापन गर। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
+    'यसले ३० दिनभित्र खाता र योगदान डाटा मेटाउन तालिका बनाउँछ। यसले Apple सदस्यता रद्द गर्दैन — Settings → Apple ID → Subscriptions बाट व्यवस्थापन गर। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
+  'auth.deletionScheduled':
+    'मेटाउने तालिका: {date} सम्म व्यक्तिगत डाटा हटाइन्छ।',
+  'auth.deletionScheduledConfirm':
+    'खाता मेटाउने तालिका बनाइयो। {date} सम्म व्यक्तिगत डाटा हटाइन्छ। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
+  'auth.deletionComplete': 'तिम्रो खाता डाटा मेटाइयो। यस यन्त्रको अनुवाद अझै चल्छ।',
   'auth.deleting': 'मेटाउँदै…',
   'auth.retryDeleteA11y': 'खाता मेटाउन फेरि प्रयास',
 

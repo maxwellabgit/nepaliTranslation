@@ -210,6 +210,7 @@ export function SettingsScreen({
           consentVersion={auth.consentVersion}
           ageConfirmed={auth.ageConfirmed}
           deletionRetryPending={auth.deletionRetryPending}
+          deletionDueAt={auth.deletionDueAt}
           onSignIn={() => void auth.signInWithApple()}
           onSignOut={() => void auth.signOut()}
           onSaveConsent={() => {

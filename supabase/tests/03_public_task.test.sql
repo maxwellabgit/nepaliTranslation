@@ -11,7 +11,7 @@ select ok(
 
 select is(
   (select payload ->> 'reward_label' from leased),
-  'Earn 1–6 credits after validation',
+  'Earn 1–2 credits after daily close (5 PM New York)',
   'leased task returns the generic reward label'
 );
 

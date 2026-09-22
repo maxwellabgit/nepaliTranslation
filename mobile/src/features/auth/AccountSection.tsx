@@ -22,6 +22,7 @@ type Props = {
   consentVersion: string | null;
   ageConfirmed: boolean;
   deletionRetryPending?: boolean;
+  deletionDueAt?: string | null;
   onSignIn: () => void;
   onSignOut: () => void;
   onSaveConsent: (ageConfirmed: boolean) => void;
@@ -35,6 +36,7 @@ export function AccountSection({
   consentVersion,
   ageConfirmed,
   deletionRetryPending = false,
+  deletionDueAt = null,
   onSignIn,
   onSignOut,
   onSaveConsent,
@@ -182,6 +184,16 @@ export function AccountSection({
           >
             <Text style={styles.link}>{t('auth.signOut', lang)}</Text>
           </Pressable>
+          {deletionDueAt ? (
+            <Text style={styles.meta} testID="deletion-due-at">
+              {t('auth.deletionScheduled', lang, {
+                date: new Date(deletionDueAt).toLocaleDateString(
+                  lang === 'ne' ? 'ne-NP' : 'en-US',
+                  { dateStyle: 'medium', timeZone: 'America/New_York' },
+                ),
+              })}
+            </Text>
+          ) : null}
         </>
       ) : null}
 
