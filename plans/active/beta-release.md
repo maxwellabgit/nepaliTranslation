@@ -83,7 +83,7 @@ cd testing-ground && npx playwright test
 
 ## Remaining work
 
-1. Independent re-review PASS after Playwright CI green on committed TG harness fixes → merge F9 → start F10.
+1. Wait for CI green on `265a071` (Playwright / js-verify). Independent review PASS on committed source (`05f22472`). Merge only after CI green → start F10.
 2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
 3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
 
