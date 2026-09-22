@@ -36,7 +36,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
 - [x] **F3** — Consented speech/photo ingestion and private storage — independent review PASS (`efaae53`)
 - [x] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review PASS (`5764410`)
-- [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
+- [x] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests — independent review PASS (`657783b`)
 - [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
 - [ ] **F7** — Protected operational admin console
 - [ ] **F8** — Telemetry, legal/store surfaces, security, dependency triage
@@ -53,20 +53,20 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F5 — ads policy + interstitial (awaiting gates / IR)**
+**Current: F5 — independent review PASS (`657783b`); merge PR #8 → start F6**
 
 | Area | Change |
 |------|--------|
 | Banner placements | Idle Translate (`translate_idle`) + Learn landing only; removed result/contribution banners |
-| Interstitial | `decideInterstitialPresentation` (15m FG, ≤3 NY day, forbidden transitions); AdMob adapter; SDK dismiss; remote `automatic_interstitial_enabled` default off |
+| Interstitial | `decideInterstitialPresentation` (15m FG, ≤3 NY day, forbidden transitions); AdMob adapter; SDK dismiss; remote `automatic_interstitial_enabled` default off; Learn-only idle_after_task opportunity |
 | Config | Interstitial unit ID in `adConfig` / `app.config.js`; prod rejects Google test IDs |
-| Tests | Interstitial + banner placement policy suites; integration expects idle house / no result ads |
+| Tests | Interstitial + banner placement policy suites; ads coverage ≥80% lines; integration expects idle house / no result ads |
 
 **Previous: F4** — PASS (`5764410`); merged PR #7.
 
 ## Remaining work
 
-1. F5 mobile gates + independent review → merge → start F6.
+1. Merge F5 PR #8 → start F6 (RevenueCat / StoreKit).
 
 ## Blockers (concrete; cannot be solved from this repo)
 
