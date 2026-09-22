@@ -19,16 +19,10 @@ Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../d
 | R0 — Restore honest release baseline | `cursor/v1-r0-release-baseline-5907` | **PASS (stacked; merge with R1)** |
 | R1 — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **PASS** |
 | R2 — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | **PASS** |
-| R4 — Consent authorization + withdrawal + 30-day deletion | `cursor/v1-r4-consent-media-deletion-5907` | **PASS (partial: server; real media capture blocked)** |
-| R5 — Interstitial timeouts + rewarded SSV + subscription matrix | `cursor/v1-r5-monetization-device-proof-5907` | **PASS (partial: code + timeouts; device/sandbox blocked)** |
-| **R3** — Mobile Review workflow + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | **in progress** |
-| R3 — Mobile Review UX + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | pending |
-| R4 — Consent write authorization, withdrawal, 30-day deletion, real media capture | `cursor/v1-r4-consent-media-deletion-5907` | pending |
-| R5 — Interstitial opportunities, rewarded SSV, RevenueCat matrix | `cursor/v1-r5-monetization-device-proof-5907` | pending |
-| R6 — Neural EN→NE quality lift + private holdout | `cursor/v1-r6-model-ship-5907` | pending (needs GPU; not this VM) |
-| R7 — Mobile/iPad polish + Windows testing-ground fixtures | `cursor/v1-r7-ui-testing-ground-5907` | pending |
-| R8 — Deploy Supabase functions, cron, backups, legal URLs | `cursor/v1-r8-production-ops-5907` | pending |
-| R9 — Release-candidate device matrix + TestFlight external | `release/1.7.0-rc1-5907` | pending |
+| R3 — Mobile Review workflow + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | **PASS (partial: mobile UI + server eligibility + admin skeleton; full mutating admin-api blocked)** |
+| R4 — Consent authorization + withdrawal + 30-day deletion | `cursor/v1-r4-consent-media-deletion-5907` | **PASS (partial: server; real media capture on device blocked)** |
+| R5 — Interstitial timeouts + rewarded SSV + subscription matrix | `cursor/v1-r5-monetization-device-proof-5907` | **PASS (partial: code + timeouts; device / sandbox / RevenueCat matrix blocked)** |
+| **R6–R9** — Model quality, UI polish, production ops, release candidate | `cursor/v1-r6-r9-blockers-5907` | **DOCUMENTED BLOCKERS** — see [`docs/R6_R9_BLOCKERS.md`](../../docs/R6_R9_BLOCKERS.md). Requires GPU (R6), physical iPhone/iPad + Apple/RevenueCat/AdMob consoles (R5 device / R9 device matrix), Supabase project provisioning + hosted cron (R8), and legal/language sign-off. |
 
 Prior beta/G0–G5 milestones (`plans/active/v1-testflight-finalization.md`) remain the source baseline. That file's completion claims are **retracted** for anything the audit or R0/R1 evidence contradicts; it stays as historical record.
 
