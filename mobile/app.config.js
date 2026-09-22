@@ -98,6 +98,8 @@ module.exports = ({ config }) => {
         rewardedUnitId,
         interstitialUnitId,
       },
+      revenueCatAppleApiKey:
+        process.env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY || '',
     },
   };
 };

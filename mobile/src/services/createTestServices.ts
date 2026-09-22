@@ -1,5 +1,6 @@
 import { DEFAULT_FEATURE_FLAGS, type FeatureFlags } from '../app/featureFlags';
 import { createMockAdAdapter } from '../features/ads/adMiddleware';
+import { createFakePurchaseService } from '../features/subscription/PurchaseService';
 import type { AppServices, ConsentState } from './contracts';
 import type { FlushResult } from './contributionSync';
 import type { MediaFlushResult } from './mediaSync';
@@ -13,6 +14,7 @@ export type TestServicesOptions = {
   mediaFlushResult?: MediaFlushResult;
   canRequestAds?: boolean;
   privacyOptionsRequired?: boolean;
+  hasSubscription?: boolean;
 };
 
 /** Deterministic fakes for production-composition integration tests. */
@@ -24,6 +26,19 @@ export function createTestServices(
   setConsent: (state: ConsentState) => void;
 } {
   const adAdapter = createMockAdAdapter();
+  const purchases = createFakePurchaseService(
+    options.hasSubscription
+      ? {
+          initial: {
+            status: 'active',
+            productId: 'neptranslate_adfree_monthly',
+            priceString: '$0.99',
+            expiresAtMs: Date.now() + 86_400_000,
+            updatedAtMs: Date.now(),
+          },
+        }
+      : undefined,
+  );
   let offline = options.offline ?? false;
   let authError = options.authError ?? null;
   let consent: ConsentState = {
@@ -78,6 +93,7 @@ export function createTestServices(
       getConsentState: () => consent,
       showPrivacyOptions: async () => undefined,
     },
+    purchases,
     setOffline: (next) => {
       offline = next;
       for (const l of netListeners) l(offline);

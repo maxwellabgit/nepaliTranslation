@@ -7,13 +7,13 @@ import { useTheme } from '../../theme';
 type Props = {
   surface: string;
   onNotNow?: () => void;
-  /** Opens in-app paywall once Slice 09 exists; no-op until then. */
+  /** Opens bilingual ad-free paywall when paywall_enabled. */
   onPreferNoAds?: () => void;
 };
 
 /**
  * Bundled house banner. Never calls the ad network.
- * Copy opens only the in-app paywall once Slice 09 exists.
+ * Copy opens the in-app paywall when wired by AdSlot.
  */
 export function HouseAd({ surface, onNotNow, onPreferNoAds }: Props) {
   const theme = useTheme();

@@ -3,6 +3,7 @@ import { AppState, type AppStateStatus } from 'react-native';
 
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
+import { useSubscriptionOptional } from '../subscription/SubscriptionProvider';
 import { useServices } from '../../services/ServiceContext';
 import {
   createForegroundAccumulator,
@@ -34,6 +35,7 @@ export function requestInterstitialOpportunity(
 export function InterstitialController() {
   const flags = useFeatureFlags();
   const entitlement = useEntitlementOptional();
+  const subscription = useSubscriptionOptional();
   const services = useServices();
   const accumRef = useRef(createForegroundAccumulator(0));
   const readyRef = useRef(false);
@@ -100,7 +102,11 @@ export function InterstitialController() {
         trustedNowMs: entitlement?.trustedNow() ?? null,
         foregroundActiveMs,
         adapter: services.ads.adapter,
-        req,
+        req: {
+          ...req,
+          hasSubscription:
+            req.hasSubscription ?? Boolean(subscription?.hasSubscription()),
+        },
       })
         .catch(() => undefined)
         .finally(() => {
@@ -112,7 +118,7 @@ export function InterstitialController() {
     return () => {
       listeners.delete(onOpportunity);
     };
-  }, [entitlement, flags.automaticInterstitialEnabled, services]);
+  }, [entitlement, flags.automaticInterstitialEnabled, services, subscription]);
 
   return null;
 }

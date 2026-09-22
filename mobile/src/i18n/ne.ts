@@ -348,4 +348,24 @@ export const ne: Record<MessageKey, string> = {
   'ads.signInRequiredTitle': 'साइन इन चाहिन्छ',
   'ads.signInRequiredBody':
     'वैकल्पिक विज्ञापनबाट विज्ञापन-मुक्त समय कमाउन साइन इन गर।',
+
+  'paywall.title': 'NepTranslate विज्ञापन-मुक्त',
+  'paywall.body':
+    'ब्यानर, हाउस विज्ञापन, र स्वचालित इन्टरस्टिसियल हटाउनुहोस्। अनुवाद, क्यामेरा, र सिकाइ सबैका लागि निःशुल्क रहन्छ।',
+  'paywall.priceFallback': 'App Store बाट मूल्य',
+  'paywall.subscribe': 'सदस्यता लिनुहोस्',
+  'paywall.subscribeA11y': 'विज्ञापन-मुक्त सदस्यता लिनुहोस्',
+  'paywall.restore': 'खरिद पुनर्स्थापना',
+  'paywall.restoreA11y': 'अघिल्लो खरिद पुनर्स्थापना',
+  'paywall.manage': 'सदस्यता व्यवस्थापन',
+  'paywall.manageA11y': 'Apple सदस्यता व्यवस्थापन',
+  'paywall.active': 'यस खातामा विज्ञापन-मुक्त सक्रिय छ।',
+  'paywall.expired': 'सदस्यता सकियो। जुनसुकै बेला फेरि लिन सकिन्छ।',
+  'paywall.billingRetry':
+    'तपाईंको Apple ID सेटिङमा बिलिङ ध्यान चाहिन्छ।',
+  'paywall.unavailable': 'अहिले यस यन्त्रमा खरिद उपलब्ध छैन।',
+  'paywall.restoreEmpty': 'पुनर्स्थापना गर्न अघिल्लो सदस्यता भेटिएन।',
+  'settings.subscription': 'सदस्यता',
+  'settings.openPaywall': 'विज्ञापन-मुक्त सदस्यता',
+  'settings.openPaywallA11y': 'विज्ञापन-मुक्त सदस्यता विकल्प खोल्नुहोस्',
 };

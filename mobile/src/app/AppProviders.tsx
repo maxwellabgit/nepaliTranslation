@@ -6,6 +6,7 @@ import {
 import { AuthProvider } from '../features/auth/AuthProvider';
 import { AuthStatusBanner } from '../features/auth/AuthStatusBanner';
 import { EntitlementProvider } from '../features/entitlements/EntitlementProvider';
+import { SubscriptionProvider } from '../features/subscription/SubscriptionProvider';
 import { migrateLegacyReviewQueue } from '../storage/contributionOutbox';
 import { ServiceProvider } from '../services/ServiceContext';
 import type { AppServices } from '../services/contracts';
@@ -49,11 +50,13 @@ export function AppProviders({ children, services, runtime }: Props) {
             <AuthProvider>
               <EntitlementProvider>
                 <FeatureConfigProvider>
+                  <SubscriptionProvider>
                   <LegacyOutboxMigration />
                   <LifecycleCoordinator />
                   <InterstitialController />
                   <AuthStatusBanner />
                   {children}
+                  </SubscriptionProvider>
                 </FeatureConfigProvider>
               </EntitlementProvider>
             </AuthProvider>

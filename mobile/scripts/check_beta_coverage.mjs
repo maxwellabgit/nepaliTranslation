@@ -21,6 +21,7 @@ const GROUPS = [
   'src/features/contribution/',
   'src/features/entitlements/',
   'src/features/ads/',
+  'src/features/subscription/',
   'src/services/contributionSync.ts',
 ];
 
