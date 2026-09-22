@@ -63,6 +63,18 @@ jobs:
       - name: Four-class ship cert (schema + pins; soft BLOCKER without weights)
         run: python benchmarks/certify_ship_artifacts.py
 
+  exclusions-gate:
+    # R2 guard: no content hash in benchmarks/private_exclusions.json may
+    # appear in any registered training / benchmark corpus.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Enforce review exclusions on training + benchmark corpora
+        run: node scripts/check_review_exclusions.mjs
+
   js-verify:
     runs-on: ubuntu-latest
     defaults:

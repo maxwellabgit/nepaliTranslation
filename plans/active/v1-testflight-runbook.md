@@ -17,8 +17,8 @@ Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../d
 | Gate | Branch | Status |
 |------|--------|--------|
 | R0 — Restore honest release baseline | `cursor/v1-r0-release-baseline-5907` | **PASS (stacked; merge with R1)** |
-| **R1** — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **in progress** |
-| R2 — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | pending |
+| R1 — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **PASS** |
+| **R2** — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | **in progress** |
 | R3 — Mobile Review UX + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | pending |
 | R4 — Consent write authorization, withdrawal, 30-day deletion, real media capture | `cursor/v1-r4-consent-media-deletion-5907` | pending |
 | R5 — Interstitial opportunities, rewarded SSV, RevenueCat matrix | `cursor/v1-r5-monetization-device-proof-5907` | pending |
@@ -80,6 +80,63 @@ Forward-only migration `supabase/migrations/20260923000000_r1_review_ledger_rota
 - Fresh-database and upgrade-path Supabase tests pass on GitHub. R1 stacks on R0 so the exact **R0+R1 integration commit** is the first commit where every required GitHub check is green — the "first useful diagnostic TestFlight" milestone the audit specifies.
 - Local Supabase suite cannot run on this VM (no Docker/Postgres); relies on GitHub CI for enforcement. Static parse of the migration confirmed.
 - Mobile `verify:ci` remains green (no runtime code paths under mobile change in R1).
+
+## R2 scope (this branch)
+
+Landed:
+
+- `datasets/corpus-registry.json` — every eligible corpus explicitly declared (id, purpose, root, glob, format, provenance, license, visibility). The importer refuses to walk any directory not in the registry.
+- Forward-only migration `supabase/migrations/20260923010000_r2_corpus_registry_exclusions.sql`:
+  - `public.review_exclusions` — canonical `(content_hash, reason)` table with reasons `public_reviewed`, `public_exposed_benchmark`, `reported_quarantine`, `consent_withdrawn`, `account_deleted`, `admin_quarantine`.
+  - `service_rotate_review_window` re-declared to **retire on close**: every confirm/edit-granted source becomes `public_review_eligible=false` and gets a `(hash, 'public_reviewed')` row in `review_exclusions`; every report inserts `(hash, 'reported_quarantine')`. `skip` never retires.
+  - `service_import_review_batch(run_id, rows jsonb, corpus_id)` — transactional batch importer that refuses excluded hashes.
+  - `service_start_review_import_run` / `service_finish_review_import_run` — auditable run records with git_sha, registry_version, manifest_checksum, status.
+  - `service_add_review_exclusion` — idempotent admin RPC (used by R4 for consent withdrawal / account deletion).
+- Rewritten `supabase/scripts/import_review_pool.ts`:
+  - Registry-driven; refuses to walk anything unlisted.
+  - Named adapters for `jsonl-src-tgt`, `jsonl-src-tgt-lang`, `jsonl-eng-npi`, `jsonl-en-ne`, `jsonl-meaning-bank`, `gold-pair`.
+  - Expanded PII detector (email / phone / SSN / credit card / IBAN / high-entropy tokens); the audit's warning that regex alone is not de-identification is documented in the file header.
+  - Removed the permanent `__probe__` write. Capability check now goes through `service_start_review_import_run(p_dry_run=true)`.
+  - Reject manifest written to `datasets/review_import_rejects.json` (also written on `--dry-run`).
+  - `--dry-run` / `DRY_RUN=1` performs no Supabase writes and no `refresh_review_length_tiers` call.
+- New pgTAP suite `supabase/tests/19_r2_corpus_and_exclusions.test.sql` covering retire-on-close for confirm/edit/report, skip-no-retirement, batch importer's excluded-hash skip, and idempotent `service_add_review_exclusion`.
+- New CI job `exclusions-gate` in `.github/workflows/agent-gates.yml` runs `node scripts/check_review_exclusions.mjs`. The script reads `benchmarks/private_exclusions.json` (the local CI-visible mirror of `public.review_exclusions`) and asserts no excluded hash appears in any registered training or benchmark corpus. Sanity-tested locally by inserting a known-good hash and observing the guard fire with 4 violations across the deduped occurrences.
+
+### Local dry-run evidence (registry v2026-09-22.r2)
+
+`deno run --dry-run supabase/scripts/import_review_pool.ts`:
+
+| Corpus | seen | accepted | deduped | pii |
+|---|---:|---:|---:|---:|
+| training-clean-en-ne | 1544 | 288 | 1256 | 0 |
+| training-clean-ne-en | 1352 | 215 | 1137 | 0 |
+| training-law-gov-en-ne | 60 | 60 | 0 | 0 |
+| training-user-conversation-seeds | 150 | 116 | 34 | 0 |
+| training-val-en-ne | 32 | 31 | 1 | 0 |
+| training-val-ne-en | 27 | 26 | 1 | 0 |
+| meaning-bank | 164 | 265 (expanded to 656 variants) | 391 | 0 |
+| benchmark-bpcc-daily | 80 | 80 | 0 | 0 |
+| benchmark-flores-plus | 997 | 994 | 0 | 3 |
+| benchmark-in22-conv | 100 | 100 | 0 | 0 |
+| gold-en-ne-formal | 137 | 123 | 14 | 0 |
+| gold-en-ne-informal | 139 | 54 | 85 | 0 |
+| gold-ne-en-deva | 133 | 133 | 0 | 0 |
+| gold-ne-en-roman | 134 | 134 | 0 | 0 |
+| **totals** | **5049** | **2619** | **2919** | **3** |
+
+Every seen row is reconciled: `accepted + deduped + pii + malformed = seen`.
+
+### R2 exit gate
+
+- pgTAP suite 19 passes in Supabase CI (stacked on R1's supabase-fixing migration).
+- `exclusions-gate` runs on push and PR; passes with an empty exclusion list; sanity-verified to fail on any excluded hash present in training/benchmark corpora.
+- Dry-run importer emits a manifest that accounts for every registered file; every row lands in accepted / deduped / pii / malformed.
+
+### R2 remaining blockers (human)
+
+- Live Supabase project provisioning + running the importer against staging is R8.
+- Syncing `public.review_exclusions` from production Supabase into `benchmarks/private_exclusions.json` is a human/admin operation (documented on the manifest file itself).
+- A NEW private uncontaminated holdout for R6 must exist before neural EN→NE quality is re-certified. R2 marks gold as public-exposed via metadata + review_exclusions when it enters a live window, satisfying the audit's rule 12.
 
 ## Decision log
 

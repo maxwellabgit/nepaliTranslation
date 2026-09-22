@@ -1,0 +1,9 @@
+{
+  "version": "2026-09-22.r2",
+  "note": "Private exclusion manifest for training + evaluation exports. Machine-readable list of content hashes that MUST NOT appear in generated training sets or private ship evaluation datasets.\n\nThe canonical source for exclusions is `public.review_exclusions` in the production Supabase project. This file is the CI-visible mirror; admins export from that table when items are retired (public_reviewed, reported_quarantine, consent_withdrawn, account_deleted, admin_quarantine).\n\nThe hash algorithm mirrors the R2 importer: SHA-256 of `${direction}|${normalizedSource}|${normalizedTarget}` where `normalizedX` collapses whitespace to a single space and trims.\n\nCI check: `node scripts/check_review_exclusions.mjs`.",
+  "content_hash_algorithm": "sha256",
+  "hash_recipe": "sha256(`${direction}|${normalize(source)}|${normalize(target)}`)",
+  "excluded": [],
+  "last_synced_at": null,
+  "last_synced_from": null
+}
