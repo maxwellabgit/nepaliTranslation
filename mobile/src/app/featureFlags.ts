@@ -9,6 +9,7 @@ export type FeatureFlags = {
   rewardsEnabled: boolean;
   networkAdsEnabled: boolean;
   rewardedAdsEnabled: boolean;
+  automaticInterstitialEnabled: boolean;
   paywallEnabled: boolean;
   learnEnabled: boolean;
 };
@@ -20,6 +21,7 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
   rewardsEnabled: false,
   networkAdsEnabled: false,
   rewardedAdsEnabled: false,
+  automaticInterstitialEnabled: false,
   paywallEnabled: false,
   learnEnabled: false,
 };

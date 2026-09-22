@@ -18,7 +18,7 @@ describe('decideAdPresentation H6 priorities', () => {
     lastNetworkBannerAtMs: null as number | null,
     lastHouseBannerAtMs: null as number | null,
     nowMs: 10_000,
-    surface: 'translate_result' as const,
+    surface: 'translate_idle' as const,
   };
 
   it('subscription or earned window → none', () => {
@@ -107,7 +107,13 @@ describe('decideAdPresentation H6 priorities', () => {
     ).toEqual({ show: false, reason: 'rewarded_offline' });
   });
 
-  it('disallows non-placement surfaces and quiz', () => {
+  it('disallows result-review and contribution placements', () => {
+    expect(
+      decideAdPresentation({ ...base, surface: 'translate_result' }),
+    ).toEqual({ show: false, reason: 'placement' });
+    expect(
+      decideAdPresentation({ ...base, surface: 'contribution_result' }),
+    ).toEqual({ show: false, reason: 'placement' });
     expect(decideAdPresentation({ ...base, surface: 'home' })).toEqual({
       show: false,
       reason: 'placement',
@@ -116,6 +122,12 @@ describe('decideAdPresentation H6 priorities', () => {
       show: false,
       reason: 'quiz',
     });
+  });
+
+  it('allows learn_landing', () => {
+    expect(
+      decideAdPresentation({ ...base, surface: 'learn_landing' }),
+    ).toEqual({ show: true, kind: 'banner' });
   });
 
   it('unknown trusted time does not suppress as earned', () => {

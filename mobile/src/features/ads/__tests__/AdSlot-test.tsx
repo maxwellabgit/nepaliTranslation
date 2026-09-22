@@ -21,6 +21,7 @@ jest.mock('../../../app/FeatureConfigProvider', () => ({
   useFeatureFlags: () => ({
     networkAdsEnabled: true,
     rewardedAdsEnabled: false,
+    automaticInterstitialEnabled: false,
     contributionTextEnabled: false,
     contributionSpeechEnabled: false,
     contributionPhotosEnabled: false,
@@ -47,7 +48,7 @@ describe('AdSlot', () => {
       render(
         <ServiceProvider services={services}>
           <AdSlot
-            surface="translate_result"
+            surface="translate_idle"
             adapter={adapter}
             eligible
             lastNetworkBannerAtMs={null}
@@ -73,7 +74,7 @@ describe('AdSlot', () => {
       render(
         <ServiceProvider services={services}>
           <AdSlot
-            surface="translate_result"
+            surface="translate_idle"
             adapter={adapter}
             eligible
             offline={false}
@@ -87,7 +88,7 @@ describe('AdSlot', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('ad-slot-banner-translate_result')).toBeTruthy();
+      expect(screen.getByTestId('ad-slot-banner-translate_idle')).toBeTruthy();
     });
     expect(onShown).toHaveBeenCalledWith('banner');
     expect(adapter.networkCalls().length).toBeGreaterThan(0);
@@ -103,7 +104,7 @@ describe('AdSlot', () => {
       render(
         <ServiceProvider services={services}>
           <AdSlot
-            surface="translate_result"
+            surface="translate_idle"
             adapter={adapter}
             eligible
             lastNetworkBannerAtMs={null}
@@ -129,7 +130,7 @@ describe('AdSlot', () => {
     await act(async () => {
       render(
         <AdSlot
-          surface="translate_result"
+          surface="translate_idle"
           adapter={adapter}
           eligible={false}
           lastNetworkBannerAtMs={null}
@@ -138,7 +139,7 @@ describe('AdSlot', () => {
       );
     });
     await waitFor(() => {
-      expect(screen.queryByTestId('ad-slot-banner-translate_result')).toBeNull();
+      expect(screen.queryByTestId('ad-slot-banner-translate_idle')).toBeNull();
     });
     expect(adapter.networkCalls()).toEqual([]);
     expect(GOOGLE_TEST_BANNER_UNIT).toBeTruthy();
@@ -157,7 +158,7 @@ describe('AdSlot', () => {
       render(
         <ServiceProvider services={services}>
           <AdSlot
-            surface="translate_result"
+            surface="translate_idle"
             adapter={adapter}
             eligible
             lastNetworkBannerAtMs={null}
@@ -180,7 +181,7 @@ describe('AdSlot', () => {
       render(
         <ServiceProvider services={services}>
           <AdSlot
-            surface="translate_result"
+            surface="translate_idle"
             adapter={adapter}
             eligible
             speaking
@@ -191,7 +192,7 @@ describe('AdSlot', () => {
       );
     });
     await waitFor(() => {
-      expect(screen.queryByTestId('ad-slot-banner-translate_result')).toBeNull();
+      expect(screen.queryByTestId('ad-slot-banner-translate_idle')).toBeNull();
     });
     expect(adapter.networkCalls()).toEqual([]);
   });
@@ -204,12 +205,12 @@ describe('AdSlot', () => {
     await act(async () => {
       render(
         <ServiceProvider services={services}>
-          <AdSlot surface="translate_result" adapter={adapter} eligible />
+          <AdSlot surface="translate_idle" adapter={adapter} eligible />
         </ServiceProvider>,
       );
     });
     await waitFor(() => {
-      expect(screen.queryByTestId('ad-slot-banner-translate_result')).toBeNull();
+      expect(screen.queryByTestId('ad-slot-banner-translate_idle')).toBeNull();
     });
     expect(adapter.networkCalls()).toEqual([]);
   });

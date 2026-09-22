@@ -5,6 +5,7 @@
  */
 
 export type AdSurface =
+  | 'translate_idle'
   | 'translate_result'
   | 'learn_landing'
   | 'contribution_result'
@@ -18,11 +19,10 @@ export type AdSurface =
   | 'learn'
   | 'quiz';
 
-/** Allowed banner placements only (H6). */
+/** Allowed banner placements (F5 / INTENT): idle Translate + Learn landing only. */
 export const ALLOWED_BANNER_PLACEMENTS = [
-  'translate_result',
+  'translate_idle',
   'learn_landing',
-  'contribution_result',
 ] as const;
 
 export type AllowedBannerPlacement = (typeof ALLOWED_BANNER_PLACEMENTS)[number];

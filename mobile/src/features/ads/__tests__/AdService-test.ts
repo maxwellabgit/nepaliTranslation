@@ -22,13 +22,17 @@ describe('AdService', () => {
       customData: 'sess-1',
     });
     await ads.adapter.showRewarded(GOOGLE_TEST_REWARDED_UNIT);
-    ads.adapter.showHouseAd('translate_result');
+    await ads.adapter.loadInterstitial('interstitial-unit');
+    await ads.adapter.showInterstitial('interstitial-unit');
+    ads.adapter.showHouseAd('translate_idle');
 
     const calls = ads.networkCalls();
     expect(calls.some((c) => c.kind === 'banner_load')).toBe(true);
     expect(calls.some((c) => c.kind === 'banner_show')).toBe(true);
     expect(calls.some((c) => c.kind === 'rewarded_load')).toBe(true);
     expect(calls.some((c) => c.kind === 'rewarded_show')).toBe(true);
+    expect(calls.some((c) => c.kind === 'interstitial_load')).toBe(true);
+    expect(calls.some((c) => c.kind === 'interstitial_show')).toBe(true);
   });
 
   it('prepareConsentAndSdk initializes SDK when consent allows ads', async () => {

@@ -7,7 +7,7 @@ describe('HouseAd', () => {
   it('shows required copy and Not now', async () => {
     const onNotNow = jest.fn();
     await act(async () => {
-      render(<HouseAd surface="translate_result" onNotNow={onNotNow} />);
+      render(<HouseAd surface="translate_idle" onNotNow={onNotNow} />);
     });
     expect(screen.getByText(HOUSE_AD_COPY)).toBeTruthy();
     expect(screen.getByText(HOUSE_AD_DISMISS)).toBeTruthy();

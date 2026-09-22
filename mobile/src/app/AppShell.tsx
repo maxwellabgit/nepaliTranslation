@@ -8,6 +8,7 @@ import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { contentMaxWidth, useSizeClass } from '../layout/sizeClass';
 import type { HistoryItem } from '../storage/phrasebook';
+import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 
 export type AppMode = 'translate' | 'camera' | 'learn';
 export type AppOverlay =
@@ -138,6 +139,12 @@ export function AppShell({
   const switchMode = (next: AppMode) => {
     if (next === mode) return;
     onHardStop();
+    // Tab presses are never interstitial opportunities (policy).
+    requestInterstitialOpportunity({
+      transition: 'tab_press',
+      surface: next === 'learn' ? 'learn_landing' : 'translate_idle',
+      cameraActive: next === 'camera',
+    });
     setMode(next);
   };
 
@@ -290,6 +297,16 @@ export function AppShell({
               onClose={() => {
                 onHardStop();
                 setOverlay(null);
+                // Only Learn landing is a known-idle surface after this close.
+                // Translate may still show turns (result under review) — never guess.
+                if (mode === 'learn') {
+                  requestInterstitialOpportunity({
+                    transition: 'idle_after_task',
+                    surface: 'learn_landing',
+                    cameraActive: false,
+                    resultUnderReview: false,
+                  });
+                }
               }}
             />
           )}

@@ -27,6 +27,7 @@ function mapRemoteFlags(data: Record<string, unknown>) {
     rewardsEnabled: Boolean(data.rewards_enabled),
     networkAdsEnabled: Boolean(data.network_ads_enabled),
     rewardedAdsEnabled: Boolean(data.rewarded_ads_enabled),
+    automaticInterstitialEnabled: Boolean(data.automatic_interstitial_enabled),
     paywallEnabled: Boolean(data.paywall_enabled),
     learnEnabled: true,
   };
@@ -87,7 +88,7 @@ export function createProductionServices(): AppServices {
           const { data, error } = await sb
             .from('app_config')
             .select(
-              'contribution_text_enabled, contribution_speech_enabled, contribution_photos_enabled, contributions_enabled, rewards_enabled, network_ads_enabled, rewarded_ads_enabled, paywall_enabled, learn_enabled',
+              'contribution_text_enabled, contribution_speech_enabled, contribution_photos_enabled, contributions_enabled, rewards_enabled, network_ads_enabled, rewarded_ads_enabled, automatic_interstitial_enabled, paywall_enabled, learn_enabled',
             )
             .eq('id', 1)
             .maybeSingle();

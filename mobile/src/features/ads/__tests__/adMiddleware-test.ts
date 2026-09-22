@@ -15,7 +15,7 @@ describe('adMiddleware', () => {
     rewardedUnitId: GOOGLE_TEST_REWARDED_UNIT,
     canRequestAds: true,
     nowMs: 1_000,
-    surface: 'translate_result' as const,
+    surface: 'translate_idle' as const,
   };
 
   it('never schedules network AdMob calls while offline', async () => {
@@ -24,7 +24,7 @@ describe('adMiddleware', () => {
       ...base,
       offline: true,
     });
-    expect(plan).toEqual({ action: 'house', surface: 'translate_result' });
+    expect(plan).toEqual({ action: 'house', surface: 'translate_idle' });
     await executeAdPlan(plan, adapter);
     expect(adapter.networkCalls()).toEqual([]);
   });

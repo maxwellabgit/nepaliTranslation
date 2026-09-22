@@ -101,12 +101,17 @@ export type Database = {
           id: number;
           version: number;
           contributions_enabled: boolean;
+          contribution_text_enabled?: boolean;
+          contribution_speech_enabled?: boolean;
+          contribution_photos_enabled?: boolean;
           rewards_enabled: boolean;
           network_ads_enabled: boolean;
           rewarded_ads_enabled: boolean;
+          automatic_interstitial_enabled: boolean;
           paywall_enabled: boolean;
           learn_enabled: boolean;
           contribution_consent_version: string;
+          deletion_processing_enabled?: boolean;
           updated_at: string;
         };
         Insert: {
@@ -115,12 +120,17 @@ export type Database = {
         };
         Update: {
           contributions_enabled?: boolean;
+          contribution_text_enabled?: boolean;
+          contribution_speech_enabled?: boolean;
+          contribution_photos_enabled?: boolean;
           rewards_enabled?: boolean;
           network_ads_enabled?: boolean;
           rewarded_ads_enabled?: boolean;
+          automatic_interstitial_enabled?: boolean;
           paywall_enabled?: boolean;
           learn_enabled?: boolean;
           contribution_consent_version?: string;
+          deletion_processing_enabled?: boolean;
         };
         Relationships: [];
       };

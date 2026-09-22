@@ -9,6 +9,7 @@ const TEST_IOS_APP_ID = 'ca-app-pub-3940256099942544~1458002511';
 const TEST_ANDROID_APP_ID = 'ca-app-pub-3940256099942544~3347511713';
 const TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2934735716';
 const TEST_REWARDED_UNIT = 'ca-app-pub-3940256099942544/1712485313';
+const TEST_INTERSTITIAL_UNIT = 'ca-app-pub-3940256099942544/4411468910';
 
 function isProductionAdsEnv() {
   if (process.env.EXPO_PUBLIC_ADS_ENV === 'production') return true;
@@ -51,14 +52,22 @@ module.exports = ({ config }) => {
   const rewardedUnitId = production
     ? process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID || ''
     : process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID || TEST_REWARDED_UNIT;
+  const interstitialUnitId = production
+    ? process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID || ''
+    : process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID ||
+      TEST_INTERSTITIAL_UNIT;
 
   if (production) {
-    if (!bannerUnitId || !rewardedUnitId) {
+    if (!bannerUnitId || !rewardedUnitId || !interstitialUnitId) {
       throw new Error(
-        'Production AdMob requires EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID and EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID',
+        'Production AdMob requires EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID, EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID, and EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID',
       );
     }
-    if (looksLikeTestId(bannerUnitId) || looksLikeTestId(rewardedUnitId)) {
+    if (
+      looksLikeTestId(bannerUnitId) ||
+      looksLikeTestId(rewardedUnitId) ||
+      looksLikeTestId(interstitialUnitId)
+    ) {
       throw new Error('Production AdMob rejects Google test unit IDs');
     }
   }
@@ -87,6 +96,7 @@ module.exports = ({ config }) => {
         androidAppId,
         bannerUnitId,
         rewardedUnitId,
+        interstitialUnitId,
       },
     },
   };

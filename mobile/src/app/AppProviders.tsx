@@ -15,6 +15,7 @@ import { ThemeProvider } from '../theme';
 import { UiLangProvider } from '../i18n';
 import { FeatureConfigProvider } from './FeatureConfigProvider';
 import { LifecycleCoordinator } from './LifecycleCoordinator';
+import { InterstitialController } from '../features/ads/InterstitialController';
 
 /** Jest never emits native safe-area events; seed metrics so children mount. */
 const INITIAL_SAFE_AREA: Metrics = {
@@ -50,6 +51,7 @@ export function AppProviders({ children, services, runtime }: Props) {
                 <FeatureConfigProvider>
                   <LegacyOutboxMigration />
                   <LifecycleCoordinator />
+                  <InterstitialController />
                   <AuthStatusBanner />
                   {children}
                 </FeatureConfigProvider>

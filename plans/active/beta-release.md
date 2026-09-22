@@ -35,7 +35,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
 - [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
 - [x] **F3** — Consented speech/photo ingestion and private storage — independent review PASS (`efaae53`)
-- [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review pending
+- [x] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review PASS (`5764410`)
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
 - [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
 - [ ] **F7** — Protected operational admin console
@@ -53,21 +53,20 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F4 — Reward close / deletion jobs — branch `cursor/v1-f4-rewards-deletion`**
+**Current: F5 — ads policy + interstitial (awaiting gates / IR)**
 
 | Area | Change |
 |------|--------|
-| Migration | NY window helpers; word-count credits; defer grants to `service_close_ny_reward_window`; `contributor_alerts`; rewarded video 15 min; deletion request + purge job RPCs; `deletion_processing_enabled` flag |
-| Submit | Immutable `source_snapshot` + `original_word_count`; scheduled 1/2 credits; no immediate contribution grants |
-| Deletion | `service_request_account_deletion` (30-day); `service_process_deletion_jobs`; upload block on `deletion_pending`; delete-account scheduled path when flag on |
-| Client | Account summary + Settings deletion due date; reward copy (5 PM NY close) |
-| Tests | `13_f4_reward_close_deletion.test.sql`; updated consensus + SSV tests |
+| Banner placements | Idle Translate (`translate_idle`) + Learn landing only; removed result/contribution banners |
+| Interstitial | `decideInterstitialPresentation` (15m FG, ≤3 NY day, forbidden transitions); AdMob adapter; SDK dismiss; remote `automatic_interstitial_enabled` default off |
+| Config | Interstitial unit ID in `adConfig` / `app.config.js`; prod rejects Google test IDs |
+| Tests | Interstitial + banner placement policy suites; integration expects idle house / no result ads |
 
-**Previous: F3** — PASS (`efaae53`); merged PR #6.
+**Previous: F4** — PASS (`5764410`); merged PR #7.
 
 ## Remaining work
 
-1. Independent review F4 → merge PR → start F5.
+1. F5 mobile gates + independent review → merge → start F6.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
