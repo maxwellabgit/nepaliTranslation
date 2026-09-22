@@ -1,0 +1,43 @@
+# Supabase Scheduled Functions descriptor for process-scheduled-jobs.
+#
+# Boundary (see docs/OPERATIONS.md):
+#   * The endpoint owns three RPC calls per invocation:
+#       - service_close_ny_reward_window  (5:00 PM America/New_York grant)
+#       - service_rotate_review_window    (G1 global 10/day rotation)
+#       - service_list_deletion_due_users -> purge -> auth admin delete
+#         (30-day account deletion SLA)
+#   * Idempotent. Rotation only triggers when the current window's
+#     ny_close_at has passed. Reward close is idempotent per receipt.
+#   * Every-minute cadence keeps the 5:00 PM NY rotation on time across
+#     DST transitions without hardcoding UTC offsets in cron.
+#
+# Auth: CRON_SECRET bearer (or service role) — see docs/OPERATIONS.md
+# secret matrix. This file is a template; the human must import it into
+# Supabase Scheduled Functions (or replace with the chosen scheduler
+# provider) and paste the resulting dashboard link into
+# docs/OPERATIONS.md verification checklist.
+
+name: process-scheduled-jobs
+schedule: "* * * * *"
+timezone: UTC
+retries: 0
+description: |
+  V1 hosted scheduler: NY reward close + global 10/day public-review
+  rotation + 30-day deletion purge. See docs/OPERATIONS.md.
+
+request:
+  method: POST
+  path: /functions/v1/process-scheduled-jobs
+  headers:
+    Content-Type: application/json
+    Authorization: Bearer ${CRON_SECRET}
+  body: |
+    {}
+
+alerts:
+  # Set these in your alert routing (docs/OPERATIONS.md).
+  on_failure:
+    - name: v1-ops-oncall
+      threshold: any-failure
+    - name: v1-scheduler-miss
+      description: page after 2 consecutive misses of the 5:00 PM NY rotation

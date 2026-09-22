@@ -22,15 +22,24 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 - [x] **G0** — Freeze corrected product contract (docs only) — amended per owner directive; committed on `cursor/v1-g0-contract-freeze-5907`; PR open blocker
 - [x] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication — committed on `cursor/v1-g1-review-pool-5907`
 - [x] **G2** — Startup consent gate, account-linked speech/photo upload, withdrawal, 30-day purge — committed on `cursor/v1-g2-consent-deletion-5907`
-- [ ] **G3** — Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity — in-progress on `cursor/v1-g3-monetization-5907`
-- [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence
+- [x] **G3** — Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity — committed on `cursor/v1-g3-monetization-5907`
+- [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence — cert run 2026-09-22 FAIL (formal + informal EN→NE below floors); committed on `cursor/v1-g4-model-device-5907`
 - [ ] **G5** — Hosted scheduler proof, secrets, legal URLs, alerts, backups, kill switches
 - [ ] **G6** — Internal TestFlight candidate; staged remote flag enablement; zero open P0/P1 for enabled surfaces
 - [ ] **G7** — External cohort ≥ seven stable NY days; signed go/no-go
 
 ## Progress
 
-**Current: G3 — monetization repair (ads SDK contracts + RevenueCat identity)**
+**Current: G4 — model certification against exact pinned ONNX weights**
+
+| Area | Change |
+|------|--------|
+| Weights fetched | `huggingface_hub.snapshot_download` pulled `hari31416/indictrans2-en-indic-dist-200M-ONNX-int8` @ manifest revision + `hari31416/indictrans2-indic-en-dist-200M-ONNX-int8` @ manifest revision into `mobile/assets/models/it2_en_indic` and `mobile/assets/models/it2_indic_en` (gitignored). |
+| Cert run | `python benchmarks/certify_ship_artifacts.py` produced real chrF and register rates on frozen gold. Result committed: `benchmarks/results/ship_cert_last.json` (`passed=false`). |
+| Verdict | `en_ne_formal` 0.4468 vs 0.55, `en_ne_informal` 0.4440 vs 0.50 — BOTH fail. Register floors also miss: तपाईं 0.7% (floor 15%), तिमी 0.0% (floor 10%). `ne_en_deva` 0.6111 PASS. `ne_en_roman` 0.4248 PASS. |
+| Docs | `docs/MODEL_CERT.md` records the measured 2026-09-22 numbers and lists the register-lift work as an out-of-G4 blocker (belongs to `model-ship` / `mt-accuracy`, not this gate). |
+
+**Prior: G3 — monetization repair (ads SDK contracts + RevenueCat identity)**
 
 | Area | Change |
 |------|--------|
