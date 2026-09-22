@@ -11,6 +11,7 @@ import {
   json,
   requestIdFrom,
 } from "../_shared/http.ts";
+import { purgeUserStorageObjects } from "../_shared/storagePurge.ts";
 
 const bodySchema = z.object({
   authorization_code: z.string().min(8).optional(),
@@ -155,6 +156,7 @@ Deno.serve(async (req) => {
       return recorded.ok ? "revoked" : "failed";
     },
     purge: async () => {
+      await purgeUserStorageObjects(user.id, { url, service });
       const res = await fetch(`${url}/rest/v1/rpc/service_purge_user_data`, {
         method: "POST",
         headers: serviceHeaders,

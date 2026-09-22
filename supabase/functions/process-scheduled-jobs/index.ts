@@ -4,6 +4,7 @@ import {
   json,
   requestIdFrom,
 } from "../_shared/http.ts";
+import { purgeUserStorageObjects } from "../_shared/storagePurge.ts";
 
 /**
  * Cron-invoked worker: NY reward close + overdue deletion purges + auth removal.
@@ -50,6 +51,8 @@ Deno.serve(async (req) => {
   for (const row of dueUsers) {
     const userId = row.user_id;
     if (!userId) continue;
+
+    await purgeUserStorageObjects(userId, { url, service });
 
     const purgeRes = await fetch(`${url}/rest/v1/rpc/service_purge_scheduled_deletion`, {
       method: "POST",

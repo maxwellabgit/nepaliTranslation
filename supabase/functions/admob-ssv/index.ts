@@ -8,7 +8,7 @@ import {
   verifyAdmobSsv,
 } from "../_shared/admobSsv.ts";
 
-const EXPECTED_REWARD_AMOUNT = "10";
+const EXPECTED_REWARD_AMOUNT = "15";
 const EXPECTED_REWARD_ITEM = "ad_free_minutes";
 
 /** Seen transaction IDs in-process (DB unique is authoritative). */
