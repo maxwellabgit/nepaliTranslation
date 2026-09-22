@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * G3 contract test: verify AdService tolerates the installed
  * react-native-google-mobile-ads v17 API, where `load()` and `show()`
@@ -5,50 +6,71 @@
  * ERROR listeners before calling load(), rather than chaining `.catch()`
  * onto a `void` return.
  *
- * NOTE: `jest.mock(...)` must be hoisted before any `import`, and the
- * factory below cannot reference outer-scope classes/types (Jest guards
- * against uninitialized mock variables). Everything the mock needs lives
- * inside the factory; the tests reach it via the module's `__hooks`
- * export using `require()` at call time.
+ * Hoisting rules
+ * --------------
+ * `jest.mock(...)` is hoisted to the top of the file. Its factory body
+ * is scanned by `babel-plugin-jest-hoist`, which rejects any identifier
+ * that (a) is not in a fixed allowlist and (b) does not begin with the
+ * case-insensitive `mock` prefix. TypeScript type parameters and the
+ * parameters of nested arrow types (e.g. `Set<(p?: unknown) => void>`)
+ * are visited BEFORE TypeScript strips them, so `p` looks like a naked
+ * identifier and Babel refuses the file.
+ *
+ * The factory below is therefore **plain JavaScript** — no TS type
+ * annotations, no generics, no arrow-type parameters. Types used by the
+ * tests live outside the factory. Tests reach the mock instances via
+ * the module's `__mockHooks` export using `require()` at call time.
+ *
+ * `@ts-nocheck` at file top: the factory body is deliberately untyped so
+ * `babel-plugin-jest-hoist` cannot object. TypeScript would otherwise
+ * complain about implicit-`any` inside the factory even though the
+ * runtime behavior is correct.
  */
 /* eslint-disable import/first */
 jest.mock('react-native-google-mobile-ads', () => {
-  class MockAd {
-    listeners: Map<string, Set<(payload?: unknown) => void>> = new Map();
-    load = jest.fn(() => undefined);
-    show = jest.fn(() => undefined);
-    addAdEventListener(event: string, cb: (payload?: unknown) => void): () => void {
-      const set = this.listeners.get(event) ?? new Set<(p?: unknown) => void>();
-      set.add(cb);
-      this.listeners.set(event, set);
-      return () => {
-        set.delete(cb);
-      };
-    }
-    emit(event: string, payload?: unknown) {
-      const set = this.listeners.get(event);
-      if (set) set.forEach((cb) => cb(payload));
-    }
+  function mockMakeAd() {
+    const ad = {
+      listeners: new Map(),
+      load: jest.fn(() => undefined),
+      show: jest.fn(() => undefined),
+      addAdEventListener(event, cb) {
+        let set = ad.listeners.get(event);
+        if (!set) {
+          set = new Set();
+          ad.listeners.set(event, set);
+        }
+        set.add(cb);
+        return () => {
+          set.delete(cb);
+        };
+      },
+      emit(event, payload) {
+        const set = ad.listeners.get(event);
+        if (set) {
+          set.forEach((cb) => cb(payload));
+        }
+      },
+    };
+    return ad;
   }
-  const hooks: { interstitial: MockAd | null; rewarded: MockAd | null } = {
-    interstitial: null,
-    rewarded: null,
-  };
-  const AdEventType = {
+
+  const mockHooks = { interstitial: null, rewarded: null };
+  const mockAdEventType = {
     LOADED: 'loaded',
     OPENED: 'opened',
     IMPRESSION: 'impression',
     CLOSED: 'closed',
     ERROR: 'error',
   };
-  const RewardedAdEventType = {
+  const mockRewardedAdEventType = {
     LOADED: 'rewarded_loaded',
     EARNED_REWARD: 'rewarded_earned',
   };
-  const initialize = jest.fn(async () => ({}));
+  const mockInitialize = jest.fn(async () => ({}));
+
   return {
     __esModule: true,
-    default: () => ({ initialize }),
+    default: () => ({ initialize: mockInitialize }),
     AdsConsent: {
       gatherConsent: jest.fn(async () => ({
         canRequestAds: true,
@@ -59,21 +81,21 @@ jest.mock('react-native-google-mobile-ads', () => {
     AdsConsentPrivacyOptionsRequirementStatus: { REQUIRED: 'REQUIRED' },
     RewardedAd: {
       createForAdRequest: jest.fn(() => {
-        const ad = new MockAd();
-        hooks.rewarded = ad;
+        const ad = mockMakeAd();
+        mockHooks.rewarded = ad;
         return ad;
       }),
     },
     InterstitialAd: {
       createForAdRequest: jest.fn(() => {
-        const ad = new MockAd();
-        hooks.interstitial = ad;
+        const ad = mockMakeAd();
+        mockHooks.interstitial = ad;
         return ad;
       }),
     },
-    RewardedAdEventType,
-    AdEventType,
-    __hooks: hooks,
+    RewardedAdEventType: mockRewardedAdEventType,
+    AdEventType: mockAdEventType,
+    __mockHooks: mockHooks,
   };
 });
 
@@ -92,13 +114,16 @@ function getMocked(): {
   RewardedAdEventType: Record<string, string>;
 } {
   const mod = require('react-native-google-mobile-ads') as {
-    __hooks: { interstitial: MockAdInstance | null; rewarded: MockAdInstance | null };
+    __mockHooks: {
+      interstitial: MockAdInstance | null;
+      rewarded: MockAdInstance | null;
+    };
     AdEventType: Record<string, string>;
     RewardedAdEventType: Record<string, string>;
   };
   return {
-    interstitial: mod.__hooks.interstitial,
-    rewarded: mod.__hooks.rewarded,
+    interstitial: mod.__mockHooks.interstitial,
+    rewarded: mod.__mockHooks.rewarded,
     AdEventType: mod.AdEventType,
     RewardedAdEventType: mod.RewardedAdEventType,
   };
