@@ -13,7 +13,7 @@ jest.mock('../../stt/sttSupport', () => ({
 
 function renderLearn() {
   return render(
-    <AppProviders services={createTestServices({ offline: true })}>
+    <AppProviders services={createTestServices({ offline: true })} bypassStartupConsent>
       <LearnScreen active onOpenContributions={jest.fn()} />
     </AppProviders>,
   );

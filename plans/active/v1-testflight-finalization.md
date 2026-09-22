@@ -19,8 +19,9 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 
 ## Milestones
 
-- [ ] **G0** — Freeze corrected product contract (docs only) — amended per owner directive; pending re-review + merge
-- [ ] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication
+- [x] **G0** — Freeze corrected product contract (docs only) — amended per owner directive; committed on `cursor/v1-g0-contract-freeze-5907`; PR open blocker
+- [x] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication — committed on `cursor/v1-g1-review-pool-5907`
+- [ ] **G2** — Startup consent gate, account-linked speech/photo upload, withdrawal, 30-day purge — in-progress on `cursor/v1-g2-consent-deletion-5907`
 - [ ] **G2** — Startup consent gate (T&C + Privacy + 18+), account-linked collection, raw speech + photo upload, withdrawal, 30-day purge
 - [ ] **G3** — Ads load/show via real SDK events; impression-based interstitial timer; RevenueCat↔Supabase UUID; sandbox matrix recorded or blocked
 - [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence
@@ -30,7 +31,32 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 
 ## Progress
 
-**Current: G0 amended — contract freeze (docs only)**
+**Current: G2 — startup consent gate + account-linked collection**
+
+| Area | Change |
+|------|--------|
+| Migration | `supabase/migrations/20260922110000_g2_startup_consent.sql` — `startup_consent_version` in `app_config`; `startup_*` fields on `profiles`; `service_record_startup_consent` RPC (rejects incomplete + outdated); `service_current_startup_consent_version` view fn; `private.purge_user_data` extended to remove `review_submissions` and `contributor_alerts` |
+| pgTAP | `supabase/tests/17_g2_startup_consent.test.sql` — incomplete/outdated rejection, complete acknowledgement, review-submission purge on account deletion |
+| Mobile storage | `mobile/src/storage/startupConsent.ts` + tests — device-local record; version-aware `isStartupConsentCurrent` |
+| Mobile gate | `mobile/src/features/auth/StartupConsentGate.tsx` — bilingual full-screen gate wrapping AppProviders; blocks product surfaces until Terms + Privacy + 18+ checkboxes accepted |
+| Consent mirror | `mobile/src/features/auth/recordStartupConsent.ts` + tests — POSTs to `service_record_startup_consent` when signed in |
+| Speech contribution | `mobile/src/features/contribution/enqueueSpeechContribution.ts` + tests — enforces startup gate + media consent + `contribution_speech_enabled` before enqueueing speech media |
+| i18n | New bilingual strings for the startup gate in `en.ts`/`ne.ts` |
+| Wiring | `AppProviders` + `App.tsx` accept `bypassStartupConsent` seam; production boot enforces the gate; three existing tests pass `bypassStartupConsent` |
+
+**Prior: G1 — global 10/day public-review pool (backend + client)**
+
+| Area | Change |
+|------|--------|
+| Migration | `supabase/migrations/20260922100000_g1_public_review_pool.sql` — `private.review_source_items`, `public.review_windows`, `review_window_items`, `review_submissions`, `private.review_admin_actions`, view `public.review_current_window`, importer + rotation + submit + admin RPCs |
+| Credit ratio | `supabase/migrations/20260922100500_g1_credit_ratio_15_minutes.sql` — `apply_reward` forces 1 credit = 15 min; `reward_schedule` updated (rewarded_video → 1 credit / 15 min; new `public_review`/`public_review_long` kinds) |
+| pgTAP | `supabase/tests/16_g1_review_pool.test.sql` — tier snapshot, rotation, dedupe, admin unsatisfactory, credit grant at close, late-reject alert without clawback, sign-in guard |
+| Rotation cron | `supabase/functions/process-scheduled-jobs/index.ts` calls `service_rotate_review_window` alongside NY reward close |
+| Public API | `supabase/functions/public-review/index.ts` — `{op:"current"}` returns shared window; `{op:"submit"}` records a review (auth required) |
+| Importer | `supabase/scripts/import_review_pool.ts` — walks `training/`, `datasets/`, `benchmarks/` JSONL, hashes rows, calls `service_import_review_item`, then refreshes length tiers |
+| Mobile client | `mobile/src/features/contribution/publicReviewApi.ts` + `__tests__/publicReviewApi-test.ts` — global-10 contract, credit tier labels |
+
+**Prior: G0 amended — contract freeze (docs only)**
 
 | Area | Change |
 |------|--------|
@@ -38,7 +64,7 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 | Data classes | `.governance/DATA_CLASSIFICATION.md` — training + benchmark rows all eligible for review; submissions never re-enter training/eval without a separate verification |
 | INTENT / AGENTS / DONE | Aligned to amended freeze |
 | ExecPlans | This file active; `beta-release.md` foundation-only |
-| CERTIFICATION / RELEASE_RUNBOOK | Will follow in G0 fix commit |
+| CERTIFICATION / RELEASE_RUNBOOK | Updated |
 
 ## Surprises & discoveries
 
@@ -70,12 +96,13 @@ git checkout -b cursor/v1-g0-contract-freeze-5907
 
 ## Remaining work
 
-1. Independent re-review of amended G0. Merge when PR is openable (collaborator blocker unresolved).
-2. **G1** on branch `cursor/v1-g1-review-pool-5907`: schema, importer, rotation function, admin adjudication, backend tests.
-3. **G2** on branch `cursor/v1-g2-consent-deletion-5907`: startup consent screen, account-linked schemas, speech capture URI, retry queue, withdrawal + account-deletion 30-day purge, Privacy Policy strings.
+1. Full mobile Review UI (screen wiring, i18n keys) using `publicReviewApi.ts` — deferred to G6 internal-TF build so it lands with the staged flag enablement.
+2. Corpus importer must run against the target Supabase project (needs `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`) — record blocker for G5 ops.
+3. Native STT recorder → durable audio URI wiring so `enqueueSpeechContribution` gets real bytes (STT/recorder platform work; blocker for G4 device).
 4. **G3** on branch `cursor/v1-g3-monetization-5907`: rewrite `AdService` around real SDK events, impression-based interstitial timer, RevenueCat identity, CustomerInfo refresh.
 5. **G4** on branch `cursor/v1-g4-model-device-5907`: attempt exact ONNX fetch + hash + four-class eval; on missing weights, record concrete blocker.
 6. **G5** on branch `cursor/v1-g5-ops-5907`: hosted scheduler cron for 5 PM rotation + 30-day purge; secrets/kill switches/legal URLs blockers.
+7. Independent review of G0 + G1 in fresh contexts.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
@@ -85,5 +112,6 @@ git checkout -b cursor/v1-g0-contract-freeze-5907
 - Live Privacy/Terms/support/deletion/`app-ads.txt` hosting (G5)
 - App Store Connect + RevenueCat + AdMob production configuration (G3/G5)
 - Legal review of bilingual startup consent + Privacy Policy before live collection (G2)
-- Docker Desktop not available on this agent host → `supabase db reset` runs in CI, not locally
+- Docker Desktop not available on this agent host → `supabase db reset` / pgTAP for G1 run in CI, not locally
+- `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` for target project to run `deno run supabase/scripts/import_review_pool.ts` against the eligible corpus
 - `ManagePullRequest` create failed with GitHub `must be a collaborator` — branches are pushed; human must open PRs

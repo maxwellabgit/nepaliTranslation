@@ -384,4 +384,19 @@ export const ne: Record<MessageKey, string> = {
   'settings.subscription': 'सदस्यता',
   'settings.openPaywall': 'विज्ञापन-मुक्त सदस्यता',
   'settings.openPaywallA11y': 'विज्ञापन-मुक्त सदस्यता विकल्प खोल्नुहोस्',
+
+  'startupConsent.title': 'सुरु गर्नु अघि',
+  'startupConsent.intro':
+    'यस यन्त्रमा NepTranslate प्रयोग गर्न, तलका बाकसहरू पढेर स्वीकार गर्नुहोस्। मूल अनुवाद अफलाइन नै काम गर्छ; ऐच्छिक अपलोड साइन-इन गरेपछि मात्र लागू हुन्छ।',
+  'startupConsent.terms':
+    'मैले NepTranslate का नियम र सर्तहरू पढेको र स्वीकार गरेको छु।',
+  'startupConsent.privacy':
+    'मैले NepTranslate को गोपनीयता नीति पढेको र स्वीकार गरेको छु — साइन-इन गरेपछि ऐच्छिक आवाज रेकर्डिङ, क्यामेरा फोटो र सार्वजनिक-समीक्षा सच्याइहरू अपलोड हुन सक्छन्; सहमति फिर्ता गरे वा खाता मेटाए यसका सम्बन्धित सबै डेटा ३० दिनभित्र हटाइन्छ।',
+  'startupConsent.age': 'म १८ वर्ष वा त्योभन्दा माथिको छु।',
+  'startupConsent.readTerms': 'नियम र सर्तहरू पढ्नुहोस्',
+  'startupConsent.readPrivacy': 'गोपनीयता नीति पढ्नुहोस्',
+  'startupConsent.continue': 'स्वीकार गरेर अगाडि बढ्नुहोस्',
+  'startupConsent.continueDisabled':
+    'अगाडि बढ्न तीनवटै बाकस जाँच्नुहोस्। स्वीकृतिपछि मूल अनुवाद उपलब्ध हुनेछ।',
+  'startupConsent.versionLabel': 'संस्करण {version}',
 };

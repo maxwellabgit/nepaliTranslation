@@ -30,7 +30,12 @@ async function renderApp(
 ) {
   await act(async () => {
     render(
-      <NepTranslateApp services={services} runtime={runtime} skipWarmUp />,
+      <NepTranslateApp
+        services={services}
+        runtime={runtime}
+        skipWarmUp
+        bypassStartupConsent
+      />,
     );
   });
   return services;

@@ -381,6 +381,21 @@ export const en = {
   'settings.subscription': 'Subscription',
   'settings.openPaywall': 'Ad-free subscription',
   'settings.openPaywallA11y': 'Open ad-free subscription options',
+
+  'startupConsent.title': 'Before you continue',
+  'startupConsent.intro':
+    'To use NepTranslate on this device, please review and accept the boxes below. Core translation works offline; optional uploads apply only if you sign in.',
+  'startupConsent.terms':
+    'I have read and accept the NepTranslate Terms & Conditions.',
+  'startupConsent.privacy':
+    'I have read and accept the NepTranslate Privacy Policy, including that optional speech recordings, Camera photos, and public-review corrections may be uploaded after I sign in and my account is retained until I withdraw consent or delete my account (30-day purge SLA).',
+  'startupConsent.age': 'I am 18 years of age or older.',
+  'startupConsent.readTerms': 'Read Terms & Conditions',
+  'startupConsent.readPrivacy': 'Read Privacy Policy',
+  'startupConsent.continue': 'Accept and continue',
+  'startupConsent.continueDisabled':
+    'Check all three boxes to continue. Core translation is available after acceptance.',
+  'startupConsent.versionLabel': 'Version {version}',
 } as const;
 
 export type MessageKey = keyof typeof en;

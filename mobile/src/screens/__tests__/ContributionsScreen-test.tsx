@@ -43,7 +43,7 @@ describe('ContributionsScreen', () => {
 
     await act(async () => {
       render(
-        <AppProviders services={createTestServices({ offline: true })}>
+        <AppProviders services={createTestServices({ offline: true })} bypassStartupConsent>
           <ContributionsScreen onClose={jest.fn()} />
         </AppProviders>,
       );

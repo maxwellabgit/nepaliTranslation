@@ -23,7 +23,7 @@ describe('LifecycleCoordinator outbox flush', () => {
 
     await act(async () => {
       render(
-        <AppProviders services={services}>
+        <AppProviders services={services} bypassStartupConsent>
           <View>
             <Text>child</Text>
           </View>

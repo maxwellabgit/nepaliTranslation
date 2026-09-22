@@ -26,6 +26,12 @@ export type NepTranslateAppProps = {
   runtime?: RuntimePorts;
   /** Skip MT warm-up in integration tests when the engine is already mocked. */
   skipWarmUp?: boolean;
+  /**
+   * Test seam: skip the G2 startup consent gate so integration tests reach
+   * product surfaces without acknowledging T&C / Privacy / 18+. Production
+   * boot must leave this false so the gate is enforced.
+   */
+  bypassStartupConsent?: boolean;
 };
 
 /**
@@ -36,6 +42,7 @@ export function NepTranslateApp({
   services,
   runtime,
   skipWarmUp = false,
+  bypassStartupConsent = false,
 }: NepTranslateAppProps = {}) {
   const [neuralReady, setNeuralReady] = useState(false);
   const [mtWarmStatus, setMtWarmStatus] = useState<string | null>(
@@ -79,7 +86,11 @@ export function NepTranslateApp({
   }, [skipWarmUp]);
 
   return (
-    <AppProviders services={services} runtime={runtime}>
+    <AppProviders
+      services={services}
+      runtime={runtime}
+      bypassStartupConsent={bypassStartupConsent}
+    >
       <AppShell
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}

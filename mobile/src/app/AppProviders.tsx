@@ -5,6 +5,7 @@ import {
 } from 'react-native-safe-area-context';
 import { AuthProvider } from '../features/auth/AuthProvider';
 import { AuthStatusBanner } from '../features/auth/AuthStatusBanner';
+import { StartupConsentGate } from '../features/auth/StartupConsentGate';
 import { EntitlementProvider } from '../features/entitlements/EntitlementProvider';
 import { SubscriptionProvider } from '../features/subscription/SubscriptionProvider';
 import { migrateLegacyReviewQueue } from '../storage/contributionOutbox';
@@ -30,6 +31,11 @@ type Props = {
   services?: AppServices;
   /** Device/runtime ports (STT, TTS, MT, OCR, clock). */
   runtime?: RuntimePorts;
+  /**
+   * Test seam — skip the G2 startup consent gate when true so integration
+   * tests reach product screens without acknowledging T&C/Privacy/18+.
+   */
+  bypassStartupConsent?: boolean;
 };
 
 function LegacyOutboxMigration() {
@@ -40,7 +46,12 @@ function LegacyOutboxMigration() {
 }
 
 /** Optional identity + entitlements + services. Missing Supabase leaves children usable. */
-export function AppProviders({ children, services, runtime }: Props) {
+export function AppProviders({
+  children,
+  services,
+  runtime,
+  bypassStartupConsent,
+}: Props) {
   return (
     <SafeAreaProvider initialMetrics={INITIAL_SAFE_AREA}>
       <ThemeProvider>
@@ -55,7 +66,9 @@ export function AppProviders({ children, services, runtime }: Props) {
                   <LifecycleCoordinator />
                   <InterstitialController />
                   <AuthStatusBanner />
-                  {children}
+                  <StartupConsentGate initialAcknowledged={bypassStartupConsent}>
+                    {children}
+                  </StartupConsentGate>
                   </SubscriptionProvider>
                 </FeatureConfigProvider>
               </EntitlementProvider>
