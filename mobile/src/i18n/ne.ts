@@ -399,4 +399,44 @@ export const ne: Record<MessageKey, string> = {
   'startupConsent.continueDisabled':
     'अगाडि बढ्न तीनवटै बाकस जाँच्नुहोस्। स्वीकृतिपछि मूल अनुवाद उपलब्ध हुनेछ।',
   'startupConsent.versionLabel': 'संस्करण {version}',
+
+  'review.title': 'आजका १० सुधार',
+  'review.subtitle':
+    'सबै रिभ्युअरहरूका लागि एउटै १० वटा वस्तु। न्यूयोर्क समयको बेलुका ५ बजे विन्डो बन्द हुन्छ र क्रेडिट बन्दमा दिइन्छ।',
+  'review.progress': '{done} / {total} पुनरावलोकन गरिएको',
+  'review.closeAt': 'न्यूयोर्क समयको बेलुका ५ बजे बन्द ({localTime})',
+  'review.rewardBalance': 'विज्ञापन-मुक्त मिनेट: {minutes}',
+  'review.rewardBalanceCredits': 'कमाइएको क्रेडिट: {credits}',
+  'review.reviewNext': 'अर्को पुनरावलोकन',
+  'review.stateSignIn': 'स्वीकृत पुनरावलोकनका लागि क्रेडिट कमाउन साइन-इन गर्नुहोस्।',
+  'review.stateConsent':
+    'पुनरावलोकनभन्दा पहिले सेटिङ्समा योगदान सहमति पूरा गर्नुहोस्।',
+  'review.stateFlagOff':
+    'सार्वजनिक पुनरावलोकन हाल रोकिएको छ। अनुवाद अझै काम गरिरहेको छ।',
+  'review.stateOffline':
+    'तपाईं अफलाइन हुनुहुन्छ। पुनरावलोकनका लागि नेटवर्क आवश्यक। अनुवाद अझै काम गरिरहेको छ।',
+  'review.stateAllDone':
+    'आजका सबै वस्तुहरू पुनरावलोकन गरिसकियो। न्यूयोर्क समयको ५ बजेपछि अर्को १० हेर्न फर्कनुहोस्।',
+  'review.stateLoading': 'आजका १० लोड गर्दै…',
+  'review.stateWindowClosed':
+    'हालको विन्डो भर्खरै बन्द भयो। अर्को सेट न्यूयोर्क समयको ५ बजेपछि खुल्नेछ।',
+  'review.stateUnavailable':
+    'पुनरावलोकन अहिले उपलब्ध छैन। कृपया केही समयपछि पुनः प्रयास गर्नुहोस्।',
+  'review.itemDirection': 'दिशा: {direction}',
+  'review.itemRegister': 'रजिस्टर: {register}',
+  'review.itemSource': 'स्रोत',
+  'review.itemProposed': 'सुझावित लक्ष्य',
+  'review.itemCorrection': 'तपाईंको सुधार (Submit correction का लागि आवश्यक)',
+  'review.actionConfirm': 'पुष्टि गर्नुहोस्',
+  'review.actionEdit': 'सुधार पेस गर्नुहोस्',
+  'review.actionEditDisabled': 'सक्षम गर्न सुधारिएको लक्ष्य लेख्नुहोस्',
+  'review.actionSkip': 'छोड्नुहोस्',
+  'review.actionReport': 'रिपोर्ट गर्नुहोस्',
+  'review.pendingReward':
+    'पुरस्कार पर्खिरहेको छ। असन्तुष्टि नमानिएमा न्यूयोर्क समयको ५ बजे क्रेडिट दिइनेछ।',
+  'review.submittedAdvance': 'पेस गरियो। अर्को वस्तु पालोमा।',
+  'review.errorAlreadySubmitted': 'तपाईंले यो वस्तु पहिले नै पुनरावलोकन गर्नुभएको छ।',
+  'review.errorWindowClosed': 'तपाईंको प्रस्तुतीकरण अघि विन्डो बन्द भयो।',
+  'review.errorInvalid': 'पेस गर्नुअघि सुधारिएको लक्ष्य लेख्नुहोस्।',
+  'review.errorUnavailable': 'केही गलत भयो। छिट्टै फेरि प्रयास गर्नुहोस्।',
 };

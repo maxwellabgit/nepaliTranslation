@@ -396,6 +396,44 @@ export const en = {
   'startupConsent.continueDisabled':
     'Check all three boxes to continue. Core translation is available after acceptance.',
   'startupConsent.versionLabel': 'Version {version}',
+
+  'review.title': "Today's 10 corrections",
+  'review.subtitle':
+    'Same 10 items for every reviewer. The window closes at 5:00 PM New York time and credits are granted at close.',
+  'review.progress': 'Reviewed {done} of {total}',
+  'review.closeAt': 'Closes at 5:00 PM New York time ({localTime})',
+  'review.rewardBalance': 'Ad-free minutes: {minutes}',
+  'review.rewardBalanceCredits': 'Credits earned: {credits}',
+  'review.reviewNext': 'Review next',
+  'review.stateSignIn': 'Sign in to earn credits for accepted reviews.',
+  'review.stateConsent':
+    'Complete contribution consent in Settings before reviewing.',
+  'review.stateFlagOff':
+    'Public review is currently paused. Translation still works.',
+  'review.stateOffline':
+    'You are offline. Reviewing needs a network. Translation still works.',
+  'review.stateAllDone':
+    "You've reviewed every item in today's set. Come back after 5:00 PM New York time for the next 10.",
+  'review.stateLoading': 'Loading today\u2019s 10\u2026',
+  'review.stateWindowClosed': 'The current window just closed. Next set opens after 5:00 PM New York time.',
+  'review.stateUnavailable': 'Review is unavailable right now. Please try again later.',
+  'review.itemDirection': 'Direction: {direction}',
+  'review.itemRegister': 'Register: {register}',
+  'review.itemSource': 'Source',
+  'review.itemProposed': 'Suggested target',
+  'review.itemCorrection': 'Your correction (required for Submit correction)',
+  'review.actionConfirm': 'Confirm',
+  'review.actionEdit': 'Submit correction',
+  'review.actionEditDisabled': 'Enter a corrected target to enable',
+  'review.actionSkip': 'Skip',
+  'review.actionReport': 'Report',
+  'review.pendingReward':
+    'Reward is pending. Credits will grant at 5:00 PM New York time if not marked unsatisfactory.',
+  'review.submittedAdvance': 'Submitted. Next item queued.',
+  'review.errorAlreadySubmitted': 'You already reviewed this item.',
+  'review.errorWindowClosed': 'The window closed before your submission.',
+  'review.errorInvalid': 'Please enter a corrected target before submitting.',
+  'review.errorUnavailable': 'Something went wrong. Try again shortly.',
 } as const;
 
 export type MessageKey = keyof typeof en;
