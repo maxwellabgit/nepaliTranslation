@@ -13,7 +13,10 @@ export type ErrorCode =
   | "age_required"
   | "lease_expired"
   | "flag_disabled"
-  | "deletion_pending";
+  | "deletion_pending"
+  | "window_closed"
+  | "already_submitted"
+  | "sign_in_required";
 
 export function json(body: unknown, status = 200, requestId?: string): Response {
   const headers: Record<string, string> = {
@@ -53,8 +56,11 @@ export function mapRpcError(errText: string): ErrorCode | null {
   if (lower.includes("deletion_pending")) return "deletion_pending";
   if (lower.includes("rate_limited")) return "rate_limited";
   if (lower.includes("lease_expired")) return "lease_expired";
+  if (lower.includes("sign_in_required")) return "sign_in_required";
+  if (lower.includes("window_closed") || lower.includes("window_not_open")) return "window_closed";
+  if (lower.includes("already_submitted") || lower.includes("23505")) return "already_submitted";
   if (lower.includes("not_found") || lower.includes("p0002")) return "not_found";
-  if (lower.includes("invalid_payload") || lower.includes("22023")) return "invalid_payload";
+  if (lower.includes("invalid_payload") || lower.includes("edit_requires_text") || lower.includes("invalid_action") || lower.includes("22023")) return "invalid_payload";
   if (lower.includes("unauthorized") || lower.includes("28000")) return "unauthorized";
   if (lower.includes("forbidden") || lower.includes("42501")) return "forbidden";
   return null;
@@ -63,6 +69,7 @@ export function mapRpcError(errText: string): ErrorCode | null {
 export function statusForError(code: ErrorCode): number {
   switch (code) {
     case "unauthorized":
+    case "sign_in_required":
       return 401;
     case "forbidden":
     case "consent_required":
@@ -76,6 +83,10 @@ export function statusForError(code: ErrorCode): number {
     case "not_found":
     case "lease_expired":
       return 404;
+    case "window_closed":
+      return 409;
+    case "already_submitted":
+      return 409;
     case "rate_limited":
       return 429;
     case "deletion_incomplete":

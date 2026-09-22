@@ -39,6 +39,18 @@ Deno.serve(async (req) => {
   if (!closeRes.ok) return errorResponse("unavailable", 503, requestId);
   const closeBody = await closeRes.json() as Record<string, unknown>;
 
+  // G1: rotate the global public-review window. Closes the prior window,
+  // grants credits for satisfactory submissions, and opens a new 10-item
+  // window at random from the eligible pool.
+  const rotateRes = await fetch(`${url}/rest/v1/rpc/service_rotate_review_window`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ p_size: 10 }),
+  });
+  const rotateBody: Record<string, unknown> = rotateRes.ok
+    ? await rotateRes.json() as Record<string, unknown>
+    : { error: "rotate_failed" };
+
   const dueRes = await fetch(`${url}/rest/v1/rpc/service_list_deletion_due_users`, {
     method: "POST",
     headers,
@@ -77,6 +89,7 @@ Deno.serve(async (req) => {
     {
       ok: true,
       reward_close: closeBody,
+      review_rotation: rotateBody,
       deletion_auth_removed: authDeleted.length,
     },
     200,
