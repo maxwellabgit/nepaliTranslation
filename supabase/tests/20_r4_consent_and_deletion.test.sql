@@ -78,8 +78,15 @@ reset role;
 
 -- ---------------------------------------------------------------------------
 -- Service role can still act on any user (cron / edge functions).
+--
+-- Clear the JWT claims first: set local role only changes the DB role,
+-- but auth.uid() reads from request.jwt.claims. Without the reset,
+-- auth.uid() would still return user A's uuid inside a service_role
+-- session and the R4 authorization check would fire spuriously.
 -- ---------------------------------------------------------------------------
 
+select set_config('request.jwt.claim.sub', '', true);
+select set_config('request.jwt.claims', '', true);
 set local role service_role;
 
 select ok(

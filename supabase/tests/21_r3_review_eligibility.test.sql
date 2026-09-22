@@ -29,7 +29,12 @@ select is(
 
 reset role;
 
--- Grant startup consent as service_role, then re-check.
+-- Grant startup consent as service_role. Clear JWT first so auth.uid()
+-- is null inside the service session (otherwise the R4 authorization
+-- check would still see user A's claim from the authenticated block
+-- above and refuse a service_role write on behalf of another user).
+select set_config('request.jwt.claim.sub', '', true);
+select set_config('request.jwt.claims', '', true);
 set local role service_role;
 select public.service_record_startup_consent(
   '11111111-1111-4111-8111-111111111111',
@@ -90,6 +95,8 @@ reset role;
 update public.app_config set contribution_text_enabled = true where id = 1;
 
 -- Deletion / withdrawal pending blocks review.
+select set_config('request.jwt.claim.sub', '', true);
+select set_config('request.jwt.claims', '', true);
 set local role service_role;
 select public.service_withdraw_contribution_consent(
   '11111111-1111-4111-8111-111111111111'
