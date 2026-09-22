@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 import Constants from 'expo-constants';
+import { BuildProvenanceCard } from '../components/BuildProvenanceCard';
+import { useFeatureFlags } from '../app/FeatureConfigProvider';
 import { AccountSection } from '../features/auth/AccountSection';
 import { ContributionCard } from '../features/contribution/ContributionCard';
 import { useAuth } from '../features/auth/AuthProvider';
@@ -79,6 +81,7 @@ export function SettingsScreen({
   const consent = services.ads.getConsentState();
   const subscription = useSubscriptionOptional();
   const legalUrls = useMemo(() => readLegalPublicUrls(), []);
+  const featureFlags = useFeatureFlags();
 
   const refreshAccountSummary = auth.refreshAccountSummary;
   const authStatus = auth.status;
@@ -431,6 +434,7 @@ export function SettingsScreen({
                   })}
             </Text>
           ) : null}
+          <BuildProvenanceCard flags={featureFlags} />
         </View>
 
         <View style={dynamic.section}>
