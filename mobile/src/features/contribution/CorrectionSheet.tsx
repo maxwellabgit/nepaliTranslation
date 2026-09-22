@@ -234,7 +234,7 @@ export function CorrectionSheet({
         consentVersion,
         ageConfirmed,
       });
-      const contributionsOn = flags.contributionsEnabled;
+      const contributionsOn = flags.contributionTextEnabled;
       let status: 'draft' | 'queued' = 'draft';
       let note: string | null = null;
       let needAuth = false;

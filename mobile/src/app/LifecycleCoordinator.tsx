@@ -33,6 +33,7 @@ export function LifecycleCoordinator({
       hooksRef.current?.onOutboxFlush?.();
       hooksRef.current?.onEntitlementRefresh?.();
       void contribution.flushOutbox();
+      void contribution.flushMediaOutbox();
       void entitlement.refresh();
       void entitlements.refresh();
     };
@@ -52,6 +53,7 @@ export function LifecycleCoordinator({
         hooksRef.current?.onOnline?.();
         hooksRef.current?.onOutboxFlush?.();
         void contribution.flushOutbox();
+        void contribution.flushMediaOutbox();
       }
       wasOffline.current = offline;
     });
@@ -61,6 +63,7 @@ export function LifecycleCoordinator({
     if (status === 'signed-in') {
       hooksRef.current?.onOutboxFlush?.();
       void contribution.flushOutbox();
+      void contribution.flushMediaOutbox();
       void entitlements.refresh();
     }
   }, [status, contribution, entitlements]);

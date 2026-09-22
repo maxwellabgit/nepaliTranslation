@@ -320,7 +320,7 @@ export const ne: Record<MessageKey, string> = {
     'यस बिल्डमा साइन इन कन्फिगर छैन। अनुवाद, इतिहास र सेटिङ अझै चल्छन्।',
   'auth.supportUserId': 'सहायता युजर ID',
   'auth.consentDraftMeta':
-    'मस्यौदा {version}। सङ्कलन अघि कानुनी समीक्षा चाहिन्छ।',
+    'मस्यौदा {version}। पाठ, बोली, फोटो, OCR/ट्रान्सक्रिप्ट, रिटेन्सन र फिर्ता समेट्छ। लाइभ सङ्कलन अघि कानुनी समीक्षा चाहिन्छ।',
   'auth.signInApple': 'Apple बाट साइन इन',
   'auth.signInUnavailable':
     'यस यन्त्रमा Apple साइन इन उपलब्ध छैन। अनुवाद अफलाइन अझै चल्छ।',

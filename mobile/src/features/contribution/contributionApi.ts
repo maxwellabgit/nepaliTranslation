@@ -88,7 +88,7 @@ export async function fetchNextContribution(input: {
   | { ok: true; assignment: PublicContribution | null }
   | { ok: false; reason: 'unavailable' | 'sign_in' | 'consent' | 'age' | 'disabled' }
 > {
-  if (!getRuntimeFeatureFlags().contributionsEnabled) {
+  if (!getRuntimeFeatureFlags().contributionTextEnabled) {
     return { ok: false, reason: 'disabled' };
   }
   const consent = await loadLocalConsent();
@@ -142,7 +142,7 @@ export async function submitContribution(input: {
   responseText?: string;
   idempotencyKey: string;
 }): Promise<SubmitContributionResult> {
-  if (!getRuntimeFeatureFlags().contributionsEnabled) {
+  if (!getRuntimeFeatureFlags().contributionTextEnabled) {
     return { ok: false, reason: 'disabled' };
   }
   const consent = await loadLocalConsent();
