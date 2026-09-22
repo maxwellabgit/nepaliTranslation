@@ -89,10 +89,11 @@ export function PaywallSheet({ visible, onClose }: Props) {
   const statusCopy =
     sub.snapshot.status === 'billing_retry'
       ? t('paywall.billingRetry', lang)
-      : sub.snapshot.status === 'expired' || sub.snapshot.status === 'cancelled'
-        ? t('paywall.expired', lang)
-        : sub.hasSubscription()
-          ? t('paywall.active', lang)
+      : sub.hasSubscription()
+        ? t('paywall.active', lang)
+        : sub.snapshot.status === 'expired' ||
+            sub.snapshot.status === 'cancelled'
+          ? t('paywall.expired', lang)
           : null;
 
   return (

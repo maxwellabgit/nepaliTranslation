@@ -53,6 +53,46 @@ describe('purchaseTypes', () => {
       ),
     ).toBe(false);
   });
+
+  it('keeps cancelled entitlements active until expires_at', () => {
+    const now = 1_000;
+    expect(
+      hasActiveSubscription(
+        {
+          status: 'cancelled',
+          productId: AD_FREE_PRODUCT_ID,
+          priceString: '$0.99',
+          expiresAtMs: 5_000,
+          updatedAtMs: now,
+        },
+        now,
+      ),
+    ).toBe(true);
+    expect(
+      hasActiveSubscription(
+        {
+          status: 'cancelled',
+          productId: AD_FREE_PRODUCT_ID,
+          priceString: '$0.99',
+          expiresAtMs: now - 1,
+          updatedAtMs: now,
+        },
+        now,
+      ),
+    ).toBe(false);
+    expect(
+      hasActiveSubscription(
+        {
+          status: 'cancelled',
+          productId: AD_FREE_PRODUCT_ID,
+          priceString: '$0.99',
+          expiresAtMs: null,
+          updatedAtMs: now,
+        },
+        now,
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('fake PurchaseService', () => {

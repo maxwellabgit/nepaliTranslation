@@ -35,8 +35,14 @@ export function hasActiveSubscription(
   nowMs: number,
 ): boolean {
   if (!snap) return false;
-  if (snap.status === 'active' || snap.status === 'billing_retry') {
+  // Cancelled still suppresses ads until the paid period ends (Apple grace).
+  if (
+    snap.status === 'active' ||
+    snap.status === 'billing_retry' ||
+    snap.status === 'cancelled'
+  ) {
     if (snap.expiresAtMs != null && snap.expiresAtMs <= nowMs) return false;
+    if (snap.status === 'cancelled' && snap.expiresAtMs == null) return false;
     return true;
   }
   return false;

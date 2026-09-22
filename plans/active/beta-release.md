@@ -53,22 +53,22 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F6 — RevenueCat / StoreKit (gates green; awaiting IR)**
+**Current: F6 — RevenueCat / StoreKit (IR findings fixed; re-review)**
 
 | Area | Change |
 |------|--------|
 | PurchaseService | Fake + production soft-fail; `react-native-purchases`; public RC Apple key only; offline cache |
 | Paywall | Bilingual sheet (Subscribe / Restore / Manage); Settings + house-ad CTA; `paywall_enabled` |
 | Webhook | Bearer-verified; `service_apply_revenuecat_event` idempotent |
-| Ads | `hasSubscription` wired through AdSlot / Rewarded / InterstitialController |
-| Tests | Purchase/paywall unit + native mock + ad-suppress; pgTAP `14_f6_subscription`; Deno webhook shape |
-| Commands | `npm run test:unit` 288 pass; integration 19; `verify:translate` OK; `test:coverage:beta` OK; `tsc`+`eslint` clean; `expo-doctor` 21/21 |
+| Ads | `hasSubscription` wired through AdSlot / Rewarded / InterstitialController; `cancelled` still entitled until `expires_at` |
+| Tests | Purchase/paywall unit + native mock + ad-suppress; pgTAP `14_f6_subscription` (info_schema exists check); Deno webhook shape |
+| Commands | unit/integration/`verify:translate`/`test:coverage:beta`/`tsc`/`eslint` green; CI supabase+js-verify green after pgTAP fix |
 
 **Previous: F5** — PASS (`657783b`); merged PR #8.
 
 ## Remaining work
 
-1. Independent review → merge F6 → start F7.
+1. Independent re-review PASS → merge F6 → start F7.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
