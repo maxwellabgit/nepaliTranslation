@@ -34,6 +34,19 @@ export async function saveForegroundActiveMs(ms: number): Promise<void> {
   }
 }
 
+/**
+ * G3: reset the "minutes since last successful interstitial impression"
+ * counter to zero. Called only after a confirmed impression so the 15-minute
+ * eligibility clock actually restarts (not cumulative lifetime foreground).
+ */
+export async function resetForegroundActiveMs(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(FOREGROUND_MS_KEY, '0');
+  } catch {
+    /* soft-fail */
+  }
+}
+
 export type InterstitialDayState = {
   dayKey: string;
   count: number;

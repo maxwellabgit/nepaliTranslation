@@ -21,7 +21,8 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 
 - [x] **G0** — Freeze corrected product contract (docs only) — amended per owner directive; committed on `cursor/v1-g0-contract-freeze-5907`; PR open blocker
 - [x] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication — committed on `cursor/v1-g1-review-pool-5907`
-- [ ] **G2** — Startup consent gate, account-linked speech/photo upload, withdrawal, 30-day purge — in-progress on `cursor/v1-g2-consent-deletion-5907`
+- [x] **G2** — Startup consent gate, account-linked speech/photo upload, withdrawal, 30-day purge — committed on `cursor/v1-g2-consent-deletion-5907`
+- [ ] **G3** — Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity — in-progress on `cursor/v1-g3-monetization-5907`
 - [ ] **G2** — Startup consent gate (T&C + Privacy + 18+), account-linked collection, raw speech + photo upload, withdrawal, 30-day purge
 - [ ] **G3** — Ads load/show via real SDK events; impression-based interstitial timer; RevenueCat↔Supabase UUID; sandbox matrix recorded or blocked
 - [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence
@@ -31,7 +32,19 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 
 ## Progress
 
-**Current: G2 — startup consent gate + account-linked collection**
+**Current: G3 — monetization repair (ads SDK contracts + RevenueCat identity)**
+
+| Area | Change |
+|------|--------|
+| Ads SDK contract | `AdService.ts` rewritten around v17 `load()`/`show()` = void. Attach LOADED + ERROR + CLOSED (+ IMPRESSION when present) event listeners before calling load/show; never chain `.catch()` onto a void return. `loadInterstitial` rejects on ERROR; `showInterstitial` returns `{ impression: boolean }`. `loadRewarded` / `showRewarded` follow the same pattern with EARNED_REWARD. |
+| Contract test | `AdService.voidLoadContract-test.ts` mocks a void-returning `load()`/`show()` and verifies load resolve/reject, impression=true only after IMPRESSION+CLOSED, impression=false on ERROR, and rewarded earned semantics. |
+| Impression timer | `foregroundAdTimer.ts` adds `resetForegroundActiveMs()`. `tryPresentInterstitial` only records daily count and resets the timer after a confirmed impression; a failed show returns `{ presented: false, executed: 'none:no_impression' }` and leaves the "minutes since last impression" counter untouched. |
+| Interstitial tests | `interstitial-test.ts` gains coverage: impression resets timer to 0; SDK reporting no impression leaves timer and daily count untouched. |
+| RevenueCat identity | `PurchaseService.ts` gets an `identify(userId)` method. Production service configures RC without an appUserID by default, then binds identity via `configure({apiKey, appUserID})` or `logIn(userId)` on `identify`. `purchase()` and `restore()` reject with `sign_in_required` when identity is not bound. `refresh(userId)` also refreshes `getCustomerInfo` from RC. |
+| Subscription provider | `openPaywall()` refuses to open when user is not signed in. |
+| PurchaseService tests | Native-adapter test suite verifies pre-identify rejection, identify binding, refresh identify, offering + purchase + restore, and cache. |
+
+**Prior: G2 — startup consent gate + account-linked collection**
 
 | Area | Change |
 |------|--------|

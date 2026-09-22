@@ -10,6 +10,7 @@ import {
   loadForegroundActiveMs,
   loadInterstitialDayState,
   recordInterstitialPresentation,
+  resetForegroundActiveMs,
   saveForegroundActiveMs,
 } from './foregroundAdTimer';
 import { resolveAdUnitConfig } from './adConfig';
@@ -92,9 +93,29 @@ export async function tryPresentInterstitial(
     };
   }
 
-  await input.adapter.loadInterstitial(input.interstitialUnitId);
-  await input.adapter.showInterstitial(input.interstitialUnitId);
+  try {
+    await input.adapter.loadInterstitial(input.interstitialUnitId);
+  } catch {
+    return {
+      decision: { show: false, reason: 'load_failed' },
+      presented: false,
+      executed: 'none:load_failed',
+    };
+  }
+  const result = await input.adapter.showInterstitial(input.interstitialUnitId);
+  if (!result?.impression) {
+    // No confirmed impression -> do NOT count toward daily cap and do NOT
+    // reset the "minutes since last successful impression" timer.
+    return {
+      decision: { show: false, reason: 'no_impression' },
+      presented: false,
+      executed: 'none:no_impression',
+    };
+  }
   await recordInterstitialPresentation(nowMs);
+  // G3: interstitial eligibility resets to "15 minutes since last successful
+  // impression" instead of accumulating cumulative foreground time forever.
+  await resetForegroundActiveMs();
   return {
     decision,
     presented: true,

@@ -99,12 +99,20 @@ describe('production PurchaseService with mocked SDK', () => {
     });
   });
 
-  it('configures, prices, purchases, and restores via native SDK', async () => {
+  it('configures, prices, purchases, and restores via native SDK after sign-in', async () => {
     const svc = createProductionPurchaseService();
     await svc.configure();
     expect(mockConfigure).toHaveBeenCalledWith({
       apiKey: 'appl_test_public_key',
     });
+
+    // G3: purchase before identify must reject with sign_in_required.
+    const beforeSignIn = await svc.purchase();
+    expect(beforeSignIn.ok).toBe(false);
+    if (!beforeSignIn.ok) expect(beforeSignIn.reason).toBe('sign_in_required');
+
+    // Bind RevenueCat identity to the Supabase UUID.
+    await svc.identify('11111111-1111-4111-8111-111111111111');
 
     const price = await svc.getOfferPriceString();
     expect(price).toBe('$0.99');
@@ -123,6 +131,14 @@ describe('production PurchaseService with mocked SDK', () => {
     await svc.manage();
   });
 
+  it('restore before identify rejects with sign_in_required', async () => {
+    const svc = createProductionPurchaseService();
+    await svc.configure();
+    const result = await svc.restore();
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe('sign_in_required');
+  });
+
   it('refresh merges server row and logs in app user', async () => {
     const svc = createProductionPurchaseService();
     await svc.configure();
@@ -139,6 +155,7 @@ describe('production PurchaseService with mocked SDK', () => {
     mockGetOfferings.mockResolvedValue({ current: { availablePackages: [] } });
     const svc = createProductionPurchaseService();
     await svc.configure();
+    await svc.identify('22222222-2222-4222-8222-222222222222');
     const result = await svc.purchase();
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.reason).toBe('no_offering');
@@ -150,6 +167,7 @@ describe('production PurchaseService with mocked SDK', () => {
     });
     const svc = createProductionPurchaseService();
     await svc.configure();
+    await svc.identify('22222222-2222-4222-8222-222222222222');
     const result = await svc.restore();
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.reason).toBe('nothing_to_restore');

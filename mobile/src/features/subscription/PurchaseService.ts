@@ -23,9 +23,21 @@ export type PurchaseService = {
   hasSubscription: () => boolean;
   refresh: (userId?: string | null) => Promise<SubscriptionSnapshot>;
   getOfferPriceString: () => Promise<string | null>;
+  /**
+   * G3: bind RevenueCat identity to a Supabase UUID before purchase/restore.
+   * Anonymous RevenueCat identities can create webhook mismatches, so V1
+   * requires sign-in before either flow.
+   */
+  identify: (userId: string) => Promise<void>;
   purchase: () => Promise<PurchaseResult>;
   restore: () => Promise<PurchaseResult>;
   manage: () => Promise<void>;
+};
+
+type NativeCustomerInfo = {
+  entitlements?: {
+    active?: Record<string, { expirationDate?: string | null }>;
+  };
 };
 
 type NativePurchases = {
@@ -38,18 +50,11 @@ type NativePurchases = {
     } | null;
   }>;
   purchasePackage: (pkg: unknown) => Promise<{
-    customerInfo?: {
-      entitlements?: {
-        active?: Record<string, { expirationDate?: string | null }>;
-      };
-    };
+    customerInfo?: NativeCustomerInfo;
   }>;
-  restorePurchases: () => Promise<{
-    entitlements?: {
-      active?: Record<string, { expirationDate?: string | null }>;
-    };
-  }>;
-  logIn?: (appUserID: string) => Promise<unknown>;
+  restorePurchases: () => Promise<NativeCustomerInfo>;
+  getCustomerInfo?: () => Promise<NativeCustomerInfo>;
+  logIn?: (appUserID: string) => Promise<{ customerInfo?: NativeCustomerInfo }>;
 };
 
 async function tryLoadPurchases(): Promise<NativePurchases | null> {
@@ -107,17 +112,22 @@ export function createFakePurchaseService(options?: {
   setSnapshot: (snap: SubscriptionSnapshot) => void;
 } {
   let snap = options?.initial ?? { ...EMPTY_SUBSCRIPTION };
+  let identified: string | null = null;
   const price = options?.priceString ?? '$0.99';
   return {
     setSnapshot: (next) => {
       snap = next;
     },
     configure: async () => undefined,
+    identify: async (userId: string) => {
+      identified = userId || null;
+    },
     getSnapshot: () => snap,
     hasSubscription: () => hasActiveSubscription(snap, Date.now()),
     refresh: async () => snap,
     getOfferPriceString: async () => (options?.softFail ? null : price),
     purchase: async () => {
+      if (!identified) return { ok: false, reason: 'sign_in_required' };
       if (options?.softFail) return { ok: false, reason: 'unavailable' };
       snap = {
         status: 'active',
@@ -130,6 +140,7 @@ export function createFakePurchaseService(options?: {
       return { ok: true, snapshot: snap };
     },
     restore: async () => {
+      if (!identified) return { ok: false, reason: 'sign_in_required' };
       if (options?.softFail) return { ok: false, reason: 'unavailable' };
       if (snap.status === 'active') return { ok: true, snapshot: snap };
       return { ok: false, reason: 'nothing_to_restore' };
@@ -145,6 +156,7 @@ export function createFakePurchaseService(options?: {
 export function createProductionPurchaseService(): PurchaseService {
   let snap: SubscriptionSnapshot = { ...EMPTY_SUBSCRIPTION };
   let configured = false;
+  let identifiedUserId: string | null = null;
   let cachedPrice: string | null = null;
   let lastPackage: unknown = null;
 
@@ -156,10 +168,37 @@ export function createProductionPurchaseService(): PurchaseService {
       const native = await tryLoadPurchases();
       if (!native) return;
       try {
+        // G3: do NOT configure with an anonymous app-user id. Wait for the
+        // Supabase UUID via identify(). The paywall stays hidden until then.
         await native.configure({ apiKey: key });
         configured = true;
       } catch {
         configured = false;
+      }
+    },
+    async identify(userId: string) {
+      if (!userId) return;
+      if (identifiedUserId === userId) return;
+      const key = readPublicEnv().revenueCatAppleApiKey ?? '';
+      if (!key) return;
+      const native = await tryLoadPurchases();
+      if (!native) return;
+      try {
+        if (!configured) {
+          await native.configure({ apiKey: key, appUserID: userId });
+          configured = true;
+          identifiedUserId = userId;
+        } else if (native.logIn) {
+          const result = await native.logIn(userId);
+          identifiedUserId = userId;
+          const info = result?.customerInfo ?? null;
+          if (info) {
+            snap = snapshotFromCustomerInfo(info, cachedPrice);
+            await saveCachedSubscription(snap);
+          }
+        }
+      } catch {
+        /* soft-fail; purchase/restore still reject on missing identity */
       }
     },
     getSnapshot: () => snap,
@@ -169,6 +208,7 @@ export function createProductionPurchaseService(): PurchaseService {
       if (local) snap = local;
 
       if (userId) {
+        await this.identify(userId);
         const sb = getSupabase();
         if (sb) {
           try {
@@ -189,12 +229,22 @@ export function createProductionPurchaseService(): PurchaseService {
             /* soft-fail to cache */
           }
         }
-        const native = configured ? await tryLoadPurchases() : null;
-        if (native?.logIn) {
-          try {
-            await native.logIn(userId);
-          } catch {
-            /* soft-fail */
+        // Refresh CustomerInfo from RC on foreground/refresh (G3 audit).
+        if (configured) {
+          const native = await tryLoadPurchases();
+          if (native?.getCustomerInfo) {
+            try {
+              const info = await native.getCustomerInfo();
+              if (info) {
+                const rcSnap = snapshotFromCustomerInfo(info, cachedPrice);
+                if (rcSnap.status === 'active' || snap.status !== 'active') {
+                  snap = rcSnap;
+                  await saveCachedSubscription(snap);
+                }
+              }
+            } catch {
+              /* soft-fail */
+            }
           }
         }
       }
@@ -223,6 +273,7 @@ export function createProductionPurchaseService(): PurchaseService {
       }
     },
     async purchase() {
+      if (!identifiedUserId) return { ok: false, reason: 'sign_in_required' };
       if (!configured) return { ok: false, reason: 'unavailable' };
       const native = await tryLoadPurchases();
       if (!native) return { ok: false, reason: 'unavailable' };
@@ -241,6 +292,7 @@ export function createProductionPurchaseService(): PurchaseService {
       }
     },
     async restore() {
+      if (!identifiedUserId) return { ok: false, reason: 'sign_in_required' };
       if (!configured) return { ok: false, reason: 'unavailable' };
       const native = await tryLoadPurchases();
       if (!native) return { ok: false, reason: 'unavailable' };

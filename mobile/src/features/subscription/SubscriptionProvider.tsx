@@ -64,8 +64,11 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   const openPaywall = useCallback(() => {
     if (!flags.paywallEnabled) return;
+    // G3: RevenueCat identity must equal the Supabase UUID before any paywall
+    // or restore action. Guests cannot open the paywall.
+    if (auth.status !== 'signed-in') return;
     setPaywallOpen(true);
-  }, [flags.paywallEnabled]);
+  }, [auth.status, flags.paywallEnabled]);
 
   const closePaywall = useCallback(() => {
     setPaywallOpen(false);

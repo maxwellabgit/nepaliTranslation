@@ -15,6 +15,21 @@ export type AdService = {
   showPrivacyOptions: () => Promise<void>;
 };
 
+/**
+ * `react-native-google-mobile-ads` v17 API — `load()` and `show()` return
+ * `void`, not a Promise. Calling `.catch()` on those returns will throw a
+ * TypeError at runtime. G3 refactor listens for LOADED / ERROR / CLOSED
+ * events instead of chaining onto load/show.
+ */
+type NativeAdInstance = {
+  load: () => void;
+  show: () => void;
+  addAdEventListener: (
+    event: string,
+    cb: (payload?: unknown) => void,
+  ) => () => void;
+};
+
 type NativeAdsModule = {
   default: () => {
     initialize: () => Promise<unknown>;
@@ -33,21 +48,19 @@ type NativeAdsModule = {
     createForAdRequest: (
       unitId: string,
       opts?: { serverSideVerificationOptions?: { userId?: string; customData?: string } },
-    ) => {
-      load: () => Promise<void>;
-      show: () => Promise<void>;
-      addAdEventListener: (event: string, cb: () => void) => () => void;
-    };
+    ) => NativeAdInstance;
   };
   InterstitialAd: {
-    createForAdRequest: (unitId: string) => {
-      load: () => Promise<void>;
-      show: () => Promise<void>;
-      addAdEventListener: (event: string, cb: () => void) => () => void;
-    };
+    createForAdRequest: (unitId: string) => NativeAdInstance;
   };
   RewardedAdEventType: { LOADED: string; EARNED_REWARD: string };
-  AdEventType: { LOADED: string; CLOSED: string; ERROR: string };
+  AdEventType: {
+    LOADED: string;
+    OPENED?: string;
+    IMPRESSION?: string;
+    CLOSED: string;
+    ERROR: string;
+  };
 };
 
 async function tryLoadNative(): Promise<NativeAdsModule | null> {
@@ -70,16 +83,16 @@ export function createProductionAdService(): AdService {
     privacyOptionsRequired: false,
   };
   let sdkReady = false;
-  let rewardedRef: {
-    show: () => Promise<void>;
-    addAdEventListener: (event: string, cb: () => void) => () => void;
-  } | null = null;
-  let interstitialRef: {
-    show: () => Promise<void>;
-    addAdEventListener: (event: string, cb: () => void) => () => void;
-  } | null = null;
+  let rewardedRef: NativeAdInstance | null = null;
+  let interstitialRef: NativeAdInstance | null = null;
   let earnedEventType = 'earned_reward';
   let interstitialLoadedEvent = 'loaded';
+  let interstitialErrorEvent = 'error';
+  let interstitialClosedEvent = 'closed';
+  let interstitialImpressionEvent: string | null = null;
+  let rewardedLoadedEvent = 'loaded';
+  let rewardedErrorEvent = 'error';
+  let rewardedClosedEvent = 'closed';
 
   const adapter: AdAdapter = {
     async loadBanner(unitId) {
@@ -94,22 +107,35 @@ export function createProductionAdService(): AdService {
       const native = await tryLoadNative();
       if (!native || !sdkReady) return;
       earnedEventType = native.RewardedAdEventType.EARNED_REWARD;
+      rewardedLoadedEvent = native.RewardedAdEventType.LOADED;
+      rewardedErrorEvent = native.AdEventType.ERROR;
+      rewardedClosedEvent = native.AdEventType.CLOSED;
       const ad = native.RewardedAd.createForAdRequest(unitId, {
         serverSideVerificationOptions: {
           userId: opts?.userId,
           customData: opts?.customData,
         },
       });
+      // v17 `load()` returns void; wire events before calling.
       await new Promise<void>((resolve, reject) => {
-        const unsub = ad.addAdEventListener(
-          native.RewardedAdEventType.LOADED,
-          () => {
-            unsub();
-            rewardedRef = ad;
-            resolve();
-          },
-        );
-        ad.load().catch(reject);
+        const unsubLoad = ad.addAdEventListener(rewardedLoadedEvent, () => {
+          unsubLoad();
+          unsubErr();
+          rewardedRef = ad;
+          resolve();
+        });
+        const unsubErr = ad.addAdEventListener(rewardedErrorEvent, () => {
+          unsubLoad();
+          unsubErr();
+          reject(new Error('rewarded_load_error'));
+        });
+        try {
+          ad.load();
+        } catch (err) {
+          unsubLoad();
+          unsubErr();
+          reject(err instanceof Error ? err : new Error('rewarded_load_throw'));
+        }
       });
     },
     async showRewarded(unitId) {
@@ -119,16 +145,25 @@ export function createProductionAdService(): AdService {
       if (!ad) return { earned: false };
       return await new Promise<{ earned: boolean }>((resolve) => {
         let earned = false;
-        const unsub = ad.addAdEventListener(earnedEventType, () => {
+        let settled = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          unsubEarn();
+          unsubClose();
+          unsubErr();
+          resolve({ earned });
+        };
+        const unsubEarn = ad.addAdEventListener(earnedEventType, () => {
           earned = true;
         });
-        void ad
-          .show()
-          .catch(() => undefined)
-          .finally(() => {
-            unsub();
-            resolve({ earned });
-          });
+        const unsubClose = ad.addAdEventListener(rewardedClosedEvent, done);
+        const unsubErr = ad.addAdEventListener(rewardedErrorEvent, done);
+        try {
+          ad.show();
+        } catch {
+          done();
+        }
       });
     },
     async loadInterstitial(unitId) {
@@ -136,23 +171,72 @@ export function createProductionAdService(): AdService {
       const native = await tryLoadNative();
       if (!native || !sdkReady) return;
       interstitialLoadedEvent = native.AdEventType.LOADED;
+      interstitialErrorEvent = native.AdEventType.ERROR;
+      interstitialClosedEvent = native.AdEventType.CLOSED;
+      interstitialImpressionEvent = native.AdEventType.IMPRESSION ?? null;
       const ad = native.InterstitialAd.createForAdRequest(unitId);
       await new Promise<void>((resolve, reject) => {
-        const unsub = ad.addAdEventListener(interstitialLoadedEvent, () => {
-          unsub();
+        const unsubLoad = ad.addAdEventListener(interstitialLoadedEvent, () => {
+          unsubLoad();
+          unsubErr();
           interstitialRef = ad;
           resolve();
         });
-        ad.load().catch(reject);
+        const unsubErr = ad.addAdEventListener(interstitialErrorEvent, () => {
+          unsubLoad();
+          unsubErr();
+          reject(new Error('interstitial_load_error'));
+        });
+        try {
+          ad.load();
+        } catch (err) {
+          unsubLoad();
+          unsubErr();
+          reject(err instanceof Error ? err : new Error('interstitial_load_throw'));
+        }
       });
     },
     async showInterstitial(unitId) {
       network.push({ kind: 'interstitial_show', unitId, atMs: Date.now() });
       const ad = interstitialRef;
       interstitialRef = null;
-      if (!ad) return;
-      // SDK owns presentation and dismissal — no custom skip UI.
-      await ad.show().catch(() => undefined);
+      if (!ad) return { impression: false };
+      // SDK owns presentation and dismissal — no custom skip UI. We resolve
+      // with impression=true when the SDK reports IMPRESSION (or CLOSED as
+      // a fallback for older builds), and impression=false on ERROR.
+      return await new Promise<{ impression: boolean }>((resolve) => {
+        let impression = false;
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          unsubImp();
+          unsubClose();
+          unsubErr();
+          resolve({ impression });
+        };
+        const unsubImp = interstitialImpressionEvent
+          ? ad.addAdEventListener(interstitialImpressionEvent, () => {
+              impression = true;
+            })
+          : () => {};
+        const unsubClose = ad.addAdEventListener(
+          interstitialClosedEvent,
+          () => {
+            if (!interstitialImpressionEvent) impression = true;
+            finish();
+          },
+        );
+        const unsubErr = ad.addAdEventListener(interstitialErrorEvent, () => {
+          impression = false;
+          finish();
+        });
+        try {
+          ad.show();
+        } catch {
+          finish();
+        }
+      });
     },
     showHouseAd(_surface: AdSurface) {
       /* UI renders house copy */

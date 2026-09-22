@@ -32,8 +32,16 @@ export type AdAdapter = {
   /** Resolves with earned=true only after the client reward callback (EARNED_REWARD). */
   showRewarded: (unitId: string) => Promise<{ earned: boolean }>;
   loadInterstitial: (unitId: string) => Promise<void>;
-  /** SDK owns presentation and dismissal — no custom skip UI. */
-  showInterstitial: (unitId: string) => Promise<void>;
+  /**
+   * SDK owns presentation and dismissal — no custom skip UI.
+   *
+   * Resolves with `impression=true` only after the AdMob SDK reports a
+   * successful ad presentation (`AdEventType.IMPRESSION` / `CLOSED` after
+   * a real show). Any load/show error resolves with `impression=false`
+   * so the caller does not falsely count the impression toward quota or
+   * reset the "since last successful impression" timer.
+   */
+  showInterstitial: (unitId: string) => Promise<{ impression: boolean }>;
   showHouseAd: (surface: AdSurface) => void;
   /** Test/observability: network-bound AdMob invocations only. */
   networkCalls: () => AdNetworkCall[];
@@ -137,6 +145,7 @@ export function createMockAdAdapter(): AdAdapter {
     },
     async showInterstitial(unitId) {
       network.push({ kind: 'interstitial_show', unitId, atMs: Date.now() });
+      return { impression: true };
     },
     showHouseAd(surface) {
       house.push(surface);
