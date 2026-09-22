@@ -34,7 +34,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
 - [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
-- [ ] **F3** — Consented speech/photo ingestion and private storage (implementation complete; IR pending)
+- [x] **F3** — Consented speech/photo ingestion and private storage — independent review PASS (`efaae53`)
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
 - [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
@@ -53,7 +53,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F3 — Consented speech/photo ingestion and private storage** (implementation on `cursor/v1-f3-consent-media`)
+**Current: F3 — Consented speech/photo ingestion — independent review PASS (`efaae53`); PR #6**
 
 | Area | Change |
 |------|--------|
@@ -61,39 +61,16 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 | Edge | `create-media-upload` + `complete-media-upload` (JWT, consent+flag assert, signed upload) |
 | Client flags | `contributionTextEnabled` / `Speech` / `Photos`; dual-read legacy `contributions_enabled` |
 | Consent | Version `2026-09-21.media`; summary covers speech/photos/OCR/retention/withdrawal/30-day/processors |
-| Outbox | `mediaOutbox` + `mediaSync` + Lifecycle flush; Camera enqueues photo before temp delete |
-| Speech | Tested `enqueueEligibleSpeechRecording` API; no STT recording URI yet (blocker) |
+| Outbox | `mediaOutbox` + `mediaSync` + Lifecycle flush; Camera **awaits** durable photo enqueue before temp delete |
+| Speech | Tested `enqueueEligibleSpeechRecording` API; no STT recording URI yet (honest blocker) |
 
-**Honesty:** CERTIFICATION F3 rows are Partial/source-proven only. No physical-device upload proof.
+**Honesty:** CERTIFICATION F3 rows Partial/source-proven. Speech live mic URI + physical upload = blockers. CI supabase+js-verify green on tip.
 
-**Previous: F2 — Bilingual UI, theme, responsive layouts** — independent review PASS (`a718794`); merged PR #5 (`1dd0b57`).
-
-**Previous: F1 — privacy / offline-core** — independent review PASS (`05adf43`); merged PR #4.
-
-**Previous: F0 — durable product contract** — merged PR #3 (`a5d9013`).
-
-## Commands that actually ran (paste)
-
-```text
-cd mobile
-npm run verify:ci
-# exit 0 (~73s): unit 59/254, integration 2/19, verify:translate OK,
-# expo-doctor 21/21, coverage OK, export:web
-
-npm exec --yes deno -- test --allow-env supabase/functions/_shared supabase/functions/tests
-# ok | 41 passed | 0 failed (~380ms) including media_upload_test.ts
-
-# Backend DB (this agent host):
-# npx supabase start → FAIL: Docker Desktop engine pipe missing
-#   (open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified)
-# SQL tests authored for CI: supabase/tests/12_f3_media_consent.test.sql
-```
+**Previous: F2** — PASS (`a718794`); merged PR #5.
 
 ## Remaining work
 
-1. Independent review PASS on this branch; merge F3.
-2. CI: confirm `supabase db reset` + `db lint` + `test db` + Deno with Docker.
-3. Start F4 only after F3 merge (reward close / deletion jobs).
+1. Merge PR #6; start F4 on `cursor/v1-f4-rewards-deletion`.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
