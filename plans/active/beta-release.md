@@ -35,7 +35,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
 - [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
 - [x] **F3** — Consented speech/photo ingestion and private storage — independent review PASS (`efaae53`)
-- [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review pending
+- [x] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review PASS (`5764410`)
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
 - [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
 - [ ] **F7** — Protected operational admin console
@@ -53,7 +53,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F4 — Reward close / deletion jobs — branch `cursor/v1-f4-rewards-deletion`**
+**Current: F4 — independent review PASS (`5764410`); merge PR #7 → start F5**
 
 | Area | Change |
 |------|--------|
