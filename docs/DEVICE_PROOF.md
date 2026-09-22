@@ -91,3 +91,12 @@ maestro test .maestro/learn-alphabet.yaml
 - Accessibility / privacy source checklist: [`CERTIFICATION.md`](./CERTIFICATION.md)
 - Store / TestFlight sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md)
 - Offline stack notes: [`OFFLINE_IOS.md`](./OFFLINE_IOS.md)
+- App Store privacy worksheet: [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md)
+- Dependency triage: [`DEPENDENCY_TRIAGE.md`](./DEPENDENCY_TRIAGE.md)
+
+## F8 store / legal blockers (not inventable from Windows)
+
+- [ ] Privacy Policy / Terms / support / deletion HTTPS pages hosted and wired via `EXPO_PUBLIC_*`
+- [ ] Crawlable `app-ads.txt` at developer domain root (source template: [`app-ads.txt`](./app-ads.txt))
+- [ ] App Store Connect privacy answers entered from worksheet (no ATT/IDFA claim)
+- [ ] Telemetry remains flag-off until legal review; no raw content in crash/analytics payloads on device

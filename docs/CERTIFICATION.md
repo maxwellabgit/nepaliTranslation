@@ -22,9 +22,11 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Partial / source-proven** | F3 - version `2026-09-21.media`; legal review before live collection |
 | Post-consent speech/photo auto-upload + offline retry | **Partial / source-proven** | F3 - photo Camera path + media outbox; speech enqueue API ready; STT does not yet produce a recording URI (blocker) |
 | Indefinite retention until withdrawal/deletion; **30-day** purge | **Partial / source-proven** | F4 — request + purge job RPCs; flag-gated delete-account; device proof = human |
-| Raw text/audio/photos never in third-party analytics | Partial | F1 remove raw console logs; F8 telemetry scrubber |
+| Raw text/audio/photos never in third-party analytics | **Source-proven (scrubber)** | F1 diagnostics + F8 telemetry scrubber/tests; `telemetry_enabled` default off. Live sink still human-gated. |
 | Login never required for Translate, Camera, Learn, History, Settings | **Source-proven** | |
 | Optional services fail soft | **Source-proven** | |
+| Privacy / Terms / support / deletion / app-ads.txt live | **Blocked — hosting** | Settings links + honest “not live yet” when `EXPO_PUBLIC_*` URLs empty. Source `docs/app-ads.txt` not crawlable until public host. |
+| App Store privacy labels match runtime | **Source worksheet** | [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md) — Connect form + legal review = human |
 
 ## Monetization & ads (policy certification)
 
@@ -78,8 +80,11 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 
 - AdMob EAS on physical iPhone/iPad (banner, rewarded, interstitial) with UMP
 - Sign in with Apple (sign-in / revoke / cancel / delete-account / 30-day deletion)
-- Legal Privacy / Terms / support / app-ads.txt live URLs
+- Legal Privacy / Terms / support / app-ads.txt **live crawlable URLs** (source templates + Settings blockers only in F8)
+- App Store Connect privacy answers entered from [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md)
 - RevenueCat / StoreKit $0.99 sandbox + TestFlight matrix
 - Bilingual Learn alphabet + UI sign-off
 - Automatic interstitial deliberate go/no-go after external beta stability
 - Admin allowlist operators in production Supabase + signed-in Playwright triage
+- Telemetry remote enable only after legal review (`telemetry_enabled`)
+- Expo-transitive dependency advisories per [`DEPENDENCY_TRIAGE.md`](./DEPENDENCY_TRIAGE.md) on F10 freeze

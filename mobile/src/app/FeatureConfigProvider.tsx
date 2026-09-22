@@ -19,7 +19,7 @@ const FeatureConfigContext = createContext<FeatureFlags>({
 
 /**
  * Loads flags via FeatureConfigService. Learn stays available on failure.
- * Contributions/rewards/ads/paywall stay off unless the service enables them.
+ * Contributions/rewards/ads/paywall/telemetry stay off unless the service enables them.
  */
 export function FeatureConfigProvider({ children }: { children: ReactNode }) {
   const { featureConfig } = useServices();

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "cursor/beta-*"
+      - "cursor/v1-*"
   pull_request:
 
 jobs:
@@ -35,6 +36,19 @@ jobs:
             exit 1
           fi
           echo "Secret scan clean."
+
+  model-hash:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify IT2 release manifest pins
+        run: node ./scripts/check_model_hash.mjs
 
   js-verify:
     runs-on: ubuntu-latest

@@ -136,6 +136,7 @@ export type Database = {
           rewarded_ads_enabled: boolean;
           automatic_interstitial_enabled: boolean;
           paywall_enabled: boolean;
+          telemetry_enabled?: boolean;
           learn_enabled: boolean;
           contribution_consent_version: string;
           deletion_processing_enabled?: boolean;
@@ -155,6 +156,7 @@ export type Database = {
           rewarded_ads_enabled?: boolean;
           automatic_interstitial_enabled?: boolean;
           paywall_enabled?: boolean;
+          telemetry_enabled?: boolean;
           learn_enabled?: boolean;
           contribution_consent_version?: string;
           deletion_processing_enabled?: boolean;

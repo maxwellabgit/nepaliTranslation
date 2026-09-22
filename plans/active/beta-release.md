@@ -38,7 +38,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review PASS (`5764410`)
 - [x] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests — independent review PASS (`657783b`)
 - [x] **F6** — RevenueCat / StoreKit $0.99 subscription — independent review PASS; merged PR #9
-- [ ] **F7** — Protected operational admin console
+- [x] **F7** — Protected operational admin console — independent review PASS; merged PR #10
 - [ ] **F8** — Telemetry, legal/store surfaces, security, dependency triage
 - [ ] **F9** — Exact model certification + extended Windows automation
 - [ ] **F10** — Device matrix, TestFlight, App Store release gates
@@ -53,33 +53,34 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F7 — protected operational admin console (implementing → independent review)**
+**Current: F8 — telemetry / legal / security / dependency triage (awaiting IR)**
 
 | Area | Change |
 |------|--------|
-| Migration | `20260922010000_f7_admin_ops.sql` — `service_assert_admin` + dashboard/review/alerts/deletions/flags/dataset/media-preview RPCs |
-| API | `admin-api` router: JWT → assert admin → service RPCs; media sign + audit; CORS soft via `ADMIN_ORIGIN` |
-| Admin SPA | `admin/` Vite+React — dashboard, review (+ signed preview), alerts, deletions, flags, dataset staging; anon+JWT only |
-| Tests | Deno `admin_api_test` (401/403/ok); pgTAP `15_f7_admin_ops`; Vitest API 403 handling; CI `backend-gate` admin job |
-| Commands | `cd admin && npm test` (+ typecheck); `deno test … supabase/functions/tests` (51+); pgTAP via CI (`15_f7_admin_ops`) when Docker unavailable locally |
-| IR fix | SPA sends `apikey` anon on every Edge call; CORS soft-allows local Vite; `ADMIN_ORIGIN` documented for deploy |
+| Telemetry | Scrubber + client gated by `telemetry_enabled` (default off); banned keys + sensitive fixtures |
+| Legal | Settings Privacy/Terms/support/deletion links via env URLs; honest not-live copy when missing |
+| Privacy labels | `docs/APP_STORE_PRIVACY_LABELS.md` matches runtime SDKs (no ATT/IDFA claim) |
+| app-ads.txt | Source copy + crawlable hosting blocker |
+| Dependencies | `docs/DEPENDENCY_TRIAGE.md` — 13 mobile advisories owned; no Expo 57 force-break |
+| CI | secret-scan + `check_model_hash.mjs` model-hash job |
 
-**Previous: F6** — PASS; merged PR #9 (`0fc3b1f`).
+**Previous: F7** — PASS; merged PR #10 (`7d9e688`).
 
 ## Remaining work
 
-1. Independent review PASS → merge F7 → start F8.
+1. Independent review → merge F8 → start F9.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
-- Playwright signed-in admin triage/export/deletion not automated in F7 (needs live allowlisted session)
-- Production `private.admin_users` allowlist insert/revoke remains human-gated
+- Live Privacy / Terms / support / app-ads.txt hosting URLs (legal + DNS)
+- App Store Connect privacy form entry for freeze build (human)
 - On-device STT (`expo-speech-recognition`) does not produce a durable audio file URI → speech auto-upload path is gated + outbox-ready but not wired to live mic capture
 - Physical iPhone / iPad proof, CocoaPods/ML Kit/AdMob/RevenueCat together
 - App Store Connect $0.99 subscription product + RevenueCat dashboard + webhook secret (human)
-- App Store Connect $0.99 subscription product + legal Privacy/Terms URLs (legal review before live media collection)
 - Bilingual human sign-off; external TestFlight cohort
 - Automatic interstitial enablement is a deliberate release go/no-go, not implied by code landing
 - StoreKit sandbox / TestFlight purchase-restore-expire matrix is human-gated
 - Full Dynamic Type + VoiceOver pass (F10 device matrix)
+- Playwright signed-in admin triage (F7 leftover human gate)
+- Production `private.admin_users` allowlist insert/revoke remains human-gated

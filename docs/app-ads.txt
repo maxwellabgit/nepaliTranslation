@@ -1,0 +1,5 @@
+# NepTranslate app-ads.txt source template (F8)
+# Host at https://<public-domain>/app-ads.txt when the developer site is live.
+# STATUS: not crawlable yet — public hosting is a human blocker (CERTIFICATION / DEVICE_PROOF / RELEASE_RUNBOOK).
+# Replace PUBLISHER_ID with the live AdMob publisher ID before publishing.
+google.com, pub-PUBLISHER_ID, DIRECT, f08c47fec0942fa0

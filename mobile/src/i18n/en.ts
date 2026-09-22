@@ -144,6 +144,22 @@ export const en = {
   'settings.privacy': 'Privacy',
   'settings.privacyBody':
     'Camera translation runs on this device. Captures are temporary and are not saved to your photo library.',
+  'settings.legal': 'Legal & support',
+  'settings.privacyPolicy': 'Privacy Policy',
+  'settings.privacyPolicyA11y': 'Open Privacy Policy',
+  'settings.terms': 'Terms of Service',
+  'settings.termsA11y': 'Open Terms of Service',
+  'settings.supportLink': 'Support',
+  'settings.supportLinkA11y': 'Open support',
+  'settings.deletionInfo': 'Account & data deletion',
+  'settings.deletionInfoA11y': 'Open account and data deletion information',
+  'settings.manageSubscription': 'Manage Apple subscription',
+  'settings.manageSubscriptionA11y': 'Open Apple subscription management',
+  'settings.legalNotLive':
+    'Privacy Policy, Terms, and support pages are not live yet. Contact support@neptranslate.app if you need help before those pages are published.',
+  'settings.legalLinkUnavailableTitle': 'Not available yet',
+  'settings.legalLinkUnavailableBody':
+    'This page is not published yet. Email support@neptranslate.app for help.',
   'settings.about': 'About',
   'settings.aboutReady':
     'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.',

@@ -13,6 +13,7 @@ const FLAG_KEYS = [
   "paywall_enabled",
   "learn_enabled",
   "deletion_processing_enabled",
+  "telemetry_enabled",
 ] as const;
 
 export function FlagsPage({ api }: { api: AdminClient }) {
