@@ -2,7 +2,7 @@
 
 **Status: BLOCKED — needs physical iPhone/iPad + Apple developer session**
 
-Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Model floors: [`MODEL_CERT.md`](./MODEL_CERT.md). Store sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md).
+Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Model floors: [`MODEL_CERT.md`](./MODEL_CERT.md). Store sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md).
 
 **G4/G6 rule:** leave every matrix / checklist box unchecked until a human fills it on a real device with the **same** TestFlight (or internal) build number recorded below. Source-only CI is not device proof. Tip `43f9bc6` is not an external RC.
 
@@ -105,7 +105,7 @@ Record OS version + device model next to each box when checked.
 ### Optional services (when flags enabled in internal testing)
 
 - [ ] Sign in with Apple: sign-in / cancel / revoke / delete-account; deletion request shows 30-day deadline
-- [ ] Post-consent speech + Camera upload; guest/non-consent uploads nothing
+- [ ] Post-consent **Camera photo** upload when flagged; guest/non-consent uploads nothing; raw speech-media upload **deferred** (not a V1 device-proof item)
 - [ ] AdMob banner (idle Translate + Learn only), rewarded (15 min after SSV), interstitial (policy + SDK dismiss) — interstitial only if deliberately enabled
 - [ ] RevenueCat / StoreKit: purchase, cancel, restore, expire, billing retry, offline launch, second-device restore
 - [ ] Subscription suppresses every ad format immediately

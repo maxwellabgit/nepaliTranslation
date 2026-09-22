@@ -111,7 +111,7 @@ Flags must be remote-controllable without an app update. Disabling optional flag
 - Distribution: diagnostic internal TestFlight (optional features off) → evidence gates G1–G6 → small external cohort ≥ seven stable days → public App Store. No “beta,” “test,” or unfinished language in public App Store metadata.
 
 ## Goals (TestFlight finalization — G0–G7)
-- [x] **G0** Freeze product contract (docs only) — this INTENT + V1_G0_DECISIONS + DATA_CLASSIFICATION
+- [ ] **G0** Freeze product contract (docs only) — this INTENT + V1_G0_DECISIONS + DATA_CLASSIFICATION (merge after independent review)
 - [ ] **G1** Real public-review pool, importer, exclusive allocation, admin adjudication, 5 PM grants
 - [ ] **G2** Truthful bilingual consent, withdrawal, 30-day purge of all linked data
 - [ ] **G3** Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity

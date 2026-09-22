@@ -19,7 +19,7 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 
 ## Milestones
 
-- [x] **G0** — Freeze corrected product contract (docs only)
+- [ ] **G0** — Freeze corrected product contract (docs only) — pending independent review PASS + merge
 - [ ] **G1** — Public-review pool schema, importer, exclusive allocation, admin adjudication, 5 PM grants + late alerts
 - [ ] **G2** — Bilingual consent, withdrawal, truthful privacy copy, complete 30-day purge
 - [ ] **G3** — Ads load/show via real SDK events; impression-based interstitial timer; RevenueCat↔Supabase UUID; sandbox matrix recorded or blocked
@@ -45,6 +45,7 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 - Audit: `react-native-google-mobile-ads` v17 `load()` returns `void`; app `.catch` is a real breakage masked by mocks (fix in G3).
 - Soft ship-cert CI can be green with missing ONNX weights — must not be treated as G4 Done.
 - Preliminary public-review runway ~649 items ≈ tens of reviewer-days — UI must say “up to 10.”
+- Independent review (first pass): FAIL — `docs/DEVICE_PROOF.md` still required post-consent speech upload; fixed to photo-only + speech deferred.
 
 ## Decision log
 
@@ -55,7 +56,7 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 ```text
 git fetch origin && git pull origin main   # already at 43f9bc6
 # Docs-only gate: no mobile/admin/supabase runtime changes
-rg -n "15 minutes of foreground-active|up to 10|speech-media|G0–G7" .governance AGENTS.md plans docs .agent
+# Independent review FAIL on DEVICE_PROOF speech line → fixed
 ```
 
 ## Remaining work
@@ -72,3 +73,4 @@ rg -n "15 minutes of foreground-active|up to 10|speech-media|G0–G7" .governanc
 - Live Privacy/Terms/support/deletion/`app-ads.txt` hosting
 - App Store Connect + RevenueCat + AdMob production configuration
 - Legal review of bilingual consent before live collection
+- ManagePullRequest create failed once with collaborator validation — retry after fix commit
