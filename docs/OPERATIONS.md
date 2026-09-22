@@ -1,13 +1,18 @@
-# Production operations (G5)
+# Production operations (R8)
 
-**Status:** template — every item on this page requires human-owned setup on Supabase, hosting, and third-party consoles. Do not treat this document as evidence that production infrastructure is running. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md).
+**Status:** template — every item on this page requires human-owned setup on Supabase, hosting, and third-party consoles. Do not treat this document as evidence that production infrastructure is running. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md).
 
 ## Hosted scheduler (5:00 PM America/New_York rotation + 30-day purge)
 
 The `process-scheduled-jobs` Supabase Edge Function does three things:
 
 1. Closes the current NY reward window and grants scheduled contribution credits (`service_close_ny_reward_window`).
-2. **G1:** rotates the global public-review window (`service_rotate_review_window`) — closes the prior 10-item window, grants credits for satisfactory submissions, pre-selects the next random 10 from `private.review_source_items`.
+2. **R1 (was G1):** rotates the global public-review window (`service_rotate_review_window(p_size, p_as_of)`). Behaviour:
+   - Advisory-lock-owned: concurrent invocations return `{status: 'busy'}` and mutate nothing.
+   - `not_due`: if the current open window's `ny_close_at > p_as_of`, no mutation; returns `{status: 'not_due', ...}`. Monitoring counts these to confirm the scheduler is alive between 5 PM ticks.
+   - At close, grants credit **only** for `confirm` and `edit` submissions that were not marked `unsatisfactory` before close; `skip` and `report` grant zero; `report` also flips the source item to `public_review_eligible=false`. Credits route through `private.apply_reward` so `earned_ad_free_until` advances at close.
+   - Empty/under-N pool: opens a window with the actual count and returns `warning: 'pool_short'` (still 200 to the caller).
+   - Non-2xx PostgREST response now surfaces to the caller as HTTP 502 `rotate_failed` — cron alerting depends on this instead of the previous "HTTP 200 with `{error: 'rotate_failed'}`" shape that hid failures.
 3. Purges eligible account-deletion records (`service_list_deletion_due_users` → `service_purge_scheduled_deletion` → `auth.admin.users delete`).
 
 ### Required cron

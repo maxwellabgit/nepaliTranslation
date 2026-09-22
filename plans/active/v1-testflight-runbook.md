@@ -16,8 +16,8 @@ Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../d
 
 | Gate | Branch | Status |
 |------|--------|--------|
-| **R0** — Restore honest release baseline | `cursor/v1-r0-release-baseline-5907` | **in progress** |
-| R1 — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | pending |
+| R0 — Restore honest release baseline | `cursor/v1-r0-release-baseline-5907` | **PASS (stacked; merge with R1)** |
+| **R1** — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **in progress** |
 | R2 — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | pending |
 | R3 — Mobile Review UX + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | pending |
 | R4 — Consent write authorization, withdrawal, 30-day deletion, real media capture | `cursor/v1-r4-consent-media-deletion-5907` | pending |
@@ -57,6 +57,29 @@ Prior beta/G0–G5 milestones (`plans/active/v1-testflight-finalization.md`) rem
 - Expo `npx expo config --type public` under the `testflight` profile shows `version: 1.7.0`, `supportsTablet: true`, correct camera copy, Google test ad IDs, and no secrets.
 
 R0 is **not** Done until GitHub, not just local, shows the mobile/admin/testing-ground checks green.
+
+## R1 scope (this branch)
+
+Forward-only migration `supabase/migrations/20260923000000_r1_review_ledger_rotation.sql`:
+
+1. Rewrite `private.apply_reward` so both the duplicate-row lookup **and** the `on conflict` clause target `(user_id, source_type, source_id)` — the identity constraint that `20260920200000_h3_atomic_consensus.sql` installed. Preserves the amended 15-min ratio (`v_minutes := p_credits * 15`) and the daily cap. Two different users can now receive credit for the same globally reviewed source item; the same user cannot receive credit twice for the same source.
+2. Rewrite `public.service_rotate_review_window` so:
+   - The signature is `(p_size smallint default 10, p_as_of timestamptz default now())`. Production uses defaults; tests inject boundary times.
+   - `pg_try_advisory_xact_lock('r1_review_rotation')` owns rotation. Concurrent callers exit with `{status: 'busy'}` and no mutation.
+   - If an open window has `ny_close_at > p_as_of`, return `{status: 'not_due', ...}` with no mutation.
+   - Grants route through `private.apply_reward` — the runbook rule that only `apply_reward` mutates both the immutable ledger and `earned_entitlements`. `earned_ad_free_until` advances at close by (credits × 15) minutes.
+   - Only `confirm` and `edit` earn credit. `skip` earns zero and marks the submission `reward_granted=true` so we do not retry it. `report` earns zero **and** marks the reviewed source item `public_review_eligible=false` with a `quarantined_at` metadata note.
+   - Empty and under-N pools open a window with the actual count and return `warning: 'pool_short'`; never duplicate.
+   - Retry after interruption is exactly-once (apply_reward is idempotent on the 3-tuple).
+3. Rewrite `private.select_review_window_items` so the per-window tier snapshot is deterministic: order the selected rows by `source_char_length DESC, source_item_id ASC` and mark the first `ceil(N/2)` as tier 2 (2 credits / 30 min), rest tier 1 (1 credit / 15 min).
+4. `supabase/functions/process-scheduled-jobs/index.ts` no longer swallows a failed rotation inside HTTP 200. Non-2xx from PostgREST returns 502 `rotate_failed` so cron monitoring can detect it. `not_due` and `ok_pool_short` are still 200 (expected between the 5 PM ticks).
+5. New pgTAP suite `supabase/tests/18_r1_rotation_and_ledger.test.sql` covers every case the runbook requires: 4:59 not_due / 5:00 close; DST boundaries; two users on the same source item; retry idempotency; skip/report zero-grant + quarantine; empty/under-N pool. Uses only the two auth.users seeded by `seed.sql` (11111... and 22222...) so it does not fabricate identity rows.
+
+### R1 exit gate
+
+- Fresh-database and upgrade-path Supabase tests pass on GitHub. R1 stacks on R0 so the exact **R0+R1 integration commit** is the first commit where every required GitHub check is green — the "first useful diagnostic TestFlight" milestone the audit specifies.
+- Local Supabase suite cannot run on this VM (no Docker/Postgres); relies on GitHub CI for enforcement. Static parse of the migration confirmed.
+- Mobile `verify:ci` remains green (no runtime code paths under mobile change in R1).
 
 ## Decision log
 
