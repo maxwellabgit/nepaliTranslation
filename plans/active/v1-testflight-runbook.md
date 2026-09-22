@@ -18,7 +18,8 @@ Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../d
 |------|--------|--------|
 | R0 — Restore honest release baseline | `cursor/v1-r0-release-baseline-5907` | **PASS (stacked; merge with R1)** |
 | R1 — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **PASS** |
-| **R2** — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | **in progress** |
+| R2 — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | **PASS** |
+| **R4** — Consent authorization + withdrawal + 30-day deletion | `cursor/v1-r4-consent-media-deletion-5907` | **in progress** |
 | R3 — Mobile Review UX + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | pending |
 | R4 — Consent write authorization, withdrawal, 30-day deletion, real media capture | `cursor/v1-r4-consent-media-deletion-5907` | pending |
 | R5 — Interstitial opportunities, rewarded SSV, RevenueCat matrix | `cursor/v1-r5-monetization-device-proof-5907` | pending |
@@ -137,6 +138,33 @@ Every seen row is reconciled: `accepted + deduped + pii + malformed = seen`.
 - Live Supabase project provisioning + running the importer against staging is R8.
 - Syncing `public.review_exclusions` from production Supabase into `benchmarks/private_exclusions.json` is a human/admin operation (documented on the manifest file itself).
 - A NEW private uncontaminated holdout for R6 must exist before neural EN→NE quality is re-certified. R2 marks gold as public-exposed via metadata + review_exclusions when it enters a live window, satisfying the audit's rule 12.
+
+## R4 scope (this branch)
+
+Landed:
+
+- Forward-only migration `supabase/migrations/20260923020000_r4_consent_authorization.sql`:
+  - **Auth-derived subject** across every consent-write and deletion-request RPC. `service_record_startup_consent`, `service_record_consent`, `service_request_account_deletion`, and the new `service_withdraw_contribution_consent` now reject any request where `auth.uid()` is set and does not equal `p_user_id` (SQLSTATE 42501 `forbidden`). Service-role calls (no `auth.uid()`) still act on any user for cron and admin workflows.
+  - `service_withdraw_contribution_consent(p_user_id)` — dedicated RPC that stops new uploads, marks queued media `pending_delete`, schedules a 30-day linked-data purge, adds a `contribution_consent_withdrawn` contributor alert, and audit-logs the action.
+  - `private.purge_user_data(p_user_id)` extended to also insert a `(content_hash, 'consent_withdrawn' | 'account_deleted')` exclusion for every reviewed source the user touched, so R2's `check_review_exclusions` guard keeps their content out of future training/eval.
+  - `service_user_deletion_manifest(p_user_id)` — machine-readable coverage manifest listing every linked table + action + current row count, plus storage-bucket coverage that `process-scheduled-jobs` handles out-of-transaction.
+
+- Client wrapper `mobile/src/features/auth/withdrawContributionConsent.ts` calls the new RPC, handles unavailable / unauthorized / forbidden / invalid_payload, and returns `deletion_due_at` on success. Covered by `__tests__/withdrawContributionConsent-test.ts` (4/4).
+
+- pgTAP suite `supabase/tests/20_r4_consent_and_deletion.test.sql`:
+  - User A cannot write user B's startup consent, contribution consent, deletion request, or withdrawal (all raise `forbidden`).
+  - `service_role` bypasses the check for cron paths.
+  - Withdrawal marks media `pending_delete`, adds the alert row, and returns a 30-day `deletion_due_at`.
+  - Deletion manifest lists ≥ 12 linked targets including `public.review_exclusions`.
+  - `private.purge_user_data` tags the reviewed content_hash with `consent_withdrawn` or `account_deleted` and deletes the user's review submissions.
+
+### R4 remaining scope (blocked or scheduled)
+
+- Real speech capture (durable app-owned audio file after STT with metadata, size/duration limits, offline queue, idempotent retry, delete after verified upload) — needs Expo AV / native recorder wiring **and** physical-device evidence. Scheduled inside R5 device-proof.
+- Photo capture end-to-end — same rationale; the existing `contribution_photos_enabled` flag is off in the internal build.
+- Withdraw-consent UI surface (button in Settings → Account) — R3 territory.
+- English/Nepali language selector directly on the first-launch consent screen — the app-level `UiLangProvider` already toggles the whole tree; R3 will add the explicit toggle inside `StartupConsentGate` if audit review still requires it.
+- Legal review of bilingual copy — human.
 
 ## Decision log
 
