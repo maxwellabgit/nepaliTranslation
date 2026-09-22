@@ -39,7 +39,8 @@ export function createProductionAdService(): AdService {
       return undefined;
     },
     async showInterstitial() {
-      return undefined;
+      // Web manual-test adapter never presents a real interstitial.
+      return { impression: false };
     },
     showHouseAd() {
       return undefined;

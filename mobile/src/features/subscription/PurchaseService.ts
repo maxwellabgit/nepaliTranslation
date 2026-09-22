@@ -124,7 +124,12 @@ export function createFakePurchaseService(options?: {
     },
     getSnapshot: () => snap,
     hasSubscription: () => hasActiveSubscription(snap, Date.now()),
-    refresh: async () => snap,
+    refresh: async (userId?: string | null) => {
+      // Mirror production: refresh binds identity to the signed-in UUID so
+      // subsequent purchase()/restore() flows can succeed.
+      if (userId) identified = userId;
+      return snap;
+    },
     getOfferPriceString: async () => (options?.softFail ? null : price),
     purchase: async () => {
       if (!identified) return { ok: false, reason: 'sign_in_required' };

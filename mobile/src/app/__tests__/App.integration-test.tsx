@@ -298,7 +298,7 @@ describe('NepTranslateApp production composition', () => {
   it('saves a correction draft that survives app relaunch', async () => {
     const services = createTestServices({ offline: true });
     const view = await render(
-      <NepTranslateApp services={services} skipWarmUp />,
+      <NepTranslateApp services={services} skipWarmUp bypassStartupConsent />,
     );
 
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
@@ -323,7 +323,13 @@ describe('NepTranslateApp production composition', () => {
 
     await view.unmount();
     await act(async () => {
-      render(<NepTranslateApp services={services} skipWarmUp />);
+      render(
+        <NepTranslateApp
+          services={services}
+          skipWarmUp
+          bypassStartupConsent
+        />,
+      );
     });
     const drafts = await listDrafts();
     expect(drafts.length).toBeGreaterThan(0);

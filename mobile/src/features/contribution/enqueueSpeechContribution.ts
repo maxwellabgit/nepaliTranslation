@@ -31,6 +31,7 @@ export async function enqueueSpeechContribution(input: {
       ok: false;
       reason:
         | 'unavailable'
+        | 'sign_in'
         | 'guest'
         | 'consent'
         | 'age'

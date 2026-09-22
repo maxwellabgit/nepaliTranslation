@@ -10,8 +10,10 @@ import { Pressable, Text } from 'react-native';
 
 jest.mock('../../auth/AuthProvider', () => ({
   useAuth: () => ({
-    status: 'guest',
-    userId: null,
+    // G3: openPaywall requires a signed-in user so RevenueCat identity is
+    // bound to a Supabase UUID before any purchase/restore.
+    status: 'signed-in',
+    userId: '11111111-1111-4111-8111-111111111111',
   }),
 }));
 

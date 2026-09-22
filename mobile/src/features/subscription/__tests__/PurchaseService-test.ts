@@ -100,9 +100,15 @@ describe('fake PurchaseService', () => {
     await clearCachedSubscription();
   });
 
-  it('purchases and restores deterministically', async () => {
+  it('purchases and restores deterministically after sign-in', async () => {
     const svc = createFakePurchaseService({ priceString: '$0.99' });
     await svc.configure();
+    // G3: purchase before identify rejects with sign_in_required.
+    const guest = await svc.purchase();
+    expect(guest.ok).toBe(false);
+    if (!guest.ok) expect(guest.reason).toBe('sign_in_required');
+
+    await svc.identify('11111111-1111-4111-8111-111111111111');
     expect(svc.hasSubscription()).toBe(false);
     const bought = await svc.purchase();
     expect(bought.ok).toBe(true);
@@ -111,9 +117,10 @@ describe('fake PurchaseService', () => {
     expect(restored.ok).toBe(true);
   });
 
-  it('soft-fails purchase and restore when softFail is set', async () => {
+  it('soft-fails purchase and restore when softFail is set (after sign-in)', async () => {
     const svc = createFakePurchaseService({ softFail: true });
     await svc.configure();
+    await svc.identify('11111111-1111-4111-8111-111111111111');
     expect(await svc.getOfferPriceString()).toBeNull();
     const bought = await svc.purchase();
     expect(bought).toEqual({ ok: false, reason: 'unavailable' });
@@ -122,8 +129,9 @@ describe('fake PurchaseService', () => {
     expect(svc.hasSubscription()).toBe(false);
   });
 
-  it('caches subscription offline', async () => {
+  it('caches subscription offline (after sign-in)', async () => {
     const svc = createFakePurchaseService();
+    await svc.identify('11111111-1111-4111-8111-111111111111');
     await svc.purchase();
     const cached = await loadCachedSubscription();
     expect(cached?.status).toBe('active');
@@ -152,11 +160,13 @@ describe('snapshotFromServerRow', () => {
 });
 
 describe('production PurchaseService soft-fail', () => {
-  it('configures without throwing when SDK/key missing', async () => {
+  it('configures without throwing when SDK/key missing; purchase rejects before sign-in', async () => {
     const svc = createProductionPurchaseService();
     await expect(svc.configure()).resolves.toBeUndefined();
     expect(svc.hasSubscription()).toBe(false);
+    // G3: no identify -> purchase rejects with sign_in_required.
     const purchase = await svc.purchase();
     expect(purchase.ok).toBe(false);
+    if (!purchase.ok) expect(purchase.reason).toBe('sign_in_required');
   });
 });

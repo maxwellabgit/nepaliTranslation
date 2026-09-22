@@ -48,6 +48,15 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
   const [ready, setReady] = useState<boolean>(initialAcknowledged ?? false);
 
   useEffect(() => {
+    // Test seam: when the parent asserts consent (production integration
+    // tests, LearnScreen-test, ContributionsScreen-test, ...) skip the
+    // storage lookup entirely so the effect cannot flip the gate closed
+    // after the first render.
+    if (initialAcknowledged) {
+      setAcknowledged(true);
+      setReady(true);
+      return;
+    }
     let cancelled = false;
     (async () => {
       const record = await loadStartupConsent();
@@ -59,7 +68,7 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialAcknowledged]);
 
   const openTerms = useCallback(() => {
     const url = readLegalPublicUrls().termsOfServiceUrl.trim();

@@ -23,14 +23,22 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 - [x] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication — committed on `cursor/v1-g1-review-pool-5907`
 - [x] **G2** — Startup consent gate, account-linked speech/photo upload, withdrawal, 30-day purge — committed on `cursor/v1-g2-consent-deletion-5907`
 - [x] **G3** — Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity — committed on `cursor/v1-g3-monetization-5907`
-- [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence — cert run 2026-09-22 FAIL (formal + informal EN→NE below floors); committed on `cursor/v1-g4-model-device-5907`
-- [ ] **G5** — Hosted scheduler proof, secrets, legal URLs, alerts, backups, kill switches
+- [x] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence — cert run 2026-09-22 FAIL (formal + informal EN→NE below floors); committed on `cursor/v1-g4-model-device-5907`
+- [ ] **G5** — Hosted scheduler proof, secrets, legal URLs, alerts, backups, kill switches — templates + operations doc committed on `cursor/v1-g5-ops-5907`
 - [ ] **G6** — Internal TestFlight candidate; staged remote flag enablement; zero open P0/P1 for enabled surfaces
 - [ ] **G7** — External cohort ≥ seven stable NY days; signed go/no-go
 
 ## Progress
 
-**Current: G4 — model certification against exact pinned ONNX weights**
+**Current: G5 — production operations templates + verification checklist**
+
+| Area | Change |
+|------|--------|
+| Operations doc | `docs/OPERATIONS.md` — hosted scheduler contract, DST handling, secret rotation matrix, remote kill-switch flag matrix (all default off until each gate proves out), backups/PITR, legal URL requirements, alert routes, verification checklist, rollback rehearsal |
+| Scheduler descriptor | `supabase/functions/schedules/process-scheduled-jobs.yaml` — every-minute cron template for Supabase Scheduled Functions (or any alt provider), gated on `CRON_SECRET` |
+| Scheduler README | `supabase/functions/schedules/README.md` — human setup and honesty note: files alone are not proof the scheduler runs |
+
+**Prior: G4 — model certification against exact pinned ONNX weights**
 
 | Area | Change |
 |------|--------|
