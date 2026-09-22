@@ -102,13 +102,19 @@ select ok(
 -- Withdrawal flow: stops uploads, enqueues 30-day purge, adds an alert.
 -- ---------------------------------------------------------------------------
 
--- Seed a media row + a review submission for user B.
+-- Seed a media row for user B.
 insert into public.contribution_media (
-  user_id, storage_path, kind, status
+  user_id, kind, bucket_id, object_path, content_type, byte_size,
+  idempotency_key, consent_version, status
 ) values (
   '22222222-2222-4222-8222-222222222222',
-  'media/22222222/test.m4a',
   'speech',
+  'contribution-speech',
+  '22222222-2222-4222-8222-222222222222/test.m4a',
+  'audio/m4a',
+  1024,
+  'r4-media-idem-1',
+  '2026-09-21.media',
   'uploaded'
 )
 on conflict do nothing;

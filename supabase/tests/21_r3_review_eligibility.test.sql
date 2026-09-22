@@ -59,6 +59,10 @@ select is(
 
 reset role;
 
+-- Truly anonymous now: clear the JWT so auth.uid() returns null.
+select set_config('request.jwt.claim.sub', '', true);
+select set_config('request.jwt.claims', '', true);
+
 -- rpc_submit_review must reject an anonymous caller with sign_in_required.
 select throws_ok(
   $$select public.rpc_submit_review(
