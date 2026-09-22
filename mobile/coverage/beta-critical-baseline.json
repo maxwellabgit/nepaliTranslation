@@ -1,8 +1,8 @@
 {
   "src/features/auth/": {
-    "statements": 78.38,
-    "branches": 70.62,
-    "lines": 81.27
+    "statements": 78.5,
+    "branches": 70.99,
+    "lines": 81.75
   },
   "src/features/contribution/": {
     "statements": 84.59,
@@ -11,13 +11,13 @@
   },
   "src/features/entitlements/": {
     "statements": 89.52,
-    "branches": 83.33,
+    "branches": 83.89,
     "lines": 91.33
   },
   "src/features/ads/": {
-    "statements": 85.37,
-    "branches": 76.34,
-    "lines": 87.11
+    "statements": 84.9,
+    "branches": 73.9,
+    "lines": 87.56
   },
   "src/features/subscription/": {
     "statements": 80.75,

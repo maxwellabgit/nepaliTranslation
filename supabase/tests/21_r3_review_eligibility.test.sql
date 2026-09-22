@@ -4,9 +4,13 @@ begin;
 select no_plan();
 
 -- Simulate an authenticated session for user A.
+select set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',
+  true
+);
 set local role authenticated;
-set local request.jwt.claim.sub = '11111111-1111-4111-8111-111111111111';
-set local request.jwt.claim.role = 'authenticated';
 
 -- User A is seeded with current consent and age from seed.sql, and the
 -- default contribution_text_enabled is true. Startup consent is NOT set by
@@ -34,9 +38,13 @@ select public.service_record_startup_consent(
 );
 reset role;
 
+select set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',
+  true
+);
 set local role authenticated;
-set local request.jwt.claim.sub = '11111111-1111-4111-8111-111111111111';
-set local request.jwt.claim.role = 'authenticated';
 
 select is(
   (public.service_check_review_eligibility() ->> 'ok')::boolean,
@@ -62,9 +70,13 @@ select throws_ok(
 -- If contribution_text_enabled is off, the guard fires.
 update public.app_config set contribution_text_enabled = false where id = 1;
 
+select set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',
+  true
+);
 set local role authenticated;
-set local request.jwt.claim.sub = '11111111-1111-4111-8111-111111111111';
-set local request.jwt.claim.role = 'authenticated';
 
 select is(
   (public.service_check_review_eligibility() ->> 'code'),
@@ -84,9 +96,13 @@ select public.service_withdraw_contribution_consent(
 );
 reset role;
 
+select set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',
+  true
+);
 set local role authenticated;
-set local request.jwt.claim.sub = '11111111-1111-4111-8111-111111111111';
-set local request.jwt.claim.role = 'authenticated';
 
 select is(
   (public.service_check_review_eligibility() ->> 'code'),

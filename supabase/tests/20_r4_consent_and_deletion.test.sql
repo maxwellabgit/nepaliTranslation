@@ -12,9 +12,13 @@ select no_plan();
 -- ---------------------------------------------------------------------------
 
 -- Simulate an authenticated session for user A.
+select set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',
+  true
+);
 set local role authenticated;
-set local request.jwt.claim.sub = '11111111-1111-4111-8111-111111111111';
-set local request.jwt.claim.role = 'authenticated';
 
 -- User A writing their own startup consent → allowed.
 select ok(
