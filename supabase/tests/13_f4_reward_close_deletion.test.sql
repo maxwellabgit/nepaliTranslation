@@ -40,6 +40,38 @@ select is(
   'rewarded_video grants 3 credits (5 min each)'
 );
 
+-- Pre-close reject: known_fail sets scheduled_credits to zero (no grant at close)
+update public.profiles
+set consent_version = '2026-09-21.media', age_confirmed_at = now(), consented_at = now()
+where user_id = '22222222-2222-4222-8222-222222222222';
+
+delete from public.contribution_receipts
+where idempotency_key = 'f4-known-fail-01';
+
+insert into public.contribution_receipts (
+  user_id, public_task_id, status, credits_awarded,
+  idempotency_key, original_word_count, source_snapshot,
+  scheduled_credits, reward_eligible, submitted_at, reason_code
+) values (
+  '22222222-2222-4222-8222-222222222222',
+  'c0c0c0c0-c0c0-40c0-80c0-c0c0c0c0c0c0',
+  'rejected',
+  0,
+  'f4-known-fail-01',
+  25,
+  'twenty one words in this synthetic source text here',
+  0,
+  false,
+  '2026-07-15 14:00:00+00',
+  'known_fail'
+);
+
+select is(
+  (public.service_close_ny_reward_window('2026-07-15 21:30:00+00'::timestamptz) ->> 'applied')::integer,
+  0,
+  'pre-close rejected receipt does not grant at close'
+);
+
 -- Close batch: pending at close grants once; pre-close reject grants zero
 update public.profiles
 set consent_version = '2026-09-21.media', age_confirmed_at = now(), consented_at = now()

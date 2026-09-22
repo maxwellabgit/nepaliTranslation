@@ -332,6 +332,10 @@ export const en = {
     'This schedules deletion of your account and contribution data within 30 days. It does not cancel an Apple subscription — manage that in Settings → Apple ID → Subscriptions. Translation on this device is unchanged.',
   'auth.deletionScheduled':
     'Deletion scheduled. Personal data will be removed by {date}.',
+  'auth.deletionScheduledConfirm':
+    'Account deletion is scheduled. Personal data will be removed by {date}. Translation on this device is unchanged.',
+  'auth.deletionComplete':
+    'Your account data has been deleted. Translation on this device still works.',
   'auth.deleting': 'Deleting…',
   'auth.retryDeleteA11y': 'Retry account deletion',
 

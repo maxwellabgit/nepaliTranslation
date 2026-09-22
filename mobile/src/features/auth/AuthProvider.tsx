@@ -23,6 +23,13 @@ import { readPublicEnv } from '../../config/env';
 import { saveAppleUserId, clearAppleIdentity } from './appleIdentity';
 import { fetchAccountSummary } from './accountSummary';
 import { performAccountDeletion } from './deleteAccount';
+import {
+  clearPendingDeletionDue,
+  isDeletionDueComplete,
+  loadPendingDeletionDue,
+  savePendingDeletionDue,
+} from '../../storage/pendingDeletion';
+import { t } from '../../i18n';
 
 type AuthContextValue = AuthState & {
   authConfigured: boolean;
@@ -51,6 +58,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ageConfirmed: result.summary.ageConfirmed,
       deletionDueAt: result.summary.deletionDueAt,
     });
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      const pendingDue = await loadPendingDeletionDue();
+      if (isDeletionDueComplete(pendingDue)) {
+        await clearPendingDeletionDue();
+        dispatch({
+          type: 'deletion_scheduled',
+          deletionDueAt: pendingDue ?? '',
+          message: t('auth.deletionComplete', 'en'),
+        });
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -202,6 +223,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await performAccountDeletion({ userId });
     if (result.ok) {
       const supabase = getSupabase();
+      if (result.scheduled && result.deletionDueAt) {
+        await savePendingDeletionDue(result.deletionDueAt);
+        const dueLabel = new Date(result.deletionDueAt).toLocaleDateString('en-US', {
+          dateStyle: 'medium',
+          timeZone: 'America/New_York',
+        });
+        await supabase?.auth.signOut();
+        dispatch({
+          type: 'deletion_scheduled',
+          deletionDueAt: result.deletionDueAt,
+          message: t('auth.deletionScheduledConfirm', 'en', { date: dueLabel }),
+        });
+        return;
+      }
       await supabase?.auth.signOut();
       dispatch({ type: 'deletion_complete' });
       return;

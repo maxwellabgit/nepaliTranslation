@@ -336,6 +336,9 @@ export const ne: Record<MessageKey, string> = {
     'यसले ३० दिनभित्र खाता र योगदान डाटा मेटाउन तालिका बनाउँछ। यसले Apple सदस्यता रद्द गर्दैन — Settings → Apple ID → Subscriptions बाट व्यवस्थापन गर। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
   'auth.deletionScheduled':
     'मेटाउने तालिका: {date} सम्म व्यक्तिगत डाटा हटाइन्छ।',
+  'auth.deletionScheduledConfirm':
+    'खाता मेटाउने तालिका बनाइयो। {date} सम्म व्यक्तिगत डाटा हटाइन्छ। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
+  'auth.deletionComplete': 'तिम्रो खाता डाटा मेटाइयो। यस यन्त्रको अनुवाद अझै चल्छ।',
   'auth.deleting': 'मेटाउँदै…',
   'auth.retryDeleteA11y': 'खाता मेटाउन फेरि प्रयास',
 
