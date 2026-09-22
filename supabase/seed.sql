@@ -121,10 +121,10 @@ insert into private.contribution_tasks (
   'it2-dist-200m'
 );
 
--- H3: seeded users have current consent + age for contribution RPC tests.
+-- H3/F3: seeded users have current consent + age for contribution RPC tests.
 update public.profiles
 set
-  consent_version = '2026-09-19.draft',
+  consent_version = '2026-09-21.media',
   consented_at = now(),
   age_confirmed_at = now(),
   updated_at = now()
@@ -134,5 +134,11 @@ where user_id in (
 );
 
 update public.app_config
-set contribution_consent_version = '2026-09-19.draft'
+set
+  contribution_consent_version = '2026-09-21.media',
+  -- Local/CI contribution RPC tests need text on; speech/photos stay off.
+  contribution_text_enabled = true,
+  contribution_speech_enabled = false,
+  contribution_photos_enabled = false,
+  contributions_enabled = true
 where id = 1;

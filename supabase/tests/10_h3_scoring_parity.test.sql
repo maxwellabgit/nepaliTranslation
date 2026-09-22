@@ -63,7 +63,7 @@ values (
 );
 
 update public.profiles
-set consent_version = '2026-09-19.draft', age_confirmed_at = now(), consented_at = now()
+set consent_version = '2026-09-21.media', age_confirmed_at = now(), consented_at = now()
 where user_id = '11111111-1111-4111-8111-111111111111';
 
 select public.service_submit_contribution_atomic(

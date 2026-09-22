@@ -11,6 +11,8 @@ import { mapSentenceFramesToView } from '../camera/overlayGeometry';
 import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
+import { useAuth } from '../features/auth/AuthProvider';
+import { enqueueEligibleMedia } from '../services/mediaEnqueue';
 import { useRuntime } from '../runtime/RuntimeContext';
 import {
   initialCameraPhase,
@@ -47,6 +49,7 @@ export function CameraScreen({ active }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const runtime = useRuntime();
+  const { status: authStatus, authConfigured } = useAuth();
   const [permission, requestPermission] = useCameraPermissions();
   const granted = permission?.granted === true;
   const [phaseState, setPhaseState] = useState<CameraPhaseState>(() =>
@@ -296,6 +299,14 @@ export function CameraScreen({ active }: Props) {
       if (gen !== requestGenRef.current) return;
       setSentences(translated);
       setDrawerOpen(false);
+      // Consented adults: durable-copy for outbox before temp delete (never await flush).
+      await enqueueEligibleMedia({
+        kind: 'photo',
+        sourceUri: uri,
+        signedIn: authStatus === 'signed-in',
+        authConfigured,
+        metadata: { surface: 'camera', sentence_count: translated.length },
+      });
       deleteCapture(uri, 'processed');
       captureUriRef.current = null;
       setCaptureUri(null);

@@ -35,7 +35,7 @@ type CardPhase =
   | 'lease_expired';
 
 /**
- * Contribution queue card. Hidden while contributionsEnabled is false.
+ * Contribution queue card. Hidden while contributionTextEnabled is false.
  * Never gates Auto/Conversation translation.
  */
 export function ContributionCard() {
@@ -240,7 +240,7 @@ export function ContributionCard() {
     [auth.authConfigured, entitlement, lang, signedIn, task],
   );
 
-  if (!flags.contributionsEnabled) {
+  if (!flags.contributionTextEnabled) {
     return (
       <View style={styles.box} testID="contribution-card-off">
         <Text style={styles.title}>{t('contributions.title', lang)}</Text>

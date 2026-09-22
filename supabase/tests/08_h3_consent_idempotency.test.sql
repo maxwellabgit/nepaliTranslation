@@ -16,7 +16,7 @@ select throws_ok(
 );
 
 update public.profiles
-set consent_version = '2026-09-19.draft', age_confirmed_at = null, consented_at = now()
+set consent_version = '2026-09-21.media', age_confirmed_at = null, consented_at = now()
 where user_id = '11111111-1111-4111-8111-111111111111';
 
 select throws_ok(
@@ -43,7 +43,7 @@ select throws_ok(
 
 -- Restore current consent for remaining tests
 update public.profiles
-set consent_version = '2026-09-19.draft', age_confirmed_at = now(), consented_at = now()
+set consent_version = '2026-09-21.media', age_confirmed_at = now(), consented_at = now()
 where user_id in (
   '11111111-1111-4111-8111-111111111111',
   '22222222-2222-4222-8222-222222222222'
@@ -73,7 +73,7 @@ select lives_ok(
   $$select * from public.service_insert_translation_report(
     '11111111-1111-4111-8111-111111111111',
     'hello', 'नमस्ते', null, 'en-ne', 'formal', 'deva',
-    'live_translate', 'shared-client-key-1', '2026-09-19.draft', '{}'::jsonb
+    'live_translate', 'shared-client-key-1', '2026-09-21.media', '{}'::jsonb
   )$$,
   'user A can report'
 );
@@ -82,7 +82,7 @@ select lives_ok(
   $$select * from public.service_insert_translation_report(
     '22222222-2222-4222-8222-222222222222',
     'hello', 'नमस्ते', null, 'en-ne', 'formal', 'deva',
-    'live_translate', 'shared-client-key-1', '2026-09-19.draft', '{}'::jsonb
+    'live_translate', 'shared-client-key-1', '2026-09-21.media', '{}'::jsonb
   )$$,
   'user B may reuse the same client key'
 );

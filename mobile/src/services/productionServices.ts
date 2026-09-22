@@ -2,6 +2,7 @@ import * as Network from 'expo-network';
 import { DEFAULT_FEATURE_FLAGS } from '../app/featureFlags';
 import { createProductionAdService } from '../features/ads/AdService';
 import { flushPendingDrafts } from './contributionSync';
+import { flushPendingMedia } from './mediaSync';
 import { getSupabase } from './supabase';
 import type { AppServices } from './contracts';
 
@@ -12,6 +13,23 @@ function stateIsOffline(state: {
   if (state.isConnected === false) return true;
   if (state.isInternetReachable === false) return true;
   return false;
+}
+
+function mapRemoteFlags(data: Record<string, unknown>) {
+  const text =
+    typeof data.contribution_text_enabled === 'boolean'
+      ? data.contribution_text_enabled
+      : Boolean(data.contributions_enabled);
+  return {
+    contributionTextEnabled: text,
+    contributionSpeechEnabled: Boolean(data.contribution_speech_enabled),
+    contributionPhotosEnabled: Boolean(data.contribution_photos_enabled),
+    rewardsEnabled: Boolean(data.rewards_enabled),
+    networkAdsEnabled: Boolean(data.network_ads_enabled),
+    rewardedAdsEnabled: Boolean(data.rewarded_ads_enabled),
+    paywallEnabled: Boolean(data.paywall_enabled),
+    learnEnabled: true,
+  };
 }
 
 /**
@@ -69,21 +87,14 @@ export function createProductionServices(): AppServices {
           const { data, error } = await sb
             .from('app_config')
             .select(
-              'contributions_enabled, rewards_enabled, network_ads_enabled, rewarded_ads_enabled, paywall_enabled, learn_enabled',
+              'contribution_text_enabled, contribution_speech_enabled, contribution_photos_enabled, contributions_enabled, rewards_enabled, network_ads_enabled, rewarded_ads_enabled, paywall_enabled, learn_enabled',
             )
             .eq('id', 1)
             .maybeSingle();
           if (error || !data) {
             return { ...DEFAULT_FEATURE_FLAGS, learnEnabled: true };
           }
-          return {
-            contributionsEnabled: Boolean(data.contributions_enabled),
-            rewardsEnabled: Boolean(data.rewards_enabled),
-            networkAdsEnabled: Boolean(data.network_ads_enabled),
-            rewardedAdsEnabled: Boolean(data.rewarded_ads_enabled),
-            paywallEnabled: Boolean(data.paywall_enabled),
-            learnEnabled: true,
-          };
+          return mapRemoteFlags(data as Record<string, unknown>);
         } catch {
           return { ...DEFAULT_FEATURE_FLAGS, learnEnabled: true };
         }
@@ -91,6 +102,7 @@ export function createProductionServices(): AppServices {
     },
     contribution: {
       flushOutbox: () => flushPendingDrafts(),
+      flushMediaOutbox: () => flushPendingMedia(),
     },
     entitlement: {
       refresh: async () => undefined,

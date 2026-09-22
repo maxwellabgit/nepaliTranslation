@@ -51,8 +51,10 @@ Deno.test("RPC consent errors map to stable client codes", () => {
   assertEquals(mapRpcError('ERROR: consent_required'), "consent_required");
   assertEquals(mapRpcError('ERROR: consent_outdated'), "consent_outdated");
   assertEquals(mapRpcError('ERROR: age_required'), "age_required");
+  assertEquals(mapRpcError('ERROR: flag_disabled'), "flag_disabled");
   assertEquals(mapRpcError('ERROR: rate_limited'), "rate_limited");
   assertEquals(statusForError("consent_required"), 403);
+  assertEquals(statusForError("flag_disabled"), 403);
   assertEquals(statusForError("rate_limited"), 429);
   assertEquals(
     JSON.stringify(errorBody("consent_outdated", "r1")).includes("raw"),

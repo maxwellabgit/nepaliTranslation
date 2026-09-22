@@ -15,7 +15,7 @@ const authState = {
   authConfigured: true,
   userId: null as string | null,
 };
-const flagState = { contributionsEnabled: false };
+const flagState = { contributionTextEnabled: false };
 
 jest.mock('../../auth/AuthProvider', () => ({
   useAuth: () => ({
@@ -27,7 +27,9 @@ jest.mock('../../auth/AuthProvider', () => ({
 
 jest.mock('../../../app/FeatureConfigProvider', () => ({
   useFeatureFlags: () => ({
-    contributionsEnabled: flagState.contributionsEnabled,
+    contributionTextEnabled: flagState.contributionTextEnabled,
+    contributionSpeechEnabled: false,
+    contributionPhotosEnabled: false,
     rewardsEnabled: false,
     networkAdsEnabled: false,
     rewardedAdsEnabled: false,
@@ -42,7 +44,7 @@ describe('CorrectionSheet H2', () => {
     authState.status = 'guest';
     authState.authConfigured = true;
     authState.userId = null;
-    flagState.contributionsEnabled = false;
+    flagState.contributionTextEnabled = false;
   });
 
   test('legacy missing labels block submit until selected', async () => {
@@ -94,7 +96,7 @@ describe('CorrectionSheet H2', () => {
   test('queues draft when signed in with consent and contributions enabled', async () => {
     authState.status = 'signed-in';
     authState.userId = 'user-1';
-    flagState.contributionsEnabled = true;
+    flagState.contributionTextEnabled = true;
     await saveLocalConsent(true);
 
     const onClose = jest.fn();
@@ -129,7 +131,7 @@ describe('CorrectionSheet H2', () => {
   });
 
   test('submit while guest saves draft and calls onNeedAuth', async () => {
-    flagState.contributionsEnabled = true;
+    flagState.contributionTextEnabled = true;
     await saveLocalConsent(true);
     const onNeedAuth = jest.fn();
 
@@ -162,7 +164,7 @@ describe('CorrectionSheet H2', () => {
   test('submit with contributions off saves draft note', async () => {
     authState.status = 'signed-in';
     authState.userId = 'user-1';
-    flagState.contributionsEnabled = false;
+    flagState.contributionTextEnabled = false;
     await saveLocalConsent(true);
 
     await act(async () => {

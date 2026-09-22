@@ -2,6 +2,7 @@ import { DEFAULT_FEATURE_FLAGS, type FeatureFlags } from '../app/featureFlags';
 import { createMockAdAdapter } from '../features/ads/adMiddleware';
 import type { AppServices, ConsentState } from './contracts';
 import type { FlushResult } from './contributionSync';
+import type { MediaFlushResult } from './mediaSync';
 
 export type TestServicesOptions = {
   flags?: Partial<FeatureFlags>;
@@ -9,6 +10,7 @@ export type TestServicesOptions = {
   authConfigured?: boolean;
   authError?: string | null;
   flushResult?: FlushResult;
+  mediaFlushResult?: MediaFlushResult;
   canRequestAds?: boolean;
   privacyOptionsRequired?: boolean;
 };
@@ -54,6 +56,8 @@ export function createTestServices(
     contribution: {
       flushOutbox: async () =>
         options.flushResult ?? { ok: false, reason: 'unavailable' },
+      flushMediaOutbox: async () =>
+        options.mediaFlushResult ?? { ok: false, reason: 'unavailable' },
     },
     entitlement: {
       refresh: async () => undefined,

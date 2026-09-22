@@ -10,7 +10,7 @@ import { ContributionCard } from '../ContributionCard';
 const mockFetchNext = jest.fn();
 const mockSubmit = jest.fn();
 const mockRefresh = jest.fn(async () => undefined);
-const flagState = { contributionsEnabled: true };
+const flagState = { contributionTextEnabled: true };
 const authState = {
   status: 'signed-in' as 'signed-in' | 'guest',
   authConfigured: true,
@@ -45,7 +45,9 @@ jest.mock('../../entitlements/EntitlementProvider', () => ({
 
 jest.mock('../../../app/FeatureConfigProvider', () => ({
   useFeatureFlags: () => ({
-    contributionsEnabled: flagState.contributionsEnabled,
+    contributionTextEnabled: flagState.contributionTextEnabled,
+    contributionSpeechEnabled: false,
+    contributionPhotosEnabled: false,
     rewardsEnabled: false,
     networkAdsEnabled: false,
     rewardedAdsEnabled: false,
@@ -80,7 +82,7 @@ async function loadReadyCard() {
 describe('ContributionCard H3', () => {
   beforeEach(() => {
     cleanup();
-    flagState.contributionsEnabled = true;
+    flagState.contributionTextEnabled = true;
     authState.status = 'signed-in';
     authState.authConfigured = true;
     authState.userId = 'user-1';
@@ -95,7 +97,7 @@ describe('ContributionCard H3', () => {
   });
 
   test('flag-off surface explains contributions are disabled', async () => {
-    flagState.contributionsEnabled = false;
+    flagState.contributionTextEnabled = false;
     const view = await render(<ContributionCard />);
     expect(view.getByTestId('contribution-card-off')).toBeTruthy();
     expect(view.queryByTestId('contribution-load')).toBeNull();

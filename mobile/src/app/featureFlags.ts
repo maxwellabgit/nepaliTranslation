@@ -3,7 +3,9 @@
  * Remote config may override later; core translate never depends on these.
  */
 export type FeatureFlags = {
-  contributionsEnabled: boolean;
+  contributionTextEnabled: boolean;
+  contributionSpeechEnabled: boolean;
+  contributionPhotosEnabled: boolean;
   rewardsEnabled: boolean;
   networkAdsEnabled: boolean;
   rewardedAdsEnabled: boolean;
@@ -12,7 +14,9 @@ export type FeatureFlags = {
 };
 
 export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
-  contributionsEnabled: false,
+  contributionTextEnabled: false,
+  contributionSpeechEnabled: false,
+  contributionPhotosEnabled: false,
   rewardsEnabled: false,
   networkAdsEnabled: false,
   rewardedAdsEnabled: false,

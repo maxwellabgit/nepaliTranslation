@@ -316,7 +316,7 @@ export const en = {
     'Sign-in is not configured in this build. Translation, history, and settings still work.',
   'auth.supportUserId': 'Support user ID',
   'auth.consentDraftMeta':
-    'Draft {version}. Legal review required before collection.',
+    'Draft {version}. Covers text, speech, photos, OCR/transcripts, retention, and withdrawal. Legal review required before live collection.',
   'auth.signInApple': 'Sign in with Apple',
   'auth.signInUnavailable':
     'Sign in with Apple is not available on this device. Translation still works offline.',

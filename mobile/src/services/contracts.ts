@@ -1,6 +1,7 @@
 import type { AdAdapter } from '../features/ads/adMiddleware';
 import type { FeatureFlags } from '../app/featureFlags';
 import type { FlushResult } from './contributionSync';
+import type { MediaFlushResult } from './mediaSync';
 
 /** Optional online identity boundary. */
 export type AuthService = {
@@ -20,6 +21,8 @@ export type FeatureConfigService = {
 /** Contribution lease/submit/outbox flush boundary. */
 export type ContributionService = {
   flushOutbox: () => Promise<FlushResult>;
+  /** Post-consent media outbox; never blocks translate. */
+  flushMediaOutbox: () => Promise<MediaFlushResult>;
 };
 
 /** Entitlement refresh boundary. */

@@ -35,7 +35,8 @@ api_url = "http://127.0.0.1"
 enabled = false
 
 [storage]
-enabled = false
+enabled = true
+# Private contribution buckets only (created in F3 migration).
 
 [auth]
 enabled = true
@@ -92,4 +93,10 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.admin-api]
+verify_jwt = true
+
+[functions.create-media-upload]
+verify_jwt = true
+
+[functions.complete-media-upload]
 verify_jwt = true

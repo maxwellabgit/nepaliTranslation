@@ -21,7 +21,7 @@ const mockReadPublicEnv = readPublicEnv as jest.Mock;
 
 const enabledFlags = {
   ...DEFAULT_FEATURE_FLAGS,
-  contributionsEnabled: true,
+  contributionTextEnabled: true,
   learnEnabled: true,
 };
 
@@ -45,7 +45,7 @@ describe('contributionApi', () => {
   });
 
   test('disabled flag blocks network without requiring sign-in', async () => {
-    setRuntimeFeatureFlags({ ...enabledFlags, contributionsEnabled: false });
+    setRuntimeFeatureFlags({ ...enabledFlags, contributionTextEnabled: false });
     const result = await fetchNextContribution({
       signedIn: true,
       authConfigured: true,

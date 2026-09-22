@@ -21,7 +21,9 @@ jest.mock('../../../app/FeatureConfigProvider', () => ({
   useFeatureFlags: () => ({
     networkAdsEnabled: true,
     rewardedAdsEnabled: false,
-    contributionsEnabled: false,
+    contributionTextEnabled: false,
+    contributionSpeechEnabled: false,
+    contributionPhotosEnabled: false,
     rewardsEnabled: false,
     paywallEnabled: false,
     learnEnabled: true,
