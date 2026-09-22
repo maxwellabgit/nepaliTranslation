@@ -44,7 +44,8 @@ const BANNED: string[] = [
   'English → Nepali',
   '13 or older',
   'Sign in with Apple in Settings to contribute',
-  'Sentence ',
+  'Sentence ${',
+  '`Sentence ',
 ];
 
 function stripNoise(source: string): string {
