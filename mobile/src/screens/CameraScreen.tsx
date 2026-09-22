@@ -300,7 +300,7 @@ export function CameraScreen({ active }: Props) {
       setSentences(translated);
       setDrawerOpen(false);
       // Consented adults: durable-copy for outbox before temp delete (never await flush).
-      void enqueueEligibleMedia({
+      await enqueueEligibleMedia({
         kind: 'photo',
         sourceUri: uri,
         signedIn: authStatus === 'signed-in',

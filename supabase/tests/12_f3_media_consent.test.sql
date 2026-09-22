@@ -190,6 +190,7 @@ select throws_ok(
     'x'
   )$$,
   '42501',
+  'new row violates row-level security policy for table "contribution_media"',
   'authenticated cannot insert media rows'
 );
 
