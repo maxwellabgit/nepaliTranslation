@@ -44,9 +44,9 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Item | Status | Notes |
 |------|--------|--------|
 | Meaningful accessibility labels on primary controls | **Source-proven** | Tabs, Speak, Pass, Mark incorrect, Camera overlays, etc. |
-| VoiceOver full walkthrough | **Device-only** | iPhone + iPad |
-| Dynamic Type / larger text | **Partial / F2** | Min 44pt targets + labels; full Dynamic Type scale remains device-gated |
-| Contrast (light + dark) | **Partial (F2)** | Scheme-aware StatusBar + useTheme on shell/Translate/Camera/Learn alphabet/Settings/contribution sheets; house/rewarded ads partially themed; full device a11y = F10 |
+| VoiceOver full walkthrough | **Device-only / F10** | Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) a11y row — unchecked until human |
+| Dynamic Type / larger text | **Partial / F2 + F10** | Min 44pt targets + labels; full Dynamic Type scale = device matrix |
+| Contrast (light + dark) | **Partial (F2)** | Scheme-aware StatusBar + useTheme; full device a11y = F10 DEVICE_PROOF |
 | Reduce Motion | Device | Gate product motion when added |
 | Offline core usable | **Source-proven** | |
 
@@ -79,13 +79,14 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 ## Remaining human gates
 
 - Exact IT2 ONNX four-class gold eval vs [`MODEL_CERT.md`](./MODEL_CERT.md) floors (weights on GPU/eval host)
+- Full device matrix + TestFlight / App Store sequence: [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) + [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md) (F10 templates; all boxes unchecked until human)
 - AdMob EAS on physical iPhone/iPad (banner, rewarded, interstitial) with UMP
 - Sign in with Apple (sign-in / revoke / cancel / delete-account / 30-day deletion)
 - Legal Privacy / Terms / support / app-ads.txt **live crawlable URLs** (source templates + Settings blockers only in F8)
 - App Store Connect privacy answers entered from [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md)
 - RevenueCat / StoreKit $0.99 sandbox + TestFlight matrix
 - Bilingual Learn alphabet + UI sign-off
-- Automatic interstitial deliberate go/no-go after external beta stability
+- Automatic interstitial deliberate go/no-go after external beta stability ([`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md))
 - Admin allowlist operators in production Supabase + signed-in Playwright triage
 - Telemetry remote enable only after legal review (`telemetry_enabled`)
 - Expo-transitive dependency advisories per [`DEPENDENCY_TRIAGE.md`](./DEPENDENCY_TRIAGE.md) on F10 freeze

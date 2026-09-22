@@ -55,39 +55,30 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F9 — model certification + Windows automation**
+**Current: F10 — device matrix, TestFlight, App Store release gates**
 
 | Area | Change |
 |------|--------|
-| Model cert | `docs/MODEL_CERT.md`, `benchmarks/ship_thresholds.json`, `benchmarks/certify_ship_artifacts.py` |
-| Playwright | F9 surfaces: UI lang, consent, rewards, ads flag-off/house, IAP soft-fail, deletion, dark, iPad |
-| CI | Playwright Chromium cache; `ship-cert` job |
-| Maestro | New YAML stubs + `.maestro/README.md` blockers |
-| CERTIFICATION | Honesty: thresholds declared; gold eval blocked without weights |
+| Device proof | `docs/DEVICE_PROOF.md` — build-under-test table, same-build matrix rule, unchecked human boxes |
+| Release runbook | `docs/RELEASE_RUNBOOK.md` — interstitial go/no-go, 7-day log, freeze worksheet, rollback rehearsal, public go/no-go |
+| Honesty | No invented EAS/TestFlight/device results; all matrix/stability boxes left unchecked |
 
-## Commands run (F9)
+## Commands run (F10)
 
 ```text
-python benchmarks/certify_ship_artifacts.py
-# schema/pins OK (543) + model-hash 18 pins OK; BLOCKER: ONNX weights missing
-
-cd mobile && npx tsc --noEmit
-cd mobile && npx jest --runInBand src/features/subscription/__tests__/PurchaseService-test.ts
-cd mobile && npm run verify:translate
-# CI playwright-scenarios: export:lexicon then export:web; TG flag/cooldown/STT harness
-# PR #12 CI green on HEAD (playwright-scenarios, ship-cert, js-verify, …)
+# Docs-only slice. No runtime code.
+# Verify no matrix boxes invented as checked in DEVICE_PROOF / RELEASE_RUNBOOK.
 ```
 
 ## Remaining work
 
-1. Merge F9 PR #12 → start F10 (device/TestFlight docs + honest blockers).
-2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
-3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
+1. Independent review PASS → merge F10 (after F9 PR #12 is on main).
+2. Human: fill DEVICE_PROOF on physical iPhone + iPad (same build).
+3. Human: internal → external TestFlight (25–50), seven clean days, interstitial go/no-go, freeze + rollback rehearsal, public submit.
 
-## Decision log (F9 review)
+## Progress (prior)
 
-- 2026-09-22: Independent review FAIL on `c017c61` — ExecPlan Remaining work cited nonexistent SHA `05f22472` and stale “wait for CI on 265a071”. Corrected in `52aeabb`.
-- 2026-09-22: Independent review PASS on `52aeabb` — material findings none; PR #12 CI green.
+**F9 — model certification + Windows automation** — independent review PASS (`52aeabb`); PR #12 pending merge onto main when approval UI allows.
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Exact four-class ONNX gold eval vs ship floors — **weights missing** on this agent host (`mobile/assets/models/it2_*`)

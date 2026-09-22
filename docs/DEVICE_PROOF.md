@@ -2,7 +2,20 @@
 
 **Status: BLOCKED — needs physical iPhone/iPad + Apple developer session**
 
-Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md).
+Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Model floors: [`MODEL_CERT.md`](./MODEL_CERT.md). Store sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md).
+
+**F10 rule:** leave every matrix / checklist box unchecked until a human fills it on a real device with the **same** TestFlight (or development) build number recorded below. Source-only CI is not device proof.
+
+## Build under test (fill on device)
+
+| Field | Value |
+|-------|--------|
+| EAS / TestFlight build number | _pending_ |
+| App version (`CFBundleShortVersionString`) | _pending_ |
+| Git SHA baked into the build | _pending_ |
+| IT2 ONNX SHA-256 (en→ne / ne→en) | _pending — must match `mobile/src/mt/onnx/it2-release-manifest.json`_ |
+| Feature-flag snapshot (all optional services) | _pending — paste remote `app_config` row or note “all off”_ |
+| Tester / date | _pending_ |
 
 ## What Windows already proved
 
@@ -15,7 +28,7 @@ Do not invent EAS build results, CocoaPods success, or device metrics from Windo
 | Playwright product scenarios | `cd testing-ground && npm run test:scenarios` (base 10/12 + F9 surfaces on Expo web + TG; live mic and live camera+ML Kit skipped) |
 | Ship cert (schema/pins) | `python benchmarks/certify_ship_artifacts.py` — soft BLOCKER without ONNX weights |
 
-Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight install, Maestro on device, mic/camera interrupt, memory under real inference, StoreKit, live AdMob interstitial, media upload against production-like storage.
+Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight install, Maestro on device, mic/camera interrupt, memory under real inference, StoreKit, live AdMob interstitial, media upload against production-like storage, VoiceOver / Dynamic Type on device.
 
 ## Exact commands (human)
 
@@ -55,13 +68,17 @@ maestro test .maestro/dark-mode-smoke.yaml
 
 ## Device matrix (fill on device — leave unchecked until proven)
 
-- [ ] Oldest supported iPhone / iOS combination
-- [ ] Current standard iPhone
-- [ ] Current large-screen iPhone
-- [ ] 11-inch iPad
-- [ ] 13-inch iPad
-- [ ] Latest public iOS/iPadOS
+Record OS version + device model next to each box when checked.
+
+- [ ] Oldest supported iPhone / iOS combination — model: ____ OS: ____
+- [ ] Current standard iPhone — model: ____ OS: ____
+- [ ] Current large-screen iPhone — model: ____ OS: ____
+- [ ] 11-inch iPad — model: ____ OS: ____
+- [ ] 13-inch iPad — model: ____ OS: ____
+- [ ] Latest public iOS/iPadOS — device: ____
 - [ ] Oldest supported OS on at least one phone and one tablet
+
+**Same-build rule:** every checked row above must use the build number in “Build under test”. If a new build ships, clear checks and re-run.
 
 ## Checklist (fill on device — leave unchecked until proven)
 
@@ -69,7 +86,7 @@ maestro test .maestro/dark-mode-smoke.yaml
 
 - [ ] CocoaPods resolves ML Kit OCR (Latin + Devanagari), Google Mobile Ads, RevenueCat, ONNX Runtime, Apple Sign-In, speech recognition together
 - [ ] Bundled ONNX / speech model **SHA-256** match release manifest (F1/F9 pins)
-- [ ] Cold/warm latency, peak RAM, install size, Camera memory, thermal, long-session notes recorded
+- [ ] Cold/warm latency, peak RAM, install size, Camera memory, thermal, long-session notes recorded (attach notes or link)
 
 ### Offline core
 
