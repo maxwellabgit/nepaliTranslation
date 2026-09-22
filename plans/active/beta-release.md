@@ -50,31 +50,46 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: Foundation tip `9b17ac9` is **not** a complete monetized production V1 until F0–F10 + go/no-go.
 - 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256. Tracked manifest: `mobile/src/mt/onnx/it2-release-manifest.json` (weights under `assets/models/` stay gitignored). EAS fetch fails on mismatch.
 - 2026-09-21: F3 consent version `2026-09-21.media`. Text path uses `contribution_text_enabled`; speech/photo use dedicated flags (defaults off). Speech auto-upload gate+outbox land; STT still does not emit a durable recording URI.
+- 2026-09-22: F8 telemetry is first-party scrubbed schema only (no new analytics SDK). Live Privacy/Terms/support/`app-ads.txt` remain hosting blockers — Settings shows honest “not live yet” when `EXPO_PUBLIC_*` URLs empty.
 
 ## Progress
 
-**Current: F8 — telemetry / legal / security / dependency triage (awaiting IR)**
+**Current: F8 — observability / legal / security — independent review PASS; PR #11 (do not merge until founder ready)**
 
 | Area | Change |
 |------|--------|
-| Telemetry | Scrubber + client gated by `telemetry_enabled` (default off); banned keys + sensitive fixtures |
-| Legal | Settings Privacy/Terms/support/deletion links via env URLs; honest not-live copy when missing |
-| Privacy labels | `docs/APP_STORE_PRIVACY_LABELS.md` matches runtime SDKs (no ATT/IDFA claim) |
-| app-ads.txt | Source copy + crawlable hosting blocker |
-| Dependencies | `docs/DEPENDENCY_TRIAGE.md` — 13 mobile advisories owned; no Expo 57 force-break |
-| CI | secret-scan + `check_model_hash.mjs` model-hash job |
+| Telemetry | `mobile/src/telemetry/` schema + scrubber + soft-fail client; gated by `telemetryEnabled` / `telemetry_enabled` (default off) |
+| Flags | Migration `20260922020000_f8_telemetry_flag.sql`; client `FeatureFlags`; `mapRemoteFlags`; admin `FLAG_KEYS` |
+| Legal UI | Settings Legal & support; configurable HTTPS via `EXPO_PUBLIC_*` / `extra.legal`; manage-subscription link |
+| Docs | `docs/app-ads.txt`, `APP_STORE_PRIVACY_LABELS.md`, `DEPENDENCY_TRIAGE.md`; CERTIFICATION / DEVICE_PROOF / RELEASE_RUNBOOK honesty |
+| CI | `secret-scan` retained; `model-hash` job + `npm run check:model-hash`; push branches include `cursor/v1-*` |
+| IR | PASS — no material findings; no invented live URLs / device proof; Expo 57 not force-broken |
 
 **Previous: F7** — PASS; merged PR #10 (`7d9e688`).
 
+## Commands run (F8)
+
+```text
+cd mobile && npm run lint
+cd mobile && npm run typecheck
+cd mobile && npm run test:unit -- --runInBand
+cd mobile && npm run verify:translate
+cd mobile && npm run check:model-hash
+cd mobile && npm audit
+cd admin && npm audit
+# CI (PR #11): secret-scan, model-hash, js-verify, supabase, admin — SUCCESS
+```
+
 ## Remaining work
 
-1. Independent review → merge F8 → start F9.
+1. Merge F8 when founder ready → start F9.
+2. Human: host Privacy/Terms/support/deletion/`app-ads.txt`; enter Connect privacy answers; enable telemetry only after legal review.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
+- Live Privacy / Terms / support / deletion HTTPS pages and crawlable `app-ads.txt` (hosting + legal)
+- App Store Connect privacy form entry (worksheet only in repo)
 - Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
-- Live Privacy / Terms / support / app-ads.txt hosting URLs (legal + DNS)
-- App Store Connect privacy form entry for freeze build (human)
 - On-device STT (`expo-speech-recognition`) does not produce a durable audio file URI → speech auto-upload path is gated + outbox-ready but not wired to live mic capture
 - Physical iPhone / iPad proof, CocoaPods/ML Kit/AdMob/RevenueCat together
 - App Store Connect $0.99 subscription product + RevenueCat dashboard + webhook secret (human)
@@ -84,3 +99,4 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - Full Dynamic Type + VoiceOver pass (F10 device matrix)
 - Playwright signed-in admin triage (F7 leftover human gate)
 - Production `private.admin_users` allowlist insert/revoke remains human-gated
+- Expo-transitive npm advisories accepted per `docs/DEPENDENCY_TRIAGE.md` until SDK-compatible upstream
