@@ -40,7 +40,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F6** — RevenueCat / StoreKit $0.99 subscription — independent review PASS; merged PR #9
 - [x] **F7** — Protected operational admin console — independent review PASS; merged PR #10
 - [x] **F8** — Telemetry, legal/store surfaces, security, dependency triage — independent review PASS; merged PR #11
-- [x] **F9** — Exact model certification + extended Windows automation — independent review PASS (`52aeabb`)
+- [x] **F9** — Exact model certification + extended Windows automation — independent review PASS (`52aeabb`); merged PR #12
 - [ ] **F10** — Device matrix, TestFlight, App Store release gates
 
 ## Decision log
