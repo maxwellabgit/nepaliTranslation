@@ -61,9 +61,10 @@ git fetch origin && git pull origin main   # already at 43f9bc6
 
 ## Remaining work
 
-1. Independent review PASS → merge G0.
-2. G1: review pool + importer (do not start until G0 merged).
-3. Human blockers unchanged: device matrix, AdMob/RevenueCat consoles, legal hosting, ONNX weights on eval host, production cron.
+1. Independent review **PASS** (`79203fd`). Merge G0 when PR can be opened.
+2. **Blocker:** `ManagePullRequest` create failed with GitHub validation `must be a collaborator` — branch is pushed; human/collaborator must open PR from `cursor/v1-g0-contract-freeze-5907` → `main`, or grant collaborator access.
+3. G1: review pool + importer (do not start until G0 merged).
+4. Human blockers unchanged: device matrix, AdMob/RevenueCat consoles, legal hosting, ONNX weights on eval host, production cron.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
