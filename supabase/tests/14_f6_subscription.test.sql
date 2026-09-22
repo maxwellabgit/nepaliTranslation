@@ -2,7 +2,15 @@
 begin;
 select plan(6);
 
-select has_table('public', 'purchased_subscriptions');
+select ok(
+  exists (
+    select 1
+    from information_schema.tables
+    where table_schema = 'public'
+      and table_name = 'purchased_subscriptions'
+  ),
+  'purchased_subscriptions table exists'
+);
 
 select lives_ok(
   $$select public.service_apply_revenuecat_event(
