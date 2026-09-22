@@ -1,0 +1,15 @@
+# F9 — Dark mode smoke. Device Appearance must be Dark before run.
+# Honest blocker: Maestro cannot flip iOS Appearance; set Dark Mode in Settings first.
+appId: com.neptranslate.app
+---
+- launchApp
+- assertVisible:
+    id: "app-shell"
+- assertVisible:
+    id: "tab-bar"
+- tapOn:
+    id: "open-settings"
+- assertVisible:
+    id: "settings-screen"
+- tapOn:
+    id: "settings-close"

@@ -39,8 +39,8 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests — independent review PASS (`657783b`)
 - [x] **F6** — RevenueCat / StoreKit $0.99 subscription — independent review PASS; merged PR #9
 - [x] **F7** — Protected operational admin console — independent review PASS; merged PR #10
-- [ ] **F8** — Telemetry, legal/store surfaces, security, dependency triage
-- [ ] **F9** — Exact model certification + extended Windows automation
+- [x] **F8** — Telemetry, legal/store surfaces, security, dependency triage — independent review PASS; merged PR #11
+- [x] **F9** — Exact model certification + extended Windows automation — independent review PASS (`52aeabb`)
 - [ ] **F10** — Device matrix, TestFlight, App Store release gates
 
 ## Decision log
@@ -51,40 +51,46 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256. Tracked manifest: `mobile/src/mt/onnx/it2-release-manifest.json` (weights under `assets/models/` stay gitignored). EAS fetch fails on mismatch.
 - 2026-09-21: F3 consent version `2026-09-21.media`. Text path uses `contribution_text_enabled`; speech/photo use dedicated flags (defaults off). Speech auto-upload gate+outbox land; STT still does not emit a durable recording URI.
 - 2026-09-22: F8 telemetry is first-party scrubbed schema only (no new analytics SDK). Live Privacy/Terms/support/`app-ads.txt` remain hosting blockers — Settings shows honest “not live yet” when `EXPO_PUBLIC_*` URLs empty.
+- 2026-09-22: F9 pre-declares four-class gold ship floors in `docs/MODEL_CERT.md` + `benchmarks/ship_thresholds.json`. `certify_ship_artifacts.py` validates schema/pins always; soft BLOCKER when ONNX weights absent. Playwright F9 surfaces + browser cache in CI. Maestro stubs expanded with honest native blockers.
 
 ## Progress
 
-**Current: F8 — observability / legal / security (allowlist scrubber fix; re-review)**
+**Current: F9 — model certification + Windows automation**
 
 | Area | Change |
 |------|--------|
-| Telemetry | Allowlist scrubber (event + TelemetryProps keys only; token-like string values); flag default off |
-| Legal UI | Settings Legal links; HTTPS-only; honest not-live when env empty |
-| Docs | Privacy labels, app-ads.txt, DEPENDENCY_TRIAGE; CERTIFICATION honesty |
-| CI | secret-scan + model-hash; `cursor/v1-*` on agent-gates |
-| Commands | `npx jest src/telemetry` green; `verify:translate` OK; `tsc`+eslint clean |
+| Model cert | `docs/MODEL_CERT.md`, `benchmarks/ship_thresholds.json`, `benchmarks/certify_ship_artifacts.py` |
+| Playwright | F9 surfaces: UI lang, consent, rewards, ads flag-off/house, IAP soft-fail, deletion, dark, iPad |
+| CI | Playwright Chromium cache; `ship-cert` job |
+| Maestro | New YAML stubs + `.maestro/README.md` blockers |
+| CERTIFICATION | Honesty: thresholds declared; gold eval blocked without weights |
 
-**Previous: F7** — PASS; merged PR #10 (`7d9e688`).
-
-## Commands run (F8)
+## Commands run (F9)
 
 ```text
-cd mobile && npx jest --runInBand src/telemetry
-cd mobile && npx eslint src/telemetry --max-warnings 0
+python benchmarks/certify_ship_artifacts.py
+# schema/pins OK (543) + model-hash 18 pins OK; BLOCKER: ONNX weights missing
+
 cd mobile && npx tsc --noEmit
+cd mobile && npx jest --runInBand src/features/subscription/__tests__/PurchaseService-test.ts
 cd mobile && npm run verify:translate
-cd mobile && npm run check:model-hash
-cd mobile && npm audit
-# CI (PR #11): secret-scan, model-hash, admin — green; js-verify/supabase pending at fix time
+# CI playwright-scenarios: export:lexicon then export:web; TG flag/cooldown/STT harness
+# PR #12 CI green on HEAD (playwright-scenarios, ship-cert, js-verify, …)
 ```
 
 ## Remaining work
 
-1. Independent re-review PASS → merge F8 → start F9.
-2. Human: host Privacy/Terms/support/`app-ads.txt`; Connect privacy answers; enable telemetry only after legal review.
+1. Merge F9 PR #12 → start F10 (device/TestFlight docs + honest blockers).
+2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
+3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
 
+## Decision log (F9 review)
+
+- 2026-09-22: Independent review FAIL on `c017c61` — ExecPlan Remaining work cited nonexistent SHA `05f22472` and stale “wait for CI on 265a071”. Corrected in `52aeabb`.
+- 2026-09-22: Independent review PASS on `52aeabb` — material findings none; PR #12 CI green.
 ## Blockers (concrete; cannot be solved from this repo)
 
+- Exact four-class ONNX gold eval vs ship floors — **weights missing** on this agent host (`mobile/assets/models/it2_*`)
 - Live Privacy / Terms / support / deletion HTTPS pages and crawlable `app-ads.txt` (hosting + legal)
 - App Store Connect privacy form entry (worksheet only in repo)
 - Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
@@ -98,3 +104,4 @@ cd mobile && npm audit
 - Playwright signed-in admin triage (F7 leftover human gate)
 - Production `private.admin_users` allowlist insert/revoke remains human-gated
 - Expo-transitive npm advisories accepted per `docs/DEPENDENCY_TRIAGE.md` until SDK-compatible upstream
+- Maestro native flows require installed IPA + human Appearance/Sign-in/AdMob setup

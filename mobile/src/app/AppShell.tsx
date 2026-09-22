@@ -152,7 +152,11 @@ export function AppShell({
   const activeIcon = theme.colors.onPrimary;
 
   return (
-    <SafeAreaView style={styles.root} testID="app-shell">
+    <SafeAreaView
+      style={styles.root}
+      testID="app-shell"
+      accessibilityLabel={`app-shell-${theme.scheme}`}
+    >
       <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
       <View
         style={[

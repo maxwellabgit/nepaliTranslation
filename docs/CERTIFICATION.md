@@ -9,7 +9,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | “Translation may be imperfect” + path to **Mark incorrect** | **Source-proven** | Settings quality copy; Mark incorrect on Translate results |
 | Informal Nepali register = तिमी (not तँ) in UI catalogs | **Source-proven** | `mobile/src/i18n/ne.ts` + i18n unit tests |
 | Full bilingual UI (EN / नेपाली) via persisted selector | **Partial / F2 chrome wired** | Settings selector + catalogued Translate/Camera/tabs/Learn/contribution sheets; sentence a11y via catalog; device a11y (VoiceOver / Dynamic Type) = F10 |
-| Exact bundled models pass four-class gold ship eval | **Not done** | F9 — thresholds pre-declared; never edit gold |
+| Exact bundled models pass four-class gold ship eval | **Partial / F9** | Thresholds pre-declared in [`MODEL_CERT.md`](./MODEL_CERT.md) + `benchmarks/ship_thresholds.json`. `python benchmarks/certify_ship_artifacts.py` validates schema/pins; **BLOCKER** until ONNX weights on eval host |
 | Gold eval / device translation quality claim | Device / human | Never claim ship quality from Windows alone |
 
 ## Privacy & contribution
@@ -78,6 +78,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 
 ## Remaining human gates
 
+- Exact IT2 ONNX four-class gold eval vs [`MODEL_CERT.md`](./MODEL_CERT.md) floors (weights on GPU/eval host)
 - AdMob EAS on physical iPhone/iPad (banner, rewarded, interstitial) with UMP
 - Sign in with Apple (sign-in / revoke / cancel / delete-account / 30-day deletion)
 - Legal Privacy / Terms / support / app-ads.txt **live crawlable URLs** (source templates + Settings blockers only in F8)
@@ -88,3 +89,4 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 - Admin allowlist operators in production Supabase + signed-in Playwright triage
 - Telemetry remote enable only after legal review (`telemetry_enabled`)
 - Expo-transitive dependency advisories per [`DEPENDENCY_TRIAGE.md`](./DEPENDENCY_TRIAGE.md) on F10 freeze
+- Maestro native stubs (`.maestro/*`) on physical iPhone/iPad — see `mobile/.maestro/README.md`

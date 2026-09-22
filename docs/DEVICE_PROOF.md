@@ -12,7 +12,8 @@ Do not invent EAS build results, CocoaPods success, or device metrics from Windo
 | Unit + integration | `npm run test:unit`, `npm run test:integration` |
 | Translation quality scripts | `npm run verify:translate` |
 | Full CI entry | `npm run verify:ci` |
-| Playwright product scenarios | `cd testing-ground && npm run test:scenarios` (10/12 on Expo web + TG recorded runtime; live mic and live camera+ML Kit skipped) |
+| Playwright product scenarios | `cd testing-ground && npm run test:scenarios` (base 10/12 + F9 surfaces on Expo web + TG; live mic and live camera+ML Kit skipped) |
+| Ship cert (schema/pins) | `python benchmarks/certify_ship_artifacts.py` — soft BLOCKER without ONNX weights |
 
 Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight install, Maestro on device, mic/camera interrupt, memory under real inference, StoreKit, live AdMob interstitial, media upload against production-like storage.
 
@@ -44,6 +45,12 @@ maestro test .maestro/smoke_tabs.yaml
 maestro test .maestro/translate-empty.yaml
 maestro test .maestro/camera-tab.yaml
 maestro test .maestro/learn-alphabet.yaml
+maestro test .maestro/ui-lang-toggle.yaml
+maestro test .maestro/settings-consent.yaml
+maestro test .maestro/learn-rewards.yaml
+maestro test .maestro/deletion-messaging.yaml
+maestro test .maestro/dark-mode-smoke.yaml
+# See .maestro/README.md for honest native blockers (AdMob, StoreKit, Apple Sign-In, ML Kit).
 ```
 
 ## Device matrix (fill on device — leave unchecked until proven)

@@ -101,6 +101,8 @@ function snapshotFromCustomerInfo(
 export function createFakePurchaseService(options?: {
   initial?: SubscriptionSnapshot;
   priceString?: string;
+  /** When true, purchase/restore soft-fail as unavailable (no StoreKit/RC). */
+  softFail?: boolean;
 }): PurchaseService & {
   setSnapshot: (snap: SubscriptionSnapshot) => void;
 } {
@@ -114,8 +116,9 @@ export function createFakePurchaseService(options?: {
     getSnapshot: () => snap,
     hasSubscription: () => hasActiveSubscription(snap, Date.now()),
     refresh: async () => snap,
-    getOfferPriceString: async () => price,
+    getOfferPriceString: async () => (options?.softFail ? null : price),
     purchase: async () => {
+      if (options?.softFail) return { ok: false, reason: 'unavailable' };
       snap = {
         status: 'active',
         productId: AD_FREE_PRODUCT_ID,
@@ -127,6 +130,7 @@ export function createFakePurchaseService(options?: {
       return { ok: true, snapshot: snap };
     },
     restore: async () => {
+      if (options?.softFail) return { ok: false, reason: 'unavailable' };
       if (snap.status === 'active') return { ok: true, snapshot: snap };
       return { ok: false, reason: 'nothing_to_restore' };
     },

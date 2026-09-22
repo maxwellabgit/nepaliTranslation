@@ -111,6 +111,17 @@ describe('fake PurchaseService', () => {
     expect(restored.ok).toBe(true);
   });
 
+  it('soft-fails purchase and restore when softFail is set', async () => {
+    const svc = createFakePurchaseService({ softFail: true });
+    await svc.configure();
+    expect(await svc.getOfferPriceString()).toBeNull();
+    const bought = await svc.purchase();
+    expect(bought).toEqual({ ok: false, reason: 'unavailable' });
+    const restored = await svc.restore();
+    expect(restored).toEqual({ ok: false, reason: 'unavailable' });
+    expect(svc.hasSubscription()).toBe(false);
+  });
+
   it('caches subscription offline', async () => {
     const svc = createFakePurchaseService();
     await svc.purchase();

@@ -15,6 +15,8 @@ export type TestServicesOptions = {
   canRequestAds?: boolean;
   privacyOptionsRequired?: boolean;
   hasSubscription?: boolean;
+  /** Purchase/restore return unavailable (Playwright IAP soft-fail). */
+  iapSoftFail?: boolean;
 };
 
 /** Deterministic fakes for production-composition integration tests. */
@@ -36,8 +38,9 @@ export function createTestServices(
             expiresAtMs: Date.now() + 86_400_000,
             updatedAtMs: Date.now(),
           },
+          softFail: options.iapSoftFail,
         }
-      : undefined,
+      : { softFail: options.iapSoftFail },
   );
   let offline = options.offline ?? false;
   let authError = options.authError ?? null;

@@ -70,7 +70,7 @@ npm run test:scenarios
 
 `test:scenarios` runs `prepare:hosted` then Vite on `http://127.0.0.1:5173` (serves `public/hosted-app`), injects `__NEPTRANSLATE_TG__` (recorded Hello→नमस्ते, optional OCR fixture), and writes artifacts under `testing-ground/runs/pw-*/`.
 
-**Automated (10):** cold Speak, typed Hello→नमस्ते, tab switch, history, learn glyph, camera tab (permission or live on web), camera OCR *fixture*, pass-the-phone, settings, speech-permission-denied.
+**Automated (10 base + F9 surfaces):** cold Speak, typed Hello→नमस्ते, tab switch, history, learn glyph, camera tab, camera OCR fixture, pass-the-phone, settings, speech-permission-denied; plus UI lang, consent, rewards, ads flag-off/house, IAP soft-fail, deletion messaging, dark mode, iPad chrome.
 
 **Blocked (2):** live mic STT; live camera + ML Kit — see `scenarios/blockers.md`. Do not claim device parity.
 

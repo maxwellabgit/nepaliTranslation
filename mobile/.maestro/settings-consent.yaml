@@ -1,0 +1,16 @@
+# F9 — Consent surface (age + save). Full save needs Sign in with Apple (blocker).
+appId: com.neptranslate.app
+---
+- launchApp
+- tapOn:
+    id: "open-settings"
+- assertVisible:
+    id: "account-section"
+- assertVisible:
+    id: "age-confirm"
+- assertVisible:
+    id: "save-consent"
+- assertVisible: "18"
+- assertVisible: "30 days"
+- tapOn:
+    id: "settings-close"

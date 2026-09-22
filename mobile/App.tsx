@@ -17,6 +17,7 @@ import type { AppServices } from './src/services/contracts';
 import { createProductionServices } from './src/services/productionServices';
 import type { RuntimePorts } from './src/runtime/ports';
 import { resolveBootRuntime } from './src/runtime/resolveBootRuntime';
+import { resolveBootServices } from './src/runtime/resolveBootServices';
 
 export type NepTranslateAppProps = {
   /** Test-only service injection. Production default supplies real adapters. */
@@ -95,9 +96,28 @@ export function NepTranslateApp({
 
 export default function App() {
   const harnessRuntime = resolveBootRuntime();
+  const boot =
+    typeof window !== 'undefined'
+      ? (
+          window as unknown as {
+            __NEPTRANSLATE_TG__?: {
+              harness?: string;
+              offline?: boolean;
+              featureFlags?: Record<string, boolean>;
+              iapSoftFail?: boolean;
+              authConfigured?: boolean;
+              canRequestAds?: boolean;
+            };
+          }
+        ).__NEPTRANSLATE_TG__
+      : undefined;
+  const harnessServices =
+    boot?.harness === 'neptranslate-testing-ground'
+      ? resolveBootServices()
+      : undefined;
   return (
     <NepTranslateApp
-      services={createProductionServices()}
+      services={harnessServices ?? createProductionServices()}
       runtime={harnessRuntime}
       skipWarmUp={Boolean(harnessRuntime)}
     />

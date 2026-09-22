@@ -1,0 +1,13 @@
+# F9 — Learn rewards surface. Credit ledger remains server-authoritative.
+appId: com.neptranslate.app
+---
+- launchApp
+- tapOn:
+    id: "tab-learn"
+- assertVisible:
+    id: "learn-screen"
+- assertVisible:
+    id: "learn-earn-rewards"
+- assertVisible:
+    id: "reward-summary"
+- assertVisible: "Earn rewards"
