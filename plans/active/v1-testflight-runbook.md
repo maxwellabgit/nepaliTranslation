@@ -20,7 +20,8 @@ Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../d
 | R1 — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **PASS** |
 | R2 — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | **PASS** |
 | R4 — Consent authorization + withdrawal + 30-day deletion | `cursor/v1-r4-consent-media-deletion-5907` | **PASS (partial: server; real media capture blocked)** |
-| **R5** — Interstitial timeouts + rewarded SSV + subscription matrix | `cursor/v1-r5-monetization-device-proof-5907` | **in progress** |
+| R5 — Interstitial timeouts + rewarded SSV + subscription matrix | `cursor/v1-r5-monetization-device-proof-5907` | **PASS (partial: code + timeouts; device/sandbox blocked)** |
+| **R3** — Mobile Review workflow + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | **in progress** |
 | R3 — Mobile Review UX + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | pending |
 | R4 — Consent write authorization, withdrawal, 30-day deletion, real media capture | `cursor/v1-r4-consent-media-deletion-5907` | pending |
 | R5 — Interstitial opportunities, rewarded SSV, RevenueCat matrix | `cursor/v1-r5-monetization-device-proof-5907` | pending |
@@ -199,6 +200,36 @@ The audit's R5 exit gate explicitly requires physical-device logs. That cannot h
 
 - Autonomous portion (bounded timeouts, listener cleanup, existing SSV + safe-opportunity + identity) proven by mobile unit tests.
 - The remaining device / sandbox / console work is folded into R9 physical-device evidence + R8 hosted operations.
+
+## R3 scope (this branch)
+
+Landed:
+
+- Forward-only migration `supabase/migrations/20260923030000_r3_review_eligibility.sql`:
+  - `private.assert_review_eligibility(p_user_id)` enforces the audit checklist server-side: signed in, profile row exists, current startup consent version + T&C + Privacy + 18+, current contribution consent + age confirmed, no pending withdrawal / deletion, `contribution_text_enabled=true`. Each failure raises a distinct SQLSTATE 42501 code (`sign_in_required`, `startup_consent_required`, `consent_outdated`, `deletion_pending`, `flag_disabled`) that the client can map.
+  - `public.service_check_review_eligibility()` — safe-to-call variant returning `{ ok: false, code: '...' }` or `{ ok: true }`.
+  - `public.rpc_submit_review` now calls `assert_review_eligibility` before accepting a submission — the client cannot bypass the guard.
+- pgTAP suite `supabase/tests/21_r3_review_eligibility.test.sql`:
+  - Signed-in user without startup consent → `startup_consent_required`.
+  - After service-role grants startup consent → eligible.
+  - `contribution_text_enabled=false` → `flag_disabled`.
+  - Pending withdrawal → `deletion_pending`.
+  - Anonymous caller of `rpc_submit_review` → `sign_in_required`.
+- Mobile Review UI at `mobile/src/screens/ReviewScreen.tsx`:
+  - State matrix: offline / flag_off / guest / consent-required / loading / all-done / active-item / errors.
+  - Displays close countdown (local timezone label), progress `done / total`, direction / register / credit tier per item, and pending-reward honesty copy so the user is never told a credit was granted before the 5 PM close.
+  - Four actions: Confirm, Submit correction (disabled until non-empty edit), Skip, Report. Route through `submitReview` which calls the RPC; server enforces eligibility again.
+  - After a successful submit the item is locked (added to a reviewed set), the correction textarea clears, and the cursor advances.
+- Bilingual English + Nepali strings for every state and action.
+- Mobile unit test `mobile/src/screens/__tests__/ReviewScreen-test.tsx` (5/5): guest state, flag-off state, item advance on confirm, disabled Submit-correction gate, `already_submitted` error surfacing.
+- Admin console `admin/src/pages/PublicReview.tsx`: read-only skeleton that reads the RLS-safe `public.review_current_window` view via PostgREST and lists the current 10 items with metadata. Explicitly enumerates the panels still requiring a new service-role `admin-api` endpoint (import runs list, submission inspection/diff, unsatisfactory/late-reject/quarantine actions, exclusion history, audit events) instead of hiding them. New PostgREST helper `postgrestGet` on the admin client. Wired into the app router at `/public-review`.
+
+### R3 remaining scope (blocked or scheduled)
+
+- Full mutating admin adjudication surface (mark unsatisfactory / late reject / quarantine resolution) — requires new endpoints on the service-role `admin-api` Edge function. Documented on the admin page itself so no operator thinks the surface is complete.
+- Submission inspection / diff view with side-by-side original vs. corrected text — same rationale (needs service-role read of `public.review_submissions` beyond RLS).
+- Idempotency key on the mobile client for retryable network submits — R7 polish.
+- iPad + accessibility polish of the Review screen — R7.
 
 ## Decision log
 

@@ -35,6 +35,28 @@ export function createAdminClient(opts: AdminClientOptions) {
     throw new Error("anonKey required");
   }
 
+  async function postgrestGet<T>(rel: string): Promise<T> {
+    const token = await opts.getAccessToken();
+    if (!token) {
+      throw new AdminApiError("unauthorized", 401);
+    }
+    const url = `${opts.baseUrl.replace(/\/$/, "")}/rest/v1${rel}`;
+    const res = await fetchImpl(url, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${token}`,
+        apikey: opts.anonKey,
+      },
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      const code = (body?.message as string) ?? "unavailable";
+      throw new AdminApiError(code, res.status);
+    }
+    return (await res.json()) as T;
+  }
+
   async function request<T>(
     path: string,
     init: RequestInit = {},
@@ -102,6 +124,14 @@ export function createAdminClient(opts: AdminClientOptions) {
           method: "POST",
           body: JSON.stringify({ media_id }),
         },
+      ),
+    // R3 public review — reads the RLS-safe view directly via PostgREST.
+    // Mutating admin actions (mark unsatisfactory / late reject / quarantine
+    // resolution) require a service-role admin-api endpoint scheduled for
+    // R7/R8 polish; see plans/active/v1-testflight-runbook.md.
+    publicReviewCurrentWindow: () =>
+      postgrestGet<Array<Record<string, unknown>>>(
+        "/review_current_window?select=window_id,slot,ny_close_at,state,size&order=slot.asc",
       ),
   };
 }
