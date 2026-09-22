@@ -13,6 +13,7 @@ maestro test .maestro/learn-alphabet.yaml
 maestro test .maestro/ui-lang-toggle.yaml
 maestro test .maestro/settings-consent.yaml
 maestro test .maestro/learn-rewards.yaml
+maestro test .maestro/deletion-messaging.yaml
 maestro test .maestro/dark-mode-smoke.yaml
 ```
 

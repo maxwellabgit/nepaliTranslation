@@ -96,7 +96,25 @@ export function NepTranslateApp({
 
 export default function App() {
   const harnessRuntime = resolveBootRuntime();
-  const harnessServices = resolveBootServices();
+  const boot =
+    typeof window !== 'undefined'
+      ? (
+          window as unknown as {
+            __NEPTRANSLATE_TG__?: {
+              harness?: string;
+              offline?: boolean;
+              featureFlags?: Record<string, boolean>;
+              iapSoftFail?: boolean;
+              authConfigured?: boolean;
+              canRequestAds?: boolean;
+            };
+          }
+        ).__NEPTRANSLATE_TG__
+      : undefined;
+  const harnessServices =
+    boot?.harness === 'neptranslate-testing-ground'
+      ? resolveBootServices()
+      : undefined;
   return (
     <NepTranslateApp
       services={harnessServices ?? createProductionServices()}

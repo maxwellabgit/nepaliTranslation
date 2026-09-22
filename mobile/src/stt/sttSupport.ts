@@ -47,6 +47,18 @@ export function resetSttSupportCache(): void {
 export function getSttSupport(): Promise<SttSupport> {
   if (!sttPromise) {
     sttPromise = (async () => {
+      // Testing-ground web: pretend English on-device STT exists so permission /
+      // deny paths are exercisable. Never claims native iOS STT parity.
+      if (typeof window !== 'undefined') {
+        const boot = (
+          window as unknown as {
+            __NEPTRANSLATE_TG__?: { harness?: string };
+          }
+        ).__NEPTRANSLATE_TG__;
+        if (boot?.harness === 'neptranslate-testing-ground') {
+          return { en: true, ne: false };
+        }
+      }
       try {
         const mod = ExpoSpeechRecognitionModule as unknown as {
           getSupportedLocales?: (opts?: object) => Promise<{

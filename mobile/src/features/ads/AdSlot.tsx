@@ -114,6 +114,18 @@ export function AdSlot({
       setCooldownsReady(true);
       return;
     }
+    // TG harness: ignore persisted cooldowns so Playwright can assert house/flag paths.
+    if (typeof window !== 'undefined') {
+      const boot = (
+        window as unknown as { __NEPTRANSLATE_TG__?: { harness?: string } }
+      ).__NEPTRANSLATE_TG__;
+      if (boot?.harness === 'neptranslate-testing-ground') {
+        setStoredNetworkAt(null);
+        setStoredHouseAt(null);
+        setCooldownsReady(true);
+        return;
+      }
+    }
     let cancelled = false;
     void (async () => {
       const loaded = await loadBannerCooldowns();

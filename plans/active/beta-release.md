@@ -69,15 +69,21 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ```text
 python benchmarks/certify_ship_artifacts.py
-# schema/pins OK + BLOCKER without mobile/assets/models/it2_*
+# schema/pins OK (543) + model-hash 18 pins OK; BLOCKER: ONNX weights missing
+
 cd mobile && npx tsc --noEmit
 cd mobile && npx jest --runInBand src/features/subscription/__tests__/PurchaseService-test.ts
-# IR fix: playwright-scenarios must `export:lexicon` before `export:web`
+cd mobile && npm run verify:translate
+cd mobile && npm run export:web
+cd testing-ground && npx playwright test
+# 67 passed, 8 skipped (after TG flag/cooldown/STT harness fixes)
+
+# CI: playwright-scenarios must `export:lexicon` before `export:web`
 ```
 
 ## Remaining work
 
-1. Independent re-review PASS after Playwright CI green → merge F9 → start F10.
+1. Independent re-review PASS after Playwright CI green on committed TG harness fixes → merge F9 → start F10.
 2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
 3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
 

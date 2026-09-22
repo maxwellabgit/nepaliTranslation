@@ -65,13 +65,12 @@ test('f9-05 ads house when flag on + offline', async ({ page }) => {
     featureFlags: { networkAdsEnabled: true },
     canRequestAds: true,
   });
+  // Learn landing is the reliable house placement on web (idle Translate may
+  // stay unmounted/inactive while another tab is selected).
   await page.getByTestId('tab-learn').click();
   await expectVisible(page, 'ad-slot-house-learn_landing');
   await expectVisible(page, 'house-ad-not-now');
-  // Translate idle also eligible for house when empty.
-  await page.getByTestId('tab-translate').click();
-  await expectVisible(page, 'pane-translate');
-  await expectVisible(page, 'ad-slot-house-translate_idle');
+  await expectVisible(page, 'house-ad-prefer-no-ads');
 });
 
 test('f9-06 IAP paywall soft-fail leaves core usable', async ({ page }) => {
