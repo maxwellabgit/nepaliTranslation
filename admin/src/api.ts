@@ -23,12 +23,17 @@ export class AdminApiError extends Error {
 
 export type AdminClientOptions = {
   baseUrl: string;
+  /** Public anon key — sent as `apikey` on Edge Function calls (never service role). */
+  anonKey: string;
   getAccessToken: () => Promise<string | null>;
   fetchImpl?: typeof fetch;
 };
 
 export function createAdminClient(opts: AdminClientOptions) {
   const fetchImpl = opts.fetchImpl ?? fetch;
+  if (!opts.anonKey || opts.anonKey.length < 10) {
+    throw new Error("anonKey required");
+  }
 
   async function request<T>(
     path: string,
@@ -44,6 +49,7 @@ export function createAdminClient(opts: AdminClientOptions) {
       headers: {
         "content-type": "application/json",
         authorization: `Bearer ${token}`,
+        apikey: opts.anonKey,
         ...(init.headers ?? {}),
       },
     });

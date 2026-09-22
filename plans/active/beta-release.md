@@ -61,7 +61,8 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 | API | `admin-api` router: JWT → assert admin → service RPCs; media sign + audit; CORS soft via `ADMIN_ORIGIN` |
 | Admin SPA | `admin/` Vite+React — dashboard, review (+ signed preview), alerts, deletions, flags, dataset staging; anon+JWT only |
 | Tests | Deno `admin_api_test` (401/403/ok); pgTAP `15_f7_admin_ops`; Vitest API 403 handling; CI `backend-gate` admin job |
-| Commands | `cd admin && npm test`; `deno test … supabase/functions/tests`; pgTAP via CI when Docker unavailable locally |
+| Commands | `cd admin && npm test` (+ typecheck); `deno test … supabase/functions/tests` (51+); pgTAP via CI (`15_f7_admin_ops`) when Docker unavailable locally |
+| IR fix | SPA sends `apikey` anon on every Edge call; CORS soft-allows local Vite; `ADMIN_ORIGIN` documented for deploy |
 
 **Previous: F6** — PASS; merged PR #9 (`0fc3b1f`).
 

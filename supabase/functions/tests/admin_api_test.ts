@@ -1,6 +1,8 @@
 import { assertEquals } from "jsr:@std/assert@1";
 import {
+  corsHeaders,
   handleAdminRequest,
+  parseAllowedOrigins,
   routePath,
   type AdminDeps,
   type RpcCaller,
@@ -11,6 +13,12 @@ Deno.test("routePath strips function prefix", () => {
   assertEquals(routePath("/functions/v1/admin-api/dashboard"), "/dashboard");
   assertEquals(routePath("/admin-api/flags"), "/flags");
   assertEquals(routePath("/admin-api"), "/");
+});
+
+Deno.test("CORS soft-allows local Vite origins when ADMIN_ORIGIN unset", () => {
+  assertEquals(parseAllowedOrigins(undefined).includes("http://localhost:5173"), true);
+  const headers = corsHeaders("http://localhost:5173", undefined) as Record<string, string>;
+  assertEquals(headers["access-control-allow-origin"], "http://localhost:5173");
 });
 
 Deno.test("forbidden maps to 403", () => {

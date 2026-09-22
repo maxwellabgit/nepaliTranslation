@@ -39,6 +39,7 @@ export function App() {
     const baseUrl = import.meta.env.VITE_SUPABASE_URL as string;
     return createAdminClient({
       baseUrl,
+      anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
       getAccessToken: async () => {
         const { data } = await supabase.auth.getSession();
         return data.session?.access_token ?? null;

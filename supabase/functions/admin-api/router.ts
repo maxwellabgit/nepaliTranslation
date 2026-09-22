@@ -39,13 +39,20 @@ export function corsHeaders(origin: string | null, allowed?: string): HeadersIni
       "authorization, content-type, x-request-id, apikey",
     "access-control-allow-methods": "GET, POST, PATCH, OPTIONS",
   };
-  if (allowed && origin && (origin === allowed || allowed === "*")) {
+  const allowList = parseAllowedOrigins(allowed);
+  if (origin && allowList.includes(origin)) {
     headers["access-control-allow-origin"] = origin;
     headers["vary"] = "Origin";
-  } else if (allowed === "*") {
-    headers["access-control-allow-origin"] = "*";
   }
   return headers;
+}
+
+/** Soft local defaults when ADMIN_ORIGIN unset; otherwise comma-separated exact origins. */
+export function parseAllowedOrigins(allowed?: string): string[] {
+  if (allowed && allowed.trim().length > 0) {
+    return allowed.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+  return ["http://localhost:5173", "http://127.0.0.1:5173"];
 }
 
 export function withCors(res: Response, origin: string | null, allowed?: string): Response {
