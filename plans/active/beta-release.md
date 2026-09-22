@@ -54,36 +54,34 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F8 — observability / legal / security — independent review PASS; PR #11 (do not merge until founder ready)**
+**Current: F8 — observability / legal / security (allowlist scrubber fix; re-review)**
 
 | Area | Change |
 |------|--------|
-| Telemetry | `mobile/src/telemetry/` schema + scrubber + soft-fail client; gated by `telemetryEnabled` / `telemetry_enabled` (default off) |
-| Flags | Migration `20260922020000_f8_telemetry_flag.sql`; client `FeatureFlags`; `mapRemoteFlags`; admin `FLAG_KEYS` |
-| Legal UI | Settings Legal & support; configurable HTTPS via `EXPO_PUBLIC_*` / `extra.legal`; manage-subscription link |
-| Docs | `docs/app-ads.txt`, `APP_STORE_PRIVACY_LABELS.md`, `DEPENDENCY_TRIAGE.md`; CERTIFICATION / DEVICE_PROOF / RELEASE_RUNBOOK honesty |
-| CI | `secret-scan` retained; `model-hash` job + `npm run check:model-hash`; push branches include `cursor/v1-*` |
-| IR | PASS — no material findings; no invented live URLs / device proof; Expo 57 not force-broken |
+| Telemetry | Allowlist scrubber (event + TelemetryProps keys only; token-like string values); flag default off |
+| Legal UI | Settings Legal links; HTTPS-only; honest not-live when env empty |
+| Docs | Privacy labels, app-ads.txt, DEPENDENCY_TRIAGE; CERTIFICATION honesty |
+| CI | secret-scan + model-hash; `cursor/v1-*` on agent-gates |
+| Commands | `npx jest src/telemetry` green; `verify:translate` OK; `tsc`+eslint clean |
 
 **Previous: F7** — PASS; merged PR #10 (`7d9e688`).
 
 ## Commands run (F8)
 
 ```text
-cd mobile && npm run lint
-cd mobile && npm run typecheck
-cd mobile && npm run test:unit -- --runInBand
+cd mobile && npx jest --runInBand src/telemetry
+cd mobile && npx eslint src/telemetry --max-warnings 0
+cd mobile && npx tsc --noEmit
 cd mobile && npm run verify:translate
 cd mobile && npm run check:model-hash
 cd mobile && npm audit
-cd admin && npm audit
-# CI (PR #11): secret-scan, model-hash, js-verify, supabase, admin — SUCCESS
+# CI (PR #11): secret-scan, model-hash, admin — green; js-verify/supabase pending at fix time
 ```
 
 ## Remaining work
 
-1. Merge F8 when founder ready → start F9.
-2. Human: host Privacy/Terms/support/deletion/`app-ads.txt`; enter Connect privacy answers; enable telemetry only after legal review.
+1. Independent re-review PASS → merge F8 → start F9.
+2. Human: host Privacy/Terms/support/`app-ads.txt`; Connect privacy answers; enable telemetry only after legal review.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
