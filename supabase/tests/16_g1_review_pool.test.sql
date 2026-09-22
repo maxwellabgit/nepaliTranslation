@@ -139,14 +139,26 @@ where i.window_id = (select id from public.review_windows where state = 'open')
 order by i.slot
 offset 1 limit 1;
 
-select ok(
-  public.service_mark_review_unsatisfactory(
+-- service_mark_review_unsatisfactory returns a `review_submissions` row.
+-- SQL row-null semantics: `row IS NOT NULL` is only true when EVERY column
+-- is non-null, and reward_granted_at stays NULL on an unsatisfactory
+-- mark. Assert the observable state change instead.
+do $$
+begin
+  perform public.service_mark_review_unsatisfactory(
     (select id from public.review_submissions
       where user_id = '22222222-2222-4222-8222-222222222222'
       limit 1),
     '11111111-1111-4111-8111-111111111111',
     'test unsatisfactory'
-  ) is not null,
+  );
+end $$;
+
+select is(
+  (select admin_status from public.review_submissions
+    where user_id = '22222222-2222-4222-8222-222222222222'
+    limit 1),
+  'unsatisfactory',
   'admin marks submission unsatisfactory before close'
 );
 
