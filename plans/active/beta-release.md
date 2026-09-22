@@ -53,22 +53,22 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F7 — protected operational admin console (implementing → independent review)**
+**Current: F7 — protected operational admin console (independent review PASS @ `f3fe6bc`)**
 
 | Area | Change |
 |------|--------|
 | Migration | `20260922010000_f7_admin_ops.sql` — `service_assert_admin` + dashboard/review/alerts/deletions/flags/dataset/media-preview RPCs |
-| API | `admin-api` router: JWT → assert admin → service RPCs; media sign + audit; CORS soft via `ADMIN_ORIGIN` |
-| Admin SPA | `admin/` Vite+React — dashboard, review (+ signed preview), alerts, deletions, flags, dataset staging; anon+JWT only |
-| Tests | Deno `admin_api_test` (401/403/ok); pgTAP `15_f7_admin_ops`; Vitest API 403 handling; CI `backend-gate` admin job |
-| Commands | `cd admin && npm test` (+ typecheck); `deno test … supabase/functions/tests` (51+); pgTAP via CI (`15_f7_admin_ops`) when Docker unavailable locally |
-| IR fix | SPA sends `apikey` anon on every Edge call; CORS soft-allows local Vite; `ADMIN_ORIGIN` documented for deploy |
+| API | `admin-api` router: JWT → assert admin → service RPCs; media sign + audit; CORS soft local Vite + `ADMIN_ORIGIN` |
+| Admin SPA | `admin/` Vite+React — dashboard, review (+ signed preview), alerts, deletions, flags, dataset staging; anon+JWT + `apikey` |
+| Tests | Deno `admin_api_test` (401/403/ok/CORS); pgTAP `15_f7_admin_ops`; Vitest API 403 + apikey; CI `backend-gate` admin job |
+| Commands | `cd admin && npm test` (+ typecheck); `deno test … supabase/functions/tests` (52); pgTAP via CI when Docker unavailable locally |
+| IR | PASS after apikey + CORS soft-allow fix ([independent-reviewer](36d7ebaa-692c-4fa8-8684-195ad0fbdfdf)) |
 
 **Previous: F6** — PASS; merged PR #9 (`0fc3b1f`).
 
 ## Remaining work
 
-1. Independent review PASS → merge F7 → start F8.
+1. Human merge of F7 when ready → start F8.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
