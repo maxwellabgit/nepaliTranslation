@@ -375,13 +375,18 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.queryByText(/Developer tool/i)).toBeNull();
   });
 
-  it('renders real ad policy result with fake SDK (offline house, no network)', async () => {
+  it('renders idle Translate house ad offline (no network); none on result review', async () => {
     const services = createTestServices({
       offline: true,
       flags: { networkAdsEnabled: true },
       canRequestAds: true,
     });
     await renderApp(services);
+    await waitFor(() => {
+      expect(screen.getByTestId('ad-slot-house-translate_idle')).toBeTruthy();
+    });
+    expect(services.ads.networkCalls()).toEqual([]);
+
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
     await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
     await waitFor(() => {
@@ -389,9 +394,8 @@ describe('NepTranslateApp production composition', () => {
         'नमस्ते',
       );
     });
-    await waitFor(() => {
-      expect(screen.getByTestId('ad-slot-house-translate_result')).toBeTruthy();
-    });
+    expect(screen.queryByTestId('ad-slot-house-translate_idle')).toBeNull();
+    expect(screen.queryByTestId('ad-slot-house-translate_result')).toBeNull();
     expect(services.ads.networkCalls()).toEqual([]);
   });
 

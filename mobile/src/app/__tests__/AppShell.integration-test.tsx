@@ -154,7 +154,7 @@ describe('AppShell integration (mounted panes + offline ads)', () => {
     const adapter = createMockAdAdapter();
     await executeAdPlan(
       planAdPlacement({
-        surface: 'translate_result',
+        surface: 'translate_idle',
         networkAdsEnabled: true,
         hasSubscription: false,
         earnedAdFreeUntilMs: null,

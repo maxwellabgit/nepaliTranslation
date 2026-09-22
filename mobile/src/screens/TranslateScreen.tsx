@@ -410,13 +410,19 @@ export function TranslateScreen({
             />
           ))
         )}
-        {latest ? (
+        {phase === 'empty' ? (
           <AdSlot
-            surface="translate_result"
-            eligible={active}
+            surface="translate_idle"
+            eligible={
+              active &&
+              !state.draft.trim() &&
+              !busy &&
+              !keyboardVisible
+            }
             keyboardVisible={keyboardVisible}
             listening={state.listening}
             speaking={false}
+            translating={state.translating}
             modalVisible={correctionOpen || optionsOpen}
             appActive={active}
           />

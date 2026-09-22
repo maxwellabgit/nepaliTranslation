@@ -39,7 +39,15 @@ type NativeAdsModule = {
       addAdEventListener: (event: string, cb: () => void) => () => void;
     };
   };
+  InterstitialAd: {
+    createForAdRequest: (unitId: string) => {
+      load: () => Promise<void>;
+      show: () => Promise<void>;
+      addAdEventListener: (event: string, cb: () => void) => () => void;
+    };
+  };
   RewardedAdEventType: { LOADED: string; EARNED_REWARD: string };
+  AdEventType: { LOADED: string; CLOSED: string; ERROR: string };
 };
 
 async function tryLoadNative(): Promise<NativeAdsModule | null> {
@@ -66,7 +74,12 @@ export function createProductionAdService(): AdService {
     show: () => Promise<void>;
     addAdEventListener: (event: string, cb: () => void) => () => void;
   } | null = null;
+  let interstitialRef: {
+    show: () => Promise<void>;
+    addAdEventListener: (event: string, cb: () => void) => () => void;
+  } | null = null;
   let earnedEventType = 'earned_reward';
+  let interstitialLoadedEvent = 'loaded';
 
   const adapter: AdAdapter = {
     async loadBanner(unitId) {
@@ -117,6 +130,29 @@ export function createProductionAdService(): AdService {
             resolve({ earned });
           });
       });
+    },
+    async loadInterstitial(unitId) {
+      network.push({ kind: 'interstitial_load', unitId, atMs: Date.now() });
+      const native = await tryLoadNative();
+      if (!native || !sdkReady) return;
+      interstitialLoadedEvent = native.AdEventType.LOADED;
+      const ad = native.InterstitialAd.createForAdRequest(unitId);
+      await new Promise<void>((resolve, reject) => {
+        const unsub = ad.addAdEventListener(interstitialLoadedEvent, () => {
+          unsub();
+          interstitialRef = ad;
+          resolve();
+        });
+        ad.load().catch(reject);
+      });
+    },
+    async showInterstitial(unitId) {
+      network.push({ kind: 'interstitial_show', unitId, atMs: Date.now() });
+      const ad = interstitialRef;
+      interstitialRef = null;
+      if (!ad) return;
+      // SDK owns presentation and dismissal — no custom skip UI.
+      await ad.show().catch(() => undefined);
     },
     showHouseAd(_surface: AdSurface) {
       /* UI renders house copy */

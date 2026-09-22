@@ -22,7 +22,7 @@ describe('AdService', () => {
       customData: 'sess-1',
     });
     await ads.adapter.showRewarded(GOOGLE_TEST_REWARDED_UNIT);
-    ads.adapter.showHouseAd('translate_result');
+    ads.adapter.showHouseAd('translate_idle');
 
     const calls = ads.networkCalls();
     expect(calls.some((c) => c.kind === 'banner_load')).toBe(true);

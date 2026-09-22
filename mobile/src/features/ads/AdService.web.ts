@@ -35,6 +35,12 @@ export function createProductionAdService(): AdService {
     async showRewarded() {
       return { earned: false };
     },
+    async loadInterstitial() {
+      return undefined;
+    },
+    async showInterstitial() {
+      return undefined;
+    },
     showHouseAd() {
       return undefined;
     },

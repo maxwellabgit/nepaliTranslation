@@ -7,6 +7,8 @@ export const GOOGLE_TEST_APP_ID_ANDROID =
 export const GOOGLE_TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2934735716';
 export const GOOGLE_TEST_REWARDED_UNIT =
   'ca-app-pub-3940256099942544/1712485313';
+export const GOOGLE_TEST_INTERSTITIAL_UNIT =
+  'ca-app-pub-3940256099942544/4411468910';
 
 export type AdsRuntimeEnv = 'production' | 'test';
 
@@ -16,6 +18,7 @@ export type AdUnitConfig = {
   androidAppId: string;
   bannerUnitId: string;
   rewardedUnitId: string;
+  interstitialUnitId: string;
 };
 
 export function isGoogleTestAdId(id: string): boolean {
@@ -54,6 +57,10 @@ export function resolveAdUnitConfig(
       input?.rewardedUnitId ??
       extra?.rewardedUnitId ??
       (env === 'production' ? '' : GOOGLE_TEST_REWARDED_UNIT),
+    interstitialUnitId:
+      input?.interstitialUnitId ??
+      extra?.interstitialUnitId ??
+      (env === 'production' ? '' : GOOGLE_TEST_INTERSTITIAL_UNIT),
   };
 
   validateAdUnitConfig(config);
@@ -66,6 +73,7 @@ export function validateAdUnitConfig(config: AdUnitConfig): void {
     config.androidAppId,
     config.bannerUnitId,
     config.rewardedUnitId,
+    config.interstitialUnitId,
   ];
   if (ids.some((id) => !id || typeof id !== 'string')) {
     throw new Error('AdMob config missing required app or unit ID');

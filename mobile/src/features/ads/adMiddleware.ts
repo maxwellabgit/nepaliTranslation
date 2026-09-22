@@ -10,7 +10,13 @@ import {
 } from './adConfig';
 
 export type AdNetworkCall = {
-  kind: 'banner_load' | 'banner_show' | 'rewarded_load' | 'rewarded_show';
+  kind:
+    | 'banner_load'
+    | 'banner_show'
+    | 'rewarded_load'
+    | 'rewarded_show'
+    | 'interstitial_load'
+    | 'interstitial_show';
   unitId: string;
   atMs: number;
 };
@@ -25,6 +31,9 @@ export type AdAdapter = {
   loadRewarded: (unitId: string, opts?: RewardedLoadOpts) => Promise<void>;
   /** Resolves with earned=true only after the client reward callback (EARNED_REWARD). */
   showRewarded: (unitId: string) => Promise<{ earned: boolean }>;
+  loadInterstitial: (unitId: string) => Promise<void>;
+  /** SDK owns presentation and dismissal — no custom skip UI. */
+  showInterstitial: (unitId: string) => Promise<void>;
   showHouseAd: (surface: AdSurface) => void;
   /** Test/observability: network-bound AdMob invocations only. */
   networkCalls: () => AdNetworkCall[];
@@ -122,6 +131,12 @@ export function createMockAdAdapter(): AdAdapter {
     async showRewarded(unitId) {
       network.push({ kind: 'rewarded_show', unitId, atMs: Date.now() });
       return { earned: true };
+    },
+    async loadInterstitial(unitId) {
+      network.push({ kind: 'interstitial_load', unitId, atMs: Date.now() });
+    },
+    async showInterstitial(unitId) {
+      network.push({ kind: 'interstitial_show', unitId, atMs: Date.now() });
     },
     showHouseAd(surface) {
       house.push(surface);

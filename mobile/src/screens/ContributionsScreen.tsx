@@ -23,7 +23,6 @@ import { AppButton, AppHeader } from '../components/AppPrimitives';
 import { EmptyState } from '../components/EmptyState';
 import { StatusBanner } from '../components/StatusBanner';
 import { RewardSummaryCard } from '../learn/RewardSummaryCard';
-import { AdSlot } from '../features/ads/AdSlot';
 import { RewardedAdButton } from '../features/ads/RewardedAdButton';
 import { t, useNetworkOffline, useUiLang, type MessageKey } from '../i18n';
 import { useTheme } from '../theme';
@@ -161,12 +160,6 @@ export function ContributionsScreen({ onClose }: Props) {
         <RewardedAdButton />
 
         <ContributionCard />
-
-        <AdSlot
-          surface="contribution_result"
-          eligible={counts.validated > 0 || counts.pendingValidation > 0}
-          modalVisible={Boolean(editDraft)}
-        />
 
         <View style={dynamic.counts} testID="contribution-counts">
           <CountRow

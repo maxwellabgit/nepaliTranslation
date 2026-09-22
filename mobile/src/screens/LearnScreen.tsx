@@ -7,6 +7,7 @@ import { StatusBanner } from '../components/StatusBanner';
 import { t, useUiLang } from '../i18n';
 import { ALPHABET_SECTIONS, type AlphabetGlyph } from '../learn/alphabet';
 import { RewardSummaryCard } from '../learn/RewardSummaryCard';
+import { AdSlot } from '../features/ads/AdSlot';
 import { hasNepaliVoice } from '../stt/sttSupport';
 import { useTheme } from '../theme';
 
@@ -121,6 +122,8 @@ export function LearnScreen({ active, onOpenContributions }: Props) {
       >
         <RewardSummaryCard active={active} />
       </Pressable>
+
+      <AdSlot surface="learn_landing" eligible={active} appActive={active} />
 
       {ALPHABET_SECTIONS.map((section) => (
         <View key={section.id} testID={`learn-section-${section.id}`}>

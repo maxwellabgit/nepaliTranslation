@@ -35,6 +35,7 @@ describe('createProductionServices featureConfig', () => {
                 rewards_enabled: true,
                 network_ads_enabled: false,
                 rewarded_ads_enabled: false,
+                automatic_interstitial_enabled: false,
                 paywall_enabled: false,
                 learn_enabled: false,
               },
@@ -52,6 +53,7 @@ describe('createProductionServices featureConfig', () => {
     expect(flags.contributionPhotosEnabled).toBe(true);
     expect(flags.rewardsEnabled).toBe(true);
     expect(flags.networkAdsEnabled).toBe(false);
+    expect(flags.automaticInterstitialEnabled).toBe(false);
     expect(flags.learnEnabled).toBe(true);
   });
 
@@ -66,6 +68,7 @@ describe('createProductionServices featureConfig', () => {
                 rewards_enabled: false,
                 network_ads_enabled: false,
                 rewarded_ads_enabled: false,
+                automatic_interstitial_enabled: false,
                 paywall_enabled: false,
                 learn_enabled: false,
               },
