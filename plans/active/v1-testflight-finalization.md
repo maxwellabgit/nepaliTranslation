@@ -23,8 +23,6 @@ V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable d
 - [x] **G1** — Global 10/day public-review pool schema, importer of all corpora, 5 PM rotation, admin adjudication — committed on `cursor/v1-g1-review-pool-5907`
 - [x] **G2** — Startup consent gate, account-linked speech/photo upload, withdrawal, 30-day purge — committed on `cursor/v1-g2-consent-deletion-5907`
 - [ ] **G3** — Ads SDK event contracts, impression-based interstitial timer, RevenueCat↔Supabase identity — in-progress on `cursor/v1-g3-monetization-5907`
-- [ ] **G2** — Startup consent gate (T&C + Privacy + 18+), account-linked collection, raw speech + photo upload, withdrawal, 30-day purge
-- [ ] **G3** — Ads load/show via real SDK events; impression-based interstitial timer; RevenueCat↔Supabase UUID; sandbox matrix recorded or blocked
 - [ ] **G4** — Exact ONNX hash + four-class eval; DEVICE_PROOF physical evidence
 - [ ] **G5** — Hosted scheduler proof, secrets, legal URLs, alerts, backups, kill switches
 - [ ] **G6** — Internal TestFlight candidate; staged remote flag enablement; zero open P0/P1 for enabled surfaces

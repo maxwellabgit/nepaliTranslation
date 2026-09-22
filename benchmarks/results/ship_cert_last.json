@@ -1,0 +1,75 @@
+{
+  "thresholds": {
+    "schemaVersion": 1,
+    "declared_at": "2026-09-22",
+    "slice": "v1-f9-cert",
+    "metric": "chrF_mean_char_trigram",
+    "metric_note": "Same helper as benchmarks/eval_it2_onnx.py (eval_it2_gold.chr_f). Not sacrebleu chrF++.",
+    "holdout_freeze": "benchmarks/results/gold_freeze.json",
+    "artifact_family": "IndicTrans2-dist-200M-ONNX-int8",
+    "manifest": "mobile/src/mt/onnx/it2-release-manifest.json",
+    "classes": {
+      "en_ne_formal": {
+        "direction": "en-ne",
+        "min_chrf": 0.55,
+        "min_tapai_rate": 0.15,
+        "max_taan_rate": 0.0
+      },
+      "en_ne_informal": {
+        "direction": "en-ne",
+        "min_chrf": 0.5,
+        "min_timi_rate": 0.1,
+        "max_taan_rate": 0.0
+      },
+      "ne_en_deva": {
+        "direction": "ne-en",
+        "min_chrf": 0.55
+      },
+      "ne_en_roman": {
+        "direction": "ne-en",
+        "min_chrf": 0.4,
+        "requires_romanizer": true
+      }
+    },
+    "onnx_model_dirs": {
+      "en-ne": "mobile/assets/models/it2_en_indic",
+      "ne-en": "mobile/assets/models/it2_indic_en"
+    },
+    "honesty": "Never invent scores when weights or GPU are missing. Never edit benchmarks/gold/ references."
+  },
+  "classes": {
+    "en_ne_formal": {
+      "n": 137,
+      "chrf_mean": 0.4468,
+      "min_chrf": 0.55,
+      "pass_chrf": false,
+      "tapai_rate": 0.0073,
+      "pass_tapai": false,
+      "taan_rate": 0.0,
+      "pass_taan": true
+    },
+    "en_ne_informal": {
+      "n": 139,
+      "chrf_mean": 0.444,
+      "min_chrf": 0.5,
+      "pass_chrf": false,
+      "timi_rate": 0.0,
+      "pass_timi": false,
+      "taan_rate": 0.0,
+      "pass_taan": true
+    },
+    "ne_en_deva": {
+      "n": 133,
+      "chrf_mean": 0.6111,
+      "min_chrf": 0.55,
+      "pass_chrf": true
+    },
+    "ne_en_roman": {
+      "n": 134,
+      "chrf_mean": 0.4248,
+      "min_chrf": 0.4,
+      "pass_chrf": true
+    }
+  },
+  "passed": false
+}
