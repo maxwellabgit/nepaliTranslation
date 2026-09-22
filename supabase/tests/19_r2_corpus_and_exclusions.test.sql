@@ -142,7 +142,7 @@ select is(
   (select count(*)::int from private.review_source_items
     where origin = 'test:r2' and public_review_eligible = true),
   1,
-  'only the skip'd source remains eligible after retirement'
+  'only the skipped source remains eligible after retirement'
 );
 
 -- Excluded content is not re-inserted by service_import_review_batch.
