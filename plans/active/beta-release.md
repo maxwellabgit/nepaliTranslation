@@ -40,7 +40,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F6** — RevenueCat / StoreKit $0.99 subscription — independent review PASS; merged PR #9
 - [x] **F7** — Protected operational admin console — independent review PASS; merged PR #10
 - [x] **F8** — Telemetry, legal/store surfaces, security, dependency triage — independent review PASS; merged PR #11
-- [ ] **F9** — Exact model certification + extended Windows automation
+- [x] **F9** — Exact model certification + extended Windows automation — independent review PASS (`52aeabb`)
 - [ ] **F10** — Device matrix, TestFlight, App Store release gates
 
 ## Decision log
@@ -80,13 +80,14 @@ cd mobile && npm run verify:translate
 
 ## Remaining work
 
-1. Independent review PASS on HEAD → merge F9 PR #12 → start F10.
+1. Merge F9 PR #12 → start F10 (device/TestFlight docs + honest blockers).
 2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
 3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
 
 ## Decision log (F9 review)
 
-- 2026-09-22: Independent review FAIL on `c017c61` — ExecPlan Remaining work cited nonexistent SHA `05f22472` and stale “wait for CI on 265a071”. Corrected before re-review.
+- 2026-09-22: Independent review FAIL on `c017c61` — ExecPlan Remaining work cited nonexistent SHA `05f22472` and stale “wait for CI on 265a071”. Corrected in `52aeabb`.
+- 2026-09-22: Independent review PASS on `52aeabb` — material findings none; PR #12 CI green.
 ## Blockers (concrete; cannot be solved from this repo)
 
 - Exact four-class ONNX gold eval vs ship floors — **weights missing** on this agent host (`mobile/assets/models/it2_*`)
