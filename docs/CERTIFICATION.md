@@ -19,8 +19,8 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Camera OCR on-device; temporary files deleted after retake/exit/processed | **Source-proven** | Guests never upload |
 | No photo-library permission for Camera path | **Source-proven** | |
 | Guest / non-consenting content stays local | **Source-proven** | Outbox today is explicit; F3 adds post-consent auto media upload |
-| Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Not done** | F3 — age UI copy is 18+; versioned media consent + auto-upload remain F3 |
-| Post-consent speech/photo auto-upload + offline retry | **Not done** | F3 |
+| Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Partial / source-proven** | F3 - version `2026-09-21.media`; legal review before live collection |
+| Post-consent speech/photo auto-upload + offline retry | **Partial / source-proven** | F3 - photo Camera path + media outbox; speech enqueue API ready; STT does not yet produce a recording URI (blocker) |
 | Indefinite retention until withdrawal/deletion; **30-day** purge | **Not done** | F4 |
 | Raw text/audio/photos never in third-party analytics | Partial | F1 remove raw console logs; F8 telemetry scrubber |
 | Login never required for Translate, Camera, Learn, History, Settings | **Source-proven** | |

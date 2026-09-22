@@ -34,7 +34,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
 - [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
-- [ ] **F3** — Consented speech/photo ingestion and private storage
+- [ ] **F3** — Consented speech/photo ingestion and private storage (implementation complete; IR pending)
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
 - [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
@@ -49,63 +49,58 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: Camera remains in product; Translate absorbs Conversation; tabs Translate / Camera / Learn. Guests keep temporary on-device captures only; consented adults may upload eligible media when flags allow.
 - 2026-09-21: Foundation tip `9b17ac9` is **not** a complete monetized production V1 until F0–F10 + go/no-go.
 - 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256. Tracked manifest: `mobile/src/mt/onnx/it2-release-manifest.json` (weights under `assets/models/` stay gitignored). EAS fetch fails on mismatch.
+- 2026-09-21: F3 consent version `2026-09-21.media`. Text path uses `contribution_text_enabled`; speech/photo use dedicated flags (defaults off). Speech auto-upload gate+outbox land; STT still does not emit a durable recording URI.
 
 ## Progress
 
-**Current: F2 — Bilingual UI, theme, responsive layouts — independent review PASS (`a718794`)**
+**Current: F3 — Consented speech/photo ingestion and private storage** (implementation on `cursor/v1-f3-consent-media`)
 
 | Area | Change |
 |------|--------|
-| UI lang | Persisted `uiLang` (AsyncStorage prefs); `UiLangProvider` before auth; Settings English/नेपाली chips switch chrome immediately |
-| Catalog | Expanded `en`/`ne` for tabs, Translate, Camera, Learn rewards, ads, auth; `t()` param interpolation |
-| Screens | AppShell, Translate (+ composer/options/turns), Camera, RewardSummary, HouseAd, RewardedAd, AccountSection, CorrectionSheet, ContributionCard, AlphabetLesson use `t()` + `useTheme()` |
-| Theme | `userInterfaceStyle: automatic`; scheme-aware StatusBar; major screens + contribution sheets off static light `colors` |
-| Layout | `sizeClass` phone / tablet11 / tablet13; content max-width; Camera capture/result stays portrait-dark |
-| a11y | Min 44pt (`MIN_TOUCH`) on tabs, Speak/Pass, Camera shutter/retake/allow; Camera sentence labels catalogued |
-| TG | Playwright projects: desktop + iPad 11 (`768×1024`) + iPad 13 (`1024×1366`); touch-target smoke on tabs, speak, pass, camera-retake (+ shutter when granted) |
-| Tests | `uiLang-test`, `sizeClass-test`, `catalogCoverage-test` (banned EN chrome + CorrectionSheet/ContributionCard), i18n key parity |
+| Migration | Split flags; profile deletion stubs; `contribution_media` + private buckets; register/complete RPCs; purge lists media |
+| Edge | `create-media-upload` + `complete-media-upload` (JWT, consent+flag assert, signed upload) |
+| Client flags | `contributionTextEnabled` / `Speech` / `Photos`; dual-read legacy `contributions_enabled` |
+| Consent | Version `2026-09-21.media`; summary covers speech/photos/OCR/retention/withdrawal/30-day/processors |
+| Outbox | `mediaOutbox` + `mediaSync` + Lifecycle flush; Camera enqueues photo before temp delete |
+| Speech | Tested `enqueueEligibleSpeechRecording` API; no STT recording URI yet (blocker) |
 
-**Honesty:** Full Dynamic Type scaling and VoiceOver walkthrough remain device-gated (F10). Age UI copy is **18+** (INTENT); versioned media consent + auto-upload remain F3. CERTIFICATION bilingual UI row is Partial / F2 chrome wired. Provisional grant ms constants remain F4/F5.
+**Honesty:** CERTIFICATION F3 rows are Partial/source-proven only. No physical-device upload proof.
+
+**Previous: F2 — Bilingual UI, theme, responsive layouts** — independent review PASS (`a718794`); merged PR #5 (`1dd0b57`).
 
 **Previous: F1 — privacy / offline-core** — independent review PASS (`05adf43`); merged PR #4.
 
 **Previous: F0 — durable product contract** — merged PR #3 (`a5d9013`).
 
-## Surprises & discoveries
-
-- Repository contract still contradicted founder V1 decisions until F0 (price, age, media upload, interstitial, reward TZ, rewarded minutes).
-- Google warns interstitials may be unsuitable for utility apps — keep `automatic_interstitial_enabled` remotely off until deliberate go/no-go.
-- Early F2 scaffold had catalog keys + Settings selector but AppShell/Translate/Camera still hardcoded EN until this repair.
-- ContributionCard still said “13 or older” after F2 chrome wire; repaired to catalogued 18+.
-- First Playwright iPad attempt failed (Chromium missing in sandbox); `npx playwright install chromium` then re-run passed.
-- IR FAIL at `ccd360c`: Pass/shutter lacked proven 44pt floor; Camera sentence a11y still English template literals — fixed at `a05f885` / `a718794`.
-
 ## Commands that actually ran (paste)
 
 ```text
-# IR fix tip a718794 — proven on this agent
 cd mobile
 npm run verify:ci
-# exit 0 (~44s): unit 56/240, integration 2/19, verify:translate OK,
+# exit 0 (~73s): unit 59/254, integration 2/19, verify:translate OK,
 # expo-doctor 21/21, coverage OK, export:web
 
-cd testing-ground
-npx playwright test scenarios/product-scenarios.spec.ts --project=ipad-11 -g "primary tab touch"
-# 1 passed (~5.6s) — tabs, speak-hero, pass-phone, camera-retake ≥44px
-# (camera-shutter asserted when live; else camera-allow ≥44)
+npm exec --yes deno -- test --allow-env supabase/functions/_shared supabase/functions/tests
+# ok | 41 passed | 0 failed (~380ms) including media_upload_test.ts
 
-# Independent review PASS at tip a718794 (2026-09-22)
+# Backend DB (this agent host):
+# npx supabase start → FAIL: Docker Desktop engine pipe missing
+#   (open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified)
+# SQL tests authored for CI: supabase/tests/12_f3_media_consent.test.sql
 ```
 
 ## Remaining work
 
-1. Merge PR #5 (`cursor/v1-f2-ui`) into main.
-2. Start F3 on `cursor/v1-f3-consent-media` after merge.
+1. Independent review PASS on this branch; merge F3.
+2. CI: confirm `supabase db reset` + `db lint` + `test db` + Deno with Docker.
+3. Start F4 only after F3 merge (reward close / deletion jobs).
 
 ## Blockers (concrete; cannot be solved from this repo)
 
+- Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
+- On-device STT (`expo-speech-recognition`) does not produce a durable audio file URI → speech auto-upload path is gated + outbox-ready but not wired to live mic capture
 - Physical iPhone / iPad proof, CocoaPods/ML Kit/AdMob/RevenueCat together
-- App Store Connect $0.99 subscription product + legal Privacy/Terms URLs
+- App Store Connect $0.99 subscription product + legal Privacy/Terms URLs (legal review before live media collection)
 - Bilingual human sign-off; external TestFlight cohort
 - Automatic interstitial enablement is a deliberate release go/no-go, not implied by code landing
 - Full Dynamic Type + VoiceOver pass (F10 device matrix)
