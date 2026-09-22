@@ -1,0 +1,15 @@
+# F9 — Deletion messaging visible in consent copy (signed-out).
+# Full delete-account Alert + 30-day purge: Sign in with Apple required (blocker).
+appId: com.neptranslate.app
+---
+- launchApp
+- tapOn:
+    id: "open-settings"
+- assertVisible:
+    id: "account-section"
+- assertVisible: "within 30 days"
+- assertVisible: "Apple subscription"
+- assertVisible:
+    id: "settings-deletion-info"
+- tapOn:
+    id: "settings-close"

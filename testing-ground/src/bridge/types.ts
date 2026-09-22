@@ -68,6 +68,23 @@ export type TestingGroundBootConfig = {
    * Not native ML Kit parity on Windows.
    */
   ocrFixture?: TgOcrDocument | 'inscription' | null;
+  /** Optional feature-flag overrides for Playwright (TG harness only). */
+  featureFlags?: Partial<{
+    contributionTextEnabled: boolean;
+    contributionSpeechEnabled: boolean;
+    contributionPhotosEnabled: boolean;
+    rewardsEnabled: boolean;
+    networkAdsEnabled: boolean;
+    rewardedAdsEnabled: boolean;
+    automaticInterstitialEnabled: boolean;
+    paywallEnabled: boolean;
+    telemetryEnabled: boolean;
+    learnEnabled: boolean;
+  }>;
+  /** Force IAP purchase/restore soft-fail (unavailable). */
+  iapSoftFail?: boolean;
+  authConfigured?: boolean;
+  canRequestAds?: boolean;
   seed?: string;
   runId?: string;
 };

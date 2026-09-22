@@ -1,0 +1,22 @@
+# F9 — UI language toggle (native). Requires installed build + Maestro CLI.
+appId: com.neptranslate.app
+---
+- launchApp
+- assertVisible:
+    id: "app-shell"
+- tapOn:
+    id: "open-settings"
+- assertVisible:
+    id: "settings-screen"
+- assertVisible:
+    id: "settings-lang-en"
+- assertVisible:
+    id: "settings-lang-ne"
+- tapOn:
+    id: "settings-lang-ne"
+- assertVisible: "सेटिङ"
+- tapOn:
+    id: "settings-lang-en"
+- assertVisible: "Settings"
+- tapOn:
+    id: "settings-close"
