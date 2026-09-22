@@ -146,6 +146,7 @@ export function createProductionPurchaseService(): PurchaseService {
 
   return {
     async configure() {
+      if (configured) return;
       const key = readPublicEnv().revenueCatAppleApiKey ?? '';
       if (!key) return;
       const native = await tryLoadPurchases();
