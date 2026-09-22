@@ -1,26 +1,56 @@
 # Release runbook (TestFlight → App Store)
 
-**Status: BLOCKED — founder Apple Connect / legal / bilingual sign-off / physical device matrix**
+**Status: BLOCKED — G0–G7 evidence incomplete; founder Apple Connect / legal / bilingual sign-off / physical device matrix / hosted ops**
 
-Do not claim App Store submission from this document or from Windows CI. Use this as the human sequence after V1 slices F0–F9 source gates and device proof ([`DEVICE_PROOF.md`](./DEVICE_PROOF.md)). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md).
+Do not claim App Store submission or external RC from this document or from Windows CI. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-testflight-finalization.md`](../plans/active/v1-testflight-finalization.md).
 
-**F10 honesty:** Internal/external TestFlight, seven clean days, interstitial go/no-go, and public submission remain **human-gated**. An agent must not check those boxes from source alone.
+**Honesty:** Tip `43f9bc6` is suitable for **diagnostic internal TestFlight** with contribution, live ads, and paywall **off** — not as the external release candidate.
 
 ## Product freeze (must match INTENT)
 
-- Ad-free subscription: **US $0.99/month** (StoreKit is authoritative for displayed price)
-- Ads: banners idle Translate + Learn only; automatic interstitial 15 foreground minutes / ≤3 per America/New_York day / safe idle only / SDK dismiss / remotely disableable
-- Rewarded video: **15** ad-free minutes after SSV
-- Rewards: 1 credit = 5 minutes; >20 original words = 2 credits; close **5:00 PM America/New_York**; no clawback
-- Contributions: 18+ versioned consent; post-consent media upload; 30-day deletion
+- Ad-free subscription: **US $0.99/month** (StoreKit authoritative); **sign-in required** before purchase/restore; RevenueCat ID = Supabase UUID
+- Ads: banners idle Translate + Learn only; automatic interstitial **15 minutes since last successful impression** / ≤3 per America/New_York day / safe idle only / SDK dismiss / remotely disableable; TestFlight = **test ad units**
+- Rewarded video: **15** ad-free minutes after SSV; real SDK event contracts
+- Rewards: 1 credit = 5 minutes; >20 original words = 2 credits; close **5:00 PM America/New_York**; no clawback; late reject → alert only
+- Public review: **up to 10** exclusive assignments per eligible reviewer per NY review day; global retirement; no frozen gold
+- Contributions: 18+ bilingual versioned consent; **photo** auto-upload when flagged; **speech-media upload deferred** from V1 disclosures; withdrawal + 30-day purge of all linked data
 - Platforms: iPhone **and** iPad; UI English **and** नेपाली
 
 ## Sequence
 
-1. **Internal TestFlight** — Exact build with all optional feature flags **off**, then enable one subsystem at a time (auth → text contributions → media → rewards → banners/rewarded → paywall). Smoke: Translate, Camera, Learn, History, Settings; airplane mode; Mark incorrect; iPhone + iPad. Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) matrix on this build.
-2. **External TestFlight cohort** — 25–50 bilingual EN/NE reviewers. Enable contribution collection only after final legal approval. Enable **automatic interstitial only** after banner/rewarded stability and an explicit go/no-go (utility-app risk) — see section below.
-3. **Stability gate** — Seven consecutive days with no open P0/P1, deletion deadline breaches, privacy leaks, crash regressions, or reward ledger inconsistencies. Use the day log below.
-4. **Freeze + phased public** — Complete the freeze worksheet, rehearse rollback, then submit the **exact** tested build. Prefer phased release if Connect supports it.
+1. **G0–G5 evidence** — Contract freeze, review pool, consent/deletion, monetization repair, model/device cert, hosted ops (see ExecPlan).
+2. **Internal TestFlight (G6)** — Exact build with optional feature flags **off**, then enable one subsystem at a time (auth → review/text → photos → rewards → banners/rewarded → paywall). Smoke: Translate, Camera, Learn, History, Settings; airplane mode; Mark incorrect; iPhone + iPad. Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) on this build. Use **test ads** and **sandbox** purchases.
+3. **External TestFlight cohort (G7)** — Small bilingual EN/NE cohort. Enable contribution collection only after legal approval. Enable **automatic interstitial only** after explicit go/no-go.
+4. **Stability gate** — Seven consecutive America/New_York days with no open P0/P1, deletion deadline breaches, privacy leaks, crash regressions, or reward ledger inconsistencies.
+5. **Freeze + phased public** — Complete freeze worksheet, rehearse rollback, submit the **exact** tested build.
+
+## Exact TestFlight go/no-go (external RC)
+
+Do not call a build the V1 release candidate until every item is true:
+
+- [ ] Rewarded and interstitial loading uses real SDK event contracts and passes on-device tests
+- [ ] Fifteen active minutes means fifteen minutes since the last successful impression; daily cap is three
+- [ ] Rewarded verification grants exactly fifteen ad-free minutes once
+- [ ] Banners/interstitials/rewarded use test ads in TestFlight; production units remain gated
+- [ ] AdMob app readiness and app-ads.txt verified before expecting revenue
+- [ ] RevenueCat identity tied to signed-in Supabase user before purchase/restore
+- [ ] Purchase, restore, refund/revocation, billing retry, reinstall, and second device pass
+- [ ] Eligible corpus importer and reconciliation manifest exist
+- [ ] Frozen benchmarks and copies cannot enter public review
+- [ ] Users receive up to ten exclusive public assignments per New York review day
+- [ ] Completed reviews globally retired from review, training, and evaluation
+- [ ] Credits grant one/two correctly at or before 5:00 PM boundary and never claw back
+- [ ] Late rejection creates an alert exactly once
+- [ ] Hosted scheduler provisioned, monitored, and tested across DST
+- [ ] Admins can adjudicate before close and see pool/credit/deletion status
+- [ ] Consent and permission copy truthfully describe automatic photo uploads and retention; speech-media not falsely promised
+- [ ] Consent withdrawal and account deletion purge all linked data within 30 days
+- [ ] Exact models fetched, hashed, evaluated, and proven on iPhone and iPad
+- [ ] Typed fallback works offline when neural translation is unavailable
+- [ ] Camera/OCR/speech/TTS/highlight alignment pass on physical devices
+- [ ] Production secrets, legal/support URLs, telemetry, backups, alerts, and kill switches pass
+- [ ] This runbook and DEVICE_PROOF contain no open blockers for the candidate build
+
 
 ## Interstitial go/no-go (explicit)
 
@@ -114,15 +144,18 @@ On a non-production or internal build with optional flags **on**:
 
 ## Public App Store go/no-go checklist
 
-Production V1 public submission is allowed only when **all** are checked by a human:
+Production V1 public submission is allowed only when **all** are checked by a human. Prefer the detailed **Exact TestFlight go/no-go** list above; this section is the final submit gate:
 
-- [ ] F0–F10 merged with green CI and independent review
-- [ ] Exact model artifacts pass frozen evaluation **or** ship is explicitly blocked on missing weights ([`MODEL_CERT.md`](./MODEL_CERT.md))
+- [ ] G0–G7 complete with green CI and independent review where applicable
+- [ ] Exact model artifacts pass frozen evaluation (soft missing-weights CI is **not** enough) — [`MODEL_CERT.md`](./MODEL_CERT.md)
 - [ ] iPhone and iPad matrices in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) pass on the **same** TestFlight build
-- [ ] RevenueCat, StoreKit, AdMob, UMP, Apple Sign-In, Supabase media storage, deletion, and admin operations pass with production-like configuration
+- [ ] RevenueCat identity = Supabase UUID; purchase/restore/refund/reinstall/second-device certified; Sign-In, media storage, deletion, admin ops pass production-like
+- [ ] Ads use real SDK contracts; TF test units; production units + app-ads.txt ready before revenue expectation
+- [ ] Public-review pool live under eligibility rules; 5 PM grants + late alerts; hosted scheduler verified
+- [ ] Consent withdrawal + 30-day purge of all linked data; privacy copy matches photo upload behavior; speech-media not falsely promised
 - [ ] Privacy/Terms/support URLs and App Store privacy answers are live and accurate
 - [ ] Bilingual UI and alphabet content receive human sign-off
-- [ ] External TestFlight: 25–50 reviewers; seven clean consecutive days (log above)
+- [ ] External TestFlight: small cohort; seven clean consecutive America/New_York days (log above)
 - [ ] Interstitial go/no-go explicitly recorded
 - [ ] Freeze worksheet complete; rollback rehearsed with remote flags
 - [ ] Explicit final go for public submission — owner: ____ date: ____
@@ -130,5 +163,6 @@ Production V1 public submission is allowed only when **all** are checked by a hu
 ## Founder actions before claiming release
 
 - [ ] Apple Developer + App Store Connect session; $0.99 subscription live in sandbox
-- [ ] Legal: Privacy, Terms, support, retention/deletion, consent copy (18+, media)
+- [ ] Legal: Privacy, Terms, support, retention/deletion, bilingual consent copy (18+, photo; speech deferred)
+- [ ] Hosted 5 PM credit + 30-day deletion schedulers provisioned and monitored
 - [ ] Complete public go/no-go checklist above

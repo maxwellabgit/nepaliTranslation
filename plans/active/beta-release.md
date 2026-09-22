@@ -1,7 +1,9 @@
-# beta-release: Production V1 finalization (F0–F10)
+# beta-release: Production V1 foundation (F0–F10) — CLOSED AS SHIP PROGRAM
+
+> **Superseded for ship readiness.** F0–F10 source merged through `43f9bc6`. External TestFlight / V1 go/no-go continues under [`v1-testflight-finalization.md`](./v1-testflight-finalization.md) (**G0–G7**). Do not open new F-slice PRs.
 
 ## Goal
-Ship a complete, monetized English↔Nepali iOS/iPadOS V1 — offline core intact; optional ads, $0.99/month subscription, consented speech/photo contributions, rewards, admin, and TestFlight/App Store gates — without breaking guest Translate, Camera, History, Settings, or Learn.
+(Historical.) Land monetized English↔Nepali iOS/iPadOS V1 **source** foundation — offline core intact; optional ads, $0.99/month subscription, consented media, rewards, admin, and release docs — without breaking guest Translate, Camera, History, Settings, or Learn.
 
 ## Context (paths, commands, constraints)
 
@@ -41,9 +43,11 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F7** — Protected operational admin console — independent review PASS; merged PR #10
 - [x] **F8** — Telemetry, legal/store surfaces, security, dependency triage — independent review PASS; merged PR #11
 - [x] **F9** — Exact model certification + extended Windows automation — independent review PASS (`52aeabb`); merged PR #12
-- [ ] **F10** — Device matrix, TestFlight, App Store release gates
+- [x] **F10** — Device matrix, TestFlight, App Store release gates (docs + honest open boxes) — merged PR #14 (`43f9bc6`)
 
 ## Decision log
+
+- 2026-09-22: **F10 merged; ship program moves to G0–G7.** Audit found ads SDK mismatch, RevenueCat orphan risk, missing review pool, consent/deletion gaps, soft model cert, unverified scheduler. See `.governance/V1_G0_DECISIONS.md`.
 
 - 2026-09-21: **V1 final boundary supersedes beta monetization/privacy text.** Full-business V1: $0.99/month ad-free; banners only idle Translate + Learn landing; automatic interstitial after 15 foreground-active minutes, max 3 per America/New_York day, SDK-owned dismiss, remotely disableable (off until device + external-beta gates); rewarded video = 15 ad-free minutes; 1 credit = 5 minutes; >20 original words = 2 credits; reward close 5:00 PM America/New_York; pending at close earns once; late rejection → alert only, no clawback; contribution requires Sign in with Apple + 18+ + versioned consent; post-consent speech/photo auto-upload; indefinite retention until withdrawal/deletion; 30-day purge; telemetry OK without raw content; bilingual UI; genuine iPhone+iPad. Feature flags independent; defaults off until gates pass.
 - 2026-09-21: Camera remains in product; Translate absorbs Conversation; tabs Translate / Camera / Learn. Guests keep temporary on-device captures only; consented adults may upload eligible media when flags allow.
@@ -55,7 +59,9 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F10 — device matrix, TestFlight, App Store release gates**
+**Closed as ship program.** Tip `43f9bc6` = F10 merged. Continue in `v1-testflight-finalization.md`.
+
+**Last F10 work (merged):**
 
 | Area | Change |
 |------|--------|
@@ -72,9 +78,9 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Remaining work
 
-1. Independent review PASS → merge F10 (after F9 PR #12 is on main).
-2. Human: fill DEVICE_PROOF on physical iPhone + iPad (same build).
-3. Human: internal → external TestFlight (25–50), seven clean days, interstitial go/no-go, freeze + rollback rehearsal, public submit.
+1. ~~Independent review PASS → merge F10~~ Done (PR #14).
+2. Human device / TestFlight / go/no-go work continues under **G4–G7** (not new F-slices).
+3. Do not treat this ExecPlan as the active ship lane.
 
 ## Progress (prior)
 

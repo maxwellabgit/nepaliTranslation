@@ -7,6 +7,6 @@ Read `AGENTS.md` and `.governance/INTENT.md` before changing this repo.
 
 Work exactly one line of effort per run/PR. Active plans live in `plans/active/`. Follow `.agent/LOOP.md`. Do not mark work complete because it compiles — use `.agent/DONE.md` for that lane.
 
-Never train on `benchmarks/gold/`. Never edit gold references to improve a score. Informal Nepali is तिमी, not तँ. Product path is on-device only (no PC/cloud MT). Production V1 finalization is slices F0–F10 in `plans/active/beta-release.md` — one slice per PR; F0 is docs-only.
+Never train on `benchmarks/gold/`. Never edit gold references to improve a score. Informal Nepali is तिमी, not तँ. Product path is on-device only (no PC/cloud MT). Production V1 ship readiness is gates **G0–G7** in `plans/active/v1-testflight-finalization.md` — one gate per PR; G0 is docs-only. Prior F0–F10 in `plans/active/beta-release.md` is foundation only.
 
 After implementation, run the `independent-reviewer` subagent. Persist progress in the ExecPlan, not in chat.

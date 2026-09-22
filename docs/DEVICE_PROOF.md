@@ -4,7 +4,7 @@
 
 Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Model floors: [`MODEL_CERT.md`](./MODEL_CERT.md). Store sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md).
 
-**F10 rule:** leave every matrix / checklist box unchecked until a human fills it on a real device with the **same** TestFlight (or development) build number recorded below. Source-only CI is not device proof.
+**G4/G6 rule:** leave every matrix / checklist box unchecked until a human fills it on a real device with the **same** TestFlight (or internal) build number recorded below. Source-only CI is not device proof. Tip `43f9bc6` is not an external RC.
 
 ## Build under test (fill on device)
 
@@ -37,8 +37,8 @@ From a machine with Expo account + Apple Developer access (`mobile/`):
 ```bash
 cd mobile
 npx eas login
-npx eas build --platform ios --profile development
-# Install the development build on physical iPhone and iPad (QR / internal distribution).
+npx eas build --platform ios --profile <internal>
+# Install the internal build on physical iPhone and iPad (QR / internal distribution).
 ```
 
 Internal TestFlight (after a store-oriented build):

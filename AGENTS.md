@@ -1,13 +1,13 @@
 # NepTranslate — agent operating system
 
-Offline-first iOS / iPadOS English ↔ Nepali translator (`mobile/`). Intent lives in [`.governance/INTENT.md`](.governance/INTENT.md). Architecture lives in [`training/ARCHITECTURE.md`](training/ARCHITECTURE.md). Gold eval lives in [`benchmarks/gold/`](benchmarks/gold/). Production V1 finalization lives in [`plans/active/beta-release.md`](plans/active/beta-release.md) (slices **F0–F10**).
+Offline-first iOS / iPadOS English ↔ Nepali translator (`mobile/`). Intent lives in [`.governance/INTENT.md`](.governance/INTENT.md). Architecture lives in [`training/ARCHITECTURE.md`](training/ARCHITECTURE.md). Gold eval lives in [`benchmarks/gold/`](benchmarks/gold/). **Ship program:** TestFlight finalization gates **G0–G7** in [`plans/active/v1-testflight-finalization.md`](plans/active/v1-testflight-finalization.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](.governance/V1_G0_DECISIONS.md). Prior F0–F10 source work is foundation only (see [`plans/active/beta-release.md`](plans/active/beta-release.md)).
 
 A fresh agent must be able to enter this repo and know the product, the current lane, remaining work, and how to prove Done. Chat is disposable. These files are not.
 
 ## Read before you touch code
 
 1. This file
-2. `.governance/INTENT.md`
+2. `.governance/INTENT.md` and `.governance/V1_G0_DECISIONS.md`
 3. `.agent/LOOP.md` and `.agent/DONE.md`
 4. The **one** active plan for your line of effort under `plans/active/`
 
@@ -29,59 +29,59 @@ Ranked by likelihood that an autonomous agent produces a real, checkable improve
 
 Do **not** start lane 5 until lane 1 is clean. Do **not** claim translation quality from UI-only diffs.
 
-### Production V1 finalization (dependency order)
+### Production V1 TestFlight finalization (dependency order)
 
-Full-business V1 (monetized, consented media, certified) uses **one** living ExecPlan: `plans/active/beta-release.md`.
+Full-business V1 readiness uses **one** living ExecPlan: `plans/active/v1-testflight-finalization.md`.
 
-Execute **exactly one** slice per branch/PR. Do not combine adjacent slices because context remains. Do not start F1+ until F0 is merged and independent review is clean.
+Execute **exactly one** gate per branch/PR. Do not combine adjacent gates. Do not start G1+ until G0 is merged and independent review is clean.
 
 | Order | Slice / lane id | Goal | Branch pattern |
 |------:|-----------------|------|----------------|
-| **F0** | `v1-f0-contract` | Durable product contract (docs only) | `cursor/v1-f0-product-contract` |
-| **F1** | `v1-f1-privacy-core` | STT privacy, log scrub, model pins, Camera stability | `cursor/v1-f1-privacy-core` |
-| **F2** | `v1-f2-ui` | Bilingual UI, dark mode, a11y, iPhone+iPad layouts | `cursor/v1-f2-ui` |
-| **F3** | `v1-f3-media` | Consented speech/photo ingestion + private storage | `cursor/v1-f3-media` |
-| **F4** | `v1-f4-rewards` | 5 PM NY reward close, alerts, 30-day deletion | `cursor/v1-f4-rewards` |
-| **F5** | `v1-f5-ads` | Banners, interstitials, rewarded, ad-policy tests | `cursor/v1-f5-ads` |
-| **F6** | `v1-f6-iap` | RevenueCat / StoreKit $0.99 subscription | `cursor/v1-f6-iap` |
-| **F7** | `v1-f7-admin` | Protected operational admin console | `cursor/v1-f7-admin` |
-| **F8** | `v1-f8-store` | Telemetry, legal/store, security, dependency triage | `cursor/v1-f8-store` |
-| **F9** | `v1-f9-cert` | Exact model certification + Windows automation | `cursor/v1-f9-cert` |
-| **F10** | `v1-f10-release` | Device matrix, TestFlight, App Store gates | `cursor/v1-f10-release` |
+| **G0** | `v1-g0-contract` | Freeze corrected product contract (docs only) | `cursor/v1-g0-contract-freeze-*` |
+| **G1** | `v1-g1-review-pool` | Real public-review pool, importer, exclusive lease, admin adjudication | `cursor/v1-g1-review-pool-*` |
+| **G2** | `v1-g2-consent-deletion` | Bilingual consent, withdrawal, truthful privacy, 30-day purge | `cursor/v1-g2-consent-deletion-*` |
+| **G3** | `v1-g3-monetization` | Ads SDK events, impression timer, RevenueCat↔Supabase identity | `cursor/v1-g3-monetization-*` |
+| **G4** | `v1-g4-model-device` | Exact ONNX cert + physical iPhone/iPad evidence | `cursor/v1-g4-model-device-*` |
+| **G5** | `v1-g5-ops` | Hosted scheduler, secrets, legal URLs, alerts, backups | `cursor/v1-g5-ops-*` |
+| **G6** | `v1-g6-internal-tf` | Internal TestFlight candidate, staged flags | `cursor/v1-g6-internal-tf-*` |
+| **G7** | `v1-g7-external-v1` | External cohort ≥7 days + V1 go/no-go | `cursor/v1-g7-external-v1-*` |
 
 **Dependency rule:** core translation must not depend on Supabase, AdMob, RevenueCat, or admin. Optional services fail soft.
 
-**Do not mix** a core quality lane (1–5) and a V1 finalization slice in the same PR.
+**Do not mix** a core quality lane (1–5) and a V1 finalization gate in the same PR.
 
-Prior beta foundation (slices 00–08 / H0–H6) and Windows production-readiness work through `9b17ac9` remain the source baseline. Do not reopen that program; supersede conflicting product-boundary text with INTENT + F0–F10.
+Prior F0–F10 (merged through `43f9bc6`) and beta foundation through `9b17ac9` remain source baseline. Do not reopen F-slices as the ship program; supersede conflicting boundary text with INTENT + G0 decisions.
 
-Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; overnight GPU FT on the founder machine; Apple/Supabase/AdMob/RevenueCat console setup; legal copy; bilingual Nepali content sign-off; live interstitial enablement. Record those as blockers, do not invent results.
+Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; overnight GPU FT on the founder machine; Apple/Supabase/AdMob/RevenueCat console setup; legal copy; bilingual Nepali content sign-off; live interstitial enablement; hosted cron provisioning. Record those as blockers, do not invent results.
 
 ## Hard rules
 
 - Scope: EN↔NE only, Expo iOS/iPadOS, on-device STT+MT and on-device camera OCR for the product path, no PC/cloud inference for core translate or OCR. Temporary Camera files are deleted after retake, exit, or successful processing. Do not request photo-library access unless importing existing images is added later.
 - One model family (IndicTrans2 dist-200M), not four register models. Informal = **तिमी**, not तँ.
 - Never train on `benchmarks/gold/`. Never edit gold references to raise a score.
-- **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated backend/admin seed data only.
+- **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated **synthetic** backend/admin seed data only. Never expose active frozen benchmarks for public correction.
 - Expo SDK **57** docs only for this release: https://docs.expo.dev/versions/v57.0.0/
-- Login is required for contributions and rewards only — never for translation, camera, history, settings, or Learn alphabet.
-- Ordinary guest / non-consenting translation history, microphone audio, transcripts, clipboard, and photos stay local. **After** 18+ versioned contribution consent, eligible speech and Camera captures may upload automatically when flags allow. Never upload for guests, under-18, declined/outdated consent, signed-out, or flag-off states.
+- Login is required for **purchase, restore, contribution/public review, and rewards** — never for translation, camera, history, settings, or Learn alphabet.
+- Ordinary guest / non-consenting translation history, microphone audio, transcripts, clipboard, and photos stay local. **After** 18+ versioned contribution consent, eligible **Camera photos** may upload automatically when flags allow. **Raw speech-media upload is deferred** from V1 disclosures. Never upload for guests, under-18, declined/outdated consent, signed-out, or flag-off states.
 - Never put service/secret keys in the app bundle or admin browser code.
-- Monetization boundary: **$0.99/month** ad-free subscription; banners only idle Translate + Learn landing; automatic interstitial 15 min / max 3 per `America/New_York` day at safe idle transitions (SDK-owned dismiss; remotely disableable); rewarded video = **15** ad-free minutes; one credit = **five** minutes; >20 original words = two credits; reward close **5:00 PM America/New_York**; no credit clawback; no automatic training from contributions.
+- Monetization boundary: **$0.99/month** ad-free subscription; banners only idle Translate + Learn landing; automatic interstitial **15 min since last successful impression** / max 3 per `America/New_York` day at safe idle transitions (SDK-owned dismiss; remotely disableable); rewarded video = **15** ad-free minutes; one credit = **five** minutes; >20 original words = two credits; reward close **5:00 PM America/New_York**; **up to 10** public reviews per reviewer per NY day; no credit clawback; no automatic training from contributions; RevenueCat identity = Supabase UUID.
 - Compiling is not Done. See `.agent/DONE.md`.
 - After implementation, run `/independent-reviewer` in a fresh context. Findings become work items.
-- Advance to the next V1 slice only with green gates and no material independent-review findings.
+- Advance to the next V1 gate only with green gates and no material independent-review findings.
 
 ## Persistence
 
 | File | Job |
 |------|-----|
 | `.governance/INTENT.md` | What the product is |
+| `.governance/V1_G0_DECISIONS.md` | Frozen audit decisions |
+| `.governance/DATA_CLASSIFICATION.md` | Review/train/benchmark eligibility |
 | `training/ARCHITECTURE.md` | How MT is supposed to work |
 | `AGENTS.md` | How an AI behaves here |
 | `.agent/PLANS.md` | ExecPlan contract |
 | `plans/active/<lane>.md` | Where this mission is |
-| `plans/active/beta-release.md` | V1 finalization (F0–F10) + proof log |
+| `plans/active/v1-testflight-finalization.md` | G0–G7 ship program + proof log |
+| `plans/active/beta-release.md` | Historical F0–F10 foundation log |
 | `benchmarks/gold/` + `mobile` verify scripts | How you prove translation quality |
 
 When a lesson should stick, add a short rule here or in `.cursor/rules/` — do not rely on chat memory.

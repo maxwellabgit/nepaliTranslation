@@ -1,6 +1,8 @@
 # Certification checklist (accessibility, privacy, quality)
 
-Source-side items can be marked **source-proven**. Device-only items stay open until a physical iPhone/iPad pass is recorded in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md).
+Source-side items can be marked **source-proven**. Device-only items stay open until a physical iPhone/iPad pass is recorded in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md).
+
+**Honesty (2026-09-22):** Tip `43f9bc6` is **not** an external TestFlight release candidate. Soft model-cert CI with missing ONNX weights is **not** four-class certification. TestFlight test ads and sandbox IAP are **not** revenue proof.
 
 ## Quality honesty
 
@@ -8,8 +10,8 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 |------|--------|--------|
 | “Translation may be imperfect” + path to **Mark incorrect** | **Source-proven** | Settings quality copy; Mark incorrect on Translate results |
 | Informal Nepali register = तिमी (not तँ) in UI catalogs | **Source-proven** | `mobile/src/i18n/ne.ts` + i18n unit tests |
-| Full bilingual UI (EN / नेपाली) via persisted selector | **Partial / F2 chrome wired** | Settings selector + catalogued Translate/Camera/tabs/Learn/contribution sheets; sentence a11y via catalog; device a11y (VoiceOver / Dynamic Type) = F10 |
-| Exact bundled models pass four-class gold ship eval | **Partial / F9** | Thresholds pre-declared in [`MODEL_CERT.md`](./MODEL_CERT.md) + `benchmarks/ship_thresholds.json`. `python benchmarks/certify_ship_artifacts.py` validates schema/pins; **BLOCKER** until ONNX weights on eval host |
+| Full bilingual UI (EN / नेपाली) via persisted selector | **Partial** | Settings selector + catalogs; device a11y = G4/G6 |
+| Exact bundled models pass four-class gold ship eval | **Blocked / G4** | Thresholds in [`MODEL_CERT.md`](./MODEL_CERT.md). Soft CI green ≠ certified while weights missing |
 | Gold eval / device translation quality claim | Device / human | Never claim ship quality from Windows alone |
 
 ## Privacy & contribution
@@ -18,25 +20,27 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 |------|--------|--------|
 | Camera OCR on-device; temporary files deleted after retake/exit/processed | **Source-proven** | Guests never upload |
 | No photo-library permission for Camera path | **Source-proven** | |
-| Guest / non-consenting content stays local | **Source-proven** | Outbox today is explicit; F3 adds post-consent auto media upload |
-| Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Partial / source-proven** | F3 - version `2026-09-21.media`; legal review before live collection |
-| Post-consent speech/photo auto-upload + offline retry | **Partial / source-proven** | F3 - photo Camera path + media outbox; speech enqueue API ready; STT does not yet produce a recording URI (blocker) |
-| Indefinite retention until withdrawal/deletion; **30-day** purge | **Partial / source-proven** | F4 — request + purge job RPCs; flag-gated delete-account; device proof = human |
-| Raw text/audio/photos never in third-party analytics | **Source-proven (scrubber)** | F1 diagnostics + F8 telemetry scrubber/tests; `telemetry_enabled` default off. Live sink still human-gated. |
-| Login never required for Translate, Camera, Learn, History, Settings | **Source-proven** | |
+| Guest / non-consenting content stays local | **Source-proven** | |
+| Contribution requires Sign in with Apple + **18+** + versioned bilingual consent | **Partial / G2** | Withdrawal + full purge incomplete per audit |
+| Post-consent **photo** auto-upload + offline retry | **Partial** | Speech-media upload **deferred** from V1 disclosures (G0) |
+| Public review: up to 10/reviewer/NY day; exclusive lease; global retirement | **Not built / G1** | Current consensus tasks ≠ requested pool |
+| Indefinite retention until withdrawal/deletion; **30-day** purge of all linked data | **Partial / G2** | Audit: some unlink/retain paths remain |
+| Raw text/audio/photos never in third-party analytics | **Source-proven (scrubber)** | Live sink human-gated |
+| Login never required for Translate, Camera, Learn, History, Settings | **Source-proven** | Purchase/restore/contribution **do** require login (G0) |
 | Optional services fail soft | **Source-proven** | |
-| Privacy / Terms / support / deletion / app-ads.txt live | **Blocked — hosting** | Settings links + honest “not live yet” when `EXPO_PUBLIC_*` URLs empty. Source `docs/app-ads.txt` not crawlable until public host. |
-| App Store privacy labels match runtime | **Source worksheet** | [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md) — Connect form + legal review = human |
+| Privacy / Terms / support / deletion / app-ads.txt live | **Blocked — hosting / G5** | |
+| App Store privacy labels match runtime | **Source worksheet** | Connect form + legal = human |
 
 ## Monetization & ads (policy certification)
 
 | Item | Status | Notes |
 |------|--------|--------|
-| Subscription US **$0.99/month** removes every ad | **Partial / source-proven** | F6 — PurchaseService + paywall + webhook; cancelled entitled until expiry; StoreKit/TestFlight matrix = human gate |
-| Banners only idle Translate + Learn landing | **Source-proven** | F5 — placements + policy tests; device AdMob = human gate |
-| Automatic interstitial: 15 foreground min, ≤3/NY day, safe idle only, SDK dismiss | **Partial / source-proven** | F5 policy + flag (default off); device + external-beta go/no-go still required |
-| Rewarded video opt-in; **15** ad-free minutes after SSV | **Partial / source-proven** | F4 schedule + SSV tests at 15 min; device AdMob proof = human gate |
+| Subscription US **$0.99/month** removes every ad | **Partial / G3** | Sign-in required before purchase/restore; UUID identity |
+| Banners only idle Translate + Learn landing | **Source-proven** | Device AdMob = human |
+| Automatic interstitial: **15 min since last successful impression**, ≤3/NY day, safe idle, SDK dismiss | **Broken/incomplete / G3** | Audit: `load().catch` vs void API; cumulative timer; weak opportunities |
+| Rewarded video opt-in; **15** ad-free minutes after SSV | **Broken/incomplete / G3** | Same SDK event mismatch |
 | Ads offline → house / no network SDK | **Source-proven** | |
+| TestFlight uses test ad units; live revenue needs prod IDs + app-ads.txt | Policy / G3+G5 | |
 | ATT / IDFA not used this release | Policy | Contextual / non-personalized default |
 
 ## Accessibility
@@ -44,50 +48,37 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Item | Status | Notes |
 |------|--------|--------|
 | Meaningful accessibility labels on primary controls | **Source-proven** | Tabs, Speak, Pass, Mark incorrect, Camera overlays, etc. |
-| VoiceOver full walkthrough | **Device-only / F10** | Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) a11y row — unchecked until human |
-| Dynamic Type / larger text | **Partial / F2 + F10** | Min 44pt targets + labels; full Dynamic Type scale = device matrix |
-| Contrast (light + dark) | **Partial (F2)** | Scheme-aware StatusBar + useTheme; full device a11y = F10 DEVICE_PROOF |
+| VoiceOver full walkthrough | **Device-only / G4–G6** | Fill [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) |
+| Dynamic Type / larger text | **Partial** | Full scale = device matrix |
+| Contrast (light + dark) | **Partial** | Device a11y = G4/G6 |
 | Reduce Motion | Device | Gate product motion when added |
 | Offline core usable | **Source-proven** | |
 
 ## Permissions (purpose strings)
 
 | Permission | Status | Notes |
-|------------|--------|--------|
-| Microphone | Source string ready | Device: confirm dialog text |
-| Speech recognition | Source string ready | Must enforce on-device recognition (F1) |
-| Camera | Source string ready + in-UI note | Device: confirm dialog text |
+|------------|--------|-------|
+| Microphone | Source string ready | Must not claim speech-media upload in V1 |
+| Speech recognition | Source string ready | On-device recognition (F1) |
+| Camera | Source string ready + in-UI note | Consented photo upload ≠ “always on-device only” |
 
 ## Offline
 
 | Item | Status | Notes |
-|------|--------|--------|
+|------|--------|-------|
 | Typing translate offline | **Source-proven** (phrase/lexicon + integration); neural weights device | |
-| Speech unavailable → typed path remains | Required F1 | Fail closed on missing on-device locales |
+| Speech unavailable → typed path remains | Required | Fail closed on missing on-device locales |
 | Camera OCR offline | Source path + fixture; **native OCR device-only** | |
 | Learn alphabet offline | **Source-proven** | |
 
-## Admin console (F7)
+## Admin console
 
 | Item | Status | Notes |
-|------|--------|--------|
-| Dashboard / review / alerts / deletions / flags / dataset staging | **Source-proven** | `admin/` SPA + `admin-api` router; Vitest + Deno + pgTAP |
-| Server allowlist via `private.admin_users`; revoked loses next request | **Source-proven** | `service_assert_admin`; pgTAP revoked/unknown |
-| Non-admin 403; no service key in browser; media preview audited | **Source-proven** | Anon + JWT only; `admin_media_preview` → `audit_log` |
-| Live allowlist ops + Playwright signed-in triage | Human-gated | Insert/revoke operators in Supabase; Playwright not automated in F7 |
+|------|--------|-------|
+| Dashboard / media / alerts / deletions / flags / dataset staging | **Source-proven (foundation)** | |
+| Public-review adjudication + pool runway | **Missing / G1** | |
+| Live allowlist ops + Playwright signed-in triage | Human-gated | |
 
 ## Remaining human gates
 
-- Exact IT2 ONNX four-class gold eval vs [`MODEL_CERT.md`](./MODEL_CERT.md) floors (weights on GPU/eval host)
-- Full device matrix + TestFlight / App Store sequence: [`DEVICE_PROOF.md`](./DEVICE_PROOF.md) + [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md) (F10 templates; all boxes unchecked until human)
-- AdMob EAS on physical iPhone/iPad (banner, rewarded, interstitial) with UMP
-- Sign in with Apple (sign-in / revoke / cancel / delete-account / 30-day deletion)
-- Legal Privacy / Terms / support / app-ads.txt **live crawlable URLs** (source templates + Settings blockers only in F8)
-- App Store Connect privacy answers entered from [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md)
-- RevenueCat / StoreKit $0.99 sandbox + TestFlight matrix
-- Bilingual Learn alphabet + UI sign-off
-- Automatic interstitial deliberate go/no-go after external beta stability ([`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md))
-- Admin allowlist operators in production Supabase + signed-in Playwright triage
-- Telemetry remote enable only after legal review (`telemetry_enabled`)
-- Expo-transitive dependency advisories per [`DEPENDENCY_TRIAGE.md`](./DEPENDENCY_TRIAGE.md) on F10 freeze
-- Maestro native stubs (`.maestro/*`) on physical iPhone/iPad — see `mobile/.maestro/README.md`
+See [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md) go/no-go and [`plans/active/v1-testflight-finalization.md`](../plans/active/v1-testflight-finalization.md).
