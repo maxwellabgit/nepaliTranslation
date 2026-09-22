@@ -118,19 +118,24 @@ export default function App() {
               iapSoftFail?: boolean;
               authConfigured?: boolean;
               canRequestAds?: boolean;
+              acknowledgeStartupConsent?: 'auto-accept' | 'require';
             };
           }
         ).__NEPTRANSLATE_TG__
       : undefined;
-  const harnessServices =
-    boot?.harness === 'neptranslate-testing-ground'
-      ? resolveBootServices()
-      : undefined;
+  const inHarness = boot?.harness === 'neptranslate-testing-ground';
+  const harnessServices = inHarness ? resolveBootServices() : undefined;
+  // Only the testing-ground harness can request a bypass of the G2 startup
+  // consent gate. Production Expo bundles never receive
+  // `__NEPTRANSLATE_TG__` and therefore always render the real gate.
+  const bypassStartupConsent =
+    inHarness && boot?.acknowledgeStartupConsent === 'auto-accept';
   return (
     <NepTranslateApp
       services={harnessServices ?? createProductionServices()}
       runtime={harnessRuntime}
       skipWarmUp={Boolean(harnessRuntime)}
+      bypassStartupConsent={bypassStartupConsent}
     />
   );
 }

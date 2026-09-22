@@ -29,8 +29,13 @@ export const F9_SCENARIO_CATALOG = [
     status: 'automated' as const,
   },
   {
-    id: 'f9-06-iap-soft-fail',
-    title: 'IAP/paywall adapter soft-fail (unavailable)',
+    id: 'f9-06-paywall-signin-required',
+    title: 'Paywall requires sign-in — guest tap leaves core usable',
+    status: 'automated' as const,
+  },
+  {
+    id: 'f9-startup-consent-gate',
+    title: 'G2 startup consent gate: walk through T&C/Privacy/18+ without bypass',
     status: 'automated' as const,
   },
   {

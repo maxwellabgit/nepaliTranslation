@@ -5,7 +5,7 @@ import { openHostedApp, expectVisible, typeAndSubmit } from './helpers/app';
 test.describe.configure({ mode: 'serial' });
 
 test('F9 catalog lists extended surfaces', () => {
-  expect(F9_SCENARIO_CATALOG.length).toBeGreaterThanOrEqual(8);
+  expect(F9_SCENARIO_CATALOG.length).toBeGreaterThanOrEqual(9);
   expect(F9_SCENARIO_CATALOG.every((s) => s.status === 'automated')).toBe(true);
 });
 
@@ -73,7 +73,15 @@ test('f9-05 ads house when flag on + offline', async ({ page }) => {
   await expectVisible(page, 'house-ad-prefer-no-ads');
 });
 
-test('f9-06 IAP paywall soft-fail leaves core usable', async ({ page }) => {
+test('f9-06 paywall requires sign-in — guest tap leaves core usable', async ({
+  page,
+}) => {
+  // G3 / audit frozen contract: sign-in is required before purchase or
+  // restore, so a guest cannot open the paywall from Settings. The
+  // subscription row is still visible so the user knows an ad-free option
+  // exists; tapping it while unauthenticated must not crash and must not
+  // block core translation. Live SDK soft-fail after successful sign-in is
+  // covered by R5 sandbox device proof, not by this Windows harness.
   await openHostedApp(page, {
     featureFlags: { paywallEnabled: true },
     iapSoftFail: true,
@@ -81,12 +89,7 @@ test('f9-06 IAP paywall soft-fail leaves core usable', async ({ page }) => {
   await page.getByTestId('open-settings').click();
   await expectVisible(page, 'settings-subscription');
   await page.getByTestId('settings-open-paywall').click();
-  await expectVisible(page, 'paywall-sheet');
-  await page.getByTestId('paywall-subscribe').click();
-  await expect(page.getByTestId('paywall-message')).toContainText(/unavailable/i, {
-    timeout: 15_000,
-  });
-  await page.getByTestId('paywall-close').click();
+  // Guest tap resolves without opening the sheet or throwing.
   await expect(page.getByTestId('paywall-sheet')).toHaveCount(0);
   await page.getByTestId('settings-close').click();
   await typeAndSubmit(page, 'Hello');
@@ -121,6 +124,29 @@ test('f9-08 dark mode via color scheme', async ({ page }) => {
   });
   // darkColors.bg #1A1410 → rgb(26, 20, 16)
   expect(bg).toMatch(/rgb\(\s*26,\s*20,\s*16\s*\)/);
+});
+
+test('f9-startup-consent-gate exercises the real G2 gate (no bypass)', async ({
+  page,
+}) => {
+  // Explicit counterpart to the `acknowledgeStartupConsent: 'auto-accept'`
+  // shortcut used by scenarioBoot. This scenario opts out of the bypass so
+  // the audit rule holds: any test that reaches product surfaces without
+  // acknowledging the gate must do so through a visible fixture. Here the
+  // fixture value `'require'` makes the non-bypass explicit and this test
+  // walks through the gate exactly as a real first-launch user would.
+  await openHostedApp(page, { acknowledgeStartupConsent: 'require' });
+  await expectVisible(page, 'startup-consent-gate');
+  const continueBtn = page.getByTestId('startup-consent-continue');
+  await expect(continueBtn).toBeDisabled();
+  await page.getByTestId('startup-consent-terms').click();
+  await page.getByTestId('startup-consent-privacy').click();
+  await page.getByTestId('startup-consent-age').click();
+  await expect(continueBtn).toBeEnabled();
+  await continueBtn.click();
+  // After acknowledgement, the product surface renders.
+  await expectVisible(page, 'tab-translate');
+  await expect(page.getByTestId('startup-consent-gate')).toHaveCount(0);
 });
 
 test('f9-09 iPad viewport primary chrome', async ({ page }, testInfo) => {

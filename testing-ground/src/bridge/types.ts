@@ -85,6 +85,21 @@ export type TestingGroundBootConfig = {
   iapSoftFail?: boolean;
   authConfigured?: boolean;
   canRequestAds?: boolean;
+  /**
+   * Testing-ground startup-consent behavior.
+   *
+   * The G2 startup consent gate wraps every product surface. Playwright
+   * scenarios that are not specifically exercising the gate must opt in
+   * to the auto-accept path with a visible fixture value; this field
+   * makes that opt-in explicit.
+   *
+   *   - `auto-accept` (scenarios): bypass the gate; the app renders
+   *     product surfaces as if the current version was already
+   *     acknowledged. **Only** valid under the testing-ground harness.
+   *   - `require` (default, prod-like): render the actual gate and
+   *     require the user to walk through it.
+   */
+  acknowledgeStartupConsent?: 'auto-accept' | 'require';
   seed?: string;
   runId?: string;
 };
