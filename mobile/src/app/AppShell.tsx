@@ -297,14 +297,16 @@ export function AppShell({
               onClose={() => {
                 onHardStop();
                 setOverlay(null);
-                // Left the contributions task → safe idle on Learn or Translate.
-                requestInterstitialOpportunity({
-                  transition: 'idle_after_task',
-                  surface:
-                    mode === 'learn' ? 'learn_landing' : 'translate_idle',
-                  cameraActive: mode === 'camera',
-                  resultUnderReview: false,
-                });
+                // Only Learn landing is a known-idle surface after this close.
+                // Translate may still show turns (result under review) — never guess.
+                if (mode === 'learn') {
+                  requestInterstitialOpportunity({
+                    transition: 'idle_after_task',
+                    surface: 'learn_landing',
+                    cameraActive: false,
+                    resultUnderReview: false,
+                  });
+                }
               }}
             />
           )}

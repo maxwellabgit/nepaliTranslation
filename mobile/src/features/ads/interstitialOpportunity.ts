@@ -2,6 +2,7 @@ import {
   decideInterstitialPresentation,
   type DecideInterstitialPresentationInput,
   type InterstitialDecision,
+  type InterstitialSurface,
   type InterstitialTransition,
 } from '../entitlements/decideInterstitialPresentation';
 import type { AdAdapter } from './adMiddleware';
@@ -11,6 +12,7 @@ import {
   recordInterstitialPresentation,
   saveForegroundActiveMs,
 } from './foregroundAdTimer';
+import { resolveAdUnitConfig } from './adConfig';
 
 export type TryPresentInterstitialInput = Omit<
   DecideInterstitialPresentationInput,
@@ -100,9 +102,76 @@ export async function tryPresentInterstitial(
   };
 }
 
+export type InterstitialOpportunityRequest = {
+  transition: InterstitialTransition;
+  surface: InterstitialSurface;
+  cameraActive?: boolean;
+  resultUnderReview?: boolean;
+  modalVisible?: boolean;
+  keyboardVisible?: boolean;
+  listening?: boolean;
+  speaking?: boolean;
+  translating?: boolean;
+  hasSubscription?: boolean;
+};
+
+export type RunInterstitialOpportunityInput = {
+  automaticInterstitialEnabled: boolean;
+  offline: boolean;
+  canRequestAds: boolean;
+  appActive: boolean;
+  earnedAdFreeUntilMs: number | null;
+  trustedNowMs: number | null;
+  foregroundActiveMs: number;
+  adapter: AdAdapter;
+  req: InterstitialOpportunityRequest;
+};
+
+/**
+ * Controller entry: resolve unit IDs + policy, then optionally present.
+ * Soft-fails (no throw) when config is invalid or flag is off.
+ */
+export async function runInterstitialOpportunity(
+  input: RunInterstitialOpportunityInput,
+): Promise<TryPresentInterstitialResult | { presented: false; executed: string }> {
+  if (!input.automaticInterstitialEnabled) {
+    return { presented: false, executed: 'none:flag_off' };
+  }
+  let interstitialUnitId = '';
+  try {
+    interstitialUnitId = resolveAdUnitConfig().interstitialUnitId;
+  } catch {
+    return { presented: false, executed: 'none:bad_config' };
+  }
+  if (!interstitialUnitId) {
+    return { presented: false, executed: 'none:missing_unit' };
+  }
+  return tryPresentInterstitial({
+    automaticInterstitialEnabled: input.automaticInterstitialEnabled,
+    hasSubscription: input.req.hasSubscription ?? false,
+    earnedAdFreeUntilMs: input.earnedAdFreeUntilMs,
+    trustedNowMs: input.trustedNowMs,
+    offline: input.offline,
+    canRequestAds: input.canRequestAds,
+    appActive: input.appActive,
+    modalVisible: input.req.modalVisible,
+    keyboardVisible: input.req.keyboardVisible,
+    listening: input.req.listening,
+    speaking: input.req.speaking,
+    translating: input.req.translating,
+    resultUnderReview: input.req.resultUnderReview,
+    cameraActive: input.req.cameraActive,
+    transition: input.req.transition,
+    surface: input.req.surface,
+    foregroundActiveMs: input.foregroundActiveMs,
+    adapter: input.adapter,
+    interstitialUnitId,
+  });
+}
+
 /** Persist a flushed foreground total (Lifecycle / controller). */
 export async function persistForegroundActiveMs(ms: number): Promise<void> {
   await saveForegroundActiveMs(ms);
 }
 
-export type { InterstitialTransition };
+export type { InterstitialTransition, InterstitialSurface };

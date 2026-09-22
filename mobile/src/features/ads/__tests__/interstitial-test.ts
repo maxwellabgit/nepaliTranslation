@@ -3,10 +3,15 @@ import {
   americaNewYorkCalendarDay,
   clearForegroundAdTimerState,
   createForegroundAccumulator,
+  loadForegroundActiveMs,
   loadInterstitialDayState,
   recordInterstitialPresentation,
+  saveForegroundActiveMs,
 } from '../foregroundAdTimer';
-import { tryPresentInterstitial } from '../interstitialOpportunity';
+import {
+  persistForegroundActiveMs,
+  tryPresentInterstitial,
+} from '../interstitialOpportunity';
 import { createMockAdAdapter } from '../adMiddleware';
 import { GOOGLE_TEST_INTERSTITIAL_UNIT } from '../adConfig';
 import { INTERSTITIAL_MIN_FOREGROUND_MS } from '../../entitlements/decideInterstitialPresentation';
@@ -31,6 +36,13 @@ describe('foregroundAdTimer', () => {
     expect(acc.onInactive(1_000 + 5_000)).toBe(5_000);
     acc.onActive(10_000);
     expect(acc.flush(10_000 + 2_000)).toBe(7_000);
+  });
+
+  it('persists and loads foreground ms', async () => {
+    await saveForegroundActiveMs(12_345);
+    expect(await loadForegroundActiveMs()).toBe(12_345);
+    await persistForegroundActiveMs(99);
+    expect(await loadForegroundActiveMs()).toBe(99);
   });
 
   it('resets interstitial count across NY calendar days', async () => {
@@ -105,6 +117,27 @@ describe('tryPresentInterstitial', () => {
       adapter,
       interstitialUnitId: GOOGLE_TEST_INTERSTITIAL_UNIT,
     });
+    expect(adapter.networkCalls()).toEqual([]);
+  });
+
+  it('refuses missing interstitial unit id', async () => {
+    const adapter = createMockAdAdapter();
+    const result = await tryPresentInterstitial({
+      automaticInterstitialEnabled: true,
+      hasSubscription: false,
+      earnedAdFreeUntilMs: null,
+      trustedNowMs: 1,
+      offline: false,
+      canRequestAds: true,
+      transition: 'idle_after_task',
+      surface: 'learn_landing',
+      foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
+      presentationsTodayNy: 0,
+      adapter,
+      interstitialUnitId: '',
+    });
+    expect(result.presented).toBe(false);
+    expect(result.executed).toBe('none:missing_unit');
     expect(adapter.networkCalls()).toEqual([]);
   });
 });

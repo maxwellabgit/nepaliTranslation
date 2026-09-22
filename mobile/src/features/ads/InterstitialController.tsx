@@ -4,30 +4,15 @@ import { AppState, type AppStateStatus } from 'react-native';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
 import { useServices } from '../../services/ServiceContext';
-import { resolveAdUnitConfig } from './adConfig';
 import {
   createForegroundAccumulator,
   loadForegroundActiveMs,
 } from './foregroundAdTimer';
 import {
   persistForegroundActiveMs,
-  tryPresentInterstitial,
-  type InterstitialTransition,
+  runInterstitialOpportunity,
+  type InterstitialOpportunityRequest,
 } from './interstitialOpportunity';
-import type { InterstitialSurface } from '../entitlements/decideInterstitialPresentation';
-
-export type InterstitialOpportunityRequest = {
-  transition: InterstitialTransition;
-  surface: InterstitialSurface;
-  cameraActive?: boolean;
-  resultUnderReview?: boolean;
-  modalVisible?: boolean;
-  keyboardVisible?: boolean;
-  listening?: boolean;
-  speaking?: boolean;
-  translating?: boolean;
-  hasSubscription?: boolean;
-};
 
 type Listener = (req: InterstitialOpportunityRequest) => void;
 
@@ -78,7 +63,6 @@ export function InterstitialController() {
     const onAppState = (next: AppStateStatus) => {
       const now = Date.now();
       if (next === 'active') {
-        // Resume is never an interstitial opportunity.
         accumRef.current.onActive(now);
         return;
       }
@@ -105,41 +89,18 @@ export function InterstitialController() {
   useEffect(() => {
     const onOpportunity = (req: InterstitialOpportunityRequest) => {
       if (presentingRef.current) return;
-      if (!flags.automaticInterstitialEnabled) return;
-
-      let units: ReturnType<typeof resolveAdUnitConfig> | null = null;
-      try {
-        units = resolveAdUnitConfig();
-      } catch {
-        return;
-      }
-      if (!units.interstitialUnitId) return;
-
-      const offline = services.network.isOffline();
-      const consent = services.ads.getConsentState();
-      const foregroundActiveMs = accumRef.current.flush(Date.now());
-
       presentingRef.current = true;
-      void tryPresentInterstitial({
+      const foregroundActiveMs = accumRef.current.flush(Date.now());
+      void runInterstitialOpportunity({
         automaticInterstitialEnabled: flags.automaticInterstitialEnabled,
-        hasSubscription: req.hasSubscription ?? false,
+        offline: services.network.isOffline(),
+        canRequestAds: services.ads.getConsentState().canRequestAds,
+        appActive: AppState.currentState === 'active',
         earnedAdFreeUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
         trustedNowMs: entitlement?.trustedNow() ?? null,
-        offline,
-        canRequestAds: consent.canRequestAds,
-        appActive: AppState.currentState === 'active',
-        modalVisible: req.modalVisible,
-        keyboardVisible: req.keyboardVisible,
-        listening: req.listening,
-        speaking: req.speaking,
-        translating: req.translating,
-        resultUnderReview: req.resultUnderReview,
-        cameraActive: req.cameraActive,
-        transition: req.transition,
-        surface: req.surface,
         foregroundActiveMs,
         adapter: services.ads.adapter,
-        interstitialUnitId: units.interstitialUnitId,
+        req,
       })
         .catch(() => undefined)
         .finally(() => {
