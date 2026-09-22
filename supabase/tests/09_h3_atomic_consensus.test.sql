@@ -105,7 +105,11 @@ select is(
   'two agreeing normals resolve the unknown task'
 );
 
--- F4: grants happen at NY close, not at consensus resolve.
+-- F4: grants happen at NY close — pin window so CI time does not matter.
+update public.contribution_receipts
+set submitted_at = '2026-07-15 14:00:00+00'::timestamptz
+where idempotency_key in ('idem-user-a-submit-01', 'idem-user-b-submit-01');
+
 select is(
   (select count(*)::int from public.reward_ledger
     where source_type = 'contribution'
@@ -119,7 +123,7 @@ select is(
 );
 
 select ok(
-  (public.service_close_ny_reward_window(now()) ->> 'applied')::integer >= 2,
+  (public.service_close_ny_reward_window('2026-07-15 21:30:00+00'::timestamptz) ->> 'applied')::integer >= 2,
   'close batch grants both validated consensus receipts'
 );
 
