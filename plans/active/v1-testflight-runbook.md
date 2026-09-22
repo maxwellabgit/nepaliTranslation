@@ -19,7 +19,8 @@ Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../d
 | R0 — Restore honest release baseline | `cursor/v1-r0-release-baseline-5907` | **PASS (stacked; merge with R1)** |
 | R1 — Repair review rewards + 5 PM rotation + DST/idempotency | `cursor/v1-r1-review-ledger-rotation-5907` | **PASS** |
 | R2 — Corpus registry + importer + retirement/exclusions | `cursor/v1-r2-review-corpus-import-5907` | **PASS** |
-| **R4** — Consent authorization + withdrawal + 30-day deletion | `cursor/v1-r4-consent-media-deletion-5907` | **in progress** |
+| R4 — Consent authorization + withdrawal + 30-day deletion | `cursor/v1-r4-consent-media-deletion-5907` | **PASS (partial: server; real media capture blocked)** |
+| **R5** — Interstitial timeouts + rewarded SSV + subscription matrix | `cursor/v1-r5-monetization-device-proof-5907` | **in progress** |
 | R3 — Mobile Review UX + admin adjudication console | `cursor/v1-r3-review-product-ui-5907` | pending |
 | R4 — Consent write authorization, withdrawal, 30-day deletion, real media capture | `cursor/v1-r4-consent-media-deletion-5907` | pending |
 | R5 — Interstitial opportunities, rewarded SSV, RevenueCat matrix | `cursor/v1-r5-monetization-device-proof-5907` | pending |
@@ -165,6 +166,39 @@ Landed:
 - Withdraw-consent UI surface (button in Settings → Account) — R3 territory.
 - English/Nepali language selector directly on the first-launch consent screen — the app-level `UiLangProvider` already toggles the whole tree; R3 will add the explicit toggle inside `StartupConsentGate` if audit review still requires it.
 - Legal review of bilingual copy — human.
+
+## R5 scope (this branch)
+
+Landed:
+
+- `mobile/src/features/ads/AdService.ts`:
+  - New exported constants `AD_LOAD_TIMEOUT_MS = 20_000` and `AD_SHOW_TIMEOUT_MS = 60_000`.
+  - `loadInterstitial`, `loadRewarded`, `showInterstitial`, `showRewarded` all wrap their listener chains in a `setTimeout` that clears listeners and settles the promise if the SDK never fires. Load timeouts reject with `interstitial_load_timeout` / `rewarded_load_timeout`; show timeouts resolve as no-impression / not-earned so the daily cap and foreground timer stay honest.
+  - All existing listener-before-load and confirmed-impression semantics are preserved.
+- `mobile/src/features/ads/__tests__/AdService.r5-timeouts-test.ts`: 4/4 covering the four timeout paths.
+- Mobile gate: 77 suites / 342 tests pass, 0 lint warnings, 0 tsc errors.
+
+Already in the repo at R0/G3 (audit-satisfied without new code):
+
+- Rewarded SSV verification: `supabase/functions/admob-ssv/index.ts` + `_shared/admobSsv.ts` verify ECDSA over the exact query, bind user/session, and consume via `service_consume_rewarded_ssv` which is idempotent per `transaction_id`. Client callbacks never grant credit; `private.apply_reward` is the only ledger writer (R1 rule).
+- Interstitial safe opportunity: `decideInterstitialPresentation` rejects presentations when `listening`, `speaking`, `translating`, `resultUnderReview`, `cameraActive`, `modalVisible`, or `keyboardVisible` are true — the "never cover a translation being read, active speech, camera capture, consent, paywall, sign-in, or a correction being edited" rule.
+- Interstitial daily cap + timer-since-last-impression: `foregroundAdTimer.ts` records the New York day count and resets on confirmed impression only.
+- RevenueCat identity binding: G3 `PurchaseService.identify(userId)`; both `purchase()` and `restore()` reject with `sign_in_required` before identity is bound; `SubscriptionProvider.openPaywall()` blocks guests.
+
+### R5 remaining scope (physical-device / sandbox only)
+
+The audit's R5 exit gate explicitly requires physical-device logs. That cannot happen inside this VM. Documented as blockers, not invented:
+
+- **Interstitial safe-opportunity device proof** — install R0+R1 diagnostic TestFlight build, exercise the 15-minute timer, daily cap, offline fallback, earned-entitlement suppression, subscription suppression.
+- **Rewarded SSV replay rejection** — physically observe the second attempt at the same `transaction_id` returns duplicate + no additional 15 minutes.
+- **RevenueCat sandbox matrix** — buy, restore, active renewal, cancel, billing retry, refund/revoke, reinstall, second device, sign-out, account switch. Requires an Apple Sandbox tester + a fully configured RevenueCat project.
+- **App Store subscription product configuration** — screenshot, price, tax/banking agreements. Human, in App Store Connect.
+- **UMP consent + child-directed / content-rating** — legal review before external cohort.
+
+### R5 exit gate (partial)
+
+- Autonomous portion (bounded timeouts, listener cleanup, existing SSV + safe-opportunity + identity) proven by mobile unit tests.
+- The remaining device / sandbox / console work is folded into R9 physical-device evidence + R8 hosted operations.
 
 ## Decision log
 

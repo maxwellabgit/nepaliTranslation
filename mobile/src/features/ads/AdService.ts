@@ -20,7 +20,17 @@ export type AdService = {
  * `void`, not a Promise. Calling `.catch()` on those returns will throw a
  * TypeError at runtime. G3 refactor listens for LOADED / ERROR / CLOSED
  * events instead of chaining onto load/show.
+ *
+ * R5: bounded timeouts protect against a missing native callback so the
+ * promise chain does not leak an unresolved promise or an orphaned
+ * listener. If the SDK never fires LOADED or ERROR within
+ * `AD_LOAD_TIMEOUT_MS` the load rejects with `interstitial_load_timeout`
+ * (or `rewarded_load_timeout`). If the SDK never fires IMPRESSION or
+ * CLOSED within `AD_SHOW_TIMEOUT_MS` the show resolves as no-impression
+ * / not-earned; listener handles are removed either way.
  */
+export const AD_LOAD_TIMEOUT_MS = 20_000;
+export const AD_SHOW_TIMEOUT_MS = 60_000;
 type NativeAdInstance = {
   load: () => void;
   show: () => void;
@@ -116,24 +126,41 @@ export function createProductionAdService(): AdService {
           customData: opts?.customData,
         },
       });
-      // v17 `load()` returns void; wire events before calling.
+      // v17 `load()` returns void; wire events before calling. R5:
+      // a bounded timeout releases listeners and rejects if the SDK
+      // never fires LOADED or ERROR.
       await new Promise<void>((resolve, reject) => {
-        const unsubLoad = ad.addAdEventListener(rewardedLoadedEvent, () => {
+        let settled = false;
+        const cleanup = () => {
+          if (timer !== null) clearTimeout(timer);
           unsubLoad();
           unsubErr();
+        };
+        const unsubLoad = ad.addAdEventListener(rewardedLoadedEvent, () => {
+          if (settled) return;
+          settled = true;
+          cleanup();
           rewardedRef = ad;
           resolve();
         });
         const unsubErr = ad.addAdEventListener(rewardedErrorEvent, () => {
-          unsubLoad();
-          unsubErr();
+          if (settled) return;
+          settled = true;
+          cleanup();
           reject(new Error('rewarded_load_error'));
         });
+        const timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          reject(new Error('rewarded_load_timeout'));
+        }, AD_LOAD_TIMEOUT_MS);
         try {
           ad.load();
         } catch (err) {
-          unsubLoad();
-          unsubErr();
+          if (settled) return;
+          settled = true;
+          cleanup();
           reject(err instanceof Error ? err : new Error('rewarded_load_throw'));
         }
       });
@@ -149,6 +176,7 @@ export function createProductionAdService(): AdService {
         const done = () => {
           if (settled) return;
           settled = true;
+          if (timer !== null) clearTimeout(timer);
           unsubEarn();
           unsubClose();
           unsubErr();
@@ -159,6 +187,13 @@ export function createProductionAdService(): AdService {
         });
         const unsubClose = ad.addAdEventListener(rewardedClosedEvent, done);
         const unsubErr = ad.addAdEventListener(rewardedErrorEvent, done);
+        // R5: bounded timeout so a missing native CLOSED/ERROR cannot
+        // leave the promise pending forever. On timeout we treat the show
+        // as not-earned; server-side SSV remains the authoritative grant.
+        const timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+          earned = false;
+          done();
+        }, AD_SHOW_TIMEOUT_MS);
         try {
           ad.show();
         } catch {
@@ -176,22 +211,37 @@ export function createProductionAdService(): AdService {
       interstitialImpressionEvent = native.AdEventType.IMPRESSION ?? null;
       const ad = native.InterstitialAd.createForAdRequest(unitId);
       await new Promise<void>((resolve, reject) => {
-        const unsubLoad = ad.addAdEventListener(interstitialLoadedEvent, () => {
+        let settled = false;
+        const cleanup = () => {
+          if (timer !== null) clearTimeout(timer);
           unsubLoad();
           unsubErr();
+        };
+        const unsubLoad = ad.addAdEventListener(interstitialLoadedEvent, () => {
+          if (settled) return;
+          settled = true;
+          cleanup();
           interstitialRef = ad;
           resolve();
         });
         const unsubErr = ad.addAdEventListener(interstitialErrorEvent, () => {
-          unsubLoad();
-          unsubErr();
+          if (settled) return;
+          settled = true;
+          cleanup();
           reject(new Error('interstitial_load_error'));
         });
+        const timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          reject(new Error('interstitial_load_timeout'));
+        }, AD_LOAD_TIMEOUT_MS);
         try {
           ad.load();
         } catch (err) {
-          unsubLoad();
-          unsubErr();
+          if (settled) return;
+          settled = true;
+          cleanup();
           reject(err instanceof Error ? err : new Error('interstitial_load_throw'));
         }
       });
@@ -210,6 +260,7 @@ export function createProductionAdService(): AdService {
         const finish = () => {
           if (settled) return;
           settled = true;
+          if (timer !== null) clearTimeout(timer);
           unsubImp();
           unsubClose();
           unsubErr();
@@ -231,6 +282,13 @@ export function createProductionAdService(): AdService {
           impression = false;
           finish();
         });
+        // R5: bounded timeout so a missing native callback does not leak.
+        // On timeout, treat as no-impression so the daily cap is not spent
+        // and the foreground timer does not reset.
+        const timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+          impression = false;
+          finish();
+        }, AD_SHOW_TIMEOUT_MS);
         try {
           ad.show();
         } catch {
