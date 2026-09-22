@@ -1,0 +1,159 @@
+{
+  "version": "2026-09-22.r2",
+  "note": "R2 corpus registry. Each corpus is explicitly declared here — the importer refuses to walk any directory that is not listed. Editing this file bumps `version`; the importer refuses to import a version different from what the run was invoked against without an explicit override.",
+  "content_hash_algorithm": "sha256",
+  "corpora": [
+    {
+      "id": "training-clean-en-ne",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "train_clean_en-ne.jsonl",
+      "format": "jsonl-src-tgt",
+      "provenance": "internal-clean-parallel",
+      "license": "internal",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "training-clean-ne-en",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "train_clean_ne-en.jsonl",
+      "format": "jsonl-src-tgt",
+      "provenance": "internal-clean-parallel",
+      "license": "internal",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "training-law-gov-en-ne",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "train_law_gov_en_ne.jsonl",
+      "format": "jsonl-eng-npi",
+      "provenance": "law-gov-scrape",
+      "license": "internal",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "training-user-conversation-seeds",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "train_user_conversation_seeds.jsonl",
+      "format": "jsonl-eng-npi",
+      "provenance": "internal-conversation-seed",
+      "license": "internal",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "training-val-en-ne",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "val_clean_en-ne.jsonl",
+      "format": "jsonl-src-tgt",
+      "provenance": "internal-clean-parallel-val",
+      "license": "internal",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "training-val-ne-en",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "val_clean_ne-en.jsonl",
+      "format": "jsonl-src-tgt",
+      "provenance": "internal-clean-parallel-val",
+      "license": "internal",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "meaning-bank",
+      "purpose": "training",
+      "root": "training/data",
+      "glob": "meaning_bank.jsonl",
+      "format": "jsonl-meaning-bank",
+      "provenance": "internal-meaning-bank",
+      "license": "internal",
+      "visibility": "public_review_eligible",
+      "notes": "One input row expands into up to four rows (en\u2192ne formal, en\u2192ne informal, en\u2192ne formal roman, en\u2192ne informal roman)."
+    },
+    {
+      "id": "benchmark-bpcc-daily",
+      "purpose": "benchmark",
+      "root": "benchmarks/data",
+      "glob": "bpcc_daily_npi_sample.jsonl",
+      "format": "jsonl-src-tgt-lang",
+      "provenance": "BPCC-daily-sample",
+      "license": "cc-by-4.0",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "benchmark-flores-plus",
+      "purpose": "benchmark",
+      "root": "benchmarks/data",
+      "glob": "flores_plus_npi_eng_dev.jsonl",
+      "format": "jsonl-en-ne",
+      "provenance": "FLORES-Plus-dev",
+      "license": "cc-by-sa-4.0",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "benchmark-in22-conv",
+      "purpose": "benchmark",
+      "root": "benchmarks/data",
+      "glob": "in22_conv_npi_slim.jsonl",
+      "format": "jsonl-en-ne",
+      "provenance": "IN22-conv-slim",
+      "license": "cc-by-4.0",
+      "visibility": "public_review_eligible"
+    },
+    {
+      "id": "gold-en-ne-formal",
+      "purpose": "gold",
+      "root": "benchmarks/gold/en_ne_formal",
+      "glob": "sources.jsonl",
+      "format": "gold-pair",
+      "provenance": "internal-gold-holdout",
+      "license": "internal",
+      "visibility": "public_review_eligible",
+      "notes": "Public-review-eligible under G0 D2. Import marks these public_exposed; a NEW private holdout must be produced before R6 reruns the ship gate."
+    },
+    {
+      "id": "gold-en-ne-informal",
+      "purpose": "gold",
+      "root": "benchmarks/gold/en_ne_informal",
+      "glob": "sources.jsonl",
+      "format": "gold-pair",
+      "provenance": "internal-gold-holdout",
+      "license": "internal",
+      "visibility": "public_review_eligible",
+      "notes": "See gold-en-ne-formal notes."
+    },
+    {
+      "id": "gold-ne-en-deva",
+      "purpose": "gold",
+      "root": "benchmarks/gold/ne_en_deva",
+      "glob": "sources.jsonl",
+      "format": "gold-pair",
+      "provenance": "internal-gold-holdout",
+      "license": "internal",
+      "visibility": "public_review_eligible",
+      "notes": "See gold-en-ne-formal notes."
+    },
+    {
+      "id": "gold-ne-en-roman",
+      "purpose": "gold",
+      "root": "benchmarks/gold/ne_en_roman",
+      "glob": "sources.jsonl",
+      "format": "gold-pair",
+      "provenance": "internal-gold-holdout",
+      "license": "internal",
+      "visibility": "public_review_eligible",
+      "notes": "See gold-en-ne-formal notes."
+    }
+  ],
+  "excluded_corpora": [
+    {
+      "id": "synthetic-english-pool",
+      "reason": "monolingual English pool without a paired target; not usable for bilingual public review",
+      "root": "datasets/synthetic/english_pool"
+    }
+  ]
+}
