@@ -12,20 +12,20 @@ import {
   loadCachedSubscription,
 } from '../subscriptionCache';
 
-const mockConfigure = jest.fn(async () => undefined);
+const mockConfigure = jest.fn(async (_opts?: { apiKey: string }) => undefined);
 const mockGetOfferings = jest.fn();
 const mockPurchasePackage = jest.fn();
 const mockRestorePurchases = jest.fn();
-const mockLogIn = jest.fn(async () => undefined);
+const mockLogIn = jest.fn(async (_id?: string) => undefined);
 
 jest.mock('react-native-purchases', () => ({
   __esModule: true,
   default: {
-    configure: (...args: unknown[]) => mockConfigure(...args),
-    getOfferings: (...args: unknown[]) => mockGetOfferings(...args),
-    purchasePackage: (...args: unknown[]) => mockPurchasePackage(...args),
-    restorePurchases: (...args: unknown[]) => mockRestorePurchases(...args),
-    logIn: (...args: unknown[]) => mockLogIn(...args),
+    configure: (opts: { apiKey: string }) => mockConfigure(opts),
+    getOfferings: () => mockGetOfferings(),
+    purchasePackage: (pkg: unknown) => mockPurchasePackage(pkg),
+    restorePurchases: () => mockRestorePurchases(),
+    logIn: (id: string) => mockLogIn(id),
   },
 }));
 
