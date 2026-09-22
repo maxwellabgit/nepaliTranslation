@@ -106,6 +106,7 @@ jobs:
         working-directory: mobile
         run: |
           npm ci
+          npm run export:lexicon
           npm run export:web
       - name: Install testing-ground deps
         run: npm ci

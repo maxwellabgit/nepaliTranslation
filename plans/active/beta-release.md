@@ -69,17 +69,15 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ```text
 python benchmarks/certify_ship_artifacts.py
-# expect: schema/pins OK + BLOCKER without mobile/assets/models/it2_*
-cd mobile && npm run verify:translate
+# schema/pins OK + BLOCKER without mobile/assets/models/it2_*
 cd mobile && npx tsc --noEmit
 cd mobile && npx jest --runInBand src/features/subscription/__tests__/PurchaseService-test.ts
-cd mobile && npx expo export --platform web
-cd testing-ground && npm run test:scenarios
+# IR fix: playwright-scenarios must `export:lexicon` before `export:web`
 ```
 
 ## Remaining work
 
-1. Independent review PASS → merge F9 → start F10.
+1. Independent re-review PASS after Playwright CI green → merge F9 → start F10.
 2. Human: place pinned ONNX under `mobile/assets/models/`, re-run `certify_ship_artifacts.py --require-weights`.
 3. Human: Maestro on device; host legal URLs; StoreKit/AdMob matrices (F10).
 
