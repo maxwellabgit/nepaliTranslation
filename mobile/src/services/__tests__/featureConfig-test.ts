@@ -37,6 +37,7 @@ describe('createProductionServices featureConfig', () => {
                 rewarded_ads_enabled: false,
                 automatic_interstitial_enabled: false,
                 paywall_enabled: false,
+                telemetry_enabled: false,
                 learn_enabled: false,
               },
               error: null,
@@ -54,7 +55,39 @@ describe('createProductionServices featureConfig', () => {
     expect(flags.rewardsEnabled).toBe(true);
     expect(flags.networkAdsEnabled).toBe(false);
     expect(flags.automaticInterstitialEnabled).toBe(false);
+    expect(flags.telemetryEnabled).toBe(false);
     expect(flags.learnEnabled).toBe(true);
+  });
+
+  test('maps telemetry_enabled when remote enables it', async () => {
+    mockedGetSupabase.mockReturnValue({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: async () => ({
+              data: {
+                contribution_text_enabled: false,
+                contribution_speech_enabled: false,
+                contribution_photos_enabled: false,
+                contributions_enabled: false,
+                rewards_enabled: false,
+                network_ads_enabled: false,
+                rewarded_ads_enabled: false,
+                automatic_interstitial_enabled: false,
+                paywall_enabled: false,
+                telemetry_enabled: true,
+                learn_enabled: false,
+              },
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    } as never);
+
+    const services = createProductionServices();
+    const flags = await services.featureConfig.loadFlags();
+    expect(flags.telemetryEnabled).toBe(true);
   });
 
   test('falls back to legacy contributions_enabled for text flag', async () => {
@@ -70,6 +103,7 @@ describe('createProductionServices featureConfig', () => {
                 rewarded_ads_enabled: false,
                 automatic_interstitial_enabled: false,
                 paywall_enabled: false,
+                telemetry_enabled: false,
                 learn_enabled: false,
               },
               error: null,

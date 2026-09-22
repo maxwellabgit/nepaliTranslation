@@ -148,6 +148,22 @@ export const ne: Record<MessageKey, string> = {
   'settings.privacy': 'गोपनीयता',
   'settings.privacyBody':
     'क्यामेरा अनुवाद यस यन्त्रमै चल्छ। तस्बिर अस्थायी हुन् र फोटो लाइब्रेरीमा बचत हुँदैनन्।',
+  'settings.legal': 'कानुनी र सहयोग',
+  'settings.privacyPolicy': 'गोपनीयता नीति',
+  'settings.privacyPolicyA11y': 'गोपनीयता नीति खोल्नुहोस्',
+  'settings.terms': 'सेवाका सर्तहरू',
+  'settings.termsA11y': 'सेवाका सर्तहरू खोल्नुहोस्',
+  'settings.supportLink': 'सहयोग',
+  'settings.supportLinkA11y': 'सहयोग खोल्नुहोस्',
+  'settings.deletionInfo': 'खाता र डाटा मेटाउने',
+  'settings.deletionInfoA11y': 'खाता र डाटा मेटाउने जानकारी खोल्नुहोस्',
+  'settings.manageSubscription': 'Apple सदस्यता व्यवस्थापन',
+  'settings.manageSubscriptionA11y': 'Apple सदस्यता व्यवस्थापन खोल्नुहोस्',
+  'settings.legalNotLive':
+    'गोपनीयता नीति, सर्तहरू र सहयोग पृष्ठ अहिले लाइभ छैनन्। प्रकाशित हुनुअघि सहयोग चाहिए support@neptranslate.app मा सम्पर्क गर्नुहोस्।',
+  'settings.legalLinkUnavailableTitle': 'अहिले उपलब्ध छैन',
+  'settings.legalLinkUnavailableBody':
+    'यो पृष्ठ अहिले प्रकाशित छैन। सहयोगका लागि support@neptranslate.app मा इमेल गर्नुहोस्।',
   'settings.about': 'बारेमा',
   'settings.aboutReady':
     'NepTranslate ले यस यन्त्रमै IndicTrans2 चलाएर अंग्रेजी ↔ नेपाली अनुवाद गर्छ। मोडेल स्थापनासँगै आउँछ — अनुवादका लागि नेटवर्क चाहिँदैन। बोली Apple ले चिन्छ र नेटवर्क चाहिन सक्छ।',

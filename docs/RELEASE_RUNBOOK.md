@@ -41,8 +41,11 @@ Do not claim App Store submission from this document or from Windows CI. Use thi
 ## Support
 
 - In-app: Settings quality note (Mark incorrect); Contributions & rewards; report inappropriate ad; subscription manage / restore
-- Out-of-band: Privacy Policy, Terms, support URL (legal owner); `app-ads.txt` crawlable
+- In-app legal section: Privacy / Terms / support / deletion info via `EXPO_PUBLIC_*` HTTPS URLs; honest “not live yet” when unset (F8)
+- Out-of-band: Privacy Policy, Terms, support URL (legal owner); crawlable `app-ads.txt` from [`docs/app-ads.txt`](./app-ads.txt) once hosted
 - Account deletion: visible deadline; completes linked personal data within 30 days; warn that Apple billing may continue and provide system subscription management
+- App Store privacy answers: [`APP_STORE_PRIVACY_LABELS.md`](./APP_STORE_PRIVACY_LABELS.md)
+- Dependency triage: [`DEPENDENCY_TRIAGE.md`](./DEPENDENCY_TRIAGE.md)
 
 ## Optional online services — soft-fail
 

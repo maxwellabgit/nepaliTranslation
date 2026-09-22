@@ -38,7 +38,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review PASS (`5764410`)
 - [x] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests — independent review PASS (`657783b`)
 - [x] **F6** — RevenueCat / StoreKit $0.99 subscription — independent review PASS; merged PR #9
-- [ ] **F7** — Protected operational admin console
+- [x] **F7** — Protected operational admin console — independent review PASS; merged PR #10
 - [ ] **F8** — Telemetry, legal/store surfaces, security, dependency triage
 - [ ] **F9** — Exact model certification + extended Windows automation
 - [ ] **F10** — Device matrix, TestFlight, App Store release gates
@@ -50,36 +50,51 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: Foundation tip `9b17ac9` is **not** a complete monetized production V1 until F0–F10 + go/no-go.
 - 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256. Tracked manifest: `mobile/src/mt/onnx/it2-release-manifest.json` (weights under `assets/models/` stay gitignored). EAS fetch fails on mismatch.
 - 2026-09-21: F3 consent version `2026-09-21.media`. Text path uses `contribution_text_enabled`; speech/photo use dedicated flags (defaults off). Speech auto-upload gate+outbox land; STT still does not emit a durable recording URI.
+- 2026-09-22: F8 telemetry is first-party scrubbed schema only (no new analytics SDK). Live Privacy/Terms/support/`app-ads.txt` remain hosting blockers — Settings shows honest “not live yet” when `EXPO_PUBLIC_*` URLs empty.
 
 ## Progress
 
-**Current: F7 — protected operational admin console (implementing → independent review)**
+**Current: F8 — observability / legal / security (allowlist scrubber fix; re-review)**
 
 | Area | Change |
 |------|--------|
-| Migration | `20260922010000_f7_admin_ops.sql` — `service_assert_admin` + dashboard/review/alerts/deletions/flags/dataset/media-preview RPCs |
-| API | `admin-api` router: JWT → assert admin → service RPCs; media sign + audit; CORS soft via `ADMIN_ORIGIN` |
-| Admin SPA | `admin/` Vite+React — dashboard, review (+ signed preview), alerts, deletions, flags, dataset staging; anon+JWT only |
-| Tests | Deno `admin_api_test` (401/403/ok); pgTAP `15_f7_admin_ops`; Vitest API 403 handling; CI `backend-gate` admin job |
-| Commands | `cd admin && npm test` (+ typecheck); `deno test … supabase/functions/tests` (51+); pgTAP via CI (`15_f7_admin_ops`) when Docker unavailable locally |
-| IR fix | SPA sends `apikey` anon on every Edge call; CORS soft-allows local Vite; `ADMIN_ORIGIN` documented for deploy |
+| Telemetry | Allowlist scrubber (event + TelemetryProps keys only; token-like string values); flag default off |
+| Legal UI | Settings Legal links; HTTPS-only; honest not-live when env empty |
+| Docs | Privacy labels, app-ads.txt, DEPENDENCY_TRIAGE; CERTIFICATION honesty |
+| CI | secret-scan + model-hash; `cursor/v1-*` on agent-gates |
+| Commands | `npx jest src/telemetry` green; `verify:translate` OK; `tsc`+eslint clean |
 
-**Previous: F6** — PASS; merged PR #9 (`0fc3b1f`).
+**Previous: F7** — PASS; merged PR #10 (`7d9e688`).
+
+## Commands run (F8)
+
+```text
+cd mobile && npx jest --runInBand src/telemetry
+cd mobile && npx eslint src/telemetry --max-warnings 0
+cd mobile && npx tsc --noEmit
+cd mobile && npm run verify:translate
+cd mobile && npm run check:model-hash
+cd mobile && npm audit
+# CI (PR #11): secret-scan, model-hash, admin — green; js-verify/supabase pending at fix time
+```
 
 ## Remaining work
 
-1. Independent review PASS → merge F7 → start F8.
+1. Independent re-review PASS → merge F8 → start F9.
+2. Human: host Privacy/Terms/support/`app-ads.txt`; Connect privacy answers; enable telemetry only after legal review.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
+- Live Privacy / Terms / support / deletion HTTPS pages and crawlable `app-ads.txt` (hosting + legal)
+- App Store Connect privacy form entry (worksheet only in repo)
 - Local Docker Desktop engine not running → cannot `supabase db reset` / `test db` on this agent host (CI must prove)
-- Playwright signed-in admin triage/export/deletion not automated in F7 (needs live allowlisted session)
-- Production `private.admin_users` allowlist insert/revoke remains human-gated
 - On-device STT (`expo-speech-recognition`) does not produce a durable audio file URI → speech auto-upload path is gated + outbox-ready but not wired to live mic capture
 - Physical iPhone / iPad proof, CocoaPods/ML Kit/AdMob/RevenueCat together
 - App Store Connect $0.99 subscription product + RevenueCat dashboard + webhook secret (human)
-- App Store Connect $0.99 subscription product + legal Privacy/Terms URLs (legal review before live media collection)
 - Bilingual human sign-off; external TestFlight cohort
 - Automatic interstitial enablement is a deliberate release go/no-go, not implied by code landing
 - StoreKit sandbox / TestFlight purchase-restore-expire matrix is human-gated
 - Full Dynamic Type + VoiceOver pass (F10 device matrix)
+- Playwright signed-in admin triage (F7 leftover human gate)
+- Production `private.admin_users` allowlist insert/revoke remains human-gated
+- Expo-transitive npm advisories accepted per `docs/DEPENDENCY_TRIAGE.md` until SDK-compatible upstream

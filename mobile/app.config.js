@@ -100,6 +100,13 @@ module.exports = ({ config }) => {
       },
       revenueCatAppleApiKey:
         process.env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY || '',
+      legal: {
+        privacyPolicyUrl: process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL || '',
+        termsOfServiceUrl: process.env.EXPO_PUBLIC_TERMS_OF_SERVICE_URL || '',
+        supportUrl: process.env.EXPO_PUBLIC_SUPPORT_URL || '',
+        deletionInfoUrl: process.env.EXPO_PUBLIC_DELETION_INFO_URL || '',
+        appAdsTxtUrl: process.env.EXPO_PUBLIC_APP_ADS_TXT_URL || '',
+      },
     },
   };
 };

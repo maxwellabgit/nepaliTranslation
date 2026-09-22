@@ -26,6 +26,8 @@ describe('i18n catalogs', () => {
     expect(t('settings.privacyBody', 'en')).toMatch(/not saved/i);
     expect(t('settings.qualityBody', 'ne')).toContain('Mark incorrect');
     expect(t('settings.privacyBody', 'ne')).toContain('यन्त्र');
+    expect(t('settings.legalNotLive', 'en')).toMatch(/not live yet/i);
+    expect(t('settings.legalNotLive', 'ne')).toContain('लाइभ');
   });
 
   test('interpolates params', () => {

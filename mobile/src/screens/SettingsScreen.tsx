@@ -22,9 +22,25 @@ import { StatusBanner } from '../components/StatusBanner';
 import { t, useNetworkOffline, useSetUiLang, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
+import { isHttpsUrl, readLegalPublicUrls } from '../config/legalUrls';
 
 const INAPPROPRIATE_AD_HELP =
   'mailto:support@neptranslate.app?subject=Inappropriate%20ad%20report';
+
+type LegalLink = {
+  testID: string;
+  labelKey:
+    | 'settings.privacyPolicy'
+    | 'settings.terms'
+    | 'settings.supportLink'
+    | 'settings.deletionInfo';
+  a11yKey:
+    | 'settings.privacyPolicyA11y'
+    | 'settings.termsA11y'
+    | 'settings.supportLinkA11y'
+    | 'settings.deletionInfoA11y';
+  url: string;
+};
 
 type Props = {
   onClose: () => void;
@@ -62,9 +78,54 @@ export function SettingsScreen({
   const services = useServices();
   const consent = services.ads.getConsentState();
   const subscription = useSubscriptionOptional();
+  const legalUrls = useMemo(() => readLegalPublicUrls(), []);
 
   const refreshAccountSummary = auth.refreshAccountSummary;
   const authStatus = auth.status;
+
+  const openLegalUrl = (url: string) => {
+    if (!isHttpsUrl(url)) {
+      Alert.alert(
+        t('settings.legalLinkUnavailableTitle', lang),
+        t('settings.legalLinkUnavailableBody', lang),
+      );
+      return;
+    }
+    void Linking.openURL(url).catch(() => {
+      Alert.alert(
+        t('settings.legalLinkUnavailableTitle', lang),
+        t('settings.legalLinkUnavailableBody', lang),
+      );
+    });
+  };
+
+  const legalLinks: LegalLink[] = [
+    {
+      testID: 'settings-privacy-policy',
+      labelKey: 'settings.privacyPolicy',
+      a11yKey: 'settings.privacyPolicyA11y',
+      url: legalUrls.privacyPolicyUrl,
+    },
+    {
+      testID: 'settings-terms',
+      labelKey: 'settings.terms',
+      a11yKey: 'settings.termsA11y',
+      url: legalUrls.termsOfServiceUrl,
+    },
+    {
+      testID: 'settings-support',
+      labelKey: 'settings.supportLink',
+      a11yKey: 'settings.supportLinkA11y',
+      url: legalUrls.supportUrl,
+    },
+    {
+      testID: 'settings-deletion-info',
+      labelKey: 'settings.deletionInfo',
+      a11yKey: 'settings.deletionInfoA11y',
+      url: legalUrls.deletionInfoUrl,
+    },
+  ];
+  const anyLegalLive = legalLinks.some((link) => isHttpsUrl(link.url));
 
   useEffect(() => {
     void Promise.all([getSttSupport(), hasNepaliVoice()]).then(
@@ -267,6 +328,26 @@ export function SettingsScreen({
           <Text style={dynamic.body}>{t('settings.privacyBody', lang)}</Text>
         </View>
 
+        <View style={dynamic.section} testID="settings-legal">
+          <Text style={dynamic.sectionLabel}>{t('settings.legal', lang)}</Text>
+          {!anyLegalLive ? (
+            <Text style={dynamic.body} testID="settings-legal-not-live">
+              {t('settings.legalNotLive', lang)}
+            </Text>
+          ) : null}
+          {legalLinks.map((link) => (
+            <Pressable
+              key={link.testID}
+              onPress={() => openLegalUrl(link.url)}
+              accessibilityRole="link"
+              accessibilityLabel={t(link.a11yKey, lang)}
+              testID={link.testID}
+            >
+              <Text style={dynamic.link}>{t(link.labelKey, lang)}</Text>
+            </Pressable>
+          ))}
+        </View>
+
         <View style={dynamic.section} testID="settings-ads-privacy">
           <Text style={dynamic.sectionLabel}>
             {t('settings.adsPrivacy', lang)}
@@ -312,6 +393,16 @@ export function SettingsScreen({
               testID="settings-open-paywall"
             >
               <Text style={dynamic.link}>{t('settings.openPaywall', lang)}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => void subscription.manage()}
+              accessibilityRole="link"
+              accessibilityLabel={t('settings.manageSubscriptionA11y', lang)}
+              testID="settings-manage-subscription"
+            >
+              <Text style={dynamic.link}>
+                {t('settings.manageSubscription', lang)}
+              </Text>
             </Pressable>
           </View>
         ) : null}
