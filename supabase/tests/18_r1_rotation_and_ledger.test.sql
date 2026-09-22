@@ -208,7 +208,9 @@ join (values
 ) as u(slot, user_id, action, corrected) on u.slot = i.slot
 where i.window_id = '00000000-0000-4000-8000-000000000001';
 
--- Ledger row count before rotation, for delta assertions.
+-- Baseline before window rotation grants: this transaction has already
+-- created 3 public_review ledger rows via direct apply_reward
+-- (r1-shared-src for both users, r1-two-credit-src for user A).
 select is(
   (select count(*)::int from public.reward_ledger
     where user_id in (
@@ -216,8 +218,8 @@ select is(
       '22222222-2222-4222-8222-222222222222'
     ) and source_type = 'public_review'
       and source_id like 'r1-%'),
-  2,
-  'baseline public_review ledger rows from earlier direct apply_reward = 2'
+  3,
+  'baseline public_review ledger rows from earlier direct apply_reward = 3'
 );
 
 -- Close exactly at 5:00 PM NY.

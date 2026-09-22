@@ -57,8 +57,14 @@ delete from public.review_submissions;
 delete from public.review_window_items;
 delete from public.review_windows;
 
+-- R1 rotation is guarded by ny_close_at > p_as_of (not_due). Tests must
+-- pass a p_as_of far in the future to force each rotation to close its
+-- open window. Two calendar days is enough to pass any DST boundary.
 select ok(
-  ((public.service_rotate_review_window(10::smallint))->>'new_window_size')::int = 10,
+  ((public.service_rotate_review_window(
+      10::smallint,
+      (now() + interval '2 day')::timestamptz
+    ))->>'new_window_size')::int = 10,
   'rotation opens a new window with 10 items'
 );
 
@@ -145,9 +151,13 @@ select ok(
 );
 
 -- Rotate again -> close current, grant credits for satisfactory submissions,
--- open a fresh window.
+-- open a fresh window. Move p_as_of another day forward so the first
+-- rotation's window is now due.
 select ok(
-  ((public.service_rotate_review_window(10::smallint))->>'new_window_size')::int = 10,
+  ((public.service_rotate_review_window(
+      10::smallint,
+      (now() + interval '3 day')::timestamptz
+    ))->>'new_window_size')::int = 10,
   'second rotation opens a fresh 10-item window'
 );
 
