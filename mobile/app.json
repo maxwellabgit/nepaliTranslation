@@ -2,7 +2,7 @@
   "expo": {
     "name": "NepTranslate",
     "slug": "translate",
-    "version": "1.6.2",
+    "version": "1.7.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -14,13 +14,12 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
         "NSSpeechRecognitionUsageDescription": "NepTranslate uses speech recognition to translate what you say.",
-        "NSCameraUsageDescription": "NepTranslate uses the camera to translate Nepali and English text you point at. Photos stay on this device and are deleted after you retake, leave, or finish.",
+        "NSCameraUsageDescription": "NepTranslate uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
         }
-      },
-      "buildNumber": "34"
+      }
     },
     "android": {
       "package": "com.neptranslate.app",
@@ -65,7 +64,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "NepTranslate uses the camera to translate Nepali and English text you point at. Photos stay on this device and are deleted after you retake, leave, or finish.",
+          "cameraPermission": "NepTranslate uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
