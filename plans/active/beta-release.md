@@ -33,7 +33,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 - [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
-- [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — IR re-review pending after 44pt + catalog a11y fix
+- [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
 - [ ] **F3** — Consented speech/photo ingestion and private storage
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
@@ -52,7 +52,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F2 — Bilingual UI, theme, responsive layouts**
+**Current: F2 — Bilingual UI, theme, responsive layouts — independent review PASS (`a718794`)**
 
 | Area | Change |
 |------|--------|
@@ -78,12 +78,12 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - Early F2 scaffold had catalog keys + Settings selector but AppShell/Translate/Camera still hardcoded EN until this repair.
 - ContributionCard still said “13 or older” after F2 chrome wire; repaired to catalogued 18+.
 - First Playwright iPad attempt failed (Chromium missing in sandbox); `npx playwright install chromium` then re-run passed.
-- IR FAIL at `ccd360c`: Pass/shutter lacked proven 44pt floor; Camera sentence a11y still English template literals.
+- IR FAIL at `ccd360c`: Pass/shutter lacked proven 44pt floor; Camera sentence a11y still English template literals — fixed at `a05f885` / `a718794`.
 
 ## Commands that actually ran (paste)
 
 ```text
-# IR fix tip (44pt Pass/shutter/retake + sentence a11y catalogs) — this agent
+# IR fix tip a718794 — proven on this agent
 cd mobile
 npm run verify:ci
 # exit 0 (~44s): unit 56/240, integration 2/19, verify:translate OK,
@@ -93,13 +93,14 @@ cd testing-ground
 npx playwright test scenarios/product-scenarios.spec.ts --project=ipad-11 -g "primary tab touch"
 # 1 passed (~5.6s) — tabs, speak-hero, pass-phone, camera-retake ≥44px
 # (camera-shutter asserted when live; else camera-allow ≥44)
+
+# Independent review PASS at tip a718794 (2026-09-22)
 ```
 
 ## Remaining work
 
-1. Independent review PASS on tip after IR fix commit.
-2. Founder: PR/merge F2 after PASS.
-3. Do **not** start F3 until F2 is merged.
+1. Merge PR #5 (`cursor/v1-f2-ui`) into main.
+2. Start F3 on `cursor/v1-f3-consent-media` after merge.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
