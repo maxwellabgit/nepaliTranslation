@@ -21,7 +21,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Guest / non-consenting content stays local | **Source-proven** | Outbox today is explicit; F3 adds post-consent auto media upload |
 | Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Partial / source-proven** | F3 - version `2026-09-21.media`; legal review before live collection |
 | Post-consent speech/photo auto-upload + offline retry | **Partial / source-proven** | F3 - photo Camera path + media outbox; speech enqueue API ready; STT does not yet produce a recording URI (blocker) |
-| Indefinite retention until withdrawal/deletion; **30-day** purge | **Not done** | F4 |
+| Indefinite retention until withdrawal/deletion; **30-day** purge | **Partial / source-proven** | F4 — request + purge job RPCs; flag-gated delete-account; device proof = human |
 | Raw text/audio/photos never in third-party analytics | Partial | F1 remove raw console logs; F8 telemetry scrubber |
 | Login never required for Translate, Camera, Learn, History, Settings | **Source-proven** | |
 | Optional services fail soft | **Source-proven** | |
@@ -33,7 +33,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Subscription US **$0.99/month** removes every ad | **Not done** | F6 — contract updated in F0; runtime still stub/$0.49 era |
 | Banners only idle Translate + Learn landing | **Not done** | F5 — tighten placements |
 | Automatic interstitial: 15 foreground min, ≤3/NY day, safe idle only, SDK dismiss | **Not done** | F5; flag off until device + external-beta go/no-go |
-| Rewarded video opt-in; **15** ad-free minutes after SSV | Partial source | Adapter exists; grant length + schedule still old (10 min / UTC) until F4/F5 |
+| Rewarded video opt-in; **15** ad-free minutes after SSV | **Partial / source-proven** | F4 schedule + SSV tests at 15 min; device AdMob proof = F5 |
 | Ads offline → house / no network SDK | **Source-proven** | |
 | ATT / IDFA not used this release | Policy | Contextual / non-personalized default |
 

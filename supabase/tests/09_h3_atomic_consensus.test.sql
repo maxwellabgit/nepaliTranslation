@@ -105,16 +105,34 @@ select is(
   'two agreeing normals resolve the unknown task'
 );
 
+-- F4: grants happen at NY close, not at consensus resolve.
 select is(
   (select count(*)::int from public.reward_ledger
     where source_type = 'contribution'
-      and source_id like 'submission:%'
+      and source_id like 'receipt:%'
+      and user_id in (
+        '11111111-1111-4111-8111-111111111111',
+        '22222222-2222-4222-8222-222222222222'
+      )),
+  0,
+  'no ledger rows until daily close runs'
+);
+
+select ok(
+  (public.service_close_ny_reward_window(now()) ->> 'applied')::integer >= 2,
+  'close batch grants both validated consensus receipts'
+);
+
+select is(
+  (select count(*)::int from public.reward_ledger
+    where source_type = 'contribution'
+      and source_id like 'receipt:%'
       and user_id in (
         '11111111-1111-4111-8111-111111111111',
         '22222222-2222-4222-8222-222222222222'
       )),
   2,
-  'both eligible contributors are rewarded once'
+  'both eligible contributors are rewarded once at close'
 );
 
 select is(

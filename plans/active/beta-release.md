@@ -35,7 +35,7 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
 - [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
 - [x] **F3** — Consented speech/photo ingestion and private storage — independent review PASS (`efaae53`)
-- [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
+- [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs — independent review pending
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
 - [ ] **F6** — RevenueCat / StoreKit $0.99 subscription
 - [ ] **F7** — Protected operational admin console
@@ -53,24 +53,21 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 ## Progress
 
-**Current: F3 — Consented speech/photo ingestion — independent review PASS (`efaae53`); PR #6**
+**Current: F4 — Reward close / deletion jobs — branch `cursor/v1-f4-rewards-deletion`**
 
 | Area | Change |
 |------|--------|
-| Migration | Split flags; profile deletion stubs; `contribution_media` + private buckets; register/complete RPCs; purge lists media |
-| Edge | `create-media-upload` + `complete-media-upload` (JWT, consent+flag assert, signed upload) |
-| Client flags | `contributionTextEnabled` / `Speech` / `Photos`; dual-read legacy `contributions_enabled` |
-| Consent | Version `2026-09-21.media`; summary covers speech/photos/OCR/retention/withdrawal/30-day/processors |
-| Outbox | `mediaOutbox` + `mediaSync` + Lifecycle flush; Camera **awaits** durable photo enqueue before temp delete |
-| Speech | Tested `enqueueEligibleSpeechRecording` API; no STT recording URI yet (honest blocker) |
+| Migration | NY window helpers; word-count credits; defer grants to `service_close_ny_reward_window`; `contributor_alerts`; rewarded video 15 min; deletion request + purge job RPCs; `deletion_processing_enabled` flag |
+| Submit | Immutable `source_snapshot` + `original_word_count`; scheduled 1/2 credits; no immediate contribution grants |
+| Deletion | `service_request_account_deletion` (30-day); `service_process_deletion_jobs`; upload block on `deletion_pending`; delete-account scheduled path when flag on |
+| Client | Account summary + Settings deletion due date; reward copy (5 PM NY close) |
+| Tests | `13_f4_reward_close_deletion.test.sql`; updated consensus + SSV tests |
 
-**Honesty:** CERTIFICATION F3 rows Partial/source-proven. Speech live mic URI + physical upload = blockers. CI supabase+js-verify green on tip.
-
-**Previous: F2** — PASS (`a718794`); merged PR #5.
+**Previous: F3** — PASS (`efaae53`); merged PR #6.
 
 ## Remaining work
 
-1. Merge PR #6; start F4 on `cursor/v1-f4-rewards-deletion`.
+1. Independent review F4 → merge PR → start F5.
 
 ## Blockers (concrete; cannot be solved from this repo)
 

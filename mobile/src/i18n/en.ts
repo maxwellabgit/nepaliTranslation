@@ -172,13 +172,14 @@ export const en = {
   'learn.earnRewardsA11y': 'Earn rewards',
   'learn.rewardsHeading': 'Rewards',
   'learn.rewardsBody':
-    'Use the app, help improve translations, earn rewards.',
+    'Contributions earn 1–2 credits (5 minutes each) at the daily 5 PM New York close.',
   'learn.credits': '{count} credits',
   'learn.adFreeInactive': 'Ad-free not active',
   'learn.adFreeMins': 'Ad-free for {mins}m',
   'learn.adFreeHours': 'Ad-free for {hours}h',
   'learn.adFreeHoursMins': 'Ad-free for {hours}h {mins}m',
-  'learn.pendingHelp': 'Helpful corrections earn extra ad-free time.',
+  'learn.pendingHelp':
+    'Pending contributions grant at the next 5 PM New York close when eligible.',
   'learn.pendingWaiting': '{count} corrections waiting.',
   'learn.pendingWaitingOne': '1 correction waiting.',
   'learn.noVoiceTitle': 'Nepali voice not installed',
@@ -294,7 +295,7 @@ export const en = {
   'contributions.sending': 'Sending…',
   'contributions.statusReceived': 'Received — pending validation',
   'contributions.statusValidated':
-    'Validated — credits applied when eligible',
+    'Validated — credits grant at the daily 5 PM New York close',
   'contributions.statusDisputed': 'Needs admin review',
   'contributions.looksCorrect': 'Looks correct',
   'contributions.submitEdit': 'Submit edit',
@@ -328,7 +329,9 @@ export const en = {
   'auth.deleteAccount': 'Delete account',
   'auth.deleteAccountTitle': 'Delete account',
   'auth.deleteAccountBody':
-    'This schedules deletion of your account and contribution data. It does not cancel an Apple subscription — manage that in Settings → Apple ID → Subscriptions. Translation on this device is unchanged.',
+    'This schedules deletion of your account and contribution data within 30 days. It does not cancel an Apple subscription — manage that in Settings → Apple ID → Subscriptions. Translation on this device is unchanged.',
+  'auth.deletionScheduled':
+    'Deletion scheduled. Personal data will be removed by {date}.',
   'auth.deleting': 'Deleting…',
   'auth.retryDeleteA11y': 'Retry account deletion',
 

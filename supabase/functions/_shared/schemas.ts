@@ -7,6 +7,9 @@ export const accountSummarySchema = z.object({
   receipt_count: z.number().int().nonnegative(),
   lifetime_credits: z.number().int().nonnegative(),
   earned_ad_free_until: z.string().nullable(),
+  deletion_requested_at: z.string().nullable(),
+  deletion_due_at: z.string().nullable(),
+  ny_reward_close_at: z.string().nullable(),
 });
 
 export type AccountSummary = z.infer<typeof accountSummarySchema>;
@@ -18,6 +21,9 @@ export function buildAccountSummary(input: {
   receipt_count: number;
   lifetime_credits: number;
   earned_ad_free_until?: string | null;
+  deletion_requested_at?: string | null;
+  deletion_due_at?: string | null;
+  ny_reward_close_at?: string | null;
 }): AccountSummary {
   return accountSummarySchema.parse({
     consent_version: input.consent_version ?? null,
@@ -26,6 +32,9 @@ export function buildAccountSummary(input: {
     receipt_count: input.receipt_count,
     lifetime_credits: input.lifetime_credits,
     earned_ad_free_until: input.earned_ad_free_until ?? null,
+    deletion_requested_at: input.deletion_requested_at ?? null,
+    deletion_due_at: input.deletion_due_at ?? null,
+    ny_reward_close_at: input.ny_reward_close_at ?? null,
   });
 }
 

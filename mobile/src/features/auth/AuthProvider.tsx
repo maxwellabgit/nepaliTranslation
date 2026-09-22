@@ -49,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       type: 'account_summary',
       consentVersion: result.summary.consentVersion,
       ageConfirmed: result.summary.ageConfirmed,
+      deletionDueAt: result.summary.deletionDueAt,
     });
   }, []);
 

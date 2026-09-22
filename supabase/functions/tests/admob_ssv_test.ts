@@ -28,7 +28,7 @@ async function buildValidQuery(opts?: {
     `ad_network=5450213213286189855`,
     `ad_unit=${opts?.unit ?? UNIT}`,
     `custom_data=${opts?.customData ?? SESSION}`,
-    `reward_amount=${opts?.rewardAmount ?? "10"}`,
+    `reward_amount=${opts?.rewardAmount ?? "15"}`,
     `reward_item=${opts?.rewardItem ?? "ad_free_minutes"}`,
     `timestamp=${timestamp}`,
     `transaction_id=${transactionId}`,
@@ -50,7 +50,7 @@ Deno.test("SSV valid fixture passes", async () => {
     allowedAdUnit: UNIT,
     expectedUserId: USER,
     expectedSessionToken: SESSION,
-    expectedRewardAmount: "10",
+    expectedRewardAmount: "15",
     expectedRewardItem: "ad_free_minutes",
   });
   assertEquals(ok.ok, true);
@@ -59,7 +59,7 @@ Deno.test("SSV valid fixture passes", async () => {
 Deno.test("SSV altered query fails", async () => {
   clearAdmobKeyCache();
   const built = await buildValidQuery();
-  const altered = built.query.replace("reward_amount=10", "reward_amount=99");
+  const altered = built.query.replace("reward_amount=15", "reward_amount=99");
   const ok = await verifyAdmobSsv({
     query: altered,
     keys: [built.pub],
@@ -143,7 +143,7 @@ Deno.test("SSV wrong reward fails", async () => {
     query: built.query,
     keys: [built.pub],
     allowedAdUnit: UNIT,
-    expectedRewardAmount: "10",
+    expectedRewardAmount: "15",
     expectedRewardItem: "ad_free_minutes",
   });
   assertEquals(ok.ok, false);
@@ -182,7 +182,7 @@ Deno.test("SSV key rotation: unknown key_id fails; rotated key passes", async ()
     `ad_network=5450213213286189855`,
     `ad_unit=${UNIT}`,
     `custom_data=${SESSION}`,
-    `reward_amount=10`,
+    `reward_amount=15`,
     `reward_item=ad_free_minutes`,
     `timestamp=${timestamp}`,
     `transaction_id=rot_tx_1`,
