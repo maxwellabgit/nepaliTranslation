@@ -31,3 +31,19 @@ jobs:
         run: deno test --allow-env supabase/functions/_shared supabase/functions/tests
       - name: Concurrent reward grant
         run: bash supabase/scripts/concurrent_reward.sh
+
+  admin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: admin/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
