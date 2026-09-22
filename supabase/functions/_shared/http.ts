@@ -16,7 +16,8 @@ export type ErrorCode =
   | "deletion_pending"
   | "window_closed"
   | "already_submitted"
-  | "sign_in_required";
+  | "sign_in_required"
+  | "rotate_failed";
 
 export function json(body: unknown, status = 200, requestId?: string): Response {
   const headers: Record<string, string> = {
@@ -93,6 +94,8 @@ export function statusForError(code: ErrorCode): number {
       return 409;
     case "not_implemented":
       return 501;
+    case "rotate_failed":
+      return 502;
     default:
       return 503;
   }

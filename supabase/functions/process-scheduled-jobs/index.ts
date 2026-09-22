@@ -39,17 +39,30 @@ Deno.serve(async (req) => {
   if (!closeRes.ok) return errorResponse("unavailable", 503, requestId);
   const closeBody = await closeRes.json() as Record<string, unknown>;
 
-  // G1: rotate the global public-review window. Closes the prior window,
-  // grants credits for satisfactory submissions, and opens a new 10-item
-  // window at random from the eligible pool.
+  // R1: rotate the global public-review window. Closes the prior window,
+  // grants credits (through private.apply_reward) for confirm/edit
+  // submissions that were not marked unsatisfactory, quarantines any
+  // reported items, and opens a new 10-item window at random from the
+  // eligible pool. `p_as_of` is omitted so production uses `now()`.
+  //
+  // Failure modes surfaced to the caller (cron alerting depends on this):
+  //   * HTTP failure from PostgREST     -> 502 rotate_failed
+  //   * status === 'not_due'            -> job continues; monitoring counts
+  //                                       these to verify the scheduler
+  //                                       is alive between 5 PM ticks.
+  //   * status === 'busy'               -> concurrent invocation; also OK.
+  //   * status === 'ok_pool_short'      -> job continues but the response
+  //                                       includes a warning so ops can
+  //                                       see the pool ran short.
   const rotateRes = await fetch(`${url}/rest/v1/rpc/service_rotate_review_window`, {
     method: "POST",
     headers,
     body: JSON.stringify({ p_size: 10 }),
   });
-  const rotateBody: Record<string, unknown> = rotateRes.ok
-    ? await rotateRes.json() as Record<string, unknown>
-    : { error: "rotate_failed" };
+  if (!rotateRes.ok) {
+    return errorResponse("rotate_failed", 502, requestId);
+  }
+  const rotateBody = await rotateRes.json() as Record<string, unknown>;
 
   const dueRes = await fetch(`${url}/rest/v1/rpc/service_list_deletion_due_users`, {
     method: "POST",
