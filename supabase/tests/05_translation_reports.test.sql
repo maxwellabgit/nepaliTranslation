@@ -12,7 +12,7 @@ select lives_ok(
     'deva',
     'live_translate',
     'idem-hello-1',
-    '2026-09-19.draft',
+    '2026-09-21.media',
     '{}'::jsonb
   )$$,
   'service role can insert a translation report'
@@ -36,7 +36,7 @@ select is(
     'deva',
     'live_translate',
     'idem-hello-1',
-    '2026-09-19.draft',
+    '2026-09-21.media',
     '{}'::jsonb
   )),
   false,
@@ -69,7 +69,7 @@ select throws_ok(
     'deva',
     'live_translate',
     'idem-auth-blocked',
-    '2026-09-19.draft',
+    '2026-09-21.media',
     '{}'::jsonb
   )$$,
   '42501'
