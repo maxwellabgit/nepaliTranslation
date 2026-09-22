@@ -32,8 +32,8 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 ## Milestones
 
 - [x] **F0** — Rewrite durable product contract (docs only) — independent review PASS; merged PR #3
-- [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — verify:ci green; review pending
-- [ ] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts
+- [x] **F1** — STT privacy, raw logging, model reproducibility, Camera stability — independent review PASS (`05adf43`)
+- [x] **F2** — Bilingual UI, dark mode, accessibility, iPhone + iPad layouts — independent review PASS (`a718794`)
 - [ ] **F3** — Consented speech/photo ingestion and private storage
 - [ ] **F4** — 5 PM America/New_York reward close, alerts, 30-day deletion jobs
 - [ ] **F5** — Banners, interstitials, rewarded ads, full ad-policy tests
@@ -48,21 +48,26 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 - 2026-09-21: **V1 final boundary supersedes beta monetization/privacy text.** Full-business V1: $0.99/month ad-free; banners only idle Translate + Learn landing; automatic interstitial after 15 foreground-active minutes, max 3 per America/New_York day, SDK-owned dismiss, remotely disableable (off until device + external-beta gates); rewarded video = 15 ad-free minutes; 1 credit = 5 minutes; >20 original words = 2 credits; reward close 5:00 PM America/New_York; pending at close earns once; late rejection → alert only, no clawback; contribution requires Sign in with Apple + 18+ + versioned consent; post-consent speech/photo auto-upload; indefinite retention until withdrawal/deletion; 30-day purge; telemetry OK without raw content; bilingual UI; genuine iPhone+iPad. Feature flags independent; defaults off until gates pass.
 - 2026-09-21: Camera remains in product; Translate absorbs Conversation; tabs Translate / Camera / Learn. Guests keep temporary on-device captures only; consented adults may upload eligible media when flags allow.
 - 2026-09-21: Foundation tip `9b17ac9` is **not** a complete monetized production V1 until F0–F10 + go/no-go.
-- 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256 manifest (`mobile/assets/models/it2-release-manifest.json`). EAS fetch fails on mismatch.
+- 2026-09-21: F1 pins IT2 downloads to immutable HF revisions + SHA-256. Tracked manifest: `mobile/src/mt/onnx/it2-release-manifest.json` (weights under `assets/models/` stay gitignored). EAS fetch fails on mismatch.
 
 ## Progress
 
-**Current: F1 — Privacy / offline-core repair**
+**Current: F2 — Bilingual UI, theme, responsive layouts — independent review PASS (`a718794`)**
 
 | Area | Change |
 |------|--------|
-| STT | Routed through RuntimePorts; `requiresOnDeviceRecognition: true`; `getSttSupport` fail-closed; typed translate works when unavailable |
-| Logs | Removed raw `console.info` source/output from TranslationEngine |
-| Diagnostics | Sensitive EN/NE fixture tests; banned keys |
-| Models | Pinned revision + SHA-256 in manifest; `hfResolveUrl` no longer uses `main`; EAS verify |
-| Camera | Downsampled preview; generation cancel; distinct `error` phase + copy; keep preview on recoverable fail |
+| UI lang | Persisted `uiLang` (AsyncStorage prefs); `UiLangProvider` before auth; Settings English/नेपाली chips switch chrome immediately |
+| Catalog | Expanded `en`/`ne` for tabs, Translate, Camera, Learn rewards, ads, auth; `t()` param interpolation |
+| Screens | AppShell, Translate (+ composer/options/turns), Camera, RewardSummary, HouseAd, RewardedAd, AccountSection, CorrectionSheet, ContributionCard, AlphabetLesson use `t()` + `useTheme()` |
+| Theme | `userInterfaceStyle: automatic`; scheme-aware StatusBar; major screens + contribution sheets off static light `colors` |
+| Layout | `sizeClass` phone / tablet11 / tablet13; content max-width; Camera capture/result stays portrait-dark |
+| a11y | Min 44pt (`MIN_TOUCH`) on tabs, Speak/Pass, Camera shutter/retake/allow; Camera sentence labels catalogued |
+| TG | Playwright projects: desktop + iPad 11 (`768×1024`) + iPad 13 (`1024×1366`); touch-target smoke on tabs, speak, pass, camera-retake (+ shutter when granted) |
+| Tests | `uiLang-test`, `sizeClass-test`, `catalogCoverage-test` (banned EN chrome + CorrectionSheet/ContributionCard), i18n key parity |
 
-**Honesty:** Physical on-device STT locale install + real IPA hash proof remain device-gated (F10). Manifest pins are real HF revisions/hashes from the release snapshot used at F1 time.
+**Honesty:** Full Dynamic Type scaling and VoiceOver walkthrough remain device-gated (F10). Age UI copy is **18+** (INTENT); versioned media consent + auto-upload remain F3. CERTIFICATION bilingual UI row is Partial / F2 chrome wired. Provisional grant ms constants remain F4/F5.
+
+**Previous: F1 — privacy / offline-core** — independent review PASS (`05adf43`); merged PR #4.
 
 **Previous: F0 — durable product contract** — merged PR #3 (`a5d9013`).
 
@@ -70,19 +75,32 @@ V1-wide + current-slice checklist in `.agent/DONE.md`. F0 specifically: durable 
 
 - Repository contract still contradicted founder V1 decisions until F0 (price, age, media upload, interstitial, reward TZ, rewarded minutes).
 - Google warns interstitials may be unsuitable for utility apps — keep `automatic_interstitial_enabled` remotely off until deliberate go/no-go.
+- Early F2 scaffold had catalog keys + Settings selector but AppShell/Translate/Camera still hardcoded EN until this repair.
+- ContributionCard still said “13 or older” after F2 chrome wire; repaired to catalogued 18+.
+- First Playwright iPad attempt failed (Chromium missing in sandbox); `npx playwright install chromium` then re-run passed.
+- IR FAIL at `ccd360c`: Pass/shutter lacked proven 44pt floor; Camera sentence a11y still English template literals — fixed at `a05f885` / `a718794`.
 
 ## Commands that actually ran (paste)
 
 ```text
-# F1
-cd mobile && npm run verify:ci
-# typecheck, lint, unit 232, integration 18, verify:translate, expo-doctor 21/21, coverage OK, export:web
+# IR fix tip a718794 — proven on this agent
+cd mobile
+npm run verify:ci
+# exit 0 (~44s): unit 56/240, integration 2/19, verify:translate OK,
+# expo-doctor 21/21, coverage OK, export:web
+
+cd testing-ground
+npx playwright test scenarios/product-scenarios.spec.ts --project=ipad-11 -g "primary tab touch"
+# 1 passed (~5.6s) — tabs, speak-hero, pass-phone, camera-retake ≥44px
+# (camera-shutter asserted when live; else camera-allow ≥44)
+
+# Independent review PASS at tip a718794 (2026-09-22)
 ```
 
 ## Remaining work
 
-1. Independent review of F1 → PASS required before merge.
-2. Start **F2** — bilingual UI, theme, iPad layouts.
+1. Merge PR #5 (`cursor/v1-f2-ui`) into main.
+2. Start F3 on `cursor/v1-f3-consent-media` after merge.
 
 ## Blockers (concrete; cannot be solved from this repo)
 
@@ -90,3 +108,4 @@ cd mobile && npm run verify:ci
 - App Store Connect $0.99 subscription product + legal Privacy/Terms URLs
 - Bilingual human sign-off; external TestFlight cohort
 - Automatic interstitial enablement is a deliberate release go/no-go, not implied by code landing
+- Full Dynamic Type + VoiceOver pass (F10 device matrix)

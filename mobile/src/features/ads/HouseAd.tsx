@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme';
-import { HOUSE_AD_COPY, HOUSE_AD_DISMISS } from './adConfig';
+import { t, useUiLang } from '../../i18n';
+import { useTheme } from '../../theme';
 
 type Props = {
   surface: string;
@@ -15,46 +16,63 @@ type Props = {
  * Copy opens only the in-app paywall once Slice 09 exists.
  */
 export function HouseAd({ surface, onNotNow, onPreferNoAds }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
+  const copy = t('ads.houseCopy', lang);
+  const dismiss = t('ads.houseDismiss', lang);
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        house: {
+          padding: 12,
+          backgroundColor: theme.colors.pasteBg,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: theme.colors.divider,
+          alignItems: 'center',
+          gap: 6,
+        },
+        brand: { fontWeight: '800', color: theme.colors.crimson },
+        copy: {
+          fontSize: 13,
+          color: theme.colors.text,
+          textAlign: 'center',
+          textDecorationLine: 'underline',
+        },
+        dismiss: {
+          paddingVertical: 4,
+          paddingHorizontal: 8,
+          minHeight: 44,
+          justifyContent: 'center',
+        },
+        dismissText: {
+          fontSize: 13,
+          color: theme.colors.textSecondary,
+          fontWeight: '600',
+        },
+      }),
+    [theme],
+  );
+
   return (
     <View style={styles.house} testID={`ad-slot-house-${surface}`}>
       <Text style={styles.brand}>NepTranslate</Text>
       <Pressable
         onPress={onPreferNoAds}
         accessibilityRole="button"
-        accessibilityLabel={HOUSE_AD_COPY}
+        accessibilityLabel={copy}
         testID="house-ad-prefer-no-ads"
       >
-        <Text style={styles.copy}>{HOUSE_AD_COPY}</Text>
+        <Text style={styles.copy}>{copy}</Text>
       </Pressable>
       <Pressable
         onPress={onNotNow}
         accessibilityRole="button"
-        accessibilityLabel={HOUSE_AD_DISMISS}
+        accessibilityLabel={dismiss}
         testID="house-ad-not-now"
         style={styles.dismiss}
       >
-        <Text style={styles.dismissText}>{HOUSE_AD_DISMISS}</Text>
+        <Text style={styles.dismissText}>{dismiss}</Text>
       </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  house: {
-    padding: 12,
-    backgroundColor: colors.pasteBg,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.divider,
-    alignItems: 'center',
-    gap: 6,
-  },
-  brand: { fontWeight: '800', color: colors.crimson },
-  copy: {
-    fontSize: 13,
-    color: colors.text,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
-  dismiss: { paddingVertical: 4, paddingHorizontal: 8 },
-  dismissText: { fontSize: 13, color: colors.textSecondary, fontWeight: '600' },
-});

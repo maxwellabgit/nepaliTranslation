@@ -296,20 +296,26 @@ export function useTranslationSession({ active, seed }: Options) {
 
   const setFormality = useCallback((formalOn: boolean) => {
     dispatch({ type: 'setFormality', formality: formalOn ? 'formal' : 'informal' });
-    void savePrefs({
-      formalOn,
-      devaOn: stateRef.current.script === 'deva',
-      conversationConsentSeen: true,
-    });
+    void loadPrefs().then((prefs) =>
+      savePrefs({
+        ...prefs,
+        formalOn,
+        devaOn: stateRef.current.script === 'deva',
+        conversationConsentSeen: true,
+      }),
+    );
   }, []);
 
   const setScript = useCallback((devaOn: boolean) => {
     dispatch({ type: 'setScript', script: devaOn ? 'deva' : 'roman' });
-    void savePrefs({
-      formalOn: stateRef.current.formality === 'formal',
-      devaOn,
-      conversationConsentSeen: true,
-    });
+    void loadPrefs().then((prefs) =>
+      savePrefs({
+        ...prefs,
+        formalOn: stateRef.current.formality === 'formal',
+        devaOn,
+        conversationConsentSeen: true,
+      }),
+    );
   }, []);
 
   const clearError = useCallback(() => {

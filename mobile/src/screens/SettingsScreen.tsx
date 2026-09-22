@@ -19,7 +19,7 @@ import { flushPendingDrafts } from '../services/contributionSync';
 import { useServices } from '../services/ServiceContext';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
 import { StatusBanner } from '../components/StatusBanner';
-import { t, useNetworkOffline, useUiLang } from '../i18n';
+import { t, useNetworkOffline, useSetUiLang, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 
 const INAPPROPRIATE_AD_HELP =
@@ -51,6 +51,7 @@ export function SettingsScreen({
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
+  const setUiLang = useSetUiLang();
   const offline = useNetworkOffline();
   const [speechCaps, setSpeechCaps] = useState<{
     neStt: boolean;
@@ -132,6 +133,20 @@ export function SettingsScreen({
           color: theme.colors.text,
           fontWeight: '600',
         },
+        langChip: {
+          minHeight: 44,
+          minWidth: 44,
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          justifyContent: 'center',
+        },
+        langChipOn: {
+          borderColor: theme.colors.forest,
+          backgroundColor: theme.colors.forestSoft,
+        },
       }),
     [theme],
   );
@@ -144,7 +159,7 @@ export function SettingsScreen({
           hitSlop={12}
           style={styles.topBtn}
           accessibilityRole="button"
-          accessibilityLabel="Close settings"
+          accessibilityLabel={t('settings.closeA11y', lang)}
           testID="settings-close"
         >
           <Text style={dynamic.topBtnText}>←</Text>
@@ -162,6 +177,32 @@ export function SettingsScreen({
       ) : null}
 
       <ScrollView contentContainerStyle={styles.scroll}>
+        <View style={dynamic.section}>
+          <Text style={dynamic.sectionLabel}>{t('settings.language', lang)}</Text>
+          <View style={styles.langRow}>
+            <Pressable
+              style={[dynamic.langChip, lang === 'en' && dynamic.langChipOn]}
+              onPress={() => setUiLang('en')}
+              accessibilityRole="button"
+              accessibilityState={{ selected: lang === 'en' }}
+              accessibilityLabel={t('settings.languageEn', lang)}
+              testID="settings-lang-en"
+            >
+              <Text style={dynamic.body}>{t('settings.languageEn', lang)}</Text>
+            </Pressable>
+            <Pressable
+              style={[dynamic.langChip, lang === 'ne' && dynamic.langChipOn]}
+              onPress={() => setUiLang('ne')}
+              accessibilityRole="button"
+              accessibilityState={{ selected: lang === 'ne' }}
+              accessibilityLabel={t('settings.languageNe', lang)}
+              testID="settings-lang-ne"
+            >
+              <Text style={dynamic.body}>{t('settings.languageNe', lang)}</Text>
+            </Pressable>
+          </View>
+        </View>
+
         <AccountSection
           authConfigured={auth.authConfigured}
           status={auth.status}
@@ -275,7 +316,9 @@ export function SettingsScreen({
             <Text style={dynamic.meta} testID="settings-consent-version">
               {auth.consentVersion === CONTRIBUTION_CONSENT_VERSION
                 ? t('settings.consentCurrent', lang)
-                : `Consent ${auth.consentVersion}`}
+                : t('settings.consentVersion', lang, {
+                    version: auth.consentVersion,
+                  })}
             </Text>
           ) : null}
         </View>
@@ -317,5 +360,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scroll: { paddingBottom: 32 },
+  scroll: {
+    paddingBottom: 40,
+    gap: 12,
+    paddingHorizontal: 16,
+  },
+  langRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 4,
+  },
 });

@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { colors } from '../theme';
+import { t, useUiLang, type UiLang } from '../i18n';
+import { MIN_TOUCH } from '../layout/sizeClass';
+import { useTheme } from '../theme';
 import { buildCorrelation, previewText } from '../camera/correlate';
 import { deleteCapture } from '../camera/deleteCapture';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
@@ -22,26 +24,28 @@ type Props = {
   active: boolean;
 };
 
-function cameraErrorCopy(reason: string | null): string {
+function cameraErrorCopy(reason: string | null, lang: UiLang): string {
   switch (reason) {
     case 'capture_failed':
-      return 'Capture failed. Try again.';
+      return t('camera.error.capture', lang);
     case 'ocr_failed':
-      return 'Could not read text from this photo. Try again closer to the writing.';
+      return t('camera.error.ocr', lang);
     case 'translate_failed':
-      return 'Text was found, but translation failed. Retake or try again.';
+      return t('camera.error.translate', lang);
     case 'model_failed':
-      return 'On-device translation is not ready. Try again in a moment.';
+      return t('camera.error.model', lang);
     case 'no_text':
-      return 'No text found. Try again closer to the writing.';
+      return t('camera.error.noText', lang);
     case 'low_confidence':
-      return 'The text was too unclear to translate.';
+      return t('camera.error.lowConfidence', lang);
     default:
-      return 'Something went wrong with this photo. Try again.';
+      return t('camera.error.generic', lang);
   }
 }
 
 export function CameraScreen({ active }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const runtime = useRuntime();
   const [permission, requestPermission] = useCameraPermissions();
   const granted = permission?.granted === true;
@@ -62,6 +66,93 @@ export function CameraScreen({ active }: Props) {
   const [viewSize, setViewSize] = useState({ width: 1, height: 1 });
 
   const phase = phaseState.phase;
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        // Capture chrome stays dark in both schemes; brand accents follow theme.
+        root: { flex: 1, backgroundColor: '#1A1410' },
+        header: { padding: 16, alignItems: 'center', gap: 8 },
+        title: { color: theme.colors.onPrimary, fontSize: 18, fontWeight: '700' },
+        direction: { color: theme.colors.onPrimary, fontWeight: '700' },
+        center: { padding: 24, gap: 16 },
+        body: { color: theme.colors.onPrimary, fontSize: 15, lineHeight: 22 },
+        allow: {
+          alignSelf: 'flex-start',
+          backgroundColor: theme.colors.crimson,
+          borderRadius: 12,
+          paddingHorizontal: 16,
+          minHeight: MIN_TOUCH,
+          justifyContent: 'center',
+        },
+        allowText: { color: theme.colors.onPrimary, fontWeight: '700' },
+        previewWrap: { flex: 1 },
+        preview: { flex: 1 },
+        shutter: {
+          position: 'absolute',
+          bottom: 24,
+          alignSelf: 'center',
+          backgroundColor: theme.colors.onPrimary,
+          borderRadius: 24,
+          paddingHorizontal: 18,
+          minHeight: MIN_TOUCH,
+          minWidth: MIN_TOUCH,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        // Shutter plate is always light; keep dark ink for contrast in both schemes.
+        shutterText: { fontWeight: '800', color: '#1A1410' },
+        retakeBtn: {
+          minHeight: MIN_TOUCH,
+          justifyContent: 'center',
+          paddingHorizontal: 8,
+        },
+        errorPreview: { width: '100%', height: 180, backgroundColor: '#2A2420' },
+        result: { flex: 1 },
+        photo: { flex: 1, backgroundColor: '#2A2420' },
+        overlay: {
+          position: 'absolute',
+          borderRadius: 4,
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          padding: 2,
+        },
+        overlayIndex: {
+          color: theme.colors.onPrimary,
+          fontWeight: '800',
+          fontSize: 12,
+          textShadowColor: 'rgba(0,0,0,0.6)',
+          textShadowOffset: { width: 0, height: 1 },
+          textShadowRadius: 2,
+        },
+        found: {
+          position: 'absolute',
+          right: 12,
+          bottom: 12,
+          color: theme.colors.onPrimary,
+        },
+        drawer: {
+          backgroundColor: '#2C2622',
+          padding: 16,
+          gap: 10,
+        },
+        drawerTitle: { color: theme.colors.onPrimary, fontWeight: '700' },
+        row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
+        rowIndex: {
+          color: theme.colors.onPrimary,
+          fontWeight: '800',
+          minWidth: 16,
+        },
+        swatch: { width: 12, height: 12, borderRadius: 2 },
+        rowText: { color: theme.colors.onPrimary, flex: 1 },
+        retake: {
+          color: theme.colors.onPrimary,
+          paddingVertical: 12,
+          fontWeight: '700',
+        },
+      }),
+    [theme],
+  );
 
   const dispatch = (event: CameraPhaseEvent) => {
     setPhaseState((prev) => reduceCameraPhase(prev, event));
@@ -241,36 +332,45 @@ export function CameraScreen({ active }: Props) {
   const showResult = phase === 'result';
   const showError =
     phase === 'empty' || phase === 'lowConfidence' || phase === 'error'
-      ? cameraErrorCopy(phaseState.reasonCode)
+      ? cameraErrorCopy(phaseState.reasonCode, lang)
       : null;
+
+  const shutterLabel =
+    phase === 'recognizing'
+      ? t('camera.reading', lang)
+      : phase === 'translating'
+        ? t('camera.translating', lang)
+        : t('camera.capture', lang);
 
   return (
     <View style={styles.root} testID="camera-screen">
       <View style={styles.header}>
-        <Text style={styles.title}>Camera</Text>
+        <Text style={styles.title}>{t('camera.title', lang)}</Text>
         <Pressable
           onPress={() => setDirection((d) => (d === 'ne-en' ? 'en-ne' : 'ne-en'))}
           accessibilityRole="button"
-          accessibilityLabel="Translation direction"
+          accessibilityLabel={t('camera.directionA11y', lang)}
           testID="camera-direction"
         >
           <Text style={styles.direction}>
-            {direction === 'ne-en' ? 'Nepali → English' : 'English → Nepali'}
+            {direction === 'ne-en'
+              ? t('camera.directionNeEn', lang)
+              : t('camera.directionEnNe', lang)}
           </Text>
         </Pressable>
       </View>
 
       {!granted && !showResult ? (
         <View style={styles.center} testID="camera-permission">
-          <Text style={styles.body}>
-            Camera OCR runs on this phone. Captures are temporary and are deleted after you retake, leave, or finish — nothing is saved to your photo library.
-          </Text>
+          <Text style={styles.body}>{t('camera.privacyNote', lang)}</Text>
           <Pressable
             onPress={() => void requestPermission()}
             style={styles.allow}
             testID="camera-allow"
+            accessibilityRole="button"
+            accessibilityLabel={t('camera.allow', lang)}
           >
-            <Text style={styles.allowText}>Allow camera</Text>
+            <Text style={styles.allowText}>{t('camera.allow', lang)}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -287,14 +387,10 @@ export function CameraScreen({ active }: Props) {
             testID="camera-shutter"
             disabled={isCameraBusy(phase)}
             onPress={() => void onCapture()}
+            accessibilityRole="button"
+            accessibilityLabel={t('camera.captureA11y', lang)}
           >
-            <Text style={styles.shutterText}>
-              {phase === 'recognizing'
-                ? 'Reading…'
-                : phase === 'translating'
-                  ? 'Translating…'
-                  : 'Capture'}
-            </Text>
+            <Text style={styles.shutterText}>{shutterLabel}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -322,8 +418,14 @@ export function CameraScreen({ active }: Props) {
           >
             {showError}
           </Text>
-          <Pressable testID="camera-retake" onPress={onRetake}>
-            <Text style={styles.retake}>Retake</Text>
+          <Pressable
+            testID="camera-retake"
+            style={styles.retakeBtn}
+            onPress={onRetake}
+            accessibilityRole="button"
+            accessibilityLabel={t('camera.retakeA11y', lang)}
+          >
+            <Text style={styles.retake}>{t('camera.retake', lang)}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -362,7 +464,9 @@ export function CameraScreen({ active }: Props) {
                 <Pressable
                   key={sentence.id}
                   testID={`camera-overlay-${sentence.id}`}
-                  accessibilityLabel={`Sentence ${sentenceIndex} source`}
+                  accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
+                    n: sentenceIndex,
+                  })}
                   onPress={() => setSelected(sentence.id)}
                   style={[
                     styles.overlay,
@@ -380,7 +484,9 @@ export function CameraScreen({ active }: Props) {
                 </Pressable>
               );
             })}
-            <Text style={styles.found}>{sentences.length} passages found</Text>
+            <Text style={styles.found}>
+              {t('camera.passagesFound', lang, { count: sentences.length })}
+            </Text>
           </View>
           <View
             testID="camera-drawer"
@@ -388,7 +494,7 @@ export function CameraScreen({ active }: Props) {
             style={styles.drawer}
           >
             <Pressable onPress={() => setDrawerOpen((open) => !open)}>
-              <Text style={styles.drawerTitle}>Translation</Text>
+              <Text style={styles.drawerTitle}>{t('camera.translation', lang)}</Text>
             </Pressable>
             {sentences.map((sentence, index) => {
               const sentenceIndex = index + 1;
@@ -396,7 +502,9 @@ export function CameraScreen({ active }: Props) {
                 <Pressable
                   key={sentence.id}
                   testID={`camera-row-${sentence.id}`}
-                  accessibilityLabel={`Sentence ${sentenceIndex} translation`}
+                  accessibilityLabel={t('camera.sentenceTranslationA11y', lang, {
+                    n: sentenceIndex,
+                  })}
                   onPress={() => setSelected(sentence.id)}
                   style={styles.row}
                 >
@@ -409,70 +517,17 @@ export function CameraScreen({ active }: Props) {
               );
             })}
           </View>
-          <Pressable testID="camera-retake" onPress={onRetake}>
-            <Text style={styles.retake}>Retake</Text>
+          <Pressable
+            testID="camera-retake"
+            style={styles.retakeBtn}
+            onPress={onRetake}
+            accessibilityRole="button"
+            accessibilityLabel={t('camera.retakeA11y', lang)}
+          >
+            <Text style={styles.retake}>{t('camera.retake', lang)}</Text>
           </Pressable>
         </View>
       ) : null}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#1A1410' },
-  header: { padding: 16, alignItems: 'center', gap: 8 },
-  title: { color: '#fff', fontSize: 18, fontWeight: '700' },
-  direction: { color: '#fff', fontWeight: '700' },
-  center: { padding: 24, gap: 16 },
-  body: { color: '#fff', fontSize: 15, lineHeight: 22 },
-  allow: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.crimson,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  allowText: { color: '#fff', fontWeight: '700' },
-  previewWrap: { flex: 1 },
-  preview: { flex: 1 },
-  shutter: {
-    position: 'absolute',
-    bottom: 24,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-  },
-  shutterText: { fontWeight: '800', color: colors.text },
-  errorPreview: { width: '100%', height: 180, backgroundColor: '#2A2420' },
-  result: { flex: 1 },
-  photo: { flex: 1, backgroundColor: '#2A2420' },
-  overlay: {
-    position: 'absolute',
-    borderRadius: 4,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    padding: 2,
-  },
-  overlayIndex: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 12,
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  found: { position: 'absolute', right: 12, bottom: 12, color: '#fff' },
-  drawer: {
-    backgroundColor: '#2C2622',
-    padding: 16,
-    gap: 10,
-  },
-  drawerTitle: { color: '#fff', fontWeight: '700' },
-  row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
-  rowIndex: { color: '#fff', fontWeight: '800', minWidth: 16 },
-  swatch: { width: 12, height: 12, borderRadius: 2 },
-  rowText: { color: '#fff', flex: 1 },
-  retake: { color: '#fff', padding: 16, fontWeight: '700' },
-});

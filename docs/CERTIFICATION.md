@@ -8,7 +8,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 |------|--------|--------|
 | “Translation may be imperfect” + path to **Mark incorrect** | **Source-proven** | Settings quality copy; Mark incorrect on Translate results |
 | Informal Nepali register = तिमी (not तँ) in UI catalogs | **Source-proven** | `mobile/src/i18n/ne.ts` + i18n unit tests |
-| Full bilingual UI (EN / नेपाली) via persisted selector | **Not done** | F2 — `useUiLang` still English-only |
+| Full bilingual UI (EN / नेपाली) via persisted selector | **Partial / F2 chrome wired** | Settings selector + catalogued Translate/Camera/tabs/Learn/contribution sheets; sentence a11y via catalog; device a11y (VoiceOver / Dynamic Type) = F10 |
 | Exact bundled models pass four-class gold ship eval | **Not done** | F9 — thresholds pre-declared; never edit gold |
 | Gold eval / device translation quality claim | Device / human | Never claim ship quality from Windows alone |
 
@@ -19,7 +19,7 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 | Camera OCR on-device; temporary files deleted after retake/exit/processed | **Source-proven** | Guests never upload |
 | No photo-library permission for Camera path | **Source-proven** | |
 | Guest / non-consenting content stays local | **Source-proven** | Outbox today is explicit; F3 adds post-consent auto media upload |
-| Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Not done** | F3 — current draft still 13+ / text-oriented |
+| Contribution requires Sign in with Apple + **18+** + versioned consent covering media | **Not done** | F3 — age UI copy is 18+; versioned media consent + auto-upload remain F3 |
 | Post-consent speech/photo auto-upload + offline retry | **Not done** | F3 |
 | Indefinite retention until withdrawal/deletion; **30-day** purge | **Not done** | F4 |
 | Raw text/audio/photos never in third-party analytics | Partial | F1 remove raw console logs; F8 telemetry scrubber |
@@ -43,8 +43,8 @@ Source-side items can be marked **source-proven**. Device-only items stay open u
 |------|--------|--------|
 | Meaningful accessibility labels on primary controls | **Source-proven** | Tabs, Speak, Pass, Mark incorrect, Camera overlays, etc. |
 | VoiceOver full walkthrough | **Device-only** | iPhone + iPad |
-| Dynamic Type / larger text | **Device-only** / F2 | Many fixed StyleSheet sizes today |
-| Contrast (light + dark) | Partial / F2 | Tokens exist; `userInterfaceStyle` still light-fixed in places |
+| Dynamic Type / larger text | **Partial / F2** | Min 44pt targets + labels; full Dynamic Type scale remains device-gated |
+| Contrast (light + dark) | **Partial (F2)** | Scheme-aware StatusBar + useTheme on shell/Translate/Camera/Learn alphabet/Settings/contribution sheets; house/rewarded ads partially themed; full device a11y = F10 |
 | Reduce Motion | Device | Gate product motion when added |
 | Offline core usable | **Source-proven** | |
 

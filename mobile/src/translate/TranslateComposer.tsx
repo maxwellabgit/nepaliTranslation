@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../theme';
+import { t, useUiLang } from '../i18n';
+import { useTheme } from '../theme';
 import type { Side } from './translationSessionReducer';
 
 type Props = {
@@ -18,62 +20,81 @@ export function TranslateComposer({
   onSubmit,
   onOpenOptions,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        wrap: { gap: 8, paddingHorizontal: 20 },
+        or: {
+          textAlign: 'center',
+          color: theme.colors.textSecondary,
+          fontSize: 13,
+        },
+        field: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: theme.colors.surface,
+          borderRadius: 12,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.colors.divider,
+          paddingLeft: 14,
+        },
+        input: {
+          flex: 1,
+          minHeight: 48,
+          fontSize: 16,
+          color: theme.colors.text,
+        },
+        options: {
+          minWidth: 44,
+          minHeight: 44,
+          paddingHorizontal: 12,
+          paddingVertical: 12,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        count: {
+          alignSelf: 'flex-end',
+          fontSize: 11,
+          color: theme.colors.textPlaceholder,
+        },
+      }),
+    [theme],
+  );
+
   return (
     <View style={styles.wrap}>
-      <Text style={styles.or}>or type</Text>
+      <Text style={styles.or}>{t('translate.orType', lang)}</Text>
       <View style={styles.field}>
         <TextInput
           value={value}
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
-          placeholder={side === 'en' ? 'Type to translate...' : 'टाइप गर्नुहोस्...'}
-          placeholderTextColor={colors.textPlaceholder}
+          placeholder={
+            side === 'en'
+              ? t('translate.placeholderEn', lang)
+              : t('translate.placeholderNe', lang)
+          }
+          placeholderTextColor={theme.colors.textPlaceholder}
           style={styles.input}
           maxLength={240}
           testID="translate-input"
-          accessibilityLabel="Translate input"
+          accessibilityLabel={t('translate.inputA11y', lang)}
           returnKeyType="done"
         />
         <Pressable
           onPress={onOpenOptions}
           accessibilityRole="button"
-          accessibilityLabel="Translation options"
+          accessibilityLabel={t('translate.optionsA11y', lang)}
           testID="translate-options"
           hitSlop={8}
           style={styles.options}
         >
-          <Ionicons name="options-outline" size={20} color={colors.text} />
+          <Ionicons name="options-outline" size={20} color={theme.colors.text} />
         </Pressable>
       </View>
-      <Text style={styles.count}>
-        {value.length}/240
-      </Text>
+      <Text style={styles.count}>{value.length}/240</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrap: { gap: 8, paddingHorizontal: 20 },
-  or: { textAlign: 'center', color: colors.textSecondary, fontSize: 13 },
-  field: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.divider,
-    paddingLeft: 14,
-  },
-  input: {
-    flex: 1,
-    minHeight: 48,
-    fontSize: 16,
-    color: colors.text,
-  },
-  options: { paddingHorizontal: 12, paddingVertical: 12 },
-  count: {
-    alignSelf: 'flex-end',
-    fontSize: 11,
-    color: colors.textPlaceholder,
-  },
-});

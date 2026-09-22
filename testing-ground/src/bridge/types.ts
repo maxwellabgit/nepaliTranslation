@@ -2,7 +2,12 @@
 
 export type TranslateModeId = 'fast-fallback' | 'recorded' | 'local-neural';
 
-export type ViewportPresetId = '375x812' | '390x844' | '430x932' | '768x1024';
+export type ViewportPresetId =
+  | '375x812'
+  | '390x844'
+  | '430x932'
+  | '768x1024'
+  | '1024x1366';
 
 export type ViewportPreset = {
   id: ViewportPresetId;
@@ -15,7 +20,8 @@ export const VIEWPORT_PRESETS: ViewportPreset[] = [
   { id: '375x812', label: 'iPhone SE / mini-ish', width: 375, height: 812 },
   { id: '390x844', label: 'iPhone 14', width: 390, height: 844 },
   { id: '430x932', label: 'iPhone 15 Pro Max', width: 430, height: 932 },
-  { id: '768x1024', label: 'iPad portrait', width: 768, height: 1024 },
+  { id: '768x1024', label: 'iPad 11-inch portrait', width: 768, height: 1024 },
+  { id: '1024x1366', label: 'iPad 13-inch portrait', width: 1024, height: 1366 },
 ];
 
 export type RecordedTranslateFixture = {

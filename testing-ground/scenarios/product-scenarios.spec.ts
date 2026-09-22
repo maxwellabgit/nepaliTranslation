@@ -258,6 +258,51 @@ test('12 live camera capture OCR — blocked on Windows', async () => {
   test.skip(true, 'Native camera OCR requires physical iPhone');
 });
 
+/** F2 layout smoke: primary chrome meets 44pt touch targets on iPad viewports. */
+test('primary tab touch targets are at least 44px', async ({ page }, testInfo) => {
+  test.skip(
+    !testInfo.project.name.startsWith('ipad'),
+    'iPad viewport projects only',
+  );
+  await openHostedApp(page);
+  for (const id of ['tab-translate', 'tab-camera', 'tab-learn', 'speak-hero'] as const) {
+    const box = await page.getByTestId(id).boundingBox();
+    expect(box, id).toBeTruthy();
+    expect(box!.height, `${id} height`).toBeGreaterThanOrEqual(44);
+    expect(box!.width, `${id} width`).toBeGreaterThanOrEqual(44);
+  }
+
+  await typeAndSubmit(page, 'Hello');
+  await expect(page.getByTestId('pass-phone')).toBeVisible({ timeout: 30_000 });
+  const passBox = await page.getByTestId('pass-phone').boundingBox();
+  expect(passBox, 'pass-phone').toBeTruthy();
+  expect(passBox!.height, 'pass-phone height').toBeGreaterThanOrEqual(44);
+  expect(passBox!.width, 'pass-phone width').toBeGreaterThanOrEqual(44);
+
+  // Fixture result always exposes retake; live shutter needs camera grant (often absent on web).
+  await openHostedApp(page, { ocrFixture: 'inscription' });
+  await page.getByTestId('tab-camera').click();
+  await expectVisible(page, 'camera-result');
+  const retakeBox = await page.getByTestId('camera-retake').boundingBox();
+  expect(retakeBox, 'camera-retake').toBeTruthy();
+  expect(retakeBox!.height, 'camera-retake height').toBeGreaterThanOrEqual(44);
+  expect(retakeBox!.width, 'camera-retake width').toBeGreaterThanOrEqual(44);
+
+  await openHostedApp(page, { ocrFixture: null });
+  await page.getByTestId('tab-camera').click();
+  const shutter = page.getByTestId('camera-shutter');
+  if (await shutter.isVisible().catch(() => false)) {
+    const shutterBox = await shutter.boundingBox();
+    expect(shutterBox, 'camera-shutter').toBeTruthy();
+    expect(shutterBox!.height, 'camera-shutter height').toBeGreaterThanOrEqual(44);
+    expect(shutterBox!.width, 'camera-shutter width').toBeGreaterThanOrEqual(44);
+  } else {
+    const allowBox = await page.getByTestId('camera-allow').boundingBox();
+    expect(allowBox, 'camera-allow (shutter gated on permission)').toBeTruthy();
+    expect(allowBox!.height, 'camera-allow height').toBeGreaterThanOrEqual(44);
+  }
+});
+
 test('artifact writer produced events.jsonl', async () => {
   const dir = artifactDir();
   expect(dir).toBeTruthy();

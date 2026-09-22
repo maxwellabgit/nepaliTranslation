@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Clipboard from 'expo-clipboard';
@@ -6,7 +6,8 @@ import {
   CONTRIBUTION_CONSENT_SUMMARY,
   CONTRIBUTION_CONSENT_VERSION,
 } from './consent';
-import { colors } from '../../theme';
+import { t, useUiLang } from '../../i18n';
+import { useTheme } from '../../theme';
 
 type Props = {
   authConfigured: boolean;
@@ -39,6 +40,8 @@ export function AccountSection({
   onSaveConsent,
   onDeleteAccount,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const [age, setAge] = useState(ageConfirmed);
   const [appleAvailable, setAppleAvailable] = useState(false);
   const signedIn = (status === 'signed-in' || status === 'deleting') && Boolean(userId);
@@ -60,12 +63,12 @@ export function AccountSection({
 
   const confirmDelete = () => {
     Alert.alert(
-      'Delete account',
-      'This deletes your NepTranslate account and contribution data on our servers. It does not cancel an Apple subscription. Translation history on this device stays until you clear it.',
+      t('auth.deleteAccountTitle', lang),
+      t('auth.deleteAccountBody', lang),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel', lang), style: 'cancel' },
         {
-          text: 'Delete account',
+          text: t('auth.deleteAccount', lang),
           style: 'destructive',
           onPress: onDeleteAccount,
         },
@@ -73,88 +76,145 @@ export function AccountSection({
     );
   };
 
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        section: {
+          marginTop: 20,
+          marginHorizontal: 16,
+          padding: 16,
+          backgroundColor: theme.colors.surface,
+          borderRadius: 16,
+          gap: 8,
+        },
+        sectionLabel: {
+          fontSize: 12,
+          fontWeight: '800',
+          letterSpacing: 0.4,
+          textTransform: 'uppercase',
+          color: theme.colors.textSecondary,
+        },
+        body: { fontSize: 15, lineHeight: 22, color: theme.colors.text },
+        meta: { fontSize: 12, color: theme.colors.textPlaceholder },
+        mono: { fontSize: 12, color: theme.colors.textSecondary },
+        link: {
+          fontSize: 15,
+          fontWeight: '700',
+          color: theme.colors.blue,
+          minHeight: 44,
+        },
+        button: {
+          minHeight: 44,
+          borderRadius: 12,
+          backgroundColor: theme.colors.text,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: 12,
+        },
+        buttonOff: { opacity: 0.45 },
+        buttonText: {
+          color: theme.colors.onPrimary,
+          fontWeight: '700',
+          fontSize: 15,
+        },
+        danger: {
+          fontSize: 15,
+          fontWeight: '700',
+          color: theme.colors.danger,
+          minHeight: 44,
+        },
+        appleButton: { width: '100%', height: 44 },
+      }),
+    [theme],
+  );
+
   return (
     <View style={styles.section} testID="account-section">
-      <Text style={styles.sectionLabel}>Account</Text>
+      <Text style={styles.sectionLabel}>{t('auth.account', lang)}</Text>
       {!authConfigured ? (
-        <Text style={styles.body}>
-          Sign-in is not configured in this build. Translation, history, and
-          settings still work.
-        </Text>
+        <Text style={styles.body}>{t('auth.notConfigured', lang)}</Text>
       ) : null}
       {authConfigured && !signedIn && appleAvailable ? (
         <View testID="sign-in-apple">
           <AppleAuthentication.AppleAuthenticationButton
             buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            buttonStyle={
+              theme.scheme === 'dark'
+                ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
             cornerRadius={12}
             style={styles.appleButton}
             onPress={onSignIn}
-            accessibilityLabel="Sign in with Apple"
+            accessibilityLabel={t('auth.signInApple', lang)}
           />
         </View>
       ) : null}
       {authConfigured && !signedIn && !appleAvailable ? (
         <Text style={styles.body} testID="apple-unavailable">
-          Sign in with Apple is not available on this device. Translation still
-          works.
+          {t('auth.signInUnavailable', lang)}
         </Text>
       ) : null}
       {status === 'signing-in' ? (
         <Text style={styles.meta} accessibilityLiveRegion="polite">
-          Signing in…
+          {t('common.loading', lang)}
         </Text>
       ) : null}
       {signedIn ? (
         <>
-          <Text style={styles.body}>Support user ID</Text>
+          <Text style={styles.body}>{t('auth.supportUserId', lang)}</Text>
           <Text style={styles.mono} testID="support-user-id">
             {userId}
           </Text>
           <Pressable
             onPress={() => void Clipboard.setStringAsync(userId ?? '')}
             accessibilityRole="button"
-            accessibilityLabel="Copy support user ID"
+            accessibilityLabel={t('auth.copyUserIdA11y', lang)}
             testID="copy-user-id"
           >
-            <Text style={styles.link}>Copy</Text>
+            <Text style={styles.link}>{t('common.copy', lang)}</Text>
           </Pressable>
           <Pressable
             onPress={() => void onSignOut()}
             accessibilityRole="button"
-            accessibilityLabel="Sign out"
+            accessibilityLabel={t('auth.signOut', lang)}
             testID="sign-out"
           >
-            <Text style={styles.link}>Sign out</Text>
+            <Text style={styles.link}>{t('auth.signOut', lang)}</Text>
           </Pressable>
         </>
       ) : null}
 
-      <Text style={styles.sectionLabel}>Contributions</Text>
+      <Text style={styles.sectionLabel}>{t('settings.contributions', lang)}</Text>
       <Text style={styles.body}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
       <Text style={styles.meta}>
-        Draft {CONTRIBUTION_CONSENT_VERSION}. Legal review required before
-        collection.
+        {t('auth.consentDraftMeta', lang, {
+          version: CONTRIBUTION_CONSENT_VERSION,
+        })}
       </Text>
       <Pressable
         onPress={() => setAge((v) => !v)}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: age }}
-        accessibilityLabel="I confirm I am 13 or older"
+        accessibilityLabel={t('auth.ageConfirm', lang)}
         testID="age-confirm"
       >
-        <Text style={styles.body}>{age ? '☑' : '☐'} I am 13 or older</Text>
+        <Text style={styles.body}>
+          {age ? '☑' : '☐'} {t('auth.ageConfirm', lang)}
+        </Text>
       </Pressable>
       <Pressable
         style={[styles.button, (!signedIn || !age) && styles.buttonOff]}
         disabled={!signedIn || !age || consentCurrent}
         onPress={() => onSaveConsent(true)}
         accessibilityRole="button"
-        accessibilityLabel="Save contribution consent"
+        accessibilityLabel={t('auth.saveConsent', lang)}
         testID="save-consent"
       >
         <Text style={styles.buttonText}>
-          {consentCurrent ? 'Consent saved' : 'Save consent'}
+          {consentCurrent
+            ? t('auth.consentSaved', lang)
+            : t('auth.saveConsent', lang)}
         </Text>
       </Pressable>
       {signedIn ? (
@@ -163,21 +223,23 @@ export function AccountSection({
             onPress={confirmDelete}
             disabled={status === 'deleting'}
             accessibilityRole="button"
-            accessibilityLabel="Delete account"
+            accessibilityLabel={t('auth.deleteAccount', lang)}
             testID="delete-account"
           >
             <Text style={styles.danger}>
-              {status === 'deleting' ? 'Deleting…' : 'Delete account'}
+              {status === 'deleting'
+                ? t('auth.deleting', lang)
+                : t('auth.deleteAccount', lang)}
             </Text>
           </Pressable>
           {deletionRetryPending ? (
             <Pressable
               onPress={onDeleteAccount}
               accessibilityRole="button"
-              accessibilityLabel="Retry account deletion"
+              accessibilityLabel={t('auth.retryDeleteA11y', lang)}
               testID="retry-delete-account"
             >
-              <Text style={styles.link}>Retry deletion</Text>
+              <Text style={styles.link}>{t('common.retry', lang)}</Text>
             </Pressable>
           ) : null}
         </>
@@ -185,37 +247,3 @@ export function AccountSection({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  section: {
-    marginTop: 20,
-    marginHorizontal: 16,
-    padding: 16,
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    gap: 8,
-  },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: colors.textSecondary,
-  },
-  body: { fontSize: 15, lineHeight: 22, color: colors.text },
-  meta: { fontSize: 12, color: colors.textPlaceholder },
-  mono: { fontSize: 12, color: colors.textSecondary },
-  link: { fontSize: 15, fontWeight: '700', color: colors.blue, minHeight: 44 },
-  button: {
-    minHeight: 44,
-    borderRadius: 12,
-    backgroundColor: colors.text,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  buttonOff: { opacity: 0.45 },
-  buttonText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  danger: { fontSize: 15, fontWeight: '700', color: colors.danger, minHeight: 44 },
-  appleButton: { width: '100%', height: 44 },
-});

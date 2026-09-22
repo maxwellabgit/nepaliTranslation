@@ -26,6 +26,7 @@ describe('storage parse failures', () => {
       formalOn: true,
       devaOn: true,
       conversationConsentSeen: false,
+      uiLang: 'en',
     });
   });
 

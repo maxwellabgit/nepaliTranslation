@@ -210,7 +210,7 @@ describe('ContributionCard H3', () => {
     });
     await waitFor(() => {
       expect(view.getByTestId('contribution-message').props.children).toMatch(
-        /13 or older/i,
+        /18 or older/i,
       );
     });
   });

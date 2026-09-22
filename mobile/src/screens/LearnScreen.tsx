@@ -18,7 +18,7 @@ type Props = {
 const COLUMNS = 5;
 
 /**
- * Learn tab: earn-rewards summary, then the full alphabet in order.
+ * Learn: earn-rewards summary, then the full alphabet in order.
  * Letters are on the page for everyone — nothing sits behind a second screen.
  */
 export function LearnScreen({ active, onOpenContributions }: Props) {

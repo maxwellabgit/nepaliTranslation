@@ -48,10 +48,9 @@ describe('RewardSummaryCard', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('reward-lifetime-credits').props.children).toEqual([
-        7,
-        ' credits',
-      ]);
+      expect(screen.getByTestId('reward-lifetime-credits').props.children).toBe(
+        '7 credits',
+      );
     });
     expect(screen.getByTestId('reward-pending-count').props.children).toBe(
       '1 correction waiting.',

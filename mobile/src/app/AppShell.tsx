@@ -1,10 +1,12 @@
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { hardStopAudio } from './hardStopAudio';
-import { colors } from '../theme';
+import { t, useUiLang } from '../i18n';
+import { useTheme } from '../theme';
+import { contentMaxWidth, useSizeClass } from '../layout/sizeClass';
 import type { HistoryItem } from '../storage/phrasebook';
 
 export type AppMode = 'translate' | 'camera' | 'learn';
@@ -72,10 +74,66 @@ export function AppShell({
   mtWarmStatus,
   onHardStop = hardStopAudio,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const [mode, setMode] = useState<AppMode>('translate');
   const [overlay, setOverlay] = useState<AppOverlay>(null);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
+  const size = useSizeClass();
+  const maxWidth = contentMaxWidth(size);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        root: { flex: 1, backgroundColor: theme.colors.bg },
+        body: { flex: 1 },
+        pane: {
+          ...StyleSheet.absoluteFill,
+        },
+        paneHidden: {
+          display: 'none',
+        },
+        overlay: {
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: theme.colors.bg,
+        },
+        tabBar: {
+          flexDirection: 'row',
+          gap: 8,
+          paddingHorizontal: 12,
+          paddingTop: 10,
+          paddingBottom: 14,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: theme.colors.divider,
+          backgroundColor: theme.colors.bg,
+        },
+        tab: {
+          flex: 1,
+          alignItems: 'center',
+          paddingVertical: 10,
+          borderRadius: 16,
+          backgroundColor: theme.colors.surface,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+        },
+        tabOn: {
+          backgroundColor: theme.colors.crimson,
+          borderColor: theme.colors.crimson,
+        },
+        tabLabel: {
+          fontSize: 13,
+          fontWeight: '700',
+          color: theme.colors.text,
+        },
+        tabLabelOn: { color: theme.colors.onPrimary },
+      }),
+    [theme],
+  );
 
   const switchMode = (next: AppMode) => {
     if (next === mode) return;
@@ -83,10 +141,20 @@ export function AppShell({
     setMode(next);
   };
 
+  const inactiveIcon = theme.colors.text;
+  const activeIcon = theme.colors.onPrimary;
+
   return (
     <SafeAreaView style={styles.root} testID="app-shell">
-      <StatusBar style="dark" />
-      <View style={styles.body}>
+      <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
+      <View
+        style={[
+          styles.body,
+          mode === 'camera' || !maxWidth
+            ? null
+            : { maxWidth, alignSelf: 'center', width: '100%' },
+        ]}
+      >
         {/* Translate and Learn stay mounted. Camera unmounts when its tab is
             inactive so only one camera preview can exist. */}
         <View
@@ -144,16 +212,16 @@ export function AppShell({
           onPress={() => switchMode('translate')}
           accessibilityRole="tab"
           accessibilityState={{ selected: mode === 'translate' }}
-          accessibilityLabel="Translate tab"
+          accessibilityLabel={t('tabs.translateA11y', lang)}
           testID="tab-translate"
         >
           <Ionicons
             name="language-outline"
             size={18}
-            color={mode === 'translate' ? '#fff' : colors.text}
+            color={mode === 'translate' ? activeIcon : inactiveIcon}
           />
           <Text style={[styles.tabLabel, mode === 'translate' && styles.tabLabelOn]}>
-            Translate
+            {t('tabs.translate', lang)}
           </Text>
         </Pressable>
         <Pressable
@@ -161,16 +229,16 @@ export function AppShell({
           onPress={() => switchMode('camera')}
           accessibilityRole="tab"
           accessibilityState={{ selected: mode === 'camera' }}
-          accessibilityLabel="Camera tab"
+          accessibilityLabel={t('tabs.cameraA11y', lang)}
           testID="tab-camera"
         >
           <Ionicons
             name="camera-outline"
             size={18}
-            color={mode === 'camera' ? '#fff' : colors.text}
+            color={mode === 'camera' ? activeIcon : inactiveIcon}
           />
           <Text style={[styles.tabLabel, mode === 'camera' && styles.tabLabelOn]}>
-            Camera
+            {t('tabs.camera', lang)}
           </Text>
         </Pressable>
         <Pressable
@@ -178,16 +246,16 @@ export function AppShell({
           onPress={() => switchMode('learn')}
           accessibilityRole="tab"
           accessibilityState={{ selected: mode === 'learn' }}
-          accessibilityLabel="Learn tab"
+          accessibilityLabel={t('tabs.learnA11y', lang)}
           testID="tab-learn"
         >
           <Ionicons
             name="book-outline"
             size={18}
-            color={mode === 'learn' ? '#fff' : colors.text}
+            color={mode === 'learn' ? activeIcon : inactiveIcon}
           />
           <Text style={[styles.tabLabel, mode === 'learn' && styles.tabLabelOn]}>
-            Learn
+            {t('tabs.learn', lang)}
           </Text>
         </Pressable>
       </View>
@@ -230,51 +298,3 @@ export function AppShell({
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  body: { flex: 1 },
-  pane: {
-    ...StyleSheet.absoluteFill,
-  },
-  paneHidden: {
-    display: 'none',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: colors.bg,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 12,
-    paddingTop: 10,
-    paddingBottom: 14,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.divider,
-    backgroundColor: colors.bg,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 16,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.divider,
-  },
-  tabOn: {
-    backgroundColor: colors.crimson,
-    borderColor: colors.crimson,
-  },
-  tabLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  tabLabelOn: { color: '#fff' },
-});

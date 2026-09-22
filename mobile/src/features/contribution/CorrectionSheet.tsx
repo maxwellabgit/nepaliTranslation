@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Modal,
@@ -16,6 +16,7 @@ import {
   CONTRIBUTION_CONSENT_VERSION,
 } from '../auth/consent';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
+import { t, useUiLang } from '../../i18n';
 import { loadLocalConsent } from '../../storage/contributionConsent';
 import {
   enqueueDraft,
@@ -25,7 +26,7 @@ import {
 import { buildCorrectionDraftFields } from '../../storage/liveIncorrect';
 import { flushPendingDrafts } from '../../services/contributionSync';
 import type { Formality, NepaliScript } from '../../mt/onDeviceTranslate';
-import { colors } from '../../theme';
+import { useTheme } from '../../theme';
 
 type Props = {
   visible: boolean;
@@ -59,6 +60,8 @@ export function CorrectionSheet({
   onSaved,
   onNeedAuth,
 }: Props) {
+  const theme = useTheme();
+  const lang = useUiLang();
   const auth = useAuth();
   const flags = useFeatureFlags();
   const [correction, setCorrection] = useState('');
@@ -71,6 +74,115 @@ export function CorrectionSheet({
   const [draftIdempotencyKey, setDraftIdempotencyKey] = useState<
     string | undefined
   >(undefined);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        backdrop: {
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.35)',
+          justifyContent: 'flex-end',
+        },
+        sheet: {
+          backgroundColor: theme.colors.surface,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: 20,
+          gap: 8,
+          maxHeight: '88%',
+        },
+        title: { fontSize: 18, fontWeight: '700', color: theme.colors.text },
+        label: {
+          marginTop: 8,
+          fontSize: 12,
+          fontWeight: '700',
+          color: theme.colors.textSecondary,
+          textTransform: 'uppercase',
+        },
+        body: { fontSize: 16, color: theme.colors.text, lineHeight: 22 },
+        input: {
+          minHeight: 72,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          borderRadius: 12,
+          padding: 12,
+          fontSize: 16,
+          color: theme.colors.text,
+          textAlignVertical: 'top',
+        },
+        meta: {
+          fontSize: 12,
+          color: theme.colors.textPlaceholder,
+          lineHeight: 18,
+        },
+        note: { fontSize: 14, color: theme.colors.blue, lineHeight: 20 },
+        chipRow: { flexDirection: 'row', gap: 8, marginTop: 4 },
+        chip: {
+          minHeight: 40,
+          paddingHorizontal: 14,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: theme.colors.bg,
+        },
+        chipOn: {
+          backgroundColor: theme.colors.text,
+          borderColor: theme.colors.text,
+        },
+        chipText: {
+          fontSize: 14,
+          fontWeight: '600',
+          color: theme.colors.text,
+        },
+        chipTextOn: { color: theme.colors.onPrimary },
+        actions: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          flexWrap: 'wrap',
+          gap: 10,
+          marginTop: 8,
+        },
+        link: {
+          fontSize: 15,
+          fontWeight: '700',
+          color: theme.colors.textSecondary,
+          minHeight: 44,
+          textAlignVertical: 'center',
+        },
+        button: {
+          minHeight: 44,
+          borderRadius: 12,
+          backgroundColor: theme.colors.text,
+          paddingHorizontal: 14,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        buttonText: {
+          color: theme.colors.onPrimary,
+          fontWeight: '700',
+          fontSize: 14,
+        },
+        buttonSecondary: {
+          minHeight: 44,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          paddingHorizontal: 12,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: theme.colors.bg,
+        },
+        buttonSecondaryText: {
+          color: theme.colors.text,
+          fontWeight: '700',
+          fontSize: 14,
+        },
+      }),
+    [theme],
+  );
 
   useEffect(() => {
     if (!visible) return;
@@ -97,7 +209,7 @@ export function CorrectionSheet({
   const save = async (wantSubmit: boolean) => {
     if (busy) return;
     if (wantSubmit && labelsMissing) {
-      setMessage('Select formality and script before submitting.');
+      setMessage(t('contributions.needLabels', lang));
       return;
     }
     const fields = buildCorrectionDraftFields({
@@ -111,7 +223,7 @@ export function CorrectionSheet({
       modelVersion,
     });
     if (!fields) {
-      setMessage('Nothing to save.');
+      setMessage(t('contributions.nothingToSave', lang));
       return;
     }
     setBusy(true);
@@ -129,20 +241,19 @@ export function CorrectionSheet({
 
       if (wantSubmit) {
         if (labelsMissing) {
-          setMessage('Select formality and script before submitting.');
+          setMessage(t('contributions.needLabels', lang));
           return;
         }
         if (!contributionsOn) {
-          note =
-            'Saved on this device. Contribution upload is off until review finishes.';
+          note = t('contributions.uploadOff', lang);
         } else if (!gate.ok) {
           needAuth = true;
           note =
             gate.reason === 'sign_in'
-              ? 'Saved on this device. Sign in with Apple to submit, then tap Submit contribution again.'
+              ? t('contributions.needSignIn', lang)
               : gate.reason === 'consent' || gate.reason === 'age'
-                ? 'Saved on this device. Save contribution consent in Settings, then tap Submit contribution again.'
-                : 'Saved on this device. Upload is unavailable right now.';
+                ? t('contributions.needConsent', lang)
+                : t('contributions.uploadUnavailable', lang);
         } else {
           status = 'queued';
         }
@@ -162,11 +273,11 @@ export function CorrectionSheet({
 
       if (status === 'queued') {
         void flushPendingDrafts();
-        setMessage('Queued for upload when online.');
+        setMessage(t('contributions.queued', lang));
         onSaved?.();
         onClose();
       } else {
-        setMessage(note ?? 'Draft saved on this device.');
+        setMessage(note ?? t('contributions.draftSaved', lang));
         onSaved?.();
         if (!wantSubmit) {
           onClose();
@@ -179,6 +290,11 @@ export function CorrectionSheet({
     }
   };
 
+  const formalLabel = t('contributions.formal', lang);
+  const informalLabel = t('contributions.informal', lang);
+  const devaLabel = t('contributions.deva', lang);
+  const romanLabel = t('contributions.roman', lang);
+
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <KeyboardAvoidingView
@@ -186,24 +302,32 @@ export function CorrectionSheet({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <View style={styles.sheet} testID="correction-sheet">
-          <Text style={styles.title}>Suggest a better translation</Text>
-          <Text style={styles.label}>Source</Text>
+          <Text style={styles.title}>
+            {t('contributions.correctionTitle', lang)}
+          </Text>
+          <Text style={styles.label}>{t('contributions.sourceLabel', lang)}</Text>
           <Text style={styles.body}>{source}</Text>
-          <Text style={styles.label}>Current translation</Text>
+          <Text style={styles.label}>
+            {t('contributions.currentLabel', lang)}
+          </Text>
           <Text style={styles.body}>{translation}</Text>
-          <Text style={styles.label}>Your correction (optional)</Text>
+          <Text style={styles.label}>
+            {t('contributions.yourCorrection', lang)}
+          </Text>
           <TextInput
             style={styles.input}
             value={correction}
             onChangeText={setCorrection}
-            placeholder="Type a better translation"
-            placeholderTextColor={colors.textPlaceholder}
+            placeholder={t('contributions.correctionPlaceholder', lang)}
+            placeholderTextColor={theme.colors.textPlaceholder}
             multiline
             testID="correction-input"
           />
           {labelsMissing ? (
             <View testID="correction-label-pickers">
-              <Text style={styles.label}>Formality (required to submit)</Text>
+              <Text style={styles.label}>
+                {t('contributions.formalityRequired', lang)}
+              </Text>
               <View style={styles.chipRow}>
                 <Pressable
                   style={[
@@ -213,7 +337,7 @@ export function CorrectionSheet({
                   onPress={() => setFormality('formal')}
                   testID="correction-formality-formal"
                   accessibilityRole="button"
-                  accessibilityLabel="Formal"
+                  accessibilityLabel={formalLabel}
                 >
                   <Text
                     style={[
@@ -221,7 +345,7 @@ export function CorrectionSheet({
                       formality === 'formal' && styles.chipTextOn,
                     ]}
                   >
-                    Formal
+                    {formalLabel}
                   </Text>
                 </Pressable>
                 <Pressable
@@ -232,7 +356,7 @@ export function CorrectionSheet({
                   onPress={() => setFormality('informal')}
                   testID="correction-formality-informal"
                   accessibilityRole="button"
-                  accessibilityLabel="Informal"
+                  accessibilityLabel={informalLabel}
                 >
                   <Text
                     style={[
@@ -240,18 +364,20 @@ export function CorrectionSheet({
                       formality === 'informal' && styles.chipTextOn,
                     ]}
                   >
-                    Informal
+                    {informalLabel}
                   </Text>
                 </Pressable>
               </View>
-              <Text style={styles.label}>Script (required to submit)</Text>
+              <Text style={styles.label}>
+                {t('contributions.scriptRequired', lang)}
+              </Text>
               <View style={styles.chipRow}>
                 <Pressable
                   style={[styles.chip, script === 'deva' && styles.chipOn]}
                   onPress={() => setScript('deva')}
                   testID="correction-script-deva"
                   accessibilityRole="button"
-                  accessibilityLabel="Devanagari"
+                  accessibilityLabel={devaLabel}
                 >
                   <Text
                     style={[
@@ -259,7 +385,7 @@ export function CorrectionSheet({
                       script === 'deva' && styles.chipTextOn,
                     ]}
                   >
-                    Devanagari
+                    {devaLabel}
                   </Text>
                 </Pressable>
                 <Pressable
@@ -267,7 +393,7 @@ export function CorrectionSheet({
                   onPress={() => setScript('roman')}
                   testID="correction-script-roman"
                   accessibilityRole="button"
-                  accessibilityLabel="Roman"
+                  accessibilityLabel={romanLabel}
                 >
                   <Text
                     style={[
@@ -275,15 +401,15 @@ export function CorrectionSheet({
                       script === 'roman' && styles.chipTextOn,
                     ]}
                   >
-                    Roman
+                    {romanLabel}
                   </Text>
                 </Pressable>
               </View>
             </View>
           ) : (
             <Text style={styles.meta} testID="correction-labels-set">
-              {formality === 'formal' ? 'Formal' : 'Informal'} ·{' '}
-              {script === 'deva' ? 'Devanagari' : 'Roman'}
+              {formality === 'formal' ? formalLabel : informalLabel} ·{' '}
+              {script === 'deva' ? devaLabel : romanLabel}
             </Text>
           )}
           <Text style={styles.meta}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
@@ -292,30 +418,36 @@ export function CorrectionSheet({
             <Pressable
               onPress={onClose}
               accessibilityRole="button"
-              accessibilityLabel="Cancel correction"
+              accessibilityLabel={t('contributions.cancelA11y', lang)}
               testID="correction-cancel"
             >
-              <Text style={styles.link}>Cancel</Text>
+              <Text style={styles.link}>
+                {t('contributions.cancel', lang)}
+              </Text>
             </Pressable>
             <Pressable
               style={styles.buttonSecondary}
               onPress={() => void save(false)}
               disabled={busy}
               accessibilityRole="button"
-              accessibilityLabel="Save on this device"
+              accessibilityLabel={t('contributions.saveDeviceA11y', lang)}
               testID="correction-save-draft"
             >
-              <Text style={styles.buttonSecondaryText}>Save on this device</Text>
+              <Text style={styles.buttonSecondaryText}>
+                {t('contributions.saveDevice', lang)}
+              </Text>
             </Pressable>
             <Pressable
               style={styles.button}
               onPress={() => void save(true)}
               disabled={busy}
               accessibilityRole="button"
-              accessibilityLabel="Submit contribution"
+              accessibilityLabel={t('contributions.submitA11y', lang)}
               testID="correction-submit"
             >
-              <Text style={styles.buttonText}>Submit contribution</Text>
+              <Text style={styles.buttonText}>
+                {t('contributions.submit', lang)}
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -323,96 +455,3 @@ export function CorrectionSheet({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    gap: 8,
-    maxHeight: '88%',
-  },
-  title: { fontSize: 18, fontWeight: '700', color: colors.text },
-  label: {
-    marginTop: 8,
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-  },
-  body: { fontSize: 16, color: colors.text, lineHeight: 22 },
-  input: {
-    minHeight: 72,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-    textAlignVertical: 'top',
-  },
-  meta: { fontSize: 12, color: colors.textPlaceholder, lineHeight: 18 },
-  note: { fontSize: 14, color: colors.blue, lineHeight: 20 },
-  chipRow: { flexDirection: 'row', gap: 8, marginTop: 4 },
-  chip: {
-    minHeight: 40,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.bg,
-  },
-  chipOn: {
-    backgroundColor: colors.text,
-    borderColor: colors.text,
-  },
-  chipText: { fontSize: 14, fontWeight: '600', color: colors.text },
-  chipTextOn: { color: '#fff' },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginTop: 8,
-  },
-  link: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textSecondary,
-    minHeight: 44,
-    textAlignVertical: 'center',
-  },
-  button: {
-    minHeight: 44,
-    borderRadius: 12,
-    backgroundColor: colors.text,
-    paddingHorizontal: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: { color: '#fff', fontWeight: '700', fontSize: 14 },
-  buttonSecondary: {
-    minHeight: 44,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    paddingHorizontal: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.bg,
-  },
-  buttonSecondaryText: {
-    color: colors.text,
-    fontWeight: '700',
-    fontSize: 14,
-  },
-});
