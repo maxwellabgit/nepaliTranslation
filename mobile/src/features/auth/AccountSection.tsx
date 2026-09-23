@@ -197,7 +197,7 @@ export function AccountSection({
         </>
       ) : null}
 
-      <Text style={styles.sectionLabel}>{t('settings.contributions', lang)}</Text>
+      <Text style={styles.sectionLabel}>{t('settings.contributionConsent', lang)}</Text>
       <Text style={styles.body}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
       <Text style={styles.meta}>
         {t('auth.consentDraftMeta', lang, {

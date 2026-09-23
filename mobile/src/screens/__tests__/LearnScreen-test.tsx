@@ -14,7 +14,7 @@ jest.mock('../../stt/sttSupport', () => ({
 function renderLearn() {
   return render(
     <AppProviders services={createTestServices({ offline: true })} bypassStartupConsent>
-      <LearnScreen active onOpenContributions={jest.fn()} />
+      <LearnScreen active onOpenTodaysReview={jest.fn()} />
     </AppProviders>,
   );
 }
@@ -36,7 +36,7 @@ describe('LearnScreen', () => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
     expect(screen.getByTestId('learn-earn-rewards')).toBeTruthy();
-    expect(screen.getByText('Earn rewards')).toBeTruthy();
+    expect(screen.getByText("Today's 10")).toBeTruthy();
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     expect(screen.getByTestId('learn-roman-a').props.children).toBe('a');
     expect(screen.getByTestId('learn-roman-ta').props.children).toBe('ṭa');

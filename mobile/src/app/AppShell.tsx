@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useReducer, useState, type ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,13 +9,15 @@ import { useTheme } from '../theme';
 import { contentMaxWidth, useSizeClass } from '../layout/sizeClass';
 import type { HistoryItem } from '../storage/phrasebook';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
+import {
+  INITIAL_SHELL,
+  TODAYS_REVIEW_ROUTE,
+  reduceShell,
+  type AppMode,
+  type AppOverlay,
+} from './shellRoutes';
 
-export type AppMode = 'translate' | 'camera' | 'learn';
-export type AppOverlay =
-  | 'history'
-  | 'settings'
-  | 'contributions'
-  | null;
+export type { AppMode, AppOverlay };
 
 type PaneProps = {
   active: boolean;
@@ -33,7 +35,7 @@ type CameraPaneProps = {
 
 type LearnPaneProps = {
   active: boolean;
-  onOpenContributions: () => void;
+  onOpenTodaysReview: () => void;
 };
 
 type HistoryOverlayProps = {
@@ -43,11 +45,11 @@ type HistoryOverlayProps = {
 
 type SettingsOverlayProps = {
   onClose: () => void;
-  onOpenContributions: () => void;
+  onOpenTodaysReview: () => void;
   neuralReady: boolean;
 };
 
-type ContributionsOverlayProps = {
+type TodaysReviewOverlayProps = {
   onClose: () => void;
 };
 
@@ -57,7 +59,7 @@ type Props = {
   LearnPane: (props: LearnPaneProps) => ReactNode;
   HistoryOverlay: (props: HistoryOverlayProps) => ReactNode;
   SettingsOverlay: (props: SettingsOverlayProps) => ReactNode;
-  ContributionsOverlay: (props: ContributionsOverlayProps) => ReactNode;
+  TodaysReviewOverlay: (props: TodaysReviewOverlayProps) => ReactNode;
   neuralReady: boolean;
   mtWarmStatus: string | null;
   /** Injected for tests; defaults to production hardStopAudio. */
@@ -70,15 +72,14 @@ export function AppShell({
   LearnPane,
   HistoryOverlay,
   SettingsOverlay,
-  ContributionsOverlay,
+  TodaysReviewOverlay,
   neuralReady,
   mtWarmStatus,
   onHardStop = hardStopAudio,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
-  const [mode, setMode] = useState<AppMode>('translate');
-  const [overlay, setOverlay] = useState<AppOverlay>(null);
+  const [{ mode, overlay }, dispatch] = useReducer(reduceShell, INITIAL_SHELL);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
   const size = useSizeClass();
@@ -145,7 +146,7 @@ export function AppShell({
       surface: next === 'learn' ? 'learn_landing' : 'translate_idle',
       cameraActive: next === 'camera',
     });
-    setMode(next);
+    dispatch({ type: 'switch_mode', mode: next });
   };
 
   const inactiveIcon = theme.colors.text;
@@ -185,11 +186,11 @@ export function AppShell({
             mtWarmStatus={mtWarmStatus}
             onOpenHistory={() => {
               onHardStop();
-              setOverlay('history');
+              dispatch({ type: 'open_overlay', overlay: 'history' });
             }}
             onOpenSettings={() => {
               onHardStop();
-              setOverlay('settings');
+              dispatch({ type: 'open_overlay', overlay: 'settings' });
             }}
           />
         </View>
@@ -209,9 +210,9 @@ export function AppShell({
         >
           <LearnPane
             active={mode === 'learn'}
-            onOpenContributions={() => {
+            onOpenTodaysReview={() => {
               onHardStop();
-              setOverlay('contributions');
+              dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
             }}
           />
         </View>
@@ -275,32 +276,31 @@ export function AppShell({
         <View style={styles.overlay} testID={`overlay-${overlay}`}>
           {overlay === 'history' ? (
             <HistoryOverlay
-              onClose={() => setOverlay(null)}
+              onClose={() => dispatch({ type: 'close_overlay' })}
               onSelect={(item) => {
                 onHardStop();
                 setSeed(item);
                 setSeedKey((k) => k + 1);
-                setMode('translate');
-                setOverlay(null);
+                dispatch({ type: 'select_history' });
               }}
             />
           ) : overlay === 'settings' ? (
             <SettingsOverlay
               onClose={() => {
                 onHardStop();
-                setOverlay(null);
+                dispatch({ type: 'close_overlay' });
               }}
-              onOpenContributions={() => {
+              onOpenTodaysReview={() => {
                 onHardStop();
-                setOverlay('contributions');
+                dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
               }}
               neuralReady={neuralReady}
             />
-          ) : (
-            <ContributionsOverlay
+          ) : overlay === TODAYS_REVIEW_ROUTE ? (
+            <TodaysReviewOverlay
               onClose={() => {
                 onHardStop();
-                setOverlay(null);
+                dispatch({ type: 'close_overlay' });
                 // Only Learn landing is a known-idle surface after this close.
                 // Translate may still show turns (result under review) — never guess.
                 if (mode === 'learn') {
@@ -313,7 +313,7 @@ export function AppShell({
                 }
               }}
             />
-          )}
+          ) : null}
         </View>
       ) : null}
     </SafeAreaView>

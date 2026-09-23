@@ -10,8 +10,7 @@ import { getSupabase } from '../../services/supabase';
  *   * Rotation at 5:00 PM America/New_York closes the window, grants
  *     credits (1/2 credits by length tier at assignment; 1 credit = 15
  *     minutes ad-free), and opens the next window with a fresh random 10.
- *   * Copy shown in-app should be "Today's 10 corrections" -- never a
- *     guarantee of 10 items.
+ *   * Copy shown in-app is "Today's 10" with subtitle "Review translations".
  *
  * Not called for guests; the mobile Review surface is signed-in only.
  */

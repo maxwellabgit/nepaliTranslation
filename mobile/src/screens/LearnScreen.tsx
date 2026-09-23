@@ -13,7 +13,7 @@ import { useTheme } from '../theme';
 
 type Props = {
   active: boolean;
-  onOpenContributions?: () => void;
+  onOpenTodaysReview?: () => void;
 };
 
 const COLUMNS = 5;
@@ -22,7 +22,7 @@ const COLUMNS = 5;
  * Learn: earn-rewards summary, then the full alphabet in order.
  * Letters are on the page for everyone — nothing sits behind a second screen.
  */
-export function LearnScreen({ active, onOpenContributions }: Props) {
+export function LearnScreen({ active, onOpenTodaysReview }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const [voiceOk, setVoiceOk] = useState(true);
@@ -114,8 +114,8 @@ export function LearnScreen({ active, onOpenContributions }: Props) {
       ) : null}
 
       <Pressable
-        onPress={onOpenContributions}
-        disabled={!onOpenContributions}
+        onPress={onOpenTodaysReview}
+        disabled={!onOpenTodaysReview}
         accessibilityRole="button"
         accessibilityLabel={t('learn.earnRewardsA11y', lang)}
         testID="learn-earn-rewards"

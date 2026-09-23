@@ -87,7 +87,7 @@ async function renderShell(onHardStop = jest.fn()) {
       LearnPane={(p) => <FakeLearn {...p} />}
       HistoryOverlay={(p) => <FakeHistory {...p} />}
       SettingsOverlay={() => <View testID="fake-settings" />}
-      ContributionsOverlay={() => <View testID="fake-contributions" />}
+      TodaysReviewOverlay={() => <View testID="fake-contributions" />}
     />,
   );
   return onHardStop;

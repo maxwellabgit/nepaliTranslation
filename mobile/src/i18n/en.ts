@@ -126,10 +126,10 @@ export const en = {
   'settings.languageEn': 'English',
   'settings.languageNe': 'नेपाली',
   'settings.languageA11y': 'Choose app language',
-  'settings.contributions': 'Contributions & rewards',
-  'settings.contributionsDetail':
-    'View drafts, sync status, and retry uploads on this device.',
-  'settings.contributionsA11y': 'Open contributions and rewards',
+  'settings.contributionConsent': 'Contribution consent',
+  'settings.todaysReview': "Today's 10",
+  'settings.todaysReviewDetail': 'Review translations',
+  'settings.todaysReviewA11y': "Open Today's 10. Review translations.",
   'settings.adsPrivacy': 'Ads & privacy',
   'settings.privacyOptions': 'Privacy options',
   'settings.privacyOptionsA11y': 'Ad privacy options',
@@ -184,11 +184,11 @@ export const en = {
   'settings.offlineBanner':
     'Optional account and sync features need a network. Translation and Learn stay available offline.',
 
-  'learn.earnRewards': 'Earn rewards',
-  'learn.earnRewardsA11y': 'Earn rewards',
-  'learn.rewardsHeading': 'Rewards',
+  'learn.earnRewards': "Today's 10",
+  'learn.earnRewardsA11y': "Open Today's 10. Review translations.",
+  'learn.rewardsHeading': 'Review translations',
   'learn.rewardsBody':
-    'Contributions earn 1–2 credits (5 minutes each) at the daily 5 PM New York close.',
+    'Same items for every reviewer. Rewards settle at 5:00 PM New York.',
   'learn.credits': '{count} credits',
   'learn.adFreeInactive': 'Ad-free not active',
   'learn.adFreeMins': 'Ad-free for {mins}m',
@@ -397,9 +397,8 @@ export const en = {
     'Check all three boxes to continue. Core translation is available after acceptance.',
   'startupConsent.versionLabel': 'Version {version}',
 
-  'review.title': "Today's 10 corrections",
-  'review.subtitle':
-    'Same 10 items for every reviewer. The window closes at 5:00 PM New York time and credits are granted at close.',
+  'review.title': "Today's 10",
+  'review.subtitle': 'Review translations. Rewards settle at 5:00 PM New York.',
   'review.progress': 'Reviewed {done} of {total}',
   'review.closeAt': 'Closes at 5:00 PM New York time ({localTime})',
   'review.rewardBalance': 'Ad-free minutes: {minutes}',

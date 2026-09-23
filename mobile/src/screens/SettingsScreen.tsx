@@ -12,7 +12,6 @@ import Constants from 'expo-constants';
 import { BuildProvenanceCard } from '../components/BuildProvenanceCard';
 import { useFeatureFlags } from '../app/FeatureConfigProvider';
 import { AccountSection } from '../features/auth/AccountSection';
-import { ContributionCard } from '../features/contribution/ContributionCard';
 import { useAuth } from '../features/auth/AuthProvider';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { recordContributionConsent } from '../features/auth/recordConsent';
@@ -46,7 +45,7 @@ type LegalLink = {
 
 type Props = {
   onClose: () => void;
-  onOpenContributions?: () => void;
+  onOpenTodaysReview?: () => void;
   neuralReady?: boolean;
 };
 
@@ -65,7 +64,7 @@ const BUILD_NUMBER =
  */
 export function SettingsScreen({
   onClose,
-  onOpenContributions,
+  onOpenTodaysReview,
   neuralReady = false,
 }: Props) {
   const theme = useTheme();
@@ -298,21 +297,19 @@ export function SettingsScreen({
           }}
         />
 
-        <ContributionCard />
-
-        {onOpenContributions ? (
+        {onOpenTodaysReview ? (
           <Pressable
             style={dynamic.section}
-            onPress={onOpenContributions}
+            onPress={onOpenTodaysReview}
             accessibilityRole="button"
-            accessibilityLabel={t('settings.contributionsA11y', lang)}
-            testID="settings-open-contributions"
+            accessibilityLabel={t('settings.todaysReviewA11y', lang)}
+            testID="settings-open-todays-review"
           >
             <Text style={dynamic.sectionLabel}>
-              {t('settings.contributions', lang)}
+              {t('settings.todaysReview', lang)}
             </Text>
             <Text style={dynamic.body}>
-              {t('settings.contributionsDetail', lang)}
+              {t('settings.todaysReviewDetail', lang)}
             </Text>
           </Pressable>
         ) : null}

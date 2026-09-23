@@ -130,10 +130,10 @@ export const ne: Record<MessageKey, string> = {
   'settings.languageEn': 'English',
   'settings.languageNe': 'नेपाली',
   'settings.languageA11y': 'एप भाषा छान्नुहोस्',
-  'settings.contributions': 'योगदान र पुरस्कार',
-  'settings.contributionsDetail':
-    'यस यन्त्रमा मस्यौदा, सिंक अवस्था, र पुनः अपलोड हेर्नुहोस्।',
-  'settings.contributionsA11y': 'योगदान र पुरस्कार खोल्नुहोस्',
+  'settings.contributionConsent': 'योगदान सहमति',
+  'settings.todaysReview': 'आजका १०',
+  'settings.todaysReviewDetail': 'अनुवाद समीक्षा',
+  'settings.todaysReviewA11y': 'आजका १० खोल्नुहोस्। अनुवाद समीक्षा।',
   'settings.adsPrivacy': 'विज्ञापन र गोपनीयता',
   'settings.privacyOptions': 'गोपनीयता विकल्पहरू',
   'settings.privacyOptionsA11y': 'विज्ञापन गोपनीयता विकल्पहरू',
@@ -188,11 +188,11 @@ export const ne: Record<MessageKey, string> = {
   'settings.offlineBanner':
     'खाता र सिंकका लागि नेटवर्क चाहिन्छ। अनुवाद र सिकाइ अफलाइन उपलब्ध छन्।',
 
-  'learn.earnRewards': 'पुरस्कार कमाउनुहोस्',
-  'learn.earnRewardsA11y': 'पुरस्कार कमाउनुहोस्',
-  'learn.rewardsHeading': 'पुरस्कार',
+  'learn.earnRewards': 'आजका १०',
+  'learn.earnRewardsA11y': 'आजका १० खोल्नुहोस्। अनुवाद समीक्षा।',
+  'learn.rewardsHeading': 'अनुवाद समीक्षा',
   'learn.rewardsBody':
-    'योगदानले दैनिक न्यूयोर्क ५ बजे बन्दपछि १–२ क्रेडिट (प्रत्येक ५ मिनेट) दिन्छ।',
+    'सबै समीक्षकले उही वस्तु देख्छन्। पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',
   'learn.credits': '{count} क्रेडिट',
   'learn.adFreeInactive': 'विज्ञापन-मुक्त सक्रिय छैन',
   'learn.adFreeMins': '{mins} मिनेट विज्ञापन-मुक्त',
@@ -400,9 +400,8 @@ export const ne: Record<MessageKey, string> = {
     'अगाडि बढ्न तीनवटै बाकस जाँच्नुहोस्। स्वीकृतिपछि मूल अनुवाद उपलब्ध हुनेछ।',
   'startupConsent.versionLabel': 'संस्करण {version}',
 
-  'review.title': 'आजका १० सुधार',
-  'review.subtitle':
-    'सबै रिभ्युअरहरूका लागि एउटै १० वटा वस्तु। न्यूयोर्क समयको बेलुका ५ बजे विन्डो बन्द हुन्छ र क्रेडिट बन्दमा दिइन्छ।',
+  'review.title': 'आजका १०',
+  'review.subtitle': 'अनुवाद समीक्षा। पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',
   'review.progress': '{done} / {total} पुनरावलोकन गरिएको',
   'review.closeAt': 'न्यूयोर्क समयको बेलुका ५ बजे बन्द ({localTime})',
   'review.rewardBalance': 'विज्ञापन-मुक्त मिनेट: {minutes}',

@@ -6,7 +6,7 @@ import { CameraScreen } from './src/screens/CameraScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { LearnScreen } from './src/screens/LearnScreen';
-import { ContributionsScreen } from './src/screens/ContributionsScreen';
+import { ReviewScreen } from './src/screens/ReviewScreen';
 import { sharedTranslationEngine } from './src/mt/TranslationEngine';
 import {
   MT_WARM_DOWNLOADING,
@@ -99,7 +99,7 @@ export function NepTranslateApp({
         LearnPane={(props) => <LearnScreen {...props} />}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}
-        ContributionsOverlay={(props) => <ContributionsScreen {...props} />}
+        TodaysReviewOverlay={(props) => <ReviewScreen {...props} />}
       />
     </AppProviders>
   );
