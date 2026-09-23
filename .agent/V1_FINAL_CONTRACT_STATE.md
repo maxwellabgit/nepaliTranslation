@@ -1,6 +1,6 @@
 status: IN_PROGRESS
 base_sha: 034f1cc66b991bf5c7ba5062bfebee7ec87f1d42
-head_sha: 526a40019d7333231f8ea61816ba70afff1af174
+head_sha: a594bf2f9cfec882fcd15149ec50ea7aeee695ef
 current_gate: C1
 completed_gates: C0
 last_green_commands: tsc --noEmit exit 0; jest TranslateScreenMarkIncorrect-test and phrasebookEdit-test 2 suites / 2 tests exit 0
