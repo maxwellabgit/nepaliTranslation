@@ -32,7 +32,8 @@ describe('i18n catalogs', () => {
 
   test('interpolates params', () => {
     expect(t('learn.credits', 'en', { count: 3 })).toBe('3 credits');
-    expect(t('ads.houseCopy', 'en')).toContain('$0.99');
+    expect(t('ads.houseCopy', 'en')).toContain('App Store');
+    expect(t('ads.houseCopy', 'en')).not.toContain('$0.99');
   });
 
   test('en and ne catalogs share the same keys', () => {

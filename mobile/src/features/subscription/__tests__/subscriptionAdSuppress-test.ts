@@ -24,7 +24,7 @@ describe('subscription suppresses ads', () => {
         trustedNowMs: 1,
         offline: false,
         canRequestAds: true,
-        transition: 'idle_after_task',
+        transition: 'learn_activity_completed',
         surface: 'learn_landing',
         foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
         presentationsTodayNy: 0,

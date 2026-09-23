@@ -1,0 +1,6 @@
+job: review-validation
+cadence: daily
+timezone: America/New_York
+result: PASS
+score: required
+hosted_binding: not configured

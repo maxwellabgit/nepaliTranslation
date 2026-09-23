@@ -113,7 +113,7 @@ export function createFakePurchaseService(options?: {
 } {
   let snap = options?.initial ?? { ...EMPTY_SUBSCRIPTION };
   let identified: string | null = null;
-  const price = options?.priceString ?? '$0.99';
+  const price = options?.priceString ?? '$2.99';
   return {
     setSnapshot: (next) => {
       snap = next;

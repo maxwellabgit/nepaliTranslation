@@ -1,0 +1,4 @@
+job: deletion-reconcile
+cadence: next_due_at every 14 days
+must_not_extend_due_at: true
+hosted_binding: not configured

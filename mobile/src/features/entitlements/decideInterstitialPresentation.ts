@@ -4,10 +4,20 @@
  */
 
 export const INTERSTITIAL_MIN_FOREGROUND_MS = 15 * 60 * 1000;
-export const INTERSTITIAL_MAX_PER_NY_DAY = 3;
+
+/** The only transitions that may present an automatic interstitial. */
+export const SAFE_INTERSTITIAL_TRANSITIONS = [
+  'translate_send_committed',
+  'camera_capture_committed',
+  'learn_activity_completed',
+] as const;
+
+export type SafeInterstitialTransition =
+  (typeof SAFE_INTERSTITIAL_TRANSITIONS)[number];
 
 /** Safe vs forbidden transition kinds for automatic interstitial. */
 export type InterstitialTransition =
+  | SafeInterstitialTransition
   | 'idle_after_task'
   | 'launch'
   | 'exit'
@@ -41,10 +51,11 @@ export type DecideInterstitialPresentationInput = {
   surface: InterstitialSurface;
   /** Cumulative foreground-active milliseconds (device clock OK). */
   foregroundActiveMs: number;
-  /** Presentations already counted for the current America/New_York calendar day. */
-  presentationsTodayNy: number;
+  /**
+   * Retained for analytics callers. It does not gate presentation.
+   */
+  presentationsTodayNy?: number;
   minForegroundMs?: number;
-  maxPerNyDay?: number;
 };
 
 export type InterstitialDecision =
@@ -56,14 +67,17 @@ export type InterstitialDecision =
  * 1. remote flag off / subscription / earned ad-free → none
  * 2. offline / UMP block → none (never call network offline)
  * 3. forbidden transition or Camera / result review / busy chrome → none
- * 4. foreground < 15 min or ≥ 3 presentations this NY day → none
- * 5. else → show (SDK presents)
+ * 4. foreground < 15 min → pending only, do not show
+ * 5. only translate_send_committed, camera_capture_committed, and
+ *    learn_activity_completed may show. There is no daily cap.
  */
 export function decideInterstitialPresentation(
   input: DecideInterstitialPresentationInput,
 ): InterstitialDecision {
   const minFg = input.minForegroundMs ?? INTERSTITIAL_MIN_FOREGROUND_MS;
-  const maxDay = input.maxPerNyDay ?? INTERSTITIAL_MAX_PER_NY_DAY;
+  const safe = (SAFE_INTERSTITIAL_TRANSITIONS as readonly string[]).includes(
+    input.transition,
+  );
 
   if (!input.automaticInterstitialEnabled) {
     return { show: false, reason: 'flag_off' };
@@ -87,10 +101,16 @@ export function decideInterstitialPresentation(
   if (input.appActive === false) {
     return { show: false, reason: 'inactive' };
   }
-  if (input.cameraActive || input.transition === 'camera') {
+  if (
+    (input.cameraActive || input.transition === 'camera') &&
+    input.transition !== 'camera_capture_committed'
+  ) {
     return { show: false, reason: 'camera' };
   }
-  if (input.resultUnderReview || input.transition === 'result_review') {
+  if (
+    (input.resultUnderReview || input.transition === 'result_review') &&
+    input.transition !== 'translate_send_committed'
+  ) {
     return { show: false, reason: 'result_review' };
   }
   if (input.modalVisible) {
@@ -106,22 +126,12 @@ export function decideInterstitialPresentation(
     return { show: false, reason: 'translating' };
   }
 
-  if (input.transition !== 'idle_after_task') {
+  if (!safe) {
     return { show: false, reason: `transition_${input.transition}` };
-  }
-
-  if (
-    input.surface !== 'translate_idle' &&
-    input.surface !== 'learn_landing'
-  ) {
-    return { show: false, reason: 'surface' };
   }
 
   if (input.foregroundActiveMs < minFg) {
     return { show: false, reason: 'foreground_gate' };
-  }
-  if (input.presentationsTodayNy >= maxDay) {
-    return { show: false, reason: 'daily_cap' };
   }
 
   return { show: true };

@@ -3,9 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 /**
  * G2 startup consent gate storage (device-local).
  *
- * Every user (guest or signed-in) must acknowledge Terms & Conditions,
- * Privacy Policy, and 18+ before reaching any product surface. Version bumps
- * force a re-acknowledgement.
+ * Every user acknowledges Terms and Privacy before product surfaces.
+ * 18+ is the signed-in contribution gate, not this startup record.
  *
  * When the user signs in, the client mirrors this record to `public.profiles`
  * via `service_record_startup_consent` so the same gate applies on other
@@ -14,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY = 'neptranslate.startup_consent.v1';
 
-export const STARTUP_CONSENT_VERSION = '2026-09-22.startup';
+export const STARTUP_CONSENT_VERSION = '2026-09-23.startup';
 
 export type StartupConsent = {
   version: string;
@@ -41,8 +40,7 @@ export function isStartupConsentCurrent(record: StartupConsent | null): boolean 
   return (
     record.version === STARTUP_CONSENT_VERSION &&
     record.terms === true &&
-    record.privacy === true &&
-    record.age18Plus === true
+    record.privacy === true
   );
 }
 

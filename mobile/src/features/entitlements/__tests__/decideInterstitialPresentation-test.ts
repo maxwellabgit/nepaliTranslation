@@ -1,6 +1,5 @@
 import {
   decideInterstitialPresentation,
-  INTERSTITIAL_MAX_PER_NY_DAY,
   INTERSTITIAL_MIN_FOREGROUND_MS,
 } from '../decideInterstitialPresentation';
 
@@ -20,7 +19,7 @@ describe('decideInterstitialPresentation', () => {
     translating: false,
     resultUnderReview: false,
     cameraActive: false,
-    transition: 'idle_after_task' as const,
+    transition: 'translate_send_committed' as const,
     surface: 'translate_idle' as const,
     foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
     presentationsTodayNy: 0,
@@ -81,7 +80,7 @@ describe('decideInterstitialPresentation', () => {
     ).toEqual({ show: false, reason: 'camera' });
     expect(
       decideInterstitialPresentation({ ...base, resultUnderReview: true }),
-    ).toEqual({ show: false, reason: 'result_review' });
+    ).toEqual({ show: true });
     expect(
       decideInterstitialPresentation({ ...base, modalVisible: true }),
     ).toEqual({ show: false, reason: 'modal' });
@@ -96,7 +95,7 @@ describe('decideInterstitialPresentation', () => {
     ).toEqual({ show: false, reason: 'translating' });
   });
 
-  it('enforces 15-minute foreground gate and 3/NY-day cap', () => {
+  it('enforces the 15-minute foreground gate and has no daily cap', () => {
     expect(
       decideInterstitialPresentation({
         ...base,
@@ -106,15 +105,27 @@ describe('decideInterstitialPresentation', () => {
     expect(
       decideInterstitialPresentation({
         ...base,
-        presentationsTodayNy: INTERSTITIAL_MAX_PER_NY_DAY,
+        presentationsTodayNy: 99,
       }),
-    ).toEqual({ show: false, reason: 'daily_cap' });
+    ).toEqual({ show: true });
+  });
+
+  it('allows only the three committed safe points', () => {
+    for (const transition of [
+      'translate_send_committed',
+      'camera_capture_committed',
+      'learn_activity_completed',
+    ] as const) {
+      expect(
+        decideInterstitialPresentation({ ...base, transition }),
+      ).toEqual({ show: true });
+    }
     expect(
       decideInterstitialPresentation({
         ...base,
-        presentationsTodayNy: INTERSTITIAL_MAX_PER_NY_DAY - 1,
+        transition: 'idle_after_task',
       }),
-    ).toEqual({ show: true });
+    ).toEqual({ show: false, reason: 'transition_idle_after_task' });
   });
 
   it('allows learn_landing surface', () => {

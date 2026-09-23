@@ -15,7 +15,7 @@ import {
 } from '../../storage/startupConsent';
 import { recordStartupConsent } from './recordStartupConsent';
 import { AppButton } from '../../components/AppPrimitives';
-import { t, useUiLang } from '../../i18n';
+import { t, useSetUiLang, useUiLang } from '../../i18n';
 import { useTheme } from '../../theme';
 import { readLegalPublicUrls } from '../../config/legalUrls';
 
@@ -39,12 +39,12 @@ type Props = {
 export function StartupConsentGate({ children, initialAcknowledged }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
+  const setLang = useSetUiLang();
   const [acknowledged, setAcknowledged] = useState<boolean>(
     initialAcknowledged ?? false,
   );
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
-  const [age, setAge] = useState(false);
   const [ready, setReady] = useState<boolean>(initialAcknowledged ?? false);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
     if (url) void Linking.openURL(url);
   }, []);
 
-  const canContinue = terms && privacy && age;
+  const canContinue = terms && privacy;
 
   const dynamic = useMemo(
     () =>
@@ -135,16 +135,15 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
     await saveStartupConsent({
       terms,
       privacy,
-      age18Plus: age,
+      age18Plus: false,
     });
-    // Best-effort mirror when signed in; ignore failures for the gate itself.
     void recordStartupConsent({
       terms,
       privacy,
-      age18Plus: age,
+      age18Plus: false,
     });
     setAcknowledged(true);
-  }, [canContinue, terms, privacy, age]);
+  }, [canContinue, terms, privacy]);
 
   if (!ready) return null;
   if (acknowledged) return <>{children}</>;
@@ -153,6 +152,24 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
     <View style={dynamic.root} testID="startup-consent-gate">
       <ScrollView contentContainerStyle={dynamic.scroll}>
         <Text style={dynamic.title}>{t('startupConsent.title', lang)}</Text>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('settings.languageEn', lang)}
+            onPress={() => setLang('en')}
+            testID="startup-consent-lang-en"
+          >
+            <Text style={dynamic.link}>{t('settings.languageEn', lang)}</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('settings.languageNe', lang)}
+            onPress={() => setLang('ne')}
+            testID="startup-consent-lang-ne"
+          >
+            <Text style={dynamic.link}>{t('settings.languageNe', lang)}</Text>
+          </Pressable>
+        </View>
         <Text style={dynamic.intro}>{t('startupConsent.intro', lang)}</Text>
 
         <Pressable
@@ -201,22 +218,6 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
               {t('startupConsent.readPrivacy', lang)}
             </Text>
           </View>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: age }}
-          accessibilityLabel={t('startupConsent.age', lang)}
-          onPress={() => setAge((v) => !v)}
-          style={dynamic.row}
-          testID="startup-consent-age"
-        >
-          <View
-            style={[dynamic.checkbox, age ? dynamic.checkboxChecked : null]}
-          >
-            {age ? <Text style={dynamic.checkmark}>✓</Text> : null}
-          </View>
-          <Text style={dynamic.text}>{t('startupConsent.age', lang)}</Text>
         </Pressable>
 
         <AppButton

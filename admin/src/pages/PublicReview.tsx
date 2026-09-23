@@ -63,7 +63,12 @@ export function PublicReviewPage({ api }: { api: AdminClient }) {
   return (
     <section data-testid="admin-public-review">
       <header>
-        <h1>Public review — current window</h1>
+        <p data-testid="admin-always-pass-notice">
+          Temporary V1 rule: automated cosine review logs a real score and
+          always returns PASS. A human unsatisfactory mark before close still
+          prevents the reward.
+        </p>
+        <h1>Today's 10 — current window</h1>
         <p>
           Shared 10-item window for every eligible reviewer today. Reads via
           the RLS-safe <code>public.review_current_window</code> view;

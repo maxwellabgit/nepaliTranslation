@@ -34,7 +34,7 @@ export function createTestServices(
           initial: {
             status: 'active',
             productId: 'neptranslate_adfree_monthly',
-            priceString: '$0.99',
+            priceString: '$2.99',
             expiresAtMs: Date.now() + 86_400_000,
             updatedAtMs: Date.now(),
           },

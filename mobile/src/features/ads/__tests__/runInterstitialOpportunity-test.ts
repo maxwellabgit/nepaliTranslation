@@ -22,7 +22,7 @@ describe('runInterstitialOpportunity', () => {
       trustedNowMs: 1,
       foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
       adapter,
-      req: { transition: 'idle_after_task', surface: 'learn_landing' },
+      req: { transition: 'learn_activity_completed', surface: 'learn_landing' },
     });
     expect(result.presented).toBe(true);
     expect(adapter.networkCalls().map((c) => c.kind)).toEqual([
@@ -42,7 +42,7 @@ describe('runInterstitialOpportunity', () => {
       trustedNowMs: 1,
       foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
       adapter,
-      req: { transition: 'idle_after_task', surface: 'learn_landing' },
+      req: { transition: 'learn_activity_completed', surface: 'learn_landing' },
     });
     expect(result).toEqual({ presented: false, executed: 'none:flag_off' });
     expect(adapter.networkCalls()).toEqual([]);

@@ -400,7 +400,7 @@ export const ne: Record<MessageKey, string> = {
   'startupConsent.readPrivacy': 'गोपनीयता नीति पढ्नुहोस्',
   'startupConsent.continue': 'स्वीकार गरेर अगाडि बढ्नुहोस्',
   'startupConsent.continueDisabled':
-    'अगाडि बढ्न तीनवटै बाकस जाँच्नुहोस्। स्वीकृतिपछि मूल अनुवाद उपलब्ध हुनेछ।',
+    'अगाडि बढ्न सर्त र गोपनीयता स्वीकार गर्नुहोस्। १८ वर्ष योगदानका लागि मात्र चाहिन्छ।',
   'startupConsent.versionLabel': 'संस्करण {version}',
 
   'review.title': 'आजका १०',

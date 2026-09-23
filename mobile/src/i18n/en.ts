@@ -358,7 +358,7 @@ export const en = {
   'auth.deleting': 'Deleting…',
   'auth.retryDeleteA11y': 'Retry account deletion',
 
-  'ads.houseCopy': 'Prefer no ads? Ad-free is $0.99/month.',
+  'ads.houseCopy': 'Prefer no ads? Ad-free is optional. The App Store shows the price.',
   'ads.houseDismiss': 'Not now',
   'ads.rewardedCta': 'Watch one optional ad for 15 ad-free minutes',
   'ads.signInRequiredTitle': 'Sign in required',
@@ -397,7 +397,7 @@ export const en = {
   'startupConsent.readPrivacy': 'Read Privacy Policy',
   'startupConsent.continue': 'Accept and continue',
   'startupConsent.continueDisabled':
-    'Check all three boxes to continue. Core translation is available after acceptance.',
+    'Accept Terms and Privacy to continue. 18+ is required only to contribute.',
   'startupConsent.versionLabel': 'Version {version}',
 
   'review.title': "Today's 10",

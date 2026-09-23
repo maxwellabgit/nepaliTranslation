@@ -5,8 +5,8 @@ select no_plan();
 select is(private.count_source_words('one two three'), 3, 'counts whitespace-separated words');
 select is(private.count_source_words(''), 0, 'empty source is zero words');
 
-select is(private.scheduled_credits_for_words(20), 1, '<=20 words schedules 1 credit');
-select is(private.scheduled_credits_for_words(21), 2, '>20 words schedules 2 credits');
+select is(private.scheduled_credits_for_words(20), 2, '<=20 words schedules 2 credits');
+select is(private.scheduled_credits_for_words(21), 4, '>=21 words schedules 4 credits');
 
 -- DST-safe NY close: winter (EST) and summer (EDT)
 select is(

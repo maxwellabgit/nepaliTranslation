@@ -32,7 +32,7 @@ describe('startupConsent storage', () => {
     expect(isStartupConsentCurrent(loaded)).toBe(true);
   });
 
-  test('gate rejects when any of the three is unchecked', () => {
+  test('gate rejects missing terms or privacy and does not require 18+', () => {
     const now = new Date().toISOString();
     expect(
       isStartupConsentCurrent({
@@ -51,7 +51,7 @@ describe('startupConsent storage', () => {
         age18Plus: false,
         accepted_at: now,
       }),
-    ).toBe(false);
+    ).toBe(true);
     expect(
       isStartupConsentCurrent({
         version: STARTUP_CONSENT_VERSION,

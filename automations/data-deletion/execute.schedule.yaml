@@ -1,0 +1,4 @@
+job: deletion-execute
+cadence: daily
+deadline: requested_at plus 30 days
+hosted_binding: not configured
