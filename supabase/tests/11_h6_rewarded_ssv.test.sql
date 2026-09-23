@@ -20,7 +20,7 @@ select is(
     '11111111-1111-4111-8111-111111111111',
     (select token from tmp_ssv_session),
     'ssv-tx-h6-1',
-    15,
+    30,
     'ad_free_minutes'
   ) ->> 'ok')::boolean,
   true,

@@ -127,6 +127,28 @@ select ok(
   'withdrawal returns a 30-day deletion_due_at'
 );
 
+select is(
+  (select count(*)::integer from private.deletion_requests
+    where user_id = '22222222-2222-4222-8222-222222222222'
+      and request_kind = 'consent_withdrawal'
+      and completed_at is null),
+  1,
+  'withdrawal writes one open deletion request'
+);
+
+select public.service_withdraw_contribution_consent(
+  '22222222-2222-4222-8222-222222222222'
+);
+
+select is(
+  (select count(*)::integer from private.deletion_requests
+    where user_id = '22222222-2222-4222-8222-222222222222'
+      and request_kind = 'consent_withdrawal'
+      and completed_at is null),
+  1,
+  'a second withdrawal does not add another open request'
+);
+
 -- Media row is now pending_delete.
 select is(
   (select status from public.contribution_media
