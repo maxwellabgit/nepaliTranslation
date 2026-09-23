@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { AdminClient } from "../api";
 import { formatApiError } from "../App";
+import { ReviewPage } from "./Review";
 
 type WindowSummary = {
   window_id: string;
@@ -34,6 +35,10 @@ export function PublicReviewPage({ api }: { api: AdminClient }) {
   const [rows, setRows] = useState<WindowSummary[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [submissionId, setSubmissionId] = useState("");
+  const [contentHash, setContentHash] = useState("");
+  const [reason, setReason] = useState("");
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,11 +75,9 @@ export function PublicReviewPage({ api }: { api: AdminClient }) {
         </p>
         <h1>Today's 10 — current window</h1>
         <p>
-          Shared 10-item window for every eligible reviewer today. Reads via
-          the RLS-safe <code>public.review_current_window</code> view;
-          mutating admin actions (unsatisfactory / late reject / quarantine
-          resolution) require a service-role <code>admin-api</code> endpoint
-          — see R3/R7 in <code>plans/active/v1-testflight-runbook.md</code>.
+          Shared window for every eligible reviewer. Translation reports and
+          contribution media are on this page. Unsatisfactory marks and
+          quarantine write through the admin API.
         </p>
       </header>
 
@@ -122,18 +125,57 @@ export function PublicReviewPage({ api }: { api: AdminClient }) {
         </p>
       ) : null}
 
-      <footer>
-        <h2>Panels required by the audit but not yet wired</h2>
-        <ul>
-          <li>Import runs + reject manifests (needs admin RPC + service role)</li>
-          <li>Submission inspection / diff (needs admin RPC + RLS bypass)</li>
-          <li>Pre-close unsatisfactory marking (RPC exists: <code>service_mark_review_unsatisfactory</code>)</li>
-          <li>Late rejection + contributor alert (RPC exists: <code>service_late_reject_review</code>)</li>
-          <li>Report / quarantine resolution (needs admin RPC around <code>service_add_review_exclusion</code>)</li>
-          <li>Source eligibility / exclusion history (view against <code>public.review_exclusions</code>)</li>
-          <li>Reward + scheduler audit events (view against <code>private.audit_log</code>)</li>
-        </ul>
-      </footer>
+      <section data-testid="admin-review-actions">
+        <h2>Adjudication</h2>
+        <label>
+          Submission ID
+          <input
+            data-testid="admin-submission-id"
+            value={submissionId}
+            onChange={(event) => setSubmissionId(event.target.value)}
+          />
+        </label>
+        <label>
+          Content hash
+          <input
+            data-testid="admin-content-hash"
+            value={contentHash}
+            onChange={(event) => setContentHash(event.target.value)}
+          />
+        </label>
+        <label>
+          Reason
+          <input
+            data-testid="admin-review-reason"
+            value={reason}
+            onChange={(event) => setReason(event.target.value)}
+          />
+        </label>
+        <button
+          type="button"
+          data-testid="admin-mark-unsatisfactory"
+          onClick={() => {
+            void api.markReviewUnsatisfactory(submissionId.trim(), reason.trim())
+              .then(() => setActionMessage("Unsatisfactory mark saved."))
+              .catch((e) => setError(formatApiError(e)));
+          }}
+        >
+          Mark unsatisfactory
+        </button>
+        <button
+          type="button"
+          data-testid="admin-quarantine"
+          onClick={() => {
+            void api.quarantineReviewHash(contentHash.trim(), reason.trim())
+              .then(() => setActionMessage("Quarantine saved."))
+              .catch((e) => setError(formatApiError(e)));
+          }}
+        >
+          Quarantine hash
+        </button>
+        {actionMessage ? <p data-testid="admin-action-message">{actionMessage}</p> : null}
+      </section>
+      <ReviewPage api={api} />
     </section>
   );
 }

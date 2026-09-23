@@ -18,6 +18,9 @@ import {
   type AuthState,
 } from './authPolicy';
 import { createAuthNonce } from './authNonce';
+import { mirrorStoredStartupConsent } from './recordStartupConsent';
+import { sessionInactiveNow, touchSessionActivity } from './sessionExpiry';
+import { AppState } from 'react-native';
 import { bindAuthRefresh, getSupabase } from '../../services/supabase';
 import { readPublicEnv } from '../../config/env';
 import { saveAppleUserId, clearAppleIdentity } from './appleIdentity';
@@ -82,13 +85,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     bindAuthRefresh(supabase);
     let cancelled = false;
-    void supabase.auth.getSession().then(({ data, error }) => {
+    void supabase.auth.getSession().then(async ({ data, error }) => {
       if (cancelled) return;
       if (error || !data.session?.user) {
         dispatch({ type: 'ready_guest' });
         return;
       }
-      dispatch({ type: 'ready_session', userId: data.session.user.id });
+      if (await sessionInactiveNow()) {
+        await supabase.auth.signOut();
+        if (!cancelled) dispatch({ type: 'session_revoked' });
+        return;
+      }
+      await touchSessionActivity();
+      if (!cancelled) dispatch({ type: 'ready_session', userId: data.session.user.id });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || String(event) === 'USER_DELETED') {
@@ -100,8 +109,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       if (session?.user) {
-        dispatch({ type: 'ready_session', userId: session.user.id });
+        void (async () => {
+          if (await sessionInactiveNow()) {
+            await supabase.auth.signOut();
+            dispatch({ type: 'session_revoked' });
+            return;
+          }
+          await touchSessionActivity();
+          if (event === 'SIGNED_IN') void mirrorStoredStartupConsent();
+          dispatch({ type: 'ready_session', userId: session.user.id });
+        })();
       }
+    });
+    const appStateSub = AppState.addEventListener('change', (next) => {
+      if (next !== 'active') return;
+      void (async () => {
+        const { data } = await supabase.auth.getSession();
+        if (!data.session?.user) return;
+        if (await sessionInactiveNow()) {
+          await supabase.auth.signOut();
+          dispatch({ type: 'session_revoked' });
+          return;
+        }
+        await touchSessionActivity();
+      })();
     });
 
     // Apple credential revocation → guest; keep local translation history.
@@ -118,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
+      appStateSub.remove();
       revokeSub.remove();
     };
   }, []);

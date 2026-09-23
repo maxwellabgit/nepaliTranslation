@@ -133,6 +133,16 @@ export function createAdminClient(opts: AdminClientOptions) {
       postgrestGet<Array<Record<string, unknown>>>(
         "/review_current_window?select=window_id,slot,ny_close_at,state,size&order=slot.asc",
       ),
+    markReviewUnsatisfactory: (submission_id: string, reason: string) =>
+      request("/public-review/unsatisfactory", {
+        method: "POST",
+        body: JSON.stringify({ submission_id, reason }),
+      }),
+    quarantineReviewHash: (content_hash: string, reason: string) =>
+      request("/public-review/quarantine", {
+        method: "POST",
+        body: JSON.stringify({ content_hash, reason }),
+      }),
   };
 }
 

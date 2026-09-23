@@ -1,5 +1,5 @@
 import {
-  creditLabelForTier,
+  creditLabelForCredits,
   fetchCurrentReviewWindow,
   firstUnsubmittedIndex,
   submitReview,
@@ -162,7 +162,7 @@ describe('publicReviewApi (G1 global 10/day pool)', () => {
   });
 
   test('credit copy respects the length tier (1 credit = 15 min)', () => {
-    expect(creditLabelForTier(1)).toBe('1 credit · 15 min ad-free');
-    expect(creditLabelForTier(2)).toBe('2 credits · 30 min ad-free');
+    expect(creditLabelForCredits(2)).toBe('2 credits · 30 min ad-free');
+    expect(creditLabelForCredits(4)).toBe('4 credits · 60 min ad-free');
   });
 });

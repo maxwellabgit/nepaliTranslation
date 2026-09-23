@@ -343,6 +343,12 @@ export const en = {
   'auth.signOut': 'Sign out',
   'auth.copyUserIdA11y': 'Copy support user ID',
   'auth.ageConfirm': 'I confirm I am 18 or older',
+  'auth.shareSpeech': 'Share speech recordings',
+  'auth.sharePhotos': 'Share Camera photos',
+  'auth.withdrawConsent': 'Withdraw contribution consent',
+  'auth.withdrawConsentTitle': 'Withdraw consent?',
+  'auth.withdrawConsentBody':
+    'This stops new uploads and schedules deletion of linked contribution data within 30 days. Translation on this device is unchanged.',
   'auth.saveConsent': 'Save consent',
   'auth.consentSaved': 'Consent saved',
   'auth.deleteAccount': 'Delete account',
@@ -360,7 +366,7 @@ export const en = {
 
   'ads.houseCopy': 'Prefer no ads? Ad-free is optional. The App Store shows the price.',
   'ads.houseDismiss': 'Not now',
-  'ads.rewardedCta': 'Watch one optional ad for 15 ad-free minutes',
+  'ads.rewardedCta': 'Watch one optional ad for 30 ad-free minutes',
   'ads.signInRequiredTitle': 'Sign in required',
   'ads.signInRequiredBody':
     'Sign in to earn ad-free time from an optional ad.',

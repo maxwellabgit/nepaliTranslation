@@ -347,6 +347,12 @@ export const ne: Record<MessageKey, string> = {
   'auth.signOut': 'साइन आउट',
   'auth.copyUserIdA11y': 'सहायता युजर ID कपी',
   'auth.ageConfirm': 'म १८ वर्ष वा माथि छु भनी पुष्टि गर्छु',
+  'auth.shareSpeech': 'बोली रेकर्डिङ साझा गर्नुहोस्',
+  'auth.sharePhotos': 'क्यामेरा फोटो साझा गर्नुहोस्',
+  'auth.withdrawConsent': 'योगदान सहमति फिर्ता लिनुहोस्',
+  'auth.withdrawConsentTitle': 'सहमति फिर्ता लिने?',
+  'auth.withdrawConsentBody':
+    'यसले नयाँ अपलोड रोक्छ र ३० दिनभित्र जोडिएको योगदान डाटा मेटाउन तालिका बनाउँछ। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
   'auth.saveConsent': 'सहमति बचत',
   'auth.consentSaved': 'सहमति बचत भयो',
   'auth.deleteAccount': 'खाता मेटाउनुहोस्',
@@ -361,9 +367,9 @@ export const ne: Record<MessageKey, string> = {
   'auth.deleting': 'मेटाउँदै…',
   'auth.retryDeleteA11y': 'खाता मेटाउन फेरि प्रयास',
 
-  'ads.houseCopy': 'विज्ञापन नचाहिने? विज्ञापन-मुक्त $०.९९/महिना।',
+  'ads.houseCopy': 'विज्ञापन नचाहिने? विज्ञापन-मुक्त वैकल्पिक हो। App Store ले मूल्य देखाउँछ।',
   'ads.houseDismiss': 'अहिले होइन',
-  'ads.rewardedCta': '१५ मिनेट विज्ञापन-मुक्तका लागि वैकल्पिक विज्ञापन हेर',
+  'ads.rewardedCta': '३० मिनेट विज्ञापन-मुक्तका लागि वैकल्पिक विज्ञापन हेर',
   'ads.signInRequiredTitle': 'साइन इन चाहिन्छ',
   'ads.signInRequiredBody':
     'वैकल्पिक विज्ञापनबाट विज्ञापन-मुक्त समय कमाउन साइन इन गर।',

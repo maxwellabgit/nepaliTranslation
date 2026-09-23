@@ -217,7 +217,7 @@ Selected base SHA and final HEAD. Branch name and push status. Completed gates. 
 
 ## Progress
 
-C0 is complete as a docs-and-baseline gate. Product behavior was not changed. The next gate is C1.
+C0 and C1 are recorded complete. Later commits added source for C2–C11, but a merge at `4797385` did not prove those gates. Internal TestFlight and public V1 stay NO-GO. The English-to-Nepali model certificate still fails its floors.
 
 ## Surprises & discoveries
 
@@ -246,7 +246,7 @@ git merge-base --is-ancestor origin/main origin/cursor/v1-r6-r9-blockers-5907
 
 ## Remaining work
 
-C1 through C15. C0 docs and baseline evidence are committed on this branch.
+Code-owned C2–C15 are not closed by the commits on `4797385`. Fresh and upgrade database proof, device proof, hosted schedulers, and a passing English-to-Nepali certificate are still required before either release gate can move. Do not treat a clean merge as C0–C15 passed.
 
 ## Blockers (concrete; cannot be solved from this repo)
 

@@ -6,6 +6,7 @@ import {
 } from '../features/auth/consent';
 import { getRuntimeFeatureFlags } from '../app/featureFlags';
 import { loadLocalConsent } from '../storage/contributionConsent';
+import { loadSharingToggles } from '../storage/sharingToggles';
 import {
   enqueueMediaItem,
   newMediaIdempotencyKey,
@@ -95,6 +96,9 @@ export async function enqueueEligibleMedia(
       photosEnabled: flags.contributionPhotosEnabled,
     });
     if (!gate.ok) return null;
+    const sharing = await loadSharingToggles();
+    if (input.kind === 'speech' && !sharing.speech) return null;
+    if (input.kind === 'photo' && !sharing.photos) return null;
 
     const contentType =
       input.contentType ?? contentTypeForUri(input.sourceUri, input.kind);

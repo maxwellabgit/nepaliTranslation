@@ -23,7 +23,8 @@ Deno.test("purgeUserStorageObjects deletes listed objects", async () => {
     fetchImpl,
   });
 
-  assertEquals(removed, 1);
+  assertEquals(removed.ok, true);
+  assertEquals(removed.removed, 1);
   assertEquals(calls.length, 1);
   assertEquals(calls[0]?.includes("contribution-photos/user/photo.jpg"), true);
 });

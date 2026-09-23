@@ -6,6 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { manifestReady } from '../../scripts/exclusionManifest.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const MOBILE = path.resolve(__dirname, '..');
@@ -15,6 +16,13 @@ const BANK_CANDIDATES = [
 ];
 const BANK = BANK_CANDIDATES.find((p) => fs.existsSync(p));
 const OUT = path.join(MOBILE, 'src', 'mt', 'generated', 'meaningLexicon.json');
+const exclusionManifest = JSON.parse(
+  fs.readFileSync(path.join(MOBILE, '..', 'benchmarks', 'private_exclusions.json'), 'utf8'),
+);
+if (!manifestReady(exclusionManifest)) {
+  console.error('export_meaning_lexicon: exclusion manifest is not a fail-closed snapshot');
+  process.exit(1);
+}
 
 const DEVANAGARI = /[\u0900-\u097F]/;
 const LATIN_WORD = /^[a-z]+$/;

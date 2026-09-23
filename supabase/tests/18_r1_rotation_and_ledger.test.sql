@@ -335,6 +335,9 @@ select ok(true, 'immediate rotation retry does not extend entitlements');
 -- Empty / under-N pool: rotation opens with actual count and flags pool_short
 -- ---------------------------------------------------------------------------
 
+-- Public review must be enabled before a short pool opens a window.
+update public.app_config set public_review_enabled = true where id = 1;
+
 -- Mark all but 2 rows ineligible so the next rotation is under-N.
 update private.review_source_items
    set public_review_eligible = false

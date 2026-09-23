@@ -27,6 +27,11 @@ type Props = {
   onSignOut: () => void;
   onSaveConsent: (ageConfirmed: boolean) => void;
   onDeleteAccount: () => void;
+  speechSharing?: boolean;
+  photoSharing?: boolean;
+  onToggleSpeechSharing?: (enabled: boolean) => void;
+  onTogglePhotoSharing?: (enabled: boolean) => void;
+  onWithdrawConsent?: () => void;
 };
 
 export function AccountSection({
@@ -41,6 +46,11 @@ export function AccountSection({
   onSignOut,
   onSaveConsent,
   onDeleteAccount,
+  speechSharing = false,
+  photoSharing = false,
+  onToggleSpeechSharing,
+  onTogglePhotoSharing,
+  onWithdrawConsent,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
@@ -62,6 +72,21 @@ export function AccountSection({
       cancelled = true;
     };
   }, []);
+
+  const confirmWithdraw = () => {
+    Alert.alert(
+      t('auth.withdrawConsentTitle', lang),
+      t('auth.withdrawConsentBody', lang),
+      [
+        { text: t('common.cancel', lang), style: 'cancel' },
+        {
+          text: t('auth.withdrawConsent', lang),
+          style: 'destructive',
+          onPress: () => onWithdrawConsent?.(),
+        },
+      ],
+    );
+  };
 
   const confirmDelete = () => {
     Alert.alert(
@@ -216,6 +241,28 @@ export function AccountSection({
         </Text>
       </Pressable>
       <Pressable
+        onPress={() => onToggleSpeechSharing?.(!speechSharing)}
+        accessibilityRole="switch"
+        accessibilityState={{ checked: speechSharing }}
+        accessibilityLabel={t('auth.shareSpeech', lang)}
+        testID="share-speech"
+      >
+        <Text style={styles.body}>
+          {speechSharing ? '☑' : '☐'} {t('auth.shareSpeech', lang)}
+        </Text>
+      </Pressable>
+      <Pressable
+        onPress={() => onTogglePhotoSharing?.(!photoSharing)}
+        accessibilityRole="switch"
+        accessibilityState={{ checked: photoSharing }}
+        accessibilityLabel={t('auth.sharePhotos', lang)}
+        testID="share-photos"
+      >
+        <Text style={styles.body}>
+          {photoSharing ? '☑' : '☐'} {t('auth.sharePhotos', lang)}
+        </Text>
+      </Pressable>
+      <Pressable
         style={[styles.button, (!signedIn || !age) && styles.buttonOff]}
         disabled={!signedIn || !age || consentCurrent}
         onPress={() => onSaveConsent(true)}
@@ -231,6 +278,14 @@ export function AccountSection({
       </Pressable>
       {signedIn ? (
         <>
+          <Pressable
+            onPress={confirmWithdraw}
+            accessibilityRole="button"
+            accessibilityLabel={t('auth.withdrawConsent', lang)}
+            testID="withdraw-consent"
+          >
+            <Text style={styles.danger}>{t('auth.withdrawConsent', lang)}</Text>
+          </Pressable>
           <Pressable
             onPress={confirmDelete}
             disabled={status === 'deleting'}

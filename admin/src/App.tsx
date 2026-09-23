@@ -4,7 +4,6 @@ import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { AdminApiError, createAdminClient, type AdminClient } from "./api";
 import { createBrowserSupabase, hasSupabaseConfig } from "./supabase";
 import { DashboardPage } from "./pages/Dashboard";
-import { ReviewPage } from "./pages/Review";
 import { PublicReviewPage } from "./pages/PublicReview";
 import { AlertsPage } from "./pages/Alerts";
 import { DeletionsPage } from "./pages/Deletions";
@@ -71,7 +70,6 @@ export function App() {
       <nav className="nav">
         <span className="brand">NepTranslate Admin</span>
         <NavLink to="/" end>Dashboard</NavLink>
-        <NavLink to="/review">Review</NavLink>
         <NavLink to="/public-review">Public Review</NavLink>
         <NavLink to="/alerts">Alerts</NavLink>
         <NavLink to="/deletions">Deletions</NavLink>
@@ -87,7 +85,7 @@ export function App() {
       </nav>
       <Routes>
         <Route path="/" element={<DashboardPage api={api} />} />
-        <Route path="/review" element={<ReviewPage api={api} />} />
+        <Route path="/review" element={<Navigate to="/public-review" replace />} />
         <Route path="/public-review" element={<PublicReviewPage api={api} />} />
         <Route path="/alerts" element={<AlertsPage api={api} />} />
         <Route path="/deletions" element={<DeletionsPage api={api} />} />

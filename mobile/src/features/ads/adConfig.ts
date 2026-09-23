@@ -103,4 +103,4 @@ export const HOUSE_AD_COPY =
   'Prefer no ads? Ad-free is optional. The App Store shows the price.';
 export const HOUSE_AD_DISMISS = 'Not now';
 export const REWARDED_CTA_LABEL =
-  'Watch one optional ad for 15 ad-free minutes';
+  'Watch one optional ad for 30 ad-free minutes';

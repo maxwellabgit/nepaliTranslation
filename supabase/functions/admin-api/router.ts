@@ -319,6 +319,42 @@ export async function handleAdminRequest(
       );
     }
 
+    if (method === "POST" && path === "/public-review/unsatisfactory") {
+      const body = await req.json().catch(() => null) as {
+        submission_id?: string;
+        reason?: string;
+      } | null;
+      if (!body?.submission_id || !body.reason) {
+        return withCors(errorResponse("invalid_payload", 400, requestId), origin, deps.env.adminOrigin);
+      }
+      const res = await deps.rpc("service_mark_review_unsatisfactory", {
+        p_submission_id: body.submission_id,
+        p_admin: user.id,
+        p_reason: body.reason,
+      });
+      if (!res.ok) return withCors(rpcError(res.text, requestId), origin, deps.env.adminOrigin);
+      return withCors(json(res.json ?? { ok: true }, 200, requestId), origin, deps.env.adminOrigin);
+    }
+
+    if (method === "POST" && path === "/public-review/quarantine") {
+      const body = await req.json().catch(() => null) as {
+        content_hash?: string;
+        reason?: string;
+      } | null;
+      if (!body?.content_hash || !body.reason) {
+        return withCors(errorResponse("invalid_payload", 400, requestId), origin, deps.env.adminOrigin);
+      }
+      const res = await deps.rpc("service_add_review_exclusion", {
+        p_content_hash: body.content_hash,
+        p_reason: "admin_quarantine",
+        p_source_lineage: "admin:public-review",
+        p_actor_user_id: user.id,
+        p_notes: body.reason,
+      });
+      if (!res.ok) return withCors(rpcError(res.text, requestId), origin, deps.env.adminOrigin);
+      return withCors(json({ ok: true }, 200, requestId), origin, deps.env.adminOrigin);
+    }
+
     return withCors(errorResponse("not_found", 404, requestId), origin, deps.env.adminOrigin);
   } catch {
     return withCors(errorResponse("unavailable", 503, requestId), origin, deps.env.adminOrigin);

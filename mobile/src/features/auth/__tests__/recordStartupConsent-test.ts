@@ -61,7 +61,7 @@ describe('recordStartupConsent', () => {
     ).toEqual({ ok: false, code: 'unauthorized' });
   });
 
-  test('incomplete when any of T&C / Privacy / 18+ is false', async () => {
+  test('incomplete when Terms or Privacy is false', async () => {
     expect(
       await recordStartupConsent({
         terms: true,
@@ -76,14 +76,23 @@ describe('recordStartupConsent', () => {
         age18Plus: true,
       }),
     ).toEqual({ ok: false, code: 'incomplete' });
-    expect(
-      await recordStartupConsent({
-        terms: true,
-        privacy: true,
-        age18Plus: false,
-      }),
-    ).toEqual({ ok: false, code: 'incomplete' });
     expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  test('posts age18Plus false for startup consent', async () => {
+    (globalThis.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      status: 200,
+    });
+    const result = await recordStartupConsent({
+      terms: true,
+      privacy: true,
+      age18Plus: false,
+    });
+    expect(result).toEqual({ ok: true });
+    const body = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
+    expect(body.p_age_confirmed).toBe(false);
+    expect(body.p_version).toBe('2026-09-23.startup');
   });
 
   test('POST when all three boxes checked', async () => {

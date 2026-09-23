@@ -4,7 +4,10 @@ import {
   json,
   requestIdFrom,
 } from "../_shared/http.ts";
-import { purgeUserStorageObjects } from "../_shared/storagePurge.ts";
+import {
+  executeDeletionRequest,
+  type DueDeletionRequest,
+} from "../_shared/deletionExecutor.ts";
 
 /**
  * Cron-invoked worker: NY reward close + overdue deletion purges + auth removal.
@@ -64,38 +67,26 @@ Deno.serve(async (req) => {
   }
   const rotateBody = await rotateRes.json() as Record<string, unknown>;
 
-  const dueRes = await fetch(`${url}/rest/v1/rpc/service_list_deletion_due_users`, {
+  const lookaheadRes = await fetch(`${url}/rest/v1/rpc/service_plan_review_lookahead`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ p_horizon: 28, p_min_enable: 14 }),
+  });
+  if (!lookaheadRes.ok) return errorResponse("lookahead_failed", 502, requestId);
+  const lookaheadBody = await lookaheadRes.json() as Record<string, unknown>;
+
+  const dueRes = await fetch(`${url}/rest/v1/rpc/service_list_due_deletion_requests`, {
     method: "POST",
     headers,
     body: JSON.stringify({ p_limit: 50 }),
   });
   if (!dueRes.ok) return errorResponse("unavailable", 503, requestId);
-  const dueUsers = await dueRes.json() as Array<{ user_id?: string }>;
+  const dueRequests = await dueRes.json() as DueDeletionRequest[];
 
-  const authDeleted: string[] = [];
-  for (const row of dueUsers) {
-    const userId = row.user_id;
-    if (!userId) continue;
-
-    await purgeUserStorageObjects(userId, { url, service });
-
-    const purgeRes = await fetch(`${url}/rest/v1/rpc/service_purge_scheduled_deletion`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ p_user_id: userId }),
-    });
-    if (!purgeRes.ok) continue;
-    const purgeBody = await purgeRes.json() as { purged?: boolean };
-    if (!purgeBody.purged) continue;
-
-    const authRes = await fetch(`${url}/auth/v1/admin/users/${userId}`, {
-      method: "DELETE",
-      headers: {
-        authorization: `Bearer ${service}`,
-        apikey: service,
-      },
-    });
-    if (authRes.ok) authDeleted.push(userId);
+  const deletionResults = [];
+  for (const row of dueRequests) {
+    if (!row?.id || !row.user_id || !row.request_kind) continue;
+    deletionResults.push(await executeDeletionRequest(row, { url, service }));
   }
 
   return json(
@@ -103,7 +94,8 @@ Deno.serve(async (req) => {
       ok: true,
       reward_close: closeBody,
       review_rotation: rotateBody,
-      deletion_auth_removed: authDeleted.length,
+      review_lookahead: lookaheadBody,
+      deletion_results: deletionResults,
     },
     200,
     requestId,

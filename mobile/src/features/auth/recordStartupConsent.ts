@@ -1,4 +1,8 @@
-import { STARTUP_CONSENT_VERSION } from '../../storage/startupConsent';
+import {
+  isStartupConsentCurrent,
+  loadStartupConsent,
+  STARTUP_CONSENT_VERSION,
+} from '../../storage/startupConsent';
 import { readPublicEnv } from '../../config/env';
 import { getSupabase } from '../../services/supabase';
 
@@ -18,8 +22,8 @@ export type StartupConsentClientResult =
  * G2 startup consent gate — mirror the local acknowledgement to Supabase for
  * the signed-in user. Guests keep the acknowledgement device-local only.
  *
- * All three boxes (Terms, Privacy, 18+) must be true or the RPC returns
- * `startup_consent_incomplete` (400).
+ * Terms and Privacy must be accepted. 18+ is not part of startup consent;
+ * a false age18Plus value is stored and sent as p_age_confirmed false.
  */
 export async function recordStartupConsent(input: {
   terms: boolean;
@@ -33,7 +37,7 @@ export async function recordStartupConsent(input: {
   const token = data.session?.access_token;
   const userId = data.session?.user?.id;
   if (!token || !userId) return { ok: false, code: 'unauthorized' };
-  if (!input.terms || !input.privacy || !input.age18Plus) {
+  if (!input.terms || !input.privacy) {
     return { ok: false, code: 'incomplete' };
   }
   const res = await fetch(
@@ -50,7 +54,7 @@ export async function recordStartupConsent(input: {
         p_version: STARTUP_CONSENT_VERSION,
         p_terms_accepted: true,
         p_privacy_accepted: true,
-        p_age_confirmed: true,
+        p_age_confirmed: input.age18Plus,
       }),
     },
   );
@@ -59,4 +63,17 @@ export async function recordStartupConsent(input: {
   if (res.status === 401) return { ok: false, code: 'unauthorized' };
   // 409 or P0001 on outdated version
   return { ok: false, code: res.status === 409 ? 'outdated' : 'unavailable' };
+}
+
+/** Mirror a guest's local startup acceptance after a later sign-in. */
+export async function mirrorStoredStartupConsent(): Promise<StartupConsentClientResult> {
+  const record = await loadStartupConsent();
+  if (!record || !isStartupConsentCurrent(record)) {
+    return { ok: false, code: 'incomplete' };
+  }
+  return recordStartupConsent({
+    terms: record.terms,
+    privacy: record.privacy,
+    age18Plus: record.age18Plus,
+  });
 }

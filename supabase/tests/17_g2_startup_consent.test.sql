@@ -41,15 +41,20 @@ select throws_ok(
   'Terms unchecked -> startup_consent_incomplete'
 );
 
-select throws_ok(
-  $$select public.service_record_startup_consent(
+select ok(
+  (public.service_record_startup_consent(
       '11111111-1111-4111-8111-111111111111',
       (select startup_consent_version from public.app_config where id = 1),
       true, true, false
-    )$$,
-  'P0001',
-  'startup_consent_incomplete',
-  '18+ unchecked -> startup_consent_incomplete'
+    ) ->> 'accepted_at') is not null,
+  '18+ false is valid startup consent'
+);
+
+select is(
+  (select startup_age_confirmed_at from public.profiles
+    where user_id = '11111111-1111-4111-8111-111111111111'),
+  null,
+  'startup age stamp stays empty when 18+ is false'
 );
 
 -- Rejects outdated versions.

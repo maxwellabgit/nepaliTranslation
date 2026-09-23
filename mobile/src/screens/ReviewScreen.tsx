@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../features/auth/AuthProvider';
 import {
-  creditLabelForTier,
+  creditLabelForCredits,
   fetchCurrentReviewWindow,
   firstUnsubmittedIndex,
   submitReview,
@@ -318,7 +318,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                     register: active.register,
                   })}
                   {'  ·  '}
-                  {creditLabelForTier(active.length_tier)}
+                  {creditLabelForCredits(active.scheduled_credits)}
                 </Text>
                 <Text style={dynamic.label}>
                   {t('review.itemSource', lang)}

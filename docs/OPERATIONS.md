@@ -7,13 +7,13 @@
 The `process-scheduled-jobs` Supabase Edge Function does three things:
 
 1. Closes the current NY reward window and grants scheduled contribution credits (`service_close_ny_reward_window`).
-2. **R1 (was G1):** rotates the global public-review window (`service_rotate_review_window(p_size, p_as_of)`). Behaviour:
+2. **Review queue:** `service_plan_review_lookahead` appends private New York days toward a 28-day horizon and turns `public_review_enabled` on only after 14 future days exist. `service_rotate_review_window` still closes a due window and grants snapshotted credits (2 for 0–20 original source words, 4 for 21 or more). It opens a public window only when that flag is on, promoting the planned day when one exists. Behaviour:
    - Advisory-lock-owned: concurrent invocations return `{status: 'busy'}` and mutate nothing.
    - `not_due`: if the current open window's `ny_close_at > p_as_of`, no mutation; returns `{status: 'not_due', ...}`. Monitoring counts these to confirm the scheduler is alive between 5 PM ticks.
    - At close, grants credit **only** for `confirm` and `edit` submissions that were not marked `unsatisfactory` before close; `skip` and `report` grant zero; `report` also flips the source item to `public_review_eligible=false`. Credits route through `private.apply_reward` so `earned_ad_free_until` advances at close.
    - Empty/under-N pool: opens a window with the actual count and returns `warning: 'pool_short'` (still 200 to the caller).
    - Non-2xx PostgREST response now surfaces to the caller as HTTP 502 `rotate_failed` — cron alerting depends on this instead of the previous "HTTP 200 with `{error: 'rotate_failed'}`" shape that hid failures.
-3. Purges eligible account-deletion records (`service_list_deletion_due_users` → `service_purge_scheduled_deletion` → `auth.admin.users delete`).
+3. Purges due rows from `private.deletion_requests` (`service_list_due_deletion_requests`). Consent withdrawal and account deletion both live in that table. Storage must succeed before the database purge. Auth deletion runs only for account deletion, and a failed auth delete stays on the request for retry. Profile `deletion_requested_at` is not the executor's source of truth.
 
 ### Required cron
 

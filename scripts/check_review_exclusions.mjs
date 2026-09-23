@@ -29,8 +29,10 @@ import { readFileSync } from "node:fs";
 import { readdirSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
+import { forbiddenSets, manifestReady } from "./exclusionManifest.mjs";
 
-const root = resolve(new URL("..", import.meta.url).pathname);
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const registryPath = join(root, "datasets", "corpus-registry.json");
 const exclusionsPath = join(root, "benchmarks", "private_exclusions.json");
 
@@ -50,13 +52,15 @@ if (exclusions.content_hash_algorithm !== "sha256") {
   process.exit(1);
 }
 
-const excludedSet = new Set(exclusions.excluded ?? []);
-if (excludedSet.size === 0) {
-  console.log(
-    "check_review_exclusions: exclusion manifest is empty; nothing to enforce yet (this is expected until public review actually retires items).",
+if (!manifestReady(exclusions)) {
+  console.error(
+    "check_review_exclusions: exclusion manifest is not a fail-closed snapshot. Require exposure_count plus excluded, source_hashes, and target_hashes. An empty file is not proof.",
   );
-  process.exit(0);
+  process.exit(1);
 }
+
+const { composite: excludedSet, source: sourceSet, target: targetSet } =
+  forbiddenSets(exclusions);
 
 const sha256 = (s) => createHash("sha256").update(s).digest("hex");
 const normalize = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
@@ -210,7 +214,13 @@ for (const corpus of registry.corpora ?? []) {
       for (const d of detected) {
         checked += 1;
         const hash = sha256(composite(d.direction, d.source, d.target));
-        if (excludedSet.has(hash)) {
+        const sourceHash = sha256(normalize(d.source));
+        const targetHash = sha256(normalize(d.target));
+        if (
+          excludedSet.has(hash) ||
+          sourceSet.has(sourceHash) ||
+          targetSet.has(targetHash)
+        ) {
           violations += 1;
           console.error(
             `check_review_exclusions: VIOLATION corpus='${corpus.id}' file='${relative(root, file)}' hash=${hash} — this content is in benchmarks/private_exclusions.json and MUST NOT appear in training/eval.`,

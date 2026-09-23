@@ -12,6 +12,12 @@ import Constants from 'expo-constants';
 import { BuildProvenanceCard } from '../components/BuildProvenanceCard';
 import { useFeatureFlags } from '../app/FeatureConfigProvider';
 import { AccountSection } from '../features/auth/AccountSection';
+import { withdrawContributionConsent } from '../features/auth/withdrawContributionConsent';
+import {
+  loadSharingToggles,
+  saveSharingToggles,
+  type SharingToggles,
+} from '../storage/sharingToggles';
 import { useAuth } from '../features/auth/AuthProvider';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { recordContributionConsent } from '../features/auth/recordConsent';
@@ -81,6 +87,14 @@ export function SettingsScreen({
   const subscription = useSubscriptionOptional();
   const legalUrls = useMemo(() => readLegalPublicUrls(), []);
   const featureFlags = useFeatureFlags();
+  const [sharing, setSharing] = useState<SharingToggles>({
+    speech: false,
+    photos: false,
+  });
+
+  useEffect(() => {
+    void loadSharingToggles().then(setSharing);
+  }, []);
 
   const refreshAccountSummary = auth.refreshAccountSummary;
   const authStatus = auth.status;
@@ -294,6 +308,30 @@ export function SettingsScreen({
           }}
           onDeleteAccount={() => {
             void auth.deleteAccount();
+          }}
+          speechSharing={sharing.speech}
+          photoSharing={sharing.photos}
+          onToggleSpeechSharing={(enabled) => {
+            const next = { ...sharing, speech: enabled };
+            setSharing(next);
+            void saveSharingToggles(next);
+          }}
+          onTogglePhotoSharing={(enabled) => {
+            const next = { ...sharing, photos: enabled };
+            setSharing(next);
+            void saveSharingToggles(next);
+          }}
+          onWithdrawConsent={() => {
+            void withdrawContributionConsent().then((result) => {
+              if (!result.ok) {
+                Alert.alert(
+                  t('auth.withdrawConsentTitle', lang),
+                  t('settings.consentNotSavedBody', lang),
+                );
+                return;
+              }
+              void auth.refreshAccountSummary();
+            });
           }}
         />
 

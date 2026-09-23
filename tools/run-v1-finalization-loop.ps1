@@ -37,11 +37,6 @@ while ($true) {
         break
     }
 
-    if ($StateText -match "(?m)^status:\s*WAITING_HUMAN\s*$") {
-        Write-Host "V1 finalization is waiting for a human action. Read $State"
-        break
-    }
-
     $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $Log = Join-Path $LogDir "$Stamp.log"
 
@@ -60,19 +55,16 @@ $State
 Rules for this pass:
 1. Read AGENTS.md, the authoritative plan in full, and the progress state before acting.
 2. Inspect git status and preserve all user changes. Never reset, discard, force-push, or write directly to main.
-3. Fetch remote refs if network access is available, but do not switch away from the reconciliation branch or replace local work.
-4. Select the earliest unfinished gate whose prerequisites are satisfied.
-5. Implement one coherent next gate or one clearly bounded portion of a large gate. Do not merely report progress.
-6. Use forward-only migrations. Never rewrite historical migrations or evidence.
-7. Run the narrow tests for the change, then all broader tests required by that gate.
-8. Fix failures caused by this work. Record unrelated blockers precisely.
-9. Update documentation and .agent/V1_FINAL_CONTRACT_STATE.md with exact commands, results, evidence paths, HEAD SHA, and next action.
-10. Commit a completed coherent gate with the gate ID in the subject. Push only the reconciliation branch after its tests pass.
-11. Never deploy production.
-12. Never put secrets or raw user content in source, logs, telemetry, fixtures, or the progress file.
-13. If code-owned work remains, keep status: IN_PROGRESS and name the next action.
-14. Use status: WAITING_HUMAN only when no safe code/document/test work can continue without a specific human credential, device, legal decision, hosted-service action, or approval. List the exact smallest unblock action.
-15. Use status: FINALIZATION_COMPLETE only when every code-owned gate and verification in the plan is complete and green and the branch is clean/pushed. Human release gates must still be listed honestly.
+3. A commit, a clean merge, or origin/main matching the reconciliation branch does not mean C0-C15 passed. Prove each gate with the plan's commands.
+4. Continue through every unfinished code-owned gate in this pass. Do not stop after one gate. Do not stop on status WAITING_HUMAN while code, tests, or docs can still move.
+5. Use forward-only migrations. Never rewrite historical migrations, audit evidence, or benchmark failures.
+6. Run the tests for each change and read the output. An empty exclusion manifest is a failure, not a pass.
+7. Fix failures caused by this work. Record unrelated blockers precisely, including the English-to-Nepali certificate if it still fails its floors.
+8. Update documentation and .agent/V1_FINAL_CONTRACT_STATE.md with exact commands, results, evidence paths, HEAD SHA, and the next unproven gate.
+9. Commit completed work with the gate IDs in the subject only after the tests you ran are honest. Push only the reconciliation branch.
+10. Never deploy production. Never mark Internal TestFlight or public V1 GO from this loop.
+11. Never put secrets or raw user content in source, logs, telemetry, fixtures, or the progress file.
+12. Keep status IN_PROGRESS while any code-owned gate is unproven. FINALIZATION_COMPLETE is only for code-owned work that is green, and it still lists human release gates. It does not mean public V1 is GO.
 
 Before ending, re-read the diff for privacy, reward idempotency, timezone/DST, deletion retry safety, ad safe points, offline-core preservation, and duplicate correction UI.
 "@
@@ -107,11 +99,6 @@ Before ending, re-read the diff for privacy, reward idempotency, timezone/DST, d
 
     if ($StateText -match "(?m)^status:\s*FINALIZATION_COMPLETE\s*$") {
         Write-Host "V1 finalization is complete according to $State"
-        break
-    }
-
-    if ($StateText -match "(?m)^status:\s*WAITING_HUMAN\s*$") {
-        Write-Host "V1 finalization is waiting for a human action. Read $State"
         break
     }
 

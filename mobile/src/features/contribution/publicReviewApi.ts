@@ -8,8 +8,8 @@ import { getSupabase } from '../../services/supabase';
  *   * One global 10-item window per America/New_York review day.
  *   * All eligible signed-in reviewers see the SAME ten items.
  *   * Rotation at 5:00 PM America/New_York closes the window, grants
- *     credits (1/2 credits by length tier at assignment; 1 credit = 15
- *     minutes ad-free), and opens the next window with a fresh random 10.
+ *     credits (2 credits when the snapshotted source is 0–20 words, 4 when
+ *     it is 21 or more; 1 credit = 15 minutes), and opens the next window.
  *   * Copy shown in-app is "Today's 10" with subtitle "Review translations".
  *
  * Not called for guests; the mobile Review surface is signed-in only.
@@ -24,7 +24,7 @@ export type ReviewItem = {
   source_text: string;
   proposed_target: string | null;
   length_tier: 1 | 2;
-  scheduled_credits: 1 | 2;
+  scheduled_credits: 1 | 2 | 4;
 };
 
 export type ReviewWindowSummary = {
@@ -172,8 +172,8 @@ export async function submitReview(input: {
   return { ok: true, submission: body.submission };
 }
 
-export function creditLabelForTier(tier: 1 | 2): string {
-  return tier === 2
-    ? '2 credits · 30 min ad-free'
-    : '1 credit · 15 min ad-free';
+export function creditLabelForCredits(credits: number): string {
+  if (credits === 4) return '4 credits · 60 min ad-free';
+  if (credits === 2) return '2 credits · 30 min ad-free';
+  return '1 credit · 15 min ad-free';
 }

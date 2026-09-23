@@ -7,6 +7,7 @@ import {
   DEFAULT_FEATURE_FLAGS,
 } from '../../app/featureFlags';
 import { enqueueEligibleMedia, enqueueEligibleSpeechRecording } from '../mediaEnqueue';
+import { setSharingTogglesForTests } from '../../storage/sharingToggles';
 
 const mockLoadLocalConsent = jest.fn();
 const mockEnqueueMediaItem = jest.fn();
@@ -61,6 +62,7 @@ describe('mediaEnqueue gates', () => {
       updated_at: new Date().toISOString(),
       ...input,
     }));
+    setSharingTogglesForTests({ speech: false, photos: false });
     setRuntimeFeatureFlags({
       ...DEFAULT_FEATURE_FLAGS,
       learnEnabled: true,
@@ -96,7 +98,18 @@ describe('mediaEnqueue gates', () => {
     expect(result).toBeNull();
   });
 
-  test('consented adult with photos flag enqueues', async () => {
+  test('sharing toggle off enqueues nothing', async () => {
+    const result = await enqueueEligibleMedia({
+      kind: 'photo',
+      sourceUri: 'file:///tmp/cam.jpg',
+      signedIn: true,
+      authConfigured: true,
+    });
+    expect(result).toBeNull();
+  });
+
+  test('consented adult with photos flag and sharing toggle enqueues', async () => {
+    setSharingTogglesForTests({ speech: true, photos: true });
     const result = await enqueueEligibleMedia({
       kind: 'photo',
       sourceUri: 'file:///tmp/cam.jpg',
@@ -108,6 +121,7 @@ describe('mediaEnqueue gates', () => {
   });
 
   test('speech enqueue API works when a recording URI is provided', async () => {
+    setSharingTogglesForTests({ speech: true, photos: false });
     const result = await enqueueEligibleSpeechRecording({
       sourceUri: 'file:///tmp/rec.m4a',
       signedIn: true,
