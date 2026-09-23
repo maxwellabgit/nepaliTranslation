@@ -49,7 +49,7 @@ Do not claim App Store submission or external RC from this document or from Wind
 
 ## Exact TestFlight go/no-go (external RC)
 
-> **Historical R0–R9 checklist.** Items below that require a three-per-day interstitial cap, a 15-minute rewarded grant, one/two credits, or ten exclusive assignments per reviewer are the old contract. The living internal and public gates are sections 9.1 and 9.2 of the reconciliation plan. This list is kept so the old runbook stays auditable.
+> **Historical R0–R9 checklist.** Items below that require a three-per-day interstitial cap, a 15-minute rewarded grant, one/two credits, or ten exclusive assignments per reviewer are the old contract. The living internal and public gates are the “Internal TestFlight” and “Public V1” paragraphs in [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md). This list is kept so the old runbook stays auditable.
 
 Do not treat the following as the current release gate:
 
@@ -84,7 +84,7 @@ Automatic interstitial stays **off** until a human records a decision. Default f
 | Decision | Owner | Date | Build | Notes |
 |----------|-------|------|-------|-------|
 | [ ] Keep `automatic_interstitial_enabled` **off** for public V1 | | | | Recommended until external cohort is clean |
-| [ ] Enable for external TestFlight only | | | | Max 3 / America/New_York day; SDK dismiss; remote kill switch verified |
+| [ ] Enable for external TestFlight only | | | | No daily cap; 15 minutes since last confirmed impression; SDK dismiss; remote kill switch verified |
 | [ ] Enable for App Store phased release | | | | Only after seven clean external days + support review |
 
 Do not treat code landing or Playwright as interstitial enablement.
@@ -169,7 +169,7 @@ On a non-production or internal build with optional flags **on**:
 
 ## Public App Store go/no-go checklist
 
-> **Historical G0–G7 submit list.** Public submission now follows section 9.2 of the reconciliation plan. The boxes below are not the living definition of Done.
+> **Historical G0–G7 submit list.** Public submission now follows the “Public V1” paragraph in the reconciliation plan. The boxes below are not the living definition of Done.
 
 The G0–G7 program allowed public submission only when **all** of these were checked by a human:
 

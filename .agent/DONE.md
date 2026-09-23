@@ -175,7 +175,7 @@ F0–F10 checklists remain in git history / `plans/active/beta-release.md` for a
 
 ## Release go/no-go (public App Store)
 
-> Historical G0–G7 submit list. Public V1 now follows section 9.2 of `plans/active/v1-final-contract-reconciliation.md`. A completed G0–G7 checklist is not the living definition of Done.
+> Historical G0–G7 submit list. Public V1 now follows the “Public V1” paragraph in `plans/active/v1-final-contract-reconciliation.md`. A completed G0–G7 checklist is not the living definition of Done.
 
 The list below is what the G0–G7 program required:
 
