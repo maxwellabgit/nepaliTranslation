@@ -8,6 +8,7 @@ import { t, useUiLang } from '../i18n';
 import { ALPHABET_SECTIONS, type AlphabetGlyph } from '../learn/alphabet';
 import { RewardSummaryCard } from '../learn/RewardSummaryCard';
 import { AdSlot } from '../features/ads/AdSlot';
+import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { hasNepaliVoice } from '../stt/sttSupport';
 import { useTheme } from '../theme';
 
@@ -95,7 +96,16 @@ export function LearnScreen({ active, onOpenTodaysReview }: Props) {
   const speak = (glyph: AlphabetGlyph) => {
     if (!voiceOk) return;
     Speech.stop();
-    Speech.speak(glyph.dewanagari, { language: 'ne-NP', rate: 0.85 });
+    Speech.speak(glyph.dewanagari, {
+      language: 'ne-NP',
+      rate: 0.85,
+      onDone: () => {
+        requestInterstitialOpportunity({
+          transition: 'learn_activity_completed',
+          surface: 'learn_landing',
+        });
+      },
+    });
   };
 
   return (

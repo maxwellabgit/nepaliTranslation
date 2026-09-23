@@ -8,7 +8,7 @@ import { loadStartupConsent, isStartupConsentCurrent } from '../../storage/start
  * G2 speech-media contribution helper.
  *
  * The raw speech-media upload path is in V1 scope. Uploads only run when:
- *   * the user has completed the startup consent gate (T&C + Privacy + 18+),
+ *   * the user has completed startup Terms and Privacy acceptance,
  *   * they are signed in,
  *   * their media consent is current for the app-config version,
  *   * and `contribution_speech_enabled` is true.

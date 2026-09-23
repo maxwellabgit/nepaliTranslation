@@ -13,6 +13,7 @@ import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
 import { useAuth } from '../features/auth/AuthProvider';
 import { enqueueEligibleMedia } from '../services/mediaEnqueue';
+import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { useRuntime } from '../runtime/RuntimeContext';
 import {
   initialCameraPhase,
@@ -312,6 +313,11 @@ export function CameraScreen({ active }: Props) {
       setCaptureUri(null);
       // Keep previewUri for the result photo until retake/exit.
       dispatch({ type: 'RESULT' });
+      requestInterstitialOpportunity({
+        transition: 'camera_capture_committed',
+        surface: 'translate_idle',
+        cameraActive: true,
+      });
     } catch {
       if (gen !== requestGenRef.current) return;
       deleteCapture(uri, 'processed');

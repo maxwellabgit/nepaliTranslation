@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { getSttSupport, hardStopRecognition } from '../stt/sttSupport';
 import { addHistory } from '../storage/phrasebook';
+import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
 import { cleanTranslationText } from '../mt/cleanText';
 import { loadPrefs, savePrefs } from '../storage/prefs';
@@ -117,11 +118,11 @@ export function useTranslationSession({ active, seed }: Options) {
     [runtime.translation],
   );
 
-  const remember = useCallback((turn: SessionTurn) => {
+  const remember = useCallback(async (turn: SessionTurn) => {
     if (!turn.translation.trim()) return;
     const current = stateRef.current;
     const direction = turn.direction ?? directionFor(turn.from);
-    void addHistory({
+    await addHistory({
       source: turn.source,
       translation: turn.translation,
       sourceLang: turn.from,
@@ -134,6 +135,11 @@ export function useTranslationSession({ active, seed }: Options) {
           ? turn.method
           : 'neural',
       modelVersion: MODEL_VERSION,
+    });
+    requestInterstitialOpportunity({
+      transition: 'translate_send_committed',
+      surface: 'translate_idle',
+      resultUnderReview: true,
     });
   }, []);
 
@@ -168,7 +174,7 @@ export function useTranslationSession({ active, seed }: Options) {
       };
       dispatch({ type: 'commitTurn', turn, keepDraft: false });
       dispatchPhase({ type: 'TRANSLATE_SUCCEEDED' });
-      remember(turn);
+      await remember(turn);
     } catch {
       dispatch({ type: 'setTranslating', translating: false });
       dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'translate_error' });
@@ -240,7 +246,7 @@ export function useTranslationSession({ active, seed }: Options) {
         };
         dispatch({ type: 'replaceTurn', id: turn.id, turn: next });
         dispatchPhase({ type: 'TRANSLATE_SUCCEEDED' });
-        remember(next);
+        await remember(next);
       } catch {
         dispatch({ type: 'setTranslating', translating: false });
         dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'translate_error' });
