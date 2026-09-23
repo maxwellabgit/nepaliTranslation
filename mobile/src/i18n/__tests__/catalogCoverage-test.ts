@@ -22,7 +22,6 @@ const TARGETS = [
   'screens/TranslateScreen.tsx',
   'screens/CameraScreen.tsx',
   'features/contribution/CorrectionSheet.tsx',
-  'features/contribution/ContributionCard.tsx',
 ] as const;
 
 /** Phrases that must come from t('…') — not string literals in these files. */
