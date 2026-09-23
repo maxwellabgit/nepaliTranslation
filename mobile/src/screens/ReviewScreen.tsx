@@ -14,8 +14,10 @@ import { useAuth } from '../features/auth/AuthProvider';
 import {
   creditLabelForTier,
   fetchCurrentReviewWindow,
+  firstUnsubmittedIndex,
   submitReview,
   type ReviewItem,
+  type ReviewMine,
   type ReviewSubmitAction,
 } from '../features/contribution/publicReviewApi';
 import { AppButton } from '../components/AppPrimitives';
@@ -79,6 +81,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   const [error, setError] = useState<ErrorReason | null>(null);
   const [correction, setCorrection] = useState('');
   const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
+  const [mine, setMine] = useState<ReviewMine[]>([]);
 
   const shouldFetch =
     !offline &&
@@ -94,11 +97,14 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setStatus('error');
       return;
     }
+    const loaded = res.items ?? [];
+    const restored = res.mine ?? [];
     setWindowId(res.window?.window_id ?? null);
     setCloseAt(res.window?.ny_close_at ?? null);
-    setItems(res.items ?? []);
-    setCursor(0);
-    setReviewedIds(new Set());
+    setItems(loaded);
+    setMine(restored);
+    setReviewedIds(new Set(restored.map((row) => row.source_item_id)));
+    setCursor(firstUnsubmittedIndex(loaded, restored));
     setStatus('ready');
   }, []);
 
@@ -258,6 +264,36 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           </Text>
         ) : (
           <>
+            {mine.length > 0 ? (
+              <View testID="review-restored">
+                {mine.map((row) => (
+                  <Text
+                    key={row.source_item_id}
+                    style={dynamic.meta}
+                    testID={`review-restored-${row.source_item_id}`}
+                  >
+                    {t(
+                      row.action === 'edit'
+                        ? 'review.actionEdit'
+                        : row.action === 'skip'
+                          ? 'review.actionSkip'
+                          : row.action === 'report'
+                            ? 'review.actionReport'
+                            : 'review.actionConfirm',
+                      lang,
+                    )}
+                    {row.corrected_text ? `: ${row.corrected_text}` : ''}
+                    {' · '}
+                    {t(
+                      row.reward_granted
+                        ? 'review.rewardEarned'
+                        : 'review.rewardPending',
+                      lang,
+                    )}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
             <Text style={dynamic.meta} testID="review-progress">
               {t('review.progress', lang, {
                 done: String(done),

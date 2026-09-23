@@ -3,12 +3,14 @@ import { AppProviders } from '../../app/AppProviders';
 import { ReviewScreen } from '../ReviewScreen';
 import { createTestServices } from '../../services/createTestServices';
 
-jest.mock('../../features/contribution/publicReviewApi', () => ({
-  fetchCurrentReviewWindow: jest.fn(),
-  submitReview: jest.fn(),
-  creditLabelForTier: (tier: 1 | 2) =>
-    tier === 2 ? '2 credits · 30 min ad-free' : '1 credit · 15 min ad-free',
-}));
+jest.mock('../../features/contribution/publicReviewApi', () => {
+  const actual = jest.requireActual('../../features/contribution/publicReviewApi');
+  return {
+    ...actual,
+    fetchCurrentReviewWindow: jest.fn(),
+    submitReview: jest.fn(),
+  };
+});
 
 jest.mock('../../features/auth/AuthProvider', () => {
   const actual = jest.requireActual('../../features/auth/AuthProvider');
@@ -155,6 +157,64 @@ describe('ReviewScreen', () => {
         'How are you?',
       );
     });
+  });
+
+  it('restores a prior edit and skips to the next unsubmitted item', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue({
+      ok: true,
+      window: {
+        window_id: 'w-1',
+        ny_close_at: '2027-01-01T22:00:00.000Z',
+        size: 2,
+      },
+      items: [
+        {
+          slot: 1,
+          source_item_id: 'src-1',
+          direction: 'en-ne',
+          register: 'formal',
+          script: 'deva',
+          source_text: 'Hello world',
+          proposed_target: 'नमस्ते संसार',
+          length_tier: 1,
+          scheduled_credits: 1,
+        },
+        {
+          slot: 2,
+          source_item_id: 'src-2',
+          direction: 'en-ne',
+          register: 'informal',
+          script: 'deva',
+          source_text: 'How are you?',
+          proposed_target: 'तिमीलाई कस्तो छ?',
+          length_tier: 2,
+          scheduled_credits: 2,
+        },
+      ],
+      mine: [
+        {
+          source_item_id: 'src-1',
+          action: 'edit',
+          corrected_text: 'नमस्ते',
+          reward_granted: false,
+        },
+      ],
+    });
+
+    await act(async () => {
+      renderScreen();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('review-item-source').props.children).toBe(
+        'How are you?',
+      );
+    });
+    const restored = screen.getByTestId('review-restored-src-1').props.children;
+    const restoredText = Array.isArray(restored) ? restored.join('') : String(restored);
+    expect(restoredText).toContain('नमस्ते');
+    expect(restoredText).toContain('Reward pending until 5:00 PM New York');
   });
 
   it('blocks Submit correction until a corrected target is entered', async () => {

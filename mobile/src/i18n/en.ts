@@ -400,6 +400,8 @@ export const en = {
   'review.title': "Today's 10",
   'review.subtitle': 'Review translations. Rewards settle at 5:00 PM New York.',
   'review.progress': 'Reviewed {done} of {total}',
+  'review.rewardPending': 'Reward pending until 5:00 PM New York',
+  'review.rewardEarned': 'Reward recorded',
   'review.closeAt': 'Closes at 5:00 PM New York time ({localTime})',
   'review.rewardBalance': 'Ad-free minutes: {minutes}',
   'review.rewardBalanceCredits': 'Credits earned: {credits}',

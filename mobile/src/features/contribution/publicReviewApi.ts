@@ -33,8 +33,20 @@ export type ReviewWindowSummary = {
   size: number;
 };
 
+export type ReviewMine = {
+  source_item_id: string;
+  action: 'confirm' | 'edit' | 'skip' | 'report';
+  corrected_text: string | null;
+  reward_granted: boolean;
+};
+
 export type ReviewCurrent =
-  | { ok: true; window: ReviewWindowSummary | null; items: ReviewItem[] }
+  | {
+      ok: true;
+      window: ReviewWindowSummary | null;
+      items: ReviewItem[];
+      mine: ReviewMine[];
+    }
   | {
       ok: false;
       reason: 'unavailable' | 'sign_in' | 'window_closed';
@@ -104,8 +116,24 @@ export async function fetchCurrentReviewWindow(): Promise<ReviewCurrent> {
   const body = (await res.json()) as {
     window?: ReviewWindowSummary | null;
     items?: ReviewItem[];
+    mine?: ReviewMine[];
   };
-  return { ok: true, window: body.window ?? null, items: body.items ?? [] };
+  return {
+    ok: true,
+    window: body.window ?? null,
+    items: body.items ?? [],
+    mine: body.mine ?? [],
+  };
+}
+
+/** First item the signed-in user has not already submitted in this window. */
+export function firstUnsubmittedIndex(
+  items: { source_item_id: string }[],
+  mine: { source_item_id: string }[],
+): number {
+  const done = new Set(mine.map((row) => row.source_item_id));
+  const index = items.findIndex((item) => !done.has(item.source_item_id));
+  return index < 0 ? 0 : index;
 }
 
 export async function submitReview(input: {

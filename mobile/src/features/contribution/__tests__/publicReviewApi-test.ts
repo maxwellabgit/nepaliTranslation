@@ -1,6 +1,7 @@
 import {
   creditLabelForTier,
   fetchCurrentReviewWindow,
+  firstUnsubmittedIndex,
   submitReview,
 } from '../publicReviewApi';
 import { getSupabase } from '../../../services/supabase';
@@ -81,6 +82,7 @@ describe('publicReviewApi (G1 global 10/day pool)', () => {
     expect(result.window?.size).toBe(10);
     expect(result.items[0].scheduled_credits).toBe(2);
     expect(result.items[0].length_tier).toBe(2);
+    expect(result.mine).toEqual([]);
   });
 
   test('empty response is null window', async () => {
@@ -90,7 +92,34 @@ describe('publicReviewApi (G1 global 10/day pool)', () => {
       json: async () => ({ window: null, items: [] }),
     });
     const result = await fetchCurrentReviewWindow();
-    expect(result).toEqual({ ok: true, window: null, items: [] });
+    expect(result).toEqual({ ok: true, window: null, items: [], mine: [] });
+  });
+
+  test('keeps the caller submissions and skips to the next item', async () => {
+    (globalThis.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        window: { window_id: 'w-1', ny_close_at: '2026-09-23T21:00:00Z', size: 2 },
+        items: [
+          { slot: 1, source_item_id: 'src-1' },
+          { slot: 2, source_item_id: 'src-2' },
+        ],
+        mine: [
+          {
+            source_item_id: 'src-1',
+            action: 'edit',
+            corrected_text: 'नमस्ते',
+            reward_granted: false,
+          },
+        ],
+      }),
+    });
+    const result = await fetchCurrentReviewWindow();
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.mine[0].corrected_text).toBe('नमस्ते');
+    expect(firstUnsubmittedIndex(result.items, result.mine)).toBe(1);
   });
 
   test('submitReview requires text for edit action locally', async () => {

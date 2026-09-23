@@ -56,9 +56,25 @@ Deno.serve(async (req) => {
     if (!winRes.ok) return errorResponse("unavailable", 503, requestId);
     const rows = (await winRes.json()) as Array<Record<string, unknown>>;
     if (rows.length === 0) {
-      return json({ window: null, items: [] }, 200, requestId);
+      return json({ window: null, items: [], mine: [] }, 200, requestId);
     }
     const first = rows[0];
+    const windowId = String(first.window_id ?? "");
+    if (!/^[0-9a-f-]{36}$/i.test(windowId)) {
+      return errorResponse("unavailable", 503, requestId);
+    }
+    const mineRes = await fetch(
+      `${url}/rest/v1/review_submissions?window_id=eq.${windowId}&select=source_item_id,action,corrected_text,reward_granted`,
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+          apikey: anon,
+          accept: "application/json",
+        },
+      },
+    );
+    if (!mineRes.ok) return errorResponse("unavailable", 503, requestId);
+    const mineRows = (await mineRes.json()) as Array<Record<string, unknown>>;
     return json(
       {
         window: {
@@ -76,6 +92,12 @@ Deno.serve(async (req) => {
           proposed_target: r.proposed_target,
           length_tier: r.length_tier_snapshot,
           scheduled_credits: r.scheduled_credits,
+        })),
+        mine: mineRows.map((r) => ({
+          source_item_id: r.source_item_id,
+          action: r.action,
+          corrected_text: r.corrected_text ?? null,
+          reward_granted: r.reward_granted === true,
         })),
       },
       200,

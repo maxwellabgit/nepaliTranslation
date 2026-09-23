@@ -403,6 +403,8 @@ export const ne: Record<MessageKey, string> = {
   'review.title': 'आजका १०',
   'review.subtitle': 'अनुवाद समीक्षा। पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',
   'review.progress': '{done} / {total} पुनरावलोकन गरिएको',
+  'review.rewardPending': 'पुरस्कार न्यूयोर्क समय साँझ ५ बजेसम्म बाँकी',
+  'review.rewardEarned': 'पुरस्कार रेकर्ड भयो',
   'review.closeAt': 'न्यूयोर्क समयको बेलुका ५ बजे बन्द ({localTime})',
   'review.rewardBalance': 'विज्ञापन-मुक्त मिनेट: {minutes}',
   'review.rewardBalanceCredits': 'कमाइएको क्रेडिट: {credits}',
