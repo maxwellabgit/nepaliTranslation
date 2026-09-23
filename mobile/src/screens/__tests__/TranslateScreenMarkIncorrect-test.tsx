@@ -7,7 +7,7 @@ jest.mock('expo-clipboard', () => ({
 }));
 
 describe('TranslateScreen Mark incorrect entry', () => {
-  test('Mark incorrect opens the correction sheet', async () => {
+  test('Mark incorrect opens a local edit and does not offer a public submit', async () => {
     await render(
       <TranslateScreen
         active
@@ -36,6 +36,7 @@ describe('TranslateScreen Mark incorrect entry', () => {
       expect(screen.getByTestId('correction-sheet')).toBeTruthy();
     });
     expect(screen.getByTestId('correction-save-draft')).toBeTruthy();
-    expect(screen.getByTestId('correction-submit')).toBeTruthy();
+    expect(screen.queryByTestId('correction-submit')).toBeNull();
+    expect(screen.queryByText('Submit contribution')).toBeNull();
   });
 });

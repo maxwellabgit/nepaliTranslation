@@ -1,30 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import { useAuth } from '../auth/AuthProvider';
-import {
-  canSubmitContribution,
-  CONTRIBUTION_CONSENT_SUMMARY,
-  CONTRIBUTION_CONSENT_VERSION,
-} from '../auth/consent';
-import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { t, useUiLang } from '../../i18n';
-import { loadLocalConsent } from '../../storage/contributionConsent';
 import {
-  enqueueDraft,
   type ContributionDraft,
   type OutboxSurface,
 } from '../../storage/contributionOutbox';
-import { buildCorrectionDraftFields } from '../../storage/liveIncorrect';
-import { flushPendingDrafts } from '../../services/contributionSync';
+import { updateHistoryTranslation } from '../../storage/phrasebook';
 import type { Formality, NepaliScript } from '../../mt/onDeviceTranslate';
 import { useTheme } from '../../theme';
 
@@ -40,6 +28,8 @@ type Props = {
   modelVersion?: string | null;
   /** Resume an existing draft after the auth gate. */
   existingDraft?: ContributionDraft | null;
+  /** When set, Save updates this local history row and never creates a public review. */
+  historyItemId?: string | null;
   onClose: () => void;
   onSaved?: () => void;
   onNeedAuth?: () => void;
@@ -56,24 +46,24 @@ export function CorrectionSheet({
   translationMethod = null,
   modelVersion = null,
   existingDraft = null,
+  historyItemId = null,
   onClose,
   onSaved,
   onNeedAuth,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
-  const auth = useAuth();
-  const flags = useFeatureFlags();
-  const [correction, setCorrection] = useState('');
-  const [formality, setFormality] = useState<Formality | null>(null);
-  const [script, setScript] = useState<NepaliScript | null>(null);
+  const [correction, setCorrection] = useState(
+    existingDraft?.correction_text ?? '',
+  );
+  const [formality, setFormality] = useState<Formality | null>(
+    existingDraft?.formality ?? formalityProp ?? null,
+  );
+  const [script, setScript] = useState<NepaliScript | null>(
+    existingDraft?.script ?? scriptProp ?? null,
+  );
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [consentVersion, setConsentVersion] = useState<string | null>(null);
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
-  const [draftIdempotencyKey, setDraftIdempotencyKey] = useState<
-    string | undefined
-  >(undefined);
 
   const styles = useMemo(
     () =>
@@ -184,107 +174,29 @@ export function CorrectionSheet({
     [theme],
   );
 
-  useEffect(() => {
-    if (!visible) return;
-    setMessage(null);
-    if (existingDraft) {
-      setCorrection(existingDraft.correction_text ?? '');
-      setFormality(existingDraft.formality);
-      setScript(existingDraft.script);
-      setDraftIdempotencyKey(existingDraft.idempotency_key);
-    } else {
-      setCorrection('');
-      setFormality(formalityProp ?? null);
-      setScript(scriptProp ?? null);
-      setDraftIdempotencyKey(undefined);
-    }
-    void loadLocalConsent().then((c) => {
-      setConsentVersion(c?.consent_version ?? null);
-      setAgeConfirmed(Boolean(c?.age_confirmed));
-    });
-  }, [visible, existingDraft, formalityProp, scriptProp]);
-
   const labelsMissing = !formality || !script;
 
-  const save = async (wantSubmit: boolean) => {
+  const save = async () => {
     if (busy) return;
-    if (wantSubmit && labelsMissing) {
-      setMessage(t('contributions.needLabels', lang));
+    const text = correction.trim();
+    if (!text) {
+      setMessage(t('history.editNeedsText', lang));
       return;
     }
-    const fields = buildCorrectionDraftFields({
-      source,
-      translation,
-      sourceLang,
-      formality,
-      script,
-      surface,
-      translationMethod,
-      modelVersion,
-    });
-    if (!fields) {
-      setMessage(t('contributions.nothingToSave', lang));
+    if (!historyItemId) {
+      setMessage(t('history.editMissing', lang));
       return;
     }
     setBusy(true);
     try {
-      const gate = canSubmitContribution({
-        authConfigured: auth.authConfigured,
-        signedIn: auth.status === 'signed-in',
-        consentVersion,
-        ageConfirmed,
-      });
-      const contributionsOn = flags.contributionTextEnabled;
-      let status: 'draft' | 'queued' = 'draft';
-      let note: string | null = null;
-      let needAuth = false;
-
-      if (wantSubmit) {
-        if (labelsMissing) {
-          setMessage(t('contributions.needLabels', lang));
-          return;
-        }
-        if (!contributionsOn) {
-          note = t('contributions.uploadOff', lang);
-        } else if (!gate.ok) {
-          needAuth = true;
-          note =
-            gate.reason === 'sign_in'
-              ? t('contributions.needSignIn', lang)
-              : gate.reason === 'consent' || gate.reason === 'age'
-                ? t('contributions.needConsent', lang)
-                : t('contributions.uploadUnavailable', lang);
-        } else {
-          status = 'queued';
-        }
+      const updated = await updateHistoryTranslation(historyItemId, text);
+      if (!updated) {
+        setMessage(t('history.editMissing', lang));
+        return;
       }
-
-      const draft = await enqueueDraft({
-        ...fields,
-        idempotency_key: draftIdempotencyKey,
-        correction_text: correction.trim() || null,
-        formality,
-        script,
-        consent_version:
-          status === 'queued' ? CONTRIBUTION_CONSENT_VERSION : consentVersion,
-        status,
-      });
-      setDraftIdempotencyKey(draft.idempotency_key);
-
-      if (status === 'queued') {
-        void flushPendingDrafts();
-        setMessage(t('contributions.queued', lang));
-        onSaved?.();
-        onClose();
-      } else {
-        setMessage(note ?? t('contributions.draftSaved', lang));
-        onSaved?.();
-        if (!wantSubmit) {
-          onClose();
-        } else if (needAuth) {
-          onNeedAuth?.();
-        }
-      }
+      setMessage(t('history.editSaved', lang));
+      onSaved?.();
+      onClose();
     } finally {
       setBusy(false);
     }
@@ -297,10 +209,7 @@ export function CorrectionSheet({
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        style={styles.backdrop}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <View style={styles.backdrop}>
         <View style={styles.sheet} testID="correction-sheet">
           <Text style={styles.title}>
             {t('contributions.correctionTitle', lang)}
@@ -412,7 +321,7 @@ export function CorrectionSheet({
               {script === 'deva' ? devaLabel : romanLabel}
             </Text>
           )}
-          <Text style={styles.meta}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
+          <Text style={styles.meta}>{t('history.editSaved', lang)}</Text>
           {message ? <Text style={styles.note}>{message}</Text> : null}
           <View style={styles.actions}>
             <Pressable
@@ -427,7 +336,7 @@ export function CorrectionSheet({
             </Pressable>
             <Pressable
               style={styles.buttonSecondary}
-              onPress={() => void save(false)}
+              onPress={() => void save()}
               disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('contributions.saveDeviceA11y', lang)}
@@ -437,21 +346,9 @@ export function CorrectionSheet({
                 {t('contributions.saveDevice', lang)}
               </Text>
             </Pressable>
-            <Pressable
-              style={styles.button}
-              onPress={() => void save(true)}
-              disabled={busy}
-              accessibilityRole="button"
-              accessibilityLabel={t('contributions.submitA11y', lang)}
-              testID="correction-submit"
-            >
-              <Text style={styles.buttonText}>
-                {t('contributions.submit', lang)}
-              </Text>
-            </Pressable>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }

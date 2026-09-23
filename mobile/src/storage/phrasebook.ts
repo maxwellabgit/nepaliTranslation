@@ -143,6 +143,22 @@ export async function clearHistory() {
   await writeList(HISTORY_KEY, []);
 }
 
+export async function updateHistoryTranslation(
+  id: string,
+  translation: string,
+): Promise<boolean> {
+  const list = await loadHistory();
+  let found = false;
+  const next = list.map((item) => {
+    if (item.id !== id) return item;
+    found = true;
+    return { ...item, translation };
+  });
+  if (!found) return false;
+  await writeList(HISTORY_KEY, next);
+  return true;
+}
+
 export async function deleteHistoryItem(id: string) {
   const list = await loadHistory();
   await writeList(

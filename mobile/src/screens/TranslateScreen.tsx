@@ -471,6 +471,7 @@ export function TranslateScreen({
         formality={state.formality}
         script={state.script}
         surface="live_translate"
+        historyItemId={latest?.id ?? null}
         translationMethod={latest?.method ?? null}
         modelVersion={null}
         onClose={() => setCorrectionOpen(false)}

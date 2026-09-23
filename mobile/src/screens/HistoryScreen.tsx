@@ -17,10 +17,6 @@ import {
   loadHistory,
   type HistoryItem,
 } from '../storage/phrasebook';
-import {
-  loadSentTrainingKeys,
-  trainingKeyFor,
-} from '../storage/trainingContrib';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
 import { EmptyState } from '../components/EmptyState';
 import { t, useUiLang } from '../i18n';
@@ -101,12 +97,10 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [sentKeys, setSentKeys] = useState<Set<string>>(new Set());
   const [correctionItem, setCorrectionItem] = useState<HistoryItem | null>(null);
 
   const reload = useCallback(async () => {
     setHistory(await loadHistory());
-    setSentKeys(await loadSentTrainingKeys());
   }, []);
 
   useFocusEffect(reload);
@@ -238,7 +232,6 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
           />
         ) : (
           history.map((item) => {
-            const sent = sentKeys.has(trainingKeyFor(item));
             return (
               <SwipeableRow
                 key={item.id}
@@ -263,21 +256,12 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
                   </Pressable>
                   <Pressable
                     onPress={() => onSendToTraining(item)}
-                    disabled={sent}
-                    style={[dynamic.trainBtn, sent && dynamic.trainBtnOff]}
+                    style={dynamic.trainBtn}
                     accessibilityRole="button"
-                    accessibilityLabel={
-                      sent
-                        ? t('history.submittedA11y', lang)
-                        : t('history.toTrainingA11y', lang)
-                    }
+                    accessibilityLabel={t('history.toTrainingA11y', lang)}
                   >
-                    <Text
-                      style={[dynamic.trainText, sent && dynamic.trainTextOff]}
-                    >
-                      {sent
-                        ? t('history.submitted', lang)
-                        : t('history.toTraining', lang)}
+                    <Text style={dynamic.trainText}>
+                      {t('history.toTraining', lang)}
                     </Text>
                   </Pressable>
                 </View>
@@ -296,6 +280,7 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         translationMethod={correctionItem?.translationMethod ?? null}
         modelVersion={correctionItem?.modelVersion ?? null}
         surface="history"
+        historyItemId={correctionItem?.id ?? null}
         onClose={() => setCorrectionItem(null)}
         onSaved={() => void reload()}
       />
