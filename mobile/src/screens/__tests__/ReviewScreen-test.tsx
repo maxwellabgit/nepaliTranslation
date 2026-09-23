@@ -307,4 +307,21 @@ describe('ReviewScreen', () => {
       expect(screen.getByTestId('review-error-already')).toBeTruthy();
     });
   });
+
+  it('shows the consent gate when the server rejects the window', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue({
+      ok: false,
+      reason: 'consent_required',
+    });
+
+    await act(async () => {
+      renderScreen();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('review-state-consent')).toBeTruthy();
+    });
+    expect(screen.queryByTestId('review-action-confirm')).toBeNull();
+  });
 });

@@ -80,7 +80,7 @@ No public-review enablement flag exists yet. Do not enable public review before 
 ## Milestones
 
 - [x] **C0** Contract rebase and honest baseline
-- [ ] **C1** One Today's 10 route; Translate, Camera, Learn only
+- [x] **C1** One Today's 10 route; Translate, Camera, Learn only
 - [ ] **C2** Deny-by-default corpus, rights, and anonymization inventory
 - [ ] **C3** 14/28-day private lookahead and `automations/` schedules
 - [ ] **C4** 2/4-credit rewards and fail-closed export exclusions
