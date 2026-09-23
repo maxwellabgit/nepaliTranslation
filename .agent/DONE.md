@@ -105,9 +105,11 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 
 ---
 
-## Production V1 gates (dependency order — do not combine)
+## Historical production gates (G0–G7 — do not implement)
 
-### G0 — product contract freeze
+> These checklists record the 2026-09-22 G0–G7 program. They are not the living contract. Living exit criteria are the C0–C15 section above and `plans/active/v1-final-contract-reconciliation.md`. Boxes below that still say top-50% credits, all corpora eligible, or an 18+ startup gate are that old freeze.
+
+### G0 — product contract freeze (historical)
 
 - [ ] INTENT / V1_G0_DECISIONS / DATA_CLASSIFICATION / AGENTS / DONE / ExecPlan / CERTIFICATION / RELEASE_RUNBOOK describe the corrected V1 boundary
 - [ ] Frozen: **global 10 samples/day** at 5:00 PM NY rotation; all training + benchmark corpora eligible; length-tier credits (top-50%-longest = 2, else 1); **1 credit = 15 minutes**; sign-in before purchase/restore/contribution; **startup consent gate (T&C + Privacy + 18+)**; raw speech-media upload **in V1** scope; account-linked collection; 30-day purge on withdrawal/delete; impression-based interstitial timer; TestFlight ads ≠ revenue; soft model-cert ≠ certified
@@ -167,13 +169,15 @@ Honest limit: a cloud agent cannot TestFlight. Do not claim airplane-mode device
 
 ## Historical F0–F10 (foundation — do not reopen)
 
-F0–F10 checklists remain in git history / `plans/active/beta-release.md` for audit. New work uses **G0–G7** only.
+F0–F10 checklists remain in git history / `plans/active/beta-release.md` for audit. New V1 work uses **C0–C15** only.
 
 ---
 
 ## Release go/no-go (public App Store)
 
-Production V1 is Done only when:
+> Historical G0–G7 submit list. Public V1 now follows section 9.2 of `plans/active/v1-final-contract-reconciliation.md`. A completed G0–G7 checklist is not the living definition of Done.
+
+The list below is what the G0–G7 program required:
 
 - [ ] G0–G7 complete with green CI and independent review where applicable
 - [ ] Exact model artifacts pass frozen evaluation and physical-device performance gates

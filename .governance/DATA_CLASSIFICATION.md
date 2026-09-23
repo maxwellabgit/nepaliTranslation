@@ -77,4 +77,4 @@ Informational only — the Gate 1 importer recomputes counts.
 | `datasets/gold/` source/trusted rows | 718 |
 | Frozen `benchmarks/gold/` samples | 543 |
 
-Under D2, every one of those rows is a candidate for `public_review_eligible=true` after PII/dedup.
+Historical D2 statement, superseded on 2026-09-23: under that old directive, every one of those rows was treated as a candidate for `public_review_eligible=true` after PII/dedup. The living rules above do not. Unresolved rights stay `admin_only`.

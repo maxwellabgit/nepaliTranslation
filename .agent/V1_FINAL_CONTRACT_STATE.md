@@ -7,4 +7,4 @@ last_green_commands: mobile lint exit 0; mobile typecheck exit 0; mobile test:un
 evidence_paths: .agent/v1-final-contract-evidence/c0/mobile-baseline.log; .agent/v1-final-contract-evidence/c0/admin-baseline.log; .agent/v1-final-contract-evidence/c0/stale-contract-inventory.txt; docs/MODEL_CERT.md
 human_blockers: English-to-Nepali model certificate FAIL recorded in docs/MODEL_CERT.md (formal chrF 0.4468 floor 0.55; informal chrF 0.4440 floor 0.50) and not re-run in C0; physical iPhone and iPad proof absent; hosted Supabase, App Store Connect, AdMob, and RevenueCat proof absent; owner must confirm NPR 199 is an available Nepal price point before storefront setup; fresh and upgrade pgTAP not run because Docker was not started
 next_action: Implement C1. Make Today's 10 the only public correction route and keep Translate, Camera, and Learn as the only primary surfaces.
-updated_at_utc: 2026-09-23T02:08:00Z
+updated_at_utc: 2026-09-23T02:20:00Z

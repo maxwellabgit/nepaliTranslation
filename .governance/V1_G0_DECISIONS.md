@@ -58,11 +58,13 @@ No public-review enablement flag exists at this base. Do not turn public review 
 
 ## Executive decision
 
-`main` at `43f9bc6` is **not** a production V1 or external TestFlight release candidate. It is suitable only as a **diagnostic internal TestFlight** build with contribution upload, live ads, and subscription purchase/restore **remotely disabled** until Gates 1–7 produce evidence.
+`main` at `43f9bc6` was **not** a production V1 or external TestFlight release candidate. At that date it was suitable only as a **diagnostic internal TestFlight** build with contribution upload, live ads, and subscription purchase/restore **remotely disabled** until Gates 1–7 produced evidence.
 
-F0–F10 source work remains the foundation. Ship readiness is gated by **G0–G7**.
+F0–F10 source work remained the foundation. On 2026-09-22, ship readiness was described as gated by **G0–G7**. That description is historical.
 
 ## Frozen decisions
+
+> Present tense in D1–D8 is the 2026-09-22 freeze, quoted as it was written. The decision table at the top of this file wins wherever they conflict.
 
 ### D1 — Public review cardinality (**global daily 10; 5:00 PM NY rotation**)
 
@@ -181,9 +183,11 @@ Internal diagnostic builds keep contribution, live ads, and paywall **off** unti
 - [x] INTENT + AGENTS + DONE + ExecPlan + CERTIFICATION + RELEASE_RUNBOOK product-freeze text aligned
 - [x] No runtime code in the Gate 0 PR
 
-## Supersedes
+## Supersedes (historical, 2026-09-22 only)
 
-- Prior "up to 10 per reviewer per NY day" cardinality — replaced by **global 10/day + 5 PM rotation**.
+> This list records what the 2026-09-22 amendment replaced. It is not the living contract. The decision table at the top of this file supersedes this list. In particular, top-50%-longest credits and a universal 18+ startup gate are no longer in force. Word-count rewards are 2 or 4 credits. 18+ applies to contribution features.
+
+- Prior "up to 10 per reviewer per NY day" cardinality — replaced, on 2026-09-22, by **global 10/day + 5 PM rotation**.
 - Prior "corpus excludes frozen benchmarks / license holds" restriction — replaced by **all corpora eligible for now**, with training / evaluation re-use gated by a separate future verification step.
 - Prior ">20 original words = 2 credits" — replaced by **top-50%-longest rank at import**.
 - Prior "1 credit = 5 minutes" — replaced by **1 credit = 15 minutes**.

@@ -4,7 +4,7 @@
 
 Do not claim App Store submission or external RC from this document or from Windows CI. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md). Historical R0–R9 log: [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md). Audit trail (do not rewrite): [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](./NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md).
 
-**Honesty:** Neither `43f9bc6` nor `71c85df` (the G0–G5 stack merged to `main`) is an external release candidate. `71c85df` was audited 2026-09-22 and found red on `js-verify`, `playwright-scenarios`, and `supabase`. The first useful milestone is a **green R0+R1 diagnostic internal TestFlight** with contribution, live ads, paywall, telemetry, and deletion processing **off**, targeting **staging** services with **Google test ad units**.
+**Honesty:** Neither `43f9bc6` nor `71c85df` (the G0–G5 stack merged to `main`) is an external release candidate. `71c85df` was audited 2026-09-22 and found red on `js-verify`, `playwright-scenarios`, and `supabase`. That audit's next milestone was a green R0+R1 diagnostic build. The living program is C0–C15 on `cursor/v1-final-contract-reconciliation-5907`. Internal TestFlight is not the current milestone. When it is reached, it still uses Google test ad units and produces no revenue. Optional server features stay off until hosted proof exists.
 
 ## Product freeze (must match INTENT)
 
@@ -19,7 +19,9 @@ Do not claim App Store submission or external RC from this document or from Wind
 
 ## Sequence
 
-1. **R0 (this branch class) + R1 evidence** — Green js-verify / playwright / supabase on the exact commit; camera copy accurate; version `1.7.0`; dedicated `testflight` EAS profile with test ads; build-provenance surface reachable in Settings; forward-only migration repairs reward idempotency / 5 PM ownership / DST / exactly-once close.
+> **Historical R0–R9 sequence.** Not the living release path. Follow C0–C15 in [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md). The numbered steps below are preserved as the runbook that was in force before 2026-09-23. Do not use them as current exit criteria.
+
+1. **R0 (historical branch class) + R1 evidence** — Green js-verify / playwright / supabase on the exact commit; camera copy accurate; version `1.7.0`; dedicated `testflight` EAS profile with test ads; build-provenance surface reachable in Settings; forward-only migration repairs reward idempotency / 5 PM ownership / DST / exactly-once close.
 2. **Internal TestFlight (bridge R1 → R4)** — Build R0+R1 commit with `testflight` profile, target **staging** Supabase, `EXPO_PUBLIC_ADS_ENV=test`, and remote flag snapshot below (see also `plans/active/v1-testflight-runbook.md`):
 
    | Flag | First internal build |
@@ -47,7 +49,9 @@ Do not claim App Store submission or external RC from this document or from Wind
 
 ## Exact TestFlight go/no-go (external RC)
 
-Do not call a build the V1 release candidate until every item is true:
+> **Historical R0–R9 checklist.** Items below that require a three-per-day interstitial cap, a 15-minute rewarded grant, one/two credits, or ten exclusive assignments per reviewer are the old contract. The living internal and public gates are sections 9.1 and 9.2 of the reconciliation plan. This list is kept so the old runbook stays auditable.
+
+Do not treat the following as the current release gate:
 
 - [ ] Rewarded and interstitial loading uses real SDK event contracts and passes on-device tests
 - [ ] Fifteen active minutes means fifteen minutes since the last successful impression; daily cap is three
@@ -165,7 +169,9 @@ On a non-production or internal build with optional flags **on**:
 
 ## Public App Store go/no-go checklist
 
-Production V1 public submission is allowed only when **all** are checked by a human. Prefer the detailed **Exact TestFlight go/no-go** list above; this section is the final submit gate:
+> **Historical G0–G7 submit list.** Public submission now follows section 9.2 of the reconciliation plan. The boxes below are not the living definition of Done.
+
+The G0–G7 program allowed public submission only when **all** of these were checked by a human:
 
 - [ ] G0–G7 complete with green CI and independent review where applicable
 - [ ] Exact model artifacts pass frozen evaluation (soft missing-weights CI is **not** enough) — [`MODEL_CERT.md`](./MODEL_CERT.md)
