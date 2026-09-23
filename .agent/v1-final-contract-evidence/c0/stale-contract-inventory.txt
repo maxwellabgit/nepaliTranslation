@@ -1,0 +1,54 @@
+C0 inventory after living-doc edits. Not required to be empty. Exit 0. Hits are remaining code, tests, migrations, and historical files.\n.\AGENTS.md:72:- Monetization boundary: **USD 2.99/month** (US storefront) and **NPR 199/month** (Nepal storefront), shown as StoreKit/RevenueCat's localized price; banners only idle Translate + idle Learn; automatic interstitial after **15 minutes** of foreground-active time since the last confirmed impression, **no daily cap**, only at Translate Send, Camera capture, and Learn activity-complete safe points; rewarded video = **2 credits / 30 ad-free minutes**; **1 credit = 15 minutes**; review rewards are **2 credits** (≤20 original source words) or **4 credits** (≥21), snapshotted at assignment; close at **5:00 PM America/New_York**; private lookahead minimum 14 days, target 28; one shared Today's 10 window; automated V1 validation logs a cosine score and returns **PASS**; timely human unsatisfactory prevents reward; no credit clawback; no automatic training from contributions; RevenueCat identity = Supabase UUID; TestFlight ads are Google test units and produce no revenue.
+.\README.md:19:**Today's 10** (subtitle: Review translations) is the only public correction flow. Rewards settle at 5:00 PM `America/New_York`: **2 credits** for an original source of 0–20 words, **4 credits** for 21 or more. One credit is 15 ad-free minutes.
+.\plans\active\v1-testflight-runbook.md:41:   - 1 credit = 15 minutes, everywhere.
+.\plans\active\v1-testflight-runbook.md:73:3. Rewrite `private.select_review_window_items` so the per-window tier snapshot is deterministic: order the selected rows by `source_char_length DESC, source_item_id ASC` and mark the first `ceil(N/2)` as tier 2 (2 credits / 30 min), rest tier 1 (1 credit / 15 min).
+.\plans\active\v1-testflight-finalization.md:24:V1-wide + current-gate checklist in `.agent/DONE.md`. G0 specifically: durable docs only; no runtime code; a fresh session can state review cardinality (**global 10/day, 5 PM NY rotation**), corpus rules (**all training + benchmarks eligible**), credit rule (**1 credit = 15 minutes; top-50%-longest = 2**), sign-in-before-purchase, startup consent gate (T&C + Privacy + 18+), raw speech-media **in V1**, interstitial impression timer, and that `43f9bc6` is not external RC.
+.\plans\active\v1-testflight-finalization.md:86:| Credit ratio | `supabase/migrations/20260922100500_g1_credit_ratio_15_minutes.sql` — `apply_reward` forces 1 credit = 15 min; `reward_schedule` updated (rewarded_video → 1 credit / 15 min; new `public_review`/`public_review_long` kinds) |
+.\plans\active\v1-testflight-finalization.md:97:| Decisions | `.governance/V1_G0_DECISIONS.md` amended: D1 global 10/day + 5 PM rotation; D2 all corpora eligible + length-percentile tier; D4 startup consent gate + speech in V1; D6 1 credit = 15 min |
+.\plans\active\v1-testflight-finalization.md:111:- 2026-09-22: **G0 first freeze** — up to 10 per reviewer per NY day; benchmark retirement; speech deferred; 1 credit = 5 min; >20 words → 2 credits.
+.\plans\active\v1-testflight-finalization.md:116:  - Length-tier credits: top 50% of `source_char_length_rank` at assignment → 2 credits; else 1 credit.
+.\plans\active\v1-testflight-finalization.md:117:  - **1 credit = 15 minutes** ad-free. Rewarded video = 1 credit.
+.\plans\active\beta-release.md:52:- 2026-09-21: **V1 final boundary supersedes beta monetization/privacy text.** Full-business V1: $0.99/month ad-free; banners only idle Translate + Learn landing; automatic interstitial after 15 foreground-active minutes, max 3 per America/New_York day, SDK-owned dismiss, remotely disableable (off until device + external-beta gates); rewarded video = 15 ad-free minutes; 1 credit = 5 minutes; >20 original words = 2 credits; reward close 5:00 PM America/New_York; pending at close earns once; late rejection → alert only, no clawback; contribution requires Sign in with Apple + 18+ + versioned consent; post-consent speech/photo auto-upload; indefinite retention until withdrawal/deletion; 30-day purge; telemetry OK without raw content; bilingual UI; genuine iPhone+iPad. Feature flags independent; defaults off until gates pass.
+.\plans\active\v1-final-contract-reconciliation.md:33:| Credit duration | 15 ad-free minutes |
+.\plans\active\v1-final-contract-reconciliation.md:103:Verification: `git status --short`, `git diff --check`, and a ripgrep inventory of `0.99`, top-50 / top half / longest, interstitial max, three-per-day, 1 credit, and 15 ad-free. The inventory is not required to be empty at C0.
+.\training\build_meaning_bank.py:198:    # longest-first replace for multi-akshara tokens
+.\supabase\tests\18_r1_rotation_and_ledger.test.sql:91:  '1 credit -> 15 minutes recorded on ledger row'
+.\supabase\tests\16_g1_review_pool.test.sql:9:--   D6 1 credit = 15 minutes; top-50%-longest at assignment = 2 credits.
+.\supabase\tests\16_g1_review_pool.test.sql:39:-- Refresh length tiers: top 50% should be tier 2, else tier 1.
+.\supabase\tests\16_g1_review_pool.test.sql:45:  'top-50%-longest -> tier 2 for 10 items'
+.\supabase\tests\16_g1_review_pool.test.sql:206:  '1 credit = 15 minutes in public_review ledger row'
+.\supabase\tests\13_f4_reward_close_deletion.test.sql:8:select is(private.scheduled_credits_for_words(20), 1, '<=20 words schedules 1 credit');
+.\supabase\tests\13_f4_reward_close_deletion.test.sql:30:-- Rewarded video schedule is 1 credit / 15 minutes (G0 amendment: 1 credit = 15 min)
+.\supabase\tests\13_f4_reward_close_deletion.test.sql:34:  'rewarded_video grants 15 ad-free minutes'
+.\supabase\tests\13_f4_reward_close_deletion.test.sql:40:  'rewarded_video grants 1 credit (15 min)'
+.\mobile\src\mt\onDeviceTranslate.ts:23: * Pronouns plus honorific verbs; longest source first so हुनुहुन्छ
+.\mobile\src\mt\onDeviceTranslate.ts:550:/** Phrase entries sorted longest-first for greedy compose. */
+.\mobile\src\mt\onDeviceTranslate.ts:604: * Greedy left-to-right EN→NE: longest phrase match, then lexicon word.
+.\supabase\tests\07_reward_caps.test.sql:54:  'known_check schedule is 1 credit'
+.\docs\RELEASE_RUNBOOK.md:14:- Rewards: **1 credit = 15 minutes**; snapshotted original source word count **≤20 → 2 credits**, **≥21 → 4 credits**; close **5:00 PM America/New_York**; automated V1 validation logs a cosine score and returns **PASS**; admin unsatisfactory before close prevents reward; no clawback; late reject → alert only
+.\docs\NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md:41:| Review reward | Bottom half by source word count: 1 credit; top half: 2 credits; 1 credit = 15 ad-free minutes |
+.\docs\NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md:50:| Interstitial cadence | After 15 minutes of foreground-active time, only at a safe opportunity, maximum 3 per New York day |
+.\docs\NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md:51:| Rewarded ad | 1 verified impression = 1 credit = 15 ad-free minutes |
+.\docs\NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md:116:   - state 1 credit = 15 minutes everywhere;
+.\docs\NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md:140:4. Store the exact awarded credit count and minutes on the submission/grant event. Use 1 credit/15 minutes for the bottom half by frozen source word count and 2 credits/30 minutes for the top half. Define the tie rule deterministically: order by `source_word_count DESC, source_item_id ASC`; the first `ceil(window_item_count / 2)` items are worth 2 credits.
+.\mobile\src\features\contribution\__tests__\publicReviewApi-test.ts:135:  test('credit copy respects the length tier (1 credit = 15 min)', () => {
+.\mobile\src\features\contribution\__tests__\publicReviewApi-test.ts:136:    expect(creditLabelForTier(1)).toBe('1 credit · 15 min ad-free');
+.\mobile\src\features\contribution\publicReviewApi.ts:11: *     credits (1/2 credits by length tier at assignment; 1 credit = 15
+.\mobile\src\features\contribution\publicReviewApi.ts:151:    : '1 credit · 15 min ad-free';
+.\supabase\migrations\20260923000000_r1_review_ledger_rotation.sql:39:--      credits (30 min) to the first ceil(N/2), 1 credit (15 min) to the
+.\supabase\migrations\20260923000000_r1_review_ledger_rotation.sql:84:  -- G0 amendment: 1 credit = 15 minutes, regardless of caller-supplied p_minutes.
+.\supabase\migrations\20260922100500_g1_credit_ratio_15_minutes.sql:3:-- 1 credit = 15 minutes of ad-free time.
+.\supabase\migrations\20260922100500_g1_credit_ratio_15_minutes.sql:4:-- Rewarded video = 1 credit / 15 minutes.
+.\supabase\migrations\20260922100500_g1_credit_ratio_15_minutes.sql:39:  -- G0 amendment: 1 credit = 15 minutes.
+.\supabase\migrations\20260922100500_g1_credit_ratio_15_minutes.sql:157:-- Reward schedule: 1 credit = 15 minutes; rewarded video = 1 credit; contribution
+.\supabase\migrations\20260922100000_g1_public_review_pool.sql:8:--   * 1 credit = 15 minutes ad-free. Top-50%-longest at assignment = 2 credits.
+.\supabase\migrations\20260922100000_g1_public_review_pool.sql:34:  source_char_length_rank_pct numeric,         -- 0.0 to 1.0 (1.0 = longest)
+.\supabase\migrations\20260921210000_f4_reward_close_deletion.sql:109:-- Reward schedule: rewarded video = 15 ad-free minutes (3 credits @ 5 min each)
+.\mobile\src\features\ads\adConfig.ts:105:  'Watch one optional ad for 15 ad-free minutes';
+.\mobile\src\features\entitlements\decideInterstitialPresentation.ts:7:export const INTERSTITIAL_MAX_PER_NY_DAY = 3;
+.\mobile\src\features\entitlements\decideInterstitialPresentation.ts:66:  const maxDay = input.maxPerNyDay ?? INTERSTITIAL_MAX_PER_NY_DAY;
+.\mobile\src\features\entitlements\__tests__\decideInterstitialPresentation-test.ts:3:  INTERSTITIAL_MAX_PER_NY_DAY,
+.\mobile\src\features\entitlements\__tests__\decideInterstitialPresentation-test.ts:109:        presentationsTodayNy: INTERSTITIAL_MAX_PER_NY_DAY,
+.\mobile\src\features\entitlements\__tests__\decideInterstitialPresentation-test.ts:115:        presentationsTodayNy: INTERSTITIAL_MAX_PER_NY_DAY - 1,
+.\mobile\src\i18n\en.ts:360:  'ads.rewardedCta': 'Watch one optional ad for 15 ad-free minutes',
+.\mobile\src\screens\__tests__\ReviewScreen-test.tsx:10:    tier === 2 ? '2 credits · 30 min ad-free' : '1 credit · 15 min ad-free',

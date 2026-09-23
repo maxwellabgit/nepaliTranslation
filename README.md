@@ -1,25 +1,35 @@
 # NepTranslate
 
-**Offline, on-device English ↔ Nepali translation for iOS.** Speech recognition and machine translation run entirely on the iPhone — no server, tunnel, or PC backend.
+**Offline, on-device English ↔ Nepali translation for iOS and iPadOS.** Speech recognition, machine translation, and Camera OCR run on the device. Optional account, review, ads, and subscription services fail soft and are never required for Translate, Camera, local history, Settings, or Learn.
 
-Develop on Windows. Ship to iPhone via Expo EAS → TestFlight / App Store.
+Develop on Windows. Ship via Expo EAS → TestFlight / App Store. TestFlight uses Google test ad units and produces **no revenue**.
+
+> **Temporary V1 review validation: always PASS.** The daily automated review job must log a real deterministic local cosine-similarity score and still return PASS for every substantive submission. A human admin can mark a submission unsatisfactory before the 5:00 PM `America/New_York` close; that decision overrides PASS and prevents the reward. A late rejection does not revoke credits. This always-PASS behavior is temporary and must stay visible in this README, `automations/README.md` (added in a later gate), the admin UI, and code comments. Do not add an external model just to compute the score.
 
 ## Product
 
-| Mode | What it does |
-|------|----------------|
-| **Normal** | Type or speak. Auto-detect Nepali or English; translate to the other language. Mic + keyboard on one screen. |
-| **Conversation** | Face-to-face handoff. One **Handoff** control (whose turn / language) and one **Speak** control. Translated text is shown large; history scrolls upward like a chat. |
+Public UI languages are English and Nepali. Primary surfaces are **Translate**, **Camera**, and **Learn**. Conversation stays inside Translate. Account is a section of Settings, not a fourth tab.
 
-**Register:** When English input produces Nepali output, a **Formal / Informal** toggle controls register (`तपाईं` vs `तिमी` style).
+| Surface | What it does |
+|---------|----------------|
+| **Translate** | Type or speak. English ↔ Nepali, including multi-turn exchange, without an account. |
+| **Camera** | Portrait on-device photo translation in both directions. Each sentence keeps one correlation color on the image and in the text below the image. |
+| **Learn** | Offline Nepali alphabet. |
 
-**Script:** Devanagari and Romanized Nepali input where supported (Roman is normalized before MT when needed).
+**Today's 10** (subtitle: Review translations) is the only public correction flow. Rewards settle at 5:00 PM `America/New_York`: **2 credits** for an original source of 0–20 words, **4 credits** for 21 or more. One credit is 15 ad-free minutes.
+
+**Subscription target:** USD 2.99/month on the United States storefront and NPR 199/month on the Nepal storefront. The app shows the localized StoreKit/RevenueCat price.
+
+**Register:** Formal / informal Nepali uses `तपाईं` vs `तिमी`. Informal is तिमी, not तँ.
+
+Living contract: [`.governance/INTENT.md`](.governance/INTENT.md) and [`plans/active/v1-final-contract-reconciliation.md`](plans/active/v1-final-contract-reconciliation.md).
 
 ## Docs
 
 | Topic | Path |
 |-------|------|
-| Agent lanes (eval, UI, MT, runtime, model) | [`AGENTS.md`](AGENTS.md) |
+| Agent lanes and the C0–C15 ship contract | [`AGENTS.md`](AGENTS.md) |
+| Final contract reconciliation | [`plans/active/v1-final-contract-reconciliation.md`](plans/active/v1-final-contract-reconciliation.md) |
 | Copy-paste launch prompts | [`.agent/LAUNCH.md`](.agent/LAUNCH.md) |
 | App setup, build, TestFlight | [`mobile/README.md`](mobile/README.md) |
 | TestFlight updates | [`mobile/TESTFLIGHT.md`](mobile/TESTFLIGHT.md) |
@@ -30,6 +40,8 @@ Develop on Windows. Ship to iPhone via Expo EAS → TestFlight / App Store.
 Authoritative product intent: [`.governance/INTENT.md`](.governance/INTENT.md).
 
 ## Ship (Windows → TestFlight)
+
+Owner authorization is required before `eas build` or `eas submit`. The commands below are the documented path, not permission to submit. The internal TestFlight profile must keep Google test ad units. Do not treat a TestFlight build as live ad revenue.
 
 ```powershell
 cd mobile

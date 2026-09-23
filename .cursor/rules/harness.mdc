@@ -7,6 +7,6 @@ Read `AGENTS.md` and `.governance/INTENT.md` before changing this repo.
 
 Work exactly one line of effort per run/PR. Active plans live in `plans/active/`. Follow `.agent/LOOP.md`. Do not mark work complete because it compiles — use `.agent/DONE.md` for that lane.
 
-Never train on `benchmarks/gold/`. Never edit gold references to improve a score. Informal Nepali is तिमी, not तँ. Product path is on-device only (no PC/cloud MT). Production V1 ship readiness is remediation gates **R0–R9** in `plans/active/v1-testflight-runbook.md` (the 2026-09-22 audit runbook is archived at `docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`) — one gate per PR. Prior F0–F10 (`plans/active/beta-release.md`) and G0–G7 (`plans/active/v1-testflight-finalization.md`, SUPERSEDED) are foundation only; do not reopen them.
+Never train on `benchmarks/gold/`. Never edit gold references to improve a score. Informal Nepali is तिमी, not तँ. Product path is on-device only (no PC/cloud MT). Production V1 ship readiness is gates **C0–C15** in `plans/active/v1-final-contract-reconciliation.md` — one coherent gate per commit. Progress is `.agent/V1_FINAL_CONTRACT_STATE.md`. Prior F0–F10, G0–G7, and R0–R9 plans are history; do not reopen them.
 
 After implementation, run the `independent-reviewer` subagent. Persist progress in the ExecPlan, not in chat.

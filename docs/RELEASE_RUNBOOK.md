@@ -1,21 +1,21 @@
 # Release runbook (TestFlight → App Store)
 
-**Status: BLOCKED — R0–R9 evidence incomplete; founder Apple Connect / legal / bilingual sign-off / physical device matrix / hosted ops**
+**Status: BLOCKED — final contract C0–C15 is in progress; founder Apple Connect / legal / bilingual sign-off / physical device matrix / hosted ops remain human gates**
 
-Do not claim App Store submission or external RC from this document or from Windows CI. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md). Audit trail: [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](./NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md).
+Do not claim App Store submission or external RC from this document or from Windows CI. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md). Historical R0–R9 log: [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md). Audit trail (do not rewrite): [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](./NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md).
 
 **Honesty:** Neither `43f9bc6` nor `71c85df` (the G0–G5 stack merged to `main`) is an external release candidate. `71c85df` was audited 2026-09-22 and found red on `js-verify`, `playwright-scenarios`, and `supabase`. The first useful milestone is a **green R0+R1 diagnostic internal TestFlight** with contribution, live ads, paywall, telemetry, and deletion processing **off**, targeting **staging** services with **Google test ad units**.
 
 ## Product freeze (must match INTENT)
 
-- Ad-free subscription: **US $0.99/month** (StoreKit authoritative); **sign-in required** before purchase/restore; RevenueCat ID = Supabase UUID
-- Ads: banners idle Translate + Learn only; automatic interstitial **15 minutes since last successful impression** / ≤3 per America/New_York day / safe idle only / SDK dismiss / remotely disableable; TestFlight = **test ad units**
-- Rewarded video: **1 credit / 15 ad-free minutes** after SSV; real SDK event contracts
-- Rewards: **1 credit = 15 minutes**; top-50%-longest samples at assignment = 2 credits; rotation **5:00 PM America/New_York**; admin can mark submissions unsatisfactory before close; no clawback; late reject → alert only
-- Public review: **global 10 items/day**, same set for every reviewer, refreshed at 5:00 PM America/New_York; all training + benchmark corpora eligible after PII/dedup; submissions never re-enter training/eval without a separate verified migration
-- Startup consent gate: every user acknowledges **T&C + Privacy Policy + "I am 18+"** before reaching any product surface
-- Contributions: signed-in only; **photo + raw speech + corrections** upload when flagged; account-linked; withdrawal + 30-day purge of all rows/objects tied to `user_id`
-- Platforms: iPhone **and** iPad; UI English **and** नेपाली
+- Ad-free subscription: **USD 2.99/month** (United States storefront) and **NPR 199/month** (Nepal storefront). The app shows StoreKit/RevenueCat's localized price and does not infer storefront. **Sign-in required** before purchase/restore; RevenueCat ID = Supabase UUID
+- Ads: banners on idle Translate and idle Learn only; automatic interstitial after **15 minutes** of foreground-active time since the last confirmed impression; **no daily cap**; display only after Translate Send, Camera capture, or Learn activity completion has been durably saved; SDK dismiss; remotely disableable. TestFlight = **Google test ad units** and **no revenue**
+- Rewarded video: **2 credits / 30 ad-free minutes** after server-verified SSV
+- Rewards: **1 credit = 15 minutes**; snapshotted original source word count **≤20 → 2 credits**, **≥21 → 4 credits**; close **5:00 PM America/New_York**; automated V1 validation logs a cosine score and returns **PASS**; admin unsatisfactory before close prevents reward; no clawback; late reject → alert only
+- Public review: one shared **Today's 10** window (up to 10 items) at 5:00 PM America/New_York; private lookahead minimum 14 days, target 28; eligibility deny-by-default; exposed hashes excluded from train/eval export
+- First launch: language choice plus Terms and Privacy acceptance. **18+** is the signed-in contribution gate, not a guest startup block
+- Contributions: signed-in, current consent, 18+, and the matching default-off toggle; account-linked; withdrawal starts a 30-day deletion with a durable retry record
+- Platforms: iPhone **and** iPad; UI English **and** Nepali
 
 ## Sequence
 
@@ -160,7 +160,7 @@ On a non-production or internal build with optional flags **on**:
 | Supabase / Apple auth | Translate / Camera / Learn / History / Settings stay up | Device Apple sign-in / delete / media storage |
 | Ads (AdMob) | Offline → house / none; no network calls offline | Banner + rewarded + interstitial on device; interstitial go/no-go |
 | Contributions / rewards | Drafts stay local; sync later | Legal consent; 5 PM NY close; 30-day purge |
-| RevenueCat subscription | Guest core unaffected | $0.99 product + sandbox / TestFlight matrix |
+| RevenueCat subscription | Guest core unaffected | USD 2.99 (US) and NPR 199 (Nepal) if Apple offers that point; sandbox matrix; do not approximate NPR |
 | Admin console | Core unaffected | Allowlist ops; deletion queue SLA |
 
 ## Public App Store go/no-go checklist
@@ -183,7 +183,7 @@ Production V1 public submission is allowed only when **all** are checked by a hu
 
 ## Founder actions before claiming release
 
-- [ ] Apple Developer + App Store Connect session; $0.99 subscription live in sandbox
-- [ ] Legal: Privacy, Terms, support, retention/deletion, bilingual consent copy (18+, photo; speech deferred)
+- [ ] Apple Developer + App Store Connect session; USD 2.99 (US storefront) and NPR 199 (Nepal storefront, exact point only) subscription configured in sandbox. Stop and ask the owner if NPR 199 is not an available price point
+- [ ] Legal: Privacy, Terms, support, retention/deletion, bilingual consent copy. 18+ applies to contribution features. Speech and Camera sharing default off
 - [ ] Hosted 5 PM credit + 30-day deletion schedulers provisioned and monitored
 - [ ] Complete public go/no-go checklist above

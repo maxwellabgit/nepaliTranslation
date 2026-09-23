@@ -1,6 +1,6 @@
 # beta-release: Production V1 foundation (F0–F10) — CLOSED AS SHIP PROGRAM
 
-> **Superseded for ship readiness.** F0–F10 source merged through `43f9bc6`. External TestFlight / V1 go/no-go continues under [`v1-testflight-finalization.md`](./v1-testflight-finalization.md) (**G0–G7**). Do not open new F-slice PRs.
+> **Superseded for ship readiness.** F0–F10 source merged through `43f9bc6`. Later programs G0–G7 and R0–R9 are also historical. The living contract is [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md) (**C0–C15**). Do not open new F-slice PRs. Do not rewrite this log.
 
 ## Goal
 (Historical.) Land monetized English↔Nepali iOS/iPadOS V1 **source** foundation — offline core intact; optional ads, $0.99/month subscription, consented media, rewards, admin, and release docs — without breaking guest Translate, Camera, History, Settings, or Learn.

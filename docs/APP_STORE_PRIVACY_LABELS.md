@@ -42,7 +42,7 @@ use ATT / IDFA.
 | `expo-speech-recognition` | On-device STT preference | Fail closed when on-device locales missing |
 | Supabase JS | Auth, config, contributions | Anon key only in app; service role never in bundle |
 | `react-native-google-mobile-ads` | Banners / rewarded / interstitial | Flags default off; UMP; no custom interstitial skip |
-| `react-native-purchases` (RevenueCat) | $0.99/month ad-free | Public Apple API key only |
+| `react-native-purchases` (RevenueCat) | Optional ad-free subscription. Target price USD 2.99/month (US) and NPR 199/month (Nepal), displayed from StoreKit. Not yet confirmed in App Store Connect | Public Apple API key only |
 | First-party telemetry (F8) | Crash/perf/usage schema | Scrubbed; flag default off; soft-fail |
 
 ## Connect form checklist (human)

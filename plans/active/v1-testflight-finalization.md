@@ -1,8 +1,8 @@
 # v1-testflight-finalization: Gate G0–G7 ship readiness (HISTORICAL)
 
-> **Status: SUPERSEDED.** This plan was closed on 2026-09-22 after the external audit at `71c85df` demonstrated that the merged G0–G5 stack is **not** an external TestFlight candidate.
+> **Status: SUPERSEDED.** This plan was closed on 2026-09-22 after the external audit at `71c85df` demonstrated that the merged G0–G5 stack is **not** an external TestFlight candidate. On 2026-09-23 the R0–R9 runbook was also superseded as the ship program by [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md).
 >
-> Active ExecPlan: [`plans/active/v1-testflight-runbook.md`](./v1-testflight-runbook.md) — R0–R9 gates.
+> Historical ExecPlan that followed this file: [`plans/active/v1-testflight-runbook.md`](./v1-testflight-runbook.md) — R0–R9 gates.
 >
 > Any `[x]` marker below records only that source code / documentation was committed. It does **not** claim the deployed subsystem is proven. See the runbook and [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](../../docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md) for the audited failing checks.
 

@@ -1,0 +1,176 @@
+C0 mobile baseline at 034f1cc66b991bf5c7ba5062bfebee7ec87f1d42
+Commands and observed results (behavior unchanged):
+npm run lint -> exit 0
+npm run typecheck -> exit 0
+npm run test:unit -> 78 suites, 347 tests, exit 0
+npm run test:integration -> 2 suites, 19 tests, exit 0
+npm run verify:translate -> exit 0
+npx expo-doctor -> 21/21 checks passed, exit 0
+Not run in C0: npm audit, pgTAP/Supabase (Docker not started), four-class model certification.
+Model certificate remains the recorded FAIL in docs/MODEL_CERT.md (en_ne_formal 0.4468, en_ne_informal 0.4440).
+PowerShell NativeCommandError lines below are stderr from npm/jest, not test failures.
+
+BASE_SHA=034f1cc66b991bf5c7ba5062bfebee7ec87f1d42
+STARTED_UTC=2026-09-23T01:58:48Z
+
+> neptranslate@1.7.0 lint
+> eslint App.tsx src --max-warnings 0
+
+
+> neptranslate@1.7.0 typecheck
+> tsc --noEmit
+
+
+> neptranslate@1.7.0 test:unit
+> jest --runInBand --testPathIgnorePatterns=integration-test
+
+node.exe : PASS src/features/ads/__tests__/AdService.voidLoadContract-test.ts (6.714 s)
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS src/featur...st.ts (6.714 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+PASS src/screens/__tests__/ReviewScreen-test.tsx
+PASS src/features/ads/__tests__/AdService.r5-timeouts-test.ts
+PASS src/features/contribution/__tests__/publicReviewApi-test.ts
+PASS src/features/auth/__tests__/recordStartupConsent-test.ts
+PASS src/features/contribution/__tests__/enqueueSpeechContribution-test.ts
+PASS src/features/auth/__tests__/withdrawContributionConsent-test.ts
+PASS src/storage/__tests__/startupConsent-test.ts
+PASS src/config/__tests__/buildProvenance-test.ts
+PASS src/services/__tests__/featureConfig-test.ts
+PASS src/features/subscription/__tests__/PaywallSheet-test.tsx
+PASS src/features/subscription/__tests__/PurchaseService-test.ts
+PASS src/telemetry/__tests__/telemetry-test.ts
+PASS src/screens/__tests__/TranslateScreenMarkIncorrect-test.tsx
+PASS src/app/__tests__/AppShell-test.tsx
+PASS src/screens/__tests__/HistoryScreen-test.tsx
+PASS src/screens/__tests__/LearnScreen-test.tsx
+PASS src/features/contribution/__tests__/CorrectionSheet-test.tsx
+PASS src/screens/__tests__/ContributionsScreen-test.tsx
+PASS src/features/contribution/__tests__/ContributionCard-test.tsx
+PASS src/services/__tests__/mediaSync-test.ts
+PASS src/features/auth/__tests__/AuthProvider-expanded-test.tsx
+PASS src/features/auth/__tests__/AccountSection-test.tsx
+PASS src/mt/onnx/__tests__/modelAssets-test.ts
+PASS src/features/ads/__tests__/AdSlot-test.tsx
+PASS src/services/__tests__/productionServices-test.ts
+PASS src/features/ads/__tests__/RewardedAdButton-test.tsx
+PASS src/learn/__tests__/RewardSummaryCard-test.tsx
+PASS src/features/ads/__tests__/HouseAd-test.tsx
+PASS src/services/__tests__/contributionSync-test.ts
+PASS src/app/__tests__/LifecycleCoordinator-test.tsx
+PASS src/features/entitlements/__tests__/EntitlementProvider-test.tsx
+PASS src/config/__tests__/legalUrls-test.ts
+PASS src/features/auth/__tests__/AuthStatusBanner-test.tsx
+PASS src/features/auth/__tests__/AuthProvider-test.tsx
+PASS src/features/ads/__tests__/interstitial-test.ts
+PASS src/i18n/__tests__/uiLang-test.tsx
+PASS src/services/__tests__/mediaEnqueue-test.ts
+PASS src/i18n/__tests__/i18n-test.ts
+PASS src/features/ads/__tests__/adConfig-test.ts
+PASS src/components/__tests__/EmptyState-test.tsx
+PASS src/features/ads/__tests__/AdService-test.ts
+PASS src/features/auth/__tests__/authPolicy-test.ts
+PASS src/features/ads/__tests__/adMiddleware-test.ts
+PASS src/camera/__tests__/correlate-test.ts
+PASS src/features/ads/__tests__/runInterstitialOpportunity-test.ts
+PASS src/features/ads/__tests__/provisionalGrant-test.ts
+PASS src/features/auth/__tests__/deleteAccount-test.ts
+PASS src/runtime/__tests__/diagnostics-test.ts
+PASS src/translate/__tests__/creditProgress-test.ts
+PASS src/stt/__tests__/sttSupport-test.ts
+PASS src/storage/__tests__/contributionOutbox-test.ts
+PASS src/learn/__tests__/alphabet-test.ts
+PASS src/features/subscription/__tests__/subscriptionAdSuppress-test.ts
+PASS src/features/subscription/__tests__/PurchaseService.native-test.ts
+PASS src/features/ads/__tests__/rewardedSession-test.ts
+PASS src/__tests__/theme-test.ts
+PASS src/features/contribution/__tests__/contributionApi-test.ts
+PASS src/features/auth/__tests__/accountSummary-test.ts
+PASS src/runtime/machines/__tests__/translatePhase-test.ts
+PASS src/features/entitlements/__tests__/trustedTime-test.ts
+PASS src/features/auth/__tests__/consent-test.ts
+PASS src/features/ads/__tests__/AdService.web-test.ts
+PASS src/translate/__tests__/translationSessionReducer-test.ts
+PASS src/storage/__tests__/mediaOutbox-test.ts
+PASS src/mt/__tests__/cleanText-test.ts
+PASS src/i18n/__tests__/catalogCoverage-test.ts
+PASS src/runtime/machines/__tests__/cameraPhase-test.ts
+PASS src/features/auth/__tests__/recordConsent-test.ts
+PASS src/features/ads/__tests__/bannerCooldown-test.ts
+PASS src/translate/__tests__/passLogic-test.ts
+PASS src/features/entitlements/__tests__/decideInterstitialPresentation-test.ts
+PASS src/runtime/__tests__/waitForIdle-test.ts
+PASS src/app/__tests__/hardStopAudio-test.ts
+PASS src/features/entitlements/__tests__/decideAdPresentation-test.ts
+PASS src/storage/__tests__/storageParse-test.ts
+PASS src/layout/__tests__/sizeClass-test.ts
+PASS src/features/entitlements/__tests__/entitlementCache-test.ts
+
+Test Suites: 78 passed, 78 total
+Tests:       347 passed, 347 total
+Snapshots:   0 total
+Time:        23.995 s
+Ran all test suites.
+
+> neptranslate@1.7.0 test:integration
+> jest --runInBand --testPathPattern=integration-test
+
+node.exe : PASS src/app/__tests__/App.integration-test.tsx
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS src/app/__...ration-test.tsx:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+PASS src/app/__tests__/AppShell.integration-test.tsx
+
+Test Suites: 2 passed, 2 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        3.464 s
+Ran all test suites matching /integration-test/i.
+
+> neptranslate@1.7.0 verify:translate
+> node ./scripts/export_meaning_lexicon.mjs && node scripts/verify_translate_fix.mjs && node scripts/verify_romanize.mjs
+
+[lexicon] wrote src\mt\generated\meaningLexicon.json (86 KB) en=140 ne=194 romanSent=256 romanWords=302
+{"text":"Hey what's up can you hear me","method":"phrase","out":"��c%���, ����� ��? ����� �����[%������%��� ���%��[%��� ��U%�������� ��U%����������c%��������","latin":false,"ok":true}
+{"text":"can you hear me","method":"phrase","out":"����� �����[%������%��� ���%��[%��� ��U%�������� ��U%����������c%��������","latin":false,"ok":true}
+{"text":"Hello","method":"phrase","out":"����U%�������","latin":false,"ok":true}
+{"text":"big dog","method":"lexicon","out":"������%��� ������������%","latin":false,"ok":true}
+{"text":"xyzzy unknownword","method":"lexicon","out":"","latin":false,"ok":true}
+{"text":"can you xyzzy me","method":"lexicon","out":"","latin":false,"ok":true}
+{"kind":"mashup","text":"thank you xyzzy","method":"lexicon","out":"","latin":false,"ok":true}
+{"kind":"mashup","text":"can you hear me xyzzy","method":"lexicon","out":"","latin":false,"ok":true}
+{"kind":"name","text":"my name is John","method":"phrase","out":"�����%��� ���[%�� John","ok":true}
+{"kind":"register","label":"sorry-formal","ok":true,"out":"���[%�� �����%��������c%����U%���"}
+{"kind":"register","label":"sorry-informal","ok":true,"out":"���[%�� �����%"}
+{"kind":"register","label":"can-you-help-me-formal","ok":true,"out":"����� �����[%����� ���%��[%��� �������� �����%���� ��U%����������c%��������"}
+{"kind":"register","label":"can-you-help-me-informal","ok":true,"out":"����� ����%���� ���%��[%��� �������� �����%���� ��U%��������"}
+{"kind":"register","label":"how-are-you-informal","ok":true,"out":"����%���Ǳ�%��[%��� ����U%������� ��"}
+{"kind":"register","label":"go-informal","ok":true,"out":"���[%���"}
+{"kind":"register","label":"sorry-informal-roman","ok":true,"out":"maaf gara"}
+OK
+PHRASE_OK namaste ��� hello
+PHRASE_OK tapai lai kasto cha? ��� how are you
+PHRASE_OK dhanyabad ��� thank you
+PHRASE_OK ma thik chu ��� i am fine
+ROMAN_OK tapai ��� �����[%�����
+ROMAN_OK kasto ��� ����U%�������
+ROMAN_OK namaste ��� ����U%�������
+ROMAN_OK pani ��� ���[%����
+ROMAN_OK sentence tapai lai kasto cha? ��� �����[%����� ��%��[%��� ����U%������� ����
+OK
+node.exe : npm warn exec The following package was not found and will be installed: expo-doctor@1.20.4
+At C:\Program Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn exec T...o-doctor@1.20.4:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
+FINISHED_UTC=2026-09-23T02:00:15Z

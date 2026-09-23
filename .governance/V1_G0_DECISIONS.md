@@ -1,9 +1,60 @@
-# V1 Gate 0 — product contract freeze
+# V1 product decisions
 
-**Date:** 2026-09-22 (amended 2026-09-22 to match owner directive)
+**Living contract date:** 2026-09-23
+**Selected base:** `034f1cc66b991bf5c7ba5062bfebee7ec87f1d42` (`origin/cursor/v1-r6-r9-blockers-5907`), a verified descendant of `origin/main` `71c85df5a4a7ba238c3496ed243ea0b25b027d91`
+**Authority:** [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md) and [`.governance/INTENT.md`](./INTENT.md)
+**Status:** The decision table below is the living contract. The 2026-09-22 Gate 0 freeze that follows is **historical evidence**. Do not implement the historical numbers when they conflict.
+
+## Decision table (final contract)
+
+| Topic | Required value | Supersedes |
+|-------|----------------|------------|
+| Review credits | **2** credits when snapshotted original source words are 0–20; **4** credits when 21 or more | Top-half / top-50%-longest / 1-credit and 2-credit percentile tiers |
+| Credit duration | **15** ad-free minutes per credit | Any 5-minute credit |
+| Rewarded ad | **2** credits (30 minutes) after one server-verified confirmation | 1 credit / 15 minutes per rewarded view |
+| Review lookahead | Minimum **14** New York days before public review is enabled; target **28**; every 14 days append, never reshuffle | Same-day random 10 with no private horizon |
+| Session inactivity | **30 days**, rolling, on refresh; JWT stays short | Indefinite Supabase auto-refresh |
+| Interstitial cap | **None.** Eligibility after 15 minutes of foreground-active time since the last confirmed impression; display only at Translate Send, Camera capture, and Learn idle-return safe points | Three per America/New_York day |
+| Subscription | **USD 2.99/month** (United States storefront); **NPR 199/month** (Nepal storefront). Display StoreKit/RevenueCat's localized price. Never infer storefront from language, IP, GPS, or device locale | US $0.99/month as the product price |
+
+Also binding, from the same plan:
+
+- Public correction UI is one route: **Today's 10**, subtitle **Review translations**.
+- Primary tabs are Translate, Camera, and Learn. Account lives in Settings.
+- First launch is bilingual legal acceptance plus language choice. 18+ is the signed-in contribution gate.
+- Exactly two sharing toggles, both default off: speech recordings and Camera photos.
+- Automated V1 review validation logs a deterministic local cosine score and returns **PASS**. A timely human unsatisfactory mark prevents reward. Late rejection does not claw back credits.
+- Public-review eligibility is deny-by-default. Unresolved rights are `admin_only`.
+- Public exposure excludes source and target hashes from train and eval export.
+- TestFlight uses Google test ad units and produces no revenue.
+
+## Feature flags at the selected base
+
+Risky and network features default **off** until hosted proof exists. Client defaults are `mobile/src/app/featureFlags.ts` `DEFAULT_FEATURE_FLAGS`. Database defaults are the `app_config` column defaults. `supabase/seed.sql` sets `contribution_text_enabled` and `contributions_enabled` true for local RPC tests only; that seed is not a production default.
+
+| Flag | Client default | Database default |
+|------|----------------|------------------|
+| `contribution_text_enabled` | off | off |
+| `contribution_speech_enabled` | off | off |
+| `contribution_photos_enabled` | off | off |
+| `rewards_enabled` | off | off |
+| `network_ads_enabled` | off | off |
+| `rewarded_ads_enabled` | off | off |
+| `automatic_interstitial_enabled` | off | off |
+| `paywall_enabled` | off | off |
+| `telemetry_enabled` | off | off |
+| `deletion_processing_enabled` | server-only | off |
+| `learn_enabled` | bundled false; runtime forced on | core product |
+
+No public-review enablement flag exists at this base. Do not turn public review on until the 14-day lookahead and hosted proof exist.
+
+---
+
+# Historical: V1 Gate 0 freeze (2026-09-22)
+
+**Date:** 2026-09-22 (amended 2026-09-22 to match the owner directive then in force)
 **Audit tip:** `43f9bc6` (merge of F10 / PR #14)
-**Status:** Frozen for implementation. Implementation slices are **G1–G7** in [`plans/active/v1-testflight-finalization.md`](../plans/active/v1-testflight-finalization.md).
-**This file is docs-only.** Runtime code must not claim these gates are Done.
+**Status:** HISTORICAL. Implementation slices G1–G7 in [`plans/active/v1-testflight-finalization.md`](../plans/active/v1-testflight-finalization.md) are closed as a ship program. The text below is preserved so past decisions stay auditable. Where it conflicts with the decision table above, the table wins. Runtime code at `034f1cc` still implements several of these historical values; gates C1–C15 replace that behavior. Do not edit this historical section to make the past look compliant.
 
 ## Executive decision
 

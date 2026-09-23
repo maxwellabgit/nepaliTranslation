@@ -1,6 +1,8 @@
 # V1 TestFlight finalization (R0–R9)
 
-**Active ExecPlan.** Supersedes any lingering claim that the G0–G5 stack merged to `main` at `71c85df5a4a7ba238c3496ed243ea0b25b027d91` is a production V1 candidate.
+> **Status: SUPERSEDED as the ship program (2026-09-23).** The living contract is [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md) (gates C0–C15), based on integration tip `034f1cc`. This file remains the R0–R9 evidence log. Do not rewrite it to match the new credit, price, or interstitial rules.
+
+**Historical ExecPlan.** Supersedes any lingering claim that the G0–G5 stack merged to `main` at `71c85df5a4a7ba238c3496ed243ea0b25b027d91` is a production V1 candidate.
 
 Reference audit: [`NepTranslate V1 Finalization and TestFlight Runbook`](../../docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md) (copied from the runbook the release owner delivered on 2026-09-22).
 

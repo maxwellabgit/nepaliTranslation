@@ -1,5 +1,7 @@
 # eval-integrity: Keep the gold gate honest
 
+> **Product-contract note (2026-09-23).** Conflicting product requirements in this file are historical. The living V1 contract is [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md). This lane file stays as the eval-integrity record. Do not edit gold to raise a score.
+
 ## Goal
 Make `benchmarks/gold/` a trustworthy holdout: schema-valid, register-pure, not used for training, freeze story intact.
 

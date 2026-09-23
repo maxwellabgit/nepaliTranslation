@@ -1,0 +1,46 @@
+C0 admin baseline at 034f1cc66b991bf5c7ba5062bfebee7ec87f1d42
+npm test -> 1 file, 3 tests, exit 0
+npm run build -> exit 0 with chunk-size warning: dist/assets/index-Vf8ckGUI.js 504.09 kB (over 500 kB)
+
+BASE_SHA=034f1cc66b991bf5c7ba5062bfebee7ec87f1d42
+STARTED_UTC=2026-09-23T01:58:49Z
+
+> neptranslate-admin@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 C:/Users/maxwe/.cursor/nepaliTranslation/admin
+
+  src/api.test.ts (3 tests) 6ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:58:50
+   Duration  7.06s (transform 36ms, setup 0ms, collect 36ms, tests 6ms, environment 6.56s, prepare 244ms)
+
+
+> neptranslate-admin@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v6.4.3 building for production...
+transforming...
+ 94 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.42 kB  gzip:   0.28 kB
+dist/assets/index-DaDjH5Do.css    1.85 kB  gzip:   0.85 kB
+dist/assets/index-Vf8ckGUI.js   504.09 kB  gzip: 146.10 kB
+node.exe : 
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: 
+https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+ built in 1.54s
+FINISHED_UTC=2026-09-23T01:59:01Z

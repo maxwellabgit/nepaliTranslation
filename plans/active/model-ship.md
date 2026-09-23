@@ -1,5 +1,7 @@
 # model-ship: Train / export only when artifacts exist
 
+> **Product-contract note (2026-09-23).** Conflicting product requirements in this file are historical. The living V1 contract is [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md). This lane file stays as the model-ship record. Do not lower certification floors to manufacture a pass.
+
 ## Goal
 Keep the FT → ONNX → `mobile/assets/models/` path coherent with INTENT. Improve scripts and mix **or** run eval if weights are present. Do not pretend a GPU job ran.
 

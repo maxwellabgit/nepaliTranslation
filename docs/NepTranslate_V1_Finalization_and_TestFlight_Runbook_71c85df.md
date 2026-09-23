@@ -1,5 +1,7 @@
 # NepTranslate V1 Finalization and TestFlight Runbook
 
+> **Historical audit record.** Captured against `71c85df` on 2026-09-22. Do not edit the findings or the prices in this file to match a later contract. The living contract is `plans/active/v1-final-contract-reconciliation.md`.
+
 **Audited revision:** `71c85df5a4a7ba238c3496ed243ea0b25b027d91` on `origin/main`  
 **Audit date:** September 22, 2026  
 **App:** NepTranslate (`com.neptranslate.app`)  

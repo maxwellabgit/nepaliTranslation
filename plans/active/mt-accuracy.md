@@ -1,5 +1,7 @@
 # mt-accuracy: Better translations on the decode path
 
+> **Product-contract note (2026-09-23).** Conflicting product requirements in this file are historical. The living V1 contract is [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md). This lane file stays as the decode-path record. Never edit gold references.
+
 ## Goal
 Improve on-device EN↔NE output via phrase overlay, lexicon, romanize, and mashup refusal — without touching gold answers or training weights (lane 5 is not in play). Informal register must be तिमी-class (pronoun **and** verb), not तँ, and not a pronoun-only swap that leaves गर्नुहोस् honorifics.
 

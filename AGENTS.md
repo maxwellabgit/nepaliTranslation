@@ -1,6 +1,6 @@
 # NepTranslate — agent operating system
 
-Offline-first iOS / iPadOS English ↔ Nepali translator (`mobile/`). Intent lives in [`.governance/INTENT.md`](.governance/INTENT.md). Architecture lives in [`training/ARCHITECTURE.md`](training/ARCHITECTURE.md). Gold eval lives in [`benchmarks/gold/`](benchmarks/gold/). **Ship program (active):** TestFlight finalization remediation gates **R0–R9** in [`plans/active/v1-testflight-runbook.md`](plans/active/v1-testflight-runbook.md), driven by the 2026-09-22 external audit archived at [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](.governance/V1_G0_DECISIONS.md). Prior F0–F10 ([`plans/active/beta-release.md`](plans/active/beta-release.md)) and G0–G7 ([`plans/active/v1-testflight-finalization.md`](plans/active/v1-testflight-finalization.md), SUPERSEDED) are historical foundation only.
+Offline-first iOS / iPadOS English ↔ Nepali translator (`mobile/`). Intent lives in [`.governance/INTENT.md`](.governance/INTENT.md). Architecture lives in [`training/ARCHITECTURE.md`](training/ARCHITECTURE.md). Gold eval lives in [`benchmarks/gold/`](benchmarks/gold/). **Ship program (active):** final contract reconciliation gates **C0–C15** in [`plans/active/v1-final-contract-reconciliation.md`](plans/active/v1-final-contract-reconciliation.md). Progress: [`.agent/V1_FINAL_CONTRACT_STATE.md`](.agent/V1_FINAL_CONTRACT_STATE.md). Contract table: [`.governance/V1_G0_DECISIONS.md`](.governance/V1_G0_DECISIONS.md). Prior F0–F10 ([`plans/active/beta-release.md`](plans/active/beta-release.md)), G0–G7 ([`plans/active/v1-testflight-finalization.md`](plans/active/v1-testflight-finalization.md)), and R0–R9 ([`plans/active/v1-testflight-runbook.md`](plans/active/v1-testflight-runbook.md)) are historical. The 2026-09-22 audit remains at [`docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`](docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md).
 
 A fresh agent must be able to enter this repo and know the product, the current lane, remaining work, and how to prove Done. Chat is disposable. These files are not.
 
@@ -29,11 +29,11 @@ Ranked by likelihood that an autonomous agent produces a real, checkable improve
 
 Do **not** start lane 5 until lane 1 is clean. Do **not** claim translation quality from UI-only diffs.
 
-### Production V1 TestFlight finalization (dependency order)
+### Production V1 final contract (dependency order)
 
-Full-business V1 readiness uses **one** living ExecPlan: `plans/active/v1-testflight-runbook.md`. The 2026-09-22 external audit that opened this program is archived at `docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md`.
+Full-business V1 readiness uses **one** living ExecPlan: `plans/active/v1-final-contract-reconciliation.md` (gates **C0–C15**). Execute **exactly one** coherent gate per commit on `cursor/v1-final-contract-reconciliation-5907`. Do not combine adjacent gates. Do not push to `main`. The R0–R9 table below is historical context for the selected base; it is not the active ship program.
 
-Execute **exactly one** gate per branch/PR. Do not combine adjacent gates. Do not start R1+ until R0 is merged and independent review is clean. R0+R1 may be **stacked** for merging (the audit's exit rule) — but they still live on separate branches and separate PRs.
+Historical remediation record (do not reopen as the ship program):
 
 | Order | Slice / lane id | Goal | Branch pattern |
 |------:|-----------------|------|----------------|
@@ -50,9 +50,9 @@ Execute **exactly one** gate per branch/PR. Do not combine adjacent gates. Do no
 
 **Dependency rule:** core translation must not depend on Supabase, AdMob, RevenueCat, or admin. Optional services fail soft.
 
-**Do not mix** a core quality lane (1–5) and a V1 remediation gate in the same PR.
+**Do not mix** a core quality lane (1–5) and a V1 contract gate in the same PR.
 
-Prior F0–F10 (`plans/active/beta-release.md`, merged through `43f9bc6`), the G0–G7 program (`plans/active/v1-testflight-finalization.md`, merged to `main` at `71c85df` — **SUPERSEDED**, red at that SHA on js-verify/playwright/supabase), and the beta foundation through `9b17ac9` remain source baseline. Do not reopen those plans as the ship program; supersede conflicting boundary text with INTENT + V1_G0_DECISIONS + the R0–R9 runbook.
+Prior F0–F10, G0–G7, and R0–R9 plans remain source history. Do not reopen them as the ship program. Conflicting product text yields to INTENT, the decision table in `V1_G0_DECISIONS.md`, and `plans/active/v1-final-contract-reconciliation.md`.
 
 Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; overnight GPU FT on the founder machine; Apple/Supabase/AdMob/RevenueCat console setup; legal copy; bilingual Nepali content sign-off; live interstitial enablement; hosted cron provisioning. Record those as blockers, do not invent results.
 
@@ -61,14 +61,15 @@ Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; o
 - Scope: EN↔NE only, Expo iOS/iPadOS, on-device STT+MT and on-device camera OCR for the product path, no PC/cloud inference for core translate or OCR. Temporary Camera files are deleted after retake, exit, or successful processing. Do not request photo-library access unless importing existing images is added later.
 - One model family (IndicTrans2 dist-200M), not four register models. Informal = **तिमी**, not तँ.
 - Never train on `benchmarks/gold/`. Never edit gold references to raise a score.
-- **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated **synthetic** backend/admin seed data only.
-- V1 public-review pool imports **all** training and benchmark corpora as eligible items (`public_review_eligible=true`) after PII/dedup. Public-review submissions must **not** be promoted back into `benchmarks/gold/` or training corpora until a separate verified migration is signed off.
+- **Never** build contributor known-check sets from `benchmarks/gold/`, training holdouts, or private evaluation answers. Known checks are separately curated synthetic backend/admin seed data only.
+- Public-review eligibility is deny-by-default. Training and benchmark rows need resolved provenance, license, and public-display rights. Collected rows need a certified anonymization record. Unresolved rights are `admin_only`. Publicly exposed source and target hashes are excluded from train and eval exports. Do not edit gold references to feed the review pool.
 - Expo SDK **57** docs only for this release: https://docs.expo.dev/versions/v57.0.0/
-- Every user must accept the startup consent gate (T&C + Privacy Policy + "I am 18+") before reaching any product surface. Guests may then translate locally; signed-in users may additionally contribute.
-- Login is required for **purchase, restore, contribution/public review, and rewards** — never for translation, camera, history, settings, or Learn alphabet.
-- Guest / signed-out / consent-declined translation history, microphone audio, transcripts, clipboard, and photos stay local. After sign-in + startup consent, eligible **Camera photos**, **raw speech recordings**, and **public-review corrections** may upload when the matching flag is on. All uploaded data is tied to the signed-in `user_id`. Never upload for guests, signed-out, or flag-off states.
+- First launch is bilingual Terms + Privacy acceptance and a language choice. It does not require an account or an 18+ attestation. The 18+ attestation is the signed-in contribution gate for public review and media sharing.
+- Login is required for **contribution, purchase, and restore** — never for translation, camera, history, settings, or Learn.
+- Authenticated sessions expire after **30 days** of inactivity. Expiry must not disable guest core surfaces.
+- Guest / signed-out / consent-declined translation history, microphone audio, transcripts, clipboard, and photos stay local. After current contribution consent, 18+, a valid session, and the matching default-off toggle, eligible speech recordings and Camera photos may upload when the remote flag is on. Never upload for guests, under-18, declined or outdated consent, signed-out, expired sessions, or flag-off states.
 - Never put service/secret keys in the app bundle or admin browser code.
-- Monetization boundary: **$0.99/month** ad-free subscription; banners only idle Translate + Learn landing; automatic interstitial **15 min since last successful impression** / max 3 per `America/New_York` day at safe idle transitions (SDK-owned dismiss; remotely disableable); rewarded video = **1 credit / 15 ad-free minutes**; **1 credit = 15 minutes**; top-50%-longest samples at assignment = 2 credits; reward grant at **5:00 PM America/New_York** rotation; **one global 10-item public-review window per NY day**; no credit clawback; no automatic training from contributions; RevenueCat identity = Supabase UUID.
+- Monetization boundary: **USD 2.99/month** (US storefront) and **NPR 199/month** (Nepal storefront), shown as StoreKit/RevenueCat's localized price; banners only idle Translate + idle Learn; automatic interstitial after **15 minutes** of foreground-active time since the last confirmed impression, **no daily cap**, only at Translate Send, Camera capture, and Learn activity-complete safe points; rewarded video = **2 credits / 30 ad-free minutes**; **1 credit = 15 minutes**; review rewards are **2 credits** (≤20 original source words) or **4 credits** (≥21), snapshotted at assignment; close at **5:00 PM America/New_York**; private lookahead minimum 14 days, target 28; one shared Today's 10 window; automated V1 validation logs a cosine score and returns **PASS**; timely human unsatisfactory prevents reward; no credit clawback; no automatic training from contributions; RevenueCat identity = Supabase UUID; TestFlight ads are Google test units and produce no revenue.
 - Compiling is not Done. See `.agent/DONE.md`.
 - After implementation, run `/independent-reviewer` in a fresh context. Findings become work items.
 - Advance to the next V1 gate only with green gates and no material independent-review findings.
@@ -78,14 +79,15 @@ Not autonomous (human-gated, still valid): TestFlight on physical iPhone/iPad; o
 | File | Job |
 |------|-----|
 | `.governance/INTENT.md` | What the product is |
-| `.governance/V1_G0_DECISIONS.md` | Frozen audit decisions |
-| `.governance/DATA_CLASSIFICATION.md` | Review/train/benchmark eligibility |
+| `.governance/V1_G0_DECISIONS.md` | Living decision table; 2026-09-22 freeze kept as history |
+| `.governance/DATA_CLASSIFICATION.md` | Deny-by-default review/train/benchmark eligibility |
 | `training/ARCHITECTURE.md` | How MT is supposed to work |
 | `AGENTS.md` | How an AI behaves here |
 | `.agent/PLANS.md` | ExecPlan contract |
-| `plans/active/<lane>.md` | Where this mission is |
-| `plans/active/v1-testflight-runbook.md` | R0–R9 ship program + proof log (active) |
-| `plans/active/v1-testflight-finalization.md` | Historical G0–G7 log (SUPERSEDED) |
+| `.agent/V1_FINAL_CONTRACT_STATE.md` | C0–C15 progress (status, SHA, next action) |
+| `plans/active/v1-final-contract-reconciliation.md` | Active V1 ship contract (C0–C15) |
+| `plans/active/v1-testflight-runbook.md` | Historical R0–R9 log |
+| `plans/active/v1-testflight-finalization.md` | Historical G0–G7 log |
 | `plans/active/beta-release.md` | Historical F0–F10 foundation log |
 | `docs/NepTranslate_V1_Finalization_and_TestFlight_Runbook_71c85df.md` | 2026-09-22 external audit that opened R0–R9 |
 | `benchmarks/gold/` + `mobile` verify scripts | How you prove translation quality |

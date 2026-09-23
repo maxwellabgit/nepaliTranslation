@@ -13,24 +13,30 @@ Shared (every lane that touches `mobile/`):
 - [ ] Prefer `cd mobile && npm run verify:ci` when the slice owns the full mobile gate
 - [ ] Diff contains no unrelated files and no gold-reference edits under `benchmarks/gold/`
 - [ ] Contributor known checks / seeds were **not** copied from `benchmarks/gold/`
-- [ ] ExecPlan updated (`plans/active/<lane>.md` or `plans/active/v1-testflight-runbook.md`)
+- [ ] ExecPlan updated (`plans/active/v1-final-contract-reconciliation.md` for V1, otherwise `plans/active/<lane>.md`) and `.agent/V1_FINAL_CONTRACT_STATE.md` when the change is a C-gate
 - [ ] `/independent-reviewer` reported no material findings
 
-## V1-wide gates (TestFlight finalization R0–R9)
+## V1 final contract (C0–C15)
 
-Apply on every V1 finalization PR. Gate-specific extras are in `plans/active/v1-testflight-runbook.md`.
+Apply on every reconciliation commit. Authoritative plan: `plans/active/v1-final-contract-reconciliation.md`. State: `.agent/V1_FINAL_CONTRACT_STATE.md`.
 
-- [ ] Only **one** V1 remediation gate in the PR; branch name `cursor/v1-rN-short-name-*` (or `release/1.7.0-rc*` for R9)
-- [ ] `plans/active/v1-testflight-runbook.md` Progress / Commands / Remaining work updated
-- [ ] Distinguish "implemented in repo" from "deployed and proven on hosted infrastructure" in the PR body
+- [ ] One coherent gate in the commit; gate ID in the subject; branch `cursor/v1-final-contract-reconciliation-5907`; do not push to `main`
+- [ ] Distinguish "implemented in repo" from "deployed and proven on hosted infrastructure"
 - [ ] Core translate path still has **no** hard dependency on Supabase, AdMob, RevenueCat, or admin
 - [ ] No production secret, tunnel URL, test password (`1234`), service role, or embedded review-sync secret introduced
-- [ ] Optional-service failure leaves Translate, Camera, History, Settings, and Learn usable
-- [ ] Contract matches INTENT + V1_G0_DECISIONS: $0.99/month; banners idle Translate + Learn only; interstitial **15 min since last successful impression** / ≤3 NY day; rewarded = 1 credit / 15 min; **1 credit = 15 minutes**; top-50%-longest = 2 credits; 5:00 PM America/New_York rotation; **global 10** public reviews per NY day; no clawback; sign-in before purchase/restore/contribution; **startup T&C + Privacy + 18+ gate**; raw speech + photo upload account-linked; 30-day purge on withdrawal/delete
-- [ ] Feature flags remain independently disableable (text/speech/photo contributions, banners, rewarded, interstitial, paywall, telemetry, deletion processing)
-- [ ] No claim of physical-device / airplane-mode / StoreKit / AdMob / interstitial / revenue proof from source-only tests
-- [ ] Human blockers (Apple, Supabase, AdMob, RevenueCat, legal, bilingual, device, iPad, hosted cron) recorded honestly when reached
-- [ ] Frozen benchmarks not exposed for public correction; known checks not copied from gold
+- [ ] Optional-service failure or session expiry leaves Translate, Camera, History, Settings, and Learn usable
+- [ ] Contract matches INTENT: review credits **2** (≤20 original source words) or **4** (≥21); **1 credit = 15 minutes**; rewarded ad = **2 credits**; lookahead minimum **14** / target **28** / append every 14 days; session inactivity **30 days**; interstitial cap **none**; subscription **USD 2.99** (US) / **NPR 199** (Nepal); StoreKit price authoritative; Today's 10 is the only public correction route; 18+ is the contribution gate, not the guest startup gate; automated V1 validation logs a cosine score and returns **PASS**
+- [ ] Risky/network feature flags default off until hosted proof
+- [ ] No claim of physical-device, hosted-scheduler, model-pass, StoreKit, AdMob, or revenue proof without evidence
+- [ ] Human blockers recorded honestly. `FINALIZATION_COMPLETE` is code-owned only
+- [ ] Public exposure excludes source and target hashes from train/eval export. Known checks are not copied from gold. Historical migrations and benchmark failures stay intact
+
+## Historical V1-wide gates (R0–R9)
+
+The checklist items below described the R0–R9 program. They are not the living contract. See the C0–C15 section above.
+
+- [ ] Only **one** historical remediation gate was recorded per R-branch
+- [ ] `plans/active/v1-testflight-runbook.md` kept its own proof log
 
 ### Standard backend gate (gates that touch `supabase/`)
 

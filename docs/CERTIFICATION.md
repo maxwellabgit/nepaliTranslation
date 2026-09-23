@@ -1,6 +1,8 @@
 # Certification checklist (accessibility, privacy, quality)
 
-Source-side items can be marked **source-proven**. Device-only items stay open until a physical iPhone/iPad pass is recorded in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md).
+Source-side items can be marked **source-proven**. Device-only items stay open until a physical iPhone/iPad pass is recorded in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Living contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md).
+
+> Rows below that still say $0.99, a three-per-day interstitial cap, 1-credit rewarded video, or a universal 18+ startup gate are **historical status at the 2026-09-22 audit**. They are not the living contract. The living targets (USD 2.99 / NPR 199, no interstitial daily cap, 2-credit rewarded ads, contribution-only 18+) are **not certified** by those old rows. Do not mark them source-proven until the later C-gates land and are re-checked.
 
 **Honesty (2026-09-22):** Tip `43f9bc6` is **not** an external TestFlight release candidate. Soft model-cert CI with missing ONNX weights is **not** four-class certification. TestFlight test ads and sandbox IAP are **not** revenue proof.
 

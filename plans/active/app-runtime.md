@@ -1,5 +1,7 @@
 # app-runtime: Faster, safer warm-up / cancel / pass-the-phone
 
+> **Product-contract note (2026-09-23).** Conflicting product requirements in this file are historical. The living V1 contract is [`v1-final-contract-reconciliation.md`](./v1-final-contract-reconciliation.md). This lane file stays as the runtime record.
+
 ## Goal
 Make the live loop reliable: model warm-up, STT/TTS/MT cancel, conversation pass, neural-not-ready fallback. No visual restyles unless they unblock a runtime bug.
 

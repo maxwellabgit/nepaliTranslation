@@ -1,7 +1,49 @@
 # Data classification — public review, training, benchmarks
 
-**Frozen:** 2026-09-22 (Gate 0; amended per owner directive)
-**Authority:** [`.governance/INTENT.md`](./INTENT.md), [`.governance/V1_G0_DECISIONS.md`](./V1_G0_DECISIONS.md)
+**Living contract:** 2026-09-23
+**Authority:** [`.governance/INTENT.md`](./INTENT.md), [`.governance/V1_G0_DECISIONS.md`](./V1_G0_DECISIONS.md), [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md)
+
+## Living rules (deny by default)
+
+Public-review eligibility is deny-by-default. Unresolved rights are `admin_only`.
+
+| Class | Meaning | Public review | Train | Evaluate ship quality |
+|-------|---------|---------------|-------|------------------------|
+| `training_source` | Training or dataset row | Only when rights are `cleared_public_display`, license and provenance are recorded, and every other eligibility predicate below passes | Not from public-review exposure. Exposed hashes are excluded from future training exports | No |
+| `benchmark_source` | Benchmark row, including gold | Same rights bar. Importing into review does not edit gold files | No | Compromised for future eval once the source or target hash is publicly exposed |
+| `collected_user` | Account-linked or user-collected text | Only after an anonymization certificate (`certified`) plus cleared public-display rights | No, unless a certified irreversible derivative says otherwise | No |
+| `raw_media` | Speech recordings, Camera photos | **No** in V1. Private buckets only | No | No |
+| `pii_sensitive` / `prohibited` | PII, unsafe, or rights-prohibited | No | No | No |
+| `planned_private` | Assigned to a future window | Not publicly readable | No | No |
+| `exposed` | Window opened or item served | Already public; terminal for re-selection after a substantive review; no-review items may recycle | **Excluded** by source and target hash | **Excluded** by source and target hash |
+| `synthetic_qc` | Separately curated known checks | Separate pool; never copied from gold | No | No |
+
+Rights values: `cleared_public_display`, `admin_only`, `unresolved`, `prohibited`.
+
+Anonymization values: `not_required`, `pending`, `certified`, `failed`.
+
+A collected row is publicly eligible only when all of these hold:
+
+- explicit eligible flag;
+- `cleared_public_display`;
+- anonymization `certified` when the row is collected/user data;
+- not previously substantively reviewed;
+- not quarantined;
+- not already planned or open;
+- not export-excluded for a conflicting reason.
+
+`unresolved` rights are stored and treated as `admin_only`. Do not label audio or photos anonymous because EXIF or `user_id` was removed. A certification record for an anonymized derivative states processor version, fields transformed or removed, re-identification assessment, reviewer, and timestamp.
+
+Every train and eval exporter must use one fail-closed exclusion boundary. An empty exclusion manifest is not proof. Direct raw-table export is unsupported.
+
+The inventory snapshot below is a **historical audit at `43f9bc6`**. It is not a claim that those rows are publicly eligible. Gate C2 re-inventories every source and records rights. Do not rewrite these counts.
+
+## Historical rules (2026-09-22 Gate 0)
+
+The section below recorded an earlier owner directive that marked training and benchmark rows eligible after PII/dedup only, and that paid a length percentile. That directive is superseded. The text is kept as history.
+
+**Frozen:** 2026-09-22 (Gate 0; amended per owner directive then in force)
+**Authority at that date:** INTENT and V1_G0_DECISIONS as they stood on 2026-09-22
 
 ## Classes
 
@@ -14,7 +56,7 @@
 | `reviewed_terminal` | Submitted / rewarded row | Terminal | Only after separate verification migration | **No** |
 | `synthetic_qc` | Hidden known checks | Separate pool; does not consume the daily ten | **No** (not from gold) | **No** |
 
-## V1 rules
+## Historical V1 rules (superseded 2026-09-23)
 
 1. Import **every** row from `datasets/`, `training/`, and `benchmarks/` into `review_source_items`. Redact PII, dedupe by content hash, record license/provenance metadata, then set `public_review_eligible=true` unless flagged `pii_sensitive`.
 2. At each 5:00 PM America/New_York rotation, choose **10 items at random** from eligible rows for the next global window.
