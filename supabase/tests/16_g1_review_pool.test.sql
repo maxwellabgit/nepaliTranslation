@@ -19,7 +19,8 @@ delete from private.review_source_items where origin like 'test:g1%';
 insert into private.review_source_items (
   content_hash, origin, direction, register, script,
   source_text, proposed_target, license_note, metadata,
-  source_char_length, pii_flag, public_review_eligible
+  source_char_length, pii_flag, public_review_eligible,
+  rights_status, origin_class, anonymization_status
 )
 select
   'g1-hash-' || i::text,
@@ -33,7 +34,10 @@ select
   '{}'::jsonb,
   i * 10,
   false,
-  true
+  true,
+  'cleared_public_display',
+  'training_source',
+  'not_required'
 from generate_series(1, 20) as g(i);
 
 -- Refresh length tiers: top 50% should be tier 2, else tier 1.
@@ -56,6 +60,11 @@ select is(
 delete from public.review_submissions;
 delete from public.review_window_items;
 delete from public.review_windows;
+
+update public.app_config
+set public_review_release_approved = true,
+    public_review_enabled = true
+where id = 1;
 
 -- R1 rotation is guarded by ny_close_at > p_as_of (not_due). Tests must
 -- pass a p_as_of far in the future to force each rotation to close its

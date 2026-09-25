@@ -49,9 +49,12 @@ function classifyHttpStatus(status: number, bodyCode?: string): MediaUploadOutco
   return { kind: 'retry', code: bodyCode ?? `http_${status}` };
 }
 
-async function readLocalBytes(uri: string): Promise<ArrayBuffer | null> {
+async function readLocalBytes(
+  uri: string,
+  fetchImpl: typeof fetch,
+): Promise<ArrayBuffer | null> {
   try {
-    const res = await fetch(uri);
+    const res = await fetchImpl(uri);
     if (!res.ok) return null;
     return await res.arrayBuffer();
   } catch {
@@ -64,6 +67,7 @@ export async function uploadMediaItem(
   token: string,
   env: { supabaseUrl: string; supabaseAnonKey: string },
   fetchImpl: typeof fetch = fetch,
+  stillAuthorized: () => Promise<boolean> = async () => true,
 ): Promise<MediaUploadOutcome> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -115,7 +119,7 @@ export async function uploadMediaItem(
     });
 
     if (createBody.status !== 'uploaded' && createBody.upload_url && createBody.token) {
-      const bytes = await readLocalBytes(item.local_uri);
+      const bytes = await readLocalBytes(item.local_uri, fetchImpl);
       if (!bytes) {
         return { kind: 'retry', code: 'local_file_missing' };
       }
@@ -135,6 +139,10 @@ export async function uploadMediaItem(
         }
         return { kind: 'rejected', code: `upload_${putRes.status}` };
       }
+    }
+
+    if (!(await stillAuthorized())) {
+      return { kind: 'rejected', code: 'sharing_disabled' };
     }
 
     const completeRes = await fetchImpl(
@@ -250,6 +258,22 @@ async function doFlush(
         supabaseAnonKey: env.supabaseAnonKey,
       },
       fetchImpl,
+      async () => {
+        const live = await supabase.auth.getSession();
+        if (live.data.session?.user?.id !== userId) return false;
+        if (await sessionInactiveNow(userId)) return false;
+        const liveSharing = await loadSharingToggles(userId);
+        const liveConsent = await loadLocalConsent();
+        const liveGeneration = await readCancelGeneration(userId);
+        const kindAllowed =
+          item.kind === 'speech' ? liveSharing.speech : liveSharing.photos;
+        return (
+          kindAllowed &&
+          liveGeneration === generation &&
+          liveConsent?.consent_version === CONTRIBUTION_CONSENT_VERSION &&
+          Boolean(liveConsent?.age_confirmed)
+        );
+      },
     );
     const applied = await applyOutcome(item, outcome);
     if (applied === 'synced') synced += 1;

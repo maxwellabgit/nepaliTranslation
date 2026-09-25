@@ -27,3 +27,22 @@ export function forbiddenSets(manifest) {
     target: new Set(manifest.target_hashes ?? []),
   };
 }
+
+/** Drop export rows whose composite, source, or target hash was publicly exposed. */
+export function filterExportRows(rows, manifest) {
+  if (!manifestReady(manifest)) {
+    throw new Error('exclusion manifest is not fail-closed');
+  }
+  const sets = forbiddenSets(manifest);
+  const kept = [];
+  const dropped = [];
+  for (const row of rows) {
+    const blocked =
+      sets.composite.has(row.hash) ||
+      sets.source.has(row.sourceHash) ||
+      sets.target.has(row.targetHash);
+    if (blocked) dropped.push(row);
+    else kept.push(row);
+  }
+  return { kept, dropped };
+}

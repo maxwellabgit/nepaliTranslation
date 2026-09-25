@@ -60,6 +60,59 @@ describe('mediaSync', () => {
     expect(outcome).toEqual({ kind: 'rejected', code: 'flag_disabled' });
   });
 
+  test('withdrawn authorization skips completion after the bytes are uploaded', async () => {
+    const item = await enqueueMediaItem({
+      idempotency_key: 'm-inflight',
+      kind: 'photo',
+      local_uri: 'file:///tmp/inflight.jpg',
+      content_type: 'image/jpeg',
+      byte_size: 100,
+      consent_version: '2026-09-21.media',
+      owner_id: 'user-a',
+    });
+    const fetchImpl = jest.fn(async (url: string) => {
+      if (String(url).startsWith('file:')) {
+        return {
+          ok: true,
+          status: 200,
+          arrayBuffer: async () => new ArrayBuffer(8),
+        };
+      }
+      if (String(url).includes('create-media-upload')) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            media_id: '11111111-1111-4111-8111-111111111111',
+            upload_url: 'https://example.supabase.co/storage/v1/object/sign/x',
+            token: 'signed',
+            status: 'pending_upload',
+          }),
+        };
+      }
+      if (String(url).includes('/object/')) {
+        return { ok: true, status: 200, json: async () => ({}) };
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ status: 'uploaded' }),
+      };
+    }) as unknown as typeof fetch;
+    const outcome = await uploadMediaItem(
+      item,
+      'tok',
+      { supabaseUrl: 'https://example.supabase.co', supabaseAnonKey: 'anon' },
+      fetchImpl,
+      async () => false,
+    );
+    expect(outcome).toEqual({ kind: 'rejected', code: 'sharing_disabled' });
+    const urls = (fetchImpl as unknown as jest.Mock).mock.calls.map((call) =>
+      String(call[0]),
+    );
+    expect(urls.some((url) => url.includes('complete-media-upload'))).toBe(false);
+  });
+
   test('flushPendingMedia no-ops when unauthorized', async () => {
     mockedGetSupabase.mockReturnValue({
       auth: {
