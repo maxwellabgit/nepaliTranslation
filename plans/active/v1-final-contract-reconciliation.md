@@ -221,7 +221,9 @@ C0 and C1 are recorded complete. Later commits added source for C2–C11, but a 
 
 2026-09-25: PR #15 merged by fast-forward. `main` is `e0c4f4fe2841721b1708bca2f2ae8f8d2fc8af2f`, the SHA whose GitHub Actions runs already passed. Optional production flags stay off. That merge is code and local-database proof only.
 
-2026-09-25: Staging project `jcrpxoojxixoieqqfgzo` has the 38 migrations and 16 Edge Functions. Flag defaults are off. Two temporary accounts were checked against each other inside a rolled-back transaction. The scheduler and review import are not done.
+2026-09-25: Staging project `jcrpxoojxixoieqqfgzo` has the 38 migrations and 16 Edge Functions. Flag defaults are off. Two temporary accounts were checked against each other inside a rolled-back transaction.
+
+2026-09-25: Imported 200 rights-cleared prompts and installed pg_cron job `process-scheduled-jobs` every minute. The close granted 4 credits once. A storage failure did not delete the database; the retry purged storage, then the database, then auth. Twenty planned days are loaded; 80 more owner-authorized prompts are still required for 28 days.
 
 ## Surprises & discoveries
 
@@ -235,6 +237,7 @@ C0 and C1 are recorded complete. Later commits added source for C2–C11, but a 
 - 2026-09-23: Living contract numbers are the decision table in this file and in `.governance/V1_G0_DECISIONS.md`. Historical G0/R0 text stays in place as evidence.
 - 2026-09-25: Accepted and fast-forwarded PR #15 onto `main` at `e0c4f4fe2841721b1708bca2f2ae8f8d2fc8af2f`. The production EAS profile still does not set live ads. Public review stays behind `public_review_release_approved`.
 - 2026-09-25: Linked staging `jcrpxoojxixoieqqfgzo`, pushed migrations, and deployed functions. Did not enable flags, install the scheduler, or import the review pool.
+- 2026-09-25: Imported only `balance-public-review-prompts` and installed the every-minute job. Public-review and contribution flags were turned back off after the exercise.
 
 ## Commands that actually ran
 

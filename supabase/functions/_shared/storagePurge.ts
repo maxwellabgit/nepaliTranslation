@@ -31,21 +31,32 @@ export async function purgeUserStorageObjects(
   const rows = await listRes.json() as StorageRow[];
   let removed = 0;
   let failed = 0;
+  let errorDetail: string | null = null;
   for (const row of rows) {
     if (!row.bucket_id || !row.object_path) {
       failed += 1;
+      errorDetail = "missing_path";
       continue;
     }
     const encoded = row.object_path.split("/").map(encodeURIComponent).join("/");
     const delRes = await fetchImpl(
       `${deps.url}/storage/v1/object/${row.bucket_id}/${encoded}`,
-      { method: "DELETE", headers },
+      {
+        method: "DELETE",
+        headers: {
+          authorization: headers.authorization,
+          apikey: headers.apikey,
+        },
+      },
     );
     if (delRes.ok) removed += 1;
-    else failed += 1;
+    else {
+      failed += 1;
+      errorDetail = `delete_${delRes.status}`;
+    }
   }
   if (failed > 0) {
-    return { ok: false, removed, failed, error: "partial_delete" };
+    return { ok: false, removed, failed, error: errorDetail ?? "partial_delete" };
   }
   return { ok: true, removed, failed: 0, error: null };
 }

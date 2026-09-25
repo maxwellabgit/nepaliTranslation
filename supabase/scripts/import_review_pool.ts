@@ -790,7 +790,7 @@ function globToRegexp(glob: string): RegExp {
   const escaped = glob
     .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
     .replace(/\*/g, "[^/]*");
-  return new RegExp(`(^|/)${escaped}$`);
+  return new RegExp(`(^|[/\\\\])${escaped}$`);
 }
 
 if (import.meta.main) {

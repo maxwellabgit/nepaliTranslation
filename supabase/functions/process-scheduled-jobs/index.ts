@@ -20,6 +20,9 @@ Deno.serve(async (req) => {
   const cronSecret = Deno.env.get("CRON_SECRET");
   const token = bearerToken(req);
   const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  // Storage and Auth admin reject the newer non-JWT secret key. The legacy
+  // service-role JWT still works for those APIs and for PostgREST.
+  const deletionService = Deno.env.get("STORAGE_SERVICE_ROLE_KEY") ?? service;
   const url = Deno.env.get("SUPABASE_URL");
   if (!url || !service) return errorResponse("unavailable", 503, requestId);
 
@@ -86,7 +89,7 @@ Deno.serve(async (req) => {
   const deletionResults = [];
   for (const row of dueRequests) {
     if (!row?.id || !row.user_id || !row.request_kind) continue;
-    deletionResults.push(await executeDeletionRequest(row, { url, service }));
+    deletionResults.push(await executeDeletionRequest(row, { url, service: deletionService }));
   }
 
   return json(
