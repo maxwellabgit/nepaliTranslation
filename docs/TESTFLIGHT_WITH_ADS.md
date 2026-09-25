@@ -1,6 +1,6 @@
 # Internal TestFlight: review prompts and test ads
 
-This branch prepares an internal iPhone/iPad build. It does **not** record a hosted deployment, an Apple upload, an ad impression, or a reward. Keep public V1 closed until the requirement ledger and four-class model certificate pass. Tell internal testers that the pinned base English→Nepali model has failed the previously recorded formal and informal ship floors; the E1 adapter is not in the app.
+This branch prepares an internal iPhone/iPad build. It does **not** record a hosted deployment, an Apple upload, an ad impression, or a reward. Keep public V1 closed until the requirement ledger and four-class model certificate pass. Tell internal testers that the pinned base English→Nepali model fails the shipped-path formal and informal chrF floors (0.4740 < 0.55; 0.3976 < 0.50) and produces no informal तिमी on that run. The E1 adapter is not in the app.
 
 ## What this change provides
 
