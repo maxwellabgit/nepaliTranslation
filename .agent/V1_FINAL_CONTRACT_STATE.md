@@ -5,7 +5,7 @@ branch: main
 pr: https://github.com/maxwellabgit/nepaliTranslation/pull/15
 pr_state: MERGED
 merge_method: fast-forward
-current_step: 3 and 4 complete on staging jcrpxoojxixoieqqfgzo. Review prompts are imported and the every-minute job is installed. Steps 5 and 6 are ads and purchases and are not started.
+current_step: PRs 17 and 16 are on main at 5645ac2. Both GitHub workflows succeeded on that SHA. No TestFlight build has been uploaded. EAS preview has no variables, so it does not yet point at staging.
 completed_gates: C0, C1 were recorded before this merge. This merge does not close C2–C15.
 internal_testflight: NO-GO
 public_v1: NO-GO
@@ -17,5 +17,8 @@ staging_supabase: project jcrpxoojxixoieqqfgzo. Owner confirmed it is non-produc
 staging_scheduler: pg_cron job process-scheduled-jobs schedule * * * * * jobid 1. 20 succeeded cron runs and 21 HTTP 200 responses from net._http_response. CRON_SECRET is an Edge Function secret and a vault secret, not in the app. New York close instants: 2026-03-07 16:00 UTC -> 22:00 UTC, 2026-03-09 16:00 UTC -> 21:00 UTC, 2026-10-31 16:00 UTC -> 21:00 UTC, 2026-11-02 16:00 UTC -> 22:00 UTC.
 staging_deletion: A missing photo failed at storage (database_completed stayed false). After the photo was uploaded, the retry completed storage, then database, then auth. The auth user, profile, media row, and storage object are gone. Storage delete must not send Content-Type application/json. The newer non-JWT secret key cannot call storage, so the function uses STORAGE_SERVICE_ROLE_KEY.
 human_blockers: 80 more rights-cleared prompts are needed for a 28-day lookahead. Signed AdMob callback, App Store price check, RevenueCat sandbox purchase, and same-build iPhone and iPad matrix are absent. Optional production flags are off.
-next_action: Test ads on staging without live traffic. Keep rewarded, interstitial, paywall, and contribution flags off until each matching proof. Do not treat the 20 planned days as a 28-day supply.
-updated_at_utc: 2026-09-25T21:00:00Z
+integrated_sha: 5645ac2f6899b0791895e891cb500f1722149f72
+ci_on_integrated_sha_2: agent-gates run 36194040238 and backend-gate run 36194040187 succeeded on 5645ac2. PR 17 fixed the deletion assertion. PR 16 keeps the rewarded button hidden unless rewarded_ads_enabled is on. testflight and testflight-ssv use EAS environment preview. production uses production. eas.json does not contain a service-role key.
+eas_preview: no variables. It does not yet contain the staging URL or anon key, and it does not contain a service-role key. Do not build from an older SHA.
+next_action: Put the staging EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY in EAS preview, with no service-role key. Then enable network_ads_enabled and automatic_interstitial_enabled on staging, leave rewarded ads and paywall off, and build profile testflight from 5645ac2. Owner AdMob units, test-device IDs, and the signed SSV receipt are still required before testflight-ssv.
+updated_at_utc: 2026-09-25T22:00:00Z
