@@ -8,8 +8,12 @@ import { getRuntimeFeatureFlags } from '../app/featureFlags';
 import { loadLocalConsent } from '../storage/contributionConsent';
 import { loadSharingToggles } from '../storage/sharingToggles';
 import {
+  bumpCancelGeneration,
+  cancelPendingKind,
   enqueueMediaItem,
   newMediaIdempotencyKey,
+  readCancelGeneration,
+  removeMediaForOwner,
   type MediaOutboxItem,
 } from '../storage/mediaOutbox';
 
@@ -71,6 +75,7 @@ export type EnqueueEligibleMediaInput = {
   sourceUri: string;
   signedIn: boolean;
   authConfigured: boolean;
+  userId?: string | null;
   contentType?: string;
   metadata?: Record<string, unknown>;
 };
@@ -96,7 +101,8 @@ export async function enqueueEligibleMedia(
       photosEnabled: flags.contributionPhotosEnabled,
     });
     if (!gate.ok) return null;
-    const sharing = await loadSharingToggles();
+    if (!input.userId) return null;
+    const sharing = await loadSharingToggles(input.userId);
     if (input.kind === 'speech' && !sharing.speech) return null;
     if (input.kind === 'photo' && !sharing.photos) return null;
 
@@ -109,6 +115,7 @@ export async function enqueueEligibleMedia(
     );
     if (!copied) return null;
 
+    const generation = await readCancelGeneration(input.userId);
     return enqueueMediaItem({
       idempotency_key: newMediaIdempotencyKey(),
       kind: input.kind,
@@ -116,6 +123,9 @@ export async function enqueueEligibleMedia(
       content_type: contentType,
       byte_size: copied.byteSize,
       consent_version: CONTRIBUTION_CONSENT_VERSION,
+      owner_id: input.userId,
+      consent_epoch: CONTRIBUTION_CONSENT_VERSION,
+      cancellation_generation: generation,
       metadata: {
         ...input.metadata,
         source: input.kind === 'photo' ? 'camera' : 'speech',
@@ -131,6 +141,33 @@ export async function enqueueEligibleMedia(
  * On-device STT (expo-speech-recognition) does not currently produce one —
  * call this only when a recording file exists. See ExecPlan F3 blocker.
  */
+function deleteLocalUri(uri: string): void {
+  try {
+    const file = new File(uri);
+    if (file.exists) file.delete();
+  } catch {
+    /* a missing file must not block consent withdrawal */
+  }
+}
+
+/** Withdrawal and account deletion drop that account's pending contribution files. */
+export async function discardOwnerContributionFiles(ownerId: string): Promise<void> {
+  if (!ownerId) return;
+  await bumpCancelGeneration(ownerId);
+  const uris = await removeMediaForOwner(ownerId);
+  for (const uri of uris) deleteLocalUri(uri);
+}
+
+/** Toggle-off cancels pending rows of that kind so they cannot transfer later. */
+export async function stopPendingSharingKind(
+  ownerId: string,
+  kind: MediaKind,
+): Promise<void> {
+  if (!ownerId) return;
+  const uris = await cancelPendingKind(ownerId, kind);
+  for (const uri of uris) deleteLocalUri(uri);
+}
+
 export async function enqueueEligibleSpeechRecording(
   input: Omit<EnqueueEligibleMediaInput, 'kind'>,
 ): Promise<MediaOutboxItem | null> {

@@ -43,6 +43,7 @@ export function createProductionRuntime(): RuntimePorts {
             sourceUri: uri,
             signedIn: Boolean(session?.data.session?.user),
             authConfigured: env.authConfigured,
+            userId: session?.data.session?.user?.id ?? null,
           });
         } catch {
           /* recognition must not depend on the upload */

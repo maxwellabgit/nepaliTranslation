@@ -91,13 +91,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'ready_guest' });
         return;
       }
-      if (await sessionInactiveNow()) {
+      const userId = data.session.user.id;
+      if (await sessionInactiveNow(userId)) {
         await supabase.auth.signOut();
         if (!cancelled) dispatch({ type: 'session_revoked' });
         return;
       }
-      await touchSessionActivity();
-      if (!cancelled) dispatch({ type: 'ready_session', userId: data.session.user.id });
+      await touchSessionActivity(userId);
+      if (!cancelled) dispatch({ type: 'ready_session', userId });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || String(event) === 'USER_DELETED') {
@@ -110,12 +111,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       if (session?.user) {
         void (async () => {
-          if (await sessionInactiveNow()) {
+          if (await sessionInactiveNow(session.user.id)) {
             await supabase.auth.signOut();
             dispatch({ type: 'session_revoked' });
             return;
           }
-          await touchSessionActivity();
+          await touchSessionActivity(session.user.id);
           if (event === 'SIGNED_IN') void mirrorStoredStartupConsent();
           dispatch({ type: 'ready_session', userId: session.user.id });
         })();
@@ -126,12 +127,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       void (async () => {
         const { data } = await supabase.auth.getSession();
         if (!data.session?.user) return;
-        if (await sessionInactiveNow()) {
+        if (await sessionInactiveNow(data.session.user.id)) {
           await supabase.auth.signOut();
           dispatch({ type: 'session_revoked' });
           return;
         }
-        await touchSessionActivity();
+        await touchSessionActivity(data.session.user.id);
       })();
     });
 

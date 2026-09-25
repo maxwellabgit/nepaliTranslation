@@ -50,7 +50,7 @@ export function CameraScreen({ active }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const runtime = useRuntime();
-  const { status: authStatus, authConfigured } = useAuth();
+  const { status: authStatus, authConfigured, userId } = useAuth();
   const [permission, requestPermission] = useCameraPermissions();
   const granted = permission?.granted === true;
   const [phaseState, setPhaseState] = useState<CameraPhaseState>(() =>
@@ -306,6 +306,7 @@ export function CameraScreen({ active }: Props) {
         sourceUri: uri,
         signedIn: authStatus === 'signed-in',
         authConfigured,
+        userId,
         metadata: { surface: 'camera', sentence_count: translated.length },
       });
       deleteCapture(uri, 'processed');

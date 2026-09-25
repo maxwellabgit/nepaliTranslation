@@ -92,7 +92,9 @@ describe('mediaSync', () => {
     mockedGetSupabase.mockReturnValue({
       auth: {
         getSession: async () => ({
-          data: { session: { access_token: 'tok' } },
+          data: {
+            session: { access_token: 'tok', user: { id: 'user-a' } },
+          },
         }),
       },
     } as never);
@@ -100,5 +102,34 @@ describe('mediaSync', () => {
     const result = await flushPendingMedia(fetchImpl);
     expect(result).toEqual({ ok: true, synced: 0, failed: 0, rejected: 0 });
     expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
+  test('account B does not upload account A files', async () => {
+    await enqueueMediaItem({
+      idempotency_key: 'm-owner-a',
+      kind: 'photo',
+      local_uri: 'file:///tmp/a.jpg',
+      content_type: 'image/jpeg',
+      byte_size: 80,
+      consent_version: '2026-09-21.media',
+      owner_id: 'user-a',
+      consent_epoch: '2026-09-21.media',
+    });
+    mockedGetSupabase.mockReturnValue({
+      auth: {
+        getSession: async () => ({
+          data: {
+            session: { access_token: 'tok', user: { id: 'user-b' } },
+          },
+        }),
+      },
+    } as never);
+    const fetchImpl = jest.fn() as unknown as typeof fetch;
+    const result = await flushPendingMedia(fetchImpl);
+    expect(result).toEqual({ ok: true, synced: 0, failed: 0, rejected: 0 });
+    expect(fetchImpl).not.toHaveBeenCalled();
+    const items = await loadMediaOutbox();
+    expect(items[0].status).toBe('queued');
+    expect(items[0].owner_id).toBe('user-a');
   });
 });
