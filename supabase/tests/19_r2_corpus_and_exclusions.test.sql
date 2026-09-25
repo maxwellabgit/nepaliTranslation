@@ -108,6 +108,20 @@ select is(
   'confirm + edit hashes added to review_exclusions/public_reviewed'
 );
 
+select is(
+  (select count(*)::int from public.review_exclusions e
+    join public.review_submissions s
+      on s.window_id = '00000000-0000-4000-9000-000000000001'
+     and s.action in ('confirm', 'edit')
+    join private.review_source_items si on si.id = s.source_item_id
+   where e.content_hash = si.content_hash
+     and e.reason = 'public_reviewed'
+     and e.source_hash = private.review_text_hash(si.source_text)
+     and e.target_hash = private.review_text_hash(si.proposed_target)),
+  2,
+  'confirm and edit exclusions store source and target hashes'
+);
+
 -- report content hash is excluded with reason 'reported_quarantine'.
 select is(
   (select count(*)::int from public.review_exclusions
