@@ -34,6 +34,20 @@
         "EXPO_PUBLIC_RELEASE_CHANNEL": "testflight-internal"
       }
     },
+    "testflight-ssv": {
+      "distribution": "store",
+      "channel": "testflight-internal",
+      "autoIncrement": true,
+      "ios": {
+        "image": "sdk-57",
+        "resourceClass": "m-medium"
+      },
+      "env": {
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true",
+        "EXPO_PUBLIC_ADS_ENV": "test-ssv",
+        "EXPO_PUBLIC_RELEASE_CHANNEL": "testflight-ssv-internal"
+      }
+    },
     "production": {
       "autoIncrement": true,
       "ios": {
@@ -47,6 +61,13 @@
     }
   },
   "submit": {
+    "testflight-ssv": {
+      "ios": {
+        "ascAppId": "6792574384",
+        "appleTeamId": "BSQ5SYHX54",
+        "bundleIdentifier": "com.neptranslate.app"
+      }
+    },
     "testflight": {
       "ios": {
         "ascAppId": "6792574384",

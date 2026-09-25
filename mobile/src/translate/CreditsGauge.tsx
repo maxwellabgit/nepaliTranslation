@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { AppState, StyleSheet, Text, View } from 'react-native';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
 import { useTheme } from '../theme';
 import { adFreeBalance } from './creditProgress';
@@ -7,9 +7,21 @@ import { adFreeBalance } from './creditProgress';
 export function CreditsGauge() {
   const theme = useTheme();
   const entitlement = useEntitlementOptional();
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const tick = () => setNowMs(Date.now());
+    const timer = setInterval(tick, 15_000);
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') tick();
+    });
+    return () => {
+      clearInterval(timer);
+      subscription.remove();
+    };
+  }, []);
   const balance = adFreeBalance({
     earnedUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
-    nowMs: Date.now(),
+    nowMs,
     lifetimeCredits: entitlement?.lifetimeCredits ?? 0,
   });
 

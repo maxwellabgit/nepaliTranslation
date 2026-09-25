@@ -123,6 +123,7 @@ export function useTranslationSession({ active, seed }: Options) {
     const current = stateRef.current;
     const direction = turn.direction ?? directionFor(turn.from);
     await addHistory({
+      id: turn.id,
       source: turn.source,
       translation: turn.translation,
       sourceLang: turn.from,

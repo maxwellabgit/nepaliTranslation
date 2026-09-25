@@ -1,10 +1,11 @@
 /**
  * Expo config with env-specific AdMob app IDs.
- * Non-production always defaults to Google test app IDs.
- * Production requires real IDs via EXPO_PUBLIC_ADMOB_* (never test IDs).
+ * Internal TestFlight uses Google demo IDs by default. A separate SSV test
+ * profile uses owner-owned iOS IDs on registered test devices.
+ * Production requires real IDs via EXPO_PUBLIC_ADMOB_*.
  */
 
-/** Google sample app IDs — mandatory outside production. */
+/** Google sample IDs for the ordinary internal TestFlight build. */
 const TEST_IOS_APP_ID = 'ca-app-pub-3940256099942544~1458002511';
 const TEST_ANDROID_APP_ID = 'ca-app-pub-3940256099942544~3347511713';
 const TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2934735716';
@@ -15,23 +16,24 @@ function looksLikeTestId(id) {
   return typeof id === 'string' && id.includes('3940256099942544');
 }
 
-function resolveAppIds(production) {
-  if (!production) {
+function resolveAppIds(production, ssvTest) {
+  if (!production && !ssvTest) {
     return {
-      iosAppId: process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID || TEST_IOS_APP_ID,
-      androidAppId:
-        process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID || TEST_ANDROID_APP_ID,
+      iosAppId: TEST_IOS_APP_ID,
+      androidAppId: TEST_ANDROID_APP_ID,
     };
   }
   const iosAppId = process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID || '';
-  const androidAppId = process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID || '';
+  const androidAppId = ssvTest
+    ? TEST_ANDROID_APP_ID
+    : process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID || '';
   if (!iosAppId || !androidAppId) {
     throw new Error(
-      'Production AdMob requires EXPO_PUBLIC_ADMOB_IOS_APP_ID and EXPO_PUBLIC_ADMOB_ANDROID_APP_ID',
+      'Owned AdMob app ID(s) required for live or TestFlight SSV ads',
     );
   }
-  if (looksLikeTestId(iosAppId) || looksLikeTestId(androidAppId)) {
-    throw new Error('Production AdMob rejects Google test app IDs');
+  if (looksLikeTestId(iosAppId) || (!ssvTest && looksLikeTestId(androidAppId))) {
+    throw new Error('Owned AdMob app IDs reject Google demo IDs');
   }
   return { iosAppId, androidAppId };
 }
@@ -41,7 +43,9 @@ function resolveAppIds(production) {
  *
  * `EXPO_PUBLIC_ADS_ENV` is authoritative. `test` forces Google's official
  * test unit IDs even when store distribution is on (needed for TestFlight
- * internal builds). `live` requires production IDs and refuses test IDs.
+ * internal builds). `test-ssv` requires owner-owned iOS units and registered
+ * test device IDs so signed server-side reward callbacks can be exercised.
+ * `live` requires production IDs and refuses demo IDs.
  *
  * A `production` EAS profile alone MUST NOT imply live ads: the caller
  * must set `EXPO_PUBLIC_ADS_ENV=live` explicitly. This eliminates the
@@ -49,10 +53,10 @@ function resolveAppIds(production) {
  */
 function readAdsEnv() {
   const raw = process.env.EXPO_PUBLIC_ADS_ENV;
-  if (raw === 'test' || raw === 'live') return raw;
+  if (raw === 'test' || raw === 'test-ssv' || raw === 'live') return raw;
   if (raw && raw.length > 0) {
     throw new Error(
-      `EXPO_PUBLIC_ADS_ENV must be "test" or "live" (got "${raw}")`,
+      `EXPO_PUBLIC_ADS_ENV must be "test", "test-ssv", or "live" (got "${raw}")`,
     );
   }
   return 'test';
@@ -64,23 +68,23 @@ function isLiveAdsEnv() {
 
 module.exports = ({ config }) => {
   const production = isLiveAdsEnv();
-  const { iosAppId, androidAppId } = resolveAppIds(production);
+  const ssvTest = readAdsEnv() === 'test-ssv';
+  const { iosAppId, androidAppId } = resolveAppIds(production, ssvTest);
 
-  const bannerUnitId = production
+  const bannerUnitId = production || ssvTest
     ? process.env.EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID || ''
-    : process.env.EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID || TEST_BANNER_UNIT;
-  const rewardedUnitId = production
+    : TEST_BANNER_UNIT;
+  const rewardedUnitId = production || ssvTest
     ? process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID || ''
-    : process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID || TEST_REWARDED_UNIT;
-  const interstitialUnitId = production
+    : TEST_REWARDED_UNIT;
+  const interstitialUnitId = production || ssvTest
     ? process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID || ''
-    : process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID ||
-      TEST_INTERSTITIAL_UNIT;
+    : TEST_INTERSTITIAL_UNIT;
 
-  if (production) {
+  if (production || ssvTest) {
     if (!bannerUnitId || !rewardedUnitId || !interstitialUnitId) {
       throw new Error(
-        'Production AdMob requires EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID, EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID, and EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID',
+        'Live or TestFlight SSV AdMob requires banner, rewarded, and interstitial unit IDs',
       );
     }
     if (
@@ -88,8 +92,21 @@ module.exports = ({ config }) => {
       looksLikeTestId(rewardedUnitId) ||
       looksLikeTestId(interstitialUnitId)
     ) {
-      throw new Error('Production AdMob rejects Google test unit IDs');
+      throw new Error('Owner AdMob units reject Google demo unit IDs');
     }
+  }
+
+  // Own ad units can exercise the SSV callback on enrolled physical test
+  // devices. Refuse a TestFlight SSV build without explicit device IDs.
+  const testDeviceIdentifiers = ssvTest
+    ? (process.env.EXPO_PUBLIC_ADMOB_TEST_DEVICE_IDS || '')
+        .split(',').map((id) => id.trim()).filter(Boolean)
+    : [];
+  if (ssvTest && (
+    testDeviceIdentifiers.length === 0 ||
+    testDeviceIdentifiers.some((id) => !/^[0-9a-f]{32}$/i.test(id))
+  )) {
+    throw new Error('TestFlight SSV requires registered 32-character AdMob test device IDs');
   }
 
   const plugins = (config.plugins || []).filter(
@@ -111,12 +128,13 @@ module.exports = ({ config }) => {
     extra: {
       ...config.extra,
       ads: {
-        env: production ? 'live' : 'test',
+        env: production ? 'live' : ssvTest ? 'test-ssv' : 'test',
         iosAppId,
         androidAppId,
         bannerUnitId,
         rewardedUnitId,
         interstitialUnitId,
+        testDeviceIdentifiers,
       },
       revenueCatAppleApiKey:
         process.env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY || '',

@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-/** Google sample IDs — required outside production; forbidden in production. */
+/** Google sample IDs for the standard internal TestFlight profile. */
 export const GOOGLE_TEST_APP_ID_IOS = 'ca-app-pub-3940256099942544~1458002511';
 export const GOOGLE_TEST_APP_ID_ANDROID =
   'ca-app-pub-3940256099942544~3347511713';
@@ -10,7 +10,7 @@ export const GOOGLE_TEST_REWARDED_UNIT =
 export const GOOGLE_TEST_INTERSTITIAL_UNIT =
   'ca-app-pub-3940256099942544/4411468910';
 
-export type AdsRuntimeEnv = 'production' | 'test';
+export type AdsRuntimeEnv = 'production' | 'test' | 'test-ssv';
 
 export type AdUnitConfig = {
   env: AdsRuntimeEnv;
@@ -19,6 +19,12 @@ export type AdUnitConfig = {
   bannerUnitId: string;
   rewardedUnitId: string;
   interstitialUnitId: string;
+  testDeviceIdentifiers?: string[];
+};
+
+type BundledAdsConfig = Omit<Partial<AdUnitConfig>, 'env'> & {
+  /** app.config stores "live"; the runtime represents it as production. */
+  env?: AdsRuntimeEnv | 'live';
 };
 
 export function isGoogleTestAdId(id: string): boolean {
@@ -33,18 +39,19 @@ export function isGoogleTestAdId(id: string): boolean {
 export function resolveAdUnitConfig(
   input?: Partial<AdUnitConfig> & { env?: AdsRuntimeEnv },
 ): AdUnitConfig {
-  const extra = (Constants.expoConfig?.extra as { ads?: Partial<AdUnitConfig> } | undefined)
+  const extra = (Constants.expoConfig?.extra as { ads?: BundledAdsConfig } | undefined)
     ?.ads;
-  const env: AdsRuntimeEnv =
-    input?.env ??
-    (extra?.env === 'production' ? 'production' : 'test');
+  const bundledEnv: AdsRuntimeEnv = extra?.env === 'live' || extra?.env === 'production'
+    ? 'production'
+    : extra?.env === 'test-ssv' ? 'test-ssv' : 'test';
+  const env: AdsRuntimeEnv = input?.env ?? bundledEnv;
 
   const config: AdUnitConfig = {
     env,
     iosAppId:
       input?.iosAppId ??
       extra?.iosAppId ??
-      (env === 'production' ? '' : GOOGLE_TEST_APP_ID_IOS),
+      (env !== 'test' ? '' : GOOGLE_TEST_APP_ID_IOS),
     androidAppId:
       input?.androidAppId ??
       extra?.androidAppId ??
@@ -52,15 +59,16 @@ export function resolveAdUnitConfig(
     bannerUnitId:
       input?.bannerUnitId ??
       extra?.bannerUnitId ??
-      (env === 'production' ? '' : GOOGLE_TEST_BANNER_UNIT),
+      (env !== 'test' ? '' : GOOGLE_TEST_BANNER_UNIT),
     rewardedUnitId:
       input?.rewardedUnitId ??
       extra?.rewardedUnitId ??
-      (env === 'production' ? '' : GOOGLE_TEST_REWARDED_UNIT),
+      (env !== 'test' ? '' : GOOGLE_TEST_REWARDED_UNIT),
     interstitialUnitId:
       input?.interstitialUnitId ??
       extra?.interstitialUnitId ??
-      (env === 'production' ? '' : GOOGLE_TEST_INTERSTITIAL_UNIT),
+      (env !== 'test' ? '' : GOOGLE_TEST_INTERSTITIAL_UNIT),
+    testDeviceIdentifiers: input?.testDeviceIdentifiers ?? extra?.testDeviceIdentifiers ?? [],
   };
 
   validateAdUnitConfig(config);
@@ -83,6 +91,18 @@ export function validateAdUnitConfig(config: AdUnitConfig): void {
       if (isGoogleTestAdId(id)) {
         throw new Error('Production AdMob config rejects Google test IDs');
       }
+    }
+    return;
+  }
+  if (config.env === 'test-ssv') {
+    if ([config.iosAppId, config.bannerUnitId, config.rewardedUnitId, config.interstitialUnitId]
+      .some(isGoogleTestAdId)) {
+      throw new Error('SSV test requires owner AdMob units, not demo IDs');
+    }
+    if (!config.testDeviceIdentifiers?.length || config.testDeviceIdentifiers.some(
+      (id) => !/^[0-9a-f]{32}$/i.test(id),
+    )) {
+      throw new Error('SSV test requires AdMob test device IDs');
     }
     return;
   }

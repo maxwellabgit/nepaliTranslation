@@ -47,6 +47,39 @@ describe('contributionSync H2', () => {
     } as never);
   });
 
+  test('never posts a queued correction without a valid authenticated session', async () => {
+    await enqueueDraft({
+      local_fingerprint: 'fp_unauthorized', surface: 'history',
+      source_text: 'Hello', model_output: 'नमस्ते', correction_text: 'नमस्कार',
+      source_lang: 'en', formality: 'formal', script: 'deva',
+      consent_version: '2026-09-19.draft', status: 'queued',
+    });
+    const send = jest.fn();
+    mockedGetSupabase.mockReturnValue({ auth: { getSession: async () => ({
+      data: { session: null },
+    }) } } as never);
+    expect(await flushPendingDrafts(send)).toEqual({ ok: false, reason: 'unauthorized' });
+    mockedGetSupabase.mockReturnValue(null);
+    expect(await flushPendingDrafts(send)).toEqual({ ok: false, reason: 'unavailable' });
+    expect(send).not.toHaveBeenCalled();
+    expect((await loadOutbox())[0]?.status).toBe('queued');
+  });
+
+  test('rejects unlabeled or unconsented corrections before the network boundary', async () => {
+    const draft = await enqueueDraft({
+      local_fingerprint: 'fp_unlabeled', surface: 'history',
+      source_text: 'Hello', model_output: 'नमस्ते', correction_text: 'नमस्कार',
+      source_lang: 'en', formality: 'formal', script: 'deva',
+      consent_version: '2026-09-19.draft', status: 'queued',
+    });
+    const send = jest.fn();
+    expect(await postTranslationReport({ ...draft, script: null }, 'tok', env, send))
+      .toEqual({ kind: 'rejected', code: 'labels_required' });
+    expect(await postTranslationReport({ ...draft, consent_version: null }, 'tok', env, send))
+      .toEqual({ kind: 'rejected', code: 'consent_required' });
+    expect(send).not.toHaveBeenCalled();
+  });
+
   test('400 consent mismatch is rejected; 500 and timeout are retryable', async () => {
     const base = {
       idempotency_key: 'k1',

@@ -200,7 +200,11 @@ export async function verifyAdmobSsv(
   );
   if (!valid) return { ok: false, reason: 'bad_signature' };
 
-  if (params.ad_unit !== input.allowedAdUnit) {
+  // Google's signed SSV query sends the numeric ad-unit segment, while
+  // the SDK and deployment configuration use ca-app-pub-.../NNNNNNNNNN.
+  const configuredUnit = input.allowedAdUnit.match(/^ca-app-pub-\d+\/(\d+)$/)?.[1]
+    ?? input.allowedAdUnit;
+  if (params.ad_unit !== configuredUnit) {
     return { ok: false, reason: 'wrong_unit' };
   }
 

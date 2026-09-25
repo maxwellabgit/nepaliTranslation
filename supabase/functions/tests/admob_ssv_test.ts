@@ -56,6 +56,25 @@ Deno.test("SSV valid fixture passes", async () => {
   assertEquals(ok.ok, true);
 });
 
+Deno.test("SSV accepts Google's signed numeric unit for the configured full ID", async () => {
+  const built = await buildValidQuery({ unit: "2222222222" });
+  const ok = await verifyAdmobSsv({
+    query: built.query,
+    keys: [built.pub],
+    allowedAdUnit: "ca-app-pub-1234567890123456/2222222222",
+    expectedRewardAmount: "30",
+    expectedRewardItem: "ad_free_minutes",
+  });
+  assertEquals(ok.ok, true);
+  const wrong = await verifyAdmobSsv({
+    query: built.query,
+    keys: [built.pub],
+    allowedAdUnit: "ca-app-pub-1234567890123456/3333333333",
+  });
+  assertEquals(wrong.ok, false);
+  if (!wrong.ok) assertEquals(wrong.reason, "wrong_unit");
+});
+
 Deno.test("SSV altered query fails", async () => {
   clearAdmobKeyCache();
   const built = await buildValidQuery();

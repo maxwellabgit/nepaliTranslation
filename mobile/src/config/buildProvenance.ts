@@ -21,7 +21,7 @@ export type BuildProvenance = {
   gitSha: string;
   gitShaShort: string;
   releaseChannel: string;
-  adsEnv: 'test' | 'live' | 'unknown';
+  adsEnv: 'test' | 'test-ssv' | 'live' | 'unknown';
   modelFamily: string;
   modelEnIndicRevision: string;
   modelIndicEnRevision: string;
@@ -34,15 +34,16 @@ function readExtra(): Record<string, unknown> {
   return extra && typeof extra === 'object' ? extra : {};
 }
 
-function readAdsEnv(extra: Record<string, unknown>): 'test' | 'live' | 'unknown' {
+function readAdsEnv(extra: Record<string, unknown>): 'test' | 'test-ssv' | 'live' | 'unknown' {
   const ads = extra.ads;
   if (ads && typeof ads === 'object') {
     const env = (ads as Record<string, unknown>).env;
     if (env === 'production' || env === 'live') return 'live';
     if (env === 'test') return 'test';
+    if (env === 'test-ssv') return 'test-ssv';
   }
   const explicit = process.env.EXPO_PUBLIC_ADS_ENV;
-  if (explicit === 'live' || explicit === 'test') return explicit;
+  if (explicit === 'live' || explicit === 'test' || explicit === 'test-ssv') return explicit;
   return 'unknown';
 }
 

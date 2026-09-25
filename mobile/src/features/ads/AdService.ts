@@ -1,5 +1,6 @@
 import type { AdAdapter, AdNetworkCall, RewardedLoadOpts } from './adMiddleware';
 import type { AdSurface } from '../entitlements/decideAdPresentation';
+import { resolveAdUnitConfig } from './adConfig';
 
 export type ConsentState = {
   canRequestAds: boolean;
@@ -43,6 +44,7 @@ type NativeAdInstance = {
 type NativeAdsModule = {
   default: () => {
     initialize: () => Promise<unknown>;
+    setRequestConfiguration?: (config: { testDeviceIdentifiers: string[] }) => Promise<void>;
   };
   AdsConsent: {
     gatherConsent: () => Promise<{
@@ -321,7 +323,15 @@ export function createProductionAdService(): AdService {
             native.AdsConsentPrivacyOptionsRequirementStatus.REQUIRED,
         };
         if (consent.canRequestAds) {
-          await native.default().initialize();
+          const ads = native.default();
+          const config = resolveAdUnitConfig();
+          if (config.env === 'test-ssv') {
+            if (!ads.setRequestConfiguration) throw new Error('test_device_configuration_missing');
+            await ads.setRequestConfiguration({
+              testDeviceIdentifiers: config.testDeviceIdentifiers ?? [],
+            });
+          }
+          await ads.initialize();
           sdkReady = true;
         }
       } catch {

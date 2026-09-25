@@ -54,4 +54,24 @@ describe('adConfig', () => {
     expect(cfg.interstitialUnitId).toBe(GOOGLE_TEST_INTERSTITIAL_UNIT);
     expect(cfg.env).toBe('test');
   });
+
+  it('requires an enrolled physical test device for owner-owned SSV ad units', () => {
+    const own = {
+      env: 'test-ssv' as const,
+      iosAppId: 'ca-app-pub-1234567890123456~1234567890',
+      androidAppId: GOOGLE_TEST_APP_ID_ANDROID,
+      bannerUnitId: 'ca-app-pub-1234567890123456/1111111111',
+      rewardedUnitId: 'ca-app-pub-1234567890123456/2222222222',
+      interstitialUnitId: 'ca-app-pub-1234567890123456/3333333333',
+    };
+    expect(() => validateAdUnitConfig(own)).toThrow(/test device/i);
+    expect(() => validateAdUnitConfig({
+      ...own, testDeviceIdentifiers: ['2077ef9a63d2b398840261c8221a0c9b'],
+    })).not.toThrow();
+    expect(() => validateAdUnitConfig({
+      ...own,
+      rewardedUnitId: GOOGLE_TEST_REWARDED_UNIT,
+      testDeviceIdentifiers: ['2077ef9a63d2b398840261c8221a0c9b'],
+    })).toThrow(/demo IDs/);
+  });
 });

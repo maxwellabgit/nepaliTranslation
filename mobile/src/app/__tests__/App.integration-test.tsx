@@ -295,7 +295,7 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.queryByTestId('sign-in-apple')).toBeNull();
   });
 
-  it('saves a correction draft that survives app relaunch', async () => {
+  it('saves a guest correction in local history without queuing a contribution', async () => {
     const services = createTestServices({ offline: true });
     const view = await render(
       <NepTranslateApp services={services} skipWarmUp bypassStartupConsent />,
@@ -316,10 +316,10 @@ describe('NepTranslateApp production composition', () => {
     );
     await fireEvent.press(screen.getByTestId('correction-save-draft'));
     await waitFor(async () => {
-      const drafts = await listDrafts();
-      expect(drafts.length).toBeGreaterThan(0);
-      expect(drafts[0].correction_text).toContain('नमस्कार');
+      const history = await loadHistory();
+      expect(history[0].translation).toBe('नमस्कार');
     });
+    expect(await listDrafts()).toHaveLength(0);
 
     await view.unmount();
     await act(async () => {
@@ -331,9 +331,9 @@ describe('NepTranslateApp production composition', () => {
         />,
       );
     });
-    const drafts = await listDrafts();
-    expect(drafts.length).toBeGreaterThan(0);
-    expect(drafts[0].correction_text).toContain('नमस्कार');
+    const history = await loadHistory();
+    expect(history[0].translation).toBe('नमस्कार');
+    expect(await listDrafts()).toHaveLength(0);
   });
 
   it('offline launch keeps core panes usable with zero ad network calls', async () => {
