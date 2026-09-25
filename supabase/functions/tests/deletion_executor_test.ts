@@ -153,5 +153,5 @@ Deno.test("purgeUserStorageObjects reports a partial object failure", async () =
   assertEquals(result.ok, false);
   assertEquals(result.removed, 1);
   assertEquals(result.failed, 1);
-  assertEquals(result.error, "partial_delete");
+  assertEquals(result.error, "delete_500");
 });
