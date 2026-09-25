@@ -1,4 +1,6 @@
-# NepTranslate
+# BOLA
+
+### In Nepali: बोल (Bola) is the imperative form of the verb "to speak" or "to talk." It means "Speak!" or "Voice."
 
 **Offline, on-device English ↔ Nepali translation for iOS and iPadOS.** Speech recognition, machine translation, and Camera OCR run on the device. Optional account, review, ads, and subscription services fail soft and are never required for Translate, Camera, local history, Settings, or Learn.
 
