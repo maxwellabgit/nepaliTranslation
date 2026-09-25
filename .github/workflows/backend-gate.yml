@@ -33,14 +33,18 @@ jobs:
         run: bash supabase/scripts/concurrent_reward.sh
       - name: Reset pre-fix schema for upgrade proof
         run: supabase db reset --version 20260923220000
+      - name: Apply forward migrations
+        run: supabase migration up --local
+      - name: pgTAP on clean upgraded schema
+        run: supabase test db
+      - name: Reset pre-fix schema for data-preservation proof
+        run: supabase db reset --version 20260923220000
       - name: Seed pre-fix state
         run: node scripts/prove_upgrade_path.mjs --seed
-      - name: Apply forward migrations
+      - name: Apply forward migrations to existing rows
         run: supabase migration up --local
       - name: Assert pre-fix rows survived the upgrade
         run: node scripts/prove_upgrade_path.mjs --assert
-      - name: pgTAP on upgraded schema
-        run: supabase test db
 
   admin:
     runs-on: ubuntu-latest
