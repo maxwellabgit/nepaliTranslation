@@ -10,6 +10,7 @@ type AdService = {
   networkCalls: () => AdNetworkCall[];
   prepareConsentAndSdk: () => Promise<ConsentState>;
   getConsentState: () => ConsentState;
+  subscribeConsent: (listener: (state: ConsentState) => void) => () => void;
   showPrivacyOptions: () => Promise<void>;
 };
 
@@ -52,6 +53,7 @@ export function createProductionAdService(): AdService {
     networkCalls: () => network.slice(),
     prepareConsentAndSdk: async () => consent,
     getConsentState: () => consent,
+    subscribeConsent: () => () => undefined,
     showPrivacyOptions: async () => undefined,
   };
 }

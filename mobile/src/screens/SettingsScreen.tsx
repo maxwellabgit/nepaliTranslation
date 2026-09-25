@@ -34,6 +34,8 @@ import { StatusBanner } from '../components/StatusBanner';
 import { t, useNetworkOffline, useSetUiLang, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
+import { RewardedAdButton } from '../features/ads/RewardedAdButton';
+import { useAdConsent } from '../features/ads/useAdConsent';
 import { isHttpsUrl, readLegalPublicUrls } from '../config/legalUrls';
 
 const INAPPROPRIATE_AD_HELP =
@@ -88,7 +90,7 @@ export function SettingsScreen({
   } | null>(null);
   const auth = useAuth();
   const services = useServices();
-  const consent = services.ads.getConsentState();
+  const consent = useAdConsent(services.ads);
   const subscription = useSubscriptionOptional();
   const legalUrls = useMemo(() => readLegalPublicUrls(), []);
   const featureFlags = useFeatureFlags();
@@ -405,6 +407,7 @@ export function SettingsScreen({
           <Text style={dynamic.sectionLabel}>
             {t('settings.adsPrivacy', lang)}
           </Text>
+          <RewardedAdButton offline={offline} />
           {consent.privacyOptionsRequired ? (
             <Pressable
               onPress={() => void services.ads.showPrivacyOptions()}

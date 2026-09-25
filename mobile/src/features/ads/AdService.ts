@@ -13,6 +13,7 @@ export type AdService = {
   /** UMP first; initialize SDK only when canRequestAds. No ATT/IDFA. */
   prepareConsentAndSdk: () => Promise<ConsentState>;
   getConsentState: () => ConsentState;
+  subscribeConsent: (listener: (state: ConsentState) => void) => () => void;
   showPrivacyOptions: () => Promise<void>;
 };
 
@@ -51,7 +52,10 @@ type NativeAdsModule = {
       canRequestAds: boolean;
       privacyOptionsRequirementStatus: string;
     }>;
-    showPrivacyOptionsForm: () => Promise<unknown>;
+    showPrivacyOptionsForm: () => Promise<{
+      canRequestAds: boolean;
+      privacyOptionsRequirementStatus: string;
+    } | undefined>;
   };
   AdsConsentPrivacyOptionsRequirementStatus: {
     REQUIRED: string;
@@ -93,6 +97,13 @@ export function createProductionAdService(): AdService {
   let consent: ConsentState = {
     canRequestAds: false,
     privacyOptionsRequired: false,
+  };
+  const consentListeners = new Set<(state: ConsentState) => void>();
+  const publishConsent = (next: ConsentState) => {
+    if (next.canRequestAds === consent.canRequestAds &&
+        next.privacyOptionsRequired === consent.privacyOptionsRequired) return;
+    consent = next;
+    for (const listener of consentListeners) listener(consent);
   };
   let sdkReady = false;
   let rewardedRef: NativeAdInstance | null = null;
@@ -308,21 +319,25 @@ export function createProductionAdService(): AdService {
     adapter,
     networkCalls: () => adapter.networkCalls(),
     getConsentState: () => consent,
+    subscribeConsent(listener) {
+      consentListeners.add(listener);
+      return () => { consentListeners.delete(listener); };
+    },
     async prepareConsentAndSdk() {
       const native = await tryLoadNative();
       if (!native) {
-        consent = { canRequestAds: false, privacyOptionsRequired: false };
+        publishConsent({ canRequestAds: false, privacyOptionsRequired: false });
         return consent;
       }
       try {
         const info = await native.AdsConsent.gatherConsent();
-        consent = {
+        const next: ConsentState = {
           canRequestAds: Boolean(info.canRequestAds),
           privacyOptionsRequired:
             info.privacyOptionsRequirementStatus ===
             native.AdsConsentPrivacyOptionsRequirementStatus.REQUIRED,
         };
-        if (consent.canRequestAds) {
+        if (next.canRequestAds) {
           const ads = native.default();
           const config = resolveAdUnitConfig();
           if (config.env === 'test-ssv') {
@@ -334,8 +349,9 @@ export function createProductionAdService(): AdService {
           await ads.initialize();
           sdkReady = true;
         }
+        publishConsent(next);
       } catch {
-        consent = { canRequestAds: false, privacyOptionsRequired: false };
+        publishConsent({ canRequestAds: false, privacyOptionsRequired: false });
       }
       return consent;
     },
@@ -343,7 +359,26 @@ export function createProductionAdService(): AdService {
       const native = await tryLoadNative();
       if (!native) return;
       try {
-        await native.AdsConsent.showPrivacyOptionsForm();
+        const info = await native.AdsConsent.showPrivacyOptionsForm();
+        if (!info) return;
+        if (info.canRequestAds && !sdkReady) {
+          const ads = native.default();
+          const config = resolveAdUnitConfig();
+          if (config.env === 'test-ssv') {
+            if (!ads.setRequestConfiguration) throw new Error('test_device_configuration_missing');
+            await ads.setRequestConfiguration({
+              testDeviceIdentifiers: config.testDeviceIdentifiers ?? [],
+            });
+          }
+          await ads.initialize();
+          sdkReady = true;
+        }
+        publishConsent({
+          canRequestAds: Boolean(info.canRequestAds),
+          privacyOptionsRequired:
+            info.privacyOptionsRequirementStatus ===
+            native.AdsConsentPrivacyOptionsRequirementStatus.REQUIRED,
+        });
       } catch {
         /* soft-fail */
       }

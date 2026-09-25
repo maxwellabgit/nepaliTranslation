@@ -94,6 +94,30 @@ describe('AdSlot', () => {
     expect(adapter.networkCalls().length).toBeGreaterThan(0);
   });
 
+  test('shows a banner when UMP finishes after the initial render', async () => {
+    const services = createTestServices({ offline: false, canRequestAds: false });
+    await act(async () => {
+      render(
+        <ServiceProvider services={services}>
+          <AdSlot
+            surface="translate_idle"
+            eligible
+            lastNetworkBannerAtMs={null}
+            lastHouseBannerAtMs={null}
+          />
+        </ServiceProvider>,
+      );
+    });
+    await waitFor(() => expect(screen.getByTestId('house-ad-not-now')).toBeTruthy());
+
+    await act(async () => {
+      services.setConsent({ canRequestAds: true, privacyOptionsRequired: false });
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('ad-slot-banner-translate_idle')).toBeTruthy(),
+    );
+  });
+
   test('dismisses house ad via Not now', async () => {
     const adapter = createMockAdAdapter();
     const onDismiss = jest.fn();

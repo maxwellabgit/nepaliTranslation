@@ -22,6 +22,7 @@
     },
     "testflight": {
       "distribution": "store",
+      "environment": "preview",
       "channel": "testflight-internal",
       "autoIncrement": true,
       "ios": {
@@ -36,6 +37,7 @@
     },
     "testflight-ssv": {
       "distribution": "store",
+      "environment": "preview",
       "channel": "testflight-internal",
       "autoIncrement": true,
       "ios": {
@@ -49,6 +51,7 @@
       }
     },
     "production": {
+      "environment": "production",
       "autoIncrement": true,
       "ios": {
         "image": "sdk-57",
