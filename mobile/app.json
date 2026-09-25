@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "NepTranslate",
+    "name": "Bola",
     "slug": "translate",
     "version": "1.7.0",
     "orientation": "portrait",
@@ -12,9 +12,9 @@
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.neptranslate.app",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "NepTranslate needs the microphone to translate spoken Nepali and English.",
-        "NSSpeechRecognitionUsageDescription": "NepTranslate uses speech recognition to translate what you say.",
-        "NSCameraUsageDescription": "NepTranslate uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
+        "NSMicrophoneUsageDescription": "Bola needs the microphone to translate spoken Nepali and English.",
+        "NSSpeechRecognitionUsageDescription": "Bola uses speech recognition to translate what you say.",
+        "NSCameraUsageDescription": "Bola uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
@@ -44,8 +44,8 @@
       [
         "expo-speech-recognition",
         {
-          "microphonePermission": "Allow NepTranslate to access your microphone for speech translation.",
-          "speechRecognitionPermission": "Allow NepTranslate to recognize your speech for translation."
+          "microphonePermission": "Allow Bola to access your microphone for speech translation.",
+          "speechRecognitionPermission": "Allow Bola to recognize your speech for translation."
         }
       ],
       [
@@ -64,7 +64,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "NepTranslate uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
+          "cameraPermission": "Bola uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
           "microphonePermission": false,
           "recordAudioAndroid": false
         }

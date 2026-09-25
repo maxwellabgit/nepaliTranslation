@@ -1,4 +1,4 @@
-# BOLA
+# Bola
 
 ### In Nepali: बोल (Bola) is the imperative form of the verb "to speak" or "to talk." It means "Speak!" or "Voice."
 

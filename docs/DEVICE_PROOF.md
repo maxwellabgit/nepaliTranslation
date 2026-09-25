@@ -13,7 +13,8 @@ Do not invent EAS build results, CocoaPods success, or device metrics from Windo
 | EAS / TestFlight build number | _pending_ |
 | App version (`CFBundleShortVersionString`) | _pending_ |
 | Git SHA baked into the build | _pending_ |
-| IT2 ONNX SHA-256 (en→ne / ne→en) | _pending — must match `mobile/src/mt/onnx/it2-release-manifest.json`_ |
+| IT2 manifest | _pending — paste every `en-indic` and `indic-en` file name, size, and SHA-256 from `mobile/src/mt/onnx/it2-release-manifest.json`, plus both repos and revisions_ |
+| Gate | _pending — `diagnostic-testflight` (owner-authorized, model failure disclosed) or `public` (four-class PASS required)_ |
 | Feature-flag snapshot (all optional services) | _pending — paste remote `app_config` row or note “all off”_ |
 | Tester / date | _pending_ |
 

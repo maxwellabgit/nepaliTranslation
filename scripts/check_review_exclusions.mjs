@@ -30,7 +30,7 @@ import { readdirSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { forbiddenSets, manifestReady } from "./exclusionManifest.mjs";
+import { forbiddenSets, manifestReady, provePositiveExportFixture } from "./exclusionManifest.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const registryPath = join(root, "datasets", "corpus-registry.json");
@@ -64,6 +64,16 @@ const { composite: excludedSet, source: sourceSet, target: targetSet } =
 
 const sha256 = (s) => createHash("sha256").update(s).digest("hex");
 const normalize = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
+
+try {
+  const proof = provePositiveExportFixture(sha256, normalize);
+  console.log(
+    `positive exclusion fixture: PASS (exposed source and target dropped; kept ${proof.kept.join(",")}; dropped ${proof.dropped.join(",")}). The corpus scan that follows is a separate regression signal, not this proof.`,
+  );
+} catch (err) {
+  console.error(`positive exclusion fixture: FAIL ${err.message}`);
+  process.exit(1);
+}
 const composite = (direction, source, target) =>
   `${direction}|${normalize(source)}|${normalize(target)}`;
 
@@ -239,5 +249,5 @@ if (violations > 0) {
 }
 
 console.log(
-  `check_review_exclusions: ok (${checked} rows scanned; ${excludedSet.size} exclusions enforced).`,
+  `check_review_exclusions: corpus scan ok (${checked} rows scanned; ${excludedSet.size} committed exclusions matched). A zero match does not prove the exclusion rule; the positive fixture above does.`,
 );

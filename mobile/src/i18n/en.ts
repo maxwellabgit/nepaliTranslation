@@ -165,9 +165,9 @@ export const en = {
     'This page is not published yet. Email support@neptranslate.app for help.',
   'settings.about': 'About',
   'settings.aboutReady':
-    'NepTranslate runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.',
+    'Bola runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.',
   'settings.aboutPending':
-    'NepTranslate includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.',
+    'Bola includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.',
   'settings.modelReady': 'model ready',
   'settings.modelPending': 'model pending',
   'settings.consentCurrent': 'Consent current',
@@ -371,7 +371,7 @@ export const en = {
   'ads.signInRequiredBody':
     'Sign in to earn ad-free time from an optional ad.',
 
-  'paywall.title': 'NepTranslate Ad-Free',
+  'paywall.title': 'Bola Ad-Free',
   'paywall.body':
     'Remove banners, house ads, and automatic interstitials. Translation, Camera, and Learn stay free for everyone.',
   'paywall.priceFallback': 'Price from the App Store',
@@ -393,11 +393,11 @@ export const en = {
 
   'startupConsent.title': 'Before you continue',
   'startupConsent.intro':
-    'To use NepTranslate on this device, please review and accept the boxes below. Core translation works offline; optional uploads apply only if you sign in.',
+    'To use Bola on this device, please review and accept the boxes below. Core translation works offline; optional uploads apply only if you sign in.',
   'startupConsent.terms':
-    'I have read and accept the NepTranslate Terms & Conditions.',
+    'I have read and accept the Bola Terms & Conditions.',
   'startupConsent.privacy':
-    'I have read and accept the NepTranslate Privacy Policy, including that optional speech recordings, Camera photos, and public-review corrections may be uploaded after I sign in and my account is retained until I withdraw consent or delete my account (30-day purge SLA).',
+    'I have read and accept the Bola Privacy Policy, including that optional speech recordings, Camera photos, and public-review corrections may be uploaded after I sign in and my account is retained until I withdraw consent or delete my account (30-day purge SLA).',
   'startupConsent.age': 'I am 18 years of age or older.',
   'startupConsent.readTerms': 'Read Terms & Conditions',
   'startupConsent.readPrivacy': 'Read Privacy Policy',

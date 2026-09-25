@@ -55,7 +55,7 @@ export function HouseAd({ surface, onNotNow, onPreferNoAds }: Props) {
 
   return (
     <View style={styles.house} testID={`ad-slot-house-${surface}`}>
-      <Text style={styles.brand}>NepTranslate</Text>
+      <Text style={styles.brand}>Bola</Text>
       <Pressable
         onPress={onPreferNoAds}
         accessibilityRole="button"
