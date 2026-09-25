@@ -5,7 +5,7 @@ branch: main
 pr: https://github.com/maxwellabgit/nepaliTranslation/pull/15
 pr_state: MERGED
 merge_method: fast-forward
-current_step: PRs 17 and 16 are on main at 5645ac2. Both GitHub workflows succeeded on that SHA. No TestFlight build has been uploaded. EAS preview has no variables, so it does not yet point at staging.
+current_step: PRs 17 and 16 are on main at 5645ac2. Both GitHub workflows succeeded on that SHA. No TestFlight build has been uploaded. EAS preview now has the staging URL and anon key from the local environment.
 completed_gates: C0, C1 were recorded before this merge. This merge does not close C2–C15.
 internal_testflight: NO-GO
 public_v1: NO-GO
@@ -19,6 +19,6 @@ staging_deletion: A missing photo failed at storage (database_completed stayed f
 human_blockers: 80 more rights-cleared prompts are needed for a 28-day lookahead. Signed AdMob callback, App Store price check, RevenueCat sandbox purchase, and same-build iPhone and iPad matrix are absent. Optional production flags are off.
 integrated_sha: 5645ac2f6899b0791895e891cb500f1722149f72
 ci_on_integrated_sha_2: agent-gates run 36194040238 and backend-gate run 36194040187 succeeded on 5645ac2. PR 17 fixed the deletion assertion. PR 16 keeps the rewarded button hidden unless rewarded_ads_enabled is on. testflight and testflight-ssv use EAS environment preview. production uses production. eas.json does not contain a service-role key.
-eas_preview: no variables. It does not yet contain the staging URL or anon key, and it does not contain a service-role key. Do not build from an older SHA.
-next_action: Put the staging EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY in EAS preview, with no service-role key. Then enable network_ads_enabled and automatic_interstitial_enabled on staging, leave rewarded ads and paywall off, and build profile testflight from 5645ac2. Owner AdMob units, test-device IDs, and the signed SSV receipt are still required before testflight-ssv.
+eas_preview: EXPO_PUBLIC_SUPABASE_URL points at jcrpxoojxixoieqqfgzo. EXPO_PUBLIC_SUPABASE_ANON_KEY is set. No service-role key, access token, or database password is in preview.
+next_action: Enable network_ads_enabled and automatic_interstitial_enabled on staging, leave rewarded ads and paywall off, and build profile testflight from the current main. Owner AdMob units, test-device IDs, and the signed SSV receipt are still required before testflight-ssv.
 updated_at_utc: 2026-09-25T22:00:00Z
