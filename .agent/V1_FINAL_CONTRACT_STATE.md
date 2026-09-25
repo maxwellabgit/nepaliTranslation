@@ -1,6 +1,6 @@
 status: IN_PROGRESS
 base_sha: 974f7c0d4cf37bfb4356545d3fd80af570b4e3d3
-head_sha: 974f7c0d4cf37bfb4356545d3fd80af570b4e3d3
+head_sha: a962b5cb888572b23804d43bbd3dec90a7e1fb5c
 branch: cursor/v1-complete-build
 current_phase: 2
 completed_gates: C0, C1
