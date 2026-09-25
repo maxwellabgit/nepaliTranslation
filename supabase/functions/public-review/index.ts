@@ -49,6 +49,20 @@ Deno.serve(async (req) => {
   };
 
   if (op === "current") {
+    const gate = await fetch(`${url}/rest/v1/rpc/service_assert_public_review_read`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        apikey: anon,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ p_user_id: user.id }),
+    });
+    if (!gate.ok) {
+      const errText = await gate.text();
+      const code = mapRpcError(errText) ?? "forbidden";
+      return errorResponse(code, statusForError(code), requestId);
+    }
     const winRes = await fetch(
       `${url}/rest/v1/review_current_window?select=window_id,ny_close_at,slot,length_tier_snapshot,scheduled_credits,source_item_id,direction,register,script,source_text,proposed_target&order=slot.asc`,
       { headers: serviceHeaders },
