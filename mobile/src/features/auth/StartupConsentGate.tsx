@@ -23,7 +23,7 @@ import { readLegalPublicUrls } from '../../config/legalUrls';
  * G2 startup consent gate.
  *
  * Wraps the app tree. Renders `children` only when the local record shows
- * T&C + Privacy + 18+ acknowledged for the current version. Otherwise a
+ * Terms and Privacy acknowledged for the current version. Otherwise a
  * bilingual modal takes over.
  *
  * The device-local record is authoritative for reaching product surfaces

@@ -126,7 +126,7 @@ test('f9-08 dark mode via color scheme', async ({ page }) => {
   expect(bg).toMatch(/rgb\(\s*26,\s*20,\s*16\s*\)/);
 });
 
-test('f9-startup-consent-gate exercises the real G2 gate (no bypass)', async ({
+test('f9-startup-consent-gate accepts Terms and Privacy on first launch', async ({
   page,
 }) => {
   // Explicit counterpart to the `acknowledgeStartupConsent: 'auto-accept'`
@@ -140,8 +140,9 @@ test('f9-startup-consent-gate exercises the real G2 gate (no bypass)', async ({
   const continueBtn = page.getByTestId('startup-consent-continue');
   await expect(continueBtn).toBeDisabled();
   await page.getByTestId('startup-consent-terms').click();
+  await expect(continueBtn).toBeDisabled();
   await page.getByTestId('startup-consent-privacy').click();
-  await page.getByTestId('startup-consent-age').click();
+  await expect(page.getByTestId('startup-consent-age')).toHaveCount(0);
   await expect(continueBtn).toBeEnabled();
   await continueBtn.click();
   // After acknowledgement, the product surface renders.

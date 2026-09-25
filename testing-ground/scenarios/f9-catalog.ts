@@ -35,7 +35,7 @@ export const F9_SCENARIO_CATALOG = [
   },
   {
     id: 'f9-startup-consent-gate',
-    title: 'G2 startup consent gate: walk through T&C/Privacy/18+ without bypass',
+    title: 'G2 startup consent gate: accept Terms and Privacy without bypass',
     status: 'automated' as const,
   },
   {
