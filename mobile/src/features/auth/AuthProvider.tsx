@@ -28,8 +28,7 @@ import { fetchAccountSummary } from './accountSummary';
 import { performAccountDeletion } from './deleteAccount';
 import {
   clearPendingDeletionDue,
-  isDeletionDueComplete,
-  loadPendingDeletionDue,
+  isServerDeletionComplete,
   savePendingDeletionDue,
 } from '../../storage/pendingDeletion';
 import { t } from '../../i18n';
@@ -55,26 +54,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!stateRef.current.userId) return;
     const result = await fetchAccountSummary();
     if (!result.ok) return;
+    if (isServerDeletionComplete(result.summary.deletionCompletedAt)) {
+      await clearPendingDeletionDue();
+    }
     dispatch({
       type: 'account_summary',
       consentVersion: result.summary.consentVersion,
       ageConfirmed: result.summary.ageConfirmed,
       deletionDueAt: result.summary.deletionDueAt,
+      deletionCompletedAt: result.summary.deletionCompletedAt,
     });
-  }, []);
-
-  useEffect(() => {
-    void (async () => {
-      const pendingDue = await loadPendingDeletionDue();
-      if (isDeletionDueComplete(pendingDue)) {
-        await clearPendingDeletionDue();
-        dispatch({
-          type: 'deletion_scheduled',
-          deletionDueAt: pendingDue ?? '',
-          message: t('auth.deletionComplete', 'en'),
-        });
-      }
-    })();
   }, []);
 
   useEffect(() => {

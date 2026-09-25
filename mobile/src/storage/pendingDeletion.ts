@@ -14,9 +14,11 @@ export async function clearPendingDeletionDue(): Promise<void> {
   await AsyncStorage.removeItem(KEY);
 }
 
-/** True when a scheduled deletion date has passed (guest completion banner). */
-export function isDeletionDueComplete(iso: string | null, nowMs = Date.now()): boolean {
-  if (!iso) return false;
-  const due = Date.parse(iso);
-  return Number.isFinite(due) && due <= nowMs;
+/**
+ * Completion is a server timestamp on the deletion request.
+ * A due date, even one that has passed, is only the deadline.
+ */
+export function isServerDeletionComplete(completedAt: string | null | undefined): boolean {
+  if (!completedAt) return false;
+  return Number.isFinite(Date.parse(completedAt));
 }

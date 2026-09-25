@@ -9,6 +9,8 @@ export type AccountSummaryClient = {
   earnedAdFreeUntil: string | null;
   deletionRequestedAt: string | null;
   deletionDueAt: string | null;
+  deletionStage: string | null;
+  deletionCompletedAt: string | null;
   nyRewardCloseAt: string | null;
 };
 
@@ -43,6 +45,8 @@ export async function fetchAccountSummary(): Promise<AccountSummaryResult> {
       earned_ad_free_until?: string | null;
       deletion_requested_at?: string | null;
       deletion_due_at?: string | null;
+      deletion_stage?: string | null;
+      deletion_completed_at?: string | null;
       ny_reward_close_at?: string | null;
     };
     return {
@@ -56,6 +60,8 @@ export async function fetchAccountSummary(): Promise<AccountSummaryResult> {
         earnedAdFreeUntil: body.earned_ad_free_until ?? null,
         deletionRequestedAt: body.deletion_requested_at ?? null,
         deletionDueAt: body.deletion_due_at ?? null,
+        deletionStage: body.deletion_stage ?? null,
+        deletionCompletedAt: body.deletion_completed_at ?? null,
         nyRewardCloseAt: body.ny_reward_close_at ?? null,
       },
     };

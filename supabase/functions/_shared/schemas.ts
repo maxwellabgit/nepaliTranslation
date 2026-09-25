@@ -9,6 +9,8 @@ export const accountSummarySchema = z.object({
   earned_ad_free_until: z.string().nullable(),
   deletion_requested_at: z.string().nullable(),
   deletion_due_at: z.string().nullable(),
+  deletion_stage: z.string().nullable(),
+  deletion_completed_at: z.string().nullable(),
   ny_reward_close_at: z.string().nullable(),
 });
 
@@ -23,6 +25,8 @@ export function buildAccountSummary(input: {
   earned_ad_free_until?: string | null;
   deletion_requested_at?: string | null;
   deletion_due_at?: string | null;
+  deletion_stage?: string | null;
+  deletion_completed_at?: string | null;
   ny_reward_close_at?: string | null;
 }): AccountSummary {
   return accountSummarySchema.parse({
@@ -34,6 +38,8 @@ export function buildAccountSummary(input: {
     earned_ad_free_until: input.earned_ad_free_until ?? null,
     deletion_requested_at: input.deletion_requested_at ?? null,
     deletion_due_at: input.deletion_due_at ?? null,
+    deletion_stage: input.deletion_stage ?? null,
+    deletion_completed_at: input.deletion_completed_at ?? null,
     ny_reward_close_at: input.ny_reward_close_at ?? null,
   });
 }

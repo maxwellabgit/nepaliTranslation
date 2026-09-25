@@ -69,6 +69,8 @@ describe('fetchAccountSummary', () => {
         earnedAdFreeUntil: '2026-10-01T00:00:00Z',
         deletionRequestedAt: null,
         deletionDueAt: null,
+        deletionStage: null,
+        deletionCompletedAt: null,
         nyRewardCloseAt: null,
       },
     });
@@ -99,6 +101,8 @@ describe('fetchAccountSummary', () => {
         earnedAdFreeUntil: null,
         deletionRequestedAt: null,
         deletionDueAt: null,
+        deletionStage: null,
+        deletionCompletedAt: null,
         nyRewardCloseAt: null,
       },
     });

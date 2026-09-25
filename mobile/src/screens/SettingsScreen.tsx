@@ -295,6 +295,7 @@ export function SettingsScreen({
           ageConfirmed={auth.ageConfirmed}
           deletionRetryPending={auth.deletionRetryPending}
           deletionDueAt={auth.deletionDueAt}
+          deletionCompletedAt={auth.deletionCompletedAt}
           onSignIn={() => void auth.signInWithApple()}
           onSignOut={() => void auth.signOut()}
           onSaveConsent={() => {
