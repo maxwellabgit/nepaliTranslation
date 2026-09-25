@@ -4,7 +4,7 @@ import { getSupabase } from '../../services/supabase';
 import { clearCachedEntitlement } from '../entitlements/entitlementCache';
 import { clearLocalConsent } from '../../storage/contributionConsent';
 import { clearContributionCaches } from '../../storage/contributionOutbox';
-import { clearMediaOutbox } from '../../storage/mediaOutbox';
+import { discardOwnerContributionFiles } from '../../services/mediaEnqueue';
 import {
   clearAppleIdentity,
   loadAppleUserId,
@@ -244,7 +244,7 @@ export async function performAccountDeletion(
     await clearLocalConsent();
     await clearCachedEntitlement();
     await clearContributionCaches();
-    await clearMediaOutbox();
+    await discardOwnerContributionFiles(input.userId);
     return { ok: true, scheduled, deletionDueAt };
   }
 

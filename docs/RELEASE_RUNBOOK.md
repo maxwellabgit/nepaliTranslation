@@ -187,6 +187,20 @@ The G0–G7 program allowed public submission only when **all** of these were ch
 - [ ] Freeze worksheet complete; rollback rehearsed with remote flags
 - [ ] Explicit final go for public submission — owner: ____ date: ____
 
+## Candidate gates
+
+Proof belongs to one git SHA. A decode fix, new weights, migration, or branding edit creates a new candidate. Rerun the checks that SHA change affects and record the new SHA in `.agent/V1_FINAL_CONTRACT_STATE.md`. Counts of Node tests, scanned rows, or SQL files are regression signals, not requirement PASS rows.
+
+**Name, before any iOS build.** The README title is BOLA and the app strings still say NepTranslate. The owner picks one public name. Apply it to the binary, App Store listing, and in-app strings, then freeze that SHA. Do not rename after `eas build`; that binary would be a different candidate.
+
+**Diagnostic TestFlight, owner-authorized only.** Allowed when source checks for that SHA are green, optional flags without hosted proof are off, and ads are Google test units. A failing four-class model certificate may ship to this group only if the failure is disclosed to testers. This gate is not public release and is not implied by a passing certificate command.
+
+**Public App Store.** Blocked until `python benchmarks/certify_ship_artifacts.py --require-weights` exits 0 on all four classes for the weights inside that build. A disclosed model failure cannot cross this gate.
+
+**`eas submit` is a separate owner approval.** Confirm the intended SHA, public name, and build number first. Submit uploads that binary to App Store Connect / TestFlight. Do not submit as part of the build command.
+
+Record the full pinned manifest `mobile/src/mt/onnx/it2-release-manifest.json`: both bundle folders, repos, revisions, and every filename, size, and SHA-256. Two bundle-level hashes are not the manifest.
+
 ## Founder actions before claiming release
 
 - [ ] Apple Developer + App Store Connect session; USD 2.99 (US storefront) and NPR 199 (Nepal storefront, exact point only) subscription configured in sandbox. Stop and ask the owner if NPR 199 is not an available price point

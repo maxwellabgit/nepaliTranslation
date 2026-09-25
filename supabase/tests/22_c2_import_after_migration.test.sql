@@ -51,7 +51,7 @@ select is(
 );
 
 select is(
-  (select count(*)::int from private.select_review_window_items(10)
+  (select count(*)::int from private.select_review_window_items(10::smallint)
     where source_item_id = (
       select id from private.review_source_items
        where content_hash = 'c2-unresolved-hash'
@@ -61,7 +61,7 @@ select is(
 );
 
 select ok(
-  (select count(*)::int from private.select_review_window_items(10)
+  (select count(*)::int from private.select_review_window_items(10::smallint)
     where source_item_id = (
       select id from private.review_source_items
        where content_hash = 'c2-cleared-hash'

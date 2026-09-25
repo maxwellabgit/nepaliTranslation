@@ -131,7 +131,7 @@ export function createAdminClient(opts: AdminClientOptions) {
     // R7/R8 polish; see plans/active/v1-testflight-runbook.md.
     publicReviewCurrentWindow: () =>
       postgrestGet<Array<Record<string, unknown>>>(
-        "/review_current_window?select=window_id,slot,ny_close_at,state,size&order=slot.asc",
+        "/review_current_window?select=window_id,slot,ny_close_at,state,source_item_id&order=slot.asc",
       ),
     markReviewUnsatisfactory: (submission_id: string, reason: string) =>
       request("/public-review/unsatisfactory", {

@@ -87,7 +87,8 @@ update public.profiles
 set
   consent_version = (select contribution_consent_version from public.app_config where id = 1),
   age_confirmed_at = now(),
-  consented_at = now()
+  consented_at = now(),
+  photo_sharing = true
 where user_id = '11111111-1111-4111-8111-111111111111';
 
 select lives_ok(
@@ -138,7 +139,8 @@ update public.profiles
 set
   consent_version = (select contribution_consent_version from public.app_config where id = 1),
   age_confirmed_at = now(),
-  consented_at = now()
+  consented_at = now(),
+  photo_sharing = true
 where user_id = '22222222-2222-4222-8222-222222222222';
 
 select lives_ok(

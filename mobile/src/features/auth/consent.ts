@@ -10,7 +10,7 @@ export const CONTRIBUTION_CONSENT_VERSION = '2026-09-21.media';
  * retention, withdrawal, deletion timing, processors, and that core works without consent.
  */
 export const CONTRIBUTION_CONSENT_SUMMARY = [
-  'By saving consent you agree that NepTranslate may upload and store contribution text you submit,',
+  'By saving consent you agree that Bola may upload and store contribution text you submit,',
   'speech recordings you allow, Camera photos you capture for translation, transcripts and OCR text,',
   'your edits, model outputs, and related technical metadata for human review and for improving and',
   'commercializing language data and models.',

@@ -13,6 +13,7 @@ export type ErrorCode =
   | "age_required"
   | "lease_expired"
   | "flag_disabled"
+  | "sharing_disabled"
   | "deletion_pending"
   | "window_closed"
   | "already_submitted"
@@ -53,6 +54,7 @@ export function mapRpcError(errText: string): ErrorCode | null {
   if (lower.includes("consent_required")) return "consent_required";
   if (lower.includes("consent_outdated")) return "consent_outdated";
   if (lower.includes("age_required")) return "age_required";
+  if (lower.includes("sharing_disabled")) return "sharing_disabled";
   if (lower.includes("flag_disabled")) return "flag_disabled";
   if (lower.includes("deletion_pending")) return "deletion_pending";
   if (lower.includes("rate_limited")) return "rate_limited";
@@ -77,6 +79,7 @@ export function statusForError(code: ErrorCode): number {
     case "consent_outdated":
     case "age_required":
     case "flag_disabled":
+    case "sharing_disabled":
     case "deletion_pending":
       return 403;
     case "invalid_payload":

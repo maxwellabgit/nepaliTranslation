@@ -18,6 +18,11 @@ import {
   saveSharingToggles,
   type SharingToggles,
 } from '../storage/sharingToggles';
+import {
+  discardOwnerContributionFiles,
+  stopPendingSharingKind,
+} from '../services/mediaEnqueue';
+import { recordSharingToggles } from '../features/auth/recordSharingToggles';
 import { useAuth } from '../features/auth/AuthProvider';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { recordContributionConsent } from '../features/auth/recordConsent';
@@ -93,8 +98,8 @@ export function SettingsScreen({
   });
 
   useEffect(() => {
-    void loadSharingToggles().then(setSharing);
-  }, []);
+    void loadSharingToggles(auth.userId).then(setSharing);
+  }, [auth.userId]);
 
   const refreshAccountSummary = auth.refreshAccountSummary;
   const authStatus = auth.status;
@@ -290,6 +295,7 @@ export function SettingsScreen({
           ageConfirmed={auth.ageConfirmed}
           deletionRetryPending={auth.deletionRetryPending}
           deletionDueAt={auth.deletionDueAt}
+          deletionCompletedAt={auth.deletionCompletedAt}
           onSignIn={() => void auth.signInWithApple()}
           onSignOut={() => void auth.signOut()}
           onSaveConsent={() => {
@@ -314,12 +320,20 @@ export function SettingsScreen({
           onToggleSpeechSharing={(enabled) => {
             const next = { ...sharing, speech: enabled };
             setSharing(next);
-            void saveSharingToggles(next);
+            void saveSharingToggles(auth.userId, next);
+            void recordSharingToggles(next);
+            if (!enabled && auth.userId) {
+              void stopPendingSharingKind(auth.userId, 'speech');
+            }
           }}
           onTogglePhotoSharing={(enabled) => {
             const next = { ...sharing, photos: enabled };
             setSharing(next);
-            void saveSharingToggles(next);
+            void saveSharingToggles(auth.userId, next);
+            void recordSharingToggles(next);
+            if (!enabled && auth.userId) {
+              void stopPendingSharingKind(auth.userId, 'photo');
+            }
           }}
           onWithdrawConsent={() => {
             void withdrawContributionConsent().then((result) => {
@@ -330,6 +344,7 @@ export function SettingsScreen({
                 );
                 return;
               }
+              if (auth.userId) void discardOwnerContributionFiles(auth.userId);
               void auth.refreshAccountSummary();
             });
           }}

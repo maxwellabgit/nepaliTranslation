@@ -1,0 +1,32 @@
+{
+  "experiment": "E1",
+  "direction": "ne-en",
+  "base": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\artifacts\\it2_indic_en_merged",
+  "dtype": "bfloat16",
+  "device": "NVIDIA GeForce RTX 4070 Ti SUPER",
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "targets": [
+      "q_proj",
+      "v_proj"
+    ]
+  },
+  "epochs": 2,
+  "microbatch": 8,
+  "grad_accum": 4,
+  "lr": 0.0001,
+  "max_length": 96,
+  "trainable_params": 1769472,
+  "dataset": {
+    "rows": 1379,
+    "meanings": 164,
+    "gold_overlap": 0,
+    "unapproved_rows": 0
+  },
+  "wall_seconds": 100.8,
+  "peak_vram_mib": 2375.1,
+  "adapter_dir": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\artifacts\\e1_gpu_baseline_20260925T140015Z\\ne-en\\adapter",
+  "note": "Load with PeftModel.from_pretrained. Do not merge_and_unload."
+}

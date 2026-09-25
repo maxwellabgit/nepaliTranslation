@@ -17,8 +17,10 @@ export type AuthState = {
   ageConfirmed: boolean;
   /** True when deletion paused and the user can retry. */
   deletionRetryPending: boolean;
-  /** ISO timestamp when scheduled deletion completes (30-day path). */
+  /** Deadline for the purge. This is not proof that deletion finished. */
   deletionDueAt: string | null;
+  /** Server completion timestamp. Absent until the deletion request finishes. */
+  deletionCompletedAt: string | null;
 };
 
 export const INITIAL_AUTH: AuthState = {
@@ -30,6 +32,7 @@ export const INITIAL_AUTH: AuthState = {
   ageConfirmed: false,
   deletionRetryPending: false,
   deletionDueAt: null,
+  deletionCompletedAt: null,
 };
 
 export type AuthAction =
@@ -46,6 +49,7 @@ export type AuthAction =
       consentVersion: string | null;
       ageConfirmed: boolean;
       deletionDueAt?: string | null;
+      deletionCompletedAt?: string | null;
     }
   | { type: 'start_deletion' }
   | { type: 'deletion_cancelled' }
@@ -113,6 +117,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         consentVersion: action.consentVersion,
         ageConfirmed: action.ageConfirmed,
         deletionDueAt: action.deletionDueAt ?? null,
+        deletionCompletedAt: action.deletionCompletedAt ?? null,
       };
     case 'start_deletion':
       return {

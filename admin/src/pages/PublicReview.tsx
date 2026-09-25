@@ -7,7 +7,7 @@ type WindowSummary = {
   window_id: string;
   ny_close_at: string;
   state: "open" | "closed" | "granted";
-  size: number;
+  source_item_id: string;
   slot: number;
 };
 
@@ -24,12 +24,8 @@ type WindowSummary = {
  *   * source eligibility/exclusion history
  *   * reward and scheduler audit events
  *
- * This page is the read-only starting point built on the RLS-safe
- * `public.review_current_window` view. Mutating admin actions
- * (unsatisfactory, late reject, quarantine resolution) require a new
- * service-role-backed `admin-api` endpoint; those endpoints are
- * scheduled for R7/R8 polish and are documented below rather than
- * silently absent from this UI.
+ * Current window rows come from `public.review_current_window`.
+ * Unsatisfactory marks and quarantine use the admin API on this page.
  */
 export function PublicReviewPage({ api }: { api: AdminClient }) {
   const [rows, setRows] = useState<WindowSummary[]>([]);
@@ -109,7 +105,7 @@ export function PublicReviewPage({ api }: { api: AdminClient }) {
               {rows.map((r) => (
                 <tr key={`${r.window_id}-${r.slot}`} data-testid={`admin-slot-${r.slot}`}>
                   <td>{r.slot}</td>
-                  <td>{r.window_id}</td>
+                  <td>{r.source_item_id}</td>
                   <td>{r.ny_close_at}</td>
                 </tr>
               ))}

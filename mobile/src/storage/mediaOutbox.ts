@@ -20,6 +20,12 @@ export type MediaOutboxItem = {
   content_type: string;
   byte_size: number;
   consent_version: string;
+  /** Account that captured the file. Missing owner never uploads. */
+  owner_id?: string | null;
+  /** Consent version captured at enqueue. */
+  consent_epoch?: string | null;
+  /** Bumped on withdrawal, deletion, or a sharing toggle turning off. */
+  cancellation_generation?: number;
   metadata: Record<string, unknown>;
   status: MediaOutboxStatus;
   media_id?: string | null;
@@ -98,6 +104,16 @@ export function normalizeMediaItem(raw: unknown): MediaOutboxItem | null {
     content_type,
     byte_size,
     consent_version,
+    owner_id: typeof row.owner_id === 'string' && row.owner_id ? row.owner_id : null,
+    consent_epoch:
+      typeof row.consent_epoch === 'string' && row.consent_epoch
+        ? row.consent_epoch
+        : consent_version,
+    cancellation_generation:
+      typeof row.cancellation_generation === 'number' &&
+      row.cancellation_generation >= 0
+        ? row.cancellation_generation
+        : 0,
     metadata:
       row.metadata && typeof row.metadata === 'object'
         ? (row.metadata as Record<string, unknown>)
@@ -159,6 +175,9 @@ export type EnqueueMediaInput = {
   content_type: string;
   byte_size: number;
   consent_version: string;
+  owner_id?: string | null;
+  consent_epoch?: string | null;
+  cancellation_generation?: number;
   metadata?: Record<string, unknown>;
 };
 
@@ -204,6 +223,9 @@ export async function enqueueMediaItem(
       content_type: input.content_type,
       byte_size: input.byte_size,
       consent_version: input.consent_version,
+      owner_id: input.owner_id ?? null,
+      consent_epoch: input.consent_epoch ?? input.consent_version,
+      cancellation_generation: input.cancellation_generation ?? 0,
       metadata: input.metadata ?? {},
       status: 'queued',
       media_id: null,
@@ -325,6 +347,85 @@ export function computeMediaNextAttemptAt(
   const baseMs = Math.min(15 * 60 * 1000, 1000 * 2 ** exp);
   const jitter = Math.floor(random() * baseMs * 0.25);
   return new Date(nowMs + baseMs + jitter).toISOString();
+}
+
+const CANCEL_GEN_KEY = 'neptranslate.media_cancel_generation.v1';
+
+async function readGenerationStore(): Promise<Record<string, number>> {
+  try {
+    const raw = await AsyncStorage.getItem(CANCEL_GEN_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const next: Record<string, number> = {};
+    for (const [userId, value] of Object.entries(parsed)) {
+      if (typeof value === 'number' && value >= 0) next[userId] = value;
+    }
+    return next;
+  } catch {
+    return {};
+  }
+}
+
+export async function readCancelGeneration(userId: string): Promise<number> {
+  if (!userId) return 0;
+  const store = await readGenerationStore();
+  return store[userId] ?? 0;
+}
+
+export async function bumpCancelGeneration(userId: string): Promise<number> {
+  if (!userId) return 0;
+  const store = await readGenerationStore();
+  const next = (store[userId] ?? 0) + 1;
+  store[userId] = next;
+  await AsyncStorage.setItem(CANCEL_GEN_KEY, JSON.stringify(store));
+  return next;
+}
+
+/** Drop one account's pending rows and return local URIs to delete. */
+export async function removeMediaForOwner(ownerId: string): Promise<string[]> {
+  if (!ownerId) return [];
+  return updateMediaOutbox((items) => {
+    const removed = items.filter(
+      (item) =>
+        item.owner_id === ownerId &&
+        item.status !== 'synced' &&
+        item.status !== 'rejected',
+    );
+    return {
+      items: items.filter((item) => !removed.some((row) => row.id === item.id)),
+      result: removed.map((item) => item.local_uri),
+    };
+  });
+}
+
+/** Stop pending rows of one kind from transferring after that toggle turns off. */
+export async function cancelPendingKind(
+  ownerId: string,
+  kind: 'speech' | 'photo',
+): Promise<string[]> {
+  if (!ownerId) return [];
+  return updateMediaOutbox((items) => {
+    const uris: string[] = [];
+    const next = items.map((item) => {
+      if (
+        item.owner_id !== ownerId ||
+        item.kind !== kind ||
+        item.status === 'synced' ||
+        item.status === 'rejected'
+      ) {
+        return item;
+      }
+      uris.push(item.local_uri);
+      return {
+        ...item,
+        status: 'rejected' as const,
+        lastErrorCode: 'sharing_disabled',
+        nextAttemptAt: null,
+        updated_at: new Date().toISOString(),
+      };
+    });
+    return { items: next, result: uris };
+  });
 }
 
 export async function clearMediaOutbox(): Promise<void> {

@@ -35,8 +35,8 @@ select is(
     28,
     14
   ) ->> 'public_review_enabled')::boolean,
-  true,
-  '14 planned days enable public review'
+  false,
+  '14 planned days do not enable public review'
 );
 
 select is(

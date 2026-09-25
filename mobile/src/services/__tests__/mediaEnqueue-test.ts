@@ -104,6 +104,7 @@ describe('mediaEnqueue gates', () => {
       sourceUri: 'file:///tmp/cam.jpg',
       signedIn: true,
       authConfigured: true,
+      userId: 'user-a',
     });
     expect(result).toBeNull();
   });
@@ -115,9 +116,22 @@ describe('mediaEnqueue gates', () => {
       sourceUri: 'file:///tmp/cam.jpg',
       signedIn: true,
       authConfigured: true,
+      userId: 'user-a',
     });
     expect(result).not.toBeNull();
     expect(mockEnqueueMediaItem).toHaveBeenCalled();
+    expect(mockEnqueueMediaItem.mock.calls[0][0].owner_id).toBe('user-a');
+  });
+
+  test('a signed-in capture without an account id enqueues nothing', async () => {
+    setSharingTogglesForTests({ speech: true, photos: true });
+    const result = await enqueueEligibleMedia({
+      kind: 'photo',
+      sourceUri: 'file:///tmp/cam.jpg',
+      signedIn: true,
+      authConfigured: true,
+    });
+    expect(result).toBeNull();
   });
 
   test('speech enqueue API works when a recording URI is provided', async () => {
@@ -126,6 +140,7 @@ describe('mediaEnqueue gates', () => {
       sourceUri: 'file:///tmp/rec.m4a',
       signedIn: true,
       authConfigured: true,
+      userId: 'user-a',
       contentType: 'audio/mp4',
     });
     expect(result).not.toBeNull();

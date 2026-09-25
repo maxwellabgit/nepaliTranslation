@@ -1,4 +1,8 @@
 import { readPublicEnv } from '../config/env';
+import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
+import { sessionInactiveNow } from '../features/auth/sessionExpiry';
+import { loadLocalConsent } from '../storage/contributionConsent';
+import { loadSharingToggles } from '../storage/sharingToggles';
 import { getSupabase } from './supabase';
 import {
   computeMediaNextAttemptAt,
@@ -7,6 +11,7 @@ import {
   markMediaSynced,
   markMediaSyncing,
   pendingMediaItems,
+  readCancelGeneration,
   type MediaOutboxItem,
 } from '../storage/mediaOutbox';
 
@@ -31,6 +36,7 @@ function classifyHttpStatus(status: number, bodyCode?: string): MediaUploadOutco
   }
   if (
     bodyCode === 'flag_disabled' ||
+    bodyCode === 'sharing_disabled' ||
     bodyCode === 'consent_required' ||
     bodyCode === 'consent_outdated' ||
     bodyCode === 'age_required'
@@ -43,9 +49,12 @@ function classifyHttpStatus(status: number, bodyCode?: string): MediaUploadOutco
   return { kind: 'retry', code: bodyCode ?? `http_${status}` };
 }
 
-async function readLocalBytes(uri: string): Promise<ArrayBuffer | null> {
+async function readLocalBytes(
+  uri: string,
+  fetchImpl: typeof fetch,
+): Promise<ArrayBuffer | null> {
   try {
-    const res = await fetch(uri);
+    const res = await fetchImpl(uri);
     if (!res.ok) return null;
     return await res.arrayBuffer();
   } catch {
@@ -58,6 +67,7 @@ export async function uploadMediaItem(
   token: string,
   env: { supabaseUrl: string; supabaseAnonKey: string },
   fetchImpl: typeof fetch = fetch,
+  stillAuthorized: () => Promise<boolean> = async () => true,
 ): Promise<MediaUploadOutcome> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -109,7 +119,7 @@ export async function uploadMediaItem(
     });
 
     if (createBody.status !== 'uploaded' && createBody.upload_url && createBody.token) {
-      const bytes = await readLocalBytes(item.local_uri);
+      const bytes = await readLocalBytes(item.local_uri, fetchImpl);
       if (!bytes) {
         return { kind: 'retry', code: 'local_file_missing' };
       }
@@ -129,6 +139,10 @@ export async function uploadMediaItem(
         }
         return { kind: 'rejected', code: `upload_${putRes.status}` };
       }
+    }
+
+    if (!(await stillAuthorized())) {
+      return { kind: 'rejected', code: 'sharing_disabled' };
     }
 
     const completeRes = await fetchImpl(
@@ -197,14 +211,44 @@ async function doFlush(
   }
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
-  if (!token) return { ok: false, reason: 'unauthorized' };
+  const userId = data.session?.user?.id;
+  if (!token || !userId) return { ok: false, reason: 'unauthorized' };
+  if (await sessionInactiveNow(userId)) {
+    return { ok: false, reason: 'unauthorized' };
+  }
 
-  const pending = (await pendingMediaItems()).slice(0, MAX_BATCH);
+  const sharing = await loadSharingToggles(userId);
+  const consent = await loadLocalConsent();
+  const generation = await readCancelGeneration(userId);
+  const consentCurrent =
+    consent?.consent_version === CONTRIBUTION_CONSENT_VERSION &&
+    Boolean(consent?.age_confirmed);
+  const pending = (await pendingMediaItems())
+    .filter((item) => item.owner_id === userId)
+    .slice(0, MAX_BATCH);
   let synced = 0;
   let failed = 0;
   let rejected = 0;
 
   for (const item of pending) {
+    const live = await supabase.auth.getSession();
+    if (live.data.session?.user?.id !== userId) break;
+    const toggleOff =
+      (item.kind === 'speech' && !sharing.speech) ||
+      (item.kind === 'photo' && !sharing.photos);
+    const generationStale =
+      (item.cancellation_generation ?? 0) !== generation;
+    const consentStale =
+      !consentCurrent ||
+      (item.consent_epoch ?? item.consent_version) !== CONTRIBUTION_CONSENT_VERSION;
+    if (toggleOff || generationStale || consentStale) {
+      const applied = await applyOutcome(item, {
+        kind: 'rejected',
+        code: toggleOff ? 'sharing_disabled' : 'consent_outdated',
+      });
+      if (applied === 'rejected') rejected += 1;
+      continue;
+    }
     await markMediaSyncing(item.idempotency_key);
     const outcome = await uploadMediaItem(
       item,
@@ -214,6 +258,22 @@ async function doFlush(
         supabaseAnonKey: env.supabaseAnonKey,
       },
       fetchImpl,
+      async () => {
+        const live = await supabase.auth.getSession();
+        if (live.data.session?.user?.id !== userId) return false;
+        if (await sessionInactiveNow(userId)) return false;
+        const liveSharing = await loadSharingToggles(userId);
+        const liveConsent = await loadLocalConsent();
+        const liveGeneration = await readCancelGeneration(userId);
+        const kindAllowed =
+          item.kind === 'speech' ? liveSharing.speech : liveSharing.photos;
+        return (
+          kindAllowed &&
+          liveGeneration === generation &&
+          liveConsent?.consent_version === CONTRIBUTION_CONSENT_VERSION &&
+          Boolean(liveConsent?.age_confirmed)
+        );
+      },
     );
     const applied = await applyOutcome(item, outcome);
     if (applied === 'synced') synced += 1;

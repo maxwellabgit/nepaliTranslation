@@ -336,7 +336,9 @@ select ok(true, 'immediate rotation retry does not extend entitlements');
 -- ---------------------------------------------------------------------------
 
 -- Public review must be enabled before a short pool opens a window.
-update public.app_config set public_review_enabled = true where id = 1;
+update public.app_config
+set public_review_enabled = true, public_review_release_approved = true
+where id = 1;
 
 -- Mark all but 2 rows ineligible so the next rotation is under-N.
 update private.review_source_items

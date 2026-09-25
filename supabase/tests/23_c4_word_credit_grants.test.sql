@@ -63,7 +63,9 @@ select is(private.count_source_words(
 
 select is(private.count_source_words('   '), 0, 'blank source is empty');
 
-update public.app_config set public_review_enabled = true where id = 1;
+update public.app_config
+set public_review_enabled = true, public_review_release_approved = true
+where id = 1;
 
 select public.service_rotate_review_window(
   10::smallint,

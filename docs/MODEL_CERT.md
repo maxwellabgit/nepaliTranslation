@@ -50,6 +50,19 @@ committed to `benchmarks/results/ship_cert_last.json`.
 | `ne_en_deva` | NE Devanagari → EN | 0.6111 | 0.55 | — | **PASS** |
 | `ne_en_roman` | Roman NE → EN | 0.4248 | 0.40 | — | **PASS** |
 
+## Re-run on fetched pins (2026-09-25)
+
+`npm run fetch:models` in `mobile/` downloaded both pinned bundles and printed `ALL_DONE`. Then `python benchmarks/certify_ship_artifacts.py --require-weights` exited 1. The 2026-09-22 table above is unchanged.
+
+| Class | Measured chrF | Floor | Register | Verdict |
+|-------|---------------|------:|----------|---------|
+| `en_ne_formal` | 0.6582 | 0.55 | तपाईं rate 0.0, floor 0.15 | **FAIL** (chrF passed, register failed) |
+| `en_ne_informal` | 0.5754 | 0.50 | तिमी rate 0.0, floor 0.10 | **FAIL** (chrF passed, register failed) |
+| `ne_en_deva` | 0.6901 | 0.55 | — | **PASS** |
+| `ne_en_roman` | not finished | 0.40 | — | **NOT RUN** — `npx` was not found when the romanizer subprocess started (`WinError 2`) |
+
+Overall: not a four-class PASS. Public release stays blocked.
+
 Overall verdict: `passed=false`. Two of four classes are below the pre-declared
 ship floor. `en_ne_formal` and `en_ne_informal` also miss their register floors:
 the base int8 export does not produce **तपाईं** or **तिमी** at meaningful rates,
