@@ -18,8 +18,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -108,29 +110,41 @@ class OnnxIt2:
         return self.tgt_tok.decode(safe, skip_special_tokens=True).strip()
 
 
+def _tool(name: str) -> str:
+    found = shutil.which(name) or shutil.which(f"{name}.cmd")
+    if not found:
+        raise FileNotFoundError(f"{name} is not on PATH; the Roman class needs the shipped converter")
+    return found
+
+
 def roman_to_deva_batch(lines: list[str]) -> list[str]:
     """Run the shipped TS converter so eval matches the app byte-for-byte."""
-    bundle = "/tmp/romanize_bundle.cjs"
+    bundle = Path(tempfile.gettempdir()) / "romanize_bundle.cjs"
     subprocess.run(
         [
-            "npx", "--yes", "esbuild",
+            _tool("npx"), "--yes", "esbuild",
             str(REPO / "mobile" / "src" / "mt" / "romanize.ts"),
             "--bundle", "--format=cjs", f"--outfile={bundle}",
         ],
         check=True,
         capture_output=True,
+        encoding="utf-8",
+        errors="replace",
         cwd=REPO / "mobile",
     )
+    bundle_js = str(bundle).replace("\\", "/")
     script = (
-        f"const m = require('{bundle}');"
+        f"const m = require('{bundle_js}');"
         "const lines = JSON.parse(require('fs').readFileSync(0, 'utf8'));"
         "console.log(JSON.stringify(lines.map((l) => m.romanToDevanagari(l))));"
     )
     out = subprocess.run(
-        ["node", "-e", script],
+        [_tool("node"), "-e", script],
         input=json.dumps(lines),
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=True,
     )
     return json.loads(out.stdout)

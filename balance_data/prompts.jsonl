@@ -1,0 +1,200 @@
+{"id": "bal_0001", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Could you tell me your name?", "review_status": "unapproved"}
+{"id": "bal_0002", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "What's your name?", "review_status": "unapproved"}
+{"id": "bal_0003", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Would you please repeat that?", "review_status": "unapproved"}
+{"id": "bal_0004", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Say that again?", "review_status": "unapproved"}
+{"id": "bal_0005", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Are you waiting for someone?", "review_status": "unapproved"}
+{"id": "bal_0006", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You waiting for someone?", "review_status": "unapproved"}
+{"id": "bal_0007", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Can you help me with this form?", "review_status": "unapproved"}
+{"id": "bal_0008", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Can you help me fill this out?", "review_status": "unapproved"}
+{"id": "bal_0009", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Do you have a moment?", "review_status": "unapproved"}
+{"id": "bal_0010", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You got a minute?", "review_status": "unapproved"}
+{"id": "bal_0011", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Where are you from?", "review_status": "unapproved"}
+{"id": "bal_0012", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Where you from?", "review_status": "unapproved"}
+{"id": "bal_0013", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Did you understand me?", "review_status": "unapproved"}
+{"id": "bal_0014", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Did you get what I said?", "review_status": "unapproved"}
+{"id": "bal_0015", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Could you speak more slowly?", "review_status": "unapproved"}
+{"id": "bal_0016", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Talk slower, okay?", "review_status": "unapproved"}
+{"id": "bal_0017", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "What would you like to drink?", "review_status": "unapproved"}
+{"id": "bal_0018", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "What do you want to drink?", "review_status": "unapproved"}
+{"id": "bal_0019", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Are you feeling cold?", "review_status": "unapproved"}
+{"id": "bal_0020", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You cold?", "review_status": "unapproved"}
+{"id": "bal_0021", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Please tell me if you need anything.", "review_status": "unapproved"}
+{"id": "bal_0022", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Tell me if you need something.", "review_status": "unapproved"}
+{"id": "bal_0023", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Have you eaten yet?", "review_status": "unapproved"}
+{"id": "bal_0024", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You eaten yet?", "review_status": "unapproved"}
+{"id": "bal_0025", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "May I ask you a question?", "review_status": "unapproved"}
+{"id": "bal_0026", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Can I ask you something?", "review_status": "unapproved"}
+{"id": "bal_0027", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Do you know the way from here?", "review_status": "unapproved"}
+{"id": "bal_0028", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You know the way?", "review_status": "unapproved"}
+{"id": "bal_0029", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Would you like me to call them?", "review_status": "unapproved"}
+{"id": "bal_0030", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Want me to call them?", "review_status": "unapproved"}
+{"id": "bal_0031", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Are you traveling alone?", "review_status": "unapproved"}
+{"id": "bal_0032", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You here alone?", "review_status": "unapproved"}
+{"id": "bal_0033", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Could you note that on paper for me?", "review_status": "unapproved"}
+{"id": "bal_0034", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Write that down for me?", "review_status": "unapproved"}
+{"id": "bal_0035", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "What time do you close?", "review_status": "unapproved"}
+{"id": "bal_0036", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "When do you close?", "review_status": "unapproved"}
+{"id": "bal_0037", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Do you take payment by card?", "review_status": "unapproved"}
+{"id": "bal_0038", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You take cards?", "review_status": "unapproved"}
+{"id": "bal_0039", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Is this seat free for you?", "review_status": "unapproved"}
+{"id": "bal_0040", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You sitting here?", "review_status": "unapproved"}
+{"id": "bal_0041", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Please let me know when you are ready.", "review_status": "unapproved"}
+{"id": "bal_0042", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Tell me when you're ready.", "review_status": "unapproved"}
+{"id": "bal_0043", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Did you bring your ticket?", "review_status": "unapproved"}
+{"id": "bal_0044", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You bring your ticket?", "review_status": "unapproved"}
+{"id": "bal_0045", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Can you hear me clearly?", "review_status": "unapproved"}
+{"id": "bal_0046", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Can you hear me?", "review_status": "unapproved"}
+{"id": "bal_0047", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Would you mind waiting outside?", "review_status": "unapproved"}
+{"id": "bal_0048", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Wait outside a second?", "review_status": "unapproved"}
+{"id": "bal_0049", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "How long have you been here?", "review_status": "unapproved"}
+{"id": "bal_0050", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "How long you been here?", "review_status": "unapproved"}
+{"id": "bal_0051", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Are you looking for the office?", "review_status": "unapproved"}
+{"id": "bal_0052", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You looking for the office?", "review_status": "unapproved"}
+{"id": "bal_0053", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Please call me when you arrive.", "review_status": "unapproved"}
+{"id": "bal_0054", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Call me when you get there.", "review_status": "unapproved"}
+{"id": "bal_0055", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Do you need a bag?", "review_status": "unapproved"}
+{"id": "bal_0056", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You need a bag?", "review_status": "unapproved"}
+{"id": "bal_0057", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Could you show me your identification?", "review_status": "unapproved"}
+{"id": "bal_0058", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Can I see your ID?", "review_status": "unapproved"}
+{"id": "bal_0059", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "What is your phone number?", "review_status": "unapproved"}
+{"id": "bal_0060", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "What's your number?", "review_status": "unapproved"}
+{"id": "bal_0061", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Are you allergic to anything?", "review_status": "unapproved"}
+{"id": "bal_0062", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You allergic to anything?", "review_status": "unapproved"}
+{"id": "bal_0063", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Would you prefer the window or the aisle?", "review_status": "unapproved"}
+{"id": "bal_0064", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Window or aisle?", "review_status": "unapproved"}
+{"id": "bal_0065", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Please tell me if you feel worse.", "review_status": "unapproved"}
+{"id": "bal_0066", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Tell me if you feel worse.", "review_status": "unapproved"}
+{"id": "bal_0067", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Do you want this in a smaller size?", "review_status": "unapproved"}
+{"id": "bal_0068", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You want a smaller one?", "review_status": "unapproved"}
+{"id": "bal_0069", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Can you meet me at the gate?", "review_status": "unapproved"}
+{"id": "bal_0070", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Meet me at the gate?", "review_status": "unapproved"}
+{"id": "bal_0071", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Have you been here before?", "review_status": "unapproved"}
+{"id": "bal_0072", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "You been here before?", "review_status": "unapproved"}
+{"id": "bal_0073", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Would you like water while you wait?", "review_status": "unapproved"}
+{"id": "bal_0074", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Want water while you wait?", "review_status": "unapproved"}
+{"id": "bal_0075", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Please keep your bag with you.", "review_status": "unapproved"}
+{"id": "bal_0076", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Keep your bag with you.", "review_status": "unapproved"}
+{"id": "bal_0077", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Who are you here to see?", "review_status": "unapproved"}
+{"id": "bal_0078", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "Who you here to see?", "review_status": "unapproved"}
+{"id": "bal_0079", "direction": "en-ne", "surface": "conversation_you", "register": "formal", "source_text": "Could you confirm your address?", "review_status": "unapproved"}
+{"id": "bal_0080", "direction": "en-ne", "surface": "conversation_you", "register": "informal", "source_text": "What's your address again?", "review_status": "unapproved"}
+{"id": "bal_0081", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The next bus to Pokhara leaves at six.", "review_status": "unapproved"}
+{"id": "bal_0082", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is this the line for domestic departures?", "review_status": "unapproved"}
+{"id": "bal_0083", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Our train is delayed by forty minutes.", "review_status": "unapproved"}
+{"id": "bal_0084", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I need a ticket to the airport, one way.", "review_status": "unapproved"}
+{"id": "bal_0085", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Where do I collect checked bags?", "review_status": "unapproved"}
+{"id": "bal_0086", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The hotel is across from the old bus park.", "review_status": "unapproved"}
+{"id": "bal_0087", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please stop the taxi at the temple gate.", "review_status": "unapproved"}
+{"id": "bal_0088", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "How much is a shared jeep to the trailhead?", "review_status": "unapproved"}
+{"id": "bal_0089", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I missed the last cable car down.", "review_status": "unapproved"}
+{"id": "bal_0090", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is there a night bus that has blankets?", "review_status": "unapproved"}
+{"id": "bal_0091", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The guesthouse key is at the front desk.", "review_status": "unapproved"}
+{"id": "bal_0092", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "We have a reservation under the name Sharma.", "review_status": "unapproved"}
+{"id": "bal_0093", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Which platform does the eastbound train use?", "review_status": "unapproved"}
+{"id": "bal_0094", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The road to the village is closed after dark.", "review_status": "unapproved"}
+{"id": "bal_0095", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Can I store this backpack until evening?", "review_status": "unapproved"}
+{"id": "bal_0096", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The ferry leaves when it is full.", "review_status": "unapproved"}
+{"id": "bal_0097", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I would like a room with a lock on the door.", "review_status": "unapproved"}
+{"id": "bal_0098", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Where is the ticket counter for local buses?", "review_status": "unapproved"}
+{"id": "bal_0099", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "My flight connection is in thirty minutes.", "review_status": "unapproved"}
+{"id": "bal_0100", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please drop me near the footbridge, not the mall.", "review_status": "unapproved"}
+{"id": "bal_0101", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is drinking water sold on this bus?", "review_status": "unapproved"}
+{"id": "bal_0102", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The mountain road is slippery after rain.", "review_status": "unapproved"}
+{"id": "bal_0103", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I need to extend my stay by one night.", "review_status": "unapproved"}
+{"id": "bal_0104", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Which stop is closest to the hospital?", "review_status": "unapproved"}
+{"id": "bal_0105", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The driver said the pass is open today.", "review_status": "unapproved"}
+{"id": "bal_0106", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please write the lodge name in Nepali.", "review_status": "unapproved"}
+{"id": "bal_0107", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "We are looking for the trail marked with red paint.", "review_status": "unapproved"}
+{"id": "bal_0108", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is there a luggage rack above the seats?", "review_status": "unapproved"}
+{"id": "bal_0109", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The border post closes at four.", "review_status": "unapproved"}
+{"id": "bal_0110", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I left my jacket on the last bus.", "review_status": "unapproved"}
+{"id": "bal_0111", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "How long is the walk from this stop?", "review_status": "unapproved"}
+{"id": "bal_0112", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please slow down on the curves.", "review_status": "unapproved"}
+{"id": "bal_0113", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "We need two seats together if possible.", "review_status": "unapproved"}
+{"id": "bal_0114", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The map shows a bridge that is not here.", "review_status": "unapproved"}
+{"id": "bal_0115", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is the museum open on Monday morning?", "review_status": "unapproved"}
+{"id": "bal_0116", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I would like to pay the entrance fee for one adult.", "review_status": "unapproved"}
+{"id": "bal_0117", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Where can I charge a phone for an hour?", "review_status": "unapproved"}
+{"id": "bal_0118", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The homestay includes breakfast, not dinner.", "review_status": "unapproved"}
+{"id": "bal_0119", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please point toward the river path.", "review_status": "unapproved"}
+{"id": "bal_0120", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Our guide will meet us by the blue gate.", "review_status": "unapproved"}
+{"id": "bal_0121", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The altitude is making the climb slow.", "review_status": "unapproved"}
+{"id": "bal_0122", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is there a later jeep if we miss this one?", "review_status": "unapproved"}
+{"id": "bal_0123", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please keep the receipt for the park fee.", "review_status": "unapproved"}
+{"id": "bal_0124", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The town center is two stops after the school.", "review_status": "unapproved"}
+{"id": "bal_0125", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "I need a place to sleep that is quiet.", "review_status": "unapproved"}
+{"id": "bal_0126", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Which lane is for Kathmandu buses?", "review_status": "unapproved"}
+{"id": "bal_0127", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "The boatman asked us to wait on the sand.", "review_status": "unapproved"}
+{"id": "bal_0128", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Please tell the driver we get off at the bazaar.", "review_status": "unapproved"}
+{"id": "bal_0129", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "We are lost between the temple and the market.", "review_status": "unapproved"}
+{"id": "bal_0130", "direction": "en-ne", "surface": "travel", "register": "formal", "source_text": "Is the viewpoint worth the extra hour?", "review_status": "unapproved"}
+{"id": "bal_0131", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "My head has hurt since last night.", "review_status": "unapproved"}
+{"id": "bal_0132", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I feel dizzy when I stand up.", "review_status": "unapproved"}
+{"id": "bal_0133", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The child has had a fever since morning.", "review_status": "unapproved"}
+{"id": "bal_0134", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I am short of breath after one flight of stairs.", "review_status": "unapproved"}
+{"id": "bal_0135", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "Please look at this cut on my hand.", "review_status": "unapproved"}
+{"id": "bal_0136", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I think I twisted my ankle on the path.", "review_status": "unapproved"}
+{"id": "bal_0137", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The cough is worse at night.", "review_status": "unapproved"}
+{"id": "bal_0138", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I need medicine for an upset stomach.", "review_status": "unapproved"}
+{"id": "bal_0139", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "She has not been able to keep water down.", "review_status": "unapproved"}
+{"id": "bal_0140", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "My tooth hurts on the left side.", "review_status": "unapproved"}
+{"id": "bal_0141", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I am allergic to penicillin.", "review_status": "unapproved"}
+{"id": "bal_0142", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The bandage keeps slipping off.", "review_status": "unapproved"}
+{"id": "bal_0143", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "Please check my blood pressure.", "review_status": "unapproved"}
+{"id": "bal_0144", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I have a rash on both arms.", "review_status": "unapproved"}
+{"id": "bal_0145", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The pain is here, under the ribs.", "review_status": "unapproved"}
+{"id": "bal_0146", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I ran out of my daily tablets.", "review_status": "unapproved"}
+{"id": "bal_0147", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "He fainted for a few seconds and then woke.", "review_status": "unapproved"}
+{"id": "bal_0148", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I need a clean cloth for this burn.", "review_status": "unapproved"}
+{"id": "bal_0149", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The clinic told me to rest for two days.", "review_status": "unapproved"}
+{"id": "bal_0150", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I cannot sleep because my ear aches.", "review_status": "unapproved"}
+{"id": "bal_0151", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "Please speak with the nurse, not only the desk.", "review_status": "unapproved"}
+{"id": "bal_0152", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I feel nauseous in the moving bus.", "review_status": "unapproved"}
+{"id": "bal_0153", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The swelling has not gone down.", "review_status": "unapproved"}
+{"id": "bal_0154", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I need help reading this prescription.", "review_status": "unapproved"}
+{"id": "bal_0155", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "My back locked up while I was lifting a bag.", "review_status": "unapproved"}
+{"id": "bal_0156", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The baby is crying and will not feed.", "review_status": "unapproved"}
+{"id": "bal_0157", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I have chills but no fever yet.", "review_status": "unapproved"}
+{"id": "bal_0158", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "Please tell me if this pharmacy is open.", "review_status": "unapproved"}
+{"id": "bal_0159", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I cut my foot on a rock in the river.", "review_status": "unapproved"}
+{"id": "bal_0160", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The inhaler is empty.", "review_status": "unapproved"}
+{"id": "bal_0161", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I need to lie down for a minute.", "review_status": "unapproved"}
+{"id": "bal_0162", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The wound looks red around the edges.", "review_status": "unapproved"}
+{"id": "bal_0163", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I have had diarrhea since yesterday.", "review_status": "unapproved"}
+{"id": "bal_0164", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "Please bring water before the tablets.", "review_status": "unapproved"}
+{"id": "bal_0165", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "My vision went blurry for a moment.", "review_status": "unapproved"}
+{"id": "bal_0166", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I am diabetic and I missed lunch.", "review_status": "unapproved"}
+{"id": "bal_0167", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "The joint is hot and hard to bend.", "review_status": "unapproved"}
+{"id": "bal_0168", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I need a doctor who can see me today.", "review_status": "unapproved"}
+{"id": "bal_0169", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "Please do not give me aspirin.", "review_status": "unapproved"}
+{"id": "bal_0170", "direction": "en-ne", "surface": "health", "register": "formal", "source_text": "I feel weak and my hands are shaking.", "review_status": "unapproved"}
+{"id": "bal_0171", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "malai bau bata phone aako thiyo", "review_status": "unapproved"}
+{"id": "bal_0172", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "tapai kahile aaune ho", "review_status": "unapproved"}
+{"id": "bal_0173", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "yo bus pokhara jaancha ki jaandaina", "review_status": "unapproved"}
+{"id": "bal_0174", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "mero tauko dukhirako cha bihana dekhi", "review_status": "unapproved"}
+{"id": "bal_0175", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "kripaya bistarai bolnus", "review_status": "unapproved"}
+{"id": "bal_0176", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "hjr ko naam k ho", "review_status": "unapproved"}
+{"id": "bal_0177", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "maile ticket harayo", "review_status": "unapproved"}
+{"id": "bal_0178", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "yo bato band cha re", "review_status": "unapproved"}
+{"id": "bal_0179", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "malai ek glass thanda pani deu na", "review_status": "unapproved"}
+{"id": "bal_0180", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "timi kahile sutchau", "review_status": "unapproved"}
+{"id": "bal_0181", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "hospital kati tada cha", "review_status": "unapproved"}
+{"id": "bal_0182", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "mero khutta baliracha", "review_status": "unapproved"}
+{"id": "bal_0183", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "yo room ma taala cha?", "review_status": "unapproved"}
+{"id": "bal_0184", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "bholi bihana niskine", "review_status": "unapproved"}
+{"id": "bal_0185", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "maile bujina k bhandai", "review_status": "unapproved"}
+{"id": "bal_0186", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "sano baccha lai joro aako cha", "review_status": "unapproved"}
+{"id": "bal_0187", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "yo dawaa kati patak khane", "review_status": "unapproved"}
+{"id": "bal_0188", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "gadi ekchin rokdinus", "review_status": "unapproved"}
+{"id": "bal_0189", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "hami harayo bazaar ma", "review_status": "unapproved"}
+{"id": "bal_0190", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "phone charge hune thau cha?", "review_status": "unapproved"}
+{"id": "bal_0191", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "malai yeta samma pugauxa?", "review_status": "unapproved"}
+{"id": "bal_0192", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "rato get tira janu", "review_status": "unapproved"}
+{"id": "bal_0193", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "bato chipplo cha", "review_status": "unapproved"}
+{"id": "bal_0194", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "ma eklai hoina", "review_status": "unapproved"}
+{"id": "bal_0195", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "khana ali piro xa", "review_status": "unapproved"}
+{"id": "bal_0196", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "bato katiko lamo ho", "review_status": "unapproved"}
+{"id": "bal_0197", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "yo seat khali ho?", "review_status": "unapproved"}
+{"id": "bal_0198", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "malai ek glass pani dinus", "review_status": "unapproved"}
+{"id": "bal_0199", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "rato chinha wala bato", "review_status": "unapproved"}
+{"id": "bal_0200", "direction": "ne-en", "surface": "roman_noise", "register": "noisy_roman", "source_text": "ma pachi phone garchu", "review_status": "unapproved"}

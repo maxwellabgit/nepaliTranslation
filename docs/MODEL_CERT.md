@@ -50,6 +50,14 @@ committed to `benchmarks/results/ship_cert_last.json`.
 | `ne_en_deva` | NE Devanagari → EN | 0.6111 | 0.55 | — | **PASS** |
 | `ne_en_roman` | Roman NE → EN | 0.4248 | 0.40 | — | **PASS** |
 
+## Input path and formal spelling
+
+The phone prepends `<formal> ` or `<informal> ` to English before the EN→NE ONNX graph (`IndicTransOnnx.ts`). Nepali→English is not prefixed. The certificate uses that same prefix.
+
+Formal तपाईं (anusvara) and तपाईँ (chandrabindu) are one pronoun. The app maps both to तिमी. The formal-rate floor counts a prediction if either spelling occurs, and the report also lists the two spellings separately. Floors are unchanged.
+
+The 2026-09-25 table below was scored without the prefix and counted only तपाईं. A zero on that run does not describe the shipped path.
+
 ## Re-run on fetched pins (2026-09-25)
 
 `npm run fetch:models` in `mobile/` downloaded both pinned bundles and printed `ALL_DONE`. Then `python benchmarks/certify_ship_artifacts.py --require-weights` exited 1. The 2026-09-22 table above is unchanged.
@@ -61,7 +69,20 @@ committed to `benchmarks/results/ship_cert_last.json`.
 | `ne_en_deva` | 0.6901 | 0.55 | — | **PASS** |
 | `ne_en_roman` | not finished | 0.40 | — | **NOT RUN** — `npx` was not found when the romanizer subprocess started (`WinError 2`) |
 
-Overall: not a four-class PASS. Public release stays blocked.
+Overall: not a four-class PASS. Public release stays blocked. That table is not the shipped input path.
+
+## Shipped-path re-run (2026-09-25)
+
+English inputs were prefixed the way `IndicTransOnnx.ts` prefixes them. Formal rate counts तपाईं or तपाईँ. Gold rows and floors were not changed. Exit code 1.
+
+| Class | chrF | Floor | Register | Verdict |
+|-------|-----:|------:|----------|---------|
+| `en_ne_formal` | 0.4740 | 0.55 | either spelling 21.2% (floor 15%); anusvara 0%; chandrabindu 21.2%; तँ 0% | **FAIL** (chrF) |
+| `en_ne_informal` | 0.3976 | 0.50 | तिमी 0% (floor 10%); तँ 0% | **FAIL** |
+| `ne_en_deva` | 0.6901 | 0.55 | — | **PASS** |
+| `ne_en_roman` | 0.4854 | 0.40 | — | **PASS** |
+
+The earlier zero formal rate was the anusvara spelling only, without the phone prefix. On this path the model does emit the chandrabindu spelling often enough to clear the formal-rate floor, and it still misses both English→Nepali chrF floors and the informal तिमी floor.
 
 Overall verdict: `passed=false`. Two of four classes are below the pre-declared
 ship floor. `en_ne_formal` and `en_ne_informal` also miss their register floors:

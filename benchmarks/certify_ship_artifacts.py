@@ -35,9 +35,25 @@ CLASSES = ["en_ne_formal", "en_ne_informal", "ne_en_deva", "ne_en_roman"]
 sys.path.insert(0, str(ROOT))
 from eval_it2_gold import chr_f, load_jsonl, norm  # noqa: E402
 
-TAPAI = re.compile(r"तपाईं")
+# Spelling equivalence for the formal pronoun. The app treats anusvara तपाईं
+# and chandrabindu तपाईँ as the same word (onDeviceTranslate maps both to तिमी).
+# The ship rate counts either spelling. The two rates are also reported separately
+# so a combined number is not read as evidence of one spelling.
+TAPAI_ANUSVARA = re.compile(r"तपाईं")
+TAPAI_CHANDRABINDU = re.compile(r"तपाईँ")
+TAPAI = re.compile(r"तपाई(?:ं|ँ)")
 TIMI = re.compile(r"तिमी")
 TAAN = re.compile(r"(?:^|[^\u0900-\u097F])तँ")
+
+
+def shipped_en_input(cls: str, text: str) -> str:
+    """Match mobile/src/mt/onnx/IndicTransOnnx.ts EN→NE formality prefix."""
+    raw = text.strip()
+    if cls == "en_ne_informal":
+        return f"<informal> {raw}"
+    if cls == "en_ne_formal":
+        return f"<formal> {raw}"
+    return text
 
 
 def fail(msg: str) -> int:
@@ -132,7 +148,7 @@ def eval_class(cls: str, gate: dict, model_dirs: dict[str, Path]) -> tuple[bool,
         seen.add(key)
         pairs.append((src, ref))
 
-    inputs = [s for s, _ in pairs]
+    inputs = [shipped_en_input(cls, s) for s, _ in pairs]
     if cls == "ne_en_roman" and gate.get("requires_romanizer"):
         inputs = roman_to_deva_batch(inputs)
 
@@ -153,7 +169,11 @@ def eval_class(cls: str, gate: dict, model_dirs: dict[str, Path]) -> tuple[bool,
 
     failed = not result["pass_chrf"]
     if "min_tapai_rate" in gate:
+        anusvara = rate(TAPAI_ANUSVARA, preds)
+        chandrabindu = rate(TAPAI_CHANDRABINDU, preds)
         r = rate(TAPAI, preds)
+        result["tapai_anusvara_rate"] = round(anusvara, 4)
+        result["tapai_chandrabindu_rate"] = round(chandrabindu, 4)
         result["tapai_rate"] = round(r, 4)
         result["pass_tapai"] = r >= float(gate["min_tapai_rate"])
         failed = failed or not result["pass_tapai"]
