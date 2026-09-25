@@ -107,7 +107,7 @@ Record OS version + device model next to each box when checked.
 
 - [ ] Sign in with Apple: sign-in / cancel / revoke / delete-account; deletion request shows 30-day deadline
 - [ ] Post-consent **Camera photo** upload when flagged; guest/non-consent uploads nothing; raw speech-media upload **deferred** (not a V1 device-proof item)
-- [ ] AdMob banner (idle Translate + Learn only), rewarded (15 min after SSV), interstitial (policy + SDK dismiss) — interstitial only if deliberately enabled
+- [ ] AdMob banner (idle Translate + Learn only), rewarded (2 credits / 30 minutes after verified SSV), interstitial (policy + SDK dismiss) — interstitial only if deliberately enabled
 - [ ] RevenueCat / StoreKit: purchase, cancel, restore, expire, billing retry, offline launch, second-device restore
 - [ ] Subscription suppresses every ad format immediately
 

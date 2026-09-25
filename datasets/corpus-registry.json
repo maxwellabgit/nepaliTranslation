@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.review-prompts",
+  "version": "2026-09-25.review-prompts-locked",
   "note": "R2 corpus registry. Each corpus is explicitly declared here — the importer refuses to walk any directory that is not listed. Editing this file bumps `version`; the importer refuses to import a version different from what the run was invoked against without an explicit override.",
   "content_hash_algorithm": "sha256",
   "corpora": [
@@ -23,7 +23,7 @@
       "format": "jsonl-src-tgt",
       "provenance": "internal-clean-parallel",
       "license": "internal",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "training-clean-ne-en",
@@ -33,7 +33,7 @@
       "format": "jsonl-src-tgt",
       "provenance": "internal-clean-parallel",
       "license": "internal",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "training-law-gov-en-ne",
@@ -43,7 +43,7 @@
       "format": "jsonl-eng-npi",
       "provenance": "law-gov-scrape",
       "license": "internal",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "training-user-conversation-seeds",
@@ -53,7 +53,7 @@
       "format": "jsonl-eng-npi",
       "provenance": "internal-conversation-seed",
       "license": "internal",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "training-val-en-ne",
@@ -63,7 +63,7 @@
       "format": "jsonl-src-tgt",
       "provenance": "internal-clean-parallel-val",
       "license": "internal",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "training-val-ne-en",
@@ -73,7 +73,7 @@
       "format": "jsonl-src-tgt",
       "provenance": "internal-clean-parallel-val",
       "license": "internal",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "meaning-bank",
@@ -83,7 +83,7 @@
       "format": "jsonl-meaning-bank",
       "provenance": "internal-meaning-bank",
       "license": "internal",
-      "visibility": "public_review_eligible",
+      "visibility": "not_for_public_review",
       "notes": "One input row expands into up to four rows (en\u2192ne formal, en\u2192ne informal, en\u2192ne formal roman, en\u2192ne informal roman)."
     },
     {
@@ -94,7 +94,7 @@
       "format": "jsonl-src-tgt-lang",
       "provenance": "BPCC-daily-sample",
       "license": "cc-by-4.0",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "benchmark-flores-plus",
@@ -104,7 +104,7 @@
       "format": "jsonl-en-ne",
       "provenance": "FLORES-Plus-dev",
       "license": "cc-by-sa-4.0",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "benchmark-in22-conv",
@@ -114,7 +114,7 @@
       "format": "jsonl-en-ne",
       "provenance": "IN22-conv-slim",
       "license": "cc-by-4.0",
-      "visibility": "public_review_eligible"
+      "visibility": "not_for_public_review"
     },
     {
       "id": "gold-en-ne-formal",
@@ -124,8 +124,8 @@
       "format": "gold-pair",
       "provenance": "internal-gold-holdout",
       "license": "internal",
-      "visibility": "public_review_eligible",
-      "notes": "Public-review-eligible under G0 D2. Import marks these public_exposed; a NEW private holdout must be produced before R6 reruns the ship gate."
+      "visibility": "not_for_public_review",
+      "notes": "Frozen private ship holdout. Never import into public review; never change these references to improve a score."
     },
     {
       "id": "gold-en-ne-informal",
@@ -135,8 +135,8 @@
       "format": "gold-pair",
       "provenance": "internal-gold-holdout",
       "license": "internal",
-      "visibility": "public_review_eligible",
-      "notes": "See gold-en-ne-formal notes."
+      "visibility": "not_for_public_review",
+      "notes": "Frozen private ship holdout. Never import into public review."
     },
     {
       "id": "gold-ne-en-deva",
@@ -146,8 +146,8 @@
       "format": "gold-pair",
       "provenance": "internal-gold-holdout",
       "license": "internal",
-      "visibility": "public_review_eligible",
-      "notes": "See gold-en-ne-formal notes."
+      "visibility": "not_for_public_review",
+      "notes": "Frozen private ship holdout. Never import into public review."
     },
     {
       "id": "gold-ne-en-roman",
@@ -157,8 +157,8 @@
       "format": "gold-pair",
       "provenance": "internal-gold-holdout",
       "license": "internal",
-      "visibility": "public_review_eligible",
-      "notes": "See gold-en-ne-formal notes."
+      "visibility": "not_for_public_review",
+      "notes": "Frozen private ship holdout. Never import into public review."
     }
   ],
   "excluded_corpora": [

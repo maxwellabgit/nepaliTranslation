@@ -2,16 +2,16 @@
 /**
  * R2 review-pool importer.
  *
- * Reads the explicit corpus registry at `datasets/corpus-registry.json`
- * and imports each declared corpus into `private.review_source_items` via
- * `service_import_review_batch`. Refuses to walk any directory that is
- * not listed in the registry.
+ * Reads one explicitly selected, rights-cleared review corpus from
+ * `datasets/corpus-registry.json` into `private.review_source_items` via
+ * `service_import_review_batch`. Training, benchmark, and gold sources
+ * cannot be imported into public review.
  *
  * Contract vs runbook §R2:
  *   1. Registry is the single source of truth. No guessing.
- *   2. Named adapters per `format` (jsonl-src-tgt, jsonl-eng-npi,
- *      gold-pair). Malformed rows, unknown schemas, or missing required
- *      fields land in the reject manifest instead of being silently skipped.
+ *   2. Only `jsonl-review-candidate` with cleared public-display rights is
+ *      importable. Malformed rows or missing required fields land in the
+ *      reject manifest instead of being silently skipped.
  *   3. PII detection is expanded (email, phone, SSN, cc, IBAN,
  *      high-entropy tokens) and PII rows never touch the review pool.
  *   4. Normalized source+target content hashes for global dedup within
@@ -36,13 +36,14 @@
  *                 not set
  *
  * CLI:
- *   deno run supabase/scripts/import_review_pool.ts [--dry-run] [--corpus=ID]
+ *   deno run supabase/scripts/import_review_pool.ts [--dry-run] --corpus=ID
  */
 
 import { walk } from "https://deno.land/std@0.203.0/fs/walk.ts";
 import { readLines } from "https://deno.land/std@0.203.0/io/read_lines.ts";
 import { join, relative } from "https://deno.land/std@0.203.0/path/mod.ts";
 import { crypto } from "https://deno.land/std@0.203.0/crypto/mod.ts";
+import { selectReviewCorpus } from "./reviewImportScope.ts";
 
 type Registry = {
   version: string;
@@ -62,7 +63,7 @@ type Registry = {
       | "gold-pair";
     provenance: string;
     license: string;
-    visibility: "public_review_eligible" | "public_review_gated";
+    visibility: "not_for_public_review" | "public_review_gated";
     rights_status?: "cleared_public_display" | "unresolved";
     notes?: string;
   }>;
@@ -472,17 +473,11 @@ async function main() {
   const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const root = Deno.env.get("IMPORT_ROOT") ?? Deno.cwd();
 
+  const { registry, checksum } = await loadRegistry(root);
+  const corpora = [selectReviewCorpus(registry.corpora, corpusId)];
   if (!dryRun && (!url || !service)) {
     console.error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required unless --dry-run");
     Deno.exit(2);
-  }
-
-  const { registry, checksum } = await loadRegistry(root);
-  const corpora = corpusId
-    ? registry.corpora.filter((corpus) => corpus.id === corpusId)
-    : registry.corpora;
-  if (corpusId && corpora.length !== 1) {
-    throw new Error(`Unknown or duplicate registry corpus: ${corpusId}`);
   }
   const gitSha = await detectGitSha(root);
   console.log(
