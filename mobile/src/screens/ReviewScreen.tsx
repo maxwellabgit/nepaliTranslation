@@ -119,6 +119,10 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     async (action: ReviewSubmitAction) => {
       if (!windowId || !active) return;
       const correctedText = correction.trim();
+      if (action === 'confirm' && !active.proposed_target?.trim()) {
+        setError('invalid');
+        return;
+      }
       if (action === 'edit' && !correctedText) {
         setError('invalid');
         return;
@@ -326,12 +330,23 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                 <Text style={dynamic.body} testID="review-item-source">
                   {active.source_text}
                 </Text>
-                <Text style={dynamic.label}>
-                  {t('review.itemProposed', lang)}
-                </Text>
-                <Text style={dynamic.body} testID="review-item-proposed">
-                  {active.proposed_target ?? '—'}
-                </Text>
+                {active.proposed_target?.trim() ? (
+                  <>
+                    <Text style={dynamic.label}>
+                      {t('review.itemProposed', lang)}
+                    </Text>
+                    <Text style={dynamic.body} testID="review-item-proposed">
+                      {active.proposed_target}
+                    </Text>
+                    <Text style={dynamic.meta}>
+                      {t('review.suggestionUnverified', lang)}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={dynamic.meta} testID="review-item-source-only">
+                    {t('review.sourceOnly', lang)}
+                  </Text>
+                )}
                 <Text style={dynamic.label}>
                   {t('review.itemCorrection', lang)}
                 </Text>
@@ -349,7 +364,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                     testID="review-action-confirm"
                     label={t('review.actionConfirm', lang)}
                     onPress={() => void submit('confirm')}
-                    disabled={status === 'submitting'}
+                    disabled={status === 'submitting' || !active.proposed_target?.trim()}
                   />
                   <AppButton
                     testID="review-action-edit"

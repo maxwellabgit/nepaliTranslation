@@ -1,8 +1,20 @@
 {
-  "version": "2026-09-22.r2",
+  "version": "2026-09-25.review-prompts",
   "note": "R2 corpus registry. Each corpus is explicitly declared here — the importer refuses to walk any directory that is not listed. Editing this file bumps `version`; the importer refuses to import a version different from what the run was invoked against without an explicit override.",
   "content_hash_algorithm": "sha256",
   "corpora": [
+    {
+      "id": "balance-public-review-prompts",
+      "purpose": "review",
+      "root": "balance_data/review_pool",
+      "glob": "for_review.jsonl",
+      "format": "jsonl-review-candidate",
+      "provenance": "owner-directed-balance-prompts",
+      "license": "owner-authorized-public-display",
+      "rights_status": "cleared_public_display",
+      "visibility": "public_review_gated",
+      "notes": "Owner authorized these 200 prompts for rewarded public review on 2026-09-25. Suggestions are machine generated and unverified. Source-only prompts require an edit. The former 40-row blind split is retired; never use any of these prompts or public answers for training or ship evaluation."
+    },
     {
       "id": "training-clean-en-ne",
       "purpose": "training",

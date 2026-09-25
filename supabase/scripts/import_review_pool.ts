@@ -36,7 +36,7 @@
  *                 not set
  *
  * CLI:
- *   deno run supabase/scripts/import_review_pool.ts [--dry-run]
+ *   deno run supabase/scripts/import_review_pool.ts [--dry-run] [--corpus=ID]
  */
 
 import { walk } from "https://deno.land/std@0.203.0/fs/walk.ts";
@@ -49,7 +49,7 @@ type Registry = {
   content_hash_algorithm: "sha256";
   corpora: Array<{
     id: string;
-    purpose: "training" | "benchmark" | "gold";
+    purpose: "training" | "benchmark" | "gold" | "review";
     root: string;
     glob: string;
     format:
@@ -58,10 +58,12 @@ type Registry = {
       | "jsonl-eng-npi"
       | "jsonl-en-ne"
       | "jsonl-meaning-bank"
+      | "jsonl-review-candidate"
       | "gold-pair";
     provenance: string;
     license: string;
     visibility: "public_review_eligible" | "public_review_gated";
+    rights_status?: "cleared_public_display" | "unresolved";
     notes?: string;
   }>;
 };
@@ -87,6 +89,8 @@ type ImportRow = {
   license_note: string | null;
   metadata: Record<string, unknown>;
   pii_flag: boolean;
+  rights_status?: "cleared_public_display" | "unresolved";
+  origin_class?: "training_source";
 };
 
 type RejectReason =
@@ -274,6 +278,32 @@ function detectSrcTgt(row: Record<string, unknown>): Detected | null {
   };
 }
 
+/** Unverified public-review prompts may have a suggested target or none. */
+function detectReviewCandidate(row: Record<string, unknown>): Detected | null {
+  if (
+    typeof row.id !== "string" ||
+    typeof row.source_text !== "string" ||
+    !["en-ne", "ne-en"].includes(String(row.direction)) ||
+    !(row.proposed_target === null || typeof row.proposed_target === "string") ||
+    !["unverified_machine_suggestion", "source_only"].includes(String(row.suggestion_status))
+  ) return null;
+  return {
+    source: row.source_text,
+    target: row.proposed_target as string | null,
+    direction: row.direction as "en-ne" | "ne-en",
+    register: typeof row.register === "string" ? row.register : "unspecified",
+    script: row.direction === "ne-en" ? "roman" : "deva",
+    licenseNote: "owner_authorized_public_review",
+    metadata: {
+      prompt_id: row.id,
+      surface: row.surface,
+      suggestion_model: row.suggestion_model,
+      suggestion_status: row.suggestion_status,
+      review_status: "needs_public_review",
+    },
+  };
+}
+
 function detectEngNpi(row: Record<string, unknown>): Detected | null {
   if (typeof row.eng_Latn !== "string" || typeof row.npi_Deva !== "string") {
     return null;
@@ -437,6 +467,7 @@ async function detectGitSha(root: string): Promise<string> {
 async function main() {
   const dryRunFlag = Deno.args.includes("--dry-run");
   const dryRun = dryRunFlag || Deno.env.get("DRY_RUN") === "1";
+  const corpusId = Deno.args.find((arg) => arg.startsWith("--corpus="))?.slice(9);
   const url = Deno.env.get("SUPABASE_URL");
   const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const root = Deno.env.get("IMPORT_ROOT") ?? Deno.cwd();
@@ -447,6 +478,12 @@ async function main() {
   }
 
   const { registry, checksum } = await loadRegistry(root);
+  const corpora = corpusId
+    ? registry.corpora.filter((corpus) => corpus.id === corpusId)
+    : registry.corpora;
+  if (corpusId && corpora.length !== 1) {
+    throw new Error(`Unknown or duplicate registry corpus: ${corpusId}`);
+  }
   const gitSha = await detectGitSha(root);
   console.log(
     `[import_review_pool] git_sha=${gitSha} registry_version=${registry.version} registry_checksum=${checksum} dry_run=${dryRun}`,
@@ -527,7 +564,7 @@ async function main() {
     };
   }
 
-  for (const corpus of registry.corpora) {
+  for (const corpus of corpora) {
     const abs = join(root, corpus.root);
     perCorpus[corpus.id] = { seen: 0, accepted: 0, deduped: 0, pii: 0 };
 
@@ -597,6 +634,9 @@ async function main() {
             if (d) detectedList.push(d);
           } else if (corpus.format === "jsonl-meaning-bank") {
             detectedList.push(...detectMeaningBankMulti(row));
+          } else if (corpus.format === "jsonl-review-candidate") {
+            const d = detectReviewCandidate(row);
+            if (d) detectedList.push(d);
           } else if (corpus.format === "gold-pair") {
             const d = detectGoldPair(row, file.origin);
             if (d) detectedList.push(d);
@@ -623,7 +663,7 @@ async function main() {
               });
               continue;
             }
-            if (!target) {
+            if (!target && corpus.format !== "jsonl-review-candidate") {
               rejects.push({
                 corpus_id: corpus.id,
                 origin: file.origin,
@@ -677,7 +717,7 @@ async function main() {
               register: detected.register,
               script: detected.script,
               source_text: source,
-              proposed_target: target,
+              proposed_target: target || null,
               license_note: detected.licenseNote,
               metadata: {
                 ...detected.metadata,
@@ -687,6 +727,12 @@ async function main() {
                 corpus_license: corpus.license,
               },
               pii_flag: false,
+              ...(corpus.format === "jsonl-review-candidate"
+                ? {
+                    rights_status: corpus.rights_status ?? "unresolved",
+                    origin_class: "training_source" as const,
+                  }
+                : {}),
             });
             perCorpus[corpus.id].accepted += 1;
           }
@@ -719,6 +765,7 @@ async function main() {
         git_sha: gitSha,
         registry_checksum: checksum,
         dry_run: dryRun,
+        corpus_filter: corpusId ?? null,
         per_corpus: perCorpus,
         run_ids: runIds,
         rejects,

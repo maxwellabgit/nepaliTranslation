@@ -1,13 +1,7 @@
-# balance_data
+# Rewarded review prompts
 
-The 59-row base-versus-E1 file only shows that the adapter changes outputs. It does not show that the adapter translates better. Those held-out lines are mostly short labels, so missing तपाईं, तपाईँ, and तिमी there does not settle register. The second-person prompts are the place to check register, including verb agreement when no pronoun is written.
+`review_pool/for_review.jsonl` contains the 200 new prompts. The owner authorized public review on 2026-09-25. The old 40-row blind split is retired: none of these prompts or later reviewer responses may be used for training or ship evaluation. `base_vs_e1_val.jsonl` remains an evaluation-only diagnostic and is never imported into public review.
 
-Nothing here is part of the 543-row ship gold set. Do not run the ship certificate on this folder. An ONNX export is not required to review these prompts or to compare base and E1.
+Of the 200 prompts, 135 have an **unverified machine suggestion**. The other 65 (including every Roman Nepali prompt) have no suggestion; a reviewer must write a translation. `bal_0004` has no suggestion because its generated target matched a gold blocklist entry. The review UI labels unverified suggestions and disables Confirm on source-only prompts; the database enforces the latter as well. A rewarded review is a user submission, not an approved training reference.
 
-## Training candidates
-
-`training_candidates/for_review.jsonl` is the 160 prompts not reserved below. A Nepali reviewer compares the suggestions with the source and writes `accepted_text`. Keep the original prompt, the chosen wording, `register`, and set `provenance` only after that acceptance. Suggestions stay unapproved until then.
-
-## Blind benchmark
-
-`benchmark_blind/for_reviewers.jsonl` is frozen first. Reviewers write `reference` from the source alone. Model suggestions are not in that file. `benchmark_blind/FREEZE.json` records the ids and source hashes. Do not add these rows to `benchmarks/gold/` in the middle of a ship run. After references exist, check meaning-level overlap with the training mix and with the frozen gold set before any training use.
+The corpus is declared as `balance-public-review-prompts` in `datasets/corpus-registry.json`. The importer rejects PII, hashes source and target, imports only this file for this corpus, and respects exposure exclusions. Submissions go through the owner-authenticated RPC; callers cannot insert their own credit snapshots. The release flag, contribution consent, rights inventory, 14-day lookahead, and hosted scheduler still govern visibility and credits.

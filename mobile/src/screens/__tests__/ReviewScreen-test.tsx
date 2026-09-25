@@ -263,6 +263,42 @@ describe('ReviewScreen', () => {
       .toBe(false);
   });
 
+  it('requires a written translation when no suggestion exists', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue({
+      ok: true,
+      window: { window_id: 'w-1', ny_close_at: '2027-01-01T22:00:00Z', size: 1 },
+      items: [{
+        slot: 1,
+        source_item_id: 'source-only',
+        direction: 'ne-en',
+        register: 'noisy_roman',
+        script: 'roman',
+        source_text: 'tapai kahile aaune ho',
+        proposed_target: null,
+        length_tier: 1,
+        scheduled_credits: 2,
+      }],
+      mine: [],
+    });
+    submitReview.mockResolvedValue({ ok: true, submission: { id: 's-1' } });
+
+    await act(async () => { renderScreen(); });
+    await waitFor(() => expect(screen.getByTestId('review-item-source-only')).toBeTruthy());
+    expect(screen.getByTestId('review-action-confirm').props.accessibilityState.disabled).toBe(true);
+    expect(screen.getByTestId('review-action-edit').props.accessibilityState.disabled).toBe(true);
+
+    await act(async () => {
+      fireEvent.changeText(screen.getByTestId('review-item-correction'), 'When will you arrive?');
+    });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-edit')); });
+    expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
+      sourceItemId: 'source-only',
+      action: 'edit',
+      correctedText: 'When will you arrive?',
+    }));
+  });
+
   it('surfaces already_submitted error from the server', async () => {
     useAuth.mockReturnValue(signedInAuth);
     fetchCurrentReviewWindow.mockResolvedValue({
