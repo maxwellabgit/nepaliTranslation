@@ -4,7 +4,7 @@
 
 Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Model floors: [`MODEL_CERT.md`](./MODEL_CERT.md). Store sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md).
 
-**R0/R5/R9 rule:** leave every matrix / checklist box unchecked until a human fills it on a real device with the **same** TestFlight (or internal) build number recorded below. Source-only CI is not device proof. Neither tip `43f9bc6` nor `71c85df` is an external RC — the first useful milestone is a green R0+R1 diagnostic TestFlight with optional flags off.
+**R0/R5/R9 rule:** leave every matrix / checklist box unchecked until a human fills it on a real device with the **same** TestFlight (or internal) build number recorded below. Source-only CI is not device proof. An ad-enabled diagnostic TestFlight may use test ads and staging flags after consent is checked. Public V1 still requires a four-class model PASS.
 
 ## Build under test (fill on device)
 
@@ -33,23 +33,26 @@ Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight
 
 ## Exact commands (human)
 
-From a machine with Expo account + Apple Developer access (`mobile/`):
+Both TestFlight profiles use the EAS `preview` environment for **staging** Supabase credentials. From a machine with Expo and Apple Developer access, first build with Google's demo units to see banner/interstitial placements:
 
 ```bash
 cd mobile
-npx eas login
-npx eas build --platform ios --profile <internal>
-# Install the internal build on physical iPhone and iPad (QR / internal distribution).
+npx eas-cli login
+npm ci
+npm run verify:ci
+npx eas-cli build --platform ios --profile testflight
+npx eas-cli submit --platform ios --profile testflight --latest
 ```
 
-Internal TestFlight (after a store-oriented build):
+For a signed reward test, configure the owner's AdMob iOS app, three units, signed SSV callback, and registered physical test-device IDs as described in `TESTFLIGHT_WITH_ADS.md`. Then use the owner units on **those test devices**:
 
 ```bash
 cd mobile
-npx eas build --platform ios --profile preview   # or production
-npx eas submit --platform ios --latest
-# App Store Connect → TestFlight → Internal Testing → install on devices
+npx eas-cli build --platform ios --profile testflight-ssv
+npx eas-cli submit --platform ios --profile testflight-ssv --latest
 ```
+
+Select that build in App Store Connect → TestFlight → Internal Testing and install it on the iPhone and iPad. Record each build number and git SHA separately. Google demo units cannot establish a signed reward, and neither build produces ad revenue.
 
 Maestro on device (app already installed; Maestro CLI on PATH):
 

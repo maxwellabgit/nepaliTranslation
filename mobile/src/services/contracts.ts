@@ -49,6 +49,8 @@ export type AdService = {
   networkCalls: () => ReturnType<AdAdapter['networkCalls']>;
   prepareConsentAndSdk: () => Promise<ConsentState>;
   getConsentState: () => ConsentState;
+  /** Receive the result when UMP finishes after the first screen render. */
+  subscribeConsent?: (listener: (state: ConsentState) => void) => () => void;
   showPrivacyOptions: () => Promise<void>;
 };
 

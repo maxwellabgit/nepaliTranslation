@@ -1,6 +1,13 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 const configure = require('../app.config.js');
+const eas = require('../eas.json');
+
+test('TestFlight reads staging variables from preview and production stays separate', () => {
+  assert.equal(eas.build.testflight.environment, 'preview');
+  assert.equal(eas.build['testflight-ssv'].environment, 'preview');
+  assert.equal(eas.build.production.environment, 'production');
+});
 
 test('TestFlight bundles Google test IDs even with shared live-ad environment variables', () => {
   const names = [

@@ -24,6 +24,7 @@ import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
 import { useSubscriptionOptional } from '../subscription/SubscriptionProvider';
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { NativeOrPlaceholderBanner } from './NativeBanner';
+import { useAdConsent } from './useAdConsent';
 
 type Props = {
   surface: AdSurface;
@@ -73,6 +74,7 @@ export function AdSlot({
   eligible = true,
 }: Props) {
   const services = useServices();
+  const consent = useAdConsent(services.ads);
   const entitlement = useEntitlementOptional();
   const subscription = useSubscriptionOptional();
   const flags = useFeatureFlags();
@@ -87,8 +89,7 @@ export function AdSlot({
   const shownKindRef = useRef<'banner' | 'house' | null>(null);
 
   const offline = offlineProp ?? services.network.isOffline();
-  const canRequestAds =
-    canRequestAdsProp ?? services.ads.getConsentState().canRequestAds;
+  const canRequestAds = canRequestAdsProp ?? consent.canRequestAds;
   const adapter = injected ?? services.ads.adapter;
   const earnedAdFreeUntilMs = entitlement?.earnedAdFreeUntilMs ?? null;
   const trustedNowMs = entitlement?.trustedNow() ?? null;

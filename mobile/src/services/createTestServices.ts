@@ -48,6 +48,7 @@ export function createTestServices(
     canRequestAds: options.canRequestAds ?? false,
     privacyOptionsRequired: options.privacyOptionsRequired ?? false,
   };
+  const consentListeners = new Set<(state: ConsentState) => void>();
   const netListeners = new Set<(offline: boolean) => void>();
   const flags: FeatureFlags = {
     ...DEFAULT_FEATURE_FLAGS,
@@ -94,6 +95,10 @@ export function createTestServices(
       networkCalls: () => adAdapter.networkCalls(),
       prepareConsentAndSdk: async () => consent,
       getConsentState: () => consent,
+      subscribeConsent: (listener) => {
+        consentListeners.add(listener);
+        return () => { consentListeners.delete(listener); };
+      },
       showPrivacyOptions: async () => undefined,
     },
     purchases,
@@ -106,6 +111,7 @@ export function createTestServices(
     },
     setConsent: (next) => {
       consent = next;
+      for (const listener of consentListeners) listener(consent);
     },
   };
   return services;
