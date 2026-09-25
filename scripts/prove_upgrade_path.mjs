@@ -20,9 +20,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const mode = process.argv[2];
 const file =
   mode === '--seed'
-    ? resolve(root, 'supabase/tests/upgrade/pre_fix_seed.sql')
+    ? resolve(root, 'supabase/upgrade_proof/pre_fix_seed.sql')
     : mode === '--assert'
-      ? resolve(root, 'supabase/tests/upgrade/post_fix_assert.sql')
+      ? resolve(root, 'supabase/upgrade_proof/post_fix_assert.sql')
       : null;
 
 if (!file) {

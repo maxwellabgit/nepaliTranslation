@@ -105,7 +105,7 @@ insert into public.review_submissions (
   original_source_snapshot, length_tier_snapshot, scheduled_credits
 )
 select '11111111-1111-4111-8111-fffff2666666'::uuid, 1, id,
-       '11111111-1111-4111-8111-111111111111', 'confirm', null,
+       '11111111-1111-4111-8111-111111111111', 'edit', 'A reviewed translation',
        source_text, 1, 1
 from private.review_source_items where content_hash = 'g2-purge-hash-1';
 

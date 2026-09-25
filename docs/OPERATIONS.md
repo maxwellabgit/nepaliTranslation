@@ -7,7 +7,7 @@
 The `process-scheduled-jobs` Supabase Edge Function does three things:
 
 1. Closes the current NY reward window and grants scheduled contribution credits (`service_close_ny_reward_window`).
-2. **Review queue:** `service_plan_review_lookahead` appends private New York days toward a 28-day horizon and turns `public_review_enabled` on only after 14 future days exist. `service_rotate_review_window` still closes a due window and grants snapshotted credits (2 for 0–20 original source words, 4 for 21 or more). It opens a public window only when that flag is on, promoting the planned day when one exists. Behaviour:
+2. **Review queue:** `service_plan_review_lookahead` appends private New York days toward a 28-day horizon. Fourteen planned days never enable public review automatically: the owner must separately approve public release and enable `public_review_enabled` after rights and hosted proofs. `service_rotate_review_window` still closes a due window and grants snapshotted credits (2 for 0–20 original source words, 4 for 21 or more). It opens a public window only when that flag is on, promoting the planned day when one exists. Behaviour:
    - Advisory-lock-owned: concurrent invocations return `{status: 'busy'}` and mutate nothing.
    - `not_due`: if the current open window's `ny_close_at > p_as_of`, no mutation; returns `{status: 'not_due', ...}`. Monitoring counts these to confirm the scheduler is alive between 5 PM ticks.
    - At close, grants credit **only** for `confirm` and `edit` submissions that were not marked `unsatisfactory` before close; `skip` and `report` grant zero; `report` also flips the source item to `public_review_eligible=false`. Credits route through `private.apply_reward` so `earned_ad_free_until` advances at close.
