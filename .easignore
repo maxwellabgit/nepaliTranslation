@@ -2,9 +2,12 @@
 # https://docs.expo.dev/build-reference/easignore/
 
 # --- everything except the Expo app ---
-/benchmarks/
+# The pre-install hook reads these two small files from the repo root.
+/benchmarks/**
+!/benchmarks/private_exclusions.json
 /training/
-/scripts/
+/scripts/**
+!/scripts/exclusionManifest.mjs
 /docs/
 /.cursor/
 /.governance/
