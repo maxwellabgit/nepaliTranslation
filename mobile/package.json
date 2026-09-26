@@ -57,7 +57,7 @@
     "test:coverage:beta": "node ./scripts/check_beta_coverage.mjs",
     "verify:translate": "node ./scripts/export_meaning_lexicon.mjs && node scripts/verify_translate_fix.mjs && node scripts/verify_romanize.mjs",
     "check:model-hash": "node ./scripts/check_model_hash.mjs",
-    "verify:beta": "npm run export:lexicon && npm run lint && npm run typecheck && npm run test:unit && npm run test:integration && node --test scripts/testflightAdsConfig.test.cjs && npm run verify:translate && npm run check:model-hash && npx expo-doctor",
+    "verify:beta": "npm run export:lexicon && npm run lint && npm run typecheck && npm run test:unit && npm run test:integration && node --test scripts/testflightAdsConfig.test.cjs && npm run verify:translate && npm run check:model-hash && node scripts/check_ios_usage_descriptions.mjs && npx expo-doctor",
     "export:web": "npx expo export --platform web",
     "verify:ci": "npm run verify:beta && npm run test:coverage:beta && npm run export:web",
     "fetch:models": "node ./scripts/eas_fetch_it2_models.mjs",

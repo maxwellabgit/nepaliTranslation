@@ -13,6 +13,7 @@
       "bundleIdentifier": "com.neptranslate.app",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Bola needs the microphone to translate spoken Nepali and English.",
+        "NSPhotoLibraryUsageDescription": "Bola translates text in Camera photos you capture. Captures are temporary and are not saved to your photo library; sharing requires your permission in Settings.",
         "NSSpeechRecognitionUsageDescription": "Bola uses speech recognition to translate what you say.",
         "NSCameraUsageDescription": "Bola uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
         "ITSAppUsesNonExemptEncryption": false,
@@ -65,7 +66,7 @@
         "expo-camera",
         {
           "cameraPermission": "Bola uses the camera to translate Nepali and English text. Images stay on this device unless you sign in and explicitly enable photo contributions in Settings.",
-          "microphonePermission": false,
+          "microphonePermission": "Bola needs the microphone to translate spoken Nepali and English.",
           "recordAudioAndroid": false
         }
       ]
