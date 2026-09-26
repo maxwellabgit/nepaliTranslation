@@ -5,7 +5,7 @@ branch: main
 pr: https://github.com/maxwellabgit/nepaliTranslation/pull/15
 pr_state: MERGED
 merge_method: fast-forward
-current_step: Staging banner and interstitial flags are on. Rewarded ads and paywall stay off. EAS iOS build 15 failed because the App Store provisioning profile lacks Sign in with Apple. No binary was submitted.
+current_step: Diagnostic TestFlight build 18 compiled and reached App Store Connect, but Apple rejected it during processing for missing photo-library and microphone purpose strings. A new binary is required; no accepted device build exists yet. Staging banner and interstitial flags are on; rewarded ads and paywall remain off.
 completed_gates: C0, C1 were recorded before this merge. This merge does not close C2–C15.
 internal_testflight: NO-GO
 public_v1: NO-GO
@@ -21,6 +21,7 @@ integrated_sha: 5645ac2f6899b0791895e891cb500f1722149f72
 ci_on_integrated_sha_2: agent-gates run 36194040238 and backend-gate run 36194040187 succeeded on 5645ac2. PR 17 fixed the deletion assertion. PR 16 keeps the rewarded button hidden unless rewarded_ads_enabled is on. testflight and testflight-ssv use EAS environment preview. production uses production. eas.json does not contain a service-role key.
 eas_preview: EXPO_PUBLIC_SUPABASE_URL points at jcrpxoojxixoieqqfgzo. EXPO_PUBLIC_SUPABASE_ANON_KEY is set. No service-role key, access token, or database password is in preview.
 eas_build: profile testflight, version 1.7.0. Build 14 (85e733a0) failed in eas-build-pre-install because .easignore omitted the exclusion files; that is fixed on 7d76168. Build 15 (8e203fea) failed in Xcode: provisioning profile "*[expo] com.neptranslate.app AppStore 2026-07-19T20:51:07.392Z" does not include Sign in with Apple. Auto-submit was not used. verify:ci passed locally before the builds (373 unit, 19 integration).
+eas_build_18: Owner-reported build 6a089eeb-7f6e-47c9-8665-8a235f006eed, version 1.7.0 build 18, Git SHA c8eb079c6782, succeeded with replacement App Store profile 46ZYV995S7. Initial EAS Submit attempt reported a stored App Store Connect API key 401. Subsequent Apple delivery emails for Apple ID 6792574384 and build 18 prove a delivery reached Apple, but Apple rejected the binary with ITMS-90683 for missing NSPhotoLibraryUsageDescription and NSMicrophoneUsageDescription in Bola.app. No accepted TestFlight binary or device proof is recorded.
 staging_ad_flags: network_ads_enabled true, automatic_interstitial_enabled true, rewarded_ads_enabled false, paywall_enabled false, contribution_text_enabled false, public_review_enabled false.
-next_action: Regenerate the App Store provisioning profile so it includes Sign in with Apple, then rebuild and submit profile testflight from current main. Do not treat build 15 as a device build. Owner AdMob units, test-device IDs, and a signed SSV receipt are still required before testflight-ssv.
-updated_at_utc: 2026-09-25T22:00:00Z
+next_action: Merge the iOS purpose-string fix and generated Info.plist check, build a new testflight binary (build number greater than 18), submit its exact EAS build ID, and verify Apple processing before any iPhone/iPad proof. Do not retry rejected build 18. Owner AdMob units, test-device IDs, and a signed SSV receipt are still required before testflight-ssv.
+updated_at_utc: 2026-09-26T02:39:37Z
