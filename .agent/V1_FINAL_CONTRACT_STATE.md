@@ -5,7 +5,7 @@ branch: main
 pr: https://github.com/maxwellabgit/nepaliTranslation/pull/15
 pr_state: MERGED
 merge_method: fast-forward
-current_step: PRs 17 and 16 are on main at 5645ac2. Both GitHub workflows succeeded on that SHA. No TestFlight build has been uploaded. EAS preview now has the staging URL and anon key from the local environment.
+current_step: Staging banner and interstitial flags are on. Rewarded ads and paywall stay off. EAS iOS build 15 failed because the App Store provisioning profile lacks Sign in with Apple. No binary was submitted.
 completed_gates: C0, C1 were recorded before this merge. This merge does not close C2–C15.
 internal_testflight: NO-GO
 public_v1: NO-GO
@@ -20,5 +20,7 @@ human_blockers: 80 more rights-cleared prompts are needed for a 28-day lookahead
 integrated_sha: 5645ac2f6899b0791895e891cb500f1722149f72
 ci_on_integrated_sha_2: agent-gates run 36194040238 and backend-gate run 36194040187 succeeded on 5645ac2. PR 17 fixed the deletion assertion. PR 16 keeps the rewarded button hidden unless rewarded_ads_enabled is on. testflight and testflight-ssv use EAS environment preview. production uses production. eas.json does not contain a service-role key.
 eas_preview: EXPO_PUBLIC_SUPABASE_URL points at jcrpxoojxixoieqqfgzo. EXPO_PUBLIC_SUPABASE_ANON_KEY is set. No service-role key, access token, or database password is in preview.
-next_action: Enable network_ads_enabled and automatic_interstitial_enabled on staging, leave rewarded ads and paywall off, and build profile testflight from the current main. Owner AdMob units, test-device IDs, and the signed SSV receipt are still required before testflight-ssv.
+eas_build: profile testflight, version 1.7.0. Build 14 (85e733a0) failed in eas-build-pre-install because .easignore omitted the exclusion files; that is fixed on 7d76168. Build 15 (8e203fea) failed in Xcode: provisioning profile "*[expo] com.neptranslate.app AppStore 2026-07-19T20:51:07.392Z" does not include Sign in with Apple. Auto-submit was not used. verify:ci passed locally before the builds (373 unit, 19 integration).
+staging_ad_flags: network_ads_enabled true, automatic_interstitial_enabled true, rewarded_ads_enabled false, paywall_enabled false, contribution_text_enabled false, public_review_enabled false.
+next_action: Regenerate the App Store provisioning profile so it includes Sign in with Apple, then rebuild and submit profile testflight from current main. Do not treat build 15 as a device build. Owner AdMob units, test-device IDs, and a signed SSV receipt are still required before testflight-ssv.
 updated_at_utc: 2026-09-25T22:00:00Z
