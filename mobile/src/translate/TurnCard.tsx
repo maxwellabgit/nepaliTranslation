@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import * as Clipboard from 'expo-clipboard';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { formatNepaliScript } from '../mt/onDeviceTranslate';
+import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { useRuntime } from '../runtime/RuntimeContext';
@@ -31,14 +31,12 @@ export function TurnCard({
   const lang = useUiLang();
   const runtime = useRuntime();
   const targetIsNepali = turn.from === 'en';
-  const shown =
-    targetIsNepali && script === 'roman'
-      ? formatNepaliScript(turn.translation, 'roman')
-      : turn.translation;
-  const roman =
-    targetIsNepali && script === 'deva'
-      ? formatNepaliScript(turn.translation, 'roman')
-      : '';
+  const shown = targetIsNepali
+    ? formatNepaliScript(turn.translation, script)
+    : turn.translation;
+  const scriptLine = targetIsNepali
+    ? companionNepaliScript(turn.translation, script)
+    : formatNepaliScript(turn.source, script);
   const canRetry = isRetryableTurn(turn, turns);
 
   const styles = useMemo(
@@ -85,7 +83,6 @@ export function TurnCard({
 
   return (
     <View style={styles.card} testID={isLatest ? 'translate-turn' : undefined}>
-      <Text style={styles.source}>{turn.source}</Text>
       <Text
         style={styles.translation}
         selectable
@@ -93,9 +90,9 @@ export function TurnCard({
       >
         {shown}
       </Text>
-      {roman ? (
-        <Text style={styles.roman} testID={isLatest ? 'translate-roman' : undefined}>
-          {roman}
+      {scriptLine && scriptLine !== shown ? (
+        <Text style={styles.roman} testID={isLatest ? 'translate-result-script' : undefined}>
+          {scriptLine}
         </Text>
       ) : null}
       <View style={styles.actions}>

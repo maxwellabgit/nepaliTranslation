@@ -91,6 +91,23 @@ export function mapFrameToView(frame: OcrFrame, image: Size, view: Size): OcrFra
 }
 
 /**
+ * One tight preview box per OCR line. Do not union lines: the gap between
+ * them is not text.
+ */
+export function mapLineFramesToView(
+  frames: OcrFrame[],
+  image: Size,
+  rotation: ImageRotation,
+  view: Size,
+): OcrFrame[] {
+  const oriented = orientedImageSize(image, rotation);
+  return frames
+    .map((frame) => rotateFrame(frame, image, rotation))
+    .map((frame) => mapFrameToView(frame, oriented, view))
+    .filter((frame) => frame.width > 0 && frame.height > 0);
+}
+
+/**
  * Rotate every sentence frame into oriented image space, union them, then
  * letterbox into the preview view.
  */

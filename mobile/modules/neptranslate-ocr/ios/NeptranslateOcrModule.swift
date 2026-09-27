@@ -18,24 +18,40 @@ public class NeptranslateOcrModule: Module {
       vision.orientation = image.imageOrientation
       let latin = TextRecognizer.textRecognizer()
       let devanagari = TextRecognizer.textRecognizer(options: DevanagariTextRecognizerOptions())
-      latin.process(vision) { latinResult, latinError in
-        if let latinError {
-          promise.reject("ocr", latinError.localizedDescription)
+      // Both scripts run together. Dropping one would miss mixed-script signs.
+      let group = DispatchGroup()
+      let lock = NSLock()
+      var latinText: MLKitTextRecognition.Text?
+      var devaText: MLKitTextRecognition.Text?
+      var ocrError: Error?
+      group.enter()
+      latin.process(vision) { result, error in
+        lock.lock()
+        if ocrError == nil { ocrError = error }
+        latinText = result
+        lock.unlock()
+        group.leave()
+      }
+      group.enter()
+      devanagari.process(vision) { result, error in
+        lock.lock()
+        if ocrError == nil { ocrError = error }
+        devaText = result
+        lock.unlock()
+        group.leave()
+      }
+      group.notify(queue: .main) {
+        if let ocrError {
+          promise.reject("ocr", ocrError.localizedDescription)
           return
         }
-        devanagari.process(vision) { devaResult, devaError in
-          if let devaError {
-            promise.reject("ocr", devaError.localizedDescription)
-            return
-          }
-          let blocks = Self.blocks(from: latinResult) + Self.blocks(from: devaResult, language: "ne")
-          promise.resolve([
-            "width": image.size.width,
-            "height": image.size.height,
-            "rotation": 0,
-            "blocks": blocks,
-          ])
-        }
+        let blocks = Self.blocks(from: latinText) + Self.blocks(from: devaText, language: "ne")
+        promise.resolve([
+          "width": image.size.width,
+          "height": image.size.height,
+          "rotation": 0,
+          "blocks": blocks,
+        ])
       }
     }
   }

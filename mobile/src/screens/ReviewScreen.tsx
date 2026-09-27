@@ -216,14 +216,16 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     >
       <ScrollView contentContainerStyle={dynamic.pad}>
         <View style={dynamic.header}>
-          <Text style={dynamic.title}>{t('review.title', lang)}</Text>
           <Pressable
             testID="review-close"
             accessibilityRole="button"
+            accessibilityLabel={t('common.backHome', lang)}
             onPress={onClose}
+            hitSlop={12}
           >
-            <Text style={dynamic.label}>{t('common.close', lang)}</Text>
+            <Text style={dynamic.title}>←</Text>
           </Pressable>
+          <Text style={dynamic.title}>{t('review.title', lang)}</Text>
         </View>
         <Text style={dynamic.subtitle}>{t('review.subtitle', lang)}</Text>
 

@@ -808,4 +808,9 @@ export function targetLabel(direction: Direction): string {
   return direction === 'en-ne' ? 'Nepali' : 'English';
 }
 
-export { formatNepaliScript, looksLikeRomanNepali, romanToDevanagari } from './romanize';
+export {
+  companionNepaliScript,
+  formatNepaliScript,
+  looksLikeRomanNepali,
+  romanToDevanagari,
+} from './romanize';

@@ -38,7 +38,8 @@ describe('adFreeBalance', () => {
       nowMs: now,
       lifetimeCredits: 4,
     });
-    expect(balance.remainingLabel).toBe('No ad-free time');
+    expect(balance.remainingLabel).toBe('');
+    expect(balance.accessibilityLabel).not.toContain('No ad-free time');
     expect(balance.totalEarnedLabel).toBe('Total earned: 4');
   });
 });

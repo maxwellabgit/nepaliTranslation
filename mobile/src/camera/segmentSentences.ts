@@ -23,6 +23,25 @@ function compactLen(text: string): number {
   return text.replace(/\s+/g, '').length;
 }
 
+/** Letters or digits. A short sign is real text; punctuation alone is not. */
+function lineHasSignal(text: string): boolean {
+  return /[\u0900-\u097F]/u.test(text) || /[A-Za-z0-9]/.test(text);
+}
+
+/**
+ * A line needs a real box on the photo. Unknown confidence is not enough.
+ * Do not reject short signs by character count.
+ */
+function lineGeometryOk(line: OcrLine, doc: OcrDocument): boolean {
+  const { x, y, width, height } = line.frame;
+  if (![x, y, width, height, doc.width, doc.height].every(Number.isFinite)) return false;
+  if (width <= 0 || height <= 0 || doc.width <= 0 || doc.height <= 0) return false;
+  if (width * height >= doc.width * doc.height * 0.9) return false;
+  const overlapW = Math.min(doc.width, x + width) - Math.max(0, x);
+  const overlapH = Math.min(doc.height, y + height) - Math.max(0, y);
+  return overlapW > 0 && overlapH > 0;
+}
+
 /**
  * Assign each OCR line to exactly one sentence by walking reading order and
  * greedily consuming lines until the sentence's compact character budget is met.
@@ -71,16 +90,17 @@ function geometryFromLines(lines: OcrLine[]): {
 /** Normalize OCR into stable sentences. Lines without punctuation stay whole. */
 export function segmentOcr(doc: OcrDocument): SegmentResult {
   const lines = sortReadingOrder(doc.blocks.flatMap((block) => block.lines));
-  const usable = lines.filter((line) => line.text.trim());
-  if (!usable.length) return { ok: false, reason: 'empty' };
+  const signaled = lines.filter((line) => lineHasSignal(line.text));
+  if (!signaled.length) return { ok: false, reason: 'empty' };
 
-  const known = usable
-    .map((line) => line.confidence)
-    .filter((c): c is number => typeof c === 'number' && Number.isFinite(c));
-  if (known.length > 0) {
-    const mean = known.reduce((sum, c) => sum + c, 0) / known.length;
-    if (mean < LOW_CONFIDENCE) return { ok: false, reason: 'low-confidence' };
-  }
+  const usable = signaled.filter((line) => {
+    if (!lineGeometryOk(line, doc)) return false;
+    if (typeof line.confidence === 'number' && Number.isFinite(line.confidence)) {
+      return line.confidence >= LOW_CONFIDENCE;
+    }
+    return true;
+  });
+  if (!usable.length) return { ok: false, reason: 'low-confidence' };
 
   const joined = usable.map((line) => line.text.trim()).join(' ');
   const language = lineLanguage(joined);

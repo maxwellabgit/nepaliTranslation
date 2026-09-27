@@ -1,7 +1,7 @@
 import { useMemo, useReducer, useState, type ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { hardStopAudio } from './hardStopAudio';
 import { t, useUiLang } from '../i18n';
@@ -22,19 +22,24 @@ type PaneProps = {
   active: boolean;
   onOpenHistory: () => void;
   onOpenSettings: () => void;
+  onOpenReview?: () => void;
   seed?: HistoryItem | null;
   seedKey?: number;
   neuralReady: boolean;
   mtWarmStatus: string | null;
+  conversation?: boolean;
+  onGoHome?: () => void;
 };
 
 type CameraPaneProps = {
   active: boolean;
+  onGoHome?: () => void;
 };
 
 type LearnPaneProps = {
   active: boolean;
   onOpenTodaysReview: () => void;
+  onGoHome?: () => void;
 };
 
 type HistoryOverlayProps = {
@@ -78,7 +83,7 @@ export function AppShell({
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
-  const [{ mode, overlay }, dispatch] = useReducer(reduceShell, INITIAL_SHELL);
+  const [{ mode, overlay, conversation }, dispatch] = useReducer(reduceShell, INITIAL_SHELL);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
   const size = useSizeClass();
@@ -105,36 +110,45 @@ export function AppShell({
         },
         tabBar: {
           flexDirection: 'row',
-          gap: 8,
-          paddingHorizontal: 12,
-          paddingTop: 10,
-          paddingBottom: 14,
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          paddingHorizontal: 16,
+          paddingTop: 8,
+          paddingBottom: 28,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: theme.colors.divider,
           backgroundColor: theme.colors.bg,
         },
         tab: {
-          flex: 1,
+          width: 84,
+          height: 84,
+          borderRadius: 42,
           alignItems: 'center',
-          paddingVertical: 10,
-          borderRadius: 16,
-          backgroundColor: theme.colors.surface,
+          justifyContent: 'center',
+          gap: 2,
+          backgroundColor: '#E15B6A',
           borderWidth: 1,
-          borderColor: theme.colors.divider,
+          borderColor: '#E15B6A',
         },
         tabOn: {
           backgroundColor: theme.colors.crimson,
           borderColor: theme.colors.crimson,
         },
         tabLabel: {
-          fontSize: 13,
+          fontSize: 11,
           fontWeight: '700',
-          color: theme.colors.text,
+          textAlign: 'center',
+          color: theme.colors.onPrimary,
         },
         tabLabelOn: { color: theme.colors.onPrimary },
       }),
     [theme],
   );
+
+  const goHome = () => {
+    onHardStop();
+    dispatch({ type: 'exit_conversation' });
+  };
 
   const switchMode = (next: AppMode) => {
     if (next === mode) return;
@@ -142,12 +156,18 @@ export function AppShell({
     dispatch({ type: 'switch_mode', mode: next });
   };
 
-  const inactiveIcon = theme.colors.text;
+  const insets = useSafeAreaInsets();
+  // Web preview reports no notch. Keep at least an iPhone status-bar gap
+  // so the clock and battery are not covered.
+  const topInset = Math.max(insets.top, 47);
+
+  const inactiveIcon = theme.colors.onPrimary;
   const activeIcon = theme.colors.onPrimary;
 
   return (
     <SafeAreaView
-      style={styles.root}
+      edges={['bottom', 'left', 'right']}
+      style={[styles.root, { paddingTop: topInset }]}
       testID="app-shell"
       accessibilityLabel={`app-shell-${theme.scheme}`}
     >
@@ -185,11 +205,17 @@ export function AppShell({
               onHardStop();
               dispatch({ type: 'open_overlay', overlay: 'settings' });
             }}
+            onOpenReview={() => {
+              onHardStop();
+              dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
+            }}
+            conversation={conversation}
+            onGoHome={goHome}
           />
         </View>
         {mode === 'camera' ? (
           <View style={styles.pane} testID="pane-camera">
-            <CameraPane active />
+            <CameraPane active onGoHome={goHome} />
           </View>
         ) : null}
         <View
@@ -203,6 +229,7 @@ export function AppShell({
         >
           <LearnPane
             active={mode === 'learn'}
+            onGoHome={goHome}
             onOpenTodaysReview={() => {
               onHardStop();
               dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
@@ -213,20 +240,48 @@ export function AppShell({
 
       <View style={styles.tabBar} testID="tab-bar">
         <Pressable
-          style={[styles.tab, mode === 'translate' && styles.tabOn]}
-          onPress={() => switchMode('translate')}
+          style={[styles.tab, conversation && mode === 'translate' && styles.tabOn]}
+          onPress={() => {
+            onHardStop();
+            dispatch(
+              conversation && mode === 'translate'
+                ? { type: 'exit_conversation' }
+                : { type: 'enter_conversation' },
+            );
+          }}
           accessibilityRole="tab"
-          accessibilityState={{ selected: mode === 'translate' }}
-          accessibilityLabel={t('tabs.translateA11y', lang)}
+          accessibilityState={{ selected: conversation && mode === 'translate' }}
+          accessibilityLabel={t(
+            conversation && mode === 'translate'
+              ? 'tabs.translateA11y'
+              : 'tabs.conversationA11y',
+            lang,
+          )}
           testID="tab-translate"
         >
           <Ionicons
-            name="language-outline"
+            name={
+              conversation && mode === 'translate'
+                ? 'language-outline'
+                : 'swap-horizontal'
+            }
             size={18}
-            color={mode === 'translate' ? activeIcon : inactiveIcon}
+            color={
+              conversation && mode === 'translate' ? activeIcon : inactiveIcon
+            }
           />
-          <Text style={[styles.tabLabel, mode === 'translate' && styles.tabLabelOn]}>
-            {t('tabs.translate', lang)}
+          <Text
+            style={[
+              styles.tabLabel,
+              conversation && mode === 'translate' && styles.tabLabelOn,
+            ]}
+          >
+            {t(
+              conversation && mode === 'translate'
+                ? 'tabs.translate'
+                : 'tabs.conversation',
+              lang,
+            )}
           </Text>
         </Pressable>
         <Pressable
@@ -269,7 +324,7 @@ export function AppShell({
         <View style={styles.overlay} testID={`overlay-${overlay}`}>
           {overlay === 'history' ? (
             <HistoryOverlay
-              onClose={() => dispatch({ type: 'close_overlay' })}
+              onClose={goHome}
               onSelect={(item) => {
                 onHardStop();
                 setSeed(item);
@@ -279,10 +334,7 @@ export function AppShell({
             />
           ) : overlay === 'settings' ? (
             <SettingsOverlay
-              onClose={() => {
-                onHardStop();
-                dispatch({ type: 'close_overlay' });
-              }}
+              onClose={goHome}
               onOpenTodaysReview={() => {
                 onHardStop();
                 dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
@@ -290,12 +342,7 @@ export function AppShell({
               neuralReady={neuralReady}
             />
           ) : overlay === TODAYS_REVIEW_ROUTE ? (
-            <TodaysReviewOverlay
-              onClose={() => {
-                onHardStop();
-                dispatch({ type: 'close_overlay' });
-              }}
-            />
+            <TodaysReviewOverlay onClose={goHome} />
           ) : null}
         </View>
       ) : null}

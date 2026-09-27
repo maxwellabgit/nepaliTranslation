@@ -151,9 +151,10 @@ describe('NepTranslateApp production composition', () => {
     await renderApp(createTestServices({ offline: true }), runtime);
 
     await waitFor(() => {
-      expect(screen.getByText(/speech is unavailable/i)).toBeTruthy();
+      expect(screen.queryByText(/speech is unavailable/i)).toBeNull();
+      expect(screen.queryByText(/you can still type/i)).toBeNull();
     });
-    expect(screen.getByTestId('speak-hero').props.accessibilityState?.disabled).toBe(
+    expect(screen.getByTestId('speak-hero').props.accessibilityState?.disabled).not.toBe(
       true,
     );
 
@@ -198,17 +199,17 @@ describe('NepTranslateApp production composition', () => {
   it('keeps a translation, moves Speak to the bottom, and returns to English after one pass each', async () => {
     await renderApp();
     expect(screen.getByTestId('speak-hero')).toBeTruthy();
-    expect(screen.getByText('बोल्नुहोस्')).toBeTruthy();
     expect(screen.queryByTestId('speak-dock')).toBeNull();
-    expect(screen.queryByTestId('tab-conversation')).toBeNull();
+    expect(screen.getByLabelText('Conversation tab')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('tab-translate'));
+    expect(screen.getByLabelText('Translate tab')).toBeTruthy();
 
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
     await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
     await waitFor(() => {
       expect(screen.getByTestId('translate-output')).toBeTruthy();
     });
-    expect(screen.queryByTestId('speak-hero')).toBeNull();
-    expect(screen.getByTestId('speak-dock')).toBeTruthy();
+    expect(screen.getByTestId('speak-hero')).toBeTruthy();
 
     await fireEvent.press(screen.getByTestId('pass-phone'));
     expect(screen.getByLabelText('पास')).toBeTruthy();
@@ -351,8 +352,8 @@ describe('NepTranslateApp production composition', () => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
-    expect(screen.getByTestId('learn-earn-rewards')).toBeTruthy();
-    expect(screen.getByLabelText('Translate tab')).toBeTruthy();
+    expect(screen.queryByTestId('learn-earn-rewards')).toBeNull();
+    expect(screen.getByLabelText('Conversation tab')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('tab-translate'));
     await fireEvent.press(screen.getByLabelText('History'));
     expect(screen.getByTestId('overlay-history')).toBeTruthy();

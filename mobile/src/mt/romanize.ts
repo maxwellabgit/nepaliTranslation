@@ -329,9 +329,22 @@ export function formatNepaliScript(
   script: 'deva' | 'roman',
 ): string {
   if (!text) return '';
-  if (script === 'deva') return text;
-  if (/[\u0900-\u097F]/.test(text)) return devanagariToRoman(text);
+  const hasDeva = /[\u0900-\u097F]/.test(text);
+  if (script === 'roman') return hasDeva ? devanagariToRoman(text) : text;
+  if (hasDeva) return text;
+  if (looksLikeRomanNepali(text)) return romanToDevanagari(text);
   return text;
+}
+
+/** Nepali in the script the gold toggle did not select. Empty when there is nothing else to show. */
+export function companionNepaliScript(
+  text: string,
+  script: 'deva' | 'roman',
+): string {
+  const selected = formatNepaliScript(text, script);
+  const other = formatNepaliScript(text, script === 'deva' ? 'roman' : 'deva');
+  if (!other.trim() || other === selected) return '';
+  return other;
 }
 
 export { normKey };

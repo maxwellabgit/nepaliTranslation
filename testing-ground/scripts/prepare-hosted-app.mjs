@@ -72,9 +72,26 @@ if (!fs.existsSync(srcDist) || !fs.existsSync(path.join(srcDist, 'index.html')))
   process.exit(1);
 }
 
+function rewriteHostedAssetPaths(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      rewriteHostedAssetPaths(full);
+      continue;
+    }
+    if (!/\.(js|css|html|json)$/i.test(entry.name)) continue;
+    const text = fs.readFileSync(full, 'utf8');
+    const next = text
+      .replaceAll('"/assets/', '"/hosted-app/assets/')
+      .replaceAll("'/assets/", "'/hosted-app/assets/");
+    if (next !== text) fs.writeFileSync(full, next, 'utf8');
+  }
+}
+
 rmrf(dest);
 copyDir(srcDist, dest);
 const indexPath = path.join(dest, 'index.html');
 const rewritten = rewriteIndex(fs.readFileSync(indexPath, 'utf8'));
 fs.writeFileSync(indexPath, rewritten, 'utf8');
+rewriteHostedAssetPaths(dest);
 console.log(`[prepare-hosted-app] Wrote ${dest}`);

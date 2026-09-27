@@ -72,25 +72,11 @@ export function useTranslationSession({ active, seed }: Options) {
     void getSttSupport().then((support) => {
       if (cancelled) return;
       sttSupportRef.current = support;
-      const side = stateRef.current.activeSide;
-      if (!support[side]) {
-        dispatchPhase({ type: 'MARK_UNAVAILABLE', reasonCode: 'stt_unsupported' });
-      }
     });
     return () => {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    const support = sttSupportRef.current;
-    if (!support) return;
-    if (!support[state.activeSide]) {
-      dispatchPhase({ type: 'MARK_UNAVAILABLE', reasonCode: 'stt_unsupported' });
-    } else if (uiRef.current.phase === 'unavailable') {
-      dispatchPhase({ type: 'RESET' });
-    }
-  }, [state.activeSide]);
 
   useEffect(() => {
     if (active) return;
@@ -175,12 +161,16 @@ export function useTranslationSession({ active, seed }: Options) {
       };
       dispatch({ type: 'commitTurn', turn, keepDraft: false });
       dispatchPhase({ type: 'TRANSLATE_SUCCEEDED' });
+      runtime.speechSynthesis.stop();
+      runtime.speechSynthesis.speak(turn.translation, {
+        language: current.activeSide === 'en' ? 'ne-NP' : 'en-US',
+      });
       await remember(turn);
     } catch {
       dispatch({ type: 'setTranslating', translating: false });
       dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'translate_error' });
     }
-  }, [remember, translateSide, runtime.ids]);
+  }, [remember, translateSide, runtime.ids, runtime.speechSynthesis]);
 
   useEffect(() => {
     return runtime.speechRecognition.subscribe((event) => {
@@ -271,15 +261,14 @@ export function useTranslationSession({ active, seed }: Options) {
     }
     if (stateRef.current.translating) return;
 
+    dispatchPhase({ type: 'SPEAK' });
     const support = sttSupportRef.current ?? (await getSttSupport());
     sttSupportRef.current = support;
-    const side = stateRef.current.activeSide;
-    if (!support[side]) {
-      dispatchPhase({ type: 'MARK_UNAVAILABLE', reasonCode: 'stt_unsupported' });
+    if (!activeRef.current) return;
+    if (!support[stateRef.current.activeSide]) {
+      dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'stt_unavailable' });
       return;
     }
-
-    dispatchPhase({ type: 'SPEAK' });
     const perm = await runtime.speechRecognition.requestPermission();
     if (!activeRef.current) return;
     if (perm !== 'granted') {

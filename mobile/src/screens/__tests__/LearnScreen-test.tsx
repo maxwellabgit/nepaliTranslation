@@ -28,15 +28,15 @@ describe('LearnScreen', () => {
     (Speech.speak as jest.Mock).mockClear();
   });
 
-  it('shows earn rewards and the alphabet immediately, with no account gate', async () => {
+  it('shows the alphabet immediately, with no account gate', async () => {
     await act(async () => {
       renderLearn();
     });
     await waitFor(() => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
-    expect(screen.getByTestId('learn-earn-rewards')).toBeTruthy();
-    expect(screen.getByText("Today's 10")).toBeTruthy();
+    expect(screen.queryByTestId('learn-earn-rewards')).toBeNull();
+    expect(screen.queryByText("Today's 10")).toBeNull();
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     expect(screen.getByTestId('learn-roman-a').props.children).toBe('a');
     expect(screen.getByTestId('learn-roman-ta').props.children).toBe('ṭa');

@@ -11,6 +11,7 @@ export const ne: Record<MessageKey, string> = {
   'common.retry': 'फेरि प्रयास',
   'common.dismiss': 'हटाउनुहोस्',
   'common.close': 'बन्द',
+  'common.backHome': 'गृहपृष्ठमा फर्क',
   'common.offline': 'तिमी अफलाइन छौ',
   'common.offlineDetail':
     'यस यन्त्रमा अनुवाद अझै चल्छ। सिंक र पुरस्कारका लागि नेटवर्क चाहिन्छ।',
@@ -21,11 +22,18 @@ export const ne: Record<MessageKey, string> = {
   'common.copy': 'कपी',
 
   'tabs.translate': 'अनुवाद',
+  'tabs.conversation': 'कुराकानी',
   'tabs.camera': 'क्यामेरा',
   'tabs.learn': 'सिकाइ',
   'tabs.translateA11y': 'अनुवाद ट्याब',
+  'tabs.conversationA11y': 'कुराकानी ट्याब',
   'tabs.cameraA11y': 'क्यामेरा ट्याब',
   'tabs.learnA11y': 'सिकाइ ट्याब',
+
+  'conversation.title': 'कुराकानी',
+  'conversation.hint': 'बोल, अनि फोन पास गर।',
+  'conversation.turnEn': 'अंग्रेजी पालो',
+  'conversation.turnNe': 'नेपाली पालो',
 
   'translate.historyA11y': 'इतिहास',
   'translate.settingsA11y': 'सेटिङ',
@@ -69,16 +77,11 @@ export const ne: Record<MessageKey, string> = {
   'translate.status.translating': 'अनुवाद हुँदै…',
   'translate.status.micDenied':
     'माइक्रोफोन अनुमति अस्वीकृत। टाइप गर, वा सेटिङमा अनुमति खोल।',
-  'translate.status.emptyResult':
-    'त्यस पाठको अनुवाद भएन। अर्को शब्द प्रयास गर।',
-  'translate.status.sttFailed':
-    'बोली पहिचान असफल। टाइप गर वा फेरि प्रयास गर।',
-  'translate.status.translateFailed':
-    'अनुवाद असफल। फेरि प्रयास गर।',
-  'translate.status.sttUnsupported':
-    'यस भाषाका लागि यन्त्रमै बोली उपलब्ध छैन। तिमी अझै टाइप गर्न सक्छौ।',
-  'translate.status.speechUnavailable':
-    'यस यन्त्रमा बोली उपलब्ध छैन। तिमी अझै टाइप गर्न सक्छौ।',
+  'translate.status.emptyResult': 'अनुवाद भएन।',
+  'translate.status.sttFailed': 'बोली असफल।',
+  'translate.status.translateFailed': 'अनुवाद असफल।',
+  'translate.status.sttUnsupported': 'बोली असफल।',
+  'translate.status.speechUnavailable': 'बोली असफल।',
   'translate.mtWarmFailed': 'मोडेल उपलब्ध छैन · वाक्य प्रयोग हुँदै',
 
   'camera.title': 'क्यामेरा',
@@ -102,8 +105,8 @@ export const ne: Record<MessageKey, string> = {
     'पाठ भेटियो तर अनुवाद असफल। फेरि खिच्नुहोस् वा प्रयास गर।',
   'camera.error.model':
     'यन्त्रमै अनुवाद तयार छैन। केही बेरमा फेरि प्रयास गर।',
-  'camera.error.noText': 'पाठ भेटिएन। लेखाइ नजिकबाट फेरि प्रयास गर।',
-  'camera.error.lowConfidence': 'पाठ स्पष्ट भएन, अनुवाद गर्न सकिएन।',
+  'camera.error.noText': 'पाठ भेटिएन',
+  'camera.error.lowConfidence': 'पाठ पढ्न नसकिने गरी अस्पष्ट थियो',
   'camera.error.generic': 'यस तस्बिरमा समस्या भयो। फेरि प्रयास गर।',
   'camera.passagesFound': '{count} खण्ड भेटियो',
   'camera.sentenceSourceA11y': 'वाक्य {n} स्रोत',

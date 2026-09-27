@@ -26,11 +26,10 @@ export function adFreeBalance(input: {
   const totalEarnedLabel = `Total earned: ${total}`;
   const until = input.earnedUntilMs;
   if (until == null || !Number.isFinite(until) || until <= input.nowMs) {
-    const remainingLabel = 'No ad-free time';
     return {
-      remainingLabel,
+      remainingLabel: '',
       totalEarnedLabel,
-      accessibilityLabel: `${remainingLabel}. ${totalEarnedLabel}.`,
+      accessibilityLabel: `${totalEarnedLabel}.`,
     };
   }
   const minutes = Math.max(1, Math.ceil((until - input.nowMs) / 60_000));

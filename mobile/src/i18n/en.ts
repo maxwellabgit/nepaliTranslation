@@ -7,6 +7,7 @@ export const en = {
   'common.retry': 'Retry',
   'common.dismiss': 'Dismiss',
   'common.close': 'Close',
+  'common.backHome': 'Back to home',
   'common.offline': 'You are offline',
   'common.offlineDetail':
     'Core translation still works on this device. Sync and rewards need a network.',
@@ -17,11 +18,18 @@ export const en = {
   'common.copy': 'Copy',
 
   'tabs.translate': 'Translate',
+  'tabs.conversation': 'Conversation',
   'tabs.camera': 'Camera',
   'tabs.learn': 'Learn',
   'tabs.translateA11y': 'Translate tab',
+  'tabs.conversationA11y': 'Conversation tab',
   'tabs.cameraA11y': 'Camera tab',
   'tabs.learnA11y': 'Learn tab',
+
+  'conversation.title': 'Conversation',
+  'conversation.hint': 'Speak, then pass the phone.',
+  'conversation.turnEn': 'English turn',
+  'conversation.turnNe': 'Nepali turn',
 
   'translate.historyA11y': 'History',
   'translate.settingsA11y': 'Settings',
@@ -59,22 +67,16 @@ export const en = {
   'translate.markIncorrect': 'Mark incorrect',
   'translate.markIncorrectA11y': 'Mark incorrect',
   'translate.phrasebookHint': ' Offline phrasebook still works.',
-  'translate.status.needMic': 'Need microphone access to speak.',
+  'translate.status.needMic': 'Microphone…',
   'translate.status.listening': 'Listening…',
-  'translate.status.finalizing': 'Finishing speech…',
-  'translate.status.translating': 'Translating…',
-  'translate.status.micDenied':
-    'Microphone permission denied. Type instead, or enable access in Settings.',
-  'translate.status.emptyResult':
-    'No translation for that text. Try different wording.',
-  'translate.status.sttFailed':
-    'Speech recognition failed. Type instead or try again.',
-  'translate.status.translateFailed':
-    'Translation failed. Retry the turn or try again.',
-  'translate.status.sttUnsupported':
-    'On-device speech is unavailable for this language. You can still type.',
-  'translate.status.speechUnavailable':
-    'Speech is unavailable on this device. You can still type.',
+  'translate.status.finalizing': 'Working…',
+  'translate.status.translating': 'Working…',
+  'translate.status.micDenied': 'Microphone blocked.',
+  'translate.status.emptyResult': 'No translation.',
+  'translate.status.sttFailed': 'Speech failed.',
+  'translate.status.translateFailed': 'Translation failed.',
+  'translate.status.sttUnsupported': 'Speech failed.',
+  'translate.status.speechUnavailable': 'Speech failed.',
   'translate.mtWarmFailed': 'Model unavailable · using phrases',
 
   'camera.title': 'Camera',
@@ -98,8 +100,8 @@ export const en = {
     'Text was found, but translation failed. Retake or try again.',
   'camera.error.model':
     'On-device translation is not ready. Try again in a moment.',
-  'camera.error.noText': 'No text found. Try again closer to the writing.',
-  'camera.error.lowConfidence': 'The text was too unclear to translate.',
+  'camera.error.noText': 'No text detected',
+  'camera.error.lowConfidence': 'Text was too unclear to read',
   'camera.error.generic': 'Something went wrong with this photo. Try again.',
   'camera.passagesFound': '{count} passages found',
   'camera.sentenceSourceA11y': 'Sentence {n} source',

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { t, useUiLang, type UiLang } from '../i18n';
 import { MIN_TOUCH } from '../layout/sizeClass';
@@ -7,7 +8,7 @@ import { useTheme } from '../theme';
 import { buildCorrelation, previewText } from '../camera/correlate';
 import { deleteCapture } from '../camera/deleteCapture';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
-import { mapSentenceFramesToView } from '../camera/overlayGeometry';
+import { mapLineFramesToView } from '../camera/overlayGeometry';
 import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
@@ -25,6 +26,7 @@ import {
 
 type Props = {
   active: boolean;
+  onGoHome?: () => void;
 };
 
 function cameraErrorCopy(reason: string | null, lang: UiLang): string {
@@ -46,7 +48,7 @@ function cameraErrorCopy(reason: string | null, lang: UiLang): string {
   }
 }
 
-export function CameraScreen({ active }: Props) {
+export function CameraScreen({ active, onGoHome }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const runtime = useRuntime();
@@ -76,7 +78,15 @@ export function CameraScreen({ active }: Props) {
       StyleSheet.create({
         // Capture chrome stays dark in both schemes; brand accents follow theme.
         root: { flex: 1, backgroundColor: '#1A1410' },
-        header: { padding: 16, alignItems: 'center', gap: 8 },
+        header: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: 8,
+          paddingTop: 8,
+          paddingBottom: 4,
+        },
+        headerSide: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+        headerCenter: { flex: 1, alignItems: 'center', gap: 4 },
         title: { color: theme.colors.onPrimary, fontSize: 18, fontWeight: '700' },
         direction: { color: theme.colors.onPrimary, fontWeight: '700' },
         center: { padding: 24, gap: 16 },
@@ -241,13 +251,14 @@ export function CameraScreen({ active }: Props) {
     dispatch({ type: 'CAPTURED' });
     setCaptureUri(uri);
     captureUriRef.current = uri;
-    const preview = await readCapturePreviewUri(uri);
-    if (gen !== requestGenRef.current) return;
-    setPreviewUri(preview);
+    const previewTask = readCapturePreviewUri(uri);
     dispatch({ type: 'RECOGNIZE_STARTED' });
     try {
       const doc = await runtime.ocr.recognize(uri);
       if (gen !== requestGenRef.current) return;
+      const preview = await previewTask;
+      if (gen !== requestGenRef.current) return;
+      setPreviewUri(preview);
       setImageSize({ width: doc.width, height: doc.height });
       setRotation(doc.rotation ?? 0);
 
@@ -363,6 +374,16 @@ export function CameraScreen({ active }: Props) {
   return (
     <View style={styles.root} testID="camera-screen">
       <View style={styles.header}>
+        <Pressable
+          onPress={onGoHome}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.backHome', lang)}
+          testID="back-home"
+          style={styles.headerSide}
+        >
+          <Ionicons name="arrow-back" size={24} color={theme.colors.onPrimary} />
+        </Pressable>
+        <View style={styles.headerCenter}>
         <Text style={styles.title}>{t('camera.title', lang)}</Text>
         <Pressable
           onPress={() => setDirection((d) => (d === 'ne-en' ? 'en-ne' : 'ne-en'))}
@@ -376,6 +397,8 @@ export function CameraScreen({ active }: Props) {
               : t('camera.directionEnNe', lang)}
           </Text>
         </Pressable>
+        </View>
+        <View style={styles.headerSide} />
       </View>
 
       {!granted && !showResult ? (
@@ -471,36 +494,42 @@ export function CameraScreen({ active }: Props) {
             ) : null}
             {sentences.map((sentence, index) => {
               const sentenceIndex = index + 1;
-              const mapped = mapSentenceFramesToView(
+              const lines = mapLineFramesToView(
                 sentence.frames,
                 imageSize,
                 rotation,
                 viewSize,
               );
-              if (!mapped) return null;
-              return (
+              return lines.map((mapped, lineIndex) => (
                 <Pressable
-                  key={sentence.id}
-                  testID={`camera-overlay-${sentence.id}`}
+                  key={`${sentence.id}-${lineIndex}`}
+                  testID={
+                    lineIndex === 0
+                      ? `camera-overlay-${sentence.id}`
+                      : `camera-overlay-${sentence.id}-${lineIndex}`
+                  }
                   accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
                     n: sentenceIndex,
                   })}
+                  hitSlop={16}
                   onPress={() => setSelected(sentence.id)}
                   style={[
                     styles.overlay,
                     {
                       left: mapped.x,
                       top: mapped.y,
-                      width: Math.max(mapped.width, 8),
-                      height: Math.max(mapped.height, 8),
+                      width: mapped.width,
+                      height: mapped.height,
                       backgroundColor: sentence.color,
                       opacity: selected === sentence.id ? 0.55 : 0.35,
                     },
                   ]}
                 >
-                  <Text style={styles.overlayIndex}>{sentenceIndex}</Text>
+                  {lineIndex === 0 ? (
+                    <Text style={styles.overlayIndex}>{sentenceIndex}</Text>
+                  ) : null}
                 </Pressable>
-              );
+              ));
             })}
             <Text style={styles.found}>
               {t('camera.passagesFound', lang, { count: sentences.length })}

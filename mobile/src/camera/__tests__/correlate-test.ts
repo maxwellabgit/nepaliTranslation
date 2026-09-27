@@ -4,6 +4,7 @@ import { dedupeOcrDocument, frameIoU, normalizeOcrText } from '../dedupeOcr';
 import { colorForSentence } from '../sentenceColors';
 import {
   mapFrameToView,
+  mapLineFramesToView,
   mapSentenceFramesToView,
   orientedImageSize,
   rotatePoint,
@@ -217,6 +218,29 @@ describe('camera sentence correlation', () => {
       ],
     });
     expect(unknown.ok).toBe(true);
+
+    const noBox = segmentOcr({
+      width: 100,
+      height: 100,
+      blocks: [
+        {
+          text: 'speck',
+          language: 'en',
+          confidence: null,
+          frame: { x: 0, y: 0, width: 0, height: 0 },
+          cornerPoints: [],
+          lines: [
+            {
+              text: 'speck',
+              confidence: null,
+              frame: { x: 0, y: 0, width: 0, height: 0 },
+              cornerPoints: [],
+            },
+          ],
+        },
+      ],
+    });
+    expect(noBox).toEqual({ ok: false, reason: 'low-confidence' });
   });
 
   it('deletes captures on retake, exit, and success only', () => {

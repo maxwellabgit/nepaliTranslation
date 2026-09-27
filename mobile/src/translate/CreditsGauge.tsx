@@ -1,11 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AppState, StyleSheet, Text, View } from 'react-native';
+import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
 import { useTheme } from '../theme';
-import { adFreeBalance } from './creditProgress';
+import { t, useUiLang } from '../i18n';
+import { adFreeBalance, creditProgress } from './creditProgress';
 
-export function CreditsGauge() {
+type Props = {
+  onPress?: () => void;
+  /** Fits in the header between the app icon and Settings. */
+  compact?: boolean;
+};
+
+export function CreditsGauge({ onPress, compact = false }: Props) {
   const theme = useTheme();
+  const lang = useUiLang();
   const entitlement = useEntitlementOptional();
   const [nowMs, setNowMs] = useState(() => Date.now());
   useEffect(() => {
@@ -19,43 +28,126 @@ export function CreditsGauge() {
       subscription.remove();
     };
   }, []);
+  const lifetimeCredits = entitlement?.lifetimeCredits ?? 0;
   const balance = adFreeBalance({
     earnedUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
     nowMs,
-    lifetimeCredits: entitlement?.lifetimeCredits ?? 0,
+    lifetimeCredits,
   });
+  const progress = creditProgress(lifetimeCredits);
+  const fill = progress.credits === 0 ? 0 : progress.percent;
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        wrap: { paddingHorizontal: 20, gap: 2 },
+        wrap: compact
+          ? {
+              flex: 1,
+              marginHorizontal: 6,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              gap: 3,
+              borderRadius: 12,
+              backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
+            }
+          : {
+              marginHorizontal: 16,
+              marginTop: 4,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              gap: 8,
+              borderRadius: 16,
+              backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+            },
         balance: {
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: '700',
           color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
         },
+        gauge: { gap: 8 },
+        gaugeHeader: {
+          flexDirection: 'row',
+          alignItems: 'baseline',
+          justifyContent: compact ? 'center' : 'space-between',
+        },
+        compactRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 6,
+        },
+        trackFlex: { flex: 1 },
         total: {
-          fontSize: 12,
-          color: theme.colors.textSecondary,
+          fontSize: compact ? 11 : 16,
+          fontWeight: '700',
+          color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
+        },
+        totalCount: {
+          fontSize: compact ? 13 : 22,
+          fontWeight: '800',
+          color: theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12',
+        },
+        track: {
+          height: compact ? 8 : 16,
+          borderRadius: 8,
+          overflow: 'hidden',
+          backgroundColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
+        },
+        fill: {
+          height: '100%',
+          borderRadius: 5,
+          backgroundColor: theme.scheme === 'dark' ? '#F0C14A' : '#FFF6D8',
         },
       }),
     [theme],
   );
 
   return (
-    <View
+    <Pressable
       style={styles.wrap}
       testID="credits-gauge"
-      accessible
-      accessibilityRole="text"
-      accessibilityLabel={balance.accessibilityLabel}
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${balance.accessibilityLabel} ${t('learn.earnRewardsA11y', lang)}`}
     >
-      <Text style={styles.balance} testID="credits-gauge-label">
-        {balance.remainingLabel}
-      </Text>
-      <Text style={styles.total} testID="credits-gauge-total">
-        {balance.totalEarnedLabel}
-      </Text>
-    </View>
+      {balance.remainingLabel ? (
+        <Text style={styles.balance} testID="credits-gauge-label">
+          {balance.remainingLabel}
+        </Text>
+      ) : null}
+      {compact ? (
+        <View style={styles.compactRow} testID="credits-gauge-total">
+          <FontAwesome5
+            name="coins"
+            size={14}
+            color={theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12'}
+          />
+          <Text style={styles.totalCount}>{progress.credits}</Text>
+          <View
+            style={[styles.track, styles.trackFlex]}
+            accessibilityRole="progressbar"
+            accessibilityValue={{ min: 0, max: 100, now: fill }}
+          >
+            <View style={[styles.fill, { width: `${fill}%` }]} />
+          </View>
+        </View>
+      ) : (
+        <View style={styles.gauge} testID="credits-gauge-total">
+          <View style={styles.gaugeHeader}>
+            <Text style={styles.total}>Total earned</Text>
+            <Text style={styles.totalCount}>{progress.credits}</Text>
+          </View>
+          <View
+            style={styles.track}
+            accessibilityRole="progressbar"
+            accessibilityValue={{ min: 0, max: 100, now: fill }}
+          >
+            <View style={[styles.fill, { width: `${fill}%` }]} />
+          </View>
+        </View>
+      )}
+    </Pressable>
   );
 }
