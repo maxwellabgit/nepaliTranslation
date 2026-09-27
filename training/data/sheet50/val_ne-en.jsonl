@@ -1,0 +1,52 @@
+{"src": "<formal> <deva> सर, तपाईँलाई केही चिया चाहिएको छ?", "tgt": "Sir, would you like some tea?", "english": "Sir, would you like some tea?", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> सर, तिमीलाई केही चिया चाहिएको छ?", "tgt": "Sir, would you like some tea?", "english": "Sir, would you like some tea?", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> sara, tapaaiinlaaii kehii chiyaa chaahieko chha?", "tgt": "Sir, would you like some tea?", "english": "Sir, would you like some tea?", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> sara, timiilaaii kehii chiyaa chaahieko chha?", "tgt": "Sir, would you like some tea?", "english": "Sir, would you like some tea?", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> के तपाईँ मलाई यो फारममा मद्दत गर्न सक्नुहुन्छ?", "tgt": "Would you be able to help me with this form?", "english": "Would you be able to help me with this form?", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> के तिमी मलाई यो फारममा मद्दत गर्न सक्छौ?", "tgt": "Would you be able to help me with this form?", "english": "Would you be able to help me with this form?", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> ke tapaaiin malaaii yo phaaramamaa maddata garna saknuhunchha?", "tgt": "Would you be able to help me with this form?", "english": "Would you be able to help me with this form?", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> ke timii malaaii yo phaaramamaa maddata garna sakchhau?", "tgt": "Would you be able to help me with this form?", "english": "Would you be able to help me with this form?", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> यदि मैले सोध्न सक्छु भने तपाईँ कहाँ काम गर्नुहुन्छ?", "tgt": "Where do you work, if I may ask?", "english": "Where do you work, if I may ask?", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> यदि मैले सोध्न सक्छु भने तिमी कहाँ काम गर्नुहुन्छ?", "tgt": "Where do you work, if I may ask?", "english": "Where do you work, if I may ask?", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> yadi maile sodhna sakchhu bhane tapaaiin kahaan kaama garnuhunchha?", "tgt": "Where do you work, if I may ask?", "english": "Where do you work, if I may ask?", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> yadi maile sodhna sakchhu bhane timii kahaan kaama garnuhunchha?", "tgt": "Where do you work, if I may ask?", "english": "Where do you work, if I may ask?", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> दर्शन र मिसन", "tgt": "Vision and Mission", "english": "Vision and Mission", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> दर्शन र मिसन", "tgt": "Vision and Mission", "english": "Vision and Mission", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> darshana ra misana", "tgt": "Vision and Mission", "english": "Vision and Mission", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> darshana ra misana", "tgt": "Vision and Mission", "english": "Vision and Mission", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> संविधान", "tgt": "Constitution", "english": "Constitution", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> संविधान", "tgt": "Constitution", "english": "Constitution", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> snwidhaana", "tgt": "Constitution", "english": "Constitution", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> snwidhaana", "tgt": "Constitution", "english": "Constitution", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> खारेज गरिएका कानुनहरू", "tgt": "Repealed Laws", "english": "Repealed Laws", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> खारेज गरिएका कानुनहरू", "tgt": "Repealed Laws", "english": "Repealed Laws", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> khaareja gariekaa kaanunaharuu", "tgt": "Repealed Laws", "english": "Repealed Laws", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> khaareja gariekaa kaanunaharuu", "tgt": "Repealed Laws", "english": "Repealed Laws", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> रद्द गर्नुहोस्", "tgt": "Cancel", "english": "Cancel", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> रद्द गर", "tgt": "Cancel", "english": "Cancel", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> radda garnuhos", "tgt": "Cancel", "english": "Cancel", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> radda gara", "tgt": "Cancel", "english": "Cancel", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> कति टाढामा छ?", "tgt": "How far is it?", "english": "How far is it?", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> कति टाढामा छ?", "tgt": "How far is it?", "english": "How far is it?", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> kati taadhaamaa chha?", "tgt": "How far is it?", "english": "How far is it?", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> kati taadhaamaa chha?", "tgt": "How far is it?", "english": "How far is it?", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> बायाँतिर फर्कनुहोस्।", "tgt": "Turn left.", "english": "Turn left.", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> बायाँतिर फर्कनुहोस्।", "tgt": "Turn left.", "english": "Turn left.", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> baayaantira pharkanuhos.", "tgt": "Turn left.", "english": "Turn left.", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> baayaantira pharkanuhos.", "tgt": "Turn left.", "english": "Turn left.", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> मलाई एलर्जी छ।", "tgt": "I have an allergy.", "english": "I have an allergy.", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> मलाई एलर्जी छ।", "tgt": "I have an allergy.", "english": "I have an allergy.", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> malaaii elarjii chha.", "tgt": "I have an allergy.", "english": "I have an allergy.", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> malaaii elarjii chha.", "tgt": "I have an allergy.", "english": "I have an allergy.", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> कहाँ दुखाइ हुन्छ?", "tgt": "Where does it hurt?", "english": "Where does it hurt?", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> कहाँ दुखाइ हुन्छ?", "tgt": "Where does it hurt?", "english": "Where does it hurt?", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> kahaan dukhaai hunchha?", "tgt": "Where does it hurt?", "english": "Where does it hurt?", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> kahaan dukhaai hunchha?", "tgt": "Where does it hurt?", "english": "Where does it hurt?", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> म नगदमा भुक्तानी गर्नेछु।", "tgt": "I will pay in cash.", "english": "I will pay in cash.", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> म नगदमा भुक्तानी गर्नेछु।", "tgt": "I will pay in cash.", "english": "I will pay in cash.", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> ma nagadamaa bhuktaanii garnechhu.", "tgt": "I will pay in cash.", "english": "I will pay in cash.", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> ma nagadamaa bhuktaanii garnechhu.", "tgt": "I will pay in cash.", "english": "I will pay in cash.", "formality": "informal", "script": "roman", "direction": "ne-en"}
+{"src": "<formal> <deva> मलाई छ बजे उठाउनुहोस्।", "tgt": "Wake me up at six.", "english": "Wake me up at six.", "formality": "formal", "script": "deva", "direction": "ne-en"}
+{"src": "<informal> <deva> मलाई छ बजे उठाउनुहोस्।", "tgt": "Wake me up at six.", "english": "Wake me up at six.", "formality": "informal", "script": "deva", "direction": "ne-en"}
+{"src": "<formal> <roman> malaaii chha baje uthaaunuhos.", "tgt": "Wake me up at six.", "english": "Wake me up at six.", "formality": "formal", "script": "roman", "direction": "ne-en"}
+{"src": "<informal> <roman> malaaii chha baje uthaaunuhos.", "tgt": "Wake me up at six.", "english": "Wake me up at six.", "formality": "informal", "script": "roman", "direction": "ne-en"}

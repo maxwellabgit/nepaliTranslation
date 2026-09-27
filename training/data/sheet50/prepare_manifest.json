@@ -1,0 +1,60 @@
+{
+  "source_sheet": "C:\\Users\\maxwe\\Downloads\\model_fill_suggestions.csv",
+  "word_cap": 50,
+  "input_rows": 2700,
+  "kept_rows": 149,
+  "dropped": {
+    "gold_or_benchmark": 2541,
+    "over_50_words": 7,
+    "gold_blocklist": 3
+  },
+  "en_ne": {
+    "train": {
+      "rows": 544,
+      "meanings": 136,
+      "by_surface": {
+        "formal_deva": 136,
+        "formal_roman": 136,
+        "informal_deva": 136,
+        "informal_roman": 136
+      }
+    },
+    "val": {
+      "rows": 52,
+      "meanings": 13,
+      "by_surface": {
+        "formal_deva": 13,
+        "formal_roman": 13,
+        "informal_deva": 13,
+        "informal_roman": 13
+      }
+    }
+  },
+  "ne_en": {
+    "train": {
+      "rows": 544,
+      "meanings": 136,
+      "by_surface": {
+        "formal_deva": 136,
+        "formal_roman": 136,
+        "informal_deva": 136,
+        "informal_roman": 136
+      }
+    },
+    "val": {
+      "rows": 52,
+      "meanings": 13,
+      "by_surface": {
+        "formal_deva": 13,
+        "formal_roman": 13,
+        "informal_deva": 13,
+        "informal_roman": 13
+      }
+    }
+  },
+  "bases": {
+    "en-ne": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\artifacts\\it2_en_indic_merged",
+    "ne-en": "C:\\Users\\maxwe\\.cursor\\nepaliTranslation\\training\\artifacts\\it2_indic_en_merged"
+  },
+  "note": "Adapters only. Gold and public benchmarks excluded. Model suggestions are not human-approved."
+}

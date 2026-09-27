@@ -1,0 +1,98 @@
+{
+  "generated_at": "2026-09-27T16:03:32.086816+00:00",
+  "run": "training\\artifacts\\sheet50_20260927T155519Z",
+  "metric": "chrF_mean_char_trigram",
+  "base": "it2_en_indic_merged + it2_indic_en_merged, no control tags",
+  "sheet50_tags": {
+    "en_ne_formal": [
+      "en-ne",
+      "<formal> <deva> "
+    ],
+    "en_ne_informal": [
+      "en-ne",
+      "<informal> <deva> "
+    ],
+    "ne_en_deva": [
+      "ne-en",
+      "<formal> <deva> "
+    ],
+    "ne_en_roman": [
+      "ne-en",
+      "<formal> <roman> "
+    ]
+  },
+  "systems": [
+    {
+      "system": "it2_base",
+      "overall_chrf": 0.5111,
+      "seconds": 96.2,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 137,
+          "chrf_mean": 0.6741,
+          "tapai_rate": 0.2044,
+          "timi_rate": 0.0
+        },
+        "en_ne_informal": {
+          "n": 139,
+          "chrf_mean": 0.5882,
+          "tapai_rate": 0.2014,
+          "timi_rate": 0.0
+        },
+        "ne_en_deva": {
+          "n": 133,
+          "chrf_mean": 0.7011,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 134,
+          "chrf_mean": 0.0759,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    },
+    {
+      "system": "sheet50",
+      "overall_chrf": 0.4118,
+      "seconds": 219.9,
+      "per_class": {
+        "en_ne_formal": {
+          "n": 137,
+          "chrf_mean": 0.5708,
+          "tapai_rate": 0.2117,
+          "timi_rate": 0.0
+        },
+        "en_ne_informal": {
+          "n": 139,
+          "chrf_mean": 0.4344,
+          "tapai_rate": 0.2086,
+          "timi_rate": 0.0
+        },
+        "ne_en_deva": {
+          "n": 133,
+          "chrf_mean": 0.5793,
+          "tapai_rate": null,
+          "timi_rate": null
+        },
+        "ne_en_roman": {
+          "n": 134,
+          "chrf_mean": 0.0595,
+          "tapai_rate": null,
+          "timi_rate": null
+        }
+      }
+    }
+  ],
+  "delta_sheet50_minus_base": {
+    "overall": -0.0993,
+    "per_class": {
+      "en_ne_formal": -0.1033,
+      "en_ne_informal": -0.1538,
+      "ne_en_deva": -0.1218,
+      "ne_en_roman": -0.0164
+    }
+  },
+  "note": "Positive delta means the new adapters scored higher. Gold files were not modified."
+}
