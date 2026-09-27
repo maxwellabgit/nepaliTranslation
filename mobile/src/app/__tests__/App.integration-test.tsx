@@ -271,7 +271,7 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.getByTestId('settings-quality')).toBeTruthy();
     expect(screen.getByText(/Translation may be imperfect/i)).toBeTruthy();
     expect(screen.getByTestId('settings-privacy')).toBeTruthy();
-    expect(screen.getByText(/not saved to your photo library/i)).toBeTruthy();
+    expect(screen.getByText(/Camera translation runs on this device/i)).toBeTruthy();
   });
 
   it('signed-out guest reaches Camera and Learn without a login wall when auth is configured', async () => {

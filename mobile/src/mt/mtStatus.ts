@@ -6,10 +6,10 @@ export function mtStatusLine(opts: {
 }): string {
   if (opts.listening) return 'Listening…';
   if (opts.warmStatus) return opts.warmStatus;
-  if (opts.neuralReady) return 'EN→NE on-device · NE→EN phrases · voice via Apple';
-  return 'Saved phrases · voice via Apple';
+  if (opts.neuralReady) return 'EN↔NE on-device · voice via Apple';
+  return 'Model unavailable · voice via Apple';
 }
 
 export const MT_WARM_PREPARING = 'Loading on-device model…';
 export const MT_WARM_DOWNLOADING = 'Downloading translation model…';
-export const MT_WARM_FAILED = 'Model unavailable · using phrases';
+export const MT_WARM_FAILED = 'Model unavailable.';

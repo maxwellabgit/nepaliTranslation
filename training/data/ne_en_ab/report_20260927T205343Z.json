@@ -1,0 +1,115 @@
+{
+  "blind": {
+    "base": {
+      "deva": {
+        "n": 32,
+        "chrf": 0.6653,
+        "latency_ms_mean": 232.7
+      },
+      "roman_phone_path": {
+        "n": 32,
+        "chrf": 0.6468,
+        "latency_ms_mean": 200.3
+      },
+      "roman_direct": {
+        "n": 32,
+        "chrf": 0.0469,
+        "latency_ms_mean": 327.2
+      }
+    },
+    "A": {
+      "deva": {
+        "n": 32,
+        "chrf": 0.6848,
+        "latency_ms_mean": 231.7
+      },
+      "roman_phone_path": {
+        "n": 32,
+        "chrf": 0.6576,
+        "latency_ms_mean": 227.7
+      },
+      "roman_direct": {
+        "n": 32,
+        "chrf": 0.0469,
+        "latency_ms_mean": 308.2
+      }
+    },
+    "B": {
+      "deva": {
+        "n": 32,
+        "chrf": 0.6761,
+        "latency_ms_mean": 223.9
+      },
+      "roman_phone_path": {
+        "n": 32,
+        "chrf": 0.6576,
+        "latency_ms_mean": 232.0
+      },
+      "roman_direct": {
+        "n": 32,
+        "chrf": 0.0559,
+        "latency_ms_mean": 302.2
+      }
+    }
+  },
+  "gold": {
+    "base": {
+      "ne_en_deva": {
+        "n": 133,
+        "chrf": 0.7093,
+        "latency_ms_mean": 122.2
+      },
+      "ne_en_roman_phone_path": {
+        "n": 134,
+        "chrf": 0.4881,
+        "latency_ms_mean": 118.4
+      },
+      "ne_en_roman_direct": {
+        "n": 134,
+        "chrf": 0.0796,
+        "latency_ms_mean": 161.8
+      }
+    },
+    "A": {
+      "ne_en_deva": {
+        "n": 133,
+        "chrf": 0.7125,
+        "latency_ms_mean": 138.1
+      },
+      "ne_en_roman_phone_path": {
+        "n": 134,
+        "chrf": 0.495,
+        "latency_ms_mean": 134.8
+      },
+      "ne_en_roman_direct": {
+        "n": 134,
+        "chrf": 0.0774,
+        "latency_ms_mean": 174.9
+      }
+    },
+    "B": {
+      "ne_en_deva": {
+        "n": 133,
+        "chrf": 0.7137,
+        "latency_ms_mean": 139.0
+      },
+      "ne_en_roman_phone_path": {
+        "n": 134,
+        "chrf": 0.5006,
+        "latency_ms_mean": 133.2
+      },
+      "ne_en_roman_direct": {
+        "n": 134,
+        "chrf": 0.0884,
+        "latency_ms_mean": 178.7
+      }
+    }
+  },
+  "decision": {
+    "direct_roman": false,
+    "chosen": "A",
+    "reason": "Keep the phone Roman\u2192Devanagari path. B did not win Roman without a Devanagari drop."
+  },
+  "run": "training/artifacts/ne_en_ab_20260927T205343Z",
+  "generated_at": "2026-09-27T20:59:54.946236+00:00"
+}

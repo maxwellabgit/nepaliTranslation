@@ -23,7 +23,7 @@ describe('i18n catalogs', () => {
     expect(t('settings.qualityBody', 'en')).toContain('imperfect');
     expect(t('settings.qualityBody', 'en')).toContain('Mark incorrect');
     expect(t('settings.privacyBody', 'en')).toMatch(/on this device/i);
-    expect(t('settings.privacyBody', 'en')).toMatch(/not saved/i);
+    expect(t('settings.privacyBody', 'en')).not.toMatch(/temporary/i);
     expect(t('settings.qualityBody', 'ne')).toContain('Mark incorrect');
     expect(t('settings.privacyBody', 'ne')).toContain('यन्त्र');
     expect(t('settings.legalNotLive', 'en')).toMatch(/not live yet/i);

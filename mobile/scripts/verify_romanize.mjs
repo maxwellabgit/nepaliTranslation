@@ -1,5 +1,5 @@
 /**
- * Check Roman Nepali → English phrase hits + transliteration sanity.
+ * Letter transliteration only. No meaning-bank word list.
  * Run from mobile/: node scripts/verify_romanize.mjs
  */
 import { createRequire } from 'module';
@@ -13,7 +13,7 @@ const root = join(__dirname, '..');
 const out = join(__dirname, '_roman_bundle.cjs');
 
 const build = spawnSync(
-  `npx --yes esbuild src/mt/onDeviceTranslate.ts --bundle --platform=node --format=cjs --outfile="${out}"`,
+  `npx --yes esbuild src/mt/romanize.ts --bundle --platform=node --format=cjs --outfile="${out}"`,
   { cwd: root, encoding: 'utf8', shell: true },
 );
 if (build.status !== 0) {
@@ -24,69 +24,26 @@ if (build.status !== 0) {
 const require = createRequire(import.meta.url);
 const t = require(out);
 
-const phraseCases = [
-  ['namaste', 'hello'],
-  ['tapai lai kasto cha?', 'how are you'],
-  ['dhanyabad', 'thank you'],
-  ['ma thik chu', 'i am fine'],
-];
-
-const romanWords = [
-  ['tapai', 'तपाईं'],
-  ['kasto', 'कस्तो'],
-  ['namaste', 'नमस्ते'],
-  ['pani', 'पानी'],
-];
-
 let failed = 0;
-for (const [src, expectSub] of phraseCases) {
-  const r = t.translateOnDevice(src, 'ne-en', { forcePreferred: true });
-  const ok =
-    r.method === 'phrase' &&
-    r.text.toLowerCase().includes(expectSub);
-  if (!ok) {
-    failed += 1;
-    console.log('PHRASE_FAIL', JSON.stringify({ src, method: r.method, out: r.text }));
-  } else {
-    console.log('PHRASE_OK', src, '→', r.text);
-  }
+function check(label, ok, extra) {
+  if (!ok) failed += 1;
+  console.log(JSON.stringify({ label, ok, ...extra }));
 }
 
-for (const [src, expect] of romanWords) {
-  const got = t.romanToDevanagari
-    ? t.romanToDevanagari(src)
-    : null;
-  // romanToDevanagari is re-exported from onDeviceTranslate via format path;
-  // fall back to translating the word through the engine's romanizer by
-  // checking the bundled module's own export if present.
-  const { romanToDevanagari } = t;
-  const outDeva = romanToDevanagari ? romanToDevanagari(src) : got;
-  const ok = outDeva === expect;
-  if (!ok) {
-    failed += 1;
-    console.log('ROMAN_FAIL', JSON.stringify({ src, expect, out: outDeva }));
-  } else {
-    console.log('ROMAN_OK', src, '→', outDeva);
-  }
-}
+const roman = t.devanagariToRoman('नमस्ते');
+check('deva to latin letters', /^[a-z. ]+$/i.test(roman) && roman.length > 0, {
+  out: roman,
+});
 
-// Chat-Roman sentence still normalizes before NE→EN overlay (phrase path).
-const sentence = t.romanToDevanagari
-  ? t.romanToDevanagari('tapai lai kasto cha?')
-  : '';
-const sentOk =
-  typeof sentence === 'string' &&
-  sentence.includes('तपाईं') &&
-  sentence.includes('लाई') &&
-  sentence.includes('कस्तो') &&
-  /[\u0900-\u097F]/.test(sentence) &&
-  !/[A-Za-z]/.test(sentence.replace(/[?.!,;:।]/g, ''));
-if (!sentOk) {
-  failed += 1;
-  console.log('ROMAN_FAIL', JSON.stringify({ src: 'tapai lai kasto cha?', out: sentence }));
-} else {
-  console.log('ROMAN_OK sentence', 'tapai lai kasto cha?', '→', sentence);
-}
+const back = t.romanToDevanagari('namaste');
+check(
+  'syllable parse stays in devanagari',
+  /[\u0900-\u097F]/.test(back) && !/[A-Za-z]/.test(back),
+  { out: back },
+);
+
+check('chat roman still detected', t.looksLikeRomanNepali('tapai lai kasto cha') === true);
+check('plain english is not roman nepali', t.looksLikeRomanNepali('where is the hotel') === false);
 
 if (existsSync(out)) unlinkSync(out);
 if (failed) {

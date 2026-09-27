@@ -1,12 +1,10 @@
 /**
  * On-device translation engine.
- * Prefers IndicTrans2 ONNX when warmed; phrasebook/lexicon remain fallback.
+ * English→Nepali uses the en-indic checkpoint. Nepali→English uses indic-en.
  */
 import {
   detectDirection,
   formatNepaliScript,
-  translateBySentences,
-  translateOnDevice,
   type Direction,
   type Formality,
   type NepaliScript,
@@ -61,8 +59,8 @@ export class TranslationEngine {
   }
 
   /**
-   * Download (if needed) + load ONNX sessions.
-   * Soft-fails so the app stays usable on phrasebook alone.
+   * Download (if needed) + load both ONNX checkpoints.
+   * A failed load leaves translation unavailable. There is no phrase list.
    */
   async warmUp(
     onProgress?: (p: ModelDownloadProgress) => void,
@@ -88,40 +86,22 @@ export class TranslationEngine {
     };
     this.state = 'translating';
     try {
-      const result =
-        this.neuralReady && sharedIndicTransOnnx.isReady()
-          ? await this.translateNeural(cleanedReq)
-          : this.translateFallback(cleanedReq);
+      if (!this.neuralReady || !sharedIndicTransOnnx.isReady()) {
+        throw new Error(this.lastError ?? 'Translation model is not loaded');
+      }
+      const result = await this.translateNeural(cleanedReq);
 
       const cancelled = requestId !== this.seq;
       if (!cancelled) {
         this.state = 'ready';
       }
       return { ...result, requestId, cancelled };
-    } catch {
-      try {
-        const fallback = this.translateFallback(cleanedReq);
-        const cancelled = requestId !== this.seq;
-        if (!cancelled) this.state = 'ready';
-        return { ...fallback, requestId, cancelled };
-      } catch (inner) {
-        this.state = 'error';
-        this.lastError =
-          inner instanceof Error ? inner.message : String(inner);
-        throw inner;
-      }
+    } catch (inner) {
+      const cancelled = requestId !== this.seq;
+      if (!cancelled) this.state = 'ready';
+      this.lastError = inner instanceof Error ? inner.message : String(inner);
+      throw inner;
     }
-  }
-
-  private translateFallback(req: TranslateRequest): TranslateResult {
-    const opts = {
-      formality: req.formality,
-      script: req.script,
-      forcePreferred: req.forcePreferred,
-    };
-    const fn =
-      req.bySentences === false ? translateOnDevice : translateBySentences;
-    return fn(req.text, req.preferred, opts);
   }
 
   private async translateNeural(
@@ -135,16 +115,6 @@ export class TranslationEngine {
     const direction = req.forcePreferred
       ? req.preferred
       : detectDirection(raw, req.preferred);
-
-    // Exact phrasebook hits stay authoritative and cheap.
-    const phrase = translateOnDevice(raw, direction, {
-      formality: req.formality,
-      script: req.script,
-      forcePreferred: true,
-    });
-    if (phrase.method === 'phrase') {
-      return phrase;
-    }
 
     const bySentences = req.bySentences !== false;
     if (bySentences) {
@@ -181,13 +151,6 @@ export class TranslationEngine {
         direction: 'ne-en',
         formality: req.formality,
       });
-      if (!neuralText.trim()) {
-        return translateOnDevice(raw, 'ne-en', {
-          formality: req.formality,
-          script: req.script,
-          forcePreferred: true,
-        });
-      }
       return { text: neuralText.trim(), method: 'neural', direction: 'ne-en' };
     }
 
@@ -198,16 +161,7 @@ export class TranslationEngine {
     });
 
     const out = formatNepaliScript(neuralText, req.script ?? 'deva');
-
-    if (!out.trim()) {
-      return translateOnDevice(raw, 'en-ne', {
-        formality: req.formality,
-        script: req.script,
-        forcePreferred: true,
-      });
-    }
-
-    return { text: out, method: 'neural', direction: 'en-ne' };
+    return { text: out.trim(), method: 'neural', direction: 'en-ne' };
   }
 
   cancelAll(): void {

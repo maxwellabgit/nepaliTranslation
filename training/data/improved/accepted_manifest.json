@@ -1,0 +1,20 @@
+{
+  "source_sheet": "C:\\Users\\maxwe\\Downloads\\TRAINING - nepali_training_benchmark_review (1).csv",
+  "mapped_rows": 4808,
+  "review_rows": 684,
+  "excluded_rows": 4124,
+  "excluded_reasons": {
+    "benchmark_match": 3906,
+    "public_review_exposure": 143,
+    "incomplete_pair": 54,
+    "register_mismatch": 12,
+    "misaligned_pair": 9
+  },
+  "corrections": 39,
+  "accepted_for_training": 0,
+  "accepted_for_benchmark": 0,
+  "approval_fields_autofilled": false,
+  "public_review_pool_excluded": true,
+  "retired_blind_split": "covered by balance_data public-review texts; not written to benchmarks/gold",
+  "note": "No training file is written until a person fills reviewer_decision, reviewer, reviewer_date, and source_rights."
+}

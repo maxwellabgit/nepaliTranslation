@@ -209,7 +209,7 @@ export class IndicTransOnnxEngine {
       }
       if (!this.indicEn) {
         throw new Error(
-          this.indicEnError ?? 'NE→EN model unavailable; use phrasebook',
+          this.indicEnError ?? 'NE→EN model unavailable',
         );
       }
       return this.generate(

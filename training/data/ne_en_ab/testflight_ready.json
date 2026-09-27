@@ -1,0 +1,8 @@
+{
+  "direction": "ne-en",
+  "en_ne": "production base, unchanged",
+  "chosen": "A",
+  "adapter": "training/artifacts/ne_en_ab_20260927T205343Z/A/adapter",
+  "direct_roman": false,
+  "reason": "Keep the phone Roman\u2192Devanagari path. B did not win Roman without a Devanagari drop."
+}

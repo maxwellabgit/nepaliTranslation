@@ -1,13 +1,7 @@
 import type { ScenarioCommandId, ScenarioState } from '../bridge/types';
 
 const COMMANDS: { id: ScenarioCommandId; label: string }[] = [
-  { id: 'load', label: 'Load' },
-  { id: 'step', label: 'Step' },
-  { id: 'run', label: 'Run' },
-  { id: 'cancel', label: 'Cancel' },
   { id: 'reset', label: 'Reset' },
-  { id: 'seed', label: 'Seed' },
-  { id: 'export', label: 'Export' },
 ];
 
 type Props = {

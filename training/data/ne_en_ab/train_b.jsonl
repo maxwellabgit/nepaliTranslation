@@ -1,0 +1,732 @@
+{"src": "यो राम्रो छ।", "tgt": "This is good.", "meaning_id": "core_grammar_00001", "kind": "deva_formal", "split": "train"}
+{"src": "यो राम्रो छ।", "tgt": "This is good.", "meaning_id": "core_grammar_00001", "kind": "deva_informal", "split": "train"}
+{"src": "yo ramro chha.", "tgt": "This is good.", "meaning_id": "core_grammar_00001", "kind": "roman_formal", "split": "train"}
+{"src": "yo ramro chha.", "tgt": "This is good.", "meaning_id": "core_grammar_00001", "kind": "roman_informal", "split": "train"}
+{"src": "त्यो ठिक होइन।", "tgt": "That is not right.", "meaning_id": "core_grammar_00002", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो ठिक होइन।", "tgt": "That is not right.", "meaning_id": "core_grammar_00002", "kind": "deva_informal", "split": "train"}
+{"src": "tyo thik hoina.", "tgt": "That is not right.", "meaning_id": "core_grammar_00002", "kind": "roman_formal", "split": "train"}
+{"src": "tyo thik hoina.", "tgt": "That is not right.", "meaning_id": "core_grammar_00002", "kind": "roman_informal", "split": "train"}
+{"src": "म क्षमा चाहन्छु।", "tgt": "I am sorry.", "meaning_id": "core_grammar_00005", "kind": "deva_formal", "split": "train"}
+{"src": "म क्षमा चाहन्छु।", "tgt": "I am sorry.", "meaning_id": "core_grammar_00005", "kind": "deva_informal", "split": "train"}
+{"src": "ma kshama chahanchhau.", "tgt": "I am sorry.", "meaning_id": "core_grammar_00005", "kind": "roman_formal", "split": "train"}
+{"src": "ma kshama chahanchhau.", "tgt": "I am sorry.", "meaning_id": "core_grammar_00005", "kind": "roman_informal", "split": "train"}
+{"src": "हो।", "tgt": "Yes.", "meaning_id": "core_grammar_00006", "kind": "deva_formal", "split": "train"}
+{"src": "हो।", "tgt": "Yes.", "meaning_id": "core_grammar_00006", "kind": "deva_informal", "split": "train"}
+{"src": "ho.", "tgt": "Yes.", "meaning_id": "core_grammar_00006", "kind": "roman_formal", "split": "train"}
+{"src": "ho.", "tgt": "Yes.", "meaning_id": "core_grammar_00006", "kind": "roman_informal", "split": "train"}
+{"src": "होइन।", "tgt": "No.", "meaning_id": "core_grammar_00007", "kind": "deva_formal", "split": "train"}
+{"src": "होइन।", "tgt": "No.", "meaning_id": "core_grammar_00007", "kind": "deva_informal", "split": "train"}
+{"src": "hoina.", "tgt": "No.", "meaning_id": "core_grammar_00007", "kind": "roman_formal", "split": "train"}
+{"src": "hoina.", "tgt": "No.", "meaning_id": "core_grammar_00007", "kind": "roman_informal", "split": "train"}
+{"src": "बायाँ मोड्नुहोस्।", "tgt": "Turn left.", "meaning_id": "core_grammar_00009", "kind": "deva_formal", "split": "train"}
+{"src": "बायाँ मोड्नुहोस्।", "tgt": "Turn left.", "meaning_id": "core_grammar_00009", "kind": "deva_informal", "split": "train"}
+{"src": "bayan modnuhos.", "tgt": "Turn left.", "meaning_id": "core_grammar_00009", "kind": "roman_formal", "split": "train"}
+{"src": "bayan modnuhos.", "tgt": "Turn left.", "meaning_id": "core_grammar_00009", "kind": "roman_informal", "split": "train"}
+{"src": "बायाँ मोड।", "tgt": "Turn left.", "meaning_id": "core_grammar_00010", "kind": "deva_formal", "split": "train"}
+{"src": "बायाँ मोड।", "tgt": "Turn left.", "meaning_id": "core_grammar_00010", "kind": "deva_informal", "split": "train"}
+{"src": "bayan moda.", "tgt": "Turn left.", "meaning_id": "core_grammar_00010", "kind": "roman_formal", "split": "train"}
+{"src": "bayan moda.", "tgt": "Turn left.", "meaning_id": "core_grammar_00010", "kind": "roman_informal", "split": "train"}
+{"src": "दायाँ मोड्नुहोस्।", "tgt": "Turn right.", "meaning_id": "core_grammar_00011", "kind": "deva_formal", "split": "train"}
+{"src": "दायाँ मोड्नुहोस्।", "tgt": "Turn right.", "meaning_id": "core_grammar_00011", "kind": "deva_informal", "split": "train"}
+{"src": "dayan modnuhos.", "tgt": "Turn right.", "meaning_id": "core_grammar_00011", "kind": "roman_formal", "split": "train"}
+{"src": "dayan modnuhos.", "tgt": "Turn right.", "meaning_id": "core_grammar_00011", "kind": "roman_informal", "split": "train"}
+{"src": "दायाँ मोड।", "tgt": "Turn right.", "meaning_id": "core_grammar_00012", "kind": "deva_formal", "split": "train"}
+{"src": "दायाँ मोड।", "tgt": "Turn right.", "meaning_id": "core_grammar_00012", "kind": "deva_informal", "split": "train"}
+{"src": "dayan moda.", "tgt": "Turn right.", "meaning_id": "core_grammar_00012", "kind": "roman_formal", "split": "train"}
+{"src": "dayan moda.", "tgt": "Turn right.", "meaning_id": "core_grammar_00012", "kind": "roman_informal", "split": "train"}
+{"src": "सिधा जानुहोस्।", "tgt": "Go straight.", "meaning_id": "core_grammar_00013", "kind": "deva_formal", "split": "train"}
+{"src": "सिधा जा।", "tgt": "Go straight.", "meaning_id": "core_grammar_00013", "kind": "deva_informal", "split": "train"}
+{"src": "sidha januhos.", "tgt": "Go straight.", "meaning_id": "core_grammar_00013", "kind": "roman_formal", "split": "train"}
+{"src": "sidha ja.", "tgt": "Go straight.", "meaning_id": "core_grammar_00013", "kind": "roman_informal", "split": "train"}
+{"src": "सिधा जाऊ।", "tgt": "Go straight.", "meaning_id": "core_grammar_00014", "kind": "deva_formal", "split": "train"}
+{"src": "सिधा जाऊ।", "tgt": "Go straight.", "meaning_id": "core_grammar_00014", "kind": "deva_informal", "split": "train"}
+{"src": "sidha jau.", "tgt": "Go straight.", "meaning_id": "core_grammar_00014", "kind": "roman_formal", "split": "train"}
+{"src": "sidha jau.", "tgt": "Go straight.", "meaning_id": "core_grammar_00014", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई यो चाहिँदैन।", "tgt": "I do not want this.", "meaning_id": "core_grammar_00016", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई यो चाहिँदैन।", "tgt": "I do not want this.", "meaning_id": "core_grammar_00016", "kind": "deva_informal", "split": "train"}
+{"src": "malai yo chahindaina.", "tgt": "I do not want this.", "meaning_id": "core_grammar_00016", "kind": "roman_formal", "split": "train"}
+{"src": "malai yo chahindaina.", "tgt": "I do not want this.", "meaning_id": "core_grammar_00016", "kind": "roman_informal", "split": "train"}
+{"src": "म मासु खाँदिनँ।", "tgt": "I do not eat meat.", "meaning_id": "core_grammar_00017", "kind": "deva_formal", "split": "train"}
+{"src": "म मासु खाँदिनँ।", "tgt": "I do not eat meat.", "meaning_id": "core_grammar_00017", "kind": "deva_informal", "split": "train"}
+{"src": "ma masu khandinn.", "tgt": "I do not eat meat.", "meaning_id": "core_grammar_00017", "kind": "roman_formal", "split": "train"}
+{"src": "ma masu khandinn.", "tgt": "I do not eat meat.", "meaning_id": "core_grammar_00017", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई एलर्जी छ।", "tgt": "I have an allergy.", "meaning_id": "core_grammar_00018", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई एलर्जी छ।", "tgt": "I have an allergy.", "meaning_id": "core_grammar_00018", "kind": "deva_informal", "split": "train"}
+{"src": "malai elarji chha.", "tgt": "I have an allergy.", "meaning_id": "core_grammar_00018", "kind": "roman_formal", "split": "train"}
+{"src": "malai elarji chha.", "tgt": "I have an allergy.", "meaning_id": "core_grammar_00018", "kind": "roman_informal", "split": "train"}
+{"src": "म बिरामी छु।", "tgt": "I am sick.", "meaning_id": "core_grammar_00019", "kind": "deva_formal", "split": "train"}
+{"src": "म बिरामी छु।", "tgt": "I am sick.", "meaning_id": "core_grammar_00019", "kind": "deva_informal", "split": "train"}
+{"src": "ma birami chhau.", "tgt": "I am sick.", "meaning_id": "core_grammar_00019", "kind": "roman_formal", "split": "train"}
+{"src": "ma birami chhau.", "tgt": "I am sick.", "meaning_id": "core_grammar_00019", "kind": "roman_informal", "split": "train"}
+{"src": "म भोलि आउनेछु।", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00020", "kind": "deva_formal", "split": "train"}
+{"src": "म भोलि आउनेछु।", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00020", "kind": "deva_informal", "split": "train"}
+{"src": "ma bholi aaunechhau.", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00020", "kind": "roman_formal", "split": "train"}
+{"src": "ma bholi aaunechhau.", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00020", "kind": "roman_informal", "split": "train"}
+{"src": "म भोलि आउँछु।", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00021", "kind": "deva_formal", "split": "train"}
+{"src": "म भोलि आउँछु।", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00021", "kind": "deva_informal", "split": "train"}
+{"src": "ma bholi aaunchhau.", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00021", "kind": "roman_formal", "split": "train"}
+{"src": "ma bholi aaunchhau.", "tgt": "I will come tomorrow.", "meaning_id": "core_grammar_00021", "kind": "roman_informal", "split": "train"}
+{"src": "म हिजो आएको थिएँ।", "tgt": "I came yesterday.", "meaning_id": "core_grammar_00022", "kind": "deva_formal", "split": "train"}
+{"src": "म हिजो आएको थिएँ।", "tgt": "I came yesterday.", "meaning_id": "core_grammar_00022", "kind": "deva_informal", "split": "train"}
+{"src": "ma hijo aaeko thien.", "tgt": "I came yesterday.", "meaning_id": "core_grammar_00022", "kind": "roman_formal", "split": "train"}
+{"src": "ma hijo aaeko thien.", "tgt": "I came yesterday.", "meaning_id": "core_grammar_00022", "kind": "roman_informal", "split": "train"}
+{"src": "म काठमाडौंमा बस्छु।", "tgt": "I live in Kathmandu.", "meaning_id": "core_grammar_00023", "kind": "deva_formal", "split": "train"}
+{"src": "म काठमाडौंमा बस्छु।", "tgt": "I live in Kathmandu.", "meaning_id": "core_grammar_00023", "kind": "deva_informal", "split": "train"}
+{"src": "ma kathamadaunma baschhau.", "tgt": "I live in Kathmandu.", "meaning_id": "core_grammar_00023", "kind": "roman_formal", "split": "train"}
+{"src": "ma kathamadaunma baschhau.", "tgt": "I live in Kathmandu.", "meaning_id": "core_grammar_00023", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई सन्देश पठाऊ न।", "tgt": "Send me a message.", "meaning_id": "core_grammar_00024", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई सन्देश पठाऊ न।", "tgt": "Send me a message.", "meaning_id": "core_grammar_00024", "kind": "deva_informal", "split": "train"}
+{"src": "malai sandesha pathau na.", "tgt": "Send me a message.", "meaning_id": "core_grammar_00024", "kind": "roman_formal", "split": "train"}
+{"src": "malai sandesha pathau na.", "tgt": "Send me a message.", "meaning_id": "core_grammar_00024", "kind": "roman_informal", "split": "train"}
+{"src": "नेटवर्कले काम गरिरहेको छैन।", "tgt": "The network is not working.", "meaning_id": "core_grammar_00025", "kind": "deva_formal", "split": "train"}
+{"src": "नेटवर्कले काम गरिरहेको छैन।", "tgt": "The network is not working.", "meaning_id": "core_grammar_00025", "kind": "deva_informal", "split": "train"}
+{"src": "netawarkale kama gariraheko chhaaina.", "tgt": "The network is not working.", "meaning_id": "core_grammar_00025", "kind": "roman_formal", "split": "train"}
+{"src": "netawarkale kama gariraheko chhaaina.", "tgt": "The network is not working.", "meaning_id": "core_grammar_00025", "kind": "roman_informal", "split": "train"}
+{"src": "नेटवर्क चलेको छैन।", "tgt": "The network is not working.", "meaning_id": "core_grammar_00026", "kind": "deva_formal", "split": "train"}
+{"src": "नेटवर्क चलेको छैन।", "tgt": "The network is not working.", "meaning_id": "core_grammar_00026", "kind": "deva_informal", "split": "train"}
+{"src": "netawarka chaleko chhaaina.", "tgt": "The network is not working.", "meaning_id": "core_grammar_00026", "kind": "roman_formal", "split": "train"}
+{"src": "netawarka chaleko chhaaina.", "tgt": "The network is not working.", "meaning_id": "core_grammar_00026", "kind": "roman_informal", "split": "train"}
+{"src": "मेरो फोनको ब्याट्री सकियो।", "tgt": "My phone has no battery.", "meaning_id": "core_grammar_00028", "kind": "deva_formal", "split": "train"}
+{"src": "मेरो फोनको ब्याट्री सकियो।", "tgt": "My phone has no battery.", "meaning_id": "core_grammar_00028", "kind": "deva_informal", "split": "train"}
+{"src": "mero phonako byatri sakiyo.", "tgt": "My phone has no battery.", "meaning_id": "core_grammar_00028", "kind": "roman_formal", "split": "train"}
+{"src": "mero phonako byatri sakiyo.", "tgt": "My phone has no battery.", "meaning_id": "core_grammar_00028", "kind": "roman_informal", "split": "train"}
+{"src": "मैले बोलिसकेँ।", "tgt": "I have finished speaking.", "meaning_id": "core_grammar_00029", "kind": "deva_formal", "split": "train"}
+{"src": "मैले बोलिसकेँ।", "tgt": "I have finished speaking.", "meaning_id": "core_grammar_00029", "kind": "deva_informal", "split": "train"}
+{"src": "maile bolisaken.", "tgt": "I have finished speaking.", "meaning_id": "core_grammar_00029", "kind": "roman_formal", "split": "train"}
+{"src": "maile bolisaken.", "tgt": "I have finished speaking.", "meaning_id": "core_grammar_00029", "kind": "roman_informal", "split": "train"}
+{"src": "अनुवाद तयार हुँदैछ।", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00030", "kind": "deva_formal", "split": "train"}
+{"src": "अनुवाद तयार हुँदैछ।", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00030", "kind": "deva_informal", "split": "train"}
+{"src": "anuwada tayara hundaichha.", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00030", "kind": "roman_formal", "split": "train"}
+{"src": "anuwada tayara hundaichha.", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00030", "kind": "roman_informal", "split": "train"}
+{"src": "अनुवाद लोड हुँदैछ।", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00031", "kind": "deva_formal", "split": "train"}
+{"src": "अनुवाद लोड हुँदैछ।", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00031", "kind": "deva_informal", "split": "train"}
+{"src": "anuwada loda hundaichha.", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00031", "kind": "roman_formal", "split": "train"}
+{"src": "anuwada loda hundaichha.", "tgt": "The translation is loading.", "meaning_id": "core_grammar_00031", "kind": "roman_informal", "split": "train"}
+{"src": "त्यो अनुवाद गलत छ।", "tgt": "That translation is wrong.", "meaning_id": "core_grammar_00032", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो अनुवाद गलत छ।", "tgt": "That translation is wrong.", "meaning_id": "core_grammar_00032", "kind": "deva_informal", "split": "train"}
+{"src": "tyo anuwada galata chha.", "tgt": "That translation is wrong.", "meaning_id": "core_grammar_00032", "kind": "roman_formal", "split": "train"}
+{"src": "tyo anuwada galata chha.", "tgt": "That translation is wrong.", "meaning_id": "core_grammar_00032", "kind": "roman_informal", "split": "train"}
+{"src": "त्यो अनुवाद सही छ।", "tgt": "That translation is correct.", "meaning_id": "core_grammar_00033", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो अनुवाद सही छ।", "tgt": "That translation is correct.", "meaning_id": "core_grammar_00033", "kind": "deva_informal", "split": "train"}
+{"src": "tyo anuwada sahi chha.", "tgt": "That translation is correct.", "meaning_id": "core_grammar_00033", "kind": "roman_formal", "split": "train"}
+{"src": "tyo anuwada sahi chha.", "tgt": "That translation is correct.", "meaning_id": "core_grammar_00033", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईं कहाँ जाँदै हुनुहुन्छ?", "tgt": "Where are you going?", "meaning_id": "pronouns_honorifics_00001", "kind": "deva_formal", "split": "train"}
+{"src": "तिमी कहाँ जाँदै छौ?", "tgt": "Where are you going?", "meaning_id": "pronouns_honorifics_00001", "kind": "deva_informal", "split": "train"}
+{"src": "tapai kaha jadai hunuhunchha?", "tgt": "Where are you going?", "meaning_id": "pronouns_honorifics_00001", "kind": "roman_formal", "split": "train"}
+{"src": "timi kaha jadai chhaau?", "tgt": "Where are you going?", "meaning_id": "pronouns_honorifics_00001", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया भित्र आउनुहोस्।", "tgt": "Please come in.", "meaning_id": "pronouns_honorifics_00002", "kind": "deva_formal", "split": "train"}
+{"src": "भित्र आ।", "tgt": "Please come in.", "meaning_id": "pronouns_honorifics_00002", "kind": "deva_informal", "split": "train"}
+{"src": "kripya bhitra aaunuhos.", "tgt": "Please come in.", "meaning_id": "pronouns_honorifics_00002", "kind": "roman_formal", "split": "train"}
+{"src": "bhitra aa.", "tgt": "Please come in.", "meaning_id": "pronouns_honorifics_00002", "kind": "roman_informal", "split": "train"}
+{"src": "के तपाईं चिया खानुहुन्छ?", "tgt": "Would you like some tea?", "meaning_id": "pronouns_honorifics_00003", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमी चिया खान्छौ?", "tgt": "Would you like some tea?", "meaning_id": "pronouns_honorifics_00003", "kind": "deva_informal", "split": "train"}
+{"src": "ke tapai chiya khanuhunchha?", "tgt": "Would you like some tea?", "meaning_id": "pronouns_honorifics_00003", "kind": "roman_formal", "split": "train"}
+{"src": "ke timi chiya khanchhaau?", "tgt": "Would you like some tea?", "meaning_id": "pronouns_honorifics_00003", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईं पहिले।", "tgt": "After you.", "meaning_id": "pronouns_honorifics_00004", "kind": "deva_formal", "split": "train"}
+{"src": "तिमी पहिले।", "tgt": "After you.", "meaning_id": "pronouns_honorifics_00004", "kind": "deva_informal", "split": "train"}
+{"src": "tapai pahile.", "tgt": "After you.", "meaning_id": "pronouns_honorifics_00004", "kind": "roman_formal", "split": "train"}
+{"src": "timi pahile.", "tgt": "After you.", "meaning_id": "pronouns_honorifics_00004", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया यहाँ पर्खनुहोस्।", "tgt": "Please wait here.", "meaning_id": "questions_requests_00001", "kind": "deva_formal", "split": "train"}
+{"src": "यहाँ पर्ख न।", "tgt": "Please wait here.", "meaning_id": "questions_requests_00001", "kind": "deva_informal", "split": "train"}
+{"src": "kripya yahan parkhanuhos.", "tgt": "Please wait here.", "meaning_id": "questions_requests_00001", "kind": "roman_formal", "split": "train"}
+{"src": "yahan parkha na.", "tgt": "Please wait here.", "meaning_id": "questions_requests_00001", "kind": "roman_informal", "split": "train"}
+{"src": "के तपाईं बुझ्नुहुन्छ?", "tgt": "Do you understand?", "meaning_id": "questions_requests_00002", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमी बुझ्छौ?", "tgt": "Do you understand?", "meaning_id": "questions_requests_00002", "kind": "deva_informal", "split": "train"}
+{"src": "ke tapai bujhnuhunchha?", "tgt": "Do you understand?", "meaning_id": "questions_requests_00002", "kind": "roman_formal", "split": "train"}
+{"src": "ke timi bujhchhaau?", "tgt": "Do you understand?", "meaning_id": "questions_requests_00002", "kind": "roman_informal", "split": "train"}
+{"src": "यसको अर्थ के हो?", "tgt": "What does this mean?", "meaning_id": "questions_requests_00003", "kind": "deva_formal", "split": "train"}
+{"src": "यसको अर्थ के हो?", "tgt": "What does this mean?", "meaning_id": "questions_requests_00003", "kind": "deva_informal", "split": "train"}
+{"src": "yasako artha ke ho?", "tgt": "What does this mean?", "meaning_id": "questions_requests_00003", "kind": "roman_formal", "split": "train"}
+{"src": "yasako artha ke ho?", "tgt": "What does this mean?", "meaning_id": "questions_requests_00003", "kind": "roman_informal", "split": "train"}
+{"src": "के तपाईं लेखिदिन सक्नुहुन्छ?", "tgt": "Could you write it down?", "meaning_id": "questions_requests_00004", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमी लेखिदिन सक्छौ?", "tgt": "Could you write it down?", "meaning_id": "questions_requests_00004", "kind": "deva_informal", "split": "train"}
+{"src": "ke tapai lekhidina saknuhunchha?", "tgt": "Could you write it down?", "meaning_id": "questions_requests_00004", "kind": "roman_formal", "split": "train"}
+{"src": "ke timi lekhidina sakchhaau?", "tgt": "Could you write it down?", "meaning_id": "questions_requests_00004", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया।", "tgt": "Please.", "meaning_id": "questions_requests_00006", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया।", "tgt": "Please.", "meaning_id": "questions_requests_00006", "kind": "deva_informal", "split": "train"}
+{"src": "kripya.", "tgt": "Please.", "meaning_id": "questions_requests_00006", "kind": "roman_formal", "split": "train"}
+{"src": "kripya.", "tgt": "Please.", "meaning_id": "questions_requests_00006", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईं कहाँबाट आउनुभएको हो?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00007", "kind": "deva_formal", "split": "train"}
+{"src": "तिमी कहाँबाट आउनुभएको हो?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00007", "kind": "deva_informal", "split": "train"}
+{"src": "tapai kahabata aaunubhaeko ho?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00007", "kind": "roman_formal", "split": "train"}
+{"src": "timi kahabata aaunubhaeko ho?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00007", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईं कहाँबाट आएको?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00008", "kind": "deva_formal", "split": "train"}
+{"src": "तिमी कहाँबाट आएको?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00008", "kind": "deva_informal", "split": "train"}
+{"src": "tapai kahabata aaeko?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00008", "kind": "roman_formal", "split": "train"}
+{"src": "timi kahabata aaeko?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00008", "kind": "roman_informal", "split": "train"}
+{"src": "के तपाईंसँग योभन्दा सानो आकार छ?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00009", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमीसँग योभन्दा सानो आकार छ?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00009", "kind": "deva_informal", "split": "train"}
+{"src": "ke tapaisnga yobhanda sano aakara chha?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00009", "kind": "roman_formal", "split": "train"}
+{"src": "ke timisnga yobhanda sano aakara chha?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00009", "kind": "roman_informal", "split": "train"}
+{"src": "के तपाईंसँग योभन्दा सानो साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00010", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमीसँग योभन्दा सानो साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00010", "kind": "deva_informal", "split": "train"}
+{"src": "ke tapaisnga yobhanda sano saija chha?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00010", "kind": "roman_formal", "split": "train"}
+{"src": "ke timisnga yobhanda sano saija chha?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00010", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया मलाई रसिद दिनुहोस्।", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00011", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई रसिद देऊ।", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00011", "kind": "deva_informal", "split": "train"}
+{"src": "kripya malai rasida dinuhos.", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00011", "kind": "roman_formal", "split": "train"}
+{"src": "malai rasida deu.", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00011", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई रसिद देऊ न।", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00012", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई रसिद देऊ न।", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00012", "kind": "deva_informal", "split": "train"}
+{"src": "malai rasida deu na.", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00012", "kind": "roman_formal", "split": "train"}
+{"src": "malai rasida deu na.", "tgt": "Please give me a receipt.", "meaning_id": "questions_requests_00012", "kind": "roman_informal", "split": "train"}
+{"src": "के यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00013", "kind": "deva_formal", "split": "train"}
+{"src": "के यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00013", "kind": "deva_informal", "split": "train"}
+{"src": "ke yo shakahari ho?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00013", "kind": "roman_formal", "split": "train"}
+{"src": "ke yo shakahari ho?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00013", "kind": "roman_informal", "split": "train"}
+{"src": "यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00014", "kind": "deva_formal", "split": "train"}
+{"src": "यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00014", "kind": "deva_informal", "split": "train"}
+{"src": "yo shakahari ho?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00014", "kind": "roman_formal", "split": "train"}
+{"src": "yo shakahari ho?", "tgt": "Is this vegetarian?", "meaning_id": "questions_requests_00014", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईंलाई कहाँ दुखेको छ?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00015", "kind": "deva_formal", "split": "train"}
+{"src": "तिमीलाई कहाँ दुखेको छ?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00015", "kind": "deva_informal", "split": "train"}
+{"src": "tapailai kaha dukheko chha?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00015", "kind": "roman_formal", "split": "train"}
+{"src": "timilai kaha dukheko chha?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00015", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया मसँग आउनुहोस्।", "tgt": "Please come with me.", "meaning_id": "questions_requests_00016", "kind": "deva_formal", "split": "train"}
+{"src": "मसँग आउ।", "tgt": "Please come with me.", "meaning_id": "questions_requests_00016", "kind": "deva_informal", "split": "train"}
+{"src": "kripya masnga aaunuhos.", "tgt": "Please come with me.", "meaning_id": "questions_requests_00016", "kind": "roman_formal", "split": "train"}
+{"src": "masnga aau.", "tgt": "Please come with me.", "meaning_id": "questions_requests_00016", "kind": "roman_informal", "split": "train"}
+{"src": "मसँग आऊ न।", "tgt": "Please come with me.", "meaning_id": "questions_requests_00017", "kind": "deva_formal", "split": "train"}
+{"src": "मसँग आऊ न।", "tgt": "Please come with me.", "meaning_id": "questions_requests_00017", "kind": "deva_informal", "split": "train"}
+{"src": "masnga aau na.", "tgt": "Please come with me.", "meaning_id": "questions_requests_00017", "kind": "roman_formal", "split": "train"}
+{"src": "masnga aau na.", "tgt": "Please come with me.", "meaning_id": "questions_requests_00017", "kind": "roman_informal", "split": "train"}
+{"src": "यहाँ उभिऊ न।", "tgt": "Please stand here.", "meaning_id": "questions_requests_00019", "kind": "deva_formal", "split": "train"}
+{"src": "यहाँ उभिऊ न।", "tgt": "Please stand here.", "meaning_id": "questions_requests_00019", "kind": "deva_informal", "split": "train"}
+{"src": "yahan ubhiu na.", "tgt": "Please stand here.", "meaning_id": "questions_requests_00019", "kind": "roman_formal", "split": "train"}
+{"src": "yahan ubhiu na.", "tgt": "Please stand here.", "meaning_id": "questions_requests_00019", "kind": "roman_informal", "split": "train"}
+{"src": "यो कहिले आइपुग्छ?", "tgt": "When will it arrive?", "meaning_id": "questions_requests_00020", "kind": "deva_formal", "split": "train"}
+{"src": "यो कहिले आइपुग्छ?", "tgt": "When will it arrive?", "meaning_id": "questions_requests_00020", "kind": "deva_informal", "split": "train"}
+{"src": "yo kahile aaipugchha?", "tgt": "When will it arrive?", "meaning_id": "questions_requests_00020", "kind": "roman_formal", "split": "train"}
+{"src": "yo kahile aaipugchha?", "tgt": "When will it arrive?", "meaning_id": "questions_requests_00020", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई फोन गर न।", "tgt": "Please call me.", "meaning_id": "questions_requests_00022", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई फोन गर न।", "tgt": "Please call me.", "meaning_id": "questions_requests_00022", "kind": "deva_informal", "split": "train"}
+{"src": "malai phona gara na.", "tgt": "Please call me.", "meaning_id": "questions_requests_00022", "kind": "roman_formal", "split": "train"}
+{"src": "malai phona gara na.", "tgt": "Please call me.", "meaning_id": "questions_requests_00022", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया मलाई सन्देश पठाउनुहोस्।", "tgt": "Send me a message.", "meaning_id": "questions_requests_00023", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई सन्देश पठाउनुहोस्।", "tgt": "Send me a message.", "meaning_id": "questions_requests_00023", "kind": "deva_informal", "split": "train"}
+{"src": "kripya malai sandesha pathaunuhos.", "tgt": "Send me a message.", "meaning_id": "questions_requests_00023", "kind": "roman_formal", "split": "train"}
+{"src": "malai sandesha pathaunuhos.", "tgt": "Send me a message.", "meaning_id": "questions_requests_00023", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया फोन अर्को व्यक्तिलाई दिनुहोस्।", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00024", "kind": "deva_formal", "split": "train"}
+{"src": "फोन अर्को व्यक्तिलाई देऊ।", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00024", "kind": "deva_informal", "split": "train"}
+{"src": "kripya phona arko wyaktilai dinuhos.", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00024", "kind": "roman_formal", "split": "train"}
+{"src": "phona arko wyaktilai deu.", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00024", "kind": "roman_informal", "split": "train"}
+{"src": "फोन अर्कोलाई देऊ न।", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00025", "kind": "deva_formal", "split": "train"}
+{"src": "फोन अर्कोलाई देऊ न।", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00025", "kind": "deva_informal", "split": "train"}
+{"src": "phona arkolai deu na.", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00025", "kind": "roman_formal", "split": "train"}
+{"src": "phona arkolai deu na.", "tgt": "Please pass the phone.", "meaning_id": "questions_requests_00025", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "Please try again.", "meaning_id": "questions_requests_00026", "kind": "deva_formal", "split": "train"}
+{"src": "फेरि प्रयास गर।", "tgt": "Please try again.", "meaning_id": "questions_requests_00026", "kind": "deva_informal", "split": "train"}
+{"src": "kripya pheri prayasa garnuhos.", "tgt": "Please try again.", "meaning_id": "questions_requests_00026", "kind": "roman_formal", "split": "train"}
+{"src": "pheri prayasa gara.", "tgt": "Please try again.", "meaning_id": "questions_requests_00026", "kind": "roman_informal", "split": "train"}
+{"src": "फेरि प्रयास गर।", "tgt": "Please try again.", "meaning_id": "questions_requests_00027", "kind": "deva_formal", "split": "train"}
+{"src": "फेरि प्रयास गर।", "tgt": "Please try again.", "meaning_id": "questions_requests_00027", "kind": "deva_informal", "split": "train"}
+{"src": "pheri prayasa gara.", "tgt": "Please try again.", "meaning_id": "questions_requests_00027", "kind": "roman_formal", "split": "train"}
+{"src": "pheri prayasa gara.", "tgt": "Please try again.", "meaning_id": "questions_requests_00027", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "Please check the translation.", "meaning_id": "questions_requests_00028", "kind": "deva_formal", "split": "train"}
+{"src": "अनुवाद जाँच गर।", "tgt": "Please check the translation.", "meaning_id": "questions_requests_00028", "kind": "deva_informal", "split": "train"}
+{"src": "kripya anuwada jancha garnuhos.", "tgt": "Please check the translation.", "meaning_id": "questions_requests_00028", "kind": "roman_formal", "split": "train"}
+{"src": "anuwada jancha gara.", "tgt": "Please check the translation.", "meaning_id": "questions_requests_00028", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईं कहाँबाट आएको?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00030", "kind": "deva_formal", "split": "train"}
+{"src": "तिमी कहाँबाट आएको?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00030", "kind": "deva_informal", "split": "train"}
+{"src": "tapai kahabata aaeko?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00030", "kind": "roman_formal", "split": "train"}
+{"src": "timi kahabata aaeko?", "tgt": "Where are you from?", "meaning_id": "questions_requests_00030", "kind": "roman_informal", "split": "train"}
+{"src": "के तपाईंसँग योभन्दा सानो साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00031", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमीसँग योभन्दा सानो साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00031", "kind": "deva_informal", "split": "train"}
+{"src": "ke tapaisnga yobhanda sano saija chha?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00031", "kind": "roman_formal", "split": "train"}
+{"src": "ke timisnga yobhanda sano saija chha?", "tgt": "Do you have a smaller size?", "meaning_id": "questions_requests_00031", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईंलाई कहाँ दुखेको छ?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00032", "kind": "deva_formal", "split": "train"}
+{"src": "तिमीलाई कहाँ दुखेको छ?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00032", "kind": "deva_informal", "split": "train"}
+{"src": "tapailai kaha dukheko chha?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00032", "kind": "roman_formal", "split": "train"}
+{"src": "timilai kaha dukheko chha?", "tgt": "Where does it hurt?", "meaning_id": "questions_requests_00032", "kind": "roman_informal", "split": "train"}
+{"src": "यो कति टाढा छ?", "tgt": "How far is it?", "meaning_id": "travel_00001", "kind": "deva_formal", "split": "train"}
+{"src": "यो कति टाढा छ?", "tgt": "How far is it?", "meaning_id": "travel_00001", "kind": "deva_informal", "split": "train"}
+{"src": "yo kati tadha chha?", "tgt": "How far is it?", "meaning_id": "travel_00001", "kind": "roman_formal", "split": "train"}
+{"src": "yo kati tadha chha?", "tgt": "How far is it?", "meaning_id": "travel_00001", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया मलाई बस स्टेशन लैजानुहोस्।", "tgt": "Please take me to the bus station.", "meaning_id": "travel_00002", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई बस स्टेशन लगिदे।", "tgt": "Please take me to the bus station.", "meaning_id": "travel_00002", "kind": "deva_informal", "split": "train"}
+{"src": "kripya malai basa steshana laijanuhos.", "tgt": "Please take me to the bus station.", "meaning_id": "travel_00002", "kind": "roman_formal", "split": "train"}
+{"src": "malai basa steshana lagide.", "tgt": "Please take me to the bus station.", "meaning_id": "travel_00002", "kind": "roman_informal", "split": "train"}
+{"src": "के यो ठमेल जाने बाटो हो?", "tgt": "Is this the way to Thamel?", "meaning_id": "travel_00003", "kind": "deva_formal", "split": "train"}
+{"src": "के यो ठमेल जाने बाटो हो?", "tgt": "Is this the way to Thamel?", "meaning_id": "travel_00003", "kind": "deva_informal", "split": "train"}
+{"src": "ke yo thamela jane bato ho?", "tgt": "Is this the way to Thamel?", "meaning_id": "travel_00003", "kind": "roman_formal", "split": "train"}
+{"src": "ke yo thamela jane bato ho?", "tgt": "Is this the way to Thamel?", "meaning_id": "travel_00003", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई ट्याक्सी चाहियो।", "tgt": "I need a taxi.", "meaning_id": "travel_00004", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई ट्याक्सी चाहियो।", "tgt": "I need a taxi.", "meaning_id": "travel_00004", "kind": "deva_informal", "split": "train"}
+{"src": "malai tyaksi chahiyo.", "tgt": "I need a taxi.", "meaning_id": "travel_00004", "kind": "roman_formal", "split": "train"}
+{"src": "malai tyaksi chahiyo.", "tgt": "I need a taxi.", "meaning_id": "travel_00004", "kind": "roman_informal", "split": "train"}
+{"src": "कुन बस पाटन जान्छ?", "tgt": "Which bus goes to Patan?", "meaning_id": "travel_00005", "kind": "deva_formal", "split": "train"}
+{"src": "कुन बस पाटन जान्छ?", "tgt": "Which bus goes to Patan?", "meaning_id": "travel_00005", "kind": "deva_informal", "split": "train"}
+{"src": "kuna basa patana janchha?", "tgt": "Which bus goes to Patan?", "meaning_id": "travel_00005", "kind": "roman_formal", "split": "train"}
+{"src": "kuna basa patana janchha?", "tgt": "Which bus goes to Patan?", "meaning_id": "travel_00005", "kind": "roman_informal", "split": "train"}
+{"src": "नजिकै सस्तो होटल छ?", "tgt": "Is there a cheaper hotel nearby?", "meaning_id": "travel_00006", "kind": "deva_formal", "split": "train"}
+{"src": "नजिकै सस्तो होटल छ?", "tgt": "Is there a cheaper hotel nearby?", "meaning_id": "travel_00006", "kind": "deva_informal", "split": "train"}
+{"src": "najikai sasto hotala chha?", "tgt": "Is there a cheaper hotel nearby?", "meaning_id": "travel_00006", "kind": "roman_formal", "split": "train"}
+{"src": "najikai sasto hotala chha?", "tgt": "Is there a cheaper hotel nearby?", "meaning_id": "travel_00006", "kind": "roman_informal", "split": "train"}
+{"src": "सिम कार्ड कहाँ किन्न सकिन्छ?", "tgt": "Where can I buy a SIM card?", "meaning_id": "travel_00007", "kind": "deva_formal", "split": "train"}
+{"src": "सिम कार्ड कहाँ किन्न सकिन्छ?", "tgt": "Where can I buy a SIM card?", "meaning_id": "travel_00007", "kind": "deva_informal", "split": "train"}
+{"src": "sima karda kaha kinna sakinchha?", "tgt": "Where can I buy a SIM card?", "meaning_id": "travel_00007", "kind": "roman_formal", "split": "train"}
+{"src": "sima karda kaha kinna sakinchha?", "tgt": "Where can I buy a SIM card?", "meaning_id": "travel_00007", "kind": "roman_informal", "split": "train"}
+{"src": "उडान ढिलो भयो।", "tgt": "The flight is delayed.", "meaning_id": "travel_00008", "kind": "deva_formal", "split": "train"}
+{"src": "उडान ढिलो भयो।", "tgt": "The flight is delayed.", "meaning_id": "travel_00008", "kind": "deva_informal", "split": "train"}
+{"src": "udana dhilo bhayo.", "tgt": "The flight is delayed.", "meaning_id": "travel_00008", "kind": "roman_formal", "split": "train"}
+{"src": "udana dhilo bhayo.", "tgt": "The flight is delayed.", "meaning_id": "travel_00008", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई ज्वरो आएको छ।", "tgt": "I have a fever.", "meaning_id": "health_00001", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई ज्वरो आएको छ।", "tgt": "I have a fever.", "meaning_id": "health_00001", "kind": "deva_informal", "split": "train"}
+{"src": "malai jwaro aaeko chha.", "tgt": "I have a fever.", "meaning_id": "health_00001", "kind": "roman_formal", "split": "train"}
+{"src": "malai jwaro aaeko chha.", "tgt": "I have a fever.", "meaning_id": "health_00001", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई टाउको घुमेको छ।", "tgt": "I feel dizzy.", "meaning_id": "health_00002", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई टाउको घुमेको छ।", "tgt": "I feel dizzy.", "meaning_id": "health_00002", "kind": "deva_informal", "split": "train"}
+{"src": "malai tauko ghumeko chha.", "tgt": "I feel dizzy.", "meaning_id": "health_00002", "kind": "roman_formal", "split": "train"}
+{"src": "malai tauko ghumeko chha.", "tgt": "I feel dizzy.", "meaning_id": "health_00002", "kind": "roman_informal", "split": "train"}
+{"src": "मलाई टाउको दुखाइको औषधि चाहियो।", "tgt": "I need medicine for a headache.", "meaning_id": "health_00003", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई टाउको दुखाइको औषधि चाहियो।", "tgt": "I need medicine for a headache.", "meaning_id": "health_00003", "kind": "deva_informal", "split": "train"}
+{"src": "malai tauko dukhaiko aushadhi chahiyo.", "tgt": "I need medicine for a headache.", "meaning_id": "health_00003", "kind": "roman_formal", "split": "train"}
+{"src": "malai tauko dukhaiko aushadhi chahiyo.", "tgt": "I need medicine for a headache.", "meaning_id": "health_00003", "kind": "roman_informal", "split": "train"}
+{"src": "के यहाँ दुख्छ?", "tgt": "Does it hurt here?", "meaning_id": "health_00004", "kind": "deva_formal", "split": "train"}
+{"src": "के यहाँ दुख्छ?", "tgt": "Does it hurt here?", "meaning_id": "health_00004", "kind": "deva_informal", "split": "train"}
+{"src": "ke yahan dukhchha?", "tgt": "Does it hurt here?", "meaning_id": "health_00004", "kind": "roman_formal", "split": "train"}
+{"src": "ke yahan dukhchha?", "tgt": "Does it hurt here?", "meaning_id": "health_00004", "kind": "roman_informal", "split": "train"}
+{"src": "म गर्भवती छु।", "tgt": "I am pregnant.", "meaning_id": "health_00005", "kind": "deva_formal", "split": "train"}
+{"src": "म गर्भवती छु।", "tgt": "I am pregnant.", "meaning_id": "health_00005", "kind": "deva_informal", "split": "train"}
+{"src": "ma garbhawati chhau.", "tgt": "I am pregnant.", "meaning_id": "health_00005", "kind": "roman_formal", "split": "train"}
+{"src": "ma garbhawati chhau.", "tgt": "I am pregnant.", "meaning_id": "health_00005", "kind": "roman_informal", "split": "train"}
+{"src": "त्यो धेरै महँगो छ।", "tgt": "That is too expensive.", "meaning_id": "shopping_00001", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो धेरै महँगो छ।", "tgt": "That is too expensive.", "meaning_id": "shopping_00001", "kind": "deva_informal", "split": "train"}
+{"src": "tyo dherai mahngo chha.", "tgt": "That is too expensive.", "meaning_id": "shopping_00001", "kind": "roman_formal", "split": "train"}
+{"src": "tyo dherai mahngo chha.", "tgt": "That is too expensive.", "meaning_id": "shopping_00001", "kind": "roman_informal", "split": "train"}
+{"src": "म यो चाहन्छु।", "tgt": "I want this one.", "meaning_id": "shopping_00002", "kind": "deva_formal", "split": "train"}
+{"src": "म यो चाहन्छु।", "tgt": "I want this one.", "meaning_id": "shopping_00002", "kind": "deva_informal", "split": "train"}
+{"src": "ma yo chahanchhau.", "tgt": "I want this one.", "meaning_id": "shopping_00002", "kind": "roman_formal", "split": "train"}
+{"src": "ma yo chahanchhau.", "tgt": "I want this one.", "meaning_id": "shopping_00002", "kind": "roman_informal", "split": "train"}
+{"src": "के म यो लगाएर हेर्न सक्छु?", "tgt": "Can I try this on?", "meaning_id": "shopping_00003", "kind": "deva_formal", "split": "train"}
+{"src": "म यो लगाएर हेर्न सक्छु?", "tgt": "Can I try this on?", "meaning_id": "shopping_00003", "kind": "deva_informal", "split": "train"}
+{"src": "ke ma yo lagaera herna sakchhau?", "tgt": "Can I try this on?", "meaning_id": "shopping_00003", "kind": "roman_formal", "split": "train"}
+{"src": "ma yo lagaera herna sakchhau?", "tgt": "Can I try this on?", "meaning_id": "shopping_00003", "kind": "roman_informal", "split": "train"}
+{"src": "साना साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "shopping_00004", "kind": "deva_formal", "split": "train"}
+{"src": "साना साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "shopping_00004", "kind": "deva_informal", "split": "train"}
+{"src": "sana saija chha?", "tgt": "Do you have a smaller size?", "meaning_id": "shopping_00004", "kind": "roman_formal", "split": "train"}
+{"src": "sana saija chha?", "tgt": "Do you have a smaller size?", "meaning_id": "shopping_00004", "kind": "roman_informal", "split": "train"}
+{"src": "म नगद तिर्छु।", "tgt": "I will pay in cash.", "meaning_id": "shopping_00005", "kind": "deva_formal", "split": "train"}
+{"src": "म नगद तिर्छु।", "tgt": "I will pay in cash.", "meaning_id": "shopping_00005", "kind": "deva_informal", "split": "train"}
+{"src": "ma nagada tirchhau.", "tgt": "I will pay in cash.", "meaning_id": "shopping_00005", "kind": "roman_formal", "split": "train"}
+{"src": "ma nagada tirchhau.", "tgt": "I will pay in cash.", "meaning_id": "shopping_00005", "kind": "roman_informal", "split": "train"}
+{"src": "के म कार्डले तिर्न सक्छु?", "tgt": "Can I pay by card?", "meaning_id": "shopping_00007", "kind": "deva_formal", "split": "train"}
+{"src": "के म कार्डले तिर्न सक्छु?", "tgt": "Can I pay by card?", "meaning_id": "shopping_00007", "kind": "deva_informal", "split": "train"}
+{"src": "ke ma kardale tirna sakchhau?", "tgt": "Can I pay by card?", "meaning_id": "shopping_00007", "kind": "roman_formal", "split": "train"}
+{"src": "ke ma kardale tirna sakchhau?", "tgt": "Can I pay by card?", "meaning_id": "shopping_00007", "kind": "roman_informal", "split": "train"}
+{"src": "यो मेरो पासपोर्ट हो।", "tgt": "This is my passport.", "meaning_id": "government_00001", "kind": "deva_formal", "split": "train"}
+{"src": "यो मेरो पासपोर्ट हो।", "tgt": "This is my passport.", "meaning_id": "government_00001", "kind": "deva_informal", "split": "train"}
+{"src": "yo mero pasaporta ho.", "tgt": "This is my passport.", "meaning_id": "government_00001", "kind": "roman_formal", "split": "train"}
+{"src": "yo mero pasaporta ho.", "tgt": "This is my passport.", "meaning_id": "government_00001", "kind": "roman_informal", "split": "train"}
+{"src": "परिचय", "tgt": "Introduction", "meaning_id": "government_00003", "kind": "deva_formal", "split": "train"}
+{"src": "परिचय", "tgt": "Introduction", "meaning_id": "government_00003", "kind": "deva_informal", "split": "train"}
+{"src": "parichaya", "tgt": "Introduction", "meaning_id": "government_00003", "kind": "roman_formal", "split": "train"}
+{"src": "parichaya", "tgt": "Introduction", "meaning_id": "government_00003", "kind": "roman_informal", "split": "train"}
+{"src": "परिदृश्य र परिलक्ष्य", "tgt": "Vision and Mission", "meaning_id": "government_00004", "kind": "deva_formal", "split": "train"}
+{"src": "परिदृश्य र परिलक्ष्य", "tgt": "Vision and Mission", "meaning_id": "government_00004", "kind": "deva_informal", "split": "train"}
+{"src": "paridashya ra parilakshya", "tgt": "Vision and Mission", "meaning_id": "government_00004", "kind": "roman_formal", "split": "train"}
+{"src": "paridashya ra parilakshya", "tgt": "Vision and Mission", "meaning_id": "government_00004", "kind": "roman_informal", "split": "train"}
+{"src": "काम, कर्तव्य र अधिकार", "tgt": "Duties and Powers", "meaning_id": "government_00005", "kind": "deva_formal", "split": "train"}
+{"src": "काम, कर्तव्य र अधिकार", "tgt": "Duties and Powers", "meaning_id": "government_00005", "kind": "deva_informal", "split": "train"}
+{"src": "kama, kartawya ra adhikara", "tgt": "Duties and Powers", "meaning_id": "government_00005", "kind": "roman_formal", "split": "train"}
+{"src": "kama, kartawya ra adhikara", "tgt": "Duties and Powers", "meaning_id": "government_00005", "kind": "roman_informal", "split": "train"}
+{"src": "सङ्गठन संरचना", "tgt": "Organization Structure", "meaning_id": "government_00006", "kind": "deva_formal", "split": "train"}
+{"src": "सङ्गठन संरचना", "tgt": "Organization Structure", "meaning_id": "government_00006", "kind": "deva_informal", "split": "train"}
+{"src": "sanggathana snrachana", "tgt": "Organization Structure", "meaning_id": "government_00006", "kind": "roman_formal", "split": "train"}
+{"src": "sanggathana snrachana", "tgt": "Organization Structure", "meaning_id": "government_00006", "kind": "roman_informal", "split": "train"}
+{"src": "पदाधिकारी र कर्मचारी", "tgt": "Officials and Employees", "meaning_id": "government_00007", "kind": "deva_formal", "split": "train"}
+{"src": "पदाधिकारी र कर्मचारी", "tgt": "Officials and Employees", "meaning_id": "government_00007", "kind": "deva_informal", "split": "train"}
+{"src": "padadhikari ra karmachari", "tgt": "Officials and Employees", "meaning_id": "government_00007", "kind": "roman_formal", "split": "train"}
+{"src": "padadhikari ra karmachari", "tgt": "Officials and Employees", "meaning_id": "government_00007", "kind": "roman_informal", "split": "train"}
+{"src": "पूर्व अध्यक्षहरू", "tgt": "Former Chairpersons", "meaning_id": "government_00008", "kind": "deva_formal", "split": "train"}
+{"src": "पूर्व अध्यक्षहरू", "tgt": "Former Chairpersons", "meaning_id": "government_00008", "kind": "deva_informal", "split": "train"}
+{"src": "purwa adhyakshaharu", "tgt": "Former Chairpersons", "meaning_id": "government_00008", "kind": "roman_formal", "split": "train"}
+{"src": "purwa adhyakshaharu", "tgt": "Former Chairpersons", "meaning_id": "government_00008", "kind": "roman_informal", "split": "train"}
+{"src": "सेवाहरू", "tgt": "Services", "meaning_id": "government_00009", "kind": "deva_formal", "split": "train"}
+{"src": "सेवाहरू", "tgt": "Services", "meaning_id": "government_00009", "kind": "deva_informal", "split": "train"}
+{"src": "sewaharu", "tgt": "Services", "meaning_id": "government_00009", "kind": "roman_formal", "split": "train"}
+{"src": "sewaharu", "tgt": "Services", "meaning_id": "government_00009", "kind": "roman_informal", "split": "train"}
+{"src": "कानून तर्जुमा", "tgt": "Law Drafting", "meaning_id": "government_00010", "kind": "deva_formal", "split": "train"}
+{"src": "कानून तर्जुमा", "tgt": "Law Drafting", "meaning_id": "government_00010", "kind": "deva_informal", "split": "train"}
+{"src": "kanuna tarjuma", "tgt": "Law Drafting", "meaning_id": "government_00010", "kind": "roman_formal", "split": "train"}
+{"src": "kanuna tarjuma", "tgt": "Law Drafting", "meaning_id": "government_00010", "kind": "roman_informal", "split": "train"}
+{"src": "खोज तथा अध्ययन", "tgt": "Research and Study", "meaning_id": "government_00011", "kind": "deva_formal", "split": "train"}
+{"src": "खोज तथा अध्ययन", "tgt": "Research and Study", "meaning_id": "government_00011", "kind": "deva_informal", "split": "train"}
+{"src": "khoja tatha adhyayana", "tgt": "Research and Study", "meaning_id": "government_00011", "kind": "roman_formal", "split": "train"}
+{"src": "khoja tatha adhyayana", "tgt": "Research and Study", "meaning_id": "government_00011", "kind": "roman_informal", "split": "train"}
+{"src": "मौजुदा कानून", "tgt": "Existing Laws", "meaning_id": "government_00012", "kind": "deva_formal", "split": "train"}
+{"src": "मौजुदा कानून", "tgt": "Existing Laws", "meaning_id": "government_00012", "kind": "deva_informal", "split": "train"}
+{"src": "maujuda kanuna", "tgt": "Existing Laws", "meaning_id": "government_00012", "kind": "roman_formal", "split": "train"}
+{"src": "maujuda kanuna", "tgt": "Existing Laws", "meaning_id": "government_00012", "kind": "roman_informal", "split": "train"}
+{"src": "संविधान", "tgt": "Constitution", "meaning_id": "government_00013", "kind": "deva_formal", "split": "train"}
+{"src": "संविधान", "tgt": "Constitution", "meaning_id": "government_00013", "kind": "deva_informal", "split": "train"}
+{"src": "snwidhana", "tgt": "Constitution", "meaning_id": "government_00013", "kind": "roman_formal", "split": "train"}
+{"src": "snwidhana", "tgt": "Constitution", "meaning_id": "government_00013", "kind": "roman_informal", "split": "train"}
+{"src": "ऐन", "tgt": "Acts", "meaning_id": "government_00014", "kind": "deva_formal", "split": "train"}
+{"src": "ऐन", "tgt": "Acts", "meaning_id": "government_00014", "kind": "deva_informal", "split": "train"}
+{"src": "aina", "tgt": "Acts", "meaning_id": "government_00014", "kind": "roman_formal", "split": "train"}
+{"src": "aina", "tgt": "Acts", "meaning_id": "government_00014", "kind": "roman_informal", "split": "train"}
+{"src": "हालसालैका ऐन", "tgt": "Recent Acts", "meaning_id": "government_00015", "kind": "deva_formal", "split": "train"}
+{"src": "हालसालैका ऐन", "tgt": "Recent Acts", "meaning_id": "government_00015", "kind": "deva_informal", "split": "train"}
+{"src": "halasalaika aina", "tgt": "Recent Acts", "meaning_id": "government_00015", "kind": "roman_formal", "split": "train"}
+{"src": "halasalaika aina", "tgt": "Recent Acts", "meaning_id": "government_00015", "kind": "roman_informal", "split": "train"}
+{"src": "खण्ड अनुसार", "tgt": "By Volume", "meaning_id": "government_00016", "kind": "deva_formal", "split": "train"}
+{"src": "खण्ड अनुसार", "tgt": "By Volume", "meaning_id": "government_00016", "kind": "deva_informal", "split": "train"}
+{"src": "khanda anusara", "tgt": "By Volume", "meaning_id": "government_00016", "kind": "roman_formal", "split": "train"}
+{"src": "khanda anusara", "tgt": "By Volume", "meaning_id": "government_00016", "kind": "roman_informal", "split": "train"}
+{"src": "वर्णानुक्रम अनुसारको सूची", "tgt": "Alphabetical List", "meaning_id": "government_00017", "kind": "deva_formal", "split": "train"}
+{"src": "वर्णानुक्रम अनुसारको सूची", "tgt": "Alphabetical List", "meaning_id": "government_00017", "kind": "deva_informal", "split": "train"}
+{"src": "warnanukrama anusarako suchi", "tgt": "Alphabetical List", "meaning_id": "government_00017", "kind": "roman_formal", "split": "train"}
+{"src": "warnanukrama anusarako suchi", "tgt": "Alphabetical List", "meaning_id": "government_00017", "kind": "roman_informal", "split": "train"}
+{"src": "अध्यादेश", "tgt": "Ordinances", "meaning_id": "government_00018", "kind": "deva_formal", "split": "train"}
+{"src": "अध्यादेश", "tgt": "Ordinances", "meaning_id": "government_00018", "kind": "deva_informal", "split": "train"}
+{"src": "adhyadesha", "tgt": "Ordinances", "meaning_id": "government_00018", "kind": "roman_formal", "split": "train"}
+{"src": "adhyadesha", "tgt": "Ordinances", "meaning_id": "government_00018", "kind": "roman_informal", "split": "train"}
+{"src": "नियमावली", "tgt": "Regulations", "meaning_id": "government_00019", "kind": "deva_formal", "split": "train"}
+{"src": "नियमावली", "tgt": "Regulations", "meaning_id": "government_00019", "kind": "deva_informal", "split": "train"}
+{"src": "niyamawali", "tgt": "Regulations", "meaning_id": "government_00019", "kind": "roman_formal", "split": "train"}
+{"src": "niyamawali", "tgt": "Regulations", "meaning_id": "government_00019", "kind": "roman_informal", "split": "train"}
+{"src": "गठन आदेश", "tgt": "Formation Orders", "meaning_id": "government_00020", "kind": "deva_formal", "split": "train"}
+{"src": "गठन आदेश", "tgt": "Formation Orders", "meaning_id": "government_00020", "kind": "deva_informal", "split": "train"}
+{"src": "gathana aadesha", "tgt": "Formation Orders", "meaning_id": "government_00020", "kind": "roman_formal", "split": "train"}
+{"src": "gathana aadesha", "tgt": "Formation Orders", "meaning_id": "government_00020", "kind": "roman_informal", "split": "train"}
+{"src": "खारेज भएका ऐन", "tgt": "Repealed Acts", "meaning_id": "government_00022", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका ऐन", "tgt": "Repealed Acts", "meaning_id": "government_00022", "kind": "deva_informal", "split": "train"}
+{"src": "khareja bhaeka aina", "tgt": "Repealed Acts", "meaning_id": "government_00022", "kind": "roman_formal", "split": "train"}
+{"src": "khareja bhaeka aina", "tgt": "Repealed Acts", "meaning_id": "government_00022", "kind": "roman_informal", "split": "train"}
+{"src": "खारेज भएका अध्यादेश", "tgt": "Repealed Ordinances", "meaning_id": "government_00023", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका अध्यादेश", "tgt": "Repealed Ordinances", "meaning_id": "government_00023", "kind": "deva_informal", "split": "train"}
+{"src": "khareja bhaeka adhyadesha", "tgt": "Repealed Ordinances", "meaning_id": "government_00023", "kind": "roman_formal", "split": "train"}
+{"src": "khareja bhaeka adhyadesha", "tgt": "Repealed Ordinances", "meaning_id": "government_00023", "kind": "roman_informal", "split": "train"}
+{"src": "खारेज भएका नियमावली", "tgt": "Repealed Regulations", "meaning_id": "government_00024", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका नियमावली", "tgt": "Repealed Regulations", "meaning_id": "government_00024", "kind": "deva_informal", "split": "train"}
+{"src": "khareja bhaeka niyamawali", "tgt": "Repealed Regulations", "meaning_id": "government_00024", "kind": "roman_formal", "split": "train"}
+{"src": "khareja bhaeka niyamawali", "tgt": "Repealed Regulations", "meaning_id": "government_00024", "kind": "roman_informal", "split": "train"}
+{"src": "नीति", "tgt": "Policies", "meaning_id": "government_00025", "kind": "deva_formal", "split": "train"}
+{"src": "नीति", "tgt": "Policies", "meaning_id": "government_00025", "kind": "deva_informal", "split": "train"}
+{"src": "niti", "tgt": "Policies", "meaning_id": "government_00025", "kind": "roman_formal", "split": "train"}
+{"src": "niti", "tgt": "Policies", "meaning_id": "government_00025", "kind": "roman_informal", "split": "train"}
+{"src": "ऐतिहासिक दस्तावेज", "tgt": "Historical Documents", "meaning_id": "government_00027", "kind": "deva_formal", "split": "train"}
+{"src": "ऐतिहासिक दस्तावेज", "tgt": "Historical Documents", "meaning_id": "government_00027", "kind": "deva_informal", "split": "train"}
+{"src": "aitihasika dastaweja", "tgt": "Historical Documents", "meaning_id": "government_00027", "kind": "roman_formal", "split": "train"}
+{"src": "aitihasika dastaweja", "tgt": "Historical Documents", "meaning_id": "government_00027", "kind": "roman_informal", "split": "train"}
+{"src": "अन्य", "tgt": "Other", "meaning_id": "government_00028", "kind": "deva_formal", "split": "train"}
+{"src": "अन्य", "tgt": "Other", "meaning_id": "government_00028", "kind": "deva_informal", "split": "train"}
+{"src": "anya", "tgt": "Other", "meaning_id": "government_00028", "kind": "roman_formal", "split": "train"}
+{"src": "anya", "tgt": "Other", "meaning_id": "government_00028", "kind": "roman_informal", "split": "train"}
+{"src": "सूचना केन्द्र", "tgt": "Information Center", "meaning_id": "government_00029", "kind": "deva_formal", "split": "train"}
+{"src": "सूचना केन्द्र", "tgt": "Information Center", "meaning_id": "government_00029", "kind": "deva_informal", "split": "train"}
+{"src": "suchana kendra", "tgt": "Information Center", "meaning_id": "government_00029", "kind": "roman_formal", "split": "train"}
+{"src": "suchana kendra", "tgt": "Information Center", "meaning_id": "government_00029", "kind": "roman_informal", "split": "train"}
+{"src": "वार्षिक प्रतिवेदन", "tgt": "Annual Report", "meaning_id": "government_00030", "kind": "deva_formal", "split": "train"}
+{"src": "वार्षिक प्रतिवेदन", "tgt": "Annual Report", "meaning_id": "government_00030", "kind": "deva_informal", "split": "train"}
+{"src": "warshika pratiwedana", "tgt": "Annual Report", "meaning_id": "government_00030", "kind": "roman_formal", "split": "train"}
+{"src": "warshika pratiwedana", "tgt": "Annual Report", "meaning_id": "government_00030", "kind": "roman_informal", "split": "train"}
+{"src": "सम्पर्क", "tgt": "Contact", "meaning_id": "government_00031", "kind": "deva_formal", "split": "train"}
+{"src": "सम्पर्क", "tgt": "Contact", "meaning_id": "government_00031", "kind": "deva_informal", "split": "train"}
+{"src": "samparka", "tgt": "Contact", "meaning_id": "government_00031", "kind": "roman_formal", "split": "train"}
+{"src": "samparka", "tgt": "Contact", "meaning_id": "government_00031", "kind": "roman_informal", "split": "train"}
+{"src": "सम्पर्क ठेगाना", "tgt": "Contact Address", "meaning_id": "government_00032", "kind": "deva_formal", "split": "train"}
+{"src": "सम्पर्क ठेगाना", "tgt": "Contact Address", "meaning_id": "government_00032", "kind": "deva_informal", "split": "train"}
+{"src": "samparka thegana", "tgt": "Contact Address", "meaning_id": "government_00032", "kind": "roman_formal", "split": "train"}
+{"src": "samparka thegana", "tgt": "Contact Address", "meaning_id": "government_00032", "kind": "roman_informal", "split": "train"}
+{"src": "सुझाव र गुनासो", "tgt": "Suggestions and Complaints", "meaning_id": "government_00033", "kind": "deva_formal", "split": "train"}
+{"src": "सुझाव र गुनासो", "tgt": "Suggestions and Complaints", "meaning_id": "government_00033", "kind": "deva_informal", "split": "train"}
+{"src": "sujhawa ra gunaso", "tgt": "Suggestions and Complaints", "meaning_id": "government_00033", "kind": "roman_formal", "split": "train"}
+{"src": "sujhawa ra gunaso", "tgt": "Suggestions and Complaints", "meaning_id": "government_00033", "kind": "roman_informal", "split": "train"}
+{"src": "बारम्बार सोधिने प्रश्न र उत्तर", "tgt": "Frequently Asked Questions", "meaning_id": "government_00034", "kind": "deva_formal", "split": "train"}
+{"src": "बारम्बार सोधिने प्रश्न र उत्तर", "tgt": "Frequently Asked Questions", "meaning_id": "government_00034", "kind": "deva_informal", "split": "train"}
+{"src": "barambara sodhine prashna ra uttara", "tgt": "Frequently Asked Questions", "meaning_id": "government_00034", "kind": "roman_formal", "split": "train"}
+{"src": "barambara sodhine prashna ra uttara", "tgt": "Frequently Asked Questions", "meaning_id": "government_00034", "kind": "roman_informal", "split": "train"}
+{"src": "नेपाल सरकार", "tgt": "Government of Nepal", "meaning_id": "government_00035", "kind": "deva_formal", "split": "train"}
+{"src": "नेपाल सरकार", "tgt": "Government of Nepal", "meaning_id": "government_00035", "kind": "deva_informal", "split": "train"}
+{"src": "nepala sarakara", "tgt": "Government of Nepal", "meaning_id": "government_00035", "kind": "roman_formal", "split": "train"}
+{"src": "nepala sarakara", "tgt": "Government of Nepal", "meaning_id": "government_00035", "kind": "roman_informal", "split": "train"}
+{"src": "नेपाल कानून आयोग", "tgt": "Nepal Law Commission", "meaning_id": "government_00036", "kind": "deva_formal", "split": "train"}
+{"src": "नेपाल कानून आयोग", "tgt": "Nepal Law Commission", "meaning_id": "government_00036", "kind": "deva_informal", "split": "train"}
+{"src": "nepala kanuna aayoga", "tgt": "Nepal Law Commission", "meaning_id": "government_00036", "kind": "roman_formal", "split": "train"}
+{"src": "nepala kanuna aayoga", "tgt": "Nepal Law Commission", "meaning_id": "government_00036", "kind": "roman_informal", "split": "train"}
+{"src": "नयाँ बानेश्वर, काठमाडौं", "tgt": "New Baneshwor, Kathmandu", "meaning_id": "government_00037", "kind": "deva_formal", "split": "train"}
+{"src": "नयाँ बानेश्वर, काठमाडौं", "tgt": "New Baneshwor, Kathmandu", "meaning_id": "government_00037", "kind": "deva_informal", "split": "train"}
+{"src": "nayan baneshwara, kathamadaun", "tgt": "New Baneshwor, Kathmandu", "meaning_id": "government_00037", "kind": "roman_formal", "split": "train"}
+{"src": "nayan baneshwara, kathamadaun", "tgt": "New Baneshwor, Kathmandu", "meaning_id": "government_00037", "kind": "roman_informal", "split": "train"}
+{"src": "भाषा चयन गर्नुहोस्", "tgt": "Select Language", "meaning_id": "government_00038", "kind": "deva_formal", "split": "train"}
+{"src": "भाषा चयन गर", "tgt": "Select Language", "meaning_id": "government_00038", "kind": "deva_informal", "split": "train"}
+{"src": "bhasha chayana garnuhos", "tgt": "Select Language", "meaning_id": "government_00038", "kind": "roman_formal", "split": "train"}
+{"src": "bhasha chayana gara", "tgt": "Select Language", "meaning_id": "government_00038", "kind": "roman_informal", "split": "train"}
+{"src": "खोज्नुहोस्", "tgt": "Search", "meaning_id": "government_00039", "kind": "deva_formal", "split": "train"}
+{"src": "खोज्नुहोस्", "tgt": "Search", "meaning_id": "government_00039", "kind": "deva_informal", "split": "train"}
+{"src": "khojnuhos", "tgt": "Search", "meaning_id": "government_00039", "kind": "roman_formal", "split": "train"}
+{"src": "khojnuhos", "tgt": "Search", "meaning_id": "government_00039", "kind": "roman_informal", "split": "train"}
+{"src": "महत्त्वपूर्ण सूचना", "tgt": "Important Notice", "meaning_id": "government_00040", "kind": "deva_formal", "split": "train"}
+{"src": "महत्त्वपूर्ण सूचना", "tgt": "Important Notice", "meaning_id": "government_00040", "kind": "deva_informal", "split": "train"}
+{"src": "mahattwapurna suchana", "tgt": "Important Notice", "meaning_id": "government_00040", "kind": "roman_formal", "split": "train"}
+{"src": "mahattwapurna suchana", "tgt": "Important Notice", "meaning_id": "government_00040", "kind": "roman_informal", "split": "train"}
+{"src": "कार्यालय समय", "tgt": "Office Hours", "meaning_id": "government_00041", "kind": "deva_formal", "split": "train"}
+{"src": "कार्यालय समय", "tgt": "Office Hours", "meaning_id": "government_00041", "kind": "deva_informal", "split": "train"}
+{"src": "karyalaya samaya", "tgt": "Office Hours", "meaning_id": "government_00041", "kind": "roman_formal", "split": "train"}
+{"src": "karyalaya samaya", "tgt": "Office Hours", "meaning_id": "government_00041", "kind": "roman_informal", "split": "train"}
+{"src": "गृहपृष्ठ", "tgt": "Home", "meaning_id": "government_00042", "kind": "deva_formal", "split": "train"}
+{"src": "गृहपृष्ठ", "tgt": "Home", "meaning_id": "government_00042", "kind": "deva_informal", "split": "train"}
+{"src": "gahapashtha", "tgt": "Home", "meaning_id": "government_00042", "kind": "roman_formal", "split": "train"}
+{"src": "gahapashtha", "tgt": "Home", "meaning_id": "government_00042", "kind": "roman_informal", "split": "train"}
+{"src": "डाउनलोड गर्नुहोस्", "tgt": "Download", "meaning_id": "government_00043", "kind": "deva_formal", "split": "train"}
+{"src": "डाउनलोड गर", "tgt": "Download", "meaning_id": "government_00043", "kind": "deva_informal", "split": "train"}
+{"src": "daunaloda garnuhos", "tgt": "Download", "meaning_id": "government_00043", "kind": "roman_formal", "split": "train"}
+{"src": "daunaloda gara", "tgt": "Download", "meaning_id": "government_00043", "kind": "roman_informal", "split": "train"}
+{"src": "थप पढ्नुहोस्", "tgt": "Read More", "meaning_id": "government_00044", "kind": "deva_formal", "split": "train"}
+{"src": "थप पढ्नुहोस्", "tgt": "Read More", "meaning_id": "government_00044", "kind": "deva_informal", "split": "train"}
+{"src": "thapa padhnuhos", "tgt": "Read More", "meaning_id": "government_00044", "kind": "roman_formal", "split": "train"}
+{"src": "thapa padhnuhos", "tgt": "Read More", "meaning_id": "government_00044", "kind": "roman_informal", "split": "train"}
+{"src": "अघिल्लो", "tgt": "Previous", "meaning_id": "government_00045", "kind": "deva_formal", "split": "train"}
+{"src": "अघिल्लो", "tgt": "Previous", "meaning_id": "government_00045", "kind": "deva_informal", "split": "train"}
+{"src": "aghillo", "tgt": "Previous", "meaning_id": "government_00045", "kind": "roman_formal", "split": "train"}
+{"src": "aghillo", "tgt": "Previous", "meaning_id": "government_00045", "kind": "roman_informal", "split": "train"}
+{"src": "अर्को", "tgt": "Next", "meaning_id": "government_00046", "kind": "deva_formal", "split": "train"}
+{"src": "अर्को", "tgt": "Next", "meaning_id": "government_00046", "kind": "deva_informal", "split": "train"}
+{"src": "arko", "tgt": "Next", "meaning_id": "government_00046", "kind": "roman_formal", "split": "train"}
+{"src": "arko", "tgt": "Next", "meaning_id": "government_00046", "kind": "roman_informal", "split": "train"}
+{"src": "पेश गर्नुहोस्", "tgt": "Submit", "meaning_id": "government_00047", "kind": "deva_formal", "split": "train"}
+{"src": "पेश गर", "tgt": "Submit", "meaning_id": "government_00047", "kind": "deva_informal", "split": "train"}
+{"src": "pesha garnuhos", "tgt": "Submit", "meaning_id": "government_00047", "kind": "roman_formal", "split": "train"}
+{"src": "pesha gara", "tgt": "Submit", "meaning_id": "government_00047", "kind": "roman_informal", "split": "train"}
+{"src": "रद्द गर्नुहोस्", "tgt": "Cancel", "meaning_id": "government_00048", "kind": "deva_formal", "split": "train"}
+{"src": "रद्द गर", "tgt": "Cancel", "meaning_id": "government_00048", "kind": "deva_informal", "split": "train"}
+{"src": "radda garnuhos", "tgt": "Cancel", "meaning_id": "government_00048", "kind": "roman_formal", "split": "train"}
+{"src": "radda gara", "tgt": "Cancel", "meaning_id": "government_00048", "kind": "roman_informal", "split": "train"}
+{"src": "पछाडि", "tgt": "Back", "meaning_id": "government_00050", "kind": "deva_formal", "split": "train"}
+{"src": "पछाडि", "tgt": "Back", "meaning_id": "government_00050", "kind": "deva_informal", "split": "train"}
+{"src": "pachhaadi", "tgt": "Back", "meaning_id": "government_00050", "kind": "roman_formal", "split": "train"}
+{"src": "pachhaadi", "tgt": "Back", "meaning_id": "government_00050", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "Please use formal language.", "meaning_id": "government_00052", "kind": "deva_formal", "split": "train"}
+{"src": "औपचारिक भाषा प्रयोग गर।", "tgt": "Please use formal language.", "meaning_id": "government_00052", "kind": "deva_informal", "split": "train"}
+{"src": "kripya aupacharika bhasha prayoga garnuhos.", "tgt": "Please use formal language.", "meaning_id": "government_00052", "kind": "roman_formal", "split": "train"}
+{"src": "aupacharika bhasha prayoga gara.", "tgt": "Please use formal language.", "meaning_id": "government_00052", "kind": "roman_informal", "split": "train"}
+{"src": "औपचारिक भाषा प्रयोग गर।", "tgt": "Please use formal language.", "meaning_id": "government_00053", "kind": "deva_formal", "split": "train"}
+{"src": "औपचारिक भाषा प्रयोग गर।", "tgt": "Please use formal language.", "meaning_id": "government_00053", "kind": "deva_informal", "split": "train"}
+{"src": "aupacharika bhasha prayoga gara.", "tgt": "Please use formal language.", "meaning_id": "government_00053", "kind": "roman_formal", "split": "train"}
+{"src": "aupacharika bhasha prayoga gara.", "tgt": "Please use formal language.", "meaning_id": "government_00053", "kind": "roman_informal", "split": "train"}
+{"src": "शुरुमा यसको कार्यकाल एक वर्ष तोकिएको भए तापनि पटक पटक म्याद थप भई २०२७ सालसम्म कायम भएको थियो ।", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "meaning_id": "government_00054", "kind": "deva_formal", "split": "train"}
+{"src": "शुरुमा यसको कार्यकाल एक वर्ष तोकिएको भए तापनि पटक पटक म्याद थप भई २०२७ सालसम्म कायम भएको थियो ।", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "meaning_id": "government_00054", "kind": "deva_informal", "split": "train"}
+{"src": "shuruma yasako karyakala eka warsha tokieko bhae tapani pataka pataka myada thapa bhai २०२७ salasamma kayama bhaeko thiyo .", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "meaning_id": "government_00054", "kind": "roman_formal", "split": "train"}
+{"src": "shuruma yasako karyakala eka warsha tokieko bhae tapani pataka pataka myada thapa bhai २०२७ salasamma kayama bhaeko thiyo .", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "meaning_id": "government_00054", "kind": "roman_informal", "split": "train"}
+{"src": "(क) ल कमिशन, २०१०ः नेपालमा सर्वप्रथम २०१०।९।६।१ को मन्त्रिमण्डलको निर्णय बमोजिम पहिलो ल कमिशनको गठन भएको हो । उक्त कमिशनको गठनविधि, कार्य प्रणाली, कार्यावधि आदिका सम्बन्धमा मिति २०१०।११।११ मा नेपाल गजेटमा प्रकाशित सरकारको विज्ञप्तिमा उल्लेख गरिएको थियो ।", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "meaning_id": "government_00055", "kind": "deva_formal", "split": "train"}
+{"src": "(क) ल कमिशन, २०१०ः नेपालमा सर्वप्रथम २०१०।९।६।१ को मन्त्रिमण्डलको निर्णय बमोजिम पहिलो ल कमिशनको गठन भएको हो । उक्त कमिशनको गठनविधि, कार्य प्रणाली, कार्यावधि आदिका सम्बन्धमा मिति २०१०।११।११ मा नेपाल गजेटमा प्रकाशित सरकारको विज्ञप्तिमा उल्लेख गरिएको थियो ।", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "meaning_id": "government_00055", "kind": "deva_informal", "split": "train"}
+{"src": "ka la kamishana, २०१० nepalama sarwaprathama २०१०.९.६.१ ko mantrimandalako nirnaya bamojima pahilo la kamishanako gathana bhaeko ho . ukta kamishanako gathanawidhi, karya pranali, karyawadhi aadika sambandhama miti २०१०.११.११ ma nepala gajetama prakashita sarakarako wijञptima ullekha garieko thiyo .", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "meaning_id": "government_00055", "kind": "roman_formal", "split": "train"}
+{"src": "ka la kamishana, २०१० nepalama sarwaprathama २०१०.९.६.१ ko mantrimandalako nirnaya bamojima pahilo la kamishanako gathana bhaeko ho . ukta kamishanako gathanawidhi, karya pranali, karyawadhi aadika sambandhama miti २०१०.११.११ ma nepala gajetama prakashita sarakarako wijञptima ullekha garieko thiyo .", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "meaning_id": "government_00055", "kind": "roman_informal", "split": "train"}
+{"src": "(ख) ल कमिशन, २०१७ः श्री ५ को सरकारको मिति २०१७।६।२७।४ को निर्णय अनुसार (नेपाल राजपत्रमा प्रकाशित मिति २०१७।७।१५) देहाय बमोजिमको ७ सदस्यीय दोश्रो ल कमिशन गठन गरियो । १. सर्वोच्च अदालतका माननीय न्यायाधीश श्री नयनबहादुर खत्री — अध्यक्ष २. मध्यमाञ्चल उच्च अदालतका मुख्य न्यायाधीश — सदस्य ३. एटर्नी जनरल श्री शम्भुप्रसाद ज्ञवाली — सदस्य ४. कानून सचिव — सदस्य ५. श्री ५ को सरकारबाट मनोनित गैर—सरकारी व्यक्ति जना ३ — सदस्य", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "meaning_id": "government_00056", "kind": "deva_formal", "split": "train"}
+{"src": "(ख) ल कमिशन, २०१७ः श्री ५ को सरकारको मिति २०१७।६।२७।४ को निर्णय अनुसार (नेपाल राजपत्रमा प्रकाशित मिति २०१७।७।१५) देहाय बमोजिमको ७ सदस्यीय दोश्रो ल कमिशन गठन गरियो । १. सर्वोच्च अदालतका माननीय न्यायाधीश श्री नयनबहादुर खत्री — अध्यक्ष २. मध्यमाञ्चल उच्च अदालतका मुख्य न्यायाधीश — सदस्य ३. एटर्नी जनरल श्री शम्भुप्रसाद ज्ञवाली — सदस्य ४. कानून सचिव — सदस्य ५. श्री ५ को सरकारबाट मनोनित गैर—सरकारी व्यक्ति जना ३ — सदस्य", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "meaning_id": "government_00056", "kind": "deva_informal", "split": "train"}
+{"src": "kha la kamishana, २०१७ shri ५ ko sarakarako miti २०१७.६.२७.४ ko nirnaya anusara nepala rajapatrama prakashita miti २०१७.७.१५ dehaya bamojimako ७ sadasyiya doshro la kamishana gathana gariyo . १. sarwochcha adalataka mananiya nyayadhisha shri nayanabahadura khatri  adhyaksha २. madhyamaञchala uchcha adalataka mukhya nyayadhisha  sadasya ३. etarni janarala shri shambhuprasada jञwali  sadasya ४. kanuna sachiwa  sadasya ५. shri ५ ko sarakarabata manonita gairasarakari wyakti jana ३  sadasya", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "meaning_id": "government_00056", "kind": "roman_formal", "split": "train"}
+{"src": "kha la kamishana, २०१७ shri ५ ko sarakarako miti २०१७.६.२७.४ ko nirnaya anusara nepala rajapatrama prakashita miti २०१७.७.१५ dehaya bamojimako ७ sadasyiya doshro la kamishana gathana gariyo . १. sarwochcha adalataka mananiya nyayadhisha shri nayanabahadura khatri  adhyaksha २. madhyamaञchala uchcha adalataka mukhya nyayadhisha  sadasya ३. etarni janarala shri shambhuprasada jञwali  sadasya ४. kanuna sachiwa  sadasya ५. shri ५ ko sarakarabata manonita gairasarakari wyakti jana ३  sadasya", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "meaning_id": "government_00056", "kind": "roman_informal", "split": "train"}
+{"src": "मिति २०१८।७।१४ मा प्रकाशित सूचना अनुसार सर्वोच्च अदालतको न्यायाधीशलाई झिकी एटर्नी जनरललाई अध्यक्ष बनाइएको थियो । उक्त सूचना अनुसूची ३ मा राखिएको छ । कमिशनको बैठक कम्तिमा महिनाको ४ पटक वस्नुपर्ने र ४ जना सदस्यहरु उपस्थित हुनुपर्ने गरी गणपूरक संख्या तोकिएकोमा मिति २०१८।७।१४ को राजपत्रमा प्रकाशित सूचना अनुसार गणपूरक संख्या ३ बनाइएको थियो । कमिशनले आफ्नो कार्यविधि व्यवस्थित गर्न नियम बनाउन सक्ने तथा सो नियम कानून मन्त्रालयबाट स्वीकृत हुनुपर्ने व्यवस्था थियो । कानून मन्त्रालयको उप—सचिवलाई सेक्रेटरी तोकिएको उक्त कमिशनले २ वर्ष भित्रमा काम सम्पन्न गरी रिपोर्ट श्री ५ को सरकार समक्ष पेश गर्नुपर्ने थियो । २०२० सालको मुलुकी ऐन यस आयोगको सक्रियतामा बनेको हो ।", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "meaning_id": "government_00057", "kind": "deva_formal", "split": "train"}
+{"src": "मिति २०१८।७।१४ मा प्रकाशित सूचना अनुसार सर्वोच्च अदालतको न्यायाधीशलाई झिकी एटर्नी जनरललाई अध्यक्ष बनाइएको थियो । उक्त सूचना अनुसूची ३ मा राखिएको छ । कमिशनको बैठक कम्तिमा महिनाको ४ पटक वस्नुपर्ने र ४ जना सदस्यहरु उपस्थित हुनुपर्ने गरी गणपूरक संख्या तोकिएकोमा मिति २०१८।७।१४ को राजपत्रमा प्रकाशित सूचना अनुसार गणपूरक संख्या ३ बनाइएको थियो । कमिशनले आफ्नो कार्यविधि व्यवस्थित गर्न नियम बनाउन सक्ने तथा सो नियम कानून मन्त्रालयबाट स्वीकृत हुनुपर्ने व्यवस्था थियो । कानून मन्त्रालयको उप—सचिवलाई सेक्रेटरी तोकिएको उक्त कमिशनले २ वर्ष भित्रमा काम सम्पन्न गरी रिपोर्ट श्री ५ को सरकार समक्ष पेश गर्नुपर्ने थियो । २०२० सालको मुलुकी ऐन यस आयोगको सक्रियतामा बनेको हो ।", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "meaning_id": "government_00057", "kind": "deva_informal", "split": "train"}
+{"src": "miti २०१८.७.१४ ma prakashita suchana anusara sarwochcha adalatako nyayadhishalai jhiki etarni janaralalai adhyaksha banaieko thiyo . ukta suchana anusuchi ३ ma rakhieko chha . kamishanako baithaka kamtima mahinako ४ pataka wasnuparne ra ४ jana sadasyaharu upasthita hunuparne gari ganapuraka snkhya tokiekoma miti २०१८.७.१४ ko rajapatrama prakashita suchana anusara ganapuraka snkhya ३ banaieko thiyo . kamishanale aaphno karyawidhi wyawasthita garna niyama banauna sakne tatha so niyama kanuna mantralayabata swikata hunuparne wyawastha thiyo . kanuna mantralayako upasachiwalai sekretari tokieko ukta kamishanale २ warsha bhitrama kama sampanna gari riporta shri ५ ko sarakara samaksha pesha garnuparne thiyo . २०२० salako muluki aina yasa aayogako sakriyatama baneko ho .", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "meaning_id": "government_00057", "kind": "roman_formal", "split": "train"}
+{"src": "miti २०१८.७.१४ ma prakashita suchana anusara sarwochcha adalatako nyayadhishalai jhiki etarni janaralalai adhyaksha banaieko thiyo . ukta suchana anusuchi ३ ma rakhieko chha . kamishanako baithaka kamtima mahinako ४ pataka wasnuparne ra ४ jana sadasyaharu upasthita hunuparne gari ganapuraka snkhya tokiekoma miti २०१८.७.१४ ko rajapatrama prakashita suchana anusara ganapuraka snkhya ३ banaieko thiyo . kamishanale aaphno karyawidhi wyawasthita garna niyama banauna sakne tatha so niyama kanuna mantralayabata swikata hunuparne wyawastha thiyo . kanuna mantralayako upasachiwalai sekretari tokieko ukta kamishanale २ warsha bhitrama kama sampanna gari riporta shri ५ ko sarakara samaksha pesha garnuparne thiyo . २०२० salako muluki aina yasa aayogako sakriyatama baneko ho .", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "meaning_id": "government_00057", "kind": "roman_informal", "split": "train"}
+{"src": "(ग) कानून आयोग, २०२०ः श्री ५ को सरकारको मिति २०२०।१०।८।४ को निर्णय बमोजिम (राजपत्रमा सूचना प्रकाशित मिति २०२०।१२।१०) गठन भएको उक्त आयोगको गठनविधि यस प्रकार थियोः— १. श्री विनोदप्रसाद धिताल सह—सचिव, कानून मन्त्रालय — पदेन अध्यक्ष २. श्री नीरकुमार क्षेत्री — सदस्य ३. श्री टोप बहादुर सिंह — सदस्य ४. श्री हेरम्बराज — सदस्य ५. श्री विश्वनाथ उपाध्याय उप—सचिव, कानून मन्त्रालय —सदस्य—सचिव", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "meaning_id": "government_00058", "kind": "deva_formal", "split": "train"}
+{"src": "(ग) कानून आयोग, २०२०ः श्री ५ को सरकारको मिति २०२०।१०।८।४ को निर्णय बमोजिम (राजपत्रमा सूचना प्रकाशित मिति २०२०।१२।१०) गठन भएको उक्त आयोगको गठनविधि यस प्रकार थियोः— १. श्री विनोदप्रसाद धिताल सह—सचिव, कानून मन्त्रालय — पदेन अध्यक्ष २. श्री नीरकुमार क्षेत्री — सदस्य ३. श्री टोप बहादुर सिंह — सदस्य ४. श्री हेरम्बराज — सदस्य ५. श्री विश्वनाथ उपाध्याय उप—सचिव, कानून मन्त्रालय —सदस्य—सचिव", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "meaning_id": "government_00058", "kind": "deva_informal", "split": "train"}
+{"src": "ga kanuna aayoga, २०२० shri ५ ko sarakarako miti २०२०.१०.८.४ ko nirnaya bamojima rajapatrama suchana prakashita miti २०२०.१२.१० gathana bhaeko ukta aayogako gathanawidhi yasa prakara thiyo १. shri winodaprasada dhitala sahasachiwa, kanuna mantralaya  padena adhyaksha २. shri nirakumara kshetri  sadasya ३. shri topa bahadura sinha  sadasya ४. shri herambaraja  sadasya ५. shri wishwanatha upadhyaya upasachiwa, kanuna mantralaya sadasyasachiwa", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "meaning_id": "government_00058", "kind": "roman_formal", "split": "train"}
+{"src": "ga kanuna aayoga, २०२० shri ५ ko sarakarako miti २०२०.१०.८.४ ko nirnaya bamojima rajapatrama suchana prakashita miti २०२०.१२.१० gathana bhaeko ukta aayogako gathanawidhi yasa prakara thiyo १. shri winodaprasada dhitala sahasachiwa, kanuna mantralaya  padena adhyaksha २. shri nirakumara kshetri  sadasya ३. shri topa bahadura sinha  sadasya ४. shri herambaraja  sadasya ५. shri wishwanatha upadhyaya upasachiwa, kanuna mantralaya sadasyasachiwa", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "meaning_id": "government_00058", "kind": "roman_informal", "split": "train"}
+{"src": "(घ) कानून आयोग, २०२९ः श्री ५ महाराजाधिराजबाट मिति २०२९।२।१९ मा प्रचलित नेपाल कानूनमा विशेष गरी फौजदारी, देवानी, बाणिज्य तथा प्रमाण सम्बन्धी कानूनहरुमा भइरहेको अभाव र त्रुटीहरु हटाई भरिसक्य सरल, बैज्ञानिक र व्यवहारिक रुप दिई छुटृाछुटृै ऐनहरुको तर्जुमा गर्न न्यायिक समितिका अध्यक्ष एवं सर्वोच्च अदालतका माननीय न्यायाधीश श्री नयनबहादुर खत्रीको अध्यक्षतामा ५ सदस्यीय चौथौ कानून आयोगको गठन गरिबक्सियो । उक्त आयोग गठनको सूचना अनुसूची – ४ मा राखिएको छ । उक्त आयोगमा सर्वोच्च अदालतका अस्थायी माननीय न्यायाधीश श्री विश्वनाथ उपाध्याय— १, महान्यायाधिवक्ता श्री रमानन्दप्रसाद सिंह —१, न्यायिक समितिका सदस्य श्री कृष्णप्रसाद पन्त— १ समेतलाई सदस्य तथा कानून सचिव श्री चूडामणिराज सिंहलाई सदस्य—सचिव तोकिएको थियो । यस आयोगले प्रमाण ऐन तथा अपराध संहिता मसौदा र तत्सम्बन्धी प्रतिवेदन तयार गरी श्री ५ समक्ष पेश गरेको थि", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "meaning_id": "government_00059", "kind": "deva_formal", "split": "train"}
+{"src": "(घ) कानून आयोग, २०२९ः श्री ५ महाराजाधिराजबाट मिति २०२९।२।१९ मा प्रचलित नेपाल कानूनमा विशेष गरी फौजदारी, देवानी, बाणिज्य तथा प्रमाण सम्बन्धी कानूनहरुमा भइरहेको अभाव र त्रुटीहरु हटाई भरिसक्य सरल, बैज्ञानिक र व्यवहारिक रुप दिई छुटृाछुटृै ऐनहरुको तर्जुमा गर्न न्यायिक समितिका अध्यक्ष एवं सर्वोच्च अदालतका माननीय न्यायाधीश श्री नयनबहादुर खत्रीको अध्यक्षतामा ५ सदस्यीय चौथौ कानून आयोगको गठन गरिबक्सियो । उक्त आयोग गठनको सूचना अनुसूची – ४ मा राखिएको छ । उक्त आयोगमा सर्वोच्च अदालतका अस्थायी माननीय न्यायाधीश श्री विश्वनाथ उपाध्याय— १, महान्यायाधिवक्ता श्री रमानन्दप्रसाद सिंह —१, न्यायिक समितिका सदस्य श्री कृष्णप्रसाद पन्त— १ समेतलाई सदस्य तथा कानून सचिव श्री चूडामणिराज सिंहलाई सदस्य—सचिव तोकिएको थियो । यस आयोगले प्रमाण ऐन तथा अपराध संहिता मसौदा र तत्सम्बन्धी प्रतिवेदन तयार गरी श्री ५ समक्ष पेश गरेको थि", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "meaning_id": "government_00059", "kind": "deva_informal", "split": "train"}
+{"src": "gha kanuna aayoga, २०२९ shri ५ maharajadhirajabata miti २०२९.२.१९ ma prachalita nepala kanunama wishesha gari phaujadari, dewani, banijya tatha pramana sambandhi kanunaharuma bhairaheko abhawa ra trutiharu hatai bharisakya sarala, baijञanika ra wyawaharika rupa dii chhautaachhautaai ainaharuko tarjuma garna nyayika samitika adhyaksha ewn sarwochcha adalataka mananiya nyayadhisha shri nayanabahadura khatriko adhyakshatama ५ sadasyiya chauthau kanuna aayogako gathana garibaksiyo . ukta aayoga gathanako suchana anusuchi  ४ ma rakhieko chha . ukta aayogama sarwochcha adalataka asthayi mananiya nyayadhisha shri wishwanatha upadhyaya १, mahanyayadhiwakta shri ramanandaprasada sinha १, nyayika samitika sadasya shri kashnaprasada panta १ sametalai sadasya tatha kanuna sachiwa shri chudamaniraja sinhalai sadasyasachiwa tokieko thiyo . yasa aayogale pramana aina tatha aparadha snhita masauda ra tatsambandhi pratiwedana tayara gari shri ५ samaksha pesha gareko thi", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "meaning_id": "government_00059", "kind": "roman_formal", "split": "train"}
+{"src": "gha kanuna aayoga, २०२९ shri ५ maharajadhirajabata miti २०२९.२.१९ ma prachalita nepala kanunama wishesha gari phaujadari, dewani, banijya tatha pramana sambandhi kanunaharuma bhairaheko abhawa ra trutiharu hatai bharisakya sarala, baijञanika ra wyawaharika rupa dii chhautaachhautaai ainaharuko tarjuma garna nyayika samitika adhyaksha ewn sarwochcha adalataka mananiya nyayadhisha shri nayanabahadura khatriko adhyakshatama ५ sadasyiya chauthau kanuna aayogako gathana garibaksiyo . ukta aayoga gathanako suchana anusuchi  ४ ma rakhieko chha . ukta aayogama sarwochcha adalataka asthayi mananiya nyayadhisha shri wishwanatha upadhyaya १, mahanyayadhiwakta shri ramanandaprasada sinha १, nyayika samitika sadasya shri kashnaprasada panta १ sametalai sadasya tatha kanuna sachiwa shri chudamaniraja sinhalai sadasyasachiwa tokieko thiyo . yasa aayogale pramana aina tatha aparadha snhita masauda ra tatsambandhi pratiwedana tayara gari shri ५ samaksha pesha gareko thi", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "meaning_id": "government_00059", "kind": "roman_informal", "split": "train"}
+{"src": "(च) नेपाल कानून सुधार आयोग, २०४१ः यस अघिका आयोगको आवधिक वा तदर्थ रुपमा गठन विघटन हुंदै आएकोमा श्री ५ को सरकारको मिति २०४१।८।२१ को निर्णयले नेपाल कानून सुधार आयोग नामक एक स्थायी प्रकृतिको आयोगको स्थापना गरी पदाधिकारीहरु नियुक्ति गर्ने व्यवस्था गर्यो । श्री ५ को सरकारको यो निर्णयले कानून तर्जुमाका क्षेत्रमा आयोगको स्थायी भूमिका एवं सक्रियताको अपेक्षा राख्दै संस्थागत रुपमा नै आयोगको अस्तित्व स्थापित गर्ने काम ग¥यो । आयोगको इतिहासमा यो सर्वाधिक महत्वको निर्णय थियो भन्न सकिन्छ । जस अनुसार ५ वर्षे कार्यावधि सहित गठन भएको आयोगको गठनविधि एवं काम कर्तव्यहरुको व्यवस्था गरिएको थियो । पछि श्री ५ को सरकारले मिति २०४६।८।२१ मा पदावधि समाप्त भएका उक्त आयोगका सदस्य तथा सह—सदस्यहरुलाई यथावत कायम राख्ने निर्णय गरेको थियो ।", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "meaning_id": "government_00061", "kind": "deva_formal", "split": "train"}
+{"src": "(च) नेपाल कानून सुधार आयोग, २०४१ः यस अघिका आयोगको आवधिक वा तदर्थ रुपमा गठन विघटन हुंदै आएकोमा श्री ५ को सरकारको मिति २०४१।८।२१ को निर्णयले नेपाल कानून सुधार आयोग नामक एक स्थायी प्रकृतिको आयोगको स्थापना गरी पदाधिकारीहरु नियुक्ति गर्ने व्यवस्था गर्यो । श्री ५ को सरकारको यो निर्णयले कानून तर्जुमाका क्षेत्रमा आयोगको स्थायी भूमिका एवं सक्रियताको अपेक्षा राख्दै संस्थागत रुपमा नै आयोगको अस्तित्व स्थापित गर्ने काम ग¥यो । आयोगको इतिहासमा यो सर्वाधिक महत्वको निर्णय थियो भन्न सकिन्छ । जस अनुसार ५ वर्षे कार्यावधि सहित गठन भएको आयोगको गठनविधि एवं काम कर्तव्यहरुको व्यवस्था गरिएको थियो । पछि श्री ५ को सरकारले मिति २०४६।८।२१ मा पदावधि समाप्त भएका उक्त आयोगका सदस्य तथा सह—सदस्यहरुलाई यथावत कायम राख्ने निर्णय गरेको थियो ।", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "meaning_id": "government_00061", "kind": "deva_informal", "split": "train"}
+{"src": "cha nepala kanuna sudhara aayoga, २०४१ yasa aghika aayogako aawadhika wa tadartha rupama gathana wighatana hundai aaekoma shri ५ ko sarakarako miti २०४१.८.२१ ko nirnayale nepala kanuna sudhara aayoga namaka eka sthayi prakatiko aayogako sthapana gari padadhikariharu niyukti garne wyawastha garyo . shri ५ ko sarakarako yo nirnayale kanuna tarjumaka kshetrama aayogako sthayi bhumika ewn sakriyatako apeksha rakhdai snsthagata rupama nai aayogako astitwa sthapita garne kama gayo . aayogako itihasama yo sarwadhika mahatwako nirnaya thiyo bhanna sakinchha . jasa anusara ५ warshe karyawadhi sahita gathana bhaeko aayogako gathanawidhi ewn kama kartawyaharuko wyawastha garieko thiyo . pachhai shri ५ ko sarakarale miti २०४६.८.२१ ma padawadhi samapta bhaeka ukta aayogaka sadasya tatha sahasadasyaharulai yathawata kayama rakhne nirnaya gareko thiyo .", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "meaning_id": "government_00061", "kind": "roman_formal", "split": "train"}
+{"src": "cha nepala kanuna sudhara aayoga, २०४१ yasa aghika aayogako aawadhika wa tadartha rupama gathana wighatana hundai aaekoma shri ५ ko sarakarako miti २०४१.८.२१ ko nirnayale nepala kanuna sudhara aayoga namaka eka sthayi prakatiko aayogako sthapana gari padadhikariharu niyukti garne wyawastha garyo . shri ५ ko sarakarako yo nirnayale kanuna tarjumaka kshetrama aayogako sthayi bhumika ewn sakriyatako apeksha rakhdai snsthagata rupama nai aayogako astitwa sthapita garne kama gayo . aayogako itihasama yo sarwadhika mahatwako nirnaya thiyo bhanna sakinchha . jasa anusara ५ warshe karyawadhi sahita gathana bhaeko aayogako gathanawidhi ewn kama kartawyaharuko wyawastha garieko thiyo . pachhai shri ५ ko sarakarale miti २०४६.८.२१ ma padawadhi samapta bhaeka ukta aayogaka sadasya tatha sahasadasyaharulai yathawata kayama rakhne nirnaya gareko thiyo .", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "meaning_id": "government_00061", "kind": "roman_informal", "split": "train"}
+{"src": "श्री ५ को सरकारले मिति २०४७।१२।१८ को निर्णयानुसार नेपाल कानून सुधार आयोगलाई पुनर्गठन गरी कार्यविधि समेत तोकेको थियो । यो आयोगले २०४८ सालमा एक कार्यदलको गठन गरी नेपाल अधिराज्यको संविधान, २०४७ बमोजिम तर्जुमा गर्नुपर्ने ऐनहरुको मस्यौदा तयार गर्यो ।", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "meaning_id": "government_00062", "kind": "deva_formal", "split": "train"}
+{"src": "श्री ५ को सरकारले मिति २०४७।१२।१८ को निर्णयानुसार नेपाल कानून सुधार आयोगलाई पुनर्गठन गरी कार्यविधि समेत तोकेको थियो । यो आयोगले २०४८ सालमा एक कार्यदलको गठन गरी नेपाल अधिराज्यको संविधान, २०४७ बमोजिम तर्जुमा गर्नुपर्ने ऐनहरुको मस्यौदा तयार गर्यो ।", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "meaning_id": "government_00062", "kind": "deva_informal", "split": "train"}
+{"src": "shri ५ ko sarakarale miti २०४७.१२.१८ ko nirnayanusara nepala kanuna sudhara aayogalai punargathana gari karyawidhi sameta tokeko thiyo . yo aayogale २०४८ salama eka karyadalako gathana gari nepala adhirajyako snwidhana, २०४७ bamojima tarjuma garnuparne ainaharuko masyauda tayara garyo .", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "meaning_id": "government_00062", "kind": "roman_formal", "split": "train"}
+{"src": "shri ५ ko sarakarale miti २०४७.१२.१८ ko nirnayanusara nepala kanuna sudhara aayogalai punargathana gari karyawidhi sameta tokeko thiyo . yo aayogale २०४८ salama eka karyadalako gathana gari nepala adhirajyako snwidhana, २०४७ bamojima tarjuma garnuparne ainaharuko masyauda tayara garyo .", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "meaning_id": "government_00062", "kind": "roman_informal", "split": "train"}
+{"src": "यस आयोगले निम्न विषयमा विशेषज्ञहरुबाट कार्यक्रम तयार गर्न लगाई तत्सम्बन्धी कानूनको तर्जुमामा अध्ययन, अनुसन्धान गरेको देखिन्छ ।", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "meaning_id": "government_00063", "kind": "deva_formal", "split": "train"}
+{"src": "यस आयोगले निम्न विषयमा विशेषज्ञहरुबाट कार्यक्रम तयार गर्न लगाई तत्सम्बन्धी कानूनको तर्जुमामा अध्ययन, अनुसन्धान गरेको देखिन्छ ।", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "meaning_id": "government_00063", "kind": "deva_informal", "split": "train"}
+{"src": "yasa aayogale nimna wishayama wisheshajञharubata karyakrama tayara garna lagai tatsambandhi kanunako tarjumama adhyayana, anusandhana gareko dekhinchha .", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "meaning_id": "government_00063", "kind": "roman_formal", "split": "train"}
+{"src": "yasa aayogale nimna wishayama wisheshajञharubata karyakrama tayara garna lagai tatsambandhi kanunako tarjumama adhyayana, anusandhana gareko dekhinchha .", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "meaning_id": "government_00063", "kind": "roman_informal", "split": "train"}
+{"src": "यो मेरो परिवार हो।", "tgt": "This is my family.", "meaning_id": "family_00001", "kind": "deva_formal", "split": "train"}
+{"src": "यो मेरो परिवार हो।", "tgt": "This is my family.", "meaning_id": "family_00001", "kind": "deva_informal", "split": "train"}
+{"src": "yo mero pariwara ho.", "tgt": "This is my family.", "meaning_id": "family_00001", "kind": "roman_formal", "split": "train"}
+{"src": "yo mero pariwara ho.", "tgt": "This is my family.", "meaning_id": "family_00001", "kind": "roman_informal", "split": "train"}
+{"src": "तपाईंकी आमालाई कस्तो छ?", "tgt": "How is your mother?", "meaning_id": "family_00002", "kind": "deva_formal", "split": "train"}
+{"src": "तिम्री आमालाई कस्तो छ?", "tgt": "How is your mother?", "meaning_id": "family_00002", "kind": "deva_informal", "split": "train"}
+{"src": "tapaiki aamalai kasto chha?", "tgt": "How is your mother?", "meaning_id": "family_00002", "kind": "roman_formal", "split": "train"}
+{"src": "timri aamalai kasto chha?", "tgt": "How is your mother?", "meaning_id": "family_00002", "kind": "roman_informal", "split": "train"}
+{"src": "यो मेरो भाइ हो।", "tgt": "This is my brother.", "meaning_id": "family_00003", "kind": "deva_formal", "split": "train"}
+{"src": "यो मेरो भाइ हो।", "tgt": "This is my brother.", "meaning_id": "family_00003", "kind": "deva_informal", "split": "train"}
+{"src": "yo mero bhai ho.", "tgt": "This is my brother.", "meaning_id": "family_00003", "kind": "roman_formal", "split": "train"}
+{"src": "yo mero bhai ho.", "tgt": "This is my brother.", "meaning_id": "family_00003", "kind": "roman_informal", "split": "train"}
+{"src": "हजुरलाई स्वागत छ।", "tgt": "You are welcome.", "meaning_id": "family_00005", "kind": "deva_formal", "split": "train"}
+{"src": "हजुरलाई स्वागत छ।", "tgt": "You are welcome.", "meaning_id": "family_00005", "kind": "deva_informal", "split": "train"}
+{"src": "hajuralai swagata chha.", "tgt": "You are welcome.", "meaning_id": "family_00005", "kind": "roman_formal", "split": "train"}
+{"src": "hajuralai swagata chha.", "tgt": "You are welcome.", "meaning_id": "family_00005", "kind": "roman_informal", "split": "train"}
+{"src": "दुई सय रुपैयाँ हो।", "tgt": "It is two hundred rupees.", "meaning_id": "numbers_money_00001", "kind": "deva_formal", "split": "train"}
+{"src": "दुई सय रुपैयाँ हो।", "tgt": "It is two hundred rupees.", "meaning_id": "numbers_money_00001", "kind": "deva_informal", "split": "train"}
+{"src": "dui saya rupaiyan ho.", "tgt": "It is two hundred rupees.", "meaning_id": "numbers_money_00001", "kind": "roman_formal", "split": "train"}
+{"src": "dui saya rupaiyan ho.", "tgt": "It is two hundred rupees.", "meaning_id": "numbers_money_00001", "kind": "roman_informal", "split": "train"}
+{"src": "साढे तीन बज्यो।", "tgt": "It is half past three.", "meaning_id": "numbers_money_00003", "kind": "deva_formal", "split": "train"}
+{"src": "साढे तीन बज्यो।", "tgt": "It is half past three.", "meaning_id": "numbers_money_00003", "kind": "deva_informal", "split": "train"}
+{"src": "sadhe tina bajyo.", "tgt": "It is half past three.", "meaning_id": "numbers_money_00003", "kind": "roman_formal", "split": "train"}
+{"src": "sadhe tina bajyo.", "tgt": "It is half past three.", "meaning_id": "numbers_money_00003", "kind": "roman_informal", "split": "train"}
+{"src": "एक हजार रुपैयाँ।", "tgt": "One thousand rupees.", "meaning_id": "numbers_money_00004", "kind": "deva_formal", "split": "train"}
+{"src": "एक हजार रुपैयाँ।", "tgt": "One thousand rupees.", "meaning_id": "numbers_money_00004", "kind": "deva_informal", "split": "train"}
+{"src": "eka hajara rupaiyan.", "tgt": "One thousand rupees.", "meaning_id": "numbers_money_00004", "kind": "roman_formal", "split": "train"}
+{"src": "eka hajara rupaiyan.", "tgt": "One thousand rupees.", "meaning_id": "numbers_money_00004", "kind": "roman_informal", "split": "train"}
+{"src": "के यहाँ वाइफाइ निःशुल्क छ?", "tgt": "Is Wi-Fi free here?", "meaning_id": "code_switch_names_00002", "kind": "deva_formal", "split": "train"}
+{"src": "यहाँ वाइफाइ फ्री छ?", "tgt": "Is Wi-Fi free here?", "meaning_id": "code_switch_names_00002", "kind": "deva_informal", "split": "train"}
+{"src": "ke yahan waiphai nishulka chha?", "tgt": "Is Wi-Fi free here?", "meaning_id": "code_switch_names_00002", "kind": "roman_formal", "split": "train"}
+{"src": "yahan waiphai phri chha?", "tgt": "Is Wi-Fi free here?", "meaning_id": "code_switch_names_00002", "kind": "roman_informal", "split": "train"}
+{"src": "मेरो नाम कुपर हो।", "tgt": "My name is Cooper.", "meaning_id": "code_switch_names_00003", "kind": "deva_formal", "split": "train"}
+{"src": "मेरो नाम कुपर हो।", "tgt": "My name is Cooper.", "meaning_id": "code_switch_names_00003", "kind": "deva_informal", "split": "train"}
+{"src": "mero nama kupara ho.", "tgt": "My name is Cooper.", "meaning_id": "code_switch_names_00003", "kind": "roman_formal", "split": "train"}
+{"src": "mero nama kupara ho.", "tgt": "My name is Cooper.", "meaning_id": "code_switch_names_00003", "kind": "roman_informal", "split": "train"}
+{"src": "दरबार स्क्वायरमा भेटौं।", "tgt": "Meet me at Durbar Square.", "meaning_id": "code_switch_names_00004", "kind": "deva_formal", "split": "train"}
+{"src": "दरबार स्क्वायरमा भेटौं।", "tgt": "Meet me at Durbar Square.", "meaning_id": "code_switch_names_00004", "kind": "deva_informal", "split": "train"}
+{"src": "darabara skwayarama bhetaun.", "tgt": "Meet me at Durbar Square.", "meaning_id": "code_switch_names_00004", "kind": "roman_formal", "split": "train"}
+{"src": "darabara skwayarama bhetaun.", "tgt": "Meet me at Durbar Square.", "meaning_id": "code_switch_names_00004", "kind": "roman_informal", "split": "train"}
+{"src": "गुगल म्याप्स खोल्नुहोस्।", "tgt": "Open Google Maps.", "meaning_id": "code_switch_names_00005", "kind": "deva_formal", "split": "train"}
+{"src": "गुगल म्याप्स खोल।", "tgt": "Open Google Maps.", "meaning_id": "code_switch_names_00005", "kind": "deva_informal", "split": "train"}
+{"src": "gugala myapsa kholnuhos.", "tgt": "Open Google Maps.", "meaning_id": "code_switch_names_00005", "kind": "roman_formal", "split": "train"}
+{"src": "gugala myapsa khola.", "tgt": "Open Google Maps.", "meaning_id": "code_switch_names_00005", "kind": "roman_informal", "split": "train"}
+{"src": "कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "Please help me.", "meaning_id": "asr_noise_00001", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई मद्दत गर।", "tgt": "Please help me.", "meaning_id": "asr_noise_00001", "kind": "deva_informal", "split": "train"}
+{"src": "kripya malai maddata garnuhos.", "tgt": "Please help me.", "meaning_id": "asr_noise_00001", "kind": "roman_formal", "split": "train"}
+{"src": "malai maddata gara.", "tgt": "Please help me.", "meaning_id": "asr_noise_00001", "kind": "roman_informal", "split": "train"}
+{"src": "हाम्रो बारेमा", "tgt": "About Us", "meaning_id": "1", "kind": "deva_formal", "split": "train"}
+{"src": "परिचय", "tgt": "Introduction", "meaning_id": "2", "kind": "deva_formal", "split": "train"}
+{"src": "परिदृश्य र परिलक्ष्य", "tgt": "Vision and Mission", "meaning_id": "3", "kind": "deva_formal", "split": "train"}
+{"src": "काम, कर्तव्य र अधिकार", "tgt": "Duties and Powers", "meaning_id": "4", "kind": "deva_formal", "split": "train"}
+{"src": "सङ्गठन संरचना", "tgt": "Organization Structure", "meaning_id": "5", "kind": "deva_formal", "split": "train"}
+{"src": "पदाधिकारी र कर्मचारी", "tgt": "Officials and Employees", "meaning_id": "6", "kind": "deva_formal", "split": "train"}
+{"src": "पूर्व अध्यक्षहरू", "tgt": "Former Chairpersons", "meaning_id": "7", "kind": "deva_formal", "split": "train"}
+{"src": "सेवाहरू", "tgt": "Services", "meaning_id": "8", "kind": "deva_formal", "split": "train"}
+{"src": "कानून तर्जुमा", "tgt": "Law Drafting", "meaning_id": "9", "kind": "deva_formal", "split": "train"}
+{"src": "खोज तथा अध्ययन", "tgt": "Research and Study", "meaning_id": "10", "kind": "deva_formal", "split": "train"}
+{"src": "मौजुदा कानून", "tgt": "Existing Laws", "meaning_id": "11", "kind": "deva_formal", "split": "train"}
+{"src": "संविधान", "tgt": "Constitution", "meaning_id": "12", "kind": "deva_formal", "split": "train"}
+{"src": "ऐन", "tgt": "Acts", "meaning_id": "13", "kind": "deva_formal", "split": "train"}
+{"src": "हालसालैका ऐन", "tgt": "Recent Acts", "meaning_id": "14", "kind": "deva_formal", "split": "train"}
+{"src": "खण्ड अनुसार", "tgt": "By Volume", "meaning_id": "15", "kind": "deva_formal", "split": "train"}
+{"src": "वर्णानुक्रम अनुसारको सूची", "tgt": "Alphabetical List", "meaning_id": "16", "kind": "deva_formal", "split": "train"}
+{"src": "अध्यादेश", "tgt": "Ordinances", "meaning_id": "17", "kind": "deva_formal", "split": "train"}
+{"src": "नियमावली", "tgt": "Regulations", "meaning_id": "18", "kind": "deva_formal", "split": "train"}
+{"src": "गठन आदेश", "tgt": "Formation Orders", "meaning_id": "19", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका कानून", "tgt": "Repealed Laws", "meaning_id": "20", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका ऐन", "tgt": "Repealed Acts", "meaning_id": "21", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका अध्यादेश", "tgt": "Repealed Ordinances", "meaning_id": "22", "kind": "deva_formal", "split": "train"}
+{"src": "खारेज भएका नियमावली", "tgt": "Repealed Regulations", "meaning_id": "23", "kind": "deva_formal", "split": "train"}
+{"src": "नीति", "tgt": "Policies", "meaning_id": "24", "kind": "deva_formal", "split": "train"}
+{"src": "अन्तर्राष्ट्रिय सन्धि सम्झौता", "tgt": "International Treaties and Agreements", "meaning_id": "25", "kind": "deva_formal", "split": "train"}
+{"src": "ऐतिहासिक दस्तावेज", "tgt": "Historical Documents", "meaning_id": "26", "kind": "deva_formal", "split": "train"}
+{"src": "अन्य", "tgt": "Other", "meaning_id": "27", "kind": "deva_formal", "split": "train"}
+{"src": "सूचना केन्द्र", "tgt": "Information Center", "meaning_id": "28", "kind": "deva_formal", "split": "train"}
+{"src": "वार्षिक प्रतिवेदन", "tgt": "Annual Report", "meaning_id": "29", "kind": "deva_formal", "split": "train"}
+{"src": "सम्पर्क", "tgt": "Contact", "meaning_id": "30", "kind": "deva_formal", "split": "train"}
+{"src": "सम्पर्क ठेगाना", "tgt": "Contact Address", "meaning_id": "31", "kind": "deva_formal", "split": "train"}
+{"src": "सुझाव र गुनासो", "tgt": "Suggestions and Complaints", "meaning_id": "32", "kind": "deva_formal", "split": "train"}
+{"src": "बारम्बार सोधिने प्रश्न र उत्तर", "tgt": "Frequently Asked Questions", "meaning_id": "33", "kind": "deva_formal", "split": "train"}
+{"src": "नेपाल सरकार", "tgt": "Government of Nepal", "meaning_id": "34", "kind": "deva_formal", "split": "train"}
+{"src": "नेपाल कानून आयोग", "tgt": "Nepal Law Commission", "meaning_id": "35", "kind": "deva_formal", "split": "train"}
+{"src": "नयाँ बानेश्वर, काठमाडौं", "tgt": "New Baneshwor, Kathmandu", "meaning_id": "36", "kind": "deva_formal", "split": "train"}
+{"src": "भाषा चयन गर्नुहोस्", "tgt": "Select Language", "meaning_id": "37", "kind": "deva_formal", "split": "train"}
+{"src": "खोज्नुहोस्", "tgt": "Search", "meaning_id": "38", "kind": "deva_formal", "split": "train"}
+{"src": "महत्त्वपूर्ण सूचना", "tgt": "Important Notice", "meaning_id": "39", "kind": "deva_formal", "split": "train"}
+{"src": "कार्यालय समय", "tgt": "Office Hours", "meaning_id": "40", "kind": "deva_formal", "split": "train"}
+{"src": "गृहपृष्ठ", "tgt": "Home", "meaning_id": "41", "kind": "deva_formal", "split": "train"}
+{"src": "डाउनलोड गर्नुहोस्", "tgt": "Download", "meaning_id": "42", "kind": "deva_formal", "split": "train"}
+{"src": "थप पढ्नुहोस्", "tgt": "Read More", "meaning_id": "43", "kind": "deva_formal", "split": "train"}
+{"src": "अघिल्लो", "tgt": "Previous", "meaning_id": "44", "kind": "deva_formal", "split": "train"}
+{"src": "अर्को", "tgt": "Next", "meaning_id": "45", "kind": "deva_formal", "split": "train"}
+{"src": "पेश गर्नुहोस्", "tgt": "Submit", "meaning_id": "46", "kind": "deva_formal", "split": "train"}
+{"src": "रद्द गर्नुहोस्", "tgt": "Cancel", "meaning_id": "47", "kind": "deva_formal", "split": "train"}
+{"src": "बन्द गर्नुहोस्", "tgt": "Close", "meaning_id": "48", "kind": "deva_formal", "split": "train"}
+{"src": "पछाडि", "tgt": "Back", "meaning_id": "49", "kind": "deva_formal", "split": "train"}
+{"src": "साझा गर्नुहोस्", "tgt": "Share", "meaning_id": "50", "kind": "deva_formal", "split": "train"}
+{"src": "(क) ल कमिशन, २०१०ः नेपालमा सर्वप्रथम २०१०।९।६।१ को मन्त्रिमण्डलको निर्णय बमोजिम पहिलो ल कमिशनको गठन भएको हो । उक्त कमिशनको गठनविधि, कार्य प्रणाली, कार्यावधि आदिका सम्बन्धमा मिति २०१०।११।११ मा नेपाल गजेटमा प्रकाशित सरकारको विज्ञप्तिमा उल्लेख गरिएको थियो ।", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "meaning_id": "51", "kind": "deva_formal", "split": "train"}
+{"src": "(ख) ल कमिशन, २०१७ः श्री ५ को सरकारको मिति २०१७।६।२७।४ को निर्णय अनुसार (नेपाल राजपत्रमा प्रकाशित मिति २०१७।७।१५) देहाय बमोजिमको ७ सदस्यीय दोश्रो ल कमिशन गठन गरियो । १. सर्वोच्च अदालतका माननीय न्यायाधीश श्री नयनबहादुर खत्री — अध्यक्ष २. मध्यमाञ्चल उच्च अदालतका मुख्य न्यायाधीश — सदस्य ३. एटर्नी जनरल श्री शम्भुप्रसाद ज्ञवाली — सदस्य ४. कानून सचिव — सदस्य ५. श्री ५ को सरकारबाट मनोनित गैर—सरकारी व्यक्ति जना ३ — सदस्य", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "meaning_id": "52", "kind": "deva_formal", "split": "train"}
+{"src": "मिति २०१८।७।१४ मा प्रकाशित सूचना अनुसार सर्वोच्च अदालतको न्यायाधीशलाई झिकी एटर्नी जनरललाई अध्यक्ष बनाइएको थियो । उक्त सूचना अनुसूची ३ मा राखिएको छ । कमिशनको बैठक कम्तिमा महिनाको ४ पटक वस्नुपर्ने र ४ जना सदस्यहरु उपस्थित हुनुपर्ने गरी गणपूरक संख्या तोकिएकोमा मिति २०१८।७।१४ को राजपत्रमा प्रकाशित सूचना अनुसार गणपूरक संख्या ३ बनाइएको थियो । कमिशनले आफ्नो कार्यविधि व्यवस्थित गर्न नियम बनाउन सक्ने तथा सो नियम कानून मन्त्रालयबाट स्वीकृत हुनुपर्ने व्यवस्था थियो । कानून मन्त्रालयको उप—सचिवलाई सेक्रेटरी तोकिएको उक्त कमिशनले २ वर्ष भित्रमा काम सम्पन्न गरी रिपोर्ट श्री ५ को सरकार समक्ष पेश गर्नुपर्ने थियो । २०२० सालको मुलुकी ऐन यस आयोगको सक्रियतामा बनेको हो ।", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "meaning_id": "53", "kind": "deva_formal", "split": "train"}
+{"src": "(ग) कानून आयोग, २०२०ः श्री ५ को सरकारको मिति २०२०।१०।८।४ को निर्णय बमोजिम (राजपत्रमा सूचना प्रकाशित मिति २०२०।१२।१०) गठन भएको उक्त आयोगको गठनविधि यस प्रकार थियोः— १. श्री विनोदप्रसाद धिताल सह—सचिव, कानून मन्त्रालय — पदेन अध्यक्ष २. श्री नीरकुमार क्षेत्री — सदस्य ३. श्री टोप बहादुर सिंह — सदस्य ४. श्री हेरम्बराज — सदस्य ५. श्री विश्वनाथ उपाध्याय उप—सचिव, कानून मन्त्रालय —सदस्य—सचिव", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "meaning_id": "54", "kind": "deva_formal", "split": "train"}
+{"src": "शुरुमा यसको कार्यकाल एक वर्ष तोकिएको भए तापनि पटक पटक म्याद थप भई २०२७ सालसम्म कायम भएको थियो ।", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "meaning_id": "55", "kind": "deva_formal", "split": "train"}
+{"src": "(घ) कानून आयोग, २०२९ः श्री ५ महाराजाधिराजबाट मिति २०२९।२।१९ मा प्रचलित नेपाल कानूनमा विशेष गरी फौजदारी, देवानी, बाणिज्य तथा प्रमाण सम्बन्धी कानूनहरुमा भइरहेको अभाव र त्रुटीहरु हटाई भरिसक्य सरल, बैज्ञानिक र व्यवहारिक रुप दिई छुटृाछुटृै ऐनहरुको तर्जुमा गर्न न्यायिक समितिका अध्यक्ष एवं सर्वोच्च अदालतका माननीय न्यायाधीश श्री नयनबहादुर खत्रीको अध्यक्षतामा ५ सदस्यीय चौथौ कानून आयोगको गठन गरिबक्सियो । उक्त आयोग गठनको सूचना अनुसूची – ४ मा राखिएको छ । उक्त आयोगमा सर्वोच्च अदालतका अस्थायी माननीय न्यायाधीश श्री विश्वनाथ उपाध्याय— १, महान्यायाधिवक्ता श्री रमानन्दप्रसाद सिंह —१, न्यायिक समितिका सदस्य श्री कृष्णप्रसाद पन्त— १ समेतलाई सदस्य तथा कानून सचिव श्री चूडामणिराज सिंहलाई सदस्य—सचिव तोकिएको थियो । यस आयोगले प्रमाण ऐन तथा अपराध संहिता मसौदा र तत्सम्बन्धी प्रतिवेदन तयार गरी श्री ५ समक्ष पेश गरेको थि", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "meaning_id": "56", "kind": "deva_formal", "split": "train"}
+{"src": "(ङ) कानून सुधार आयोग, २०३६ः कानून आयोग २०२९ को सुझाव सहितको प्रतिवेदन अध्ययन गरी कार्यान्वयन गर्ने तथा तोकिए बमोजिम अन्य कामहरु गर्न पाँचौ पटक मिति २०३६।८।२६ मा कानून सुधार आयोगको गठन भयो । यसको कार्यावधि ३ वर्षको हुने र बैठक कम्तिमा हप्ताको २ पटक वस्ने गरी व्यवस्था गरिएको थियो । तोकिए बमोजिम आयोगको गठनविधि एवं काम, कर्तव्यहरु अनुसूची— ५ मा उल्लेख गरिएको छ । यो आयोगले हदम्याद सम्बन्धी कानूनको मस्यौदा, मुलुकी ऐनको संशोधन मस्यौदा एवं मध्यस्थता सम्बन्धी ऐनको मस्यौदा तयार गरी पेश गरेको थियो । आयोगको पदावधि मिति २०३९।८।२२ मा समाप्त भएपनि अर्को व्यवस्था नभएसम्मका लागि यो आयोगलाई साविक बमोजिमको जिम्मेवारी थप गरिएको थियो ।", "tgt": "To draft new legislation and amendment of the statute with explanatory notes, To codify, unify and review existing laws, To draft legislation to include treaty obligation, To exchange ideas and information with law commissions and law drafting agencies of other countries, To carry out study and research works on legal field. To make consultation with stakeholders, To obtain expert service. To prepare annual programs and annual progress report, To accomplish other functions relating to law and justice as prescribed by the Government and as deemed necessary by the Commission itself, To make necessary recommendation to the Government. Process of Discussion on Consultation Paper", "meaning_id": "57", "kind": "deva_formal", "split": "train"}
+{"src": "(च) नेपाल कानून सुधार आयोग, २०४१ः यस अघिका आयोगको आवधिक वा तदर्थ रुपमा गठन विघटन हुंदै आएकोमा श्री ५ को सरकारको मिति २०४१।८।२१ को निर्णयले नेपाल कानून सुधार आयोग नामक एक स्थायी प्रकृतिको आयोगको स्थापना गरी पदाधिकारीहरु नियुक्ति गर्ने व्यवस्था गर्यो । श्री ५ को सरकारको यो निर्णयले कानून तर्जुमाका क्षेत्रमा आयोगको स्थायी भूमिका एवं सक्रियताको अपेक्षा राख्दै संस्थागत रुपमा नै आयोगको अस्तित्व स्थापित गर्ने काम ग¥यो । आयोगको इतिहासमा यो सर्वाधिक महत्वको निर्णय थियो भन्न सकिन्छ । जस अनुसार ५ वर्षे कार्यावधि सहित गठन भएको आयोगको गठनविधि एवं काम कर्तव्यहरुको व्यवस्था गरिएको थियो । पछि श्री ५ को सरकारले मिति २०४६।८।२१ मा पदावधि समाप्त भएका उक्त आयोगका सदस्य तथा सह—सदस्यहरुलाई यथावत कायम राख्ने निर्णय गरेको थियो ।", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "meaning_id": "58", "kind": "deva_formal", "split": "train"}
+{"src": "श्री ५ को सरकारले मिति २०४७।१२।१८ को निर्णयानुसार नेपाल कानून सुधार आयोगलाई पुनर्गठन गरी कार्यविधि समेत तोकेको थियो । यो आयोगले २०४८ सालमा एक कार्यदलको गठन गरी नेपाल अधिराज्यको संविधान, २०४७ बमोजिम तर्जुमा गर्नुपर्ने ऐनहरुको मस्यौदा तयार गर्यो ।", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "meaning_id": "59", "kind": "deva_formal", "split": "train"}
+{"src": "यस आयोगले निम्न विषयमा विशेषज्ञहरुबाट कार्यक्रम तयार गर्न लगाई तत्सम्बन्धी कानूनको तर्जुमामा अध्ययन, अनुसन्धान गरेको देखिन्छ ।", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "meaning_id": "60", "kind": "deva_formal", "split": "train"}
+{"src": "हो।", "tgt": "Yes.", "meaning_id": "61", "kind": "deva_formal", "split": "train"}
+{"src": "हो।", "tgt": "Yes.", "meaning_id": "62", "kind": "deva_formal", "split": "train"}
+{"src": "होइन।", "tgt": "No.", "meaning_id": "63", "kind": "deva_formal", "split": "train"}
+{"src": "होइन।", "tgt": "No.", "meaning_id": "64", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया।", "tgt": "Please.", "meaning_id": "65", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया।", "tgt": "Please.", "meaning_id": "66", "kind": "deva_formal", "split": "train"}
+{"src": "तपाईं कहाँबाट आउनुभएको हो?", "tgt": "Where are you from?", "meaning_id": "75", "kind": "deva_formal", "split": "train"}
+{"src": "तिमी कहाँबाट आएको?", "tgt": "Where are you from?", "meaning_id": "76", "kind": "deva_formal", "split": "train"}
+{"src": "म नेपालबाट आएको हुँ।", "tgt": "I am from Nepal.", "meaning_id": "77", "kind": "deva_formal", "split": "train"}
+{"src": "म नेपालबाट आएको हुँ।", "tgt": "I am from Nepal.", "meaning_id": "78", "kind": "deva_formal", "split": "train"}
+{"src": "यसको अर्थ के हो?", "tgt": "What does this mean?", "meaning_id": "89", "kind": "deva_formal", "split": "train"}
+{"src": "यसको अर्थ के हो?", "tgt": "What does this mean?", "meaning_id": "90", "kind": "deva_formal", "split": "train"}
+{"src": "यो कति टाढा छ?", "tgt": "How far is it?", "meaning_id": "109", "kind": "deva_formal", "split": "train"}
+{"src": "यो कति टाढा छ?", "tgt": "How far is it?", "meaning_id": "110", "kind": "deva_formal", "split": "train"}
+{"src": "बायाँ मोड्नुहोस्।", "tgt": "Turn left.", "meaning_id": "113", "kind": "deva_formal", "split": "train"}
+{"src": "बायाँ मोड।", "tgt": "Turn left.", "meaning_id": "114", "kind": "deva_formal", "split": "train"}
+{"src": "दायाँ मोड्नुहोस्।", "tgt": "Turn right.", "meaning_id": "115", "kind": "deva_formal", "split": "train"}
+{"src": "दायाँ मोड।", "tgt": "Turn right.", "meaning_id": "116", "kind": "deva_formal", "split": "train"}
+{"src": "सिधा जानुहोस्।", "tgt": "Go straight.", "meaning_id": "117", "kind": "deva_formal", "split": "train"}
+{"src": "सिधा जाऊ।", "tgt": "Go straight.", "meaning_id": "118", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो धेरै महँगो छ।", "tgt": "That is too expensive.", "meaning_id": "123", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो धेरै महँगो छ।", "tgt": "That is too expensive.", "meaning_id": "124", "kind": "deva_formal", "split": "train"}
+{"src": "के तपाईंसँग योभन्दा सानो आकार छ?", "tgt": "Do you have a smaller size?", "meaning_id": "125", "kind": "deva_formal", "split": "train"}
+{"src": "के तिमीसँग योभन्दा सानो साइज छ?", "tgt": "Do you have a smaller size?", "meaning_id": "126", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई यो चाहिन्छ।", "tgt": "I would like this.", "meaning_id": "127", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई यो चाहिन्छ।", "tgt": "I would like this.", "meaning_id": "128", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई यो चाहिँदैन।", "tgt": "I do not want this.", "meaning_id": "129", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई यो चाहिँदैन।", "tgt": "I do not want this.", "meaning_id": "130", "kind": "deva_formal", "split": "train"}
+{"src": "के म कार्डबाट भुक्तानी गर्न सक्छु?", "tgt": "Can I pay by card?", "meaning_id": "131", "kind": "deva_formal", "split": "train"}
+{"src": "के म कार्डले तिर्न सक्छु?", "tgt": "Can I pay by card?", "meaning_id": "132", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया मलाई रसिद दिनुहोस्।", "tgt": "Please give me a receipt.", "meaning_id": "133", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई रसिद देऊ न।", "tgt": "Please give me a receipt.", "meaning_id": "134", "kind": "deva_formal", "split": "train"}
+{"src": "म मासु खाँदिनँ।", "tgt": "I do not eat meat.", "meaning_id": "139", "kind": "deva_formal", "split": "train"}
+{"src": "म मासु खाँदिनँ।", "tgt": "I do not eat meat.", "meaning_id": "140", "kind": "deva_formal", "split": "train"}
+{"src": "के यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "meaning_id": "141", "kind": "deva_formal", "split": "train"}
+{"src": "यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "meaning_id": "142", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई एलर्जी छ।", "tgt": "I have an allergy.", "meaning_id": "147", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई एलर्जी छ।", "tgt": "I have an allergy.", "meaning_id": "148", "kind": "deva_formal", "split": "train"}
+{"src": "म बिरामी छु।", "tgt": "I am sick.", "meaning_id": "149", "kind": "deva_formal", "split": "train"}
+{"src": "म बिरामी छु।", "tgt": "I am sick.", "meaning_id": "150", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई ज्वरो आएको छ।", "tgt": "I have a fever.", "meaning_id": "151", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई ज्वरो आएको छ।", "tgt": "I have a fever.", "meaning_id": "152", "kind": "deva_formal", "split": "train"}
+{"src": "तपाईंलाई कहाँ दुखेको छ?", "tgt": "Where does it hurt?", "meaning_id": "155", "kind": "deva_formal", "split": "train"}
+{"src": "तिमीलाई कहाँ दुखेको छ?", "tgt": "Where does it hurt?", "meaning_id": "156", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया मसँग आउनुहोस्।", "tgt": "Please come with me.", "meaning_id": "159", "kind": "deva_formal", "split": "train"}
+{"src": "मसँग आऊ न।", "tgt": "Please come with me.", "meaning_id": "160", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया यहाँ उभिनुहोस्।", "tgt": "Please stand here.", "meaning_id": "163", "kind": "deva_formal", "split": "train"}
+{"src": "यहाँ उभिऊ न।", "tgt": "Please stand here.", "meaning_id": "164", "kind": "deva_formal", "split": "train"}
+{"src": "यो कहिले आइपुग्छ?", "tgt": "When will it arrive?", "meaning_id": "167", "kind": "deva_formal", "split": "train"}
+{"src": "यो कहिले आइपुग्छ?", "tgt": "When will it arrive?", "meaning_id": "168", "kind": "deva_formal", "split": "train"}
+{"src": "म भोलि आउनेछु।", "tgt": "I will come tomorrow.", "meaning_id": "169", "kind": "deva_formal", "split": "train"}
+{"src": "म भोलि आउँछु।", "tgt": "I will come tomorrow.", "meaning_id": "170", "kind": "deva_formal", "split": "train"}
+{"src": "म हिजो आएको थिएँ।", "tgt": "I came yesterday.", "meaning_id": "171", "kind": "deva_formal", "split": "train"}
+{"src": "म हिजो आएको थिएँ।", "tgt": "I came yesterday.", "meaning_id": "172", "kind": "deva_formal", "split": "train"}
+{"src": "म काठमाडौंमा बस्छु।", "tgt": "I live in Kathmandu.", "meaning_id": "175", "kind": "deva_formal", "split": "train"}
+{"src": "म काठमाडौंमा बस्छु।", "tgt": "I live in Kathmandu.", "meaning_id": "176", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया मलाई फोन गर्नुहोस्।", "tgt": "Please call me.", "meaning_id": "177", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई फोन गर न।", "tgt": "Please call me.", "meaning_id": "178", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया मलाई सन्देश पठाउनुहोस्।", "tgt": "Send me a message.", "meaning_id": "179", "kind": "deva_formal", "split": "train"}
+{"src": "मलाई सन्देश पठाऊ न।", "tgt": "Send me a message.", "meaning_id": "180", "kind": "deva_formal", "split": "train"}
+{"src": "नेटवर्कले काम गरिरहेको छैन।", "tgt": "The network is not working.", "meaning_id": "181", "kind": "deva_formal", "split": "train"}
+{"src": "नेटवर्क चलेको छैन।", "tgt": "The network is not working.", "meaning_id": "182", "kind": "deva_formal", "split": "train"}
+{"src": "मेरो फोनको ब्याट्री सकिएको छ।", "tgt": "My phone has no battery.", "meaning_id": "183", "kind": "deva_formal", "split": "train"}
+{"src": "मेरो फोनको ब्याट्री सकियो।", "tgt": "My phone has no battery.", "meaning_id": "184", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया फोन अर्को व्यक्तिलाई दिनुहोस्।", "tgt": "Please pass the phone.", "meaning_id": "185", "kind": "deva_formal", "split": "train"}
+{"src": "फोन अर्कोलाई देऊ न।", "tgt": "Please pass the phone.", "meaning_id": "186", "kind": "deva_formal", "split": "train"}
+{"src": "मैले बोलिसकेँ।", "tgt": "I have finished speaking.", "meaning_id": "187", "kind": "deva_formal", "split": "train"}
+{"src": "मैले बोलिसकेँ।", "tgt": "I have finished speaking.", "meaning_id": "188", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "Please try again.", "meaning_id": "189", "kind": "deva_formal", "split": "train"}
+{"src": "फेरि प्रयास गर।", "tgt": "Please try again.", "meaning_id": "190", "kind": "deva_formal", "split": "train"}
+{"src": "अनुवाद तयार हुँदैछ।", "tgt": "The translation is loading.", "meaning_id": "191", "kind": "deva_formal", "split": "train"}
+{"src": "अनुवाद लोड हुँदैछ।", "tgt": "The translation is loading.", "meaning_id": "192", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "Please check the translation.", "meaning_id": "193", "kind": "deva_formal", "split": "train"}
+{"src": "अनुवाद जाँच गर।", "tgt": "Please check the translation.", "meaning_id": "194", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो अनुवाद गलत छ।", "tgt": "That translation is wrong.", "meaning_id": "195", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो अनुवाद गलत छ।", "tgt": "That translation is wrong.", "meaning_id": "196", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो अनुवाद सही छ।", "tgt": "That translation is correct.", "meaning_id": "197", "kind": "deva_formal", "split": "train"}
+{"src": "त्यो अनुवाद सही छ।", "tgt": "That translation is correct.", "meaning_id": "198", "kind": "deva_formal", "split": "train"}
+{"src": "कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "Please use formal language.", "meaning_id": "199", "kind": "deva_formal", "split": "train"}
+{"src": "औपचारिक भाषा प्रयोग गर।", "tgt": "Please use formal language.", "meaning_id": "200", "kind": "deva_formal", "split": "train"}

@@ -1,5 +1,6 @@
 /**
- * Web stub. IndicTrans2 ONNX is native-only; the manual web test uses the phrase/lexicon path.
+ * Web stub. IndicTrans2 ONNX is native-only. Browser translate returns empty
+ * unless the testing ground supplies a recorded fixture.
  */
 export class IndicTransOnnxEngine {
   isReady(): boolean {

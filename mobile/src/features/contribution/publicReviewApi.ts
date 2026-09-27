@@ -1,5 +1,10 @@
 import { readPublicEnv } from '../../config/env';
 import { getSupabase } from '../../services/supabase';
+import {
+  isTestingGroundHarness,
+  TESTING_GROUND_DAILY_REVIEW,
+  TESTING_GROUND_REVIEW_WINDOW,
+} from './testingGroundReview';
 
 /**
  * G1 public review pool client.
@@ -101,6 +106,14 @@ function mapError(code: string | undefined): ReviewSubmitResult {
 }
 
 export async function fetchCurrentReviewWindow(): Promise<ReviewCurrent> {
+  if (isTestingGroundHarness()) {
+    return {
+      ok: true,
+      window: TESTING_GROUND_REVIEW_WINDOW,
+      items: TESTING_GROUND_DAILY_REVIEW,
+      mine: [],
+    };
+  }
   const auth = await authHeaders();
   if (!auth.ok) return { ok: false, reason: auth.reason };
   const res = await fetch(`${auth.url}/functions/v1/public-review`, {
@@ -144,6 +157,17 @@ export async function submitReview(input: {
 }): Promise<ReviewSubmitResult> {
   if (input.action === 'edit' && !input.correctedText?.trim()) {
     return { ok: false, reason: 'invalid' };
+  }
+  if (isTestingGroundHarness()) {
+    return {
+      ok: true,
+      submission: {
+        testing_ground: true,
+        window_id: input.windowId,
+        source_item_id: input.sourceItemId,
+        action: input.action,
+      },
+    };
   }
   const auth = await authHeaders();
   if (!auth.ok) return { ok: false, reason: auth.reason };

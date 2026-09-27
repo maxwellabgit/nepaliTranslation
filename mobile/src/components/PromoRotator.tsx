@@ -1,32 +1,54 @@
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+
 import { t, useUiLang } from '../i18n';
 
+const ROTATE_MS = 60_000;
+
+type SlideId = 'adfree' | 'earn';
+
 type Props = {
-  onSeeHow?: () => void;
+  onAdFree: () => void;
+  onEarn: () => void;
 };
 
-/** Thin earn-credits strip. */
-export function EarnCreditsBanner({ onSeeHow }: Props) {
+/** Dark homepage strip. The two promos trade places every 60 seconds. */
+export function PromoRotator({ onAdFree, onEarn }: Props) {
   const lang = useUiLang();
+  const [active, setActive] = useState<SlideId>('adfree');
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((current) => (current === 'adfree' ? 'earn' : 'adfree'));
+    }, ROTATE_MS);
+    return () => clearInterval(timer);
+  }, []);
+
+  const adFree = active === 'adfree';
+  const title = adFree ? t('promo.adFreeTitle', lang) : t('earnBanner.title', lang);
+  const body = adFree ? t('promo.adFreeBody', lang) : t('earnBanner.body', lang);
+  const action = adFree ? t('promo.seeOptions', lang) : t('earnBanner.seeHow', lang);
 
   return (
     <Pressable
-      onPress={onSeeHow}
+      onPress={adFree ? onAdFree : onEarn}
       accessibilityRole="button"
-      accessibilityLabel={t('earnBanner.seeHowA11y', lang)}
+      accessibilityLabel={
+        adFree ? t('promo.seeOptionsA11y', lang) : t('earnBanner.seeHowA11y', lang)
+      }
       style={styles.wrap}
-      testID="earn-credits-banner"
+      testID="promo-rotator"
     >
       <FontAwesome5 name="coins" size={16} color="#F0C14A" />
       <View style={styles.copy}>
-        <Text style={styles.title}>{t('earnBanner.title', lang)}</Text>
+        <Text style={styles.title}>{title}</Text>
         <Text style={styles.body} numberOfLines={1}>
-          {t('earnBanner.body', lang)}
+          {body}
         </Text>
       </View>
-      <View style={styles.seeHow} testID="earn-credits-see-how">
-        <Text style={styles.seeHowText}>{t('earnBanner.seeHow', lang)} →</Text>
+      <View style={styles.seeHow} testID={adFree ? 'promo-ad-free' : 'promo-earn'}>
+        <Text style={styles.seeHowText}>{action} →</Text>
       </View>
     </Pressable>
   );

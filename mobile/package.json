@@ -55,7 +55,7 @@
     "test:integration": "jest --runInBand --testPathPattern=integration-test",
     "test:coverage": "jest --coverage --runInBand --testPathIgnorePatterns=integration-test",
     "test:coverage:beta": "node ./scripts/check_beta_coverage.mjs",
-    "verify:translate": "node ./scripts/export_meaning_lexicon.mjs && node scripts/verify_translate_fix.mjs && node scripts/verify_romanize.mjs",
+    "verify:translate": "node scripts/verify_translate_fix.mjs && node scripts/verify_romanize.mjs",
     "check:model-hash": "node ./scripts/check_model_hash.mjs",
     "verify:beta": "npm run export:lexicon && npm run lint && npm run typecheck && npm run test:unit && npm run test:integration && node --test scripts/testflightAdsConfig.test.cjs && npm run verify:translate && npm run check:model-hash && node scripts/check_ios_usage_descriptions.mjs && npx expo-doctor",
     "export:web": "npx expo export --platform web",

@@ -5,7 +5,7 @@
 ## Models
 
 - Bundled: `it2_en_indic` INT8 only
-- NE→EN: phrasebook / lexicon (no second ONNX graph)
+- NE→EN: indic-en ONNX checkpoint (same family, separate weights)
 
 ## Corrections (product path)
 

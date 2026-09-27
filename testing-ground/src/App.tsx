@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  applyTranslateMode,
-  defaultBootConfig,
-  TRANSLATE_MODE_LABELS,
-} from './bridge/config';
+import { defaultBootConfig } from './bridge/config';
 import type {
   ScenarioCommandId,
   ScenarioState,
   TestingGroundBootConfig,
   TimelineEvent,
-  TranslateModeId,
   ViewportPresetId,
 } from './bridge/types';
 import { VIEWPORT_PRESETS } from './bridge/types';
@@ -95,11 +90,6 @@ export default function App() {
     },
     [pushEvent],
   );
-
-  const onTranslateMode = (mode: TranslateModeId) => {
-    const next = applyTranslateMode({ ...bootConfig }, mode);
-    remountHostedApp(next, `translateMode=${mode}`);
-  };
 
   const applyFixtures = () => {
     try {
@@ -189,8 +179,6 @@ export default function App() {
     }
   };
 
-  const modeMeta = TRANSLATE_MODE_LABELS[bootConfig.translateMode];
-
   return (
     <div className="tg-root">
       <header className="tg-header">
@@ -203,7 +191,6 @@ export default function App() {
         </div>
         <div className="tg-header-meta">
           <span className="tg-pill">offline scenario harness</span>
-          <span className="tg-pill">{modeMeta.label}</span>
         </div>
       </header>
 
@@ -216,9 +203,6 @@ export default function App() {
           onViewportChange={setViewportId}
           iframeKey={iframeKey}
           iframeRef={iframeRef}
-          translateMode={bootConfig.translateMode}
-          onTranslateMode={onTranslateMode}
-          modeHonesty={modeMeta.honesty}
         />
         <DevConsole
           bootConfig={bootConfig}

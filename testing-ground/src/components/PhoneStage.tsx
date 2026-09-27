@@ -1,11 +1,6 @@
 import type { RefObject } from 'react';
-import type {
-  TranslateModeId,
-  ViewportPreset,
-  ViewportPresetId,
-} from '../bridge/types';
+import type { ViewportPreset, ViewportPresetId } from '../bridge/types';
 import { VIEWPORT_PRESETS } from '../bridge/types';
-import { TRANSLATE_MODE_LABELS } from '../bridge/config';
 
 type Props = {
   viewport: ViewportPreset;
@@ -13,9 +8,6 @@ type Props = {
   onViewportChange: (id: ViewportPresetId) => void;
   iframeKey: number;
   iframeRef: RefObject<HTMLIFrameElement | null>;
-  translateMode: TranslateModeId;
-  onTranslateMode: (mode: TranslateModeId) => void;
-  modeHonesty: string;
 };
 
 const HOSTED_APP_SRC = '/hosted-app/index.html';
@@ -26,9 +18,6 @@ export function PhoneStage({
   onViewportChange,
   iframeKey,
   iframeRef,
-  translateMode,
-  onTranslateMode,
-  modeHonesty,
 }: Props) {
   return (
     <section className="tg-phone-col">
@@ -47,22 +36,7 @@ export function PhoneStage({
             ))}
           </select>
         </div>
-        <div className="tg-field">
-          <label htmlFor="tg-mode">Translation mode</label>
-          <select
-            id="tg-mode"
-            value={translateMode}
-            onChange={(e) => onTranslateMode(e.target.value as TranslateModeId)}
-          >
-            {(Object.keys(TRANSLATE_MODE_LABELS) as TranslateModeId[]).map((id) => (
-              <option key={id} value={id}>
-                {TRANSLATE_MODE_LABELS[id].label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
-      <p className="tg-honesty">{modeHonesty}</p>
       <div
         className="tg-phone-frame"
         style={{ width: viewport.width + 22 }}

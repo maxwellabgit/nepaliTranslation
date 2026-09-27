@@ -1,5 +1,4 @@
 import type { OcrDocument } from '../camera/ocrTypes';
-import { translateOnDevice } from '../mt/onDeviceTranslate';
 import type {
   CameraPermission,
   RuntimePorts,
@@ -64,11 +63,11 @@ export function createTestRuntime(options: TestRuntimeOptions = {}): RuntimePort
         }
         const hit = translations.find((t) => (t.match ? t.match(req) : true));
         if (hit) return { ...hit.result };
-        const local = translateOnDevice(req.text, req.preferred, {
-          formality: req.formality,
-          script: req.script,
-          forcePreferred: req.forcePreferred,
-        });
+        const local = {
+          text: '',
+          method: 'neural' as const,
+          direction: req.preferred,
+        };
         return {
           text: local.text,
           method: local.method,

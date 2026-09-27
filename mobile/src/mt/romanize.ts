@@ -1,11 +1,8 @@
 /**
- * Everyday Nepali Devanagari ↔ chat-Roman.
- *
- * Roman → Devanagari is lexicon-first (meaning-bank words) then a
- * syllable parser. The old greedy letter matcher treated every "a" as
- * independent अ and produced unreadable input for the NE→EN model.
+ * Devanagari ↔ Latin script.
+ * This is a letter transliterator so the script toggle and the indic-en
+ * checkpoint can see one script. It does not translate.
  */
-import { meaningLexicon, normKey } from './meaningLexicon';
 
 const CONSONANTS: Record<string, string> = {
   क: 'k',
@@ -79,26 +76,6 @@ const MATRAS: Record<string, string> = {
 };
 
 const VIRAMA = '्';
-
-const PHRASE_ROMAN: Record<string, string> = {
-  नमस्ते: 'namaste',
-  धन्यवाद: 'dhanyabad',
-  कृपया: 'kripya',
-  हो: 'ho',
-  होइन: 'hoina',
-  'ठिक छ': 'thik cha',
-  'माफ गर्नुहोस्': 'maaf garnuhos',
-  'माफ गर': 'maaf gara',
-  मद्दत: 'madat',
-  'तपाईंलाई कस्तो छ': 'tapai lai kasto cha',
-  'तिमीलाई कस्तो छ': 'timi lai kasto cha',
-  'म ठिक छु': 'ma thik chu',
-  'शुभ प्रभात': 'shubha prabhat',
-  'शुभ रात्री': 'shubha ratri',
-  स्वागत: 'swagat',
-  'स्वागत छ': 'swagat cha',
-  बिदा: 'bida',
-};
 
 /** Longest-first chat-Roman consonant spellings. */
 const CONS_ROMAN: Array<[string, string]> = [
@@ -218,32 +195,21 @@ function syllablesToDeva(raw: string): string {
 }
 
 function tokenToDeva(tok: string): string {
-  const key = tok.toLowerCase();
-  const hit = meaningLexicon.romanWords[key];
-  if (hit) return hit;
-  return syllablesToDeva(key);
+  return syllablesToDeva(tok.toLowerCase());
 }
 
 export function looksLikeRomanNepali(text: string): boolean {
   const t = text.toLowerCase();
   if (!/[a-z]/.test(t)) return false;
   if (/[\u0900-\u097F]/.test(t)) return false;
-  const words = t.match(/[a-z]+/g) ?? [];
-  if (!words.length) return false;
-  let hits = 0;
-  for (const w of words) {
-    if (meaningLexicon.romanWords[w]) hits += 1;
-  }
-  if (hits >= 2) return true;
-  if (words.length === 1 && hits === 1 && words[0].length >= 4) return true;
   return /\b(namaste|dhanyabad|tapai|timi|kasto|chha|hoina|malai|mero|kaha|garnuhos|dinuhos|swagat|maaf|kripya|thik|bujhina|shauchalaya|madat)\b/i.test(
     t,
   );
 }
 
 /**
- * Chat-style Roman Nepali → Devanagari.
- * Known words come from the meaning bank; the rest is syllable-parsed.
+ * Syllable parser for chat-style Roman Nepali → Devanagari,
+ * so the indic-en checkpoint receives Devanagari.
  */
 export function romanToDevanagari(text: string): string {
   const trimmed = text.trim();
@@ -270,10 +236,6 @@ export function romanToDevanagari(text: string): string {
 export function devanagariToRoman(text: string): string {
   const trimmed = text.trim();
   if (!trimmed) return '';
-  if (PHRASE_ROMAN[trimmed]) return PHRASE_ROMAN[trimmed];
-  const bare = trimmed.replace(/[?.!,;:।]+$/u, '');
-  const punct = trimmed.slice(bare.length);
-  if (PHRASE_ROMAN[bare]) return PHRASE_ROMAN[bare] + punct;
 
   let out = '';
   let i = 0;
@@ -346,5 +308,3 @@ export function companionNepaliScript(
   if (!other.trim() || other === selected) return '';
   return other;
 }
-
-export { normKey };

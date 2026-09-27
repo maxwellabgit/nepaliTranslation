@@ -5,7 +5,6 @@ import type {
   TimelineEvent,
   ViewportPreset,
 } from '../bridge/types';
-import { TRANSLATE_MODE_LABELS } from '../bridge/config';
 
 type TabId = 'overview' | 'timeline' | 'state' | 'fixtures';
 
@@ -74,12 +73,6 @@ export function DevConsole({
               <tr>
                 <td>Run id</td>
                 <td className="tg-mono">{bootConfig.runId}</td>
-              </tr>
-              <tr>
-                <td>Translate mode</td>
-                <td>
-                  {TRANSLATE_MODE_LABELS[bootConfig.translateMode].label}
-                </td>
               </tr>
               <tr>
                 <td>Viewport</td>

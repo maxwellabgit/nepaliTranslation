@@ -11,7 +11,7 @@ export const SCENARIO_CATALOG = [
   },
   {
     id: '02-typed-en-ne-hello',
-    title: 'Typed EN→NE Hello→नमस्ते (recorded/phrase path)',
+    title: 'Typed EN→NE Hello→नमस्ते (recorded fixture)',
     status: 'automated',
   },
   {

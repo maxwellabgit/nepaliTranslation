@@ -72,7 +72,7 @@ export const en = {
     "Is this incorrect? Correct it, and we'll send you credits",
   'credits.notMoney':
     '* Credits are not money. They automatically redeem for ad-free time.',
-  'translate.phrasebookHint': ' Offline phrasebook still works.',
+  'translate.mtWarmFailed': 'Model unavailable.',
   'translate.status.needMic': 'Microphone…',
   'translate.status.listening': 'Listening…',
   'translate.status.finalizing': 'Working…',
@@ -83,7 +83,6 @@ export const en = {
   'translate.status.translateFailed': 'Translation failed.',
   'translate.status.sttUnsupported': 'Speech failed.',
   'translate.status.speechUnavailable': 'Speech failed.',
-  'translate.mtWarmFailed': 'Model unavailable · using phrases',
 
   'camera.title': 'Camera',
   'camera.directionA11y': 'Translation direction',
@@ -153,8 +152,7 @@ export const en = {
   'settings.qualityBody':
     'Translation may be imperfect. On a result, tap Mark incorrect to suggest a better translation.',
   'settings.privacy': 'Privacy',
-  'settings.privacyBody':
-    'Camera translation runs on this device. Captures are temporary and are not saved to your photo library.',
+  'settings.privacyBody': 'Camera translation runs on this device.',
   'settings.legal': 'Legal & support',
   'settings.privacyPolicy': 'Privacy Policy',
   'settings.privacyPolicyA11y': 'Open Privacy Policy',
@@ -175,7 +173,7 @@ export const en = {
   'settings.aboutReady':
     'Bola runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.',
   'settings.aboutPending':
-    'Bola includes on-device English ↔ Nepali models in the install. If they have not finished loading, saved traveler phrases still work. Speech uses Apple recognition and may need a network.',
+    'Bola includes on-device English ↔ Nepali models in the install. Translation waits until those models finish loading. Speech uses Apple recognition and may need a network.',
   'settings.modelReady': 'model ready',
   'settings.modelPending': 'model pending',
   'settings.consentCurrent': 'Consent current',
@@ -202,6 +200,11 @@ export const en = {
   'earnBanner.seeHow': 'See how',
   'earnBanner.seeHowA11y': 'See how to earn credits',
   'earnBanner.dismissA11y': 'Dismiss earn credits',
+  'promo.adFreeTitle': 'Go ad-free',
+  'promo.adFreeBody': 'More room to translate.',
+  'promo.seeOptions': 'See options',
+  'promo.seeOptionsA11y': 'See ad-free options',
+  'promo.dismissA11y': 'Dismiss this banner',
   'learn.rewardsHeading': 'Review translations',
   'learn.rewardsBody':
     'Same items for every reviewer. Rewards settle at 5:00 PM New York.',
@@ -451,6 +454,10 @@ export const en = {
   'review.actionEdit': 'Submit correction',
   'review.actionEditDisabled': 'Enter a corrected target to enable',
   'review.actionSkip': 'Skip',
+  'review.actionSubmit': 'Submit',
+  'review.settle': 'Rewards settle at 5:00 PM New York.',
+  'review.prevA11y': 'Previous sample',
+  'review.nextA11y': 'Next sample',
   'review.actionReport': 'Report',
   'review.pendingReward':
     'Reward is pending. Credits will grant at 5:00 PM New York time if not marked unsatisfactory.',

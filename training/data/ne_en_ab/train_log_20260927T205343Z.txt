@@ -1,0 +1,31 @@
+run 20260927T205343Z
+base training/artifacts/it2_indic_en_merged
+gpu NVIDIA GeForce RTX 4070 Ti SUPER 16376 MiB
+first attempt: per_device_train_batch_size=8 gradient_accumulation_steps=4
+  died step 2/26 CUDA out of memory during accelerate fp32 cast
+  message: tried to allocate 20.00 MiB; 12.80 GiB reported free; 1.81 GiB allocated by PyTorch
+finished attempt: batch 4, accumulation 8, gradient checkpointing, dataloader_num_workers=0
+  PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True (unsupported on this platform)
+prepare: dropped_benchmark_rows=3838 dropped_blocklist_train_examples=60 train_a=436 train_b=732 dev=64
+
+[ab] train A rows=436 dtype=torch.bfloat16
+[ab] label_rows_at_cap=3/436
+{'loss': 3.8057, 'grad_norm': 2.460160732269287, 'learning_rate': 6.666666666666667e-05, 'epoch': 0.73}
+{'loss': 3.3912, 'grad_norm': 1.7774772644042969, 'learning_rate': 2.5e-05, 'epoch': 1.51}
+{'train_runtime': 41.47, 'train_samples_per_second': 21.027, 'train_steps_per_second': 0.627, 'train_loss': 3.438802645756648, 'epoch': 1.95}
+[ab] saved training/artifacts/ne_en_ab_20260927T205343Z/A/adapter
+
+[ab] train B rows=732 dtype=torch.bfloat16
+[ab] label_rows_at_cap=5/732
+{'loss': 4.6516, 'grad_norm': 1.9114844799041748, 'learning_rate': 8.292682926829268e-05, 'epoch': 0.44}
+{'loss': 4.144, 'grad_norm': 2.126797914505005, 'learning_rate': 5.853658536585366e-05, 'epoch': 0.87}
+{'loss': 3.9331, 'grad_norm': 2.2284157276153564, 'learning_rate': 3.414634146341464e-05, 'epoch': 1.35}
+{'loss': 3.5734, 'grad_norm': 1.8865524530410767, 'learning_rate': 9.756097560975611e-06, 'epoch': 1.79}
+{'train_runtime': 72.0554, 'train_samples_per_second': 20.318, 'train_steps_per_second': 0.611, 'train_loss': 4.003541664643721, 'epoch': 1.96}
+[ab] saved training/artifacts/ne_en_ab_20260927T205343Z/B/adapter
+
+[ab] scored base
+[ab] scored A
+[ab] scored B
+decision direct_roman=false chosen=A
+exit 0 elapsed_ms 375124 ended_at 2026-09-27T20:59:58.149Z

@@ -1,0 +1,31 @@
+{
+  "held_out_meanings": [
+    "core_grammar_00008",
+    "core_grammar_00015",
+    "core_grammar_00027",
+    "government_00002",
+    "government_00021",
+    "government_00026",
+    "government_00049",
+    "government_00051",
+    "government_00060",
+    "health_00006",
+    "numbers_money_00002",
+    "questions_requests_00005",
+    "questions_requests_00018",
+    "questions_requests_00021",
+    "questions_requests_00029",
+    "shopping_00006"
+  ],
+  "dropped_benchmark_rows": 3838,
+  "dropped_blocklist_train_examples": 60,
+  "train_a": 436,
+  "train_b": 732,
+  "dev": 64,
+  "dev_by_kind": {
+    "deva_formal": 16,
+    "deva_informal": 16,
+    "roman_formal": 16,
+    "roman_informal": 16
+  }
+}

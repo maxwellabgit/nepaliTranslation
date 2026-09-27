@@ -139,7 +139,7 @@ describe('ReviewScreen', () => {
     });
 
     await act(async () => {
-      fireEvent.press(screen.getByTestId('review-action-confirm'));
+      fireEvent.press(screen.getByTestId('review-action-submit'));
     });
 
     await waitFor(() => {
@@ -246,11 +246,13 @@ describe('ReviewScreen', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('review-action-edit')).toBeTruthy();
+      expect(screen.getByTestId('review-action-submit')).toBeTruthy();
     });
 
-    expect(screen.getByTestId('review-action-edit').props.accessibilityState.disabled)
-      .toBe(true);
+    expect(screen.getByTestId('review-action-submit').props.accessibilityState.disabled)
+      .toBe(false);
+
+    submitReview.mockResolvedValue({ ok: true, submission: { id: 'sub-edit' } });
 
     await act(async () => {
       fireEvent.changeText(
@@ -259,8 +261,15 @@ describe('ReviewScreen', () => {
       );
     });
 
-    expect(screen.getByTestId('review-action-edit').props.accessibilityState.disabled)
-      .toBe(false);
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-action-submit'));
+    });
+    expect(submitReview).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'edit',
+        correctedText: 'नमस्कार',
+      }),
+    );
   });
 
   it('requires a written translation when no suggestion exists', async () => {
@@ -284,14 +293,13 @@ describe('ReviewScreen', () => {
     submitReview.mockResolvedValue({ ok: true, submission: { id: 's-1' } });
 
     await act(async () => { renderScreen(); });
-    await waitFor(() => expect(screen.getByTestId('review-item-source-only')).toBeTruthy());
-    expect(screen.getByTestId('review-action-confirm').props.accessibilityState.disabled).toBe(true);
-    expect(screen.getByTestId('review-action-edit').props.accessibilityState.disabled).toBe(true);
+    await waitFor(() => expect(screen.getByTestId('review-item-correction')).toBeTruthy());
+    expect(screen.getByTestId('review-action-submit').props.accessibilityState.disabled).toBe(true);
 
     await act(async () => {
       fireEvent.changeText(screen.getByTestId('review-item-correction'), 'When will you arrive?');
     });
-    await act(async () => { fireEvent.press(screen.getByTestId('review-action-edit')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-submit')); });
     expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
       sourceItemId: 'source-only',
       action: 'edit',
@@ -332,11 +340,11 @@ describe('ReviewScreen', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('review-action-confirm')).toBeTruthy();
+      expect(screen.getByTestId('review-action-submit')).toBeTruthy();
     });
 
     await act(async () => {
-      fireEvent.press(screen.getByTestId('review-action-confirm'));
+      fireEvent.press(screen.getByTestId('review-action-submit'));
     });
 
     await waitFor(() => {
@@ -358,6 +366,6 @@ describe('ReviewScreen', () => {
     await waitFor(() => {
       expect(screen.getByTestId('review-state-consent')).toBeTruthy();
     });
-    expect(screen.queryByTestId('review-action-confirm')).toBeNull();
+    expect(screen.queryByTestId('review-action-submit')).toBeNull();
   });
 });

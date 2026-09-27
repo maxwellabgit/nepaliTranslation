@@ -10,9 +10,10 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../features/auth/AuthProvider';
 import {
-  creditLabelForCredits,
   fetchCurrentReviewWindow,
   firstUnsubmittedIndex,
   submitReview,
@@ -24,26 +25,19 @@ import { AppButton } from '../components/AppPrimitives';
 import { t, useNetworkOffline, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { useFeatureFlags } from '../app/FeatureConfigProvider';
+import { isTestingGroundHarness } from '../features/contribution/testingGroundReview';
 
 /**
- * R3 mobile Review screen.
- *
- * Renders the shared 10-item public review window. All submissions route
- * through `rpc_submit_review` which, under R3's migration, first calls
- * `private.assert_review_eligibility(auth.uid())` so the client cannot
- * bypass eligibility. Copy honestly says the reward is pending until the
- * 5:00 PM New York close; late rejection preserves the granted display.
- *
- * State matrix:
- *   * offline               → offline banner (no fetch)
- *   * flag_off              → paused message
- *   * guest                 → sign-in message (still no fetch)
- *   * consent-required      → pointer to Settings
- *   * fetching              → spinner
- *   * items empty           → all-done message
- *   * items[cursor]         → source / target / correction textarea + 4 actions
- *   * window_closed on submit → offline-safe error banner
+ * Shared 10-item review window. Submissions go through `rpc_submit_review`,
+ * which checks eligibility on the server. Rewards stay pending until the
+ * 5:00 PM New York close.
  */
+
+function samplePreview(text: string): string {
+  const chars = Array.from(text.trim());
+  if (chars.length <= 5) return chars.join('');
+  return `${chars.slice(0, 5).join('')}...`;
+}
 
 type OverlayProps = {
   onClose: () => void;
@@ -68,14 +62,15 @@ type ErrorReason =
 
 export function ReviewScreen({ onClose }: OverlayProps) {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const lang = useUiLang();
   const auth = useAuth();
   const offline = useNetworkOffline();
   const flags = useFeatureFlags();
+  const testingGround = isTestingGroundHarness();
 
   const [items, setItems] = useState<ReviewItem[]>([]);
   const [windowId, setWindowId] = useState<string | null>(null);
-  const [closeAt, setCloseAt] = useState<string | null>(null);
   const [cursor, setCursor] = useState(0);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<ErrorReason | null>(null);
@@ -84,9 +79,10 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   const [mine, setMine] = useState<ReviewMine[]>([]);
 
   const shouldFetch =
-    !offline &&
-    auth.status === 'signed-in' &&
-    Boolean(flags.contributionTextEnabled);
+    testingGround ||
+    (!offline &&
+      auth.status === 'signed-in' &&
+      Boolean(flags.contributionTextEnabled));
 
   const refresh = useCallback(async () => {
     setStatus('loading');
@@ -100,7 +96,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     const loaded = res.items ?? [];
     const restored = res.mine ?? [];
     setWindowId(res.window?.window_id ?? null);
-    setCloseAt(res.window?.ny_close_at ?? null);
     setItems(loaded);
     setMine(restored);
     setReviewedIds(new Set(restored.map((row) => row.source_item_id)));
@@ -148,23 +143,23 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setCorrection('');
       setCursor((c) => (c + 1 < items.length ? c + 1 : c));
       setStatus('submitted');
-      // Announce success briefly, then move back to ready for the next item.
       setTimeout(() => setStatus('ready'), 800);
     },
     [windowId, active, correction, items.length],
   );
 
+  const topGap = Math.max(insets.top, 47);
+
   const dynamic = useMemo(
     () =>
       StyleSheet.create({
         root: { flex: 1, backgroundColor: theme.colors.bg },
-        pad: { padding: theme.spacing.lg, gap: theme.spacing.md },
-        title: {
-          fontSize: 22,
-          fontWeight: '700',
-          color: theme.colors.text,
+        pad: {
+          paddingTop: topGap,
+          paddingHorizontal: theme.spacing.lg,
+          paddingBottom: theme.spacing.lg,
+          gap: theme.spacing.md,
         },
-        subtitle: { fontSize: 14, color: theme.colors.textSecondary },
         section: {
           borderRadius: theme.radii.md,
           borderWidth: StyleSheet.hairlineWidth,
@@ -172,8 +167,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           padding: theme.spacing.md,
           gap: theme.spacing.sm,
         },
-        label: { fontSize: 13, fontWeight: '600', color: theme.colors.text },
-        body: { fontSize: 15, color: theme.colors.text },
         meta: { fontSize: 12, color: theme.colors.textSecondary },
         textarea: {
           minHeight: 80,
@@ -185,25 +178,106 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           color: theme.colors.text,
         },
         actionsRow: { flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' },
+        pager: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 12,
+        },
+        sampleList: { flexDirection: 'row', gap: 16 },
+        sampleColumn: { flex: 1, gap: 2 },
+        sample: { fontSize: 14, color: theme.colors.textSecondary },
+        sampleCurrent: { fontSize: 14, fontWeight: '700', color: theme.colors.text },
+        creditRow: {
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+          paddingHorizontal: 12,
+          paddingVertical: 6,
+          borderRadius: 999,
+          backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+        },
+        creditText: {
+          fontSize: 15,
+          fontWeight: '800',
+          color: theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12',
+        },
+        footer: {
+          fontSize: 12,
+          lineHeight: 16,
+          color: theme.colors.textSecondary,
+        },
+        progress: {
+          alignSelf: 'flex-start',
+          flexDirection: 'row',
+          alignItems: 'baseline',
+          gap: 6,
+          paddingHorizontal: 14,
+          paddingVertical: 8,
+          borderRadius: 999,
+          backgroundColor: theme.colors.surface,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.colors.divider,
+        },
+        progressCount: {
+          fontSize: 22,
+          fontWeight: '800',
+          color: theme.colors.text,
+        },
+        progressOf: {
+          fontSize: 14,
+          fontWeight: '600',
+          color: theme.colors.textSecondary,
+        },
         stateNote: { fontSize: 14, color: theme.colors.textSecondary },
         errorNote: { fontSize: 13, color: theme.colors.errorText, fontWeight: '600' },
         header: {
           flexDirection: 'row',
-          justifyContent: 'space-between',
           alignItems: 'center',
         },
+        headerSide: { width: 36 },
+        titlePill: {
+          flex: 1,
+          alignItems: 'center',
+        },
+        titleChip: {
+          borderRadius: 14,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+        },
+        title: {
+          fontSize: 20,
+          fontWeight: '700',
+          color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
+        },
+        itemColumn: { gap: theme.spacing.md },
+        sourceCard: {
+          position: 'relative',
+          minHeight: 96,
+          borderRadius: 16,
+          backgroundColor: theme.colors.surface,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.colors.divider,
+          padding: 16,
+          justifyContent: 'center',
+        },
+        sourceText: {
+          fontSize: 22,
+          fontWeight: '700',
+          color: theme.colors.text,
+          paddingRight: 108,
+        },
+        back: {
+          fontSize: 22,
+          fontWeight: '700',
+          color: theme.colors.text,
+        },
       }),
-    [theme],
+    [theme, topGap],
   );
-
-  const closeLabel = closeAt
-    ? new Date(closeAt).toLocaleString(lang === 'ne' ? 'ne-NP' : 'en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-      })
-    : '—';
 
   const total = items.length;
   const done = reviewedIds.size;
@@ -222,25 +296,27 @@ export function ReviewScreen({ onClose }: OverlayProps) {
             accessibilityLabel={t('common.backHome', lang)}
             onPress={onClose}
             hitSlop={12}
+            style={dynamic.headerSide}
           >
-            <Text style={dynamic.title}>←</Text>
+            <Text style={dynamic.back}>←</Text>
           </Pressable>
-          <Text style={dynamic.title}>{t('review.title', lang)}</Text>
+          <View style={dynamic.titlePill}>
+            <View style={dynamic.titleChip}>
+              <Text style={dynamic.title}>{t('review.title', lang)}</Text>
+            </View>
+          </View>
+          <View style={dynamic.headerSide} />
         </View>
-        <Text style={dynamic.subtitle}>{t('review.subtitle', lang)}</Text>
-        <Text style={dynamic.meta} testID="review-credits-note">
-          {t('credits.notMoney', lang)}
-        </Text>
 
-        {offline ? (
+        {offline && !testingGround ? (
           <Text style={dynamic.stateNote} testID="review-state-offline">
             {t('review.stateOffline', lang)}
           </Text>
-        ) : !flags.contributionTextEnabled ? (
+        ) : !flags.contributionTextEnabled && !testingGround ? (
           <Text style={dynamic.stateNote} testID="review-state-flag-off">
             {t('review.stateFlagOff', lang)}
           </Text>
-        ) : auth.status !== 'signed-in' ? (
+        ) : auth.status !== 'signed-in' && !testingGround ? (
           <Text style={dynamic.stateNote} testID="review-state-sign-in">
             {t('review.stateSignIn', lang)}
           </Text>
@@ -303,58 +379,104 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                 ))}
               </View>
             ) : null}
-            <Text style={dynamic.meta} testID="review-progress">
-              {t('review.progress', lang, {
-                done: String(done),
-                total: String(total),
+            <View style={dynamic.sampleList} testID="review-sample-list">
+              {[0, 1].map((column) => {
+                const start = column === 0 ? 0 : Math.ceil(items.length / 2);
+                const end = column === 0 ? Math.ceil(items.length / 2) : items.length;
+                return (
+                  <View key={column} style={dynamic.sampleColumn}>
+                    {items.slice(start, end).map((item, offset) => {
+                      const index = start + offset;
+                      return (
+                        <Pressable
+                          key={item.source_item_id}
+                          onPress={() => {
+                            setCursor(index);
+                            setCorrection('');
+                          }}
+                          testID={`review-sample-${index}`}
+                        >
+                          <Text
+                            style={
+                              index === cursor
+                                ? dynamic.sampleCurrent
+                                : dynamic.sample
+                            }
+                          >
+                            {index + 1}. {samplePreview(item.source_text)}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                );
               })}
-            </Text>
-            <Text style={dynamic.meta} testID="review-close-at">
-              {t('review.closeAt', lang, { localTime: closeLabel })}
-            </Text>
+            </View>
+            <View style={dynamic.pager}>
+              <Pressable
+                testID="review-prev"
+                accessibilityRole="button"
+                accessibilityLabel={t('review.prevA11y', lang)}
+                disabled={cursor <= 0}
+                onPress={() => {
+                  setCursor((current) => Math.max(0, current - 1));
+                  setCorrection('');
+                }}
+                hitSlop={8}
+              >
+                <Ionicons
+                  name="chevron-back"
+                  size={28}
+                  color={cursor <= 0 ? theme.colors.divider : theme.colors.text}
+                />
+              </Pressable>
+              <View style={dynamic.progress} testID="review-progress">
+                <Text style={dynamic.progressCount}>{done}</Text>
+                <Text style={dynamic.progressOf}>of {total}</Text>
+              </View>
+              <Pressable
+                testID="review-next"
+                accessibilityRole="button"
+                accessibilityLabel={t('review.nextA11y', lang)}
+                disabled={cursor >= items.length - 1}
+                onPress={() => {
+                  setCursor((current) => Math.min(items.length - 1, current + 1));
+                  setCorrection('');
+                }}
+                hitSlop={8}
+              >
+                <Ionicons
+                  name="chevron-forward"
+                  size={28}
+                  color={
+                    cursor >= items.length - 1
+                      ? theme.colors.divider
+                      : theme.colors.text
+                  }
+                />
+              </Pressable>
+            </View>
             {remaining === 0 ? (
               <Text style={dynamic.stateNote} testID="review-state-all-done">
                 {t('review.stateAllDone', lang)}
               </Text>
             ) : active ? (
-              <View style={dynamic.section} testID="review-item">
-                <Text style={dynamic.meta}>
-                  {t('review.itemDirection', lang, {
-                    direction: active.direction,
-                  })}
-                  {'  ·  '}
-                  {t('review.itemRegister', lang, {
-                    register: active.register,
-                  })}
-                  {'  ·  '}
-                  {creditLabelForCredits(active.scheduled_credits)}
-                </Text>
-                <Text style={dynamic.label}>
-                  {t('review.itemSource', lang)}
-                </Text>
-                <Text style={dynamic.body} testID="review-item-source">
-                  {active.source_text}
-                </Text>
-                {active.proposed_target?.trim() ? (
-                  <>
-                    <Text style={dynamic.label}>
-                      {t('review.itemProposed', lang)}
-                    </Text>
-                    <Text style={dynamic.body} testID="review-item-proposed">
-                      {active.proposed_target}
-                    </Text>
-                    <Text style={dynamic.meta}>
-                      {t('review.suggestionUnverified', lang)}
-                    </Text>
-                  </>
-                ) : (
-                  <Text style={dynamic.meta} testID="review-item-source-only">
-                    {t('review.sourceOnly', lang)}
+              <View testID="review-item" style={dynamic.itemColumn}>
+                <View style={dynamic.sourceCard}>
+                  <Text style={dynamic.sourceText} testID="review-item-source">
+                    {active.source_text}
                   </Text>
-                )}
-                <Text style={dynamic.label}>
-                  {t('review.itemCorrection', lang)}
-                </Text>
+                  <View style={dynamic.creditRow} testID="review-credits">
+                    <FontAwesome5
+                      name="coins"
+                      size={16}
+                      color={theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12'}
+                    />
+                    <Text style={dynamic.creditText}>
+                      {t('learn.credits', lang, { count: active.scheduled_credits })}
+                    </Text>
+                  </View>
+                </View>
                 <TextInput
                   testID="review-item-correction"
                   style={dynamic.textarea}
@@ -362,20 +484,21 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                   value={correction}
                   onChangeText={setCorrection}
                   editable={status !== 'submitting'}
+                  placeholder={active.proposed_target?.trim() || undefined}
+                  placeholderTextColor={theme.colors.textPlaceholder}
                 />
 
                 <View style={dynamic.actionsRow}>
                   <AppButton
-                    testID="review-action-confirm"
-                    label={t('review.actionConfirm', lang)}
-                    onPress={() => void submit('confirm')}
-                    disabled={status === 'submitting' || !active.proposed_target?.trim()}
-                  />
-                  <AppButton
-                    testID="review-action-edit"
-                    label={t('review.actionEdit', lang)}
-                    onPress={() => void submit('edit')}
-                    disabled={status === 'submitting' || !correction.trim()}
+                    testID="review-action-submit"
+                    label={t('review.actionSubmit', lang)}
+                    onPress={() =>
+                      void submit(correction.trim() ? 'edit' : 'confirm')
+                    }
+                    disabled={
+                      status === 'submitting' ||
+                      (!correction.trim() && !active.proposed_target?.trim())
+                    }
                   />
                   <AppButton
                     testID="review-action-skip"
@@ -383,16 +506,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                     onPress={() => void submit('skip')}
                     disabled={status === 'submitting'}
                   />
-                  <AppButton
-                    testID="review-action-report"
-                    label={t('review.actionReport', lang)}
-                    onPress={() => void submit('report')}
-                    disabled={status === 'submitting'}
-                  />
                 </View>
-                <Text style={dynamic.meta}>
-                  {t('review.pendingReward', lang)}
-                </Text>
                 {error === 'already_submitted' ? (
                   <Text style={dynamic.errorNote} testID="review-error-already">
                     {t('review.errorAlreadySubmitted', lang)}
@@ -410,6 +524,10 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                 ) : null}
               </View>
             ) : null}
+            <Text style={dynamic.footer} testID="review-credits-note">
+              {t('credits.notMoney', lang)}
+            </Text>
+            <Text style={dynamic.footer}>{t('review.settle', lang)}</Text>
           </>
         )}
       </ScrollView>

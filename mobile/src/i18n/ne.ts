@@ -76,7 +76,7 @@ export const ne: Record<MessageKey, string> = {
     'यो गलत हो? सच्याऊ, अनि हामी तिमीलाई क्रेडिट पठाउँछौं',
   'credits.notMoney':
     '* क्रेडिट पैसा होइन। यो आफैं विज्ञापन-रहित समयमा लाग्छ।',
-  'translate.phrasebookHint': ' अफलाइन वाक्यपुस्तिका अझै काम गर्छ।',
+  'translate.mtWarmFailed': 'मोडेल उपलब्ध छैन।',
   'translate.status.needMic': 'बोल्न माइक्रोफोन अनुमति चाहिन्छ।',
   'translate.status.listening': 'सुन्दै…',
   'translate.status.finalizing': 'बोली टुङ्ग्याउँदै…',
@@ -88,7 +88,6 @@ export const ne: Record<MessageKey, string> = {
   'translate.status.translateFailed': 'अनुवाद असफल।',
   'translate.status.sttUnsupported': 'बोली असफल।',
   'translate.status.speechUnavailable': 'बोली असफल।',
-  'translate.mtWarmFailed': 'मोडेल उपलब्ध छैन · वाक्य प्रयोग हुँदै',
 
   'camera.title': 'क्यामेरा',
   'camera.directionA11y': 'अनुवाद दिशा',
@@ -158,8 +157,7 @@ export const ne: Record<MessageKey, string> = {
   'settings.qualityBody':
     'अनुवाद अपूर्ण हुन सक्छ। नतिजामा Mark incorrect थिचेर राम्रो अनुवाद सुझाउन सकिन्छ।',
   'settings.privacy': 'गोपनीयता',
-  'settings.privacyBody':
-    'क्यामेरा अनुवाद यस यन्त्रमै चल्छ। तस्बिर अस्थायी हुन् र फोटो लाइब्रेरीमा बचत हुँदैनन्।',
+  'settings.privacyBody': 'क्यामेरा अनुवाद यस यन्त्रमै चल्छ।',
   'settings.legal': 'कानुनी र सहयोग',
   'settings.privacyPolicy': 'गोपनीयता नीति',
   'settings.privacyPolicyA11y': 'गोपनीयता नीति खोल्नुहोस्',
@@ -180,7 +178,7 @@ export const ne: Record<MessageKey, string> = {
   'settings.aboutReady':
     'Bola ले यस यन्त्रमै IndicTrans2 चलाएर अंग्रेजी ↔ नेपाली अनुवाद गर्छ। मोडेल स्थापनासँगै आउँछ — अनुवादका लागि नेटवर्क चाहिँदैन। बोली Apple ले चिन्छ र नेटवर्क चाहिन सक्छ।',
   'settings.aboutPending':
-    'Bola मा अंग्रेजी ↔ नेपाली मोडेल स्थापनासँगै आउँछन्। लोड नसकिए पनि सुरक्षित यात्री वाक्य काम गर्छन्। बोली Apple ले चिन्छ र नेटवर्क चाहिन सक्छ।',
+    'Bola मा अंग्रेजी ↔ नेपाली मोडेल स्थापनासँगै आउँछन्। अनुवाद मोडेल लोड भएपछि मात्र हुन्छ। बोली Apple ले चिन्छ र नेटवर्क चाहिन सक्छ।',
   'settings.modelReady': 'मोडेल तयार',
   'settings.modelPending': 'मोडेल पर्खँदै',
   'settings.consentCurrent': 'सहमति अद्यावधिक',
@@ -207,6 +205,11 @@ export const ne: Record<MessageKey, string> = {
   'earnBanner.seeHow': 'हेर',
   'earnBanner.seeHowA11y': 'क्रेडिट कमाउने तरिका हेर',
   'earnBanner.dismissA11y': 'यो पट्टी हटाऊ',
+  'promo.adFreeTitle': 'विज्ञापन हटाऊ',
+  'promo.adFreeBody': 'अनुवादका लागि बढी ठाउँ।',
+  'promo.seeOptions': 'विकल्प हेर',
+  'promo.seeOptionsA11y': 'विज्ञापन-मुक्त विकल्प हेर',
+  'promo.dismissA11y': 'यो ब्यानर हटाऊ',
   'learn.rewardsHeading': 'अनुवाद समीक्षा',
   'learn.rewardsBody':
     'सबै समीक्षकले उही वस्तु देख्छन्। पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',
@@ -457,6 +460,10 @@ export const ne: Record<MessageKey, string> = {
   'review.actionEdit': 'सुधार पेस गर्नुहोस्',
   'review.actionEditDisabled': 'सक्षम गर्न सुधारिएको लक्ष्य लेख्नुहोस्',
   'review.actionSkip': 'छोड्नुहोस्',
+  'review.actionSubmit': 'पठाऊ',
+  'review.settle': 'पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',
+  'review.prevA11y': 'अघिल्लो नमूना',
+  'review.nextA11y': 'पछिल्लो नमूना',
   'review.actionReport': 'रिपोर्ट गर्नुहोस्',
   'review.pendingReward':
     'पुरस्कार पर्खिरहेको छ। असन्तुष्टि नमानिएमा न्यूयोर्क समयको ५ बजे क्रेडिट दिइनेछ।',

@@ -23,7 +23,8 @@ import { useRuntime } from '../runtime/RuntimeContext';
 import { updateHistoryTranslation, type HistoryItem } from '../storage/phrasebook';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { CreditsGauge } from '../translate/CreditsGauge';
-import { EarnCreditsBanner } from '../components/EarnCreditsBanner';
+import { PromoRotator } from '../components/PromoRotator';
+import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { TranslateComposer } from '../translate/TranslateComposer';
 import { TurnCard } from '../translate/TurnCard';
 import { useTranslationSession } from '../translate/useTranslationSession';
@@ -83,7 +84,6 @@ function statusCopy(
 
 export function TranslateScreen({
   seed,
-  neuralReady = false,
   mtWarmStatus = null,
   active = true,
   onOpenHistory,
@@ -95,6 +95,7 @@ export function TranslateScreen({
   const theme = useTheme();
   const lang = useUiLang();
   const runtime = useRuntime();
+  const subscription = useSubscriptionOptional();
   const session = useTranslationSession({ active, seed });
   const { state, uiPhase } = session;
   const [correctionOpen, setCorrectionOpen] = useState(false);
@@ -418,8 +419,6 @@ export function TranslateScreen({
           </Pressable>
         </View>
 
-        <EarnCreditsBanner onSeeHow={onOpenReview} />
-
         {status ? (
           <View style={styles.statusRow} testID="translate-status">
             <Text style={styles.statusText}>{status}</Text>
@@ -547,7 +546,10 @@ export function TranslateScreen({
         </Pressable>
       </View>
 
-      <EarnCreditsBanner onSeeHow={onOpenReview} />
+      <PromoRotator
+        onAdFree={() => subscription?.openPaywall()}
+        onEarn={() => onOpenReview?.()}
+      />
 
       <View style={styles.langRow}>
         <Pressable
@@ -693,7 +695,6 @@ export function TranslateScreen({
       {showFailure ? (
         <Text style={styles.failure} testID="mt-failure">
           {t('translate.mtWarmFailed', lang)}
-          {!neuralReady ? t('translate.phrasebookHint', lang) : ''}
         </Text>
       ) : null}
 

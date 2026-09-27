@@ -6,11 +6,11 @@ export const TRANSLATE_MODE_LABELS: Record<
 > = {
   'fast-fallback': {
     label: 'fast fallback',
-    honesty: 'Deterministic lexicon/echo path via createTestRuntime (no neural).',
+    honesty: 'No checkpoint in the browser. Unrecorded lines return empty.',
   },
   recorded: {
     label: 'recorded',
-    honesty: 'Returns fixture translations only; missing keys use a tagged echo.',
+    honesty: 'Returns fixture translations only. Missing keys return empty.',
   },
   'local-neural': {
     label: 'local-neural',
@@ -29,17 +29,12 @@ export function defaultBootConfig(
     neuralReady: false,
     speechPermission: 'granted',
     cameraPermission: 'granted',
-    translations: [
-      {
-        source: 'Hello',
-        preferred: 'en-ne',
-        text: 'नमस्ते',
-        method: 'recorded',
-        direction: 'en-ne',
-      },
-    ],
     transcripts: ['Hello'],
+    featureFlags: {
+      contributionTextEnabled: true,
+    },
     seed: 'tg-seed-1',
+    acknowledgeStartupConsent: 'auto-accept',
     ...overrides,
   };
 }
