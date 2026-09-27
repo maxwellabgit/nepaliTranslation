@@ -11,7 +11,13 @@ export function EarnCreditsBanner({ onSeeHow }: Props) {
   const lang = useUiLang();
 
   return (
-    <View style={styles.wrap} testID="earn-credits-banner">
+    <Pressable
+      onPress={onSeeHow}
+      accessibilityRole="button"
+      accessibilityLabel={t('earnBanner.seeHowA11y', lang)}
+      style={styles.wrap}
+      testID="earn-credits-banner"
+    >
       <FontAwesome5 name="coins" size={16} color="#F0C14A" />
       <View style={styles.copy}>
         <Text style={styles.title}>{t('earnBanner.title', lang)}</Text>
@@ -19,16 +25,10 @@ export function EarnCreditsBanner({ onSeeHow }: Props) {
           {t('earnBanner.body', lang)}
         </Text>
       </View>
-      <Pressable
-        onPress={onSeeHow}
-        accessibilityRole="button"
-        accessibilityLabel={t('earnBanner.seeHowA11y', lang)}
-        testID="earn-credits-see-how"
-        style={styles.seeHow}
-      >
+      <View style={styles.seeHow} testID="earn-credits-see-how">
         <Text style={styles.seeHowText}>{t('earnBanner.seeHow', lang)} →</Text>
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 }
 

@@ -13,6 +13,7 @@ describe('creditProgress', () => {
     expect(mid.percent).toBe(50);
 
     const past = creditProgress(240);
+    expect(past.credits).toBe(50);
     expect(past.nextThreshold).toBeNull();
     expect(past.percent).toBe(100);
   });

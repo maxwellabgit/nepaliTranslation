@@ -1,4 +1,5 @@
-/** Explicit credit milestones for the compact gauge. */
+/** Explicit credit milestones for the compact gauge. Display never exceeds the cap. */
+export const CREDIT_CAP = 50;
 export const CREDIT_THRESHOLDS = [10, 30, 60, 120, 240] as const;
 
 export type CreditProgress = {
@@ -22,7 +23,7 @@ export function adFreeBalance(input: {
   nowMs: number;
   lifetimeCredits: number;
 }): AdFreeBalance {
-  const total = Math.max(0, Math.floor(input.lifetimeCredits));
+  const total = Math.min(CREDIT_CAP, Math.max(0, Math.floor(input.lifetimeCredits)));
   const totalEarnedLabel = `Total earned: ${total}`;
   const until = input.earnedUntilMs;
   if (until == null || !Number.isFinite(until) || until <= input.nowMs) {
@@ -42,7 +43,15 @@ export function adFreeBalance(input: {
 }
 
 export function creditProgress(credits: number): CreditProgress {
-  const safe = Math.max(0, Math.floor(credits));
+  const safe = Math.min(CREDIT_CAP, Math.max(0, Math.floor(credits)));
+  if (safe >= CREDIT_CAP) {
+    return {
+      credits: CREDIT_CAP,
+      nextThreshold: null,
+      percent: 100,
+      accessibilityLabel: `${CREDIT_CAP} credits. Credit cap reached.`,
+    };
+  }
   const next = CREDIT_THRESHOLDS.find((t) => t > safe) ?? null;
   if (next == null) {
     return {

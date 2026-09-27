@@ -2,9 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
-import { INTERSTITIAL_MIN_FOREGROUND_MS } from '../features/entitlements/decideInterstitialPresentation';
-import { subscribeForegroundActiveMs } from '../features/ads/InterstitialController';
-import { loadForegroundActiveMs } from '../features/ads/foregroundAdTimer';
+import { subscribeAdCountdown } from '../features/ads/adCountdown';
 import { markSkippableVideoAdDue } from '../features/ads/skippableVideoAdMark';
 import { useTheme } from '../theme';
 import { t, useUiLang } from '../i18n';
@@ -21,7 +19,7 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
   const lang = useUiLang();
   const entitlement = useEntitlementOptional();
   const [nowMs, setNowMs] = useState(() => Date.now());
-  const [foregroundMs, setForegroundMs] = useState(0);
+  const [foregroundMs, setForegroundMs] = useState(15 * 60 * 1000);
   const adMarkedRef = useRef(false);
   useEffect(() => {
     const tick = () => setNowMs(Date.now());
@@ -35,19 +33,9 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
     };
   }, []);
   useEffect(() => {
-    let cancelled = false;
-    void loadForegroundActiveMs().then((ms) => {
-      if (!cancelled) setForegroundMs(ms);
-    });
-    const unsubscribe = subscribeForegroundActiveMs((ms) => {
-      if (!cancelled) setForegroundMs(ms);
-    });
-    return () => {
-      cancelled = true;
-      unsubscribe();
-    };
+    return subscribeAdCountdown((ms) => setForegroundMs(ms));
   }, []);
-  const remainingMs = Math.max(0, INTERSTITIAL_MIN_FOREGROUND_MS - foregroundMs);
+  const remainingMs = foregroundMs;
   useEffect(() => {
     if (remainingMs > 0) {
       adMarkedRef.current = false;
