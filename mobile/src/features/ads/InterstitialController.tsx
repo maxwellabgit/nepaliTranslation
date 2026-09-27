@@ -18,6 +18,21 @@ import {
 type Listener = (req: InterstitialOpportunityRequest) => void;
 
 const listeners = new Set<Listener>();
+const foregroundListeners = new Set<(ms: number) => void>();
+
+/** Live foreground-active milliseconds, for the credits-bar countdown. */
+export function subscribeForegroundActiveMs(
+  listener: (ms: number) => void,
+): () => void {
+  foregroundListeners.add(listener);
+  return () => {
+    foregroundListeners.delete(listener);
+  };
+}
+
+function publishForegroundMs(ms: number) {
+  foregroundListeners.forEach((listener) => listener(ms));
+}
 
 /** Fire a presentation attempt from screens / shell (soft-fail if none listening). */
 export function requestInterstitialOpportunity(
@@ -47,6 +62,7 @@ export function InterstitialController() {
       if (cancelled) return;
       accumRef.current.setMs(ms);
       readyRef.current = true;
+      publishForegroundMs(ms);
       if (AppState.currentState === 'active') {
         accumRef.current.onActive(Date.now());
       }
@@ -78,10 +94,16 @@ export function InterstitialController() {
         persist(Date.now());
       }
     }, 30_000);
+    const countdown = setInterval(() => {
+      if (AppState.currentState === 'active' && readyRef.current) {
+        publishForegroundMs(accumRef.current.flush(Date.now()));
+      }
+    }, 1_000);
 
     return () => {
       sub.remove();
       clearInterval(interval);
+      clearInterval(countdown);
       if (AppState.currentState === 'active') {
         persist(Date.now());
       }
@@ -108,6 +130,17 @@ export function InterstitialController() {
             req.hasSubscription ?? Boolean(subscription?.hasSubscription()),
         },
       })
+        .then((result) => {
+          if (result && 'presented' in result && result.presented) {
+            const now = Date.now();
+            accumRef.current.onInactive(now);
+            accumRef.current.setMs(0);
+            if (AppState.currentState === 'active') {
+              accumRef.current.onActive(now);
+            }
+            publishForegroundMs(0);
+          }
+        })
         .catch(() => undefined)
         .finally(() => {
           presentingRef.current = false;

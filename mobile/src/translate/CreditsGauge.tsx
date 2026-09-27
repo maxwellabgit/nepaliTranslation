@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
+import { INTERSTITIAL_MIN_FOREGROUND_MS } from '../features/entitlements/decideInterstitialPresentation';
+import { subscribeForegroundActiveMs } from '../features/ads/InterstitialController';
+import { loadForegroundActiveMs } from '../features/ads/foregroundAdTimer';
+import { markSkippableVideoAdDue } from '../features/ads/skippableVideoAdMark';
 import { useTheme } from '../theme';
 import { t, useUiLang } from '../i18n';
 import { adFreeBalance, creditProgress } from './creditProgress';
@@ -17,6 +21,8 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
   const lang = useUiLang();
   const entitlement = useEntitlementOptional();
   const [nowMs, setNowMs] = useState(() => Date.now());
+  const [foregroundMs, setForegroundMs] = useState(0);
+  const adMarkedRef = useRef(false);
   useEffect(() => {
     const tick = () => setNowMs(Date.now());
     const timer = setInterval(tick, 15_000);
@@ -28,6 +34,31 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
       subscription.remove();
     };
   }, []);
+  useEffect(() => {
+    let cancelled = false;
+    void loadForegroundActiveMs().then((ms) => {
+      if (!cancelled) setForegroundMs(ms);
+    });
+    const unsubscribe = subscribeForegroundActiveMs((ms) => {
+      if (!cancelled) setForegroundMs(ms);
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, []);
+  const remainingMs = Math.max(0, INTERSTITIAL_MIN_FOREGROUND_MS - foregroundMs);
+  useEffect(() => {
+    if (remainingMs > 0) {
+      adMarkedRef.current = false;
+      return;
+    }
+    if (adMarkedRef.current) return;
+    adMarkedRef.current = true;
+    // REVIEW: 15:00 elapsed. Hook for a video ad skippable after 5 seconds.
+    markSkippableVideoAdDue();
+  }, [remainingMs]);
+  const countdownLabel = formatAdCountdown(remainingMs);
   const lifetimeCredits = entitlement?.lifetimeCredits ?? 0;
   const balance = adFreeBalance({
     earnedUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
@@ -94,13 +125,21 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
           overflow: 'hidden',
           backgroundColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
         },
+        countdown: {
+          fontSize: compact ? 12 : 14,
+          fontWeight: '800',
+          fontVariant: ['tabular-nums'],
+          color: theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12',
+          minWidth: 40,
+          textAlign: 'right',
+        },
         fill: {
           height: '100%',
           borderRadius: 5,
           backgroundColor: theme.scheme === 'dark' ? '#F0C14A' : '#FFF6D8',
         },
       }),
-    [theme],
+    [compact, theme],
   );
 
   return (
@@ -110,7 +149,7 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
       onPress={onPress}
       disabled={!onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${balance.accessibilityLabel} ${t('learn.earnRewardsA11y', lang)}`}
+      accessibilityLabel={`${balance.accessibilityLabel} ${countdownLabel} ${t('learn.earnRewardsA11y', lang)}`}
     >
       {balance.remainingLabel ? (
         <Text style={styles.balance} testID="credits-gauge-label">
@@ -132,6 +171,9 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
           >
             <View style={[styles.fill, { width: `${fill}%` }]} />
           </View>
+          <Text style={styles.countdown} testID="credits-ad-countdown">
+            {countdownLabel}
+          </Text>
         </View>
       ) : (
         <View style={styles.gauge} testID="credits-gauge-total">
@@ -150,4 +192,11 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
       )}
     </Pressable>
   );
+}
+
+function formatAdCountdown(ms: number): string {
+  const totalSeconds = Math.ceil(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }

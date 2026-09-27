@@ -228,6 +228,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           <Text style={dynamic.title}>{t('review.title', lang)}</Text>
         </View>
         <Text style={dynamic.subtitle}>{t('review.subtitle', lang)}</Text>
+        <Text style={dynamic.meta} testID="review-credits-note">
+          {t('credits.notMoney', lang)}
+        </Text>
 
         {offline ? (
           <Text style={dynamic.stateNote} testID="review-state-offline">

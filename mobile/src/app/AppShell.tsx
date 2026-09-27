@@ -126,21 +126,21 @@ export function AppShell({
           alignItems: 'center',
           justifyContent: 'center',
           gap: 2,
-          backgroundColor: '#E15B6A',
+          backgroundColor: '#F6DDE0',
           borderWidth: 1,
-          borderColor: '#E15B6A',
+          borderColor: '#F6DDE0',
         },
         tabOn: {
-          backgroundColor: theme.colors.crimson,
-          borderColor: theme.colors.crimson,
+          backgroundColor: '#E7B7BC',
+          borderColor: '#E7B7BC',
         },
         tabLabel: {
           fontSize: 11,
           fontWeight: '700',
           textAlign: 'center',
-          color: theme.colors.onPrimary,
+          color: theme.colors.text,
         },
-        tabLabelOn: { color: theme.colors.onPrimary },
+        tabLabelOn: { color: theme.colors.text },
       }),
     [theme],
   );
@@ -161,8 +161,8 @@ export function AppShell({
   // so the clock and battery are not covered.
   const topInset = Math.max(insets.top, 47);
 
-  const inactiveIcon = theme.colors.onPrimary;
-  const activeIcon = theme.colors.onPrimary;
+  const inactiveIcon = theme.colors.text;
+  const activeIcon = theme.colors.text;
 
   return (
     <SafeAreaView

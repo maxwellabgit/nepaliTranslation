@@ -95,8 +95,29 @@ export function createTestRuntime(options: TestRuntimeOptions = {}): RuntimePort
       },
     },
     speechSynthesis: {
-      speak: () => undefined,
-      stop: () => undefined,
+      speak: (text, opts) => {
+        try {
+          const synth =
+            typeof window !== 'undefined' ? window.speechSynthesis : undefined;
+          if (!synth || typeof SpeechSynthesisUtterance === 'undefined') return;
+          synth.cancel();
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.lang = opts.language;
+          if (opts.rate) utter.rate = opts.rate;
+          synth.speak(utter);
+        } catch {
+          /* preview speech is best-effort */
+        }
+      },
+      stop: () => {
+        try {
+          const synth =
+            typeof window !== 'undefined' ? window.speechSynthesis : undefined;
+          synth?.cancel();
+        } catch {
+          /* ignore */
+        }
+      },
     },
     camera: {
       getPermission: async () => cameraPermission,

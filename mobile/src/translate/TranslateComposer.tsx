@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -26,11 +26,9 @@ type Props = {
   side: Side;
   onChangeText: (text: string) => void;
   onSubmit: () => void;
-  onOpenOptions?: () => void;
   /** On is formal, off is informal. */
   formal?: boolean;
   onFormality?: (formal: boolean) => void;
-  dock?: ReactNode;
   expanded?: boolean;
   script?: NepaliScript;
   onToggleScript?: () => void;
@@ -50,7 +48,6 @@ export function TranslateComposer({
   onSubmit,
   formal = true,
   onFormality,
-  dock,
   expanded = false,
   script = 'deva',
   onToggleScript,
@@ -129,7 +126,7 @@ export function TranslateComposer({
           gap: 4,
           paddingHorizontal: 16,
           paddingTop: 4,
-          flex: expanded ? 1 : 0,
+          ...(expanded ? { flex: 1 } : { flexGrow: 0, flexShrink: 0 }),
         },
         scriptRow: {
           flexDirection: 'row',
@@ -156,8 +153,8 @@ export function TranslateComposer({
           color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
         },
         field: {
-          flex: expanded ? 1 : 0,
-          minHeight: expanded ? 220 : 140,
+          ...(expanded ? { flex: 1 } : { flexGrow: 0, flexShrink: 0 }),
+          minHeight: expanded ? 220 : 168,
           backgroundColor: theme.colors.surface,
           borderRadius: 16,
           borderWidth: StyleSheet.hairlineWidth,
@@ -303,7 +300,6 @@ export function TranslateComposer({
               <Ionicons name="volume-high-outline" size={20} color={theme.colors.text} />
             </Pressable>
           ) : null}
-          {dock}
         </View>
         {onPressMic ? (
           <>

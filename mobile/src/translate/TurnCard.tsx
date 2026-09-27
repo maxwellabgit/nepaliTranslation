@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import * as Clipboard from 'expo-clipboard';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { useRuntime } from '../runtime/RuntimeContext';
-import { isRetryableTurn, type SessionTurn } from './translationSessionReducer';
+import type { SessionTurn } from './translationSessionReducer';
 import type { NepaliScript } from '../mt/onDeviceTranslate';
 
 type Props = {
@@ -13,72 +13,75 @@ type Props = {
   turns: SessionTurn[];
   script: NepaliScript;
   isLatest: boolean;
-  busy?: boolean;
-  onRetry: (turn: SessionTurn) => void;
-  onMarkIncorrect?: () => void;
+  /** True while this turn still belongs to the person holding the phone. */
+  sent?: boolean;
+  /** Show the original wording instead of the translation. */
+  original?: boolean;
+  /** Alternate shade against the neighboring bubble. */
+  alt?: boolean;
 };
 
 export function TurnCard({
   turn,
-  turns,
   script,
   isLatest,
-  busy = false,
-  onRetry,
-  onMarkIncorrect,
+  sent = false,
+  original = false,
+  alt = false,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const runtime = useRuntime();
-  const targetIsNepali = turn.from === 'en';
-  const shown = targetIsNepali
-    ? formatNepaliScript(turn.translation, script)
-    : turn.translation;
-  const scriptLine = targetIsNepali
-    ? companionNepaliScript(turn.translation, script)
-    : formatNepaliScript(turn.source, script);
-  const canRetry = isRetryableTurn(turn, turns);
+  const nepaliText = original
+    ? turn.from === 'ne'
+      ? turn.source
+      : ''
+    : turn.from === 'en'
+      ? turn.translation
+      : '';
+  const shown = nepaliText
+    ? formatNepaliScript(nepaliText, script)
+    : original
+      ? turn.source
+      : turn.translation;
+  const scriptLine = nepaliText ? companionNepaliScript(nepaliText, script) : '';
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
         card: {
-          backgroundColor: theme.colors.surface,
-          borderRadius: 12,
-          padding: 14,
-          gap: 6,
+          alignSelf: 'stretch',
+          width: '100%',
+          backgroundColor: sent
+            ? alt
+              ? '#F8E6E8'
+              : '#F3D5D8'
+            : alt
+              ? theme.colors.pasteBg
+              : theme.colors.surface,
+          borderRadius: 18,
+          paddingHorizontal: 14,
+          paddingVertical: 10,
+          gap: 4,
         },
-        source: { fontSize: 15, color: theme.colors.textSecondary },
         translation: {
-          fontSize: 22,
-          fontWeight: '700',
+          fontSize: 17,
+          fontWeight: '600',
           color: theme.colors.text,
         },
-        roman: { fontSize: 14, color: theme.colors.textSecondary },
-        actions: {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          gap: 16,
-          marginTop: 6,
-        },
-        action: {
+        roman: {
           fontSize: 13,
-          fontWeight: '700',
-          color: theme.colors.crimson,
-          minHeight: 44,
-          textAlignVertical: 'center',
-        },
-        actionOff: {
-          fontSize: 13,
-          fontWeight: '700',
           color: theme.colors.textSecondary,
-          opacity: 0.5,
-          minHeight: 44,
-          textAlignVertical: 'center',
         },
-        mark: { color: theme.colors.text },
+        play: {
+          alignSelf: 'flex-start',
+          minWidth: 44,
+          minHeight: 44,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
       }),
-    [theme],
+    [alt, sent, theme],
   );
 
   return (
@@ -95,58 +98,25 @@ export function TurnCard({
           {scriptLine}
         </Text>
       ) : null}
-      <View style={styles.actions}>
-        <Pressable
-          onPress={() => {
-            runtime.speechSynthesis.stop();
-            runtime.speechSynthesis.speak(turn.translation, {
-              language: targetIsNepali ? 'ne-NP' : 'en-US',
-            });
-          }}
-          accessibilityRole="button"
-          accessibilityLabel={t('translate.playA11y', lang)}
-        >
-          <Text style={styles.action}>{t('common.play', lang)}</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => void Clipboard.setStringAsync(shown)}
-          accessibilityRole="button"
-          accessibilityLabel={t('translate.copyA11y', lang)}
-          testID={isLatest ? 'translate-copy' : undefined}
-        >
-          <Text style={styles.action}>{t('common.copy', lang)}</Text>
-        </Pressable>
-        {canRetry ? (
-          <Pressable
-            onPress={() => onRetry(turn)}
-            disabled={busy}
-            accessibilityRole="button"
-            accessibilityLabel={
-              busy
-                ? t('translate.retryBusyA11y', lang)
-                : t('translate.retryA11y', lang)
-            }
-            accessibilityState={{ disabled: busy }}
-            testID={isLatest ? 'translate-retry' : undefined}
-          >
-            <Text style={[styles.action, busy && styles.actionOff]}>
-              {t('common.retry', lang)}
-            </Text>
-          </Pressable>
-        ) : null}
-        {isLatest && onMarkIncorrect ? (
-          <Pressable
-            onPress={onMarkIncorrect}
-            accessibilityRole="button"
-            accessibilityLabel={t('translate.markIncorrectA11y', lang)}
-            testID="mark-incorrect"
-          >
-            <Text style={[styles.action, styles.mark]}>
-              {t('translate.markIncorrect', lang)}
-            </Text>
-          </Pressable>
-        ) : null}
-      </View>
+      <Pressable
+        onPress={() => {
+          if (!shown.trim()) return;
+          runtime.speechSynthesis.stop();
+          runtime.speechSynthesis.speak(shown, {
+            language: nepaliText ? 'ne-NP' : 'en-US',
+          });
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={t('translate.playA11y', lang)}
+        testID={isLatest ? 'translate-play' : undefined}
+        style={styles.play}
+      >
+        <Ionicons
+          name="play"
+          size={22}
+          color={theme.colors.text}
+        />
+      </Pressable>
     </View>
   );
 }

@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,16 +20,14 @@ import { t, useUiLang, type UiLang } from '../i18n';
 import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import { useRuntime } from '../runtime/RuntimeContext';
-import type { HistoryItem } from '../storage/phrasebook';
+import { updateHistoryTranslation, type HistoryItem } from '../storage/phrasebook';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { CreditsGauge } from '../translate/CreditsGauge';
-import { OptionsSheet } from '../translate/OptionsSheet';
+import { EarnCreditsBanner } from '../components/EarnCreditsBanner';
 import { TranslateComposer } from '../translate/TranslateComposer';
 import { TurnCard } from '../translate/TurnCard';
 import { useTranslationSession } from '../translate/useTranslationSession';
-import { canPassPhone } from '../translate/passLogic';
 import {
-  latestFrom,
   sessionPhase,
 } from '../translate/translationSessionReducer';
 
@@ -98,16 +97,17 @@ export function TranslateScreen({
   const runtime = useRuntime();
   const session = useTranslationSession({ active, seed });
   const { state, uiPhase } = session;
-  const [optionsOpen, setOptionsOpen] = useState(false);
   const [correctionOpen, setCorrectionOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackDraft, setFeedbackDraft] = useState('');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [boxFocus, setBoxFocus] = useState<'source' | 'result'>('source');
   const [micDocked, setMicDocked] = useState(false);
+  const [historyOriginal, setHistoryOriginal] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const phase = sessionPhase(state);
   const latest = state.turns[state.turns.length - 1];
   const showFailure = mtWarmStatus === MT_WARM_FAILED;
-  const passEnabled = canPassPhone(state.draft, latestFrom(state), state.activeSide);
   const busy = state.translating || uiPhase.phase === 'listening';
   const status = statusCopy(uiPhase.phase, uiPhase.reasonCode, lang);
 
@@ -143,9 +143,9 @@ export function TranslateScreen({
           borderRadius: 16,
           backgroundColor: theme.colors.surface,
         },
-        langOn: { backgroundColor: theme.colors.crimson },
+        langOn: { backgroundColor: '#F3D5D8' },
         langText: { fontWeight: '700', color: theme.colors.text },
-        langTextOn: { color: theme.colors.onPrimary },
+        langTextOn: { color: theme.colors.text },
         failure: {
           textAlign: 'center',
           color: theme.colors.danger,
@@ -171,57 +171,30 @@ export function TranslateScreen({
           color: theme.colors.crimson,
           fontSize: 13,
         },
-        scroll: { flex: 1 },
+        scroll: { flex: 1, minHeight: 0 },
         scrollContent: { padding: 16, gap: 12, flexGrow: 1 },
         stage: { flex: 1 },
-        hero: {
-          ...StyleSheet.absoluteFill,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        speak: {
-          width: 120,
-          height: 120,
-          borderRadius: 60,
-          backgroundColor: theme.colors.crimson,
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2,
-        },
-        speakListening: { backgroundColor: theme.colors.text },
-        speakOff: { opacity: 0.45 },
-        speakEn: {
-          color: theme.colors.onPrimary,
-          fontWeight: '800',
-          fontSize: 18,
-        },
-        speakBola: {
-          color: theme.colors.onPrimary,
-          fontWeight: '800',
-          fontSize: 16,
-        },
-        speakNe: { color: theme.colors.onPrimary, fontSize: 13 },
-        speakCorner: {
-          width: 48,
-          height: 48,
-          borderRadius: 24,
-          backgroundColor: theme.colors.crimson,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
         dock: {
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
-          gap: 16,
+          gap: 12,
+          paddingHorizontal: 16,
           paddingBottom: 8,
         },
-        pass: {
-          paddingHorizontal: 36,
-          minWidth: 168,
+        flip: {
+          flex: 1,
           minHeight: MIN_TOUCH,
           borderRadius: 20,
-          backgroundColor: theme.colors.text,
+          backgroundColor: '#111111',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        pass: {
+          flex: 1,
+          paddingHorizontal: 18,
+          minHeight: MIN_TOUCH,
+          borderRadius: 20,
+          backgroundColor: theme.scheme === 'dark' ? '#2E9B57' : '#1F8A4C',
           alignItems: 'center',
           justifyContent: 'center',
         },
@@ -235,20 +208,28 @@ export function TranslateScreen({
           color: theme.colors.text,
         },
         turnBanner: {
-          paddingHorizontal: 16,
-          paddingVertical: 14,
-          borderRadius: 16,
-          backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+          alignSelf: 'stretch',
+          width: '100%',
+          backgroundColor: theme.colors.surface,
+          borderRadius: 18,
+          paddingHorizontal: 14,
+          paddingVertical: 10,
           gap: 4,
         },
+        chatContent: {
+          flexGrow: 1,
+        },
+        chatSpacer: {
+          flex: 1,
+        },
         turnTitle: {
-          fontSize: 20,
-          fontWeight: '800',
+          fontSize: 17,
+          fontWeight: '600',
           color: theme.colors.text,
         },
         turnHint: {
-          fontSize: 14,
-          color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
+          fontSize: 13,
+          color: theme.colors.textSecondary,
         },
         resultBox: {
           position: 'relative',
@@ -282,12 +263,39 @@ export function TranslateScreen({
           right: 12,
           bottom: 12,
         },
-        markIncorrect: {
-          marginHorizontal: 20,
-          marginTop: 8,
+        resultHead: {
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          gap: 8,
+        },
+        feedback: {
           fontSize: 13,
           fontWeight: '700',
+          color: theme.colors.crimson,
+        },
+        feedbackPrompt: {
+          marginTop: 12,
+          fontSize: 15,
+          lineHeight: 21,
+          fontWeight: '600',
           color: theme.colors.text,
+        },
+        feedbackNote: {
+          marginTop: 6,
+          fontSize: 12,
+          lineHeight: 17,
+          color: theme.colors.textSecondary,
+        },
+        feedbackInput: {
+          marginTop: 10,
+          minHeight: 72,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          borderRadius: 12,
+          padding: 12,
+          fontSize: 16,
+          color: theme.colors.text,
+          textAlignVertical: 'top',
         },
       }),
     [theme],
@@ -308,14 +316,6 @@ export function TranslateScreen({
   }, [state.turns.length, phase]);
 
   const speechUnavailable = uiPhase.phase === 'unavailable';
-  const speakLabel =
-    uiPhase.phase === 'listening'
-      ? t('translate.stopA11y', lang)
-      : uiPhase.phase === 'requestingPermission'
-        ? t('translate.requestingMicA11y', lang)
-        : speechUnavailable
-          ? t('translate.speechUnavailableA11y', lang)
-          : t('translate.speakA11y', lang);
 
   const passLabel =
     state.activeSide === 'en'
@@ -342,11 +342,10 @@ export function TranslateScreen({
     : state.activeSide === 'en'
       ? formatNepaliScript('अनुवाद यहाँ देखिन्छ', state.script)
       : 'Translation';
-  const resultSub = latest
-    ? latest.from === 'en'
+  const resultSub =
+    latest?.from === 'en'
       ? companionNepaliScript(latest.translation, state.script)
-      : formatNepaliScript(latest.source, state.script)
-    : '';
+      : '';
   const playSource = () => {
     const typed = state.draft.trim();
     const text = typed || latest?.source || '';
@@ -364,59 +363,15 @@ export function TranslateScreen({
       language: latest.from === 'en' ? 'ne-NP' : 'en-US',
     });
   };
-
-  const speakButton = (testID: string, placement: 'hero' | 'corner' | 'dock' = 'hero') => (
-    <Pressable
-      onPress={() => void session.toggleListen()}
-      disabled={
-        speechUnavailable ||
-        (state.translating && uiPhase.phase !== 'listening')
-      }
-      style={[
-        placement === 'corner' ? styles.speakCorner : styles.speak,
-        uiPhase.phase === 'listening' && styles.speakListening,
-        (speechUnavailable ||
-          (state.translating && uiPhase.phase !== 'listening')) &&
-          styles.speakOff,
-      ]}
-      accessibilityRole="button"
-      accessibilityLabel={speakLabel}
-      accessibilityState={{
-        disabled:
-          speechUnavailable ||
-          (state.translating && uiPhase.phase !== 'listening'),
-        busy: uiPhase.phase === 'listening' || state.translating,
-      }}
-      testID={testID}
-    >
-      {placement === 'corner' ? (
-        <Ionicons
-          name={uiPhase.phase === 'listening' ? 'stop' : 'mic'}
-          size={18}
-          color={theme.colors.onPrimary}
-        />
-      ) : (
-        <>
-          <Ionicons
-            name={uiPhase.phase === 'listening' ? 'stop' : 'mic'}
-            size={32}
-            color={theme.colors.onPrimary}
-          />
-        </>
-      )}
-    </Pressable>
-  );
+  const saveFeedback = async () => {
+    const text = feedbackDraft.trim();
+    if (!text || !latest?.id) return;
+    await updateHistoryTranslation(latest.id, text);
+    setFeedbackOpen(false);
+  };
 
   const sheets = (
     <>
-      <OptionsSheet
-        visible={optionsOpen}
-        formality={state.formality}
-        script={state.script}
-        onClose={() => setOptionsOpen(false)}
-        onFormality={session.setFormality}
-        onScript={session.setScript}
-      />
       <CorrectionSheet
         visible={correctionOpen}
         source={latest?.source ?? state.draft}
@@ -463,6 +418,8 @@ export function TranslateScreen({
           </Pressable>
         </View>
 
+        <EarnCreditsBanner onSeeHow={onOpenReview} />
+
         {status ? (
           <View style={styles.statusRow} testID="translate-status">
             <Text style={styles.statusText}>{status}</Text>
@@ -472,29 +429,30 @@ export function TranslateScreen({
         <ScrollView
           ref={scrollRef}
           style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, styles.chatContent]}
           keyboardShouldPersistTaps="handled"
         >
+          <View style={styles.chatSpacer} />
           <View style={styles.turnBanner} testID="conversation-turn">
             <Text style={styles.turnTitle}>
               {state.activeSide === 'en'
-                ? t('conversation.turnEn', lang)
-                : t('conversation.turnNe', lang)}
+                ? t('conversation.turnEn', historyOriginal ? (lang === 'en' ? 'ne' : 'en') : lang)
+                : t('conversation.turnNe', historyOriginal ? (lang === 'en' ? 'ne' : 'en') : lang)}
             </Text>
-            <Text style={styles.turnHint}>{t('conversation.hint', lang)}</Text>
+            <Text style={styles.turnHint}>
+              {t('conversation.hint', historyOriginal ? (lang === 'en' ? 'ne' : 'en') : lang)}
+            </Text>
           </View>
-          {state.turns.map((turn) => (
+          {state.turns.map((turn, index) => (
             <TurnCard
               key={turn.id}
               turn={turn}
               turns={state.turns}
               script={state.script}
+              sent={turn.from === state.activeSide}
+              original={historyOriginal}
+              alt={index % 2 === 0}
               isLatest={turn.id === latest?.id}
-              busy={busy}
-              onRetry={(item) => void session.retry(item)}
-              onMarkIncorrect={
-                turn.id === latest?.id ? () => setCorrectionOpen(true) : undefined
-              }
             />
           ))}
         </ScrollView>
@@ -506,7 +464,6 @@ export function TranslateScreen({
           onSubmit={() => void session.submit()}
           formal={state.formality === 'formal'}
           onFormality={session.setFormality}
-          expanded
           focused={boxFocus === 'source'}
           onFocusField={() => {
             setBoxFocus('source');
@@ -529,14 +486,20 @@ export function TranslateScreen({
 
         <View style={styles.dock}>
           <Pressable
+            onPress={() => setHistoryOriginal((on) => !on)}
+            accessibilityRole="button"
+            accessibilityLabel="Flip"
+            testID="flip-history"
+            style={styles.flip}
+          >
+            <Text style={styles.passText}>Flip</Text>
+          </Pressable>
+          <Pressable
             onPress={() => {
-              if (passEnabled) session.pass();
-              else {
-                session.dispatch({
-                  type: 'setSide',
-                  side: state.activeSide === 'en' ? 'ne' : 'en',
-                });
-              }
+              void (async () => {
+                if (state.draft.trim()) await session.submit();
+                session.pass();
+              })();
             }}
             disabled={busy}
             accessibilityRole="button"
@@ -560,27 +523,15 @@ export function TranslateScreen({
       testID="translate-screen"
     >
       <View style={styles.header}>
-        {conversation ? (
-          <Pressable
-            onPress={onGoHome}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.backHome', lang)}
-            testID="back-home"
-            style={styles.iconBtn}
-          >
-            <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
-          </Pressable>
-        ) : (
-          <Pressable
-            onPress={onOpenHistory}
-            accessibilityRole="button"
-            accessibilityLabel={t('translate.historyA11y', lang)}
-            testID="open-history"
-            style={styles.iconBtn}
-          >
-            <Ionicons name="time-outline" size={22} color={theme.colors.text} />
-          </Pressable>
-        )}
+        <Pressable
+          onPress={onOpenHistory}
+          accessibilityRole="button"
+          accessibilityLabel={t('translate.historyA11y', lang)}
+          testID="open-history"
+          style={styles.iconBtn}
+        >
+          <Ionicons name="time-outline" size={22} color={theme.colors.text} />
+        </Pressable>
         <View style={styles.brandBlock}>
           <Image source={require('../../assets/icon.png')} style={styles.mark} />
         </View>
@@ -595,6 +546,8 @@ export function TranslateScreen({
           <Ionicons name="settings-outline" size={22} color={theme.colors.text} />
         </Pressable>
       </View>
+
+      <EarnCreditsBanner onSeeHow={onOpenReview} />
 
       <View style={styles.langRow}>
         <Pressable
@@ -666,23 +619,62 @@ export function TranslateScreen({
           setBoxFocus('result');
           Keyboard.dismiss();
         }}
-        style={styles.resultBox}
+        style={[styles.resultBox, feedbackOpen && { paddingBottom: 48 }]}
         testID="translate-result"
       >
-        <Text
-          style={
-            resultText && boxFocus === 'result'
-              ? styles.resultText
-              : styles.resultHintText
-          }
-          testID="translate-output"
-        >
-          {resultText || resultHint}
-        </Text>
+        <View style={styles.resultHead}>
+          <Text
+            style={[
+              resultText && boxFocus === 'result'
+                ? styles.resultText
+                : styles.resultHintText,
+              { flex: 1 },
+            ]}
+            testID="translate-output"
+          >
+            {resultText || resultHint}
+          </Text>
+          {latest ? (
+            <Pressable
+              onPress={() => {
+                setFeedbackDraft(latest.translation);
+                setFeedbackOpen(true);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={t('translate.feedbackA11y', lang)}
+              testID="mark-incorrect"
+            >
+              <Text style={styles.feedback}>{t('translate.feedback', lang)}</Text>
+            </Pressable>
+          ) : null}
+        </View>
         {resultSub && resultSub !== resultText ? (
           <Text style={styles.resultSub} testID="translate-result-script">
             {resultSub}
           </Text>
+        ) : null}
+        {feedbackOpen && latest ? (
+          <View testID="correction-sheet">
+            <Text style={styles.feedbackPrompt}>
+              {t('translate.feedbackPrompt', lang)}
+            </Text>
+            <Text style={styles.feedbackNote}>{t('credits.notMoney', lang)}</Text>
+            <TextInput
+              value={feedbackDraft}
+              onChangeText={setFeedbackDraft}
+              multiline
+              style={styles.feedbackInput}
+              testID="correction-input"
+            />
+            <Pressable
+              onPress={() => void saveFeedback()}
+              accessibilityRole="button"
+              testID="correction-save-draft"
+              style={{ marginTop: 8, alignSelf: 'flex-start' }}
+            >
+              <Text style={styles.feedback}>{t('contributions.saveDevice', lang)}</Text>
+            </Pressable>
+          </View>
         ) : null}
         {resultText ? (
           <Pressable
@@ -725,17 +717,6 @@ export function TranslateScreen({
         </View>
       ) : null}
 
-      {latest ? (
-        <Pressable
-          onPress={() => setCorrectionOpen(true)}
-          accessibilityRole="button"
-          accessibilityLabel={t('translate.markIncorrectA11y', lang)}
-          testID="mark-incorrect"
-        >
-          <Text style={styles.markIncorrect}>{t('translate.markIncorrect', lang)}</Text>
-        </Pressable>
-      ) : null}
-
       <ScrollView
         ref={scrollRef}
         style={{ flexGrow: 0 }}
@@ -755,40 +736,12 @@ export function TranslateScreen({
             listening={state.listening}
             speaking={false}
             translating={state.translating}
-            modalVisible={correctionOpen || optionsOpen}
+            modalVisible={correctionOpen}
             appActive={active}
           />
         ) : null}
       </ScrollView>
-
-      {phase === 'empty' ? null : (
-        <View style={styles.dock}>
-          {speakInBox ? null : speakButton('speak-dock', 'dock')}
-          {conversation ? (
-            <Pressable
-              onPress={session.pass}
-              disabled={!passEnabled || busy}
-              accessibilityRole="button"
-              accessibilityLabel={passLabel}
-              accessibilityState={{ disabled: !passEnabled || busy }}
-              testID="pass-phone"
-              style={[styles.pass, (!passEnabled || busy) && styles.passOff]}
-            >
-              <Text style={styles.passText}>{passLabel}</Text>
-            </Pressable>
-          ) : null}
-        </View>
-      )}
       </View>
-
-      <OptionsSheet
-        visible={optionsOpen}
-        formality={state.formality}
-        script={state.script}
-        onClose={() => setOptionsOpen(false)}
-        onFormality={session.setFormality}
-        onScript={session.setScript}
-      />
 
       <CorrectionSheet
         visible={correctionOpen}

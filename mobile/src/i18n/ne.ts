@@ -70,6 +70,12 @@ export const ne: Record<MessageKey, string> = {
   'translate.retryBusyA11y': 'अनुवाद हुँदा फेरि प्रयास उपलब्ध छैन',
   'translate.markIncorrect': 'गलत चिन्ह लगाउनुहोस्',
   'translate.markIncorrectA11y': 'गलत चिन्ह लगाउनुहोस्',
+  'translate.feedback': 'प्रतिक्रिया',
+  'translate.feedbackA11y': 'प्रतिक्रिया',
+  'translate.feedbackPrompt':
+    'यो गलत हो? सच्याऊ, अनि हामी तिमीलाई क्रेडिट पठाउँछौं',
+  'credits.notMoney':
+    '* क्रेडिट पैसा होइन। यो आफैं विज्ञापन-रहित समयमा लाग्छ।',
   'translate.phrasebookHint': ' अफलाइन वाक्यपुस्तिका अझै काम गर्छ।',
   'translate.status.needMic': 'बोल्न माइक्रोफोन अनुमति चाहिन्छ।',
   'translate.status.listening': 'सुन्दै…',
@@ -196,6 +202,11 @@ export const ne: Record<MessageKey, string> = {
 
   'learn.earnRewards': 'आजका १०',
   'learn.earnRewardsA11y': 'आजका १० खोल्नुहोस्। अनुवाद समीक्षा।',
+  'earnBanner.title': 'क्रेडिट कमाऊ',
+  'earnBanner.body': 'अनलाइन हुँदा अनुवाद समीक्षा गर।',
+  'earnBanner.seeHow': 'हेर',
+  'earnBanner.seeHowA11y': 'क्रेडिट कमाउने तरिका हेर',
+  'earnBanner.dismissA11y': 'यो पट्टी हटाऊ',
   'learn.rewardsHeading': 'अनुवाद समीक्षा',
   'learn.rewardsBody':
     'सबै समीक्षकले उही वस्तु देख्छन्। पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',

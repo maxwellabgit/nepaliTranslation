@@ -27,7 +27,7 @@ describe('TranslateScreen Mark incorrect entry', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Mark incorrect')).toBeTruthy();
+      expect(screen.getByLabelText('feedback')).toBeTruthy();
     });
 
     await fireEvent.press(screen.getByTestId('mark-incorrect'));

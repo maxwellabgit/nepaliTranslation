@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 
+import { EarnCreditsBanner } from '../components/EarnCreditsBanner';
 import { EmptyState } from '../components/EmptyState';
 import { t, useUiLang } from '../i18n';
 import { ALPHABET_SECTIONS, type AlphabetGlyph } from '../learn/alphabet';
@@ -23,7 +24,7 @@ const COLUMNS = 5;
  * Learn: the full alphabet in order.
  * Letters are on the page for everyone — nothing sits behind a second screen.
  */
-export function LearnScreen({ active, onGoHome }: Props) {
+export function LearnScreen({ active, onGoHome, onOpenTodaysReview }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const [voiceOk, setVoiceOk] = useState(true);
@@ -150,6 +151,7 @@ export function LearnScreen({ active, onGoHome }: Props) {
 
   return (
     <View style={dynamic.root} testID="learn-screen">
+    <EarnCreditsBanner onSeeHow={onOpenTodaysReview} />
     <View style={dynamic.backRow}>
       <Pressable
         onPress={onGoHome}

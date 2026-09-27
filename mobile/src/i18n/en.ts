@@ -66,6 +66,12 @@ export const en = {
   'translate.retryBusyA11y': 'Retry unavailable while translating',
   'translate.markIncorrect': 'Mark incorrect',
   'translate.markIncorrectA11y': 'Mark incorrect',
+  'translate.feedback': 'feedback',
+  'translate.feedbackA11y': 'feedback',
+  'translate.feedbackPrompt':
+    "Is this incorrect? Correct it, and we'll send you credits",
+  'credits.notMoney':
+    '* Credits are not money. They automatically redeem for ad-free time.',
   'translate.phrasebookHint': ' Offline phrasebook still works.',
   'translate.status.needMic': 'Microphone…',
   'translate.status.listening': 'Listening…',
@@ -191,6 +197,11 @@ export const en = {
 
   'learn.earnRewards': "Today's 10",
   'learn.earnRewardsA11y': "Open Today's 10. Review translations.",
+  'earnBanner.title': 'Earn credits',
+  'earnBanner.body': 'Review translations when online.',
+  'earnBanner.seeHow': 'See how',
+  'earnBanner.seeHowA11y': 'See how to earn credits',
+  'earnBanner.dismissA11y': 'Dismiss earn credits',
   'learn.rewardsHeading': 'Review translations',
   'learn.rewardsBody':
     'Same items for every reviewer. Rewards settle at 5:00 PM New York.',
