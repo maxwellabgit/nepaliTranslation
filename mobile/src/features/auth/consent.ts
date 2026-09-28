@@ -1,27 +1,18 @@
+import { en } from '../../i18n/en';
+
 /**
  * Draft contribution agreement. Live collection stays off until legal review.
- * Version must change when the text changes.
+ * Version must change when the English text changes.
  */
 export const CONTRIBUTION_CONSENT_VERSION = '2026-09-21.media';
 
 /**
+ * English statement shown in Settings. Nepali uses the same key in the UI catalog.
  * Topics required by INTENT: speech, photos, transcripts/OCR, edits, model outputs,
  * technical metadata, future model development/commercialization, human review,
  * retention, withdrawal, deletion timing, processors, and that core works without consent.
  */
-export const CONTRIBUTION_CONSENT_SUMMARY = [
-  'By saving consent you agree that Bola may upload and store contribution text you submit,',
-  'speech recordings you allow, Camera photos you capture for translation, transcripts and OCR text,',
-  'your edits, model outputs, and related technical metadata for human review and for improving and',
-  'commercializing language data and models.',
-  'Contributed media may be retained indefinitely until you withdraw consent or delete your account;',
-  'withdrawal or deletion schedules purge of linked contribution data within 30 days.',
-  'Processors include our hosting and storage providers needed to run this pipeline.',
-  'Ordinary guest translation history, clipboard, and non-consented media stay on this device only.',
-  'Core Translate, Camera OCR, History, Settings, and Learn work without signing in or consenting.',
-  'Do not contribute personal or sensitive content.',
-  'Deleting the app account does not cancel an Apple subscription.',
-].join(' ');
+export const CONTRIBUTION_CONSENT_SUMMARY = en['auth.contributionConsentBody'];
 
 export type FeatureId =
   | 'translate'

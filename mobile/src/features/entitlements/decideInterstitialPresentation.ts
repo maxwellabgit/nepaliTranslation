@@ -3,7 +3,7 @@
  * AdMob SDK owns presentation and dismissal — this only decides eligibility.
  */
 
-export const INTERSTITIAL_MIN_FOREGROUND_MS = 15 * 60 * 1000;
+export const INTERSTITIAL_MIN_FOREGROUND_MS = 10 * 60 * 1000;
 
 /** The only transitions that may present an automatic interstitial. */
 export const SAFE_INTERSTITIAL_TRANSITIONS = [
@@ -67,7 +67,7 @@ export type InterstitialDecision =
  * 1. remote flag off / subscription / earned ad-free → none
  * 2. offline / UMP block → none (never call network offline)
  * 3. forbidden transition or Camera / result review / busy chrome → none
- * 4. foreground < 15 min → pending only, do not show
+ * 4. foreground < 10 min → pending only, do not show
  * 5. only translate_send_committed, camera_capture_committed, and
  *    learn_activity_completed may show. There is no daily cap.
  */

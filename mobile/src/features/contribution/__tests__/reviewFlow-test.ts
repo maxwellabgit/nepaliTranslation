@@ -1,5 +1,6 @@
 import type { ReviewItem } from '../publicReviewApi';
 import {
+  comparisonChoices,
   creditAwardDeadline,
   formatCountdown,
   groupReviewItems,
@@ -51,6 +52,24 @@ describe('review flow categories', () => {
       correctedText: 'मेरो',
     });
     expect(judgmentToSubmit('neither', 'केही', 'सुझाव')).toEqual({
+      action: 'report',
+    });
+  });
+
+  it('never confirms a source-only item', () => {
+    expect(comparisonChoices(null)).toEqual(['mine', 'same', 'neither']);
+    expect(comparisonChoices('  ')).toEqual(['mine', 'same', 'neither']);
+    expect(comparisonChoices('सुझाव')).toEqual(['ours', 'mine', 'same', 'neither']);
+    expect(judgmentToSubmit('mine', 'When will you arrive?', null)).toEqual({
+      action: 'edit',
+      correctedText: 'When will you arrive?',
+    });
+    expect(judgmentToSubmit('same', 'When will you arrive?', null)).toEqual({
+      action: 'edit',
+      correctedText: 'When will you arrive?',
+    });
+    expect(judgmentToSubmit('ours', 'When will you arrive?', null).action).toBe('edit');
+    expect(judgmentToSubmit('neither', 'When will you arrive?', null)).toEqual({
       action: 'report',
     });
   });

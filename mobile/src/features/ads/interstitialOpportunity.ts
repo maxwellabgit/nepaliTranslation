@@ -113,7 +113,7 @@ export async function tryPresentInterstitial(
     };
   }
   await recordInterstitialPresentation(nowMs);
-  // G3: interstitial eligibility resets to "15 minutes since last successful
+  // G3: interstitial eligibility resets to "10 minutes since last successful
   // impression" instead of accumulating cumulative foreground time forever.
   await resetForegroundActiveMs();
   return {

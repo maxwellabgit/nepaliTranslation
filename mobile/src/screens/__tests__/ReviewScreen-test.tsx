@@ -63,6 +63,25 @@ const signedInAuth = {
   userId: '11111111-1111-4111-8111-111111111111',
 };
 
+function sourceOnlyWindow() {
+  return {
+    ok: true as const,
+    window: { window_id: 'w-1', ny_close_at: '2027-01-01T22:00:00Z', size: 1 },
+    items: [{
+      slot: 1,
+      source_item_id: 'source-only',
+      direction: 'ne-en' as const,
+      register: 'noisy_roman',
+      script: 'roman',
+      source_text: 'tapai kahile aaune ho',
+      proposed_target: null,
+      length_tier: 1 as const,
+      scheduled_credits: 2 as const,
+    }],
+    mine: [],
+  };
+}
+
 describe('ReviewScreen', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -104,6 +123,28 @@ describe('ReviewScreen', () => {
     await act(async () => {
       fireEvent.changeText(screen.getByTestId('review-item-correction'), text);
     });
+  }
+
+  async function openSourceOnly(text: string, advance = true) {
+    await waitFor(() => {
+      expect(screen.getByTestId('review-category-roman')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-category-roman'));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('review-item-correction')).toBeTruthy();
+    });
+    if (text) {
+      await act(async () => {
+        fireEvent.changeText(screen.getByTestId('review-item-correction'), text);
+      });
+    }
+    if (advance) {
+      await act(async () => {
+        fireEvent.press(screen.getByTestId('review-action-submit'));
+      });
+    }
   }
 
   it('shows three category cards and moves forward through type then compare', async () => {
@@ -366,12 +407,58 @@ describe('ReviewScreen', () => {
       fireEvent.changeText(screen.getByTestId('review-item-correction'), 'When will you arrive?');
     });
     await act(async () => { fireEvent.press(screen.getByTestId('review-action-submit')); });
+    expect(screen.queryByTestId('review-judgment-ours')).toBeNull();
+    expect(screen.queryByTestId('review-system-answer')).toBeNull();
     await act(async () => { fireEvent.press(screen.getByTestId('review-judgment-mine')); });
     await act(async () => { fireEvent.press(screen.getByTestId('review-action-next')); });
     expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
       sourceItemId: 'source-only',
       action: 'edit',
       correctedText: 'When will you arrive?',
+    }));
+  });
+
+  it('stores same meaning on a source-only item as an edit', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue(sourceOnlyWindow());
+    submitReview.mockResolvedValue({ ok: true, submission: { id: 's-same' } });
+
+    await act(async () => { renderScreen(); });
+    await openSourceOnly('When will you arrive?');
+    await act(async () => { fireEvent.press(screen.getByTestId('review-judgment-same')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-next')); });
+    expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
+      action: 'edit',
+      correctedText: 'When will you arrive?',
+    }));
+  });
+
+  it('skips a source-only item without a judgment', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue(sourceOnlyWindow());
+    submitReview.mockResolvedValue({ ok: true, submission: { id: 's-skip' } });
+
+    await act(async () => { renderScreen(); });
+    await openSourceOnly('', false);
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-skip')); });
+    expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
+      sourceItemId: 'source-only',
+      action: 'skip',
+    }));
+  });
+
+  it('reports a source-only item when neither line is right', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue(sourceOnlyWindow());
+    submitReview.mockResolvedValue({ ok: true, submission: { id: 's-report' } });
+
+    await act(async () => { renderScreen(); });
+    await openSourceOnly('Not this');
+    await act(async () => { fireEvent.press(screen.getByTestId('review-judgment-neither')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-next')); });
+    expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
+      sourceItemId: 'source-only',
+      action: 'report',
     }));
   });
 

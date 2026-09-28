@@ -350,7 +350,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
     setPreviewUri(null);
     setSentences([]);
     setSelected(null);
-    setDrawerOpen(false);
     dispatch({ type: 'RETAKE' });
     if (!granted) {
       setPhaseState({ phase: 'permission', reasonCode: null });

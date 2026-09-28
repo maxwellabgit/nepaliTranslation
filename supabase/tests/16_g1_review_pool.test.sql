@@ -206,13 +206,13 @@ select is(
   'unsatisfactory submission did not receive credits'
 );
 
--- Ledger recorded 15 minutes per credit for the public_review grant.
+-- Ledger recorded 10 minutes per credit for the public_review grant.
 select ok(
-  (select minutes >= credits * 15 from public.reward_ledger
+  (select minutes >= credits * 10 from public.reward_ledger
     where source_type = 'public_review'
       and user_id = '11111111-1111-4111-8111-111111111111'
     order by created_at desc limit 1),
-  '1 credit = 15 minutes in public_review ledger row'
+  '1 credit = 10 minutes in public_review ledger row'
 );
 
 -- Late reject creates an alert but does not remove the ledger row.

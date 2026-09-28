@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useReducer, useState, type ReactNode } from 'react';
+import { useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { hardStopAudio } from './hardStopAudio';
 import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
 import { contentMaxWidth, useSizeClass } from '../layout/sizeClass';
+import { statusBarInset } from '../layout/statusBarInset';
 import type { HistoryItem } from '../storage/phrasebook';
 import {
   INITIAL_SHELL,
@@ -151,10 +152,8 @@ export function AppShell({
     dispatch({ type: 'switch_mode', mode: next });
   };
 
-  const insets = useSafeAreaInsets();
-  // Web preview reports no notch. Keep at least an iPhone status-bar gap
-  // so the clock and battery are not covered.
-  const topInset = Math.max(insets.top, 47);
+  const safeInsets = useContext(SafeAreaInsetsContext);
+  const topInset = statusBarInset(safeInsets?.top ?? 0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -293,7 +292,10 @@ export function AppShell({
       </View>
 
       {overlay ? (
-        <View style={styles.overlay} testID={`overlay-${overlay}`}>
+        <View
+          style={[styles.overlay, { paddingTop: topInset }]}
+          testID={`overlay-${overlay}`}
+        >
           {overlay === 'history' ? (
             <HistoryOverlay
               onClose={goHome}

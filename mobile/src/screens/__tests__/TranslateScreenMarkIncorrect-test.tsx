@@ -1,4 +1,4 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { act, render, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { TranslateScreen } from '../TranslateScreen';
 
 jest.mock('expo-clipboard', () => ({
@@ -38,5 +38,8 @@ describe('TranslateScreen Mark incorrect entry', () => {
     expect(screen.getByTestId('correction-save-draft')).toBeTruthy();
     expect(screen.queryByTestId('correction-submit')).toBeNull();
     expect(screen.queryByText('Submit contribution')).toBeNull();
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    });
   });
 });

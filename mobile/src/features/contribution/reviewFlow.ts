@@ -44,12 +44,28 @@ export function firstUnsubmittedIn(
   return items.findIndex((item) => !doneIds.has(item.source_item_id));
 }
 
+export function hasProposedTranslation(
+  proposed: string | null | undefined,
+): boolean {
+  return Boolean(proposed?.trim());
+}
+
+/** Source-only items have no system line, so "our translation" is not a choice. */
+export function comparisonChoices(
+  proposed: string | null | undefined,
+): ReviewJudgment[] {
+  if (hasProposedTranslation(proposed)) {
+    return ['ours', 'mine', 'same', 'neither'];
+  }
+  return ['mine', 'same', 'neither'];
+}
+
 /**
- * Our translation keeps the system line.
+ * Our translation confirms the system line.
  * Mine is better stores the typed line as the correction.
- * Same meaning confirms the current line.
+ * Same meaning confirms when a system line exists.
  * Neither is right reports the item and earns nothing.
- * With no current line, same meaning keeps the typed line.
+ * A source-only item never confirms: the typed line is an edit.
  */
 export function judgmentToSubmit(
   judgment: ReviewJudgment,
@@ -58,10 +74,9 @@ export function judgmentToSubmit(
 ): { action: ReviewSubmitAction; correctedText?: string } {
   const text = typed.trim();
   if (judgment === 'neither') return { action: 'report' };
-  if (judgment === 'mine') return { action: 'edit', correctedText: text };
-  if (judgment === 'ours') return { action: 'confirm' };
-  if (proposed?.trim()) return { action: 'confirm' };
-  if (text) return { action: 'edit', correctedText: text };
+  if (!hasProposedTranslation(proposed) || judgment === 'mine') {
+    return { action: 'edit', correctedText: text };
+  }
   return { action: 'confirm' };
 }
 

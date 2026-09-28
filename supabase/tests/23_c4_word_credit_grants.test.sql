@@ -131,8 +131,8 @@ select is(
       and credits = 2
     order by created_at desc
     limit 1),
-  30,
-  'close grants 30 minutes for the 20-word item'
+  20,
+  'close grants 20 minutes for the 20-word item'
 );
 
 select is(
@@ -142,8 +142,8 @@ select is(
       and credits = 4
     order by created_at desc
     limit 1),
-  60,
-  'close grants 60 minutes for the 21-word item'
+  40,
+  'close grants 40 minutes for the 21-word item'
 );
 
 select * from finish();

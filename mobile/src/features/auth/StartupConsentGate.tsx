@@ -16,6 +16,8 @@ import {
 import { recordStartupConsent } from './recordStartupConsent';
 import { AppButton } from '../../components/AppPrimitives';
 import { t, useSetUiLang, useUiLang } from '../../i18n';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { statusBarInset } from '../../layout/statusBarInset';
 import { useTheme } from '../../theme';
 import { readLegalPublicUrls } from '../../config/legalUrls';
 
@@ -38,6 +40,7 @@ type Props = {
 
 export function StartupConsentGate({ children, initialAcknowledged }: Props) {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const lang = useUiLang();
   const setLang = useSetUiLang();
   const [acknowledged, setAcknowledged] = useState<boolean>(
@@ -84,7 +87,11 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
   const dynamic = useMemo(
     () =>
       StyleSheet.create({
-        root: { flex: 1, backgroundColor: theme.colors.bg },
+        root: {
+          flex: 1,
+          backgroundColor: theme.colors.bg,
+          paddingTop: statusBarInset(insets.top),
+        },
         scroll: { padding: theme.spacing.lg, gap: theme.spacing.md },
         title: {
           fontSize: 22,
@@ -127,7 +134,7 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
           marginTop: 4,
         },
       }),
-    [theme],
+    [insets.top, theme],
   );
 
   const submit = useCallback(async () => {

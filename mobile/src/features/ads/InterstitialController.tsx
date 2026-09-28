@@ -8,24 +8,23 @@ import { useServices } from '../../services/ServiceContext';
 import {
   createForegroundAccumulator,
   loadForegroundActiveMs,
+  resetForegroundActiveMs,
 } from './foregroundAdTimer';
 import {
   persistForegroundActiveMs,
   runInterstitialOpportunity,
   type InterstitialOpportunityRequest,
 } from './interstitialOpportunity';
-import {
-  hydrateAdCountdown,
-  pauseAdCountdown,
-  resumeAdCountdown,
-} from './adCountdown';
 
 type Listener = (req: InterstitialOpportunityRequest) => void;
 
 const listeners = new Set<Listener>();
 const foregroundListeners = new Set<(ms: number) => void>();
 
-/** Live foreground-active milliseconds, for the credits-bar countdown. */
+/**
+ * Live foreground-active milliseconds. The credits gauge and interstitial
+ * eligibility both read this value. A confirmed impression publishes 0.
+ */
 export function subscribeForegroundActiveMs(
   listener: (ms: number) => void,
 ): () => void {
@@ -72,12 +71,6 @@ export function InterstitialController() {
         accumRef.current.onActive(Date.now());
       }
     });
-    void hydrateAdCountdown().then(() => {
-      if (cancelled) return;
-      if (AppState.currentState === 'active') {
-        resumeAdCountdown(Date.now());
-      }
-    });
     return () => {
       cancelled = true;
     };
@@ -93,12 +86,10 @@ export function InterstitialController() {
       const now = Date.now();
       if (next === 'active') {
         accumRef.current.onActive(now);
-        resumeAdCountdown(now);
         return;
       }
       const total = accumRef.current.onInactive(now);
       void persistForegroundActiveMs(total);
-      pauseAdCountdown(now);
     };
 
     const sub = AppState.addEventListener('change', onAppState);
@@ -110,7 +101,6 @@ export function InterstitialController() {
     const countdown = setInterval(() => {
       if (AppState.currentState === 'active' && readyRef.current) {
         publishForegroundMs(accumRef.current.flush(Date.now()));
-        resumeAdCountdown(Date.now());
       }
     }, 1_000);
 
@@ -120,7 +110,6 @@ export function InterstitialController() {
       clearInterval(countdown);
       if (AppState.currentState === 'active') {
         persist(Date.now());
-        pauseAdCountdown(Date.now());
       }
     };
   }, []);
@@ -154,6 +143,7 @@ export function InterstitialController() {
               accumRef.current.onActive(now);
             }
             publishForegroundMs(0);
+            void resetForegroundActiveMs();
           }
         })
         .catch(() => undefined)

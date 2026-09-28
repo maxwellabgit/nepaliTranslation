@@ -81,14 +81,14 @@ select is(
   'exactly two ledger rows for the same source item (one per user)'
 );
 
--- One-credit apply_reward stores minutes = credits * 15 regardless of the
--- caller-supplied p_minutes; two-credit apply_reward stores minutes = 30.
+-- One-credit apply_reward stores minutes = credits * 10 regardless of the
+-- caller-supplied p_minutes; two-credit apply_reward stores minutes = 20.
 select is(
   (select minutes from public.reward_ledger
     where user_id = '11111111-1111-4111-8111-111111111111'
       and source_id = 'r1-shared-src'),
-  15,
-  '1 credit -> 15 minutes recorded on ledger row'
+  10,
+  '1 credit -> 10 minutes recorded on ledger row'
 );
 
 select is(
@@ -104,8 +104,8 @@ select is(
   (select minutes from public.reward_ledger
     where user_id = '11111111-1111-4111-8111-111111111111'
       and source_id = 'r1-two-credit-src'),
-  30,
-  '2 credits -> 30 minutes recorded (caller-supplied 999 ignored)'
+  20,
+  '2 credits -> 20 minutes recorded (caller-supplied 999 ignored)'
 );
 
 -- ---------------------------------------------------------------------------

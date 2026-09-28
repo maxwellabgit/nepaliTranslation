@@ -30,11 +30,11 @@ Public V1 is NO-GO while the committed English-to-Nepali model certificate fails
 | Topic | Required value |
 |-------|----------------|
 | Review credits | 2 if snapshotted original source words are 0–20; 4 if 21 or more |
-| Credit duration | 15 ad-free minutes |
+| Credit duration | 10 ad-free minutes |
 | Rewarded ad | 2 credits after one server-verified confirmation |
 | Review lookahead | Minimum 14 New York days before enablement; target 28; append every 14 days; never reshuffle planned days |
 | Session inactivity | 30 days, rolling; JWT stays short |
-| Interstitial cap | None. 15 minutes of foreground-active time since the last confirmed impression |
+| Interstitial cap | None. 10 minutes of foreground-active time since the last confirmed impression |
 | Subscription | USD 2.99/month (US storefront); NPR 199/month (Nepal storefront). Display the StoreKit/RevenueCat localized price |
 
 Resolved interpretations (do not reopen unless implementation evidence makes them impossible):

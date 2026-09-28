@@ -4,7 +4,12 @@ import Constants from 'expo-constants';
 export const GOOGLE_TEST_APP_ID_IOS = 'ca-app-pub-3940256099942544~1458002511';
 export const GOOGLE_TEST_APP_ID_ANDROID =
   'ca-app-pub-3940256099942544~3347511713';
-export const GOOGLE_TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2934735716';
+/**
+ * Anchored adaptive demo unit. NativeBanner requests
+ * ANCHORED_ADAPTIVE_BANNER, which Google treats as a different format from
+ * the fixed-size banner demo unit (.../2934735716).
+ */
+export const GOOGLE_TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2435281174';
 export const GOOGLE_TEST_REWARDED_UNIT =
   'ca-app-pub-3940256099942544/1712485313';
 export const GOOGLE_TEST_INTERSTITIAL_UNIT =
@@ -123,4 +128,4 @@ export const HOUSE_AD_COPY =
   'Prefer no ads? Ad-free is optional. The App Store shows the price.';
 export const HOUSE_AD_DISMISS = 'Not now';
 export const REWARDED_CTA_LABEL =
-  'Watch one optional ad for 30 ad-free minutes';
+  'Watch one optional ad for 20 ad-free minutes';

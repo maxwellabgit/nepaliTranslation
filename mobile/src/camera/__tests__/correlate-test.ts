@@ -4,7 +4,6 @@ import { dedupeOcrDocument, frameIoU, normalizeOcrText } from '../dedupeOcr';
 import { colorForSentence } from '../sentenceColors';
 import {
   mapFrameToView,
-  mapLineFramesToView,
   mapSentenceFramesToView,
   orientedImageSize,
   rotatePoint,

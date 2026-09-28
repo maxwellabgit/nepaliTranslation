@@ -14,7 +14,7 @@ import {
  *   * All eligible signed-in reviewers see the SAME ten items.
  *   * Rotation at 5:00 PM America/New_York closes the window, grants
  *     credits (2 credits when the snapshotted source is 0–20 words, 4 when
- *     it is 21 or more; 1 credit = 15 minutes), and opens the next window.
+ *     it is 21 or more; 1 credit = 10 minutes), and opens the next window.
  *   * Copy shown in-app is "Today's 10" with subtitle "Review translations".
  *
  * Not called for guests; the mobile Review surface is signed-in only.
@@ -197,7 +197,7 @@ export async function submitReview(input: {
 }
 
 export function creditLabelForCredits(credits: number): string {
-  if (credits === 4) return '4 credits · 60 min ad-free';
-  if (credits === 2) return '2 credits · 30 min ad-free';
-  return '1 credit · 15 min ad-free';
+  const minutes = Math.max(0, credits) * 10;
+  if (credits === 1) return '1 credit · 10 min ad-free';
+  return `${credits} credits · ${minutes} min ad-free`;
 }

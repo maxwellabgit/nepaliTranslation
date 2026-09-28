@@ -27,17 +27,17 @@ select is(
   'after 5 PM NY rolls close to next NY day'
 );
 
--- Rewarded video schedule is 2 credits / 30 minutes (C4). 1 credit remains 15 minutes.
+-- Rewarded video schedule is 2 credits / 20 minutes. 1 credit is 10 minutes.
 select is(
   (select minutes from private.reward_schedule('rewarded_video')),
-  30,
-  'rewarded_video grants 30 ad-free minutes'
+  20,
+  'rewarded_video grants 20 ad-free minutes'
 );
 
 select is(
   (select credits from private.reward_schedule('rewarded_video')),
   2,
-  'rewarded_video grants 2 credits (30 min)'
+  'rewarded_video grants 2 credits (20 min)'
 );
 
 -- Pre-close reject: known_fail sets scheduled_credits to zero (no grant at close)

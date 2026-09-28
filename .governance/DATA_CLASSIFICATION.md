@@ -60,7 +60,7 @@ The section below recorded an earlier owner directive that marked training and b
 
 1. Import **every** row from `datasets/`, `training/`, and `benchmarks/` into `review_source_items`. Redact PII, dedupe by content hash, record license/provenance metadata, then set `public_review_eligible=true` unless flagged `pii_sensitive`.
 2. At each 5:00 PM America/New_York rotation, choose **10 items at random** from eligible rows for the next global window.
-3. Snapshot **length-tier** on each assignment: items in the top 50% of `source_char_length_rank` at assignment time earn **2 credits**; the rest earn **1 credit**. 1 credit = 15 minutes ad-free.
+3. Snapshot **length-tier** on each assignment: items in the top 50% of `source_char_length_rank` at assignment time earn **2 credits**; the rest earn **1 credit**. 1 credit = 10 minutes ad-free.
 4. **Do not** promote submissions back into training corpora or benchmarks. The importer is one-way for V1; a later verified export gate (out of scope for G1) decides what may re-enter training / evaluation.
 5. Contributor known checks remain **separately curated synthetic** rows. Never copy them from `benchmarks/gold/`, training holdouts, or private evaluation answers.
 6. Enforce exclusions (PII, duplicate content hash) in **SQL views / export jobs / CI**, not only client filters.

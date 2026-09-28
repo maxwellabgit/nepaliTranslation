@@ -2,6 +2,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Formality, NepaliScript } from '../mt/onDeviceTranslate';
 
 const HISTORY_KEY = 'neptranslate.history.v1';
+/** One launch clears every device's local translation history. Later launches keep new rows. */
+const HISTORY_WIPE_ONCE_KEY = 'neptranslate.history.wipe-once.2026-09-28';
+
+let historyWipeOnce: Promise<void> | null = null;
+
+async function clearHistoryOnce(): Promise<void> {
+  if (historyWipeOnce) return historyWipeOnce;
+  historyWipeOnce = (async () => {
+    try {
+      const done = await AsyncStorage.getItem(HISTORY_WIPE_ONCE_KEY);
+      if (done === '1') return;
+      await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify([]));
+      await AsyncStorage.setItem(HISTORY_WIPE_ONCE_KEY, '1');
+    } finally {
+      historyWipeOnce = null;
+    }
+  })();
+  return historyWipeOnce;
+}
 
 export type TranslationDirection = 'en-ne' | 'ne-en';
 export type TranslationMethod = 'phrase' | 'lexicon' | 'neural';
@@ -109,6 +128,7 @@ async function writeList(key: string, items: HistoryItem[]) {
 }
 
 export async function loadHistory(): Promise<HistoryItem[]> {
+  await clearHistoryOnce();
   return readList(HISTORY_KEY);
 }
 

@@ -5,7 +5,7 @@ describe('i18n catalogs', () => {
     expect(t('history.emptyTitle')).toBe('No translations yet');
     expect(t('settings.title', 'en')).toBe('Settings');
     expect(t('contributions.offlineBanner', 'en')).toContain('offline');
-    expect(t('tabs.translate', 'en')).toBe('Translate');
+    expect(t('tabs.translate', 'en')).toBe('Translation');
     expect(t('camera.allow', 'en')).toBe('Allow camera');
   });
 

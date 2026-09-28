@@ -26,6 +26,7 @@ import {
   firstUnsubmittedIn,
   formatCountdown,
   groupReviewItems,
+  comparisonChoices,
   judgmentToSubmit,
   type ReviewCategoryId,
   type ReviewJudgment,
@@ -164,7 +165,10 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   }, [phase]);
 
   const grouped = useMemo(() => groupReviewItems(items), [items]);
-  const activeList = category ? grouped[category] : [];
+  const activeList = useMemo(
+    () => (category ? grouped[category] : []),
+    [category, grouped],
+  );
   const active = activeList[cursor] ?? null;
 
   const openCategory = useCallback(
@@ -220,8 +224,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     [active, advanceAfter, windowId],
   );
 
-  const topGap = Math.max(insets.top, 47);
-
   const backToSets = useCallback(() => {
     setPhase('intro');
     setCategory(null);
@@ -236,7 +238,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         root: { flex: 1, backgroundColor: theme.colors.bg },
         column: {
           flex: 1,
-          paddingTop: topGap,
+          paddingTop: 4,
           paddingHorizontal: theme.spacing.lg,
           paddingBottom: Math.max(insets.bottom, theme.spacing.md),
         },
@@ -450,7 +452,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         errorNote: { fontSize: 13, color: theme.colors.errorText, fontWeight: '600' },
         dim: { opacity: 0.45 },
       }),
-    [theme, topGap, insets.bottom, displayFont],
+    [theme, insets.bottom, displayFont],
   );
 
   const blocking =
@@ -674,13 +676,17 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                       {correction.trim()}
                     </Text>
                   </View>
-                  <Text style={dynamic.fieldLabel}>{t('review.currentTranslation', lang)}</Text>
-                  <Text style={dynamic.fieldHint}>({t('review.fromSystem', lang)})</Text>
-                  <View style={dynamic.answerCard}>
-                    <Text style={dynamic.answerText} testID="review-system-answer">
-                      {active.proposed_target?.trim() || t('review.noCurrent', lang)}
-                    </Text>
-                  </View>
+                  {active.proposed_target?.trim() ? (
+                    <>
+                      <Text style={dynamic.fieldLabel}>{t('review.currentTranslation', lang)}</Text>
+                      <Text style={dynamic.fieldHint}>({t('review.fromSystem', lang)})</Text>
+                      <View style={dynamic.answerCard}>
+                        <Text style={dynamic.answerText} testID="review-system-answer">
+                          {active.proposed_target.trim()}
+                        </Text>
+                      </View>
+                    </>
+                  ) : null}
                   <Text style={dynamic.fieldLabel}>{t('review.whichBetter', lang)}</Text>
                   <View style={{ height: 8 }} />
                   {(
@@ -690,7 +696,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                       ['same', 'thumbs-up-outline', 'review.sameMeaning'],
                       ['neither', 'thumbs-down-outline', 'review.neitherRight'],
                     ] as const
-                  ).map(([id, icon, label]) => (
+                  )
+                    .filter(([id]) => comparisonChoices(active.proposed_target).includes(id))
+                    .map(([id, icon, label]) => (
                     <Pressable
                       key={id}
                       testID={`review-judgment-${id}`}

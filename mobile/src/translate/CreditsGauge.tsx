@@ -1,9 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useFeatureFlags } from '../app/FeatureConfigProvider';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
-import { subscribeAdCountdown } from '../features/ads/adCountdown';
-import { markSkippableVideoAdDue } from '../features/ads/skippableVideoAdMark';
+import { useAdConsent } from '../features/ads/useAdConsent';
+import { subscribeForegroundActiveMs } from '../features/ads/InterstitialController';
+import {
+  formatInterstitialCountdown,
+  interstitialAdsSuppressed,
+  interstitialGauge,
+} from '../features/ads/interstitialGauge';
+import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
+import { useServices } from '../services/ServiceContext';
 import { useTheme } from '../theme';
 import { t, useUiLang } from '../i18n';
 import { adFreeBalance, creditProgress } from './creditProgress';
@@ -17,36 +25,42 @@ type Props = {
 export function CreditsGauge({ onPress, compact = false }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
+  const flags = useFeatureFlags();
+  const services = useServices();
+  const consent = useAdConsent(services.ads);
   const entitlement = useEntitlementOptional();
+  const subscription = useSubscriptionOptional();
   const [nowMs, setNowMs] = useState(() => Date.now());
-  const [foregroundMs, setForegroundMs] = useState(15 * 60 * 1000);
-  const adMarkedRef = useRef(false);
+  const [foregroundMs, setForegroundMs] = useState(0);
   useEffect(() => {
     const tick = () => setNowMs(Date.now());
     const timer = setInterval(tick, 15_000);
-    const subscription = AppState.addEventListener('change', (state) => {
+    const appState = AppState.addEventListener('change', (state) => {
       if (state === 'active') tick();
     });
     return () => {
       clearInterval(timer);
-      subscription.remove();
+      appState.remove();
     };
   }, []);
-  useEffect(() => {
-    return subscribeAdCountdown((ms) => setForegroundMs(ms));
-  }, []);
-  const remainingMs = foregroundMs;
-  useEffect(() => {
-    if (remainingMs > 0) {
-      adMarkedRef.current = false;
-      return;
-    }
-    if (adMarkedRef.current) return;
-    adMarkedRef.current = true;
-    // REVIEW: 15:00 elapsed. Hook for a video ad skippable after 5 seconds.
-    markSkippableVideoAdDue();
-  }, [remainingMs]);
-  const countdownLabel = formatAdCountdown(remainingMs);
+  useEffect(() => subscribeForegroundActiveMs(setForegroundMs), []);
+  const gauge = interstitialGauge({
+    foregroundActiveMs: foregroundMs,
+    suppressed: interstitialAdsSuppressed({
+      automaticInterstitialEnabled: flags.automaticInterstitialEnabled,
+      hasSubscription: Boolean(subscription?.hasSubscription()),
+      earnedAdFreeUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
+      trustedNowMs: entitlement?.trustedNow() ?? null,
+      offline: services.network.isOffline(),
+      canRequestAds: consent.canRequestAds,
+    }),
+  });
+  const countdownLabel =
+    gauge.state === 'ready'
+      ? t('ads.interstitialReady', lang)
+      : gauge.state === 'unavailable'
+        ? t('ads.interstitialUnavailable', lang)
+        : formatInterstitialCountdown(gauge.remainingMs);
   const lifetimeCredits = entitlement?.lifetimeCredits ?? 0;
   const balance = adFreeBalance({
     earnedUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
@@ -167,6 +181,9 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
         <View style={styles.gauge} testID="credits-gauge-total">
           <View style={styles.gaugeHeader}>
             <Text style={styles.total}>Total earned</Text>
+            <Text style={styles.countdown} testID="credits-ad-countdown">
+              {countdownLabel}
+            </Text>
             <Text style={styles.totalCount}>{progress.credits}</Text>
           </View>
           <View
@@ -180,11 +197,4 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
       )}
     </Pressable>
   );
-}
-
-function formatAdCountdown(ms: number): string {
-  const totalSeconds = Math.ceil(ms / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }

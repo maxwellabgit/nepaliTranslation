@@ -3,7 +3,7 @@ import { tesseractPageToOcrDocument, type TesseractPage } from './browserOcrMap'
 import type { OcrDocument } from './ocrTypes';
 
 type TessWorker = {
-  recognize: (image: Blob) => Promise<{ data: TesseractPage }>;
+  recognize: (image: string) => Promise<{ data: TesseractPage }>;
   setParameters: (params: Record<string, string>) => Promise<void>;
 };
 

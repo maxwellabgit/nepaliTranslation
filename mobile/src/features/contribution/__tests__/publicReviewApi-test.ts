@@ -161,8 +161,8 @@ describe('publicReviewApi (G1 global 10/day pool)', () => {
     expect(result).toEqual({ ok: false, reason: 'already_submitted' });
   });
 
-  test('credit copy respects the length tier (1 credit = 15 min)', () => {
-    expect(creditLabelForCredits(2)).toBe('2 credits · 30 min ad-free');
-    expect(creditLabelForCredits(4)).toBe('4 credits · 60 min ad-free');
+  test('credit copy respects the length tier (1 credit = 10 min)', () => {
+    expect(creditLabelForCredits(2)).toBe('2 credits · 20 min ad-free');
+    expect(creditLabelForCredits(4)).toBe('4 credits · 40 min ad-free');
   });
 });

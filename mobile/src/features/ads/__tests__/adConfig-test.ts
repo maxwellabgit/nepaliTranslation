@@ -51,6 +51,7 @@ describe('adConfig', () => {
   it('resolveAdUnitConfig defaults to test IDs in Jest', () => {
     const cfg = resolveAdUnitConfig({ env: 'test' });
     expect(cfg.bannerUnitId).toBe(GOOGLE_TEST_BANNER_UNIT);
+    expect(cfg.bannerUnitId).toBe('ca-app-pub-3940256099942544/2435281174');
     expect(cfg.interstitialUnitId).toBe(GOOGLE_TEST_INTERSTITIAL_UNIT);
     expect(cfg.env).toBe('test');
   });

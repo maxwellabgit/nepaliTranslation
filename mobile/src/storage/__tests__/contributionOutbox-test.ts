@@ -200,6 +200,7 @@ describe('contributionOutbox H2', () => {
   });
 
   test('legacy History lacks formality/script and does not invent them', async () => {
+    await loadHistory();
     await AsyncStorage.setItem(
       'neptranslate.history.v1',
       JSON.stringify([

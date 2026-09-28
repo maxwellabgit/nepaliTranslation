@@ -1,6 +1,8 @@
 import { Alert } from 'react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { render, fireEvent, screen, waitFor, act } from '@testing-library/react-native';
+import { UiLangProvider } from '../../../i18n';
+import { savePrefs } from '../../../storage/prefs';
 import { AccountSection } from '../AccountSection';
 
 const base = {
@@ -51,6 +53,30 @@ describe('AccountSection', () => {
     });
     expect(screen.queryByTestId('sign-in-apple')).toBeNull();
     expect(screen.queryByTestId('apple-auth-button')).toBeNull();
+  });
+
+  test('contribution consent follows the app language', async () => {
+    await savePrefs({
+      formalOn: true,
+      devaOn: true,
+      conversationConsentSeen: false,
+      uiLang: 'ne',
+    });
+    await act(async () => {
+      render(
+        <UiLangProvider>
+          <AccountSection {...base} status="guest" userId={null} />
+        </UiLangProvider>,
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('contribution-consent-body').props.children).toMatch(
+        /सहमति बचत/,
+      );
+    });
+    expect(screen.getByTestId('contribution-consent-body').props.children).not.toMatch(
+      /By saving consent/i,
+    );
   });
 
   test('delete account explains that an Apple subscription is not cancelled', async () => {

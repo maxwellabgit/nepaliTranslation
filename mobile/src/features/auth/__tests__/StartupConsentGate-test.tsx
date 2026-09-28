@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Linking, Text } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '../../../theme';
 import { UiLangProvider } from '../../../i18n';
 import {
@@ -24,13 +25,20 @@ jest.mock('../../../config/legalUrls', () => ({
 
 function mount() {
   return render(
+    <SafeAreaProvider
+      initialMetrics={{
+        frame: { x: 0, y: 0, width: 390, height: 844 },
+        insets: { top: 47, left: 0, right: 0, bottom: 34 },
+      }}
+    >
     <ThemeProvider scheme="light">
       <UiLangProvider>
         <StartupConsentGate>
           <Text testID="guest-translator">Translator</Text>
         </StartupConsentGate>
       </UiLangProvider>
-    </ThemeProvider>,
+    </ThemeProvider>
+    </SafeAreaProvider>,
   );
 }
 
@@ -54,6 +62,8 @@ describe('guest startup consent', () => {
       .toBe(true);
 
     await act(async () => { fireEvent.press(screen.getByTestId('startup-consent-lang-ne')); });
+    expect(screen.getByText(/मैले Bola को गोपनीयता नीति/)).toBeTruthy();
+    expect(screen.queryByText(/I have read and accept the Bola Privacy Policy/)).toBeNull();
     await act(async () => { fireEvent.press(screen.getByTestId('startup-consent-terms')); });
     expect(screen.getByTestId('startup-consent-continue').props.accessibilityState.disabled)
       .toBe(true);

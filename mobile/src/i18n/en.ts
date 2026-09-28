@@ -350,6 +350,8 @@ export const en = {
   'auth.supportUserId': 'Support user ID',
   'auth.consentDraftMeta':
     'Draft {version}. Covers text, speech, photos, OCR/transcripts, retention, and withdrawal. Legal review required before live collection.',
+  'auth.contributionConsentBody':
+    'By saving consent you agree that Bola may upload and store contribution text you submit, speech recordings you allow, Camera photos you capture for translation, transcripts and OCR text, your edits, model outputs, and related technical metadata for human review and for improving and commercializing language data and models. Contributed media may be retained indefinitely until you withdraw consent or delete your account; withdrawal or deletion schedules purge of linked contribution data within 30 days. Processors include our hosting and storage providers needed to run this pipeline. Ordinary guest translation history, clipboard, and non-consented media stay on this device only. Core Translate, Camera OCR, History, Settings, and Learn work without signing in or consenting. Do not contribute personal or sensitive content. Deleting the app account does not cancel an Apple subscription.',
   'auth.signInApple': 'Sign in with Apple',
   'auth.signInUnavailable':
     'Sign in with Apple is not available on this device. Translation still works offline.',
@@ -379,10 +381,12 @@ export const en = {
 
   'ads.houseCopy': 'Prefer no ads? Ad-free is optional. The App Store shows the price.',
   'ads.houseDismiss': 'Not now',
-  'ads.rewardedCta': 'Watch one optional ad for 30 ad-free minutes',
+  'ads.rewardedCta': 'Watch one optional ad for 20 ad-free minutes',
   'ads.signInRequiredTitle': 'Sign in required',
   'ads.signInRequiredBody':
     'Sign in to earn ad-free time from an optional ad.',
+  'ads.interstitialReady': 'Ad ready',
+  'ads.interstitialUnavailable': 'Ads off',
 
   'paywall.title': 'Bola Ad-Free',
   'paywall.body':

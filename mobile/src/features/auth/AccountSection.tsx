@@ -2,10 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Clipboard from 'expo-clipboard';
-import {
-  CONTRIBUTION_CONSENT_SUMMARY,
-  CONTRIBUTION_CONSENT_VERSION,
-} from './consent';
+import { CONTRIBUTION_CONSENT_VERSION } from './consent';
 import { t, useUiLang } from '../../i18n';
 import { useTheme } from '../../theme';
 
@@ -229,7 +226,9 @@ export function AccountSection({
       ) : null}
 
       <Text style={styles.sectionLabel}>{t('settings.contributionConsent', lang)}</Text>
-      <Text style={styles.body}>{CONTRIBUTION_CONSENT_SUMMARY}</Text>
+      <Text style={styles.body} testID="contribution-consent-body">
+        {t('auth.contributionConsentBody', lang)}
+      </Text>
       <Text style={styles.meta}>
         {t('auth.consentDraftMeta', lang, {
           version: CONTRIBUTION_CONSENT_VERSION,

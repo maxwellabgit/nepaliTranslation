@@ -8,7 +8,8 @@
 /** Google sample IDs for the ordinary internal TestFlight build. */
 const TEST_IOS_APP_ID = 'ca-app-pub-3940256099942544~1458002511';
 const TEST_ANDROID_APP_ID = 'ca-app-pub-3940256099942544~3347511713';
-const TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2934735716';
+/** Anchored adaptive demo unit. Matches NativeBanner's ANCHORED_ADAPTIVE_BANNER size. */
+const TEST_BANNER_UNIT = 'ca-app-pub-3940256099942544/2435281174';
 const TEST_REWARDED_UNIT = 'ca-app-pub-3940256099942544/1712485313';
 const TEST_INTERSTITIAL_UNIT = 'ca-app-pub-3940256099942544/4411468910';
 

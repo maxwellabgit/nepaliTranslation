@@ -32,4 +32,28 @@ describe('local history edit', () => {
     expect(rows.find((row) => row.id === 'b')?.translation).toBe('धन्यवाद');
     expect(await updateHistoryTranslation('missing', 'x')).toBe(false);
   });
+
+  test('clears existing history once, then keeps rows saved after that', async () => {
+    await AsyncStorage.setItem(
+      'neptranslate.history.v1',
+      JSON.stringify([
+        {
+          id: 'old',
+          source: 'old',
+          translation: 'पुरानो',
+          sourceLang: 'en',
+          targetLang: 'ne',
+          createdAt: 1,
+        },
+      ]),
+    );
+    expect(await loadHistory()).toEqual([]);
+    await addHistory({
+      source: 'new',
+      translation: 'नयाँ',
+      sourceLang: 'en',
+      targetLang: 'ne',
+    });
+    expect((await loadHistory()).map((row) => row.source)).toEqual(['new']);
+  });
 });

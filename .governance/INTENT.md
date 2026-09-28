@@ -94,7 +94,7 @@ Original source word count, snapshotted at assignment, determines reward:
 - 0–20 words: **2 credits**
 - 21 or more words: **4 credits**
 
-**One credit = 15 ad-free minutes.** A short review earns 30 ad-free minutes. A long review earns 60 ad-free minutes. Empty or invalid source items are rejected before planning.
+**One credit = 10 ad-free minutes.** A short review earns 20 ad-free minutes. A long review earns 40 ad-free minutes. Empty or invalid source items are rejected before planning.
 
 There is no top-half, percentile, longest-50-percent, or 1-credit/2-credit corpus-relative reward on the new grant path. Historical ledger rows stay as history. New reward rows carry a rule version and an idempotency key.
 
@@ -102,8 +102,8 @@ A skip earns zero.
 
 #### Advertising
 - **Banners:** only idle Translate and idle Learn landing. Never overlap input, keyboard, camera, results, consent, or purchase UI.
-- **Automatic interstitial:** eligible after **15 minutes of foreground-active time** since the last confirmed interstitial impression. There is **no per-day maximum**. Reaching 15 minutes sets pending eligibility and does not itself display an ad. Display is allowed only at durable safe points: Translate immediately after Send has committed the input and queued or produced the translation; Camera immediately after a captured photo and its processing task are durably recorded; Learn after a completed learning activity returns to an idle state. Never on launch, resume, tab press, permission flow, error recovery, app exit, while recording, while an edit is unsaved, or while the only copy of user input is transient. A failed or no-fill interstitial does not reset the timer. A confirmed impression resets the timer. SDK-owned dismiss. Remotely disableable.
-- **Rewarded video:** explicit user action only. One server-verified, idempotent confirmation grants **2 credits** (30 ad-free minutes). Client-only claims are rejected. Preserve an existing rewarded-ad abuse cap unless a test proves it conflicts; count two-credit rewards correctly.
+- **Automatic interstitial:** eligible after **10 minutes of foreground-active time** since the last confirmed interstitial impression. There is **no per-day maximum**. Reaching 10 minutes sets pending eligibility and does not itself display an ad. Display is allowed only at durable safe points: Translate immediately after Send has committed the input and queued or produced the translation; Camera immediately after a captured photo and its processing task are durably recorded; Learn after a completed learning activity returns to an idle state. Never on launch, resume, tab press, permission flow, error recovery, app exit, while recording, while an edit is unsaved, or while the only copy of user input is transient. A failed or no-fill interstitial does not reset the timer. A confirmed impression resets the timer. SDK-owned dismiss. Remotely disableable.
+- **Rewarded video:** explicit user action only. One server-verified, idempotent confirmation grants **2 credits** (20 ad-free minutes). Client-only claims are rejected. Preserve an existing rewarded-ad abuse cap unless a test proves it conflicts; count two-credit rewards correctly.
 - TestFlight and internal builds use Google's test ad units and produce **no revenue**. Live revenue requires an App Store production configuration, live AdMob IDs, AdMob readiness, UMP, app-ads.txt, production flags, and valid impressions after release.
 - V1 uses contextual/non-personalized ads. Do not request ATT and do not access IDFA. Keep UMP consent-form and privacy-options support.
 - Subscription or active earned ad-free time suppresses ads according to entitlement rules.
@@ -159,7 +159,7 @@ Flags must be remote-controllable without an app update. Disabling them must not
 | Topic | Required value |
 |-------|----------------|
 | Review credits | 2 if original source words ≤ 20; 4 if ≥ 21. Snapshotted at assignment. |
-| Credit duration | 15 ad-free minutes |
+| Credit duration | 10 ad-free minutes |
 | Rewarded ad | 2 credits (30 minutes), server-verified once |
 | Review lookahead | Minimum 14 days before enablement; target 28; append every 14 days; never reshuffle |
 | Session inactivity | 30 days, rolling; short JWT |

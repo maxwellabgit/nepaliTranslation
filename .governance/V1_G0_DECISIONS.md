@@ -14,7 +14,7 @@
 | Rewarded ad | **2** credits (30 minutes) after one server-verified confirmation | 1 credit / 15 minutes per rewarded view |
 | Review lookahead | Minimum **14** New York days before public review is enabled; target **28**; every 14 days append, never reshuffle | Same-day random 10 with no private horizon |
 | Session inactivity | **30 days**, rolling, on refresh; JWT stays short | Indefinite Supabase auto-refresh |
-| Interstitial cap | **None.** Eligibility after 15 minutes of foreground-active time since the last confirmed impression; display only at Translate Send, Camera capture, and Learn idle-return safe points | Three per America/New_York day |
+| Interstitial cap | **None.** Eligibility after 10 minutes of foreground-active time since the last confirmed impression; display only at Translate Send, Camera capture, and Learn idle-return safe points | Three per America/New_York day |
 | Subscription | **USD 2.99/month** (United States storefront); **NPR 199/month** (Nepal storefront). Display StoreKit/RevenueCat's localized price. Never infer storefront from language, IP, GPS, or device locale | US $0.99/month as the product price |
 
 Also binding, from the same plan:
@@ -142,12 +142,12 @@ Guests still translate locally without sign-in, but they cannot upload anything.
 
 Automatic interstitial eligibility requires **15 minutes of foreground-active time since the last successful interstitial impression** (not cumulative lifetime foreground time that never resets). Cap remains **three per America/New_York calendar day**. Quota/timer updates only after a **confirmed impression**. Safe idle opportunities after completed activities are required (Gate 3).
 
-### D6 — Credits (**1 credit = 15 minutes**, no clawback)
+### D6 — Credits (**1 credit = 10 minutes**, no clawback)
 
-- **One credit = 15 minutes** of ad-free time (matches one rewarded-video grant).
-- Top-50% longest samples (per D2 rank at assignment) → **2 credits** (30 minutes).
-- Otherwise → **1 credit** (15 minutes).
-- Rewarded video → **1 credit / 15 minutes**.
+- **One credit = 10 minutes** of ad-free time (matches one rewarded-video grant).
+- Top-50% longest samples (per D2 rank at assignment) → **2 credits** (20 minutes).
+- Otherwise → **1 credit** (10 minutes).
+- Rewarded video → **1 credit / 10 minutes**.
 - Credits granted at the 5:00 PM close (D1). If an admin marked a submission unsatisfactory before close, that submission grants zero credits.
 - **No clawback.** Post-close rejection creates a contributor alert only.
 - Subscription or active earned ad-free window suppresses banners, automatic interstitials, and house ads.

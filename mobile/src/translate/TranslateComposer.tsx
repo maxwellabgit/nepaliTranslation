@@ -71,7 +71,12 @@ export function TranslateComposer({
   const [fieldH, setFieldH] = useState(expanded ? 300 : 160);
 
   useEffect(() => {
-    Animated.parallel([
+    if (process.env.NODE_ENV === 'test') {
+      docked.setValue(micMode === 'idle' ? 0 : 1);
+      raised.setValue(micMode === 'listening' ? 1 : 0);
+      return;
+    }
+    const animation = Animated.parallel([
       Animated.timing(docked, {
         toValue: micMode === 'idle' ? 0 : 1,
         duration: 180,
@@ -84,7 +89,9 @@ export function TranslateComposer({
         easing: Easing.out(Easing.cubic),
         useNativeDriver: false,
       }),
-    ]).start();
+    ]);
+    animation.start();
+    return () => animation.stop();
   }, [docked, micMode, raised]);
 
   useEffect(() => {
@@ -244,7 +251,7 @@ export function TranslateComposer({
           shadowOffset: { width: 0, height: micMode === 'listening' ? -4 : 2 },
         },
       }),
-    [expanded, focused, micMode, theme],
+    [expanded, focused, inactiveRed, micMode, theme],
   );
 
   return (

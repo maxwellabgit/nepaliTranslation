@@ -364,25 +364,6 @@ export function TranslateScreen({
     setFeedbackOpen(false);
   };
 
-  const sheets = (
-    <>
-      <CorrectionSheet
-        visible={correctionOpen}
-        source={latest?.source ?? state.draft}
-        translation={latest?.translation ?? ''}
-        sourceLang={latest?.from ?? state.activeSide}
-        formality={state.formality}
-        script={state.script}
-        surface="live_translate"
-        historyItemId={latest?.id ?? null}
-        translationMethod={latest?.method ?? null}
-        modelVersion={null}
-        onClose={() => setCorrectionOpen(false)}
-        onNeedAuth={onOpenSettings}
-      />
-    </>
-  );
-
   return (
     <KeyboardAvoidingView
       style={styles.root}
