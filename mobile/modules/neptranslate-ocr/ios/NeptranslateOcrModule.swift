@@ -10,10 +10,15 @@ public class NeptranslateOcrModule: Module {
     AsyncFunction("recognize") { (uri: String, promise: Promise) in
       guard let url = URL(string: uri),
             let data = try? Data(contentsOf: url),
-            let image = UIImage(data: data) else {
+            let source = UIImage(data: data) else {
         promise.reject("empty", "The capture had no readable image.")
         return
       }
+      // Phone cameras store portrait shots sideways and set EXIF.
+      // ML Kit still returns boxes in that sensor space, which the preview
+      // paints as tall strips beside the text. Draw the oriented bitmap
+      // first so recognition and the preview share one upright pixel space.
+      let image = Self.upright(source)
       let vision = VisionImage(image: image)
       vision.orientation = image.imageOrientation
       let latin = TextRecognizer.textRecognizer()
@@ -53,6 +58,18 @@ public class NeptranslateOcrModule: Module {
           "blocks": blocks,
         ])
       }
+    }
+  }
+
+  /// Bake EXIF into pixels. The result is `.up` and `size` matches the preview.
+  private static func upright(_ image: UIImage) -> UIImage {
+    if image.imageOrientation == .up { return image }
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = image.scale
+    format.opaque = true
+    let renderer = UIGraphicsImageRenderer(size: image.size, format: format)
+    return renderer.image { _ in
+      image.draw(in: CGRect(origin: .zero, size: image.size))
     }
   }
 

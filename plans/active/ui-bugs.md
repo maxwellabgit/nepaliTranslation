@@ -34,6 +34,18 @@ Lane 2 checklist in `.agent/DONE.md`:
 ## Progress
 Done (2026-08-18). Source walk, in-source fixes, proof commands, independent review PASS (round 3). GitHub PR create is blocked (`must be a collaborator`); branch `cursor/ui-bugs-a8e4` is on origin.
 
+### Camera highlight repair (2026-09-28)
+Branch `cursor/camera-highlight-repair-815e`.
+
+Repro from a portrait photo of horizontal screen text: highlight views were thin vertical strips on the right of the still, and punctuated lines swallowed the following lines into a few mashed cards.
+
+- iOS OCR redraws the capture upright before ML Kit so line boxes share the preview's pixel space.
+- Browser OCR bakes EXIF into the bitmap passed to Tesseract and scales page boxes onto that bitmap.
+- Each visual OCR line is one highlight and one translation row. Line numbers are the non-color cue; the row dot and the photo tint share `colorForIndex`.
+- Result sheet: detected-language pill, rounded photo, tinted rows, copy, Retake, Copy text, Done.
+
+Proof: `npx tsc --noEmit` exit 0; camera unit tests 23 passed (`correlate`, `browserOcrMap`, `ocrFixtures`, `highlightLayout`); `npm run verify:translate` OK. `npm run lint` still reports three pre-existing warnings in `ReviewScreen.tsx`, `TranslateScreen.tsx`, and `TranslateComposer.tsx`. `npm run test:unit` reports 6 pre-existing failures (stale `tabs.translate` expectation, plus Animated `act(...)` console errors in AppShell and Mark incorrect). Integration `App.integration-test.tsx` hits the same pre-existing Animated `act(...)` guard. No gold edits. Device TestFlight of a live capture was not run.
+
 ## Surprises & discoveries
 
 Verified at source-walk (then fixed — see findings below). Do not treat these as current code:

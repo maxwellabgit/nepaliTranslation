@@ -4,6 +4,7 @@
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from 'expo-speech';
+import { StyleSheet } from 'react-native';
 import {
   act,
   fireEvent,
@@ -401,18 +402,24 @@ describe('NepTranslateApp production composition', () => {
     expect(services.ads.networkCalls()).toEqual([]);
   });
 
-  it('shows inscription overlays in a collapsed drawer without signing in', async () => {
+  it('shows line highlights and the translation sheet without signing in', async () => {
     setCameraTestFixture(INSCRIPTION_FIXTURE);
     await renderApp(createTestServices({ offline: true, authConfigured: false }));
     await fireEvent.press(screen.getByTestId('tab-camera'));
     await waitFor(() => {
       expect(screen.getByTestId('camera-overlay-s1')).toBeTruthy();
     });
+    const overlayStyle = StyleSheet.flatten(screen.getByTestId('camera-overlay-s1').props.style);
+    expect(Number.parseFloat(String(overlayStyle.width))).toBeGreaterThan(
+      Number.parseFloat(String(overlayStyle.height)),
+    );
     expect(screen.getByTestId('camera-overlay-s2')).toBeTruthy();
     expect(screen.getByTestId('camera-overlay-s3')).toBeTruthy();
     expect(screen.getByTestId('camera-drawer').props.accessibilityState?.expanded).toBe(
-      false,
+      true,
     );
+    expect(screen.getByTestId('camera-detected')).toBeTruthy();
+    expect(screen.getByText('Detected: Nepali')).toBeTruthy();
     expect(screen.getByText('Hail to Lord Shiva.')).toBeTruthy();
     expect(screen.queryByTestId('sign-in-apple')).toBeNull();
     expect(screen.queryByTestId('camera-preview')).toBeNull();

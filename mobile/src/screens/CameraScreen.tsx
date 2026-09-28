@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as Clipboard from 'expo-clipboard';
 import { t, useUiLang, type UiLang } from '../i18n';
 import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import { BackArrow } from '../components/BackArrow';
 import { buildCorrelation } from '../camera/correlate';
 import { deleteCapture } from '../camera/deleteCapture';
+import { containedPhotoSize, highlightPercents } from '../camera/highlightLayout';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
-import { orientedImageSize, rotateFrame } from '../camera/overlayGeometry';
 import { readCapturePreviewUri } from '../camera/readCapturePreview';
+import { withAlpha } from '../camera/sentenceColors';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
 import { useAuth } from '../features/auth/AuthProvider';
@@ -28,6 +31,10 @@ type Props = {
   active: boolean;
   onGoHome?: () => void;
 };
+
+/** 1×1 placeholder so a test fixture can mount line highlights without a capture. */
+const FIXTURE_PREVIEW =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 function cameraErrorCopy(reason: string | null, lang: UiLang): string {
   switch (reason) {
@@ -59,6 +66,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
     initialCameraPhase(false),
   );
   const [sentences, setSentences] = useState<CorrelatedSentence[]>([]);
+  const [detectedLanguage, setDetectedLanguage] = useState<'en' | 'ne' | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [direction, setDirection] = useState<'ne-en' | 'en-ne'>('ne-en');
   const [captureUri, setCaptureUri] = useState<string | null>(null);
@@ -130,26 +138,88 @@ export function CameraScreen({ active, onGoHome }: Props) {
           backgroundColor: '#1A1410',
         },
         photoFrame: { alignSelf: 'center' },
-        overlay: { position: 'absolute', borderRadius: 3 },
-        translations: {
-          maxHeight: '46%',
-          backgroundColor: '#2C2622',
+        overlay: { position: 'absolute', borderRadius: 8 },
+        detectedPill: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 6,
+          backgroundColor: theme.colors.surface,
+          borderRadius: 999,
+          paddingHorizontal: 10,
+          paddingVertical: 4,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+        },
+        detectedText: { color: theme.colors.text, fontSize: 13, fontWeight: '700' },
+        resultSheet: { flex: 1, minHeight: 0, backgroundColor: theme.colors.bg },
+        photoClip: {
+          borderRadius: 18,
+          overflow: 'hidden',
+          backgroundColor: '#1A1410',
+        },
+        translationCard: {
+          flexShrink: 1,
+          flexGrow: 1,
+          minHeight: 0,
+          maxHeight: '58%',
+          marginHorizontal: 12,
+          marginBottom: 8,
+          backgroundColor: theme.colors.surface,
+          borderRadius: 22,
+          paddingTop: 14,
           paddingHorizontal: 12,
-          paddingTop: 12,
-          paddingBottom: 4,
           gap: 8,
         },
+        translationHead: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 4 },
+        translationTitle: { color: theme.colors.text, fontSize: 18, fontWeight: '700' },
+        translationSubtitle: { color: theme.colors.textSecondary, fontSize: 13 },
         translationRow: {
-          borderRadius: 12,
-          paddingHorizontal: 14,
-          paddingVertical: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderRadius: 14,
+          paddingLeft: 10,
+          paddingRight: 4,
+          paddingVertical: 8,
+          gap: 8,
         },
-        translationText: {
-          color: '#1A1410',
-          fontSize: 16,
-          lineHeight: 22,
+        lineIndex: {
+          width: 18,
+          color: theme.colors.textSecondary,
+          fontSize: 12,
           fontWeight: '700',
         },
+        colorDot: { width: 10, height: 10, borderRadius: 5 },
+        translationText: {
+          flex: 1,
+          color: theme.colors.text,
+          fontSize: 15,
+          lineHeight: 21,
+          fontWeight: '600',
+        },
+        copyBtn: {
+          width: MIN_TOUCH,
+          height: MIN_TOUCH,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        actions: { flexDirection: 'row', gap: 8, paddingBottom: 8 },
+        actionBtn: {
+          flex: 1,
+          minHeight: MIN_TOUCH,
+          borderRadius: 14,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: 8,
+          borderWidth: 1,
+          borderColor: theme.colors.divider,
+          backgroundColor: theme.colors.bg,
+        },
+        actionPrimary: {
+          backgroundColor: theme.colors.text,
+          borderColor: theme.colors.text,
+        },
+        actionText: { color: theme.colors.text, fontWeight: '700', fontSize: 14 },
+        actionPrimaryText: { color: theme.colors.bg, fontWeight: '700', fontSize: 14 },
         retake: {
           color: theme.colors.onPrimary,
           paddingVertical: 12,
@@ -196,6 +266,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       setCaptureUri(null);
       setPreviewUri(null);
       setSentences([]);
+      setDetectedLanguage(null);
       setSelected(null);
       setPhaseState(initialCameraPhase(granted));
       return;
@@ -205,17 +276,20 @@ export function CameraScreen({ active, onGoHome }: Props) {
     if (!fixture) return;
     setImageSize({ width: fixture.width, height: fixture.height });
     setRotation(fixture.rotation ?? 0);
+    setPreviewUri(FIXTURE_PREVIEW);
     const built = buildCorrelation(
       fixture,
       (text) => INSCRIPTION_TRANSLATIONS[text] ?? '',
     );
     if (!built.ok) {
+      setDetectedLanguage(null);
       setPhaseState({
         phase: built.reason === 'empty' ? 'empty' : 'lowConfidence',
         reasonCode: built.reason === 'empty' ? 'no_text' : 'low_confidence',
       });
       return;
     }
+    setDetectedLanguage(built.language);
     setSentences(built.sentences);
     setPhaseState({ phase: 'result', reasonCode: null });
   }, [active, granted, runtime.translation]);
@@ -255,6 +329,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
 
       const built = buildCorrelation(doc, () => '');
       if (!built.ok) {
+        setDetectedLanguage(null);
         deleteCapture(uri, 'processed');
         captureUriRef.current = null;
         setCaptureUri(null);
@@ -311,6 +386,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
         }
       }
       if (gen !== requestGenRef.current) return;
+      setDetectedLanguage(built.language);
       setSentences(translated);
       // Consented adults: durable-copy for outbox before temp delete (never await flush).
       await enqueueEligibleMedia({
@@ -349,15 +425,44 @@ export function CameraScreen({ active, onGoHome }: Props) {
     setCaptureUri(null);
     setPreviewUri(null);
     setSentences([]);
+    setDetectedLanguage(null);
     setSelected(null);
-    setDrawerOpen(false);
     dispatch({ type: 'RETAKE' });
     if (!granted) {
       setPhaseState({ phase: 'permission', reasonCode: null });
     }
   };
 
+  const onDone = () => {
+    if (onGoHome) onGoHome();
+    else onRetake();
+  };
+
+  const copyText = (value: string) => {
+    const text = value.trim();
+    if (!text) return;
+    void Clipboard.setStringAsync(text);
+  };
+
+  const copyAllTranslations = () => {
+    copyText(
+      sentences
+        .map((sentence) => sentence.translation.trim())
+        .filter(Boolean)
+        .join('\n'),
+    );
+  };
+
   if (!active) return null;
+
+  const sourceLanguageName =
+    detectedLanguage === 'ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
+  const targetLanguageName =
+    direction === 'en-ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
+  const photoBox = containedPhotoSize(imageSize, rotation, {
+    width: Math.max(0, stageSize.width - 24),
+    height: Math.max(0, stageSize.height - 12),
+  });
 
   const showResult = phase === 'result';
   const showError =
@@ -394,6 +499,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
               : t('camera.directionEnNe', lang)}
           </Text>
         </Pressable>
+        {showResult && detectedLanguage ? (
+          <View style={styles.detectedPill} testID="camera-detected">
+            <Ionicons name="scan-outline" size={14} color={theme.colors.text} />
+            <Text style={styles.detectedText}>
+              {t('camera.detected', lang, { language: sourceLanguageName })}
+            </Text>
+          </View>
+        ) : null}
         </View>
         <View style={styles.headerSide} />
       </View>
@@ -480,9 +593,9 @@ export function CameraScreen({ active, onGoHome }: Props) {
       ) : null}
 
       {showResult ? (
-        <View style={styles.result} testID="camera-result">
+        <View style={styles.resultSheet} testID="camera-result">
           <View
-            style={styles.photoStage}
+            style={[styles.photoStage, { backgroundColor: theme.colors.bg }]}
             testID="camera-photo"
             onLayout={(event) => {
               const { width, height } = event.nativeEvent.layout;
@@ -490,22 +603,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
             }}
           >
             {previewUri ? (
-              <View
-                style={[
-                  styles.photoFrame,
-                  (() => {
-                    const oriented = orientedImageSize(imageSize, rotation);
-                    const scale = Math.min(
-                      stageSize.width / Math.max(1, oriented.width),
-                      stageSize.height / Math.max(1, oriented.height),
-                    );
-                    return {
-                      width: oriented.width * scale,
-                      height: oriented.height * scale,
-                    };
-                  })(),
-                ]}
-              >
+              <View style={[styles.photoFrame, styles.photoClip, photoBox]}>
                 <Image
                   testID="camera-photo-image"
                   source={{ uri: previewUri }}
@@ -513,10 +611,10 @@ export function CameraScreen({ active, onGoHome }: Props) {
                   resizeMode="stretch"
                   accessibilityIgnoresInvertColors
                 />
-                {sentences.map((sentence) => {
-                  const oriented = orientedImageSize(imageSize, rotation);
-                  return sentence.frames.map((frame, lineIndex) => {
-                    const mapped = rotateFrame(frame, imageSize, rotation);
+                {sentences.map((sentence, sentenceIndex) =>
+                  sentence.frames.map((frame, lineIndex) => {
+                    const box = highlightPercents(frame, imageSize, rotation);
+                    if (!box) return null;
                     return (
                       <Pressable
                         key={`${sentence.id}-${lineIndex}`}
@@ -526,53 +624,107 @@ export function CameraScreen({ active, onGoHome }: Props) {
                             : `camera-overlay-${sentence.id}-${lineIndex}`
                         }
                         accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
-                          n: lineIndex + 1,
+                          n: sentenceIndex + 1,
                         })}
                         onPress={() => setSelected(sentence.id)}
                         style={[
                           styles.overlay,
+                          box,
                           {
-                            left: `${(mapped.x / oriented.width) * 100}%`,
-                            top: `${(mapped.y / oriented.height) * 100}%`,
-                            width: `${(mapped.width / oriented.width) * 100}%`,
-                            height: `${(mapped.height / oriented.height) * 100}%`,
-                            backgroundColor: sentence.color,
-                            opacity: selected === sentence.id ? 0.55 : 0.35,
+                            backgroundColor: withAlpha(
+                              sentence.color,
+                              selected === sentence.id ? 0.55 : 0.38,
+                            ),
                           },
                         ]}
                       />
                     );
-                  });
-                })}
+                  }),
+                )}
               </View>
             ) : null}
           </View>
-          <ScrollView
+          <View
             testID="camera-drawer"
-            style={styles.translations}
-            contentContainerStyle={{ gap: 8, paddingBottom: 8 }}
+            accessibilityState={{ expanded: true }}
+            style={styles.translationCard}
           >
-            {sentences.map((sentence) => (
+            <View style={styles.translationHead}>
+              <Ionicons name="sparkles" size={18} color={theme.colors.saffron} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.translationTitle}>{t('camera.translation', lang)}</Text>
+                <Text style={styles.translationSubtitle}>
+                  {t('camera.translatedTo', lang, { language: targetLanguageName })}
+                </Text>
+              </View>
+            </View>
+            <ScrollView style={{ flexGrow: 1, flexShrink: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: 4 }}>
+              {sentences.map((sentence, index) => (
+                <View
+                  key={sentence.id}
+                  style={[
+                    styles.translationRow,
+                    {
+                      backgroundColor: withAlpha(sentence.color, 0.22),
+                      borderWidth: selected === sentence.id ? 2 : 0,
+                      borderColor: sentence.color,
+                    },
+                  ]}
+                >
+                  <Pressable
+                    testID={`camera-row-${sentence.id}`}
+                    accessibilityLabel={t('camera.sentenceTranslationA11y', lang, {
+                      n: index + 1,
+                    })}
+                    onPress={() => setSelected(sentence.id)}
+                    style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}
+                  >
+                    <Text style={styles.lineIndex}>{index + 1}</Text>
+                    <View style={[styles.colorDot, { backgroundColor: sentence.color }]} />
+                    <Text style={styles.translationText}>{sentence.translation}</Text>
+                  </Pressable>
+                  <Pressable
+                    testID={`camera-copy-${sentence.id}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('camera.copyLine', lang)}
+                    onPress={() => copyText(sentence.translation)}
+                    style={styles.copyBtn}
+                  >
+                    <Ionicons name="copy-outline" size={18} color={theme.colors.textSecondary} />
+                  </Pressable>
+                </View>
+              ))}
+            </ScrollView>
+            <View style={styles.actions}>
               <Pressable
-                key={sentence.id}
-                testID={`camera-row-${sentence.id}`}
-                accessibilityLabel={sentence.translation}
-                onPress={() => setSelected(sentence.id)}
-                style={[styles.translationRow, { backgroundColor: sentence.color }]}
+                testID="camera-retake"
+                style={styles.actionBtn}
+                onPress={onRetake}
+                accessibilityRole="button"
+                accessibilityLabel={t('camera.retakeA11y', lang)}
               >
-                <Text style={styles.translationText}>{sentence.translation}</Text>
+                <Text style={styles.actionText}>{t('camera.retake', lang)}</Text>
               </Pressable>
-            ))}
-          </ScrollView>
-          <Pressable
-            testID="camera-retake"
-            style={styles.retakeBtn}
-            onPress={onRetake}
-            accessibilityRole="button"
-            accessibilityLabel={t('camera.retakeA11y', lang)}
-          >
-            <Text style={styles.retake}>{t('camera.retake', lang)}</Text>
-          </Pressable>
+              <Pressable
+                testID="camera-copy-text"
+                style={styles.actionBtn}
+                onPress={copyAllTranslations}
+                accessibilityRole="button"
+                accessibilityLabel={t('camera.copyText', lang)}
+              >
+                <Text style={styles.actionText}>{t('camera.copyText', lang)}</Text>
+              </Pressable>
+              <Pressable
+                testID="camera-done"
+                style={[styles.actionBtn, styles.actionPrimary]}
+                onPress={onDone}
+                accessibilityRole="button"
+                accessibilityLabel={t('camera.doneA11y', lang)}
+              >
+                <Text style={styles.actionPrimaryText}>{t('camera.done', lang)}</Text>
+              </Pressable>
+            </View>
+          </View>
         </View>
       ) : null}
     </View>
