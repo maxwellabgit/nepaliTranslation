@@ -10,6 +10,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
+import { BackArrow } from './BackArrow';
 import { colors } from '../theme';
 
 type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
@@ -93,20 +94,15 @@ type AppHeaderProps = {
 export function AppHeader({ title, onBack, right, testID }: AppHeaderProps) {
   return (
     <View style={styles.header} testID={testID ?? 'app-header'}>
-      {onBack ? (
-        <Pressable
-          onPress={onBack}
-          hitSlop={12}
-          style={styles.headerSide}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          testID="app-header-back"
-        >
-          <Text style={styles.backText}>←</Text>
-        </Pressable>
-      ) : (
-        <View style={styles.headerSide} />
-      )}
+      <View style={styles.headerSide}>
+        {onBack ? (
+          <BackArrow
+            onPress={onBack}
+            accessibilityLabel="Go back"
+            testID="app-header-back"
+          />
+        ) : null}
+      </View>
       <Text style={styles.headerTitle} accessibilityRole="header">
         {title}
       </Text>
@@ -191,7 +187,6 @@ const styles = StyleSheet.create({
   },
   headerSide: { width: 72, minHeight: 44, justifyContent: 'center' },
   headerRight: { alignItems: 'flex-end' },
-  backText: { fontSize: 22, color: colors.text },
   headerTitle: {
     flex: 1,
     textAlign: 'center',

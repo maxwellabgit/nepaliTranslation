@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import * as Speech from 'expo-speech';
 
+import { BackArrow } from '../components/BackArrow';
 import { EmptyState } from '../components/EmptyState';
 import { t, useUiLang } from '../i18n';
 import { ALPHABET_SECTIONS, type AlphabetGlyph } from '../learn/alphabet';
@@ -60,12 +60,6 @@ export function LearnScreen({ active, onGoHome, onOpenTodaysReview }: Props) {
         backRow: {
           paddingHorizontal: 8,
           paddingTop: 4,
-        },
-        backBtn: {
-          width: 44,
-          height: 44,
-          alignItems: 'center',
-          justifyContent: 'center',
         },
         content: {
           padding: theme.spacing.lg,
@@ -200,15 +194,11 @@ export function LearnScreen({ active, onGoHome, onOpenTodaysReview }: Props) {
   return (
     <View style={dynamic.root} testID="learn-screen">
     <View style={dynamic.backRow}>
-      <Pressable
+      <BackArrow
         onPress={onGoHome}
-        accessibilityRole="button"
         accessibilityLabel={t('common.backHome', lang)}
         testID="back-home"
-        style={dynamic.backBtn}
-      >
-        <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
-      </Pressable>
+      />
     </View>
     <ScrollView
       style={dynamic.root}

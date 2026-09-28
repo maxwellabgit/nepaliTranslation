@@ -30,6 +30,7 @@ import { saveLocalConsent } from '../storage/contributionConsent';
 import { flushPendingDrafts } from '../services/contributionSync';
 import { useServices } from '../services/ServiceContext';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
+import { BackArrow } from '../components/BackArrow';
 import { StatusBanner } from '../components/StatusBanner';
 import { t, useNetworkOffline, useSetUiLang, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
@@ -173,7 +174,6 @@ export function SettingsScreen({
           paddingVertical: 10,
           paddingHorizontal: theme.spacing.xs,
         },
-        topBtnText: { fontSize: 22, color: theme.colors.textSecondary },
         title: {
           flex: 1,
           textAlign: 'center',
@@ -240,16 +240,13 @@ export function SettingsScreen({
   return (
     <View style={dynamic.root} testID="settings-screen">
       <View style={dynamic.topBar}>
-        <Pressable
-          onPress={onClose}
-          hitSlop={12}
-          style={styles.topBtn}
-          accessibilityRole="button"
-          accessibilityLabel={t('settings.closeA11y', lang)}
-          testID="settings-close"
-        >
-          <Text style={dynamic.topBtnText}>←</Text>
-        </Pressable>
+        <View style={styles.topBtn}>
+          <BackArrow
+            onPress={onClose}
+            accessibilityLabel={t('settings.closeA11y', lang)}
+            testID="settings-close"
+          />
+        </View>
         <Text style={dynamic.title}>{t('settings.title', lang)}</Text>
         <View style={styles.topBtn} />
       </View>

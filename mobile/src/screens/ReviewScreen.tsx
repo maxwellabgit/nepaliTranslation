@@ -30,6 +30,7 @@ import {
   type ReviewCategoryId,
   type ReviewJudgment,
 } from '../features/contribution/reviewFlow';
+import { BackArrow } from '../components/BackArrow';
 import { AppButton } from '../components/AppPrimitives';
 import { REVIEW_CATEGORY_FACE, ReviewCategoryImage } from './reviewCategoryArt';
 import { t, useNetworkOffline, useUiLang } from '../i18n';
@@ -241,7 +242,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         },
         scroll: { flex: 1 },
         header: { flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.md },
-        headerSide: { width: 36 },
+        headerSide: { width: 44, alignItems: 'center', justifyContent: 'center' },
         titlePill: { flex: 1, alignItems: 'center' },
         titleChip: {
           borderRadius: 14,
@@ -269,7 +270,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           color: theme.colors.textSecondary,
           textAlign: 'center',
         },
-        back: { fontSize: 22, fontWeight: '700', color: theme.colors.text },
         cardList: { gap: 12 },
         categoryCard: {
           minHeight: 148,
@@ -476,27 +476,17 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       <View style={dynamic.column}>
         <View style={dynamic.header}>
           {phase === 'intro' ? (
-            <Pressable
+            <BackArrow
               testID="review-close"
-              accessibilityRole="button"
               accessibilityLabel={t('common.backHome', lang)}
               onPress={onClose}
-              hitSlop={12}
-              style={dynamic.headerSide}
-            >
-              <Text style={dynamic.back}>←</Text>
-            </Pressable>
+            />
           ) : (
-            <Pressable
+            <BackArrow
               testID="review-back"
-              accessibilityRole="button"
               accessibilityLabel={t('review.backToSets', lang)}
               onPress={backToSets}
-              hitSlop={12}
-              style={dynamic.headerSide}
-            >
-              <Text style={dynamic.back}>←</Text>
-            </Pressable>
+            />
           )}
           <View style={dynamic.titlePill}>
             {phase === 'intro' ? (
@@ -695,8 +685,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                   <View style={{ height: 8 }} />
                   {(
                     [
-                      ['same', 'thumbs-up-outline', 'review.sameMeaning'],
+                      ['ours', 'checkmark-circle-outline', 'review.currentTranslation'],
                       ['mine', 'person-outline', 'review.mineBetter'],
+                      ['same', 'thumbs-up-outline', 'review.sameMeaning'],
                       ['neither', 'thumbs-down-outline', 'review.neitherRight'],
                     ] as const
                   ).map(([id, icon, label]) => (

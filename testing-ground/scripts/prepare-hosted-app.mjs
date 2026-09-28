@@ -83,7 +83,9 @@ function rewriteHostedAssetPaths(dir) {
     const text = fs.readFileSync(full, 'utf8');
     const next = text
       .replaceAll('"/assets/', '"/hosted-app/assets/')
-      .replaceAll("'/assets/", "'/hosted-app/assets/");
+      .replaceAll("'/assets/", "'/hosted-app/assets/")
+      .replaceAll('"/_expo/', '"/hosted-app/_expo/')
+      .replaceAll("'/_expo/", "'/hosted-app/_expo/");
     if (next !== text) fs.writeFileSync(full, next, 'utf8');
   }
 }

@@ -20,6 +20,11 @@ export type TestRuntimeOptions = {
   cameraPermission?: CameraPermission;
   transcripts?: string[];
   ocrDocuments?: Record<string, OcrDocument>;
+  /**
+   * When no recorded OCR document matches, recognize the captured photo.
+   * Web resolves that to in-browser Tesseract. Jest leaves this off.
+   */
+  recognizeCapturedPhoto?: boolean;
   translations?: RecordedTranslate[];
   translateError?: string | null;
 };
@@ -128,15 +133,17 @@ export function createTestRuntime(options: TestRuntimeOptions = {}): RuntimePort
     ocr: {
       recognize: async (uri) => {
         const doc = ocrDocuments[uri];
-        if (!doc) {
-          return {
-            width: 800,
-            height: 1200,
-            rotation: 0,
-            blocks: [],
-          };
+        if (doc) return doc;
+        if (options.recognizeCapturedPhoto) {
+          const { recognizeCapture } = await import('../camera/recognizeCapture');
+          return recognizeCapture(uri);
         }
-        return doc;
+        return {
+          width: 800,
+          height: 1200,
+          rotation: 0,
+          blocks: [],
+        };
       },
     },
     clock: {

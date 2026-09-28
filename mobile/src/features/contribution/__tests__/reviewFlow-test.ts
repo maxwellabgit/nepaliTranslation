@@ -43,6 +43,9 @@ describe('review flow categories', () => {
       action: 'edit',
       correctedText: 'नमस्ते',
     });
+    expect(judgmentToSubmit('ours', 'मेरो', 'सुझाव')).toEqual({
+      action: 'confirm',
+    });
     expect(judgmentToSubmit('mine', 'मेरो', 'सुझाव')).toEqual({
       action: 'edit',
       correctedText: 'मेरो',

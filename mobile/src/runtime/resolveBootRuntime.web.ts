@@ -84,6 +84,7 @@ export function resolveBootRuntime(): RuntimePorts | undefined {
     cameraPermission: boot.cameraPermission ?? 'granted',
     transcripts: boot.transcripts,
     translations,
+    recognizeCapturedPhoto: true,
   });
 }
 

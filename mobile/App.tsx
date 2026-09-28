@@ -95,7 +95,7 @@ export function NepTranslateApp({
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}
         TranslatePane={(props) => <TranslateScreen {...props} />}
-        CameraPane={() => <CameraScreen active />}
+        CameraPane={(props) => <CameraScreen {...props} />}
         LearnPane={(props) => <LearnScreen {...props} />}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}

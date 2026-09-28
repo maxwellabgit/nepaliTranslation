@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { t, useUiLang, type UiLang } from '../i18n';
 import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
-import { buildCorrelation, previewText } from '../camera/correlate';
+import { BackArrow } from '../components/BackArrow';
+import { buildCorrelation } from '../camera/correlate';
 import { deleteCapture } from '../camera/deleteCapture';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
-import { mapLineFramesToView } from '../camera/overlayGeometry';
+import { orientedImageSize, rotateFrame } from '../camera/overlayGeometry';
 import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
@@ -60,7 +60,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
   );
   const [sentences, setSentences] = useState<CorrelatedSentence[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [direction, setDirection] = useState<'ne-en' | 'en-ne'>('ne-en');
   const [captureUri, setCaptureUri] = useState<string | null>(null);
   const [previewUri, setPreviewUri] = useState<string | null>(null);
@@ -69,7 +68,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const requestGenRef = useRef(0);
   const [imageSize, setImageSize] = useState({ width: 800, height: 1200 });
   const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
-  const [viewSize, setViewSize] = useState({ width: 1, height: 1 });
+  const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
   const phase = phaseState.phase;
 
@@ -82,13 +81,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
           flexDirection: 'row',
           alignItems: 'center',
           paddingHorizontal: 8,
-          paddingTop: 8,
+          paddingTop: 4,
           paddingBottom: 4,
+          backgroundColor: theme.colors.bg,
         },
         headerSide: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
         headerCenter: { flex: 1, alignItems: 'center', gap: 4 },
-        title: { color: theme.colors.onPrimary, fontSize: 18, fontWeight: '700' },
-        direction: { color: theme.colors.onPrimary, fontWeight: '700' },
+        title: { color: theme.colors.text, fontSize: 18, fontWeight: '700' },
+        direction: { color: theme.colors.text, fontWeight: '700' },
         center: { padding: 24, gap: 16 },
         body: { color: theme.colors.onPrimary, fontSize: 15, lineHeight: 22 },
         allow: {
@@ -121,44 +121,35 @@ export function CameraScreen({ active, onGoHome }: Props) {
           justifyContent: 'center',
           paddingHorizontal: 8,
         },
-        errorPreview: { width: '100%', height: 180, backgroundColor: '#2A2420' },
-        result: { flex: 1 },
-        photo: { flex: 1, backgroundColor: '#2A2420' },
-        overlay: {
-          position: 'absolute',
-          borderRadius: 4,
-          alignItems: 'flex-start',
-          justifyContent: 'flex-start',
-          padding: 2,
+        result: { flex: 1, minHeight: 0 },
+        photoStage: {
+          flex: 1,
+          minHeight: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#1A1410',
         },
-        overlayIndex: {
-          color: theme.colors.onPrimary,
-          fontWeight: '800',
-          fontSize: 12,
-          textShadowColor: 'rgba(0,0,0,0.6)',
-          textShadowOffset: { width: 0, height: 1 },
-          textShadowRadius: 2,
-        },
-        found: {
-          position: 'absolute',
-          right: 12,
-          bottom: 12,
-          color: theme.colors.onPrimary,
-        },
-        drawer: {
+        photoFrame: { alignSelf: 'center' },
+        overlay: { position: 'absolute', borderRadius: 3 },
+        translations: {
+          maxHeight: '46%',
           backgroundColor: '#2C2622',
-          padding: 16,
-          gap: 10,
+          paddingHorizontal: 12,
+          paddingTop: 12,
+          paddingBottom: 4,
+          gap: 8,
         },
-        drawerTitle: { color: theme.colors.onPrimary, fontWeight: '700' },
-        row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
-        rowIndex: {
-          color: theme.colors.onPrimary,
-          fontWeight: '800',
-          minWidth: 16,
+        translationRow: {
+          borderRadius: 12,
+          paddingHorizontal: 14,
+          paddingVertical: 12,
         },
-        swatch: { width: 12, height: 12, borderRadius: 2 },
-        rowText: { color: theme.colors.onPrimary, flex: 1 },
+        translationText: {
+          color: '#1A1410',
+          fontSize: 16,
+          lineHeight: 22,
+          fontWeight: '700',
+        },
         retake: {
           color: theme.colors.onPrimary,
           paddingVertical: 12,
@@ -206,7 +197,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
       setPreviewUri(null);
       setSentences([]);
       setSelected(null);
-      setDrawerOpen(false);
       setPhaseState(initialCameraPhase(granted));
       return;
     }
@@ -227,7 +217,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
       return;
     }
     setSentences(built.sentences);
-    setDrawerOpen(false);
     setPhaseState({ phase: 'result', reasonCode: null });
   }, [active, granted, runtime.translation]);
 
@@ -237,7 +226,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
     dispatch({ type: 'CAPTURE' });
     let uri: string | null = null;
     try {
-      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.7 });
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 1 });
       if (gen !== requestGenRef.current) return;
       uri = photo?.uri ?? null;
     } catch {
@@ -248,9 +237,11 @@ export function CameraScreen({ active, onGoHome }: Props) {
       dispatch({ type: 'FAIL', reasonCode: 'capture_failed' });
       return;
     }
+    // Show the still before any text recognition. OCR runs only on this photo.
     dispatch({ type: 'CAPTURED' });
     setCaptureUri(uri);
     captureUriRef.current = uri;
+    setPreviewUri(uri);
     const previewTask = readCapturePreviewUri(uri);
     dispatch({ type: 'RECOGNIZE_STARTED' });
     try {
@@ -258,7 +249,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       if (gen !== requestGenRef.current) return;
       const preview = await previewTask;
       if (gen !== requestGenRef.current) return;
-      setPreviewUri(preview);
+      if (preview) setPreviewUri(preview);
       setImageSize({ width: doc.width, height: doc.height });
       setRotation(doc.rotation ?? 0);
 
@@ -289,9 +280,20 @@ export function CameraScreen({ active, onGoHome }: Props) {
             forcePreferred: true,
           });
           if (gen !== requestGenRef.current) return;
+          let translation = (result.text ?? '').trim();
+          if (!translation) {
+            try {
+              const { translateCapturedLine } = await import('../camera/translateCapture');
+              translation = (
+                await translateCapturedLine(sentence.text, direction)
+              ).trim();
+            } catch {
+              translation = '';
+            }
+          }
           translated.push({
             ...sentence,
-            translation: result.text ?? '',
+            translation,
           });
         } catch (err) {
           if (gen !== requestGenRef.current) return;
@@ -310,7 +312,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
       }
       if (gen !== requestGenRef.current) return;
       setSentences(translated);
-      setDrawerOpen(false);
       // Consented adults: durable-copy for outbox before temp delete (never await flush).
       await enqueueEligibleMedia({
         kind: 'photo',
@@ -374,15 +375,11 @@ export function CameraScreen({ active, onGoHome }: Props) {
   return (
     <View style={styles.root} testID="camera-screen">
       <View style={styles.header}>
-        <Pressable
+        <BackArrow
           onPress={onGoHome}
-          accessibilityRole="button"
           accessibilityLabel={t('common.backHome', lang)}
           testID="back-home"
-          style={styles.headerSide}
-        >
-          <Ionicons name="arrow-back" size={24} color={theme.colors.onPrimary} />
-        </Pressable>
+        />
         <View style={styles.headerCenter}>
         <Text style={styles.title}>{t('camera.title', lang)}</Text>
         <Pressable
@@ -417,6 +414,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       ) : null}
 
       {granted &&
+      !previewUri &&
       !showResult &&
       phase !== 'empty' &&
       phase !== 'lowConfidence' &&
@@ -436,17 +434,27 @@ export function CameraScreen({ active, onGoHome }: Props) {
         </View>
       ) : null}
 
-      {showError ? (
-        <View style={styles.center} testID="camera-error">
-          {previewUri ? (
+      {previewUri && !showResult ? (
+        <View style={styles.result} testID={showError ? 'camera-error' : 'camera-still'}>
+          <View style={styles.photoStage}>
             <Image
-              testID="camera-error-preview"
+              testID={showError ? 'camera-error-preview' : 'camera-still-image'}
               source={{ uri: previewUri }}
-              style={styles.errorPreview}
+              style={StyleSheet.absoluteFill}
               resizeMode="contain"
               accessibilityIgnoresInvertColors
             />
-          ) : null}
+          </View>
+          {showError ? null : (
+            <Text style={styles.body} testID="camera-reading">
+              {shutterLabel}
+            </Text>
+          )}
+        </View>
+      ) : null}
+
+      {showError ? (
+        <View style={styles.center} testID={previewUri ? undefined : 'camera-error'}>
           <Text
             style={styles.body}
             testID={
@@ -474,96 +482,88 @@ export function CameraScreen({ active, onGoHome }: Props) {
       {showResult ? (
         <View style={styles.result} testID="camera-result">
           <View
-            style={styles.photo}
+            style={styles.photoStage}
             testID="camera-photo"
-            onLayout={(e) =>
-              setViewSize({
-                width: e.nativeEvent.layout.width,
-                height: e.nativeEvent.layout.height,
-              })
-            }
+            onLayout={(event) => {
+              const { width, height } = event.nativeEvent.layout;
+              setStageSize({ width, height });
+            }}
           >
             {previewUri ? (
-              <Image
-                testID="camera-photo-image"
-                source={{ uri: previewUri }}
-                style={StyleSheet.absoluteFill}
-                resizeMode="contain"
-                accessibilityIgnoresInvertColors
-              />
+              <View
+                style={[
+                  styles.photoFrame,
+                  (() => {
+                    const oriented = orientedImageSize(imageSize, rotation);
+                    const scale = Math.min(
+                      stageSize.width / Math.max(1, oriented.width),
+                      stageSize.height / Math.max(1, oriented.height),
+                    );
+                    return {
+                      width: oriented.width * scale,
+                      height: oriented.height * scale,
+                    };
+                  })(),
+                ]}
+              >
+                <Image
+                  testID="camera-photo-image"
+                  source={{ uri: previewUri }}
+                  style={StyleSheet.absoluteFill}
+                  resizeMode="stretch"
+                  accessibilityIgnoresInvertColors
+                />
+                {sentences.map((sentence) => {
+                  const oriented = orientedImageSize(imageSize, rotation);
+                  return sentence.frames.map((frame, lineIndex) => {
+                    const mapped = rotateFrame(frame, imageSize, rotation);
+                    return (
+                      <Pressable
+                        key={`${sentence.id}-${lineIndex}`}
+                        testID={
+                          lineIndex === 0
+                            ? `camera-overlay-${sentence.id}`
+                            : `camera-overlay-${sentence.id}-${lineIndex}`
+                        }
+                        accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
+                          n: lineIndex + 1,
+                        })}
+                        onPress={() => setSelected(sentence.id)}
+                        style={[
+                          styles.overlay,
+                          {
+                            left: `${(mapped.x / oriented.width) * 100}%`,
+                            top: `${(mapped.y / oriented.height) * 100}%`,
+                            width: `${(mapped.width / oriented.width) * 100}%`,
+                            height: `${(mapped.height / oriented.height) * 100}%`,
+                            backgroundColor: sentence.color,
+                            opacity: selected === sentence.id ? 0.55 : 0.35,
+                          },
+                        ]}
+                      />
+                    );
+                  });
+                })}
+              </View>
             ) : null}
-            {sentences.map((sentence, index) => {
-              const sentenceIndex = index + 1;
-              const lines = mapLineFramesToView(
-                sentence.frames,
-                imageSize,
-                rotation,
-                viewSize,
-              );
-              return lines.map((mapped, lineIndex) => (
-                <Pressable
-                  key={`${sentence.id}-${lineIndex}`}
-                  testID={
-                    lineIndex === 0
-                      ? `camera-overlay-${sentence.id}`
-                      : `camera-overlay-${sentence.id}-${lineIndex}`
-                  }
-                  accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
-                    n: sentenceIndex,
-                  })}
-                  hitSlop={16}
-                  onPress={() => setSelected(sentence.id)}
-                  style={[
-                    styles.overlay,
-                    {
-                      left: mapped.x,
-                      top: mapped.y,
-                      width: mapped.width,
-                      height: mapped.height,
-                      backgroundColor: sentence.color,
-                      opacity: selected === sentence.id ? 0.55 : 0.35,
-                    },
-                  ]}
-                >
-                  {lineIndex === 0 ? (
-                    <Text style={styles.overlayIndex}>{sentenceIndex}</Text>
-                  ) : null}
-                </Pressable>
-              ));
-            })}
-            <Text style={styles.found}>
-              {t('camera.passagesFound', lang, { count: sentences.length })}
-            </Text>
           </View>
-          <View
+          <ScrollView
             testID="camera-drawer"
-            accessibilityState={{ expanded: drawerOpen }}
-            style={styles.drawer}
+            style={styles.translations}
+            contentContainerStyle={{ gap: 8, paddingBottom: 8 }}
           >
-            <Pressable onPress={() => setDrawerOpen((open) => !open)}>
-              <Text style={styles.drawerTitle}>{t('camera.translation', lang)}</Text>
-            </Pressable>
-            {sentences.map((sentence, index) => {
-              const sentenceIndex = index + 1;
-              return (
-                <Pressable
-                  key={sentence.id}
-                  testID={`camera-row-${sentence.id}`}
-                  accessibilityLabel={t('camera.sentenceTranslationA11y', lang, {
-                    n: sentenceIndex,
-                  })}
-                  onPress={() => setSelected(sentence.id)}
-                  style={styles.row}
-                >
-                  <Text style={styles.rowIndex}>{sentenceIndex}</Text>
-                  <View style={[styles.swatch, { backgroundColor: sentence.color }]} />
-                  <Text style={styles.rowText}>
-                    {drawerOpen ? sentence.translation : previewText(sentence.translation)}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+            {sentences.map((sentence) => (
+              <Pressable
+                key={sentence.id}
+                testID={`camera-row-${sentence.id}`}
+                accessibilityLabel={sentence.translation}
+                onPress={() => setSelected(sentence.id)}
+                style={[styles.translationRow, { backgroundColor: sentence.color }]}
+              >
+                <Text style={styles.translationText}>{sentence.translation}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
           <Pressable
             testID="camera-retake"
             style={styles.retakeBtn}

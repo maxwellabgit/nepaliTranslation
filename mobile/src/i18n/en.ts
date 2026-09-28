@@ -438,7 +438,7 @@ export const en = {
   'review.typeHere': 'Type your translation here...',
   'review.earnUpTo': 'Earn up to {count} credits after verification',
   'review.yourEntered': 'what you entered',
-  'review.currentTranslation': 'Current translation',
+  'review.currentTranslation': 'Our translation',
   'review.fromSystem': 'from our system',
   'review.whichBetter': 'Which is better?',
   'review.sameMeaning': 'Same meaning',

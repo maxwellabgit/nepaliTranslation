@@ -9,7 +9,7 @@ export const REVIEW_CATEGORY_ORDER: ReviewCategoryId[] = [
   'roman',
 ];
 
-export type ReviewJudgment = 'same' | 'mine' | 'neither';
+export type ReviewJudgment = 'ours' | 'mine' | 'same' | 'neither';
 
 const CREDIT_AWARD_ZONE = 'America/New_York';
 const CREDIT_AWARD_HOUR = 17;
@@ -45,8 +45,9 @@ export function firstUnsubmittedIn(
 }
 
 /**
- * Same meaning confirms the current line.
+ * Our translation keeps the system line.
  * Mine is better stores the typed line as the correction.
+ * Same meaning confirms the current line.
  * Neither is right reports the item and earns nothing.
  * With no current line, same meaning keeps the typed line.
  */
@@ -58,6 +59,7 @@ export function judgmentToSubmit(
   const text = typed.trim();
   if (judgment === 'neither') return { action: 'report' };
   if (judgment === 'mine') return { action: 'edit', correctedText: text };
+  if (judgment === 'ours') return { action: 'confirm' };
   if (proposed?.trim()) return { action: 'confirm' };
   if (text) return { action: 'edit', correctedText: text };
   return { action: 'confirm' };

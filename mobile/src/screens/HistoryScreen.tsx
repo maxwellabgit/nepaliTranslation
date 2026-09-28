@@ -18,6 +18,7 @@ import {
   type HistoryItem,
 } from '../storage/phrasebook';
 import { CorrectionSheet } from '../features/contribution/CorrectionSheet';
+import { BackArrow } from '../components/BackArrow';
 import { EmptyState } from '../components/EmptyState';
 import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
@@ -125,7 +126,6 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
           paddingVertical: 10,
           paddingHorizontal: theme.spacing.xs,
         },
-        topBtnText: { fontSize: 22, color: theme.colors.textSecondary },
         clearText: {
           fontSize: 14,
           color: theme.colors.blue,
@@ -181,16 +181,13 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
   return (
     <View style={dynamic.root} testID="history-screen">
       <View style={dynamic.topBar}>
-        <Pressable
-          onPress={onClose}
-          hitSlop={12}
-          style={styles.topBtn}
-          accessibilityRole="button"
-          accessibilityLabel={t('history.close', lang)}
-          testID="history-close"
-        >
-          <Text style={dynamic.topBtnText}>←</Text>
-        </Pressable>
+        <View style={styles.topBtn}>
+          <BackArrow
+            onPress={onClose}
+            accessibilityLabel={t('history.close', lang)}
+            testID="history-close"
+          />
+        </View>
         <Text style={dynamic.title}>{t('history.title', lang)}</Text>
         <Pressable
           onPress={() => {
