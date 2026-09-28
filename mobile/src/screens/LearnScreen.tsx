@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
 import * as Speech from 'expo-speech';
 
 import { EmptyState } from '../components/EmptyState';
@@ -19,15 +20,20 @@ type Props = {
 
 const COLUMNS = 5;
 
+const TODAYS_TITLE_FONT = {
+  'PlusJakarta-ExtraBold': require('../../assets/fonts/PlusJakartaSans-ExtraBold.ttf'),
+};
+
 /**
  * Learn: the full alphabet in order.
  * Letters are on the page for everyone — nothing sits behind a second screen.
  */
-export function LearnScreen({ active, onGoHome }: Props) {
+export function LearnScreen({ active, onGoHome, onOpenTodaysReview }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const [voiceOk, setVoiceOk] = useState(true);
   const [voiceChecked, setVoiceChecked] = useState(false);
+  const [titleFont, setTitleFont] = useState(false);
 
   useEffect(() => {
     if (!active) return;
@@ -36,6 +42,16 @@ export function LearnScreen({ active, onGoHome }: Props) {
       setVoiceChecked(true);
     });
   }, [active]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void Font.loadAsync(TODAYS_TITLE_FONT).then(() => {
+      if (!cancelled) setTitleFont(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const dynamic = useMemo(
     () =>
@@ -113,8 +129,41 @@ export function LearnScreen({ active, onGoHome }: Props) {
           fontSize: 13,
           color: theme.colors.textSecondary,
         },
+        todaysCard: {
+          borderRadius: 18,
+          overflow: 'hidden',
+          aspectRatio: 1024 / 384,
+          justifyContent: 'center',
+        },
+        todaysImage: {
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        },
+        todaysCopy: {
+          width: '54%',
+          paddingLeft: 16,
+          paddingRight: 8,
+          gap: 4,
+        },
+        todaysTitle: {
+          fontFamily: titleFont ? 'PlusJakarta-ExtraBold' : undefined,
+          fontSize: 28,
+          fontWeight: titleFont ? '400' : '800',
+          color: '#1A1410',
+        },
+        todaysEarn: {
+          fontSize: 13,
+          lineHeight: 18,
+          fontWeight: '600',
+          color: '#3D342C',
+        },
       }),
-    [theme],
+    [theme, titleFont],
   );
 
   if (!active) {
@@ -167,6 +216,24 @@ export function LearnScreen({ active, onGoHome }: Props) {
       keyboardShouldPersistTaps="handled"
     >
       <AdSlot surface="learn_landing" eligible={active} appActive={active} />
+
+      <Pressable
+        testID="learn-todays-10"
+        accessibilityRole="button"
+        accessibilityLabel={t('learn.earnRewardsA11y', lang)}
+        onPress={onOpenTodaysReview}
+        style={dynamic.todaysCard}
+      >
+        <Image
+          source={require('../../assets/review/todays10-card.png')}
+          resizeMode="cover"
+          style={dynamic.todaysImage}
+        />
+        <View style={dynamic.todaysCopy}>
+          <Text style={dynamic.todaysTitle}>{t('learn.earnRewards', lang)}</Text>
+          <Text style={dynamic.todaysEarn}>{t('learn.reviewEarn', lang)}</Text>
+        </View>
+      </Pressable>
 
       {ALPHABET_SECTIONS.map((section) => (
         <View key={section.id} testID={`learn-section-${section.id}`}>

@@ -11,14 +11,10 @@ export type AppOverlay =
 export type ShellState = {
   mode: AppMode;
   overlay: AppOverlay;
-  /** Pass-the-phone exchange. Homepage is translate with this false. */
-  conversation: boolean;
 };
 
 export type ShellEvent =
   | { type: 'switch_mode'; mode: AppMode }
-  | { type: 'enter_conversation' }
-  | { type: 'exit_conversation' }
   | { type: 'open_overlay'; overlay: Exclude<AppOverlay, null> }
   | { type: 'close_overlay' }
   | { type: 'select_history' };
@@ -26,7 +22,6 @@ export type ShellEvent =
 export const INITIAL_SHELL: ShellState = {
   mode: 'translate',
   overlay: null,
-  conversation: false,
 };
 
 const PRIMARY_MODES: readonly AppMode[] = ['translate', 'camera', 'learn'];
@@ -38,21 +33,13 @@ export function isPrimaryMode(mode: string): mode is AppMode {
 export function reduceShell(state: ShellState, event: ShellEvent): ShellState {
   switch (event.type) {
     case 'switch_mode':
-      return {
-        ...state,
-        mode: event.mode,
-        conversation: event.mode === 'translate' ? state.conversation : false,
-      };
-    case 'enter_conversation':
-      return { mode: 'translate', overlay: null, conversation: true };
-    case 'exit_conversation':
-      return { mode: 'translate', overlay: null, conversation: false };
+      return { ...state, mode: event.mode, overlay: null };
     case 'open_overlay':
       return { ...state, overlay: event.overlay };
     case 'close_overlay':
       return { ...state, overlay: null };
     case 'select_history':
-      return { mode: 'translate', overlay: null, conversation: false };
+      return { mode: 'translate', overlay: null };
     default:
       return state;
   }

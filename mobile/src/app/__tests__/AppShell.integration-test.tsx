@@ -118,7 +118,7 @@ describe('AppShell integration (mounted panes + offline ads)', () => {
   it('unmounts Camera when leaving and keeps Translate text', async () => {
     const hardStop = await renderShell();
     expect(screen.getByTestId('tab-bar')).toBeTruthy();
-    expect(screen.getByLabelText('Conversation tab')).toBeTruthy();
+    expect(screen.getByLabelText('Translation tab')).toBeTruthy();
 
     await fireEvent.changeText(screen.getByTestId('shell-auto-input'), 'hello');
     await fireEvent.press(screen.getByTestId('tab-camera'));

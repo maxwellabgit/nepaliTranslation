@@ -27,7 +27,6 @@ type PaneProps = {
   seedKey?: number;
   neuralReady: boolean;
   mtWarmStatus: string | null;
-  conversation?: boolean;
   onGoHome?: () => void;
 };
 
@@ -83,7 +82,7 @@ export function AppShell({
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
-  const [{ mode, overlay, conversation }, dispatch] = useReducer(reduceShell, INITIAL_SHELL);
+  const [{ mode, overlay }, dispatch] = useReducer(reduceShell, INITIAL_SHELL);
   const [seed, setSeed] = useState<HistoryItem | null>(null);
   const [seedKey, setSeedKey] = useState(0);
   const size = useSizeClass();
@@ -112,33 +111,29 @@ export function AppShell({
           flexDirection: 'row',
           justifyContent: 'space-evenly',
           alignItems: 'center',
-          paddingHorizontal: 16,
-          paddingTop: 8,
+          paddingHorizontal: 12,
+          paddingTop: 6,
           paddingBottom: 28,
-          borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: theme.colors.divider,
           backgroundColor: theme.colors.bg,
         },
         tab: {
-          width: 84,
-          height: 84,
-          borderRadius: 42,
+          minWidth: 88,
+          paddingVertical: 10,
+          paddingHorizontal: 16,
+          borderRadius: 22,
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 2,
-          backgroundColor: '#F6DDE0',
-          borderWidth: 1,
-          borderColor: '#F6DDE0',
+          gap: 4,
+          backgroundColor: 'transparent',
         },
         tabOn: {
-          backgroundColor: '#E7B7BC',
-          borderColor: '#E7B7BC',
+          backgroundColor: '#F6D5DC',
         },
         tabLabel: {
-          fontSize: 11,
-          fontWeight: '700',
+          fontSize: 12,
+          fontWeight: '600',
           textAlign: 'center',
-          color: theme.colors.text,
+          color: '#4A3F55',
         },
         tabLabelOn: { color: theme.colors.text },
       }),
@@ -147,7 +142,7 @@ export function AppShell({
 
   const goHome = () => {
     onHardStop();
-    dispatch({ type: 'exit_conversation' });
+    dispatch({ type: 'switch_mode', mode: 'translate' });
   };
 
   const switchMode = (next: AppMode) => {
@@ -169,9 +164,6 @@ export function AppShell({
     if (boot?.harness !== 'neptranslate-testing-ground') return;
     dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
   }, []);
-
-  const inactiveIcon = theme.colors.text;
-  const activeIcon = theme.colors.text;
 
   return (
     <SafeAreaView
@@ -218,7 +210,6 @@ export function AppShell({
               onHardStop();
               dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
             }}
-            conversation={conversation}
             onGoHome={goHome}
           />
         </View>
@@ -249,48 +240,20 @@ export function AppShell({
 
       <View style={styles.tabBar} testID="tab-bar">
         <Pressable
-          style={[styles.tab, conversation && mode === 'translate' && styles.tabOn]}
-          onPress={() => {
-            onHardStop();
-            dispatch(
-              conversation && mode === 'translate'
-                ? { type: 'exit_conversation' }
-                : { type: 'enter_conversation' },
-            );
-          }}
+          style={[styles.tab, mode === 'translate' && styles.tabOn]}
+          onPress={() => switchMode('translate')}
           accessibilityRole="tab"
-          accessibilityState={{ selected: conversation && mode === 'translate' }}
-          accessibilityLabel={t(
-            conversation && mode === 'translate'
-              ? 'tabs.translateA11y'
-              : 'tabs.conversationA11y',
-            lang,
-          )}
+          accessibilityState={{ selected: mode === 'translate' }}
+          accessibilityLabel={t('tabs.translateA11y', lang)}
           testID="tab-translate"
         >
           <Ionicons
-            name={
-              conversation && mode === 'translate'
-                ? 'language-outline'
-                : 'swap-horizontal'
-            }
-            size={18}
-            color={
-              conversation && mode === 'translate' ? activeIcon : inactiveIcon
-            }
+            name="swap-horizontal"
+            size={22}
+            color="#1A1410"
           />
-          <Text
-            style={[
-              styles.tabLabel,
-              conversation && mode === 'translate' && styles.tabLabelOn,
-            ]}
-          >
-            {t(
-              conversation && mode === 'translate'
-                ? 'tabs.translate'
-                : 'tabs.conversation',
-              lang,
-            )}
+          <Text style={[styles.tabLabel, mode === 'translate' && styles.tabLabelOn]}>
+            {t('tabs.translate', lang)}
           </Text>
         </Pressable>
         <Pressable
@@ -303,8 +266,8 @@ export function AppShell({
         >
           <Ionicons
             name="camera-outline"
-            size={18}
-            color={mode === 'camera' ? activeIcon : inactiveIcon}
+            size={22}
+            color="#5C4E66"
           />
           <Text style={[styles.tabLabel, mode === 'camera' && styles.tabLabelOn]}>
             {t('tabs.camera', lang)}
@@ -320,8 +283,8 @@ export function AppShell({
         >
           <Ionicons
             name="book-outline"
-            size={18}
-            color={mode === 'learn' ? activeIcon : inactiveIcon}
+            size={22}
+            color="#5C4E66"
           />
           <Text style={[styles.tabLabel, mode === 'learn' && styles.tabLabelOn]}>
             {t('tabs.learn', lang)}

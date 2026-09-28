@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, render, screen, waitFor, fireEvent } from '@testing-library/react-native';
 import { AppProviders } from '../../app/AppProviders';
 import { ReviewScreen } from '../ReviewScreen';
@@ -63,8 +64,9 @@ const signedInAuth = {
 };
 
 describe('ReviewScreen', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await AsyncStorage.clear();
   });
 
   it('shows the sign-in state for guests without fetching', async () => {
@@ -89,7 +91,22 @@ describe('ReviewScreen', () => {
     expect(fetchCurrentReviewWindow).not.toHaveBeenCalled();
   });
 
-  it('renders items and advances to the next item after confirm', async () => {
+  async function openEnglishAndType(text: string) {
+    await waitFor(() => {
+      expect(screen.getByTestId('review-category-english')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-category-english'));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('review-item-correction')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.changeText(screen.getByTestId('review-item-correction'), text);
+    });
+  }
+
+  it('shows three category cards and moves forward through type then compare', async () => {
     useAuth.mockReturnValue(signedInAuth);
     fetchCurrentReviewWindow.mockResolvedValue({
       ok: true,
@@ -133,13 +150,31 @@ describe('ReviewScreen', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('review-item-source').props.children).toBe(
-        'Hello world',
-      );
+      expect(screen.getByTestId('review-category-deva')).toBeTruthy();
+      expect(screen.getByTestId('review-category-roman')).toBeTruthy();
+      expect(screen.getByTestId('review-category-english')).toBeTruthy();
     });
+    expect(screen.queryByTestId('review-prev')).toBeNull();
+    expect(screen.queryByTestId('review-item-source')).toBeNull();
+
+    await openEnglishAndType('नमस्ते संसार');
+    expect(screen.getByTestId('review-item-source').props.children).toBe('Hello world');
+    expect(screen.getByTestId('review-credits-note')).toBeTruthy();
+    expect(screen.getByTestId('review-settle')).toBeTruthy();
 
     await act(async () => {
       fireEvent.press(screen.getByTestId('review-action-submit'));
+    });
+    expect(submitReview).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByTestId('review-compare')).toBeTruthy();
+    });
+
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-judgment-same'));
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-action-next'));
     });
 
     await waitFor(() => {
@@ -152,6 +187,22 @@ describe('ReviewScreen', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByTestId('review-item-source').props.children).toBe(
+        'How are you?',
+      );
+    });
+    expect(screen.queryByTestId('review-prev')).toBeNull();
+    expect(screen.queryByTestId('review-close')).toBeNull();
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-back'));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('review-intro')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-category-english'));
+    });
     await waitFor(() => {
       expect(screen.getByTestId('review-item-source').props.children).toBe(
         'How are you?',
@@ -207,14 +258,19 @@ describe('ReviewScreen', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getByTestId('review-category-english')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-category-english'));
+    });
+
+    await waitFor(() => {
       expect(screen.getByTestId('review-item-source').props.children).toBe(
         'How are you?',
       );
     });
-    const restored = screen.getByTestId('review-restored-src-1').props.children;
-    const restoredText = Array.isArray(restored) ? restored.join('') : String(restored);
-    expect(restoredText).toContain('नमस्ते');
-    expect(restoredText).toContain('Reward pending until 5:00 PM New York');
+    expect(screen.queryByTestId('review-restored-src-1')).toBeNull();
+    expect(screen.getByTestId('review-progress').props.children).toBe('2 of 2');
   });
 
   it('blocks Submit correction until a corrected target is entered', async () => {
@@ -246,13 +302,18 @@ describe('ReviewScreen', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getByTestId('review-category-english')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-category-english'));
+    });
+
+    await waitFor(() => {
       expect(screen.getByTestId('review-action-submit')).toBeTruthy();
     });
 
     expect(screen.getByTestId('review-action-submit').props.accessibilityState.disabled)
-      .toBe(false);
-
-    submitReview.mockResolvedValue({ ok: true, submission: { id: 'sub-edit' } });
+      .toBe(true);
 
     await act(async () => {
       fireEvent.changeText(
@@ -261,15 +322,14 @@ describe('ReviewScreen', () => {
       );
     });
 
+    expect(screen.getByTestId('review-action-submit').props.accessibilityState.disabled)
+      .toBe(false);
+
     await act(async () => {
       fireEvent.press(screen.getByTestId('review-action-submit'));
     });
-    expect(submitReview).toHaveBeenCalledWith(
-      expect.objectContaining({
-        action: 'edit',
-        correctedText: 'नमस्कार',
-      }),
-    );
+    expect(submitReview).not.toHaveBeenCalled();
+    expect(screen.getByTestId('review-compare')).toBeTruthy();
   });
 
   it('requires a written translation when no suggestion exists', async () => {
@@ -293,6 +353,12 @@ describe('ReviewScreen', () => {
     submitReview.mockResolvedValue({ ok: true, submission: { id: 's-1' } });
 
     await act(async () => { renderScreen(); });
+    await waitFor(() => {
+      expect(screen.getByTestId('review-category-roman')).toBeTruthy();
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-category-roman'));
+    });
     await waitFor(() => expect(screen.getByTestId('review-item-correction')).toBeTruthy());
     expect(screen.getByTestId('review-action-submit').props.accessibilityState.disabled).toBe(true);
 
@@ -300,6 +366,8 @@ describe('ReviewScreen', () => {
       fireEvent.changeText(screen.getByTestId('review-item-correction'), 'When will you arrive?');
     });
     await act(async () => { fireEvent.press(screen.getByTestId('review-action-submit')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-judgment-mine')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-next')); });
     expect(submitReview).toHaveBeenCalledWith(expect.objectContaining({
       sourceItemId: 'source-only',
       action: 'edit',
@@ -339,12 +407,16 @@ describe('ReviewScreen', () => {
       renderScreen();
     });
 
-    await waitFor(() => {
-      expect(screen.getByTestId('review-action-submit')).toBeTruthy();
-    });
+    await openEnglishAndType('नमस्ते');
 
     await act(async () => {
       fireEvent.press(screen.getByTestId('review-action-submit'));
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-judgment-same'));
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-action-next'));
     });
 
     await waitFor(() => {
@@ -367,5 +439,60 @@ describe('ReviewScreen', () => {
       expect(screen.getByTestId('review-state-consent')).toBeTruthy();
     });
     expect(screen.queryByTestId('review-action-submit')).toBeNull();
+  });
+
+  it('ends a category on a thank-you countdown and only continues forward', async () => {
+    useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue({
+      ok: true,
+      window: {
+        window_id: 'w-1',
+        ny_close_at: '2027-01-01T22:00:00.000Z',
+        size: 1,
+      },
+      items: [
+        {
+          slot: 1,
+          source_item_id: 'src-1',
+          direction: 'en-ne',
+          register: 'formal',
+          script: 'deva',
+          source_text: 'Hello',
+          proposed_target: 'नमस्ते',
+          length_tier: 1,
+          scheduled_credits: 2,
+        },
+      ],
+    });
+    submitReview.mockResolvedValue({ ok: true, submission: { id: 'sub-1' } });
+
+    await act(async () => {
+      renderScreen();
+    });
+    await openEnglishAndType('नमस्ते');
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-action-submit'));
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-judgment-same'));
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-action-next'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('review-thanks')).toBeTruthy();
+    });
+    expect(screen.getByTestId('review-countdown').props.children).toMatch(/^\d+:\d{2}:\d{2}$/);
+    expect(screen.queryByTestId('review-close')).toBeNull();
+    expect(screen.getByTestId('review-back')).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('review-continue'));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('review-intro')).toBeTruthy();
+    });
+    expect(screen.getByTestId('review-category-english').props.accessibilityState.disabled).toBe(true);
   });
 });

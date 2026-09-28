@@ -16,11 +16,10 @@ describe('shell route reducer', () => {
   });
 
   test('Learn and Settings open the same Today\'s 10 route', () => {
-    const fromLearn = openTodaysReview({ mode: 'learn', overlay: null, conversation: false });
+    const fromLearn = openTodaysReview({ mode: 'learn', overlay: null });
     const fromSettings = openTodaysReview({
       mode: 'translate',
       overlay: 'settings',
-      conversation: false,
     });
     expect(fromLearn.overlay).toBe(TODAYS_REVIEW_ROUTE);
     expect(fromSettings.overlay).toBe(TODAYS_REVIEW_ROUTE);
@@ -32,14 +31,14 @@ describe('shell route reducer', () => {
   test('closing the review route returns to the underlying surface', () => {
     const open = openTodaysReview(INITIAL_SHELL);
     const closed = reduceShell(open, { type: 'close_overlay' });
-    expect(closed).toEqual({ mode: 'translate', overlay: null, conversation: false });
+    expect(closed).toEqual({ mode: 'translate', overlay: null });
   });
 
   test('history selection returns to Translate and clears overlays', () => {
     const next = reduceShell(
-      { mode: 'learn', overlay: 'history', conversation: false },
+      { mode: 'learn', overlay: 'history' },
       { type: 'select_history' },
     );
-    expect(next).toEqual({ mode: 'translate', overlay: null, conversation: false });
+    expect(next).toEqual({ mode: 'translate', overlay: null });
   });
 });

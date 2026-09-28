@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
+  Platform,
   Pressable,
   StyleSheet,
   Switch,
@@ -34,6 +35,7 @@ type Props = {
   onToggleScript?: () => void;
   focused?: boolean;
   onFocusField?: () => void;
+  onBlurField?: () => void;
   micMode?: MicMode;
   onPressMic?: () => void;
   micDisabled?: boolean;
@@ -53,6 +55,7 @@ export function TranslateComposer({
   onToggleScript,
   focused = true,
   onFocusField,
+  onBlurField,
   micMode = 'idle',
   onPressMic,
   micDisabled = false,
@@ -61,6 +64,8 @@ export function TranslateComposer({
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
+  const inputRef = useRef<TextInput>(null);
+  const micRef = useRef<View>(null);
   const docked = useRef(new Animated.Value(micMode === 'idle' ? 0 : 1)).current;
   const raised = useRef(new Animated.Value(micMode === 'listening' ? 1 : 0)).current;
   const [fieldH, setFieldH] = useState(expanded ? 300 : 160);
@@ -81,6 +86,24 @@ export function TranslateComposer({
       }),
     ]).start();
   }, [docked, micMode, raised]);
+
+  useEffect(() => {
+    if (Platform.OS !== 'web' || micMode !== 'typing') return;
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      const input = inputRef.current as unknown as HTMLElement | null;
+      const mic = micRef.current as unknown as HTMLElement | null;
+      const inside = (node: HTMLElement | null) =>
+        Boolean(node && target && (node === target || node.contains?.(target)));
+      if (inside(input) || inside(mic)) return;
+      onBlurField?.();
+      const host =
+        input?.querySelector?.('textarea,input') ?? input;
+      (host as HTMLElement | null)?.blur?.();
+    };
+    document.addEventListener('pointerdown', onPointerDown, true);
+    return () => document.removeEventListener('pointerdown', onPointerDown, true);
+  }, [micMode, onBlurField]);
 
   const idleTop = Math.max(48, (fieldH - MIC) / 2);
   const dockedTop = Math.max(0, fieldH - BAR - MIC / 2 + 14);
@@ -113,7 +136,7 @@ export function TranslateComposer({
       : formal
         ? 'Formal'
         : 'Informal';
-  const inactiveRed = theme.scheme === 'dark' ? '#8A5A62' : '#C4A0A6';
+  const inactiveRed = theme.scheme === 'dark' ? '#C47A86' : '#D07A88';
   const micColor = raised.interpolate({
     inputRange: [0, 1],
     outputRange: [inactiveRed, theme.colors.crimson],
@@ -262,10 +285,12 @@ export function TranslateComposer({
           ) : null}
         </View>
         <TextInput
+          ref={inputRef}
           value={value}
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
           onFocus={onFocusField}
+          onBlur={onBlurField}
           placeholder={
             side === 'en'
               ? t('translate.placeholderEn', lang)
@@ -305,6 +330,7 @@ export function TranslateComposer({
           <>
             <Animated.View style={[styles.bar, { height: barHeight, backgroundColor: micColor }]} />
             <Animated.View style={[styles.circle, { top: circleTop, backgroundColor: micColor }]}>
+              <View ref={micRef} collapsable={false} style={{ width: MIC, height: MIC }}>
               <Pressable
                 onPress={onPressMic}
                 disabled={micDisabled}
@@ -325,7 +351,25 @@ export function TranslateComposer({
                   color={theme.colors.onPrimary}
                 />
               </Pressable>
+              </View>
             </Animated.View>
+            {micMode === 'idle' ? (
+              <Animated.Text
+                testID="tap-to-speak"
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  textAlign: 'center',
+                  top: Animated.add(circleTop, MIC + 8),
+                  fontSize: 14,
+                  color: theme.colors.textSecondary,
+                  zIndex: 3,
+                }}
+              >
+                {t('translate.tapToSpeak', lang)}
+              </Animated.Text>
+            ) : null}
           </>
         ) : null}
       </View>

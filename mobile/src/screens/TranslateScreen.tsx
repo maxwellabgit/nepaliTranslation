@@ -26,7 +26,6 @@ import { CreditsGauge } from '../translate/CreditsGauge';
 import { PromoRotator } from '../components/PromoRotator';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { TranslateComposer } from '../translate/TranslateComposer';
-import { TurnCard } from '../translate/TurnCard';
 import { useTranslationSession } from '../translate/useTranslationSession';
 import {
   sessionPhase,
@@ -40,8 +39,6 @@ type Props = {
   onOpenHistory: () => void;
   onOpenSettings: () => void;
   onOpenReview?: () => void;
-  /** Pass-the-phone exchange. The homepage leaves this false. */
-  conversation?: boolean;
   onGoHome?: () => void;
 };
 
@@ -89,8 +86,6 @@ export function TranslateScreen({
   onOpenHistory,
   onOpenSettings,
   onOpenReview,
-  conversation = false,
-  onGoHome,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
@@ -104,7 +99,7 @@ export function TranslateScreen({
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [boxFocus, setBoxFocus] = useState<'source' | 'result'>('source');
   const [micDocked, setMicDocked] = useState(false);
-  const [historyOriginal, setHistoryOriginal] = useState(false);
+  const suppressMicDock = useRef(false);
   const scrollRef = useRef<ScrollView>(null);
   const phase = sessionPhase(state);
   const latest = state.turns[state.turns.length - 1];
@@ -242,7 +237,7 @@ export function TranslateScreen({
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: theme.colors.divider,
           padding: 16,
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
         },
         resultText: {
           fontSize: 22,
@@ -304,7 +299,10 @@ export function TranslateScreen({
 
   useEffect(() => {
     const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    const hide = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+      setMicDocked(false);
+    });
     return () => {
       show.remove();
       hide.remove();
@@ -316,23 +314,18 @@ export function TranslateScreen({
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [state.turns.length, phase]);
 
+  useEffect(() => {
+    if (!active) setMicDocked(false);
+  }, [active]);
+
   const speechUnavailable = uiPhase.phase === 'unavailable';
 
-  const passLabel =
-    state.activeSide === 'en'
-      ? t('translate.pass', lang)
-      : t('translate.passNe', lang);
-
   const speakInBox = uiPhase.phase === 'listening' || state.listening;
-  const micMode = conversation
-    ? speakInBox
-      ? 'listening'
-      : 'typing'
-    : speakInBox
-      ? 'listening'
-      : micDocked
-        ? 'typing'
-        : 'idle';
+  const micMode = speakInBox
+    ? 'listening'
+    : micDocked
+      ? 'typing'
+      : 'idle';
   const resultText = latest
     ? latest.from === 'en'
       ? formatNepaliScript(latest.translation, state.script)
@@ -341,8 +334,8 @@ export function TranslateScreen({
   const resultHint = latest
     ? ''
     : state.activeSide === 'en'
-      ? formatNepaliScript('अनुवाद यहाँ देखिन्छ', state.script)
-      : 'Translation';
+      ? t('translate.resultHintEn', 'en')
+      : formatNepaliScript(t('translate.resultHintNe', 'ne'), state.script);
   const resultSub =
     latest?.from === 'en'
       ? companionNepaliScript(latest.translation, state.script)
@@ -389,131 +382,6 @@ export function TranslateScreen({
       />
     </>
   );
-
-  if (conversation) {
-    return (
-      <KeyboardAvoidingView
-        style={styles.root}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        testID="conversation-screen"
-      >
-        <View style={styles.header}>
-          <Pressable
-            onPress={onGoHome}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.backHome', lang)}
-            testID="back-home"
-            style={styles.iconBtn}
-          >
-            <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
-          </Pressable>
-          <Text style={styles.conversationTitle}>{t('conversation.title', lang)}</Text>
-          <Pressable
-            onPress={onOpenSettings}
-            accessibilityRole="button"
-            accessibilityLabel={t('translate.settingsA11y', lang)}
-            testID="open-settings"
-            style={styles.iconBtn}
-          >
-            <Ionicons name="settings-outline" size={22} color={theme.colors.text} />
-          </Pressable>
-        </View>
-
-        {status ? (
-          <View style={styles.statusRow} testID="translate-status">
-            <Text style={styles.statusText}>{status}</Text>
-          </View>
-        ) : null}
-
-        <ScrollView
-          ref={scrollRef}
-          style={styles.scroll}
-          contentContainerStyle={[styles.scrollContent, styles.chatContent]}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.chatSpacer} />
-          <View style={styles.turnBanner} testID="conversation-turn">
-            <Text style={styles.turnTitle}>
-              {state.activeSide === 'en'
-                ? t('conversation.turnEn', historyOriginal ? (lang === 'en' ? 'ne' : 'en') : lang)
-                : t('conversation.turnNe', historyOriginal ? (lang === 'en' ? 'ne' : 'en') : lang)}
-            </Text>
-            <Text style={styles.turnHint}>
-              {t('conversation.hint', historyOriginal ? (lang === 'en' ? 'ne' : 'en') : lang)}
-            </Text>
-          </View>
-          {state.turns.map((turn, index) => (
-            <TurnCard
-              key={turn.id}
-              turn={turn}
-              turns={state.turns}
-              script={state.script}
-              sent={turn.from === state.activeSide}
-              original={historyOriginal}
-              alt={index % 2 === 0}
-              isLatest={turn.id === latest?.id}
-            />
-          ))}
-        </ScrollView>
-
-        <TranslateComposer
-          value={state.draft}
-          side={state.activeSide}
-          onChangeText={(text) => session.dispatch({ type: 'setDraft', text })}
-          onSubmit={() => void session.submit()}
-          formal={state.formality === 'formal'}
-          onFormality={session.setFormality}
-          focused={boxFocus === 'source'}
-          onFocusField={() => {
-            setBoxFocus('source');
-            setMicDocked(true);
-          }}
-          script={state.script}
-          onToggleScript={() => session.setScript(state.script !== 'deva')}
-          micMode={micMode}
-          onPressMic={() => {
-          setMicDocked(true);
-          void session.toggleListen();
-        }}
-          micDisabled={
-            speechUnavailable ||
-            (state.translating && uiPhase.phase !== 'listening')
-          }
-          micTestId="speak-hero"
-          onPlaySource={playSource}
-        />
-
-        <View style={styles.dock}>
-          <Pressable
-            onPress={() => setHistoryOriginal((on) => !on)}
-            accessibilityRole="button"
-            accessibilityLabel="Flip"
-            testID="flip-history"
-            style={styles.flip}
-          >
-            <Text style={styles.passText}>Flip</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              void (async () => {
-                if (state.draft.trim()) await session.submit();
-                session.pass();
-              })();
-            }}
-            disabled={busy}
-            accessibilityRole="button"
-            accessibilityLabel={passLabel}
-            accessibilityState={{ disabled: busy }}
-            testID="pass-phone"
-            style={[styles.pass, busy && styles.passOff]}
-          >
-            <Text style={styles.passText}>{passLabel}</Text>
-          </Pressable>
-        </View>
-        {sheets}
-      </KeyboardAvoidingView>
-    );
-  }
 
   return (
     <KeyboardAvoidingView
@@ -573,7 +441,7 @@ export function TranslateScreen({
           accessibilityRole="button"
           accessibilityLabel={t('translate.swapA11y', lang)}
         >
-          <Ionicons name="swap-horizontal" size={20} color={theme.colors.crimson} />
+          <Ionicons name="swap-horizontal" size={20} color="#1A1410" />
         </Pressable>
         <Pressable
           onPress={() => session.dispatch({ type: 'setSide', side: 'ne' })}
@@ -599,8 +467,17 @@ export function TranslateScreen({
         expanded
         focused={boxFocus === 'source'}
         onFocusField={() => {
+          if (suppressMicDock.current) return;
           setBoxFocus('source');
           setMicDocked(true);
+        }}
+        onBlurField={() => {
+          if (uiPhase.phase === 'listening' || state.listening) return;
+          suppressMicDock.current = true;
+          setMicDocked(false);
+          setTimeout(() => {
+            suppressMicDock.current = false;
+          }, 150);
         }}
         script={state.script}
         onToggleScript={() => session.setScript(state.script !== 'deva')}
@@ -619,6 +496,7 @@ export function TranslateScreen({
       <Pressable
         onPress={() => {
           setBoxFocus('result');
+          setMicDocked(false);
           Keyboard.dismiss();
         }}
         style={[styles.resultBox, feedbackOpen && { paddingBottom: 48 }]}

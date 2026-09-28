@@ -11,10 +11,10 @@ jest.mock('../../stt/sttSupport', () => ({
   hasNepaliVoice: jest.fn(),
 }));
 
-function renderLearn() {
+function renderLearn(onOpenTodaysReview = jest.fn()) {
   return render(
     <AppProviders services={createTestServices({ offline: true })} bypassStartupConsent>
-      <LearnScreen active onOpenTodaysReview={jest.fn()} />
+      <LearnScreen active onOpenTodaysReview={onOpenTodaysReview} />
     </AppProviders>,
   );
 }
@@ -35,8 +35,8 @@ describe('LearnScreen', () => {
     await waitFor(() => {
       expect(screen.getByTestId('learn-screen')).toBeTruthy();
     });
-    expect(screen.queryByTestId('learn-earn-rewards')).toBeNull();
-    expect(screen.queryByText("Today's 10")).toBeNull();
+    expect(screen.getByTestId('learn-todays-10')).toBeTruthy();
+    expect(screen.getByText("Today's 10")).toBeTruthy();
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     expect(screen.getByTestId('learn-roman-a').props.children).toBe('a');
     expect(screen.getByTestId('learn-roman-ta').props.children).toBe('ṭa');
@@ -44,6 +44,15 @@ describe('LearnScreen', () => {
     expect(screen.queryByText(/no account needed/i)).toBeNull();
     expect(screen.queryByText(/offline/i)).toBeNull();
     expect(screen.queryByTestId('learn-open-alphabet')).toBeNull();
+  });
+
+  it('opens Today\'s 10 from the section above the alphabet', async () => {
+    const onOpenTodaysReview = jest.fn();
+    await act(async () => {
+      renderLearn(onOpenTodaysReview);
+    });
+    await fireEvent.press(screen.getByTestId('learn-todays-10'));
+    expect(onOpenTodaysReview).toHaveBeenCalledTimes(1);
   });
 
   it('speaks a letter from the grid', async () => {

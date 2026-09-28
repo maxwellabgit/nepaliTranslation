@@ -200,30 +200,17 @@ describe('NepTranslateApp production composition', () => {
     await renderApp();
     expect(screen.getByTestId('speak-hero')).toBeTruthy();
     expect(screen.queryByTestId('speak-dock')).toBeNull();
-    expect(screen.getByLabelText('Conversation tab')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('tab-translate'));
-    expect(screen.getByLabelText('Translate tab')).toBeTruthy();
+    expect(screen.getByLabelText('Translation tab')).toBeTruthy();
+    expect(screen.getByTestId('tab-translate').props.accessibilityState?.selected).toBe(
+      true,
+    );
 
     await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
     await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
     await waitFor(() => {
-      expect(screen.getByTestId('translate-output')).toBeTruthy();
+      expect(screen.getByTestId('translate-output').props.children).toBe('नमस्ते');
     });
     expect(screen.getByTestId('speak-hero')).toBeTruthy();
-
-    await fireEvent.press(screen.getByTestId('pass-phone'));
-    expect(screen.getByLabelText('पास')).toBeTruthy();
-
-    await fireEvent.changeText(screen.getByTestId('translate-input'), 'नमस्ते');
-    await fireEvent(screen.getByTestId('translate-input'), 'submitEditing');
-    await waitFor(() => {
-      expect(screen.getByTestId('translate-output').props.children).toBe('Hello');
-    });
-    await fireEvent.press(screen.getByTestId('pass-phone'));
-    expect(screen.getByLabelText('Pass')).toBeTruthy();
-    expect(screen.getByLabelText('English').props.accessibilityState?.selected).toBe(
-      true,
-    );
 
     await fireEvent.press(screen.getByTestId('tab-learn'));
     await waitFor(() => {
@@ -353,7 +340,10 @@ describe('NepTranslateApp production composition', () => {
     });
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     expect(screen.queryByTestId('learn-earn-rewards')).toBeNull();
-    expect(screen.getByLabelText('Conversation tab')).toBeTruthy();
+    expect(screen.getByLabelText('Translation tab')).toBeTruthy();
+    expect(screen.getByTestId('tab-translate').props.accessibilityState?.selected).toBe(
+      true,
+    );
     await fireEvent.press(screen.getByTestId('tab-translate'));
     await fireEvent.press(screen.getByLabelText('History'));
     expect(screen.getByTestId('overlay-history')).toBeTruthy();
