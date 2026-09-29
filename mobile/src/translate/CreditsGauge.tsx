@@ -48,7 +48,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   const [foregroundMs, setForegroundMs] = useState(0);
   useEffect(() => {
     const tick = () => setNowMs(Date.now());
-    const timer = setInterval(tick, 15_000);
+    const timer = setInterval(tick, 1_000);
     const appState = AppState.addEventListener('change', (state) => {
       if (state === 'active') tick();
     });
@@ -78,10 +78,10 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   const remainingMs = previewRemainingMs ?? award.displayRemainingMs ?? liveRemaining;
   const face = gaugePresentation(remainingMs);
   const pumping = award.phase === 'pump' && previewRemainingMs == null;
-  const scale = face.overMark ? 1.08 : pumping ? 1.06 : 1;
-  const fillColor = face.overMark ? OVER : theme.scheme === 'dark' ? FILL_DARK : FILL;
-  const timerColor = face.overMark ? OVER : theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
-  const coinColor = face.overMark ? OVER : theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
+  const scale = pumping ? 1.06 : 1;
+  const fillColor = face.fillFull ? OVER : theme.scheme === 'dark' ? FILL_DARK : FILL;
+  const timerColor = theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
+  const coinColor = timerColor;
 
   const styles = useMemo(
     () =>
@@ -105,7 +105,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
         },
         track: {
           flex: 1,
-          height: face.overMark ? (compact ? 12 : 20) : compact ? 8 : 16,
+          height: compact ? 8 : 16,
           borderRadius: 8,
           overflow: 'hidden',
           backgroundColor: theme.scheme === 'dark' ? '#5C4A28' : '#F3E6C4',
@@ -116,7 +116,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           backgroundColor: fillColor,
         },
         timer: {
-          fontSize: face.overMark ? (compact ? 14 : 20) : compact ? 12 : 16,
+          fontSize: compact ? 12 : 16,
           fontWeight: '800',
           fontVariant: ['tabular-nums'],
           color: timerColor,
@@ -124,7 +124,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           textAlign: 'right',
         },
       }),
-    [compact, face.overMark, fillColor, scale, theme.scheme, timerColor],
+    [compact, fillColor, scale, theme.scheme, timerColor],
   );
 
   const accessibilityLabel = face.overMark
@@ -141,7 +141,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
       accessibilityLabel={accessibilityLabel}
     >
       <View style={styles.row} testID="credits-gauge-total">
-        <FontAwesome5 name="coins" size={face.overMark ? 18 : 14} color={coinColor} />
+        <FontAwesome5 name="coins" size={14} color={coinColor} />
         <View
           style={styles.track}
           accessibilityRole="progressbar"

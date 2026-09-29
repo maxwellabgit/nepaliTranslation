@@ -11,7 +11,7 @@
 |-------|----------------|------------|
 | Review credits | **1** credit when snapshotted original source words are 1–4; **2** credits when 5–6; **3** credits when 7 or more. Empty text is not planned and schedules 0. Delivered at the next sign-in after the 5:00 PM New York close | 0–20 words → 2 and 21+ → 4, and the older top-half percentile tiers |
 | Credit duration | **10** ad-free minutes per credit. New time stacks on time still left. The timer hard-stops at **12 hours** | Any 5-minute or 15-minute credit, and a clock that starts at close while the reviewer is offline |
-| Gauge | **50** credits of remaining ad-free time is a visual full mark. It is not printed and it does not cap earning. Past the mark, the inner gauge and the timer turn red and grow slightly | A numeric credit cap drawn on the gauge |
+| Gauge | **50** credits of remaining ad-free time is a visual full mark. It is not printed and it does not cap earning. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color | A numeric credit cap drawn on the gauge |
 | Rewarded ad | **2** credits (20 minutes) after one server-verified confirmation. Same timer and same gauge mark as review credits | 1 credit / 15 minutes per rewarded view |
 | Review lookahead | Minimum **14** New York days before public review is enabled; target **28**; every 14 days append, never reshuffle | Same-day random 10 with no private horizon |
 | Session inactivity | **30 days**, rolling, on refresh; JWT stays short | Indefinite Supabase auto-refresh |
@@ -153,7 +153,7 @@ Owner revision 2026-09-29. The 2026-09-22 freeze used a top-50% length split (2 
 - **7 words or more → 3 credits** (30 minutes).
 - Empty or invalid source text is rejected before planning and earns nothing.
 - Rewarded video → **2 credits / 20 minutes**, and it adds to the same timer.
-- The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed. Past the mark, the inner gauge and the timer turn red and enlarge slightly.
+- The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color.
 - The ad-free timer stacks on time still left and hard-stops at **12 hours**.
 - The **5:00 PM America/New_York** close decides the credits. Use the IANA timezone. The reviewer receives them at the next sign-in after that close, including a later day: an award message, then coins flying into the Home timer, then the timer pumping up to the time those credits are worth. If an admin marked a submission unsatisfactory before close, that submission grants zero credits.
 - **No clawback.** Post-close rejection creates a contributor alert only.

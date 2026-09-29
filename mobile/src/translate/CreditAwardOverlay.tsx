@@ -43,11 +43,11 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
       useNativeDriver: true,
     }).start();
     Animated.stagger(
-      60,
+      75,
       coins.map((coin) =>
         Animated.timing(coin, {
           toValue: 1,
-          duration: 980,
+          duration: 1200,
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }),

@@ -10,7 +10,9 @@
  * One credit is 10 ad-free minutes. Empty text schedules nothing and is
  * rejected before a window is planned. The Home gauge treats 50 credits of
  * remaining ad-free time as a visual full mark. That mark is not an earning
- * cap and is not printed. The timer itself hard-stops at 12 hours.
+ * cap and is not printed. When the inner bar is full, that fill turns red.
+ * The pill and the clock stay the same size and color. The timer itself
+ * hard-stops at 12 hours.
  */
 
 export const MINUTES_PER_CREDIT = 10;
@@ -50,11 +52,13 @@ export function stackAdFreeMinutes(
   };
 }
 
+/** Under one hour the clock is m:ss, starting at 0:00. At one hour it becomes h:mm:ss. */
 export function formatAdFreeClock(totalSeconds: number): string {
   const safe = Math.max(0, Math.floor(totalSeconds));
   const hours = Math.floor(safe / 3600);
   const minutes = Math.floor((safe % 3600) / 60);
   const seconds = safe % 60;
+  if (hours < 1) return `${minutes}:${String(seconds).padStart(2, '0')}`;
   return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
@@ -64,6 +68,8 @@ export type GaugePresentation = {
   fillPercent: number;
   /** True when remaining time is worth more than the visual 50-credit mark. */
   overMark: boolean;
+  /** True when the inner bar has reached the visual full mark. */
+  fillFull: boolean;
   clock: string;
   scale: number;
 };
@@ -80,8 +86,9 @@ export function gaugePresentation(remainingMs: number): GaugePresentation {
     creditUnits,
     fillPercent,
     overMark,
+    fillFull: fillPercent >= 100,
     clock: formatAdFreeClock(ms / 1000),
-    scale: overMark ? 1.08 : 1,
+    scale: 1,
   };
 }
 

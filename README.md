@@ -18,7 +18,7 @@ Public UI languages are English and Nepali. Primary surfaces are **Translate**, 
 | **Camera** | Portrait on-device photo translation in both directions. Each sentence keeps one correlation color on the image and in the text below the image. |
 | **Learn** | Offline Nepali alphabet. |
 
-**Today's 10** (subtitle: Review translations) is the only public correction flow. The 5:00 PM `America/New_York` close decides the credits from the snapshotted original source: **1 credit** for 4 words or fewer, **2 credits** for 5 or 6 words, **3 credits** for 7 or more. One credit is 10 ad-free minutes. The timer starts at the next sign-in, keeps time still left, and stops at 12 hours. The Home gauge treats 50 credits of remaining ad-free time as a visual full mark. That mark is not printed and it does not cap earning.
+**Today's 10** (subtitle: Review translations) is the only public correction flow. The 5:00 PM `America/New_York` close decides the credits from the snapshotted original source: **1 credit** for 4 words or fewer, **2 credits** for 5 or 6 words, **3 credits** for 7 or more. One credit is 10 ad-free minutes. The timer starts at the next sign-in, keeps time still left, and stops at 12 hours. The Home gauge treats 50 credits of remaining ad-free time as a visual full mark. That mark is not printed and it does not cap earning. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color. Under one hour the clock reads m:ss, starting at 0:00. At one hour it becomes h:mm:ss.
 
 **Subscription target:** USD 2.99/month on the United States storefront and NPR 199/month on the Nepal storefront. The app shows the localized StoreKit/RevenueCat price.
 

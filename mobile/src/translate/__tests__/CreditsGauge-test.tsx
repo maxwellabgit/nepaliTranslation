@@ -27,7 +27,7 @@ describe('CreditsGauge ad-free timer', () => {
     await act(async () => {
       renderGauge(0);
     });
-    expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('0:00:00');
+    expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('0:00');
     expect(screen.getByTestId('credits-gauge').props.accessibilityLabel).toContain('Ads off');
     expect(screen.queryByText('50')).toBeNull();
     const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
@@ -51,13 +51,15 @@ describe('CreditsGauge ad-free timer', () => {
     expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('8:20:00');
     const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
     expect(fill.width).toBe('100%');
-    expect(fill.backgroundColor).not.toBe('#D64545');
+    expect(fill.backgroundColor).toBe('#D64545');
+    const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
+    expect(timer.color).not.toBe('#D64545');
     const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
     expect(wrap.transform).toEqual([{ scale: 1 }]);
     expect(screen.queryByText('50')).toBeNull();
   });
 
-  it('turns the inner gauge and timer red and enlarges them past 50 credits', async () => {
+  it('keeps a full inner bar red past 50 credits without resizing the gauge', async () => {
     await act(async () => {
       renderGauge(creditMs(55));
     });
@@ -66,9 +68,9 @@ describe('CreditsGauge ad-free timer', () => {
     expect(fill.width).toBe('100%');
     expect(fill.backgroundColor).toBe('#D64545');
     const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
-    expect(timer.color).toBe('#D64545');
+    expect(timer.color).not.toBe('#D64545');
     const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
-    expect(wrap.transform).toEqual([{ scale: 1.08 }]);
+    expect(wrap.transform).toEqual([{ scale: 1 }]);
   });
 });
 

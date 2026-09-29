@@ -44,26 +44,34 @@ describe('gaugePresentation', () => {
   test('empty, 20, 50, and 55 credits', () => {
     const empty = gaugePresentation(0);
     expect(empty.fillPercent).toBe(0);
-    expect(empty.clock).toBe('0:00:00');
+    expect(empty.clock).toBe('0:00');
+    expect(empty.fillFull).toBe(false);
     expect(empty.overMark).toBe(false);
     expect(empty.scale).toBe(1);
 
     const twenty = gaugePresentation(creditMs(20));
     expect(twenty.fillPercent).toBe(40);
     expect(twenty.clock).toBe('3:20:00');
+    expect(twenty.fillFull).toBe(false);
     expect(twenty.overMark).toBe(false);
 
     const full = gaugePresentation(creditMs(GAUGE_CREDIT_MARK));
     expect(full.fillPercent).toBe(100);
     expect(full.clock).toBe('8:20:00');
+    expect(full.fillFull).toBe(true);
     expect(full.overMark).toBe(false);
     expect(full.scale).toBe(1);
 
     const over = gaugePresentation(creditMs(55));
     expect(over.fillPercent).toBe(100);
     expect(over.clock).toBe('9:10:00');
+    expect(over.fillFull).toBe(true);
     expect(over.overMark).toBe(true);
-    expect(over.scale).toBe(1.08);
+    expect(over.scale).toBe(1);
+    expect(formatAdFreeClock(0)).toBe('0:00');
+    expect(formatAdFreeClock(30 * 60)).toBe('30:00');
+    expect(formatAdFreeClock(59 * 60 + 59)).toBe('59:59');
+    expect(formatAdFreeClock(3600)).toBe('1:00:00');
     expect(formatAdFreeClock(12 * 3600)).toBe('12:00:00');
   });
 });

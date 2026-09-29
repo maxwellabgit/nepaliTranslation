@@ -99,7 +99,7 @@ Original source word count, snapshotted at assignment, determines reward:
 
 The close at **5:00 PM `America/New_York`** decides the credits. The reviewer receives them at the next sign-in after that close, including a later day. Sign-in shows an award message, then coins fly into the Home timer and the timer pumps up to the time those credits are worth. Time still left on the clock is kept. The timer has a hard maximum of **12 hours**.
 
-The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed on the gauge. Remaining time worth more than 50 credits turns the inner gauge and the timer red and enlarges them slightly. Rewarded-video credits use the same timer and the same mark.
+The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed on the gauge. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color. Rewarded-video credits use the same timer and the same mark.
 
 There is no top-half, percentile, longest-50-percent, or corpus-relative reward on the new grant path. Historical ledger rows stay as history. New reward rows carry a rule version and an idempotency key.
 
@@ -165,7 +165,7 @@ Flags must be remote-controllable without an app update. Disabling them must not
 |-------|----------------|
 | Review credits | 1 if original source words are 1–4; 2 if 5–6; 3 if 7 or more. Empty text is not planned and schedules 0. Snapshotted at assignment. Delivered at the next sign-in after the 5:00 PM New York close. |
 | Credit duration | 10 ad-free minutes. Timer stacks on time still left and hard-stops at 12 hours. |
-| Gauge | 50 credits of remaining ad-free time is a visual full mark only. It is not printed and it does not cap earning. Past that mark the inner gauge and timer turn red and grow slightly. |
+| Gauge | 50 credits of remaining ad-free time is a visual full mark only. It is not printed and it does not cap earning. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color. |
 | Rewarded ad | 2 credits (20 minutes), server-verified once |
 | Review lookahead | Minimum 14 days before enablement; target 28; append every 14 days; never reshuffle |
 | Session inactivity | 30 days, rolling; short JWT |
