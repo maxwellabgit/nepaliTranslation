@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from 'react';
+import { useContext, useMemo, useReducer, useState, type ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaInsetsContext, SafeAreaView } from 'react-native-safe-area-context';
@@ -154,15 +154,6 @@ export function AppShell({
 
   const safeInsets = useContext(SafeAreaInsetsContext);
   const topInset = statusBarInset(safeInsets?.top ?? 0);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const boot = (
-      window as unknown as { __NEPTRANSLATE_TG__?: { harness?: string } }
-    ).__NEPTRANSLATE_TG__;
-    if (boot?.harness !== 'neptranslate-testing-ground') return;
-    dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE });
-  }, []);
 
   return (
     <SafeAreaView

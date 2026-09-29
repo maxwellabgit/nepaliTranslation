@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -6,36 +6,50 @@ import { t, useUiLang } from '../i18n';
 
 const ROTATE_MS = 60_000;
 
-type SlideId = 'adfree' | 'earn';
+type SlideId = 'earn' | 'ad' | 'adfree';
 
 type Props = {
   onAdFree: () => void;
   onEarn: () => void;
+  /**
+   * Network banner (or the testing-ground stand-in) shown in this same top slot.
+   * Earn credits stays in the rotation when this is present, including once a
+   * live ad fills the slot.
+   */
+  ad?: ReactNode;
 };
 
-/** Dark homepage strip. The two promos trade places every 60 seconds. */
-export function PromoRotator({ onAdFree, onEarn }: Props) {
+/** Top homepage strip. Earn credits, the banner ad, and go ad-free share one slot. */
+export function PromoRotator({ onAdFree, onEarn, ad }: Props) {
   const lang = useUiLang();
-  const [active, setActive] = useState<SlideId>('adfree');
+  const [tick, setTick] = useState(0);
+  const slides: SlideId[] = ad ? ['earn', 'ad', 'adfree'] : ['earn', 'adfree'];
+  const active = slides[tick % slides.length] ?? 'earn';
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActive((current) => (current === 'adfree' ? 'earn' : 'adfree'));
-    }, ROTATE_MS);
+    const timer = setInterval(() => setTick((current) => current + 1), ROTATE_MS);
     return () => clearInterval(timer);
   }, []);
 
-  const adFree = active === 'adfree';
-  const title = adFree ? t('promo.adFreeTitle', lang) : t('earnBanner.title', lang);
-  const body = adFree ? t('promo.adFreeBody', lang) : t('earnBanner.body', lang);
-  const action = adFree ? t('promo.seeOptions', lang) : t('earnBanner.seeHow', lang);
+  if (active === 'ad') {
+    return (
+      <View style={styles.adWrap} testID="promo-ad-slide">
+        {ad}
+      </View>
+    );
+  }
+
+  const earn = active === 'earn';
+  const title = earn ? t('earnBanner.title', lang) : t('promo.adFreeTitle', lang);
+  const body = earn ? t('earnBanner.body', lang) : t('promo.adFreeBody', lang);
+  const action = earn ? t('earnBanner.seeHow', lang) : t('promo.seeOptions', lang);
 
   return (
     <Pressable
-      onPress={adFree ? onAdFree : onEarn}
+      onPress={earn ? onEarn : onAdFree}
       accessibilityRole="button"
       accessibilityLabel={
-        adFree ? t('promo.seeOptionsA11y', lang) : t('earnBanner.seeHowA11y', lang)
+        earn ? t('earnBanner.seeHowA11y', lang) : t('promo.seeOptionsA11y', lang)
       }
       style={styles.wrap}
       testID="promo-rotator"
@@ -47,7 +61,7 @@ export function PromoRotator({ onAdFree, onEarn }: Props) {
           {body}
         </Text>
       </View>
-      <View style={styles.seeHow} testID={adFree ? 'promo-ad-free' : 'promo-earn'}>
+      <View style={styles.seeHow} testID={earn ? 'promo-earn' : 'promo-ad-free'}>
         <Text style={styles.seeHowText}>{action} →</Text>
       </View>
     </Pressable>
@@ -67,6 +81,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#3C3214',
     gap: 8,
+  },
+  adWrap: {
+    alignSelf: 'stretch',
+    marginHorizontal: 8,
+    marginBottom: 8,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   copy: { flex: 1, minWidth: 0 },
   title: {

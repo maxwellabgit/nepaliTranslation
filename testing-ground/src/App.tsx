@@ -24,7 +24,17 @@ function newRunId(): string {
 export default function App() {
   const [viewportId, setViewportId] = useState<ViewportPresetId>('390x844');
   const [bootConfig, setBootConfig] = useState<TestingGroundBootConfig>(() =>
-    defaultBootConfig({ runId: newRunId() }),
+    defaultBootConfig({
+      runId: newRunId(),
+      offline: false,
+      canRequestAds: true,
+      featureFlags: {
+        contributionTextEnabled: true,
+        networkAdsEnabled: true,
+        automaticInterstitialEnabled: true,
+        rewardedAdsEnabled: true,
+      },
+    }),
   );
   const [iframeKey, setIframeKey] = useState(0);
   const [events, setEvents] = useState<TimelineEvent[]>([]);
@@ -190,7 +200,9 @@ export default function App() {
           </p>
         </div>
         <div className="tg-header-meta">
-          <span className="tg-pill">offline scenario harness</span>
+          <span className="tg-pill">
+            {bootConfig.offline ? 'offline scenario harness' : 'sample ads on'}
+          </span>
         </div>
       </header>
 

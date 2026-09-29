@@ -80,15 +80,22 @@ describe('decideAdPresentation H6 priorities', () => {
     ).toEqual({ show: true, kind: 'house' });
   });
 
-  it('eligible online banner with 12-minute cooldown', () => {
+  it('eligible online banner cycles after 60 seconds', () => {
     expect(decideAdPresentation(base)).toEqual({ show: true, kind: 'banner' });
+    expect(
+      decideAdPresentation({
+        ...base,
+        lastNetworkBannerAtMs: 10_000 - 30_000,
+        nowMs: 10_000,
+      }),
+    ).toEqual({ show: false, reason: 'banner_cooldown' });
     expect(
       decideAdPresentation({
         ...base,
         lastNetworkBannerAtMs: 10_000 - 60_000,
         nowMs: 10_000,
       }),
-    ).toEqual({ show: false, reason: 'banner_cooldown' });
+    ).toEqual({ show: true, kind: 'banner' });
   });
 
   it('rewarded only after explicit tap', () => {

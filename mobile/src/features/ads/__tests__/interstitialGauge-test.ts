@@ -25,13 +25,13 @@ describe('interstitial gauge', () => {
     expect(formatInterstitialCountdown(gauge.remainingMs)).toBe('9:00');
   });
 
-  it('shows ready at the eligibility threshold and again after a reset to zero', () => {
+  it('reaches 0:00 at the eligibility threshold and 10:00 after a reset', () => {
     expect(
       interstitialGauge({
         foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
         suppressed: false,
-      }).state,
-    ).toBe('ready');
+      }),
+    ).toEqual({ state: 'countdown', remainingMs: 0 });
     const reset = interstitialGauge({
       foregroundActiveMs: 0,
       suppressed: false,

@@ -56,11 +56,9 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
     }),
   });
   const countdownLabel =
-    gauge.state === 'ready'
-      ? t('ads.interstitialReady', lang)
-      : gauge.state === 'unavailable'
-        ? t('ads.interstitialUnavailable', lang)
-        : formatInterstitialCountdown(gauge.remainingMs);
+    gauge.state === 'unavailable'
+      ? t('ads.interstitialUnavailable', lang)
+      : formatInterstitialCountdown(gauge.remainingMs);
   const lifetimeCredits = entitlement?.lifetimeCredits ?? 0;
   const balance = adFreeBalance({
     earnedUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,

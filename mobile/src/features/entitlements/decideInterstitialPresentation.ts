@@ -26,7 +26,8 @@ export type InterstitialTransition =
   | 'permission'
   | 'error_recovery'
   | 'camera'
-  | 'result_review';
+  | 'result_review'
+  | 'timer_elapsed';
 
 export type InterstitialSurface = 'translate_idle' | 'learn_landing';
 
@@ -100,6 +101,12 @@ export function decideInterstitialPresentation(
   }
   if (input.appActive === false) {
     return { show: false, reason: 'inactive' };
+  }
+  if (input.transition === 'timer_elapsed') {
+    if (input.foregroundActiveMs < minFg) {
+      return { show: false, reason: 'foreground_gate' };
+    }
+    return { show: true };
   }
   if (
     (input.cameraActive || input.transition === 'camera') &&

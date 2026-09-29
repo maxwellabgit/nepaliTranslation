@@ -32,6 +32,18 @@ type Props = {
   onGoHome?: () => void;
 };
 
+/** Result review. Dark brown field, sandy-gold card. */
+const RESULT_NIGHT = {
+  bg: '#1A1410',
+  card: '#3C3214',
+  text: '#F7F1EA',
+  sand: '#E8D7A8',
+  gold: '#E8A317',
+  button: '#2A2418',
+};
+/** Photo is 12% smaller than the result stage; the card covers its lower half. */
+const PHOTO_SCALE = 0.88;
+
 /** 1×1 placeholder so a test fixture can mount line highlights without a capture. */
 const FIXTURE_PREVIEW =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -151,28 +163,43 @@ export function CameraScreen({ active, onGoHome }: Props) {
           borderColor: theme.colors.divider,
         },
         detectedText: { color: theme.colors.text, fontSize: 13, fontWeight: '700' },
-        resultSheet: { flex: 1, minHeight: 0, backgroundColor: theme.colors.bg },
+        headerNight: { backgroundColor: RESULT_NIGHT.bg },
+        titleNight: { color: RESULT_NIGHT.text },
+        directionNight: { color: RESULT_NIGHT.sand },
+        resultSheet: {
+          flex: 1,
+          minHeight: 0,
+          backgroundColor: RESULT_NIGHT.bg,
+          position: 'relative',
+        },
         photoClip: {
           borderRadius: 18,
           overflow: 'hidden',
           backgroundColor: '#1A1410',
         },
         translationCard: {
-          flexShrink: 1,
-          flexGrow: 1,
-          minHeight: 0,
-          maxHeight: '58%',
-          marginHorizontal: 12,
-          marginBottom: 8,
-          backgroundColor: theme.colors.surface,
+          position: 'absolute',
+          left: 12,
+          right: 12,
+          bottom: 8,
+          backgroundColor: RESULT_NIGHT.card,
           borderRadius: 22,
           paddingTop: 14,
           paddingHorizontal: 12,
           gap: 8,
+          borderWidth: 1,
+          borderColor: '#5A4A28',
         },
-        translationHead: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 4 },
-        translationTitle: { color: theme.colors.text, fontSize: 18, fontWeight: '700' },
-        translationSubtitle: { color: theme.colors.textSecondary, fontSize: 13 },
+        translationHead: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, paddingHorizontal: 4 },
+        translationTitle: { color: RESULT_NIGHT.text, fontSize: 18, fontWeight: '700' },
+        translationSubtitle: { color: RESULT_NIGHT.sand, fontSize: 13 },
+        detectedCorner: {
+          color: RESULT_NIGHT.sand,
+          fontSize: 12,
+          fontWeight: '700',
+          textAlign: 'right',
+          maxWidth: 120,
+        },
         translationRow: {
           flexDirection: 'row',
           alignItems: 'center',
@@ -184,14 +211,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
         },
         lineIndex: {
           width: 18,
-          color: theme.colors.textSecondary,
+          color: RESULT_NIGHT.sand,
           fontSize: 12,
           fontWeight: '700',
         },
         colorDot: { width: 10, height: 10, borderRadius: 5 },
         translationText: {
           flex: 1,
-          color: theme.colors.text,
+          color: RESULT_NIGHT.text,
           fontSize: 15,
           lineHeight: 21,
           fontWeight: '600',
@@ -211,15 +238,15 @@ export function CameraScreen({ active, onGoHome }: Props) {
           justifyContent: 'center',
           paddingHorizontal: 8,
           borderWidth: 1,
-          borderColor: theme.colors.divider,
-          backgroundColor: theme.colors.bg,
+          borderColor: '#5A4A28',
+          backgroundColor: RESULT_NIGHT.button,
         },
         actionPrimary: {
-          backgroundColor: theme.colors.text,
-          borderColor: theme.colors.text,
+          backgroundColor: RESULT_NIGHT.text,
+          borderColor: RESULT_NIGHT.text,
         },
-        actionText: { color: theme.colors.text, fontWeight: '700', fontSize: 14 },
-        actionPrimaryText: { color: theme.colors.bg, fontWeight: '700', fontSize: 14 },
+        actionText: { color: RESULT_NIGHT.text, fontWeight: '700', fontSize: 14 },
+        actionPrimaryText: { color: RESULT_NIGHT.bg, fontWeight: '700', fontSize: 14 },
         retake: {
           color: theme.colors.onPrimary,
           paddingVertical: 12,
@@ -494,9 +521,15 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const targetLanguageName =
     direction === 'en-ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
   const photoBox = containedPhotoSize(imageSize, rotation, {
-    width: Math.max(0, stageSize.width - 24),
-    height: Math.max(0, stageSize.height - 12),
+    width: Math.max(0, stageSize.width * PHOTO_SCALE),
+    height: Math.max(0, stageSize.height * PHOTO_SCALE),
   });
+  const photoTop = Math.max(0, (stageSize.height - photoBox.height) / 2);
+  const photoLeft = Math.max(0, (stageSize.width - photoBox.width) / 2);
+  const sheetTop =
+    photoBox.height > 0
+      ? photoTop + photoBox.height * 0.42
+      : Math.max(0, stageSize.height * 0.42);
 
   const showResult = phase === 'result';
   const showError =
@@ -513,34 +546,27 @@ export function CameraScreen({ active, onGoHome }: Props) {
 
   return (
     <View style={styles.root} testID="camera-screen">
-      <View style={styles.header}>
+      <View style={[styles.header, showResult && styles.headerNight]}>
         <BackArrow
           onPress={onGoHome}
           accessibilityLabel={t('common.backHome', lang)}
           testID="back-home"
+          color={showResult ? RESULT_NIGHT.text : undefined}
         />
         <View style={styles.headerCenter}>
-        <Text style={styles.title}>{t('camera.title', lang)}</Text>
+        <Text style={[styles.title, showResult && styles.titleNight]}>{t('camera.title', lang)}</Text>
         <Pressable
           onPress={() => setDirection((d) => (d === 'ne-en' ? 'en-ne' : 'ne-en'))}
           accessibilityRole="button"
           accessibilityLabel={t('camera.directionA11y', lang)}
           testID="camera-direction"
         >
-          <Text style={styles.direction}>
+          <Text style={[styles.direction, showResult && styles.directionNight]}>
             {direction === 'ne-en'
               ? t('camera.directionNeEn', lang)
               : t('camera.directionEnNe', lang)}
           </Text>
         </Pressable>
-        {showResult && detectedLanguage ? (
-          <View style={styles.detectedPill} testID="camera-detected">
-            <Ionicons name="scan-outline" size={14} color={theme.colors.text} />
-            <Text style={styles.detectedText}>
-              {t('camera.detected', lang, { language: sourceLanguageName })}
-            </Text>
-          </View>
-        ) : null}
         </View>
         <View style={styles.headerSide} />
       </View>
@@ -627,79 +653,93 @@ export function CameraScreen({ active, onGoHome }: Props) {
       ) : null}
 
       {showResult ? (
-        <View style={styles.resultSheet} testID="camera-result">
-          <View
-            style={[styles.photoStage, { backgroundColor: theme.colors.bg }]}
-            testID="camera-photo"
-            onLayout={(event) => {
-              const { width, height } = event.nativeEvent.layout;
-              setStageSize({ width, height });
-            }}
-          >
-            {previewUri ? (
-              <View style={[styles.photoFrame, styles.photoClip, photoBox]}>
-                <Image
-                  testID="camera-photo-image"
-                  source={{ uri: previewUri }}
-                  style={StyleSheet.absoluteFill}
-                  resizeMode="stretch"
-                  accessibilityIgnoresInvertColors
-                />
-                {sentences.map((sentence, sentenceIndex) =>
-                  sentence.frames.map((frame, lineIndex) => {
-                    const box = highlightPercents(frame, imageSize, rotation);
-                    if (!box) return null;
-                    return (
-                      <Pressable
-                        key={`${sentence.id}-${lineIndex}`}
-                        testID={
-                          lineIndex === 0
-                            ? `camera-overlay-${sentence.id}`
-                            : `camera-overlay-${sentence.id}-${lineIndex}`
-                        }
-                        accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
-                          n: sentenceIndex + 1,
-                        })}
-                        onPress={() => setSelected(sentence.id)}
-                        style={[
-                          styles.overlay,
-                          box,
-                          {
-                            backgroundColor: withAlpha(
-                              sentence.color,
-                              selected === sentence.id ? 0.55 : 0.38,
-                            ),
-                          },
-                        ]}
-                      />
-                    );
-                  }),
-                )}
-              </View>
-            ) : null}
-          </View>
+        <View
+          style={styles.resultSheet}
+          testID="camera-result"
+          onLayout={(event) => {
+            const { width, height } = event.nativeEvent.layout;
+            setStageSize({ width, height });
+          }}
+        >
+          {previewUri ? (
+            <View
+              style={[
+                styles.photoFrame,
+                styles.photoClip,
+                photoBox,
+                { position: 'absolute', top: photoTop, left: photoLeft },
+              ]}
+              testID="camera-photo"
+            >
+              <Image
+                testID="camera-photo-image"
+                source={{ uri: previewUri }}
+                style={StyleSheet.absoluteFill}
+                resizeMode="stretch"
+                accessibilityIgnoresInvertColors
+              />
+              {sentences.map((sentence, sentenceIndex) =>
+                sentence.frames.map((frame, lineIndex) => {
+                  const box = highlightPercents(frame, imageSize, rotation);
+                  if (!box) return null;
+                  return (
+                    <Pressable
+                      key={`${sentence.id}-${lineIndex}`}
+                      testID={
+                        lineIndex === 0
+                          ? `camera-overlay-${sentence.id}`
+                          : `camera-overlay-${sentence.id}-${lineIndex}`
+                      }
+                      accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
+                        n: sentenceIndex + 1,
+                      })}
+                      onPress={() => setSelected(sentence.id)}
+                      style={[
+                        styles.overlay,
+                        box,
+                        {
+                          backgroundColor: withAlpha(
+                            sentence.color,
+                            selected === sentence.id ? 0.55 : 0.38,
+                          ),
+                        },
+                      ]}
+                    />
+                  );
+                }),
+              )}
+            </View>
+          ) : null}
           <View
             testID="camera-drawer"
             accessibilityState={{ expanded: true }}
-            style={styles.translationCard}
+            style={[styles.translationCard, { top: sheetTop }]}
           >
             <View style={styles.translationHead}>
-              <Ionicons name="sparkles" size={18} color={theme.colors.saffron} />
+              <Ionicons name="sparkles" size={18} color={RESULT_NIGHT.gold} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.translationTitle}>{t('camera.translation', lang)}</Text>
                 <Text style={styles.translationSubtitle}>
                   {t('camera.translatedTo', lang, { language: targetLanguageName })}
                 </Text>
               </View>
+              {detectedLanguage ? (
+                <Text style={styles.detectedCorner} testID="camera-detected">
+                  {t('camera.detected', lang, { language: sourceLanguageName })}
+                </Text>
+              ) : null}
             </View>
-            <ScrollView style={{ flexGrow: 1, flexShrink: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: 4 }}>
+            <ScrollView
+              style={{ flexGrow: 1, flexShrink: 1, minHeight: 0 }}
+              contentContainerStyle={{ gap: 8, paddingBottom: 4 }}
+            >
               {sentences.map((sentence, index) => (
                 <View
                   key={sentence.id}
                   style={[
                     styles.translationRow,
                     {
-                      backgroundColor: withAlpha(sentence.color, 0.22),
+                      backgroundColor: withAlpha(sentence.color, 0.34),
                       borderWidth: selected === sentence.id ? 2 : 0,
                       borderColor: sentence.color,
                     },
@@ -724,7 +764,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
                     onPress={() => copyText(sentence.translation)}
                     style={styles.copyBtn}
                   >
-                    <Ionicons name="copy-outline" size={18} color={theme.colors.textSecondary} />
+                    <Ionicons name="copy-outline" size={18} color={RESULT_NIGHT.sand} />
                   </Pressable>
                 </View>
               ))}

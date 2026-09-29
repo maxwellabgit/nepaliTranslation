@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { AppState, type AppStateStatus } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, Platform, type AppStateStatus } from 'react-native';
 
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
@@ -10,11 +10,13 @@ import {
   loadForegroundActiveMs,
   resetForegroundActiveMs,
 } from './foregroundAdTimer';
+import { INTERSTITIAL_MIN_FOREGROUND_MS } from '../entitlements/decideInterstitialPresentation';
 import {
   persistForegroundActiveMs,
   runInterstitialOpportunity,
   type InterstitialOpportunityRequest,
 } from './interstitialOpportunity';
+import { SampleVideoAd } from './SampleVideoAd';
 
 type Listener = (req: InterstitialOpportunityRequest) => void;
 
@@ -38,6 +40,11 @@ function publishForegroundMs(ms: number) {
   foregroundListeners.forEach((listener) => listener(ms));
 }
 
+function appIsOpen(): boolean {
+  const state = AppState.currentState;
+  return state !== 'background' && state !== 'inactive';
+}
+
 /** Fire a presentation attempt from screens / shell (soft-fail if none listening). */
 export function requestInterstitialOpportunity(
   req: InterstitialOpportunityRequest,
@@ -59,6 +66,56 @@ export function InterstitialController() {
   const accumRef = useRef(createForegroundAccumulator(0));
   const readyRef = useRef(false);
   const presentingRef = useRef(false);
+  const [videoOpen, setVideoOpen] = useState(false);
+  const presentDueRef = useRef<(ms: number) => void>(() => undefined);
+
+  const resetClock = useCallback((now: number) => {
+    accumRef.current.onInactive(now);
+    accumRef.current.setMs(0);
+    if (appIsOpen()) accumRef.current.onActive(now);
+    publishForegroundMs(0);
+    void resetForegroundActiveMs();
+  }, []);
+
+  presentDueRef.current = (ms: number) => {
+    if (presentingRef.current || ms < INTERSTITIAL_MIN_FOREGROUND_MS) return;
+    if (!flags.automaticInterstitialEnabled) return;
+    if (services.network.isOffline()) return;
+    if (!services.ads.getConsentState().canRequestAds) return;
+    if (subscription?.hasSubscription()) return;
+    const until = entitlement?.earnedAdFreeUntilMs ?? null;
+    const trusted = entitlement?.trustedNow() ?? null;
+    if (until != null && trusted != null && until > trusted) return;
+    presentingRef.current = true;
+    if (Platform.OS === 'web') {
+      setVideoOpen(true);
+      return;
+    }
+    void runInterstitialOpportunity({
+      automaticInterstitialEnabled: true,
+      offline: false,
+      canRequestAds: true,
+      appActive: true,
+      earnedAdFreeUntilMs: until,
+      trustedNowMs: trusted,
+      foregroundActiveMs: ms,
+      adapter: services.ads.adapter,
+      req: {
+        transition: 'timer_elapsed',
+        surface: 'translate_idle',
+        hasSubscription: Boolean(subscription?.hasSubscription()),
+      },
+    })
+      .then((result) => {
+        if (result && 'presented' in result && result.presented) {
+          resetClock(Date.now());
+        }
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        presentingRef.current = false;
+      });
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -67,9 +124,10 @@ export function InterstitialController() {
       accumRef.current.setMs(ms);
       readyRef.current = true;
       publishForegroundMs(ms);
-      if (AppState.currentState === 'active') {
+      if (appIsOpen()) {
         accumRef.current.onActive(Date.now());
       }
+      presentDueRef.current(ms);
     });
     return () => {
       cancelled = true;
@@ -88,6 +146,7 @@ export function InterstitialController() {
         accumRef.current.onActive(now);
         return;
       }
+      if (next !== 'background' && next !== 'inactive') return;
       const total = accumRef.current.onInactive(now);
       void persistForegroundActiveMs(total);
     };
@@ -99,9 +158,10 @@ export function InterstitialController() {
       }
     }, 30_000);
     const countdown = setInterval(() => {
-      if (AppState.currentState === 'active' && readyRef.current) {
-        publishForegroundMs(accumRef.current.flush(Date.now()));
-      }
+      if (!appIsOpen() || !readyRef.current) return;
+      const ms = accumRef.current.flush(Date.now());
+      publishForegroundMs(ms);
+      presentDueRef.current(ms);
     }, 1_000);
 
     return () => {
@@ -158,5 +218,14 @@ export function InterstitialController() {
     };
   }, [entitlement, flags.automaticInterstitialEnabled, services, subscription]);
 
-  return null;
+  return (
+    <SampleVideoAd
+      visible={videoOpen}
+      onFinished={() => {
+        setVideoOpen(false);
+        resetClock(Date.now());
+        presentingRef.current = false;
+      }}
+    />
+  );
 }

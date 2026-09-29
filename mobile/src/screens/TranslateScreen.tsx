@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -27,9 +26,6 @@ import { PromoRotator } from '../components/PromoRotator';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { TranslateComposer } from '../translate/TranslateComposer';
 import { useTranslationSession } from '../translate/useTranslationSession';
-import {
-  sessionPhase,
-} from '../translate/translationSessionReducer';
 
 type Props = {
   seed?: HistoryItem | null;
@@ -96,15 +92,11 @@ export function TranslateScreen({
   const [correctionOpen, setCorrectionOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackDraft, setFeedbackDraft] = useState('');
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [boxFocus, setBoxFocus] = useState<'source' | 'result'>('source');
   const [micDocked, setMicDocked] = useState(false);
   const suppressMicDock = useRef(false);
-  const scrollRef = useRef<ScrollView>(null);
-  const phase = sessionPhase(state);
   const latest = state.turns[state.turns.length - 1];
   const showFailure = mtWarmStatus === MT_WARM_FAILED;
-  const busy = state.translating || uiPhase.phase === 'listening';
   const status = statusCopy(uiPhase.phase, uiPhase.reasonCode, lang);
 
   const styles = useMemo(
@@ -167,8 +159,6 @@ export function TranslateScreen({
           color: theme.colors.crimson,
           fontSize: 13,
         },
-        scroll: { flex: 1, minHeight: 0 },
-        scrollContent: { padding: 16, gap: 12, flexGrow: 1 },
         stage: { flex: 1 },
         dock: {
           flexDirection: 'row',
@@ -298,21 +288,13 @@ export function TranslateScreen({
   );
 
   useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
     const hide = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
       setMicDocked(false);
     });
     return () => {
-      show.remove();
       hide.remove();
     };
   }, []);
-
-  useEffect(() => {
-    if (phase === 'empty') return;
-    scrollRef.current?.scrollToEnd({ animated: true });
-  }, [state.turns.length, phase]);
 
   useEffect(() => {
     if (!active) setMicDocked(false);
@@ -323,7 +305,7 @@ export function TranslateScreen({
   const speakInBox = uiPhase.phase === 'listening' || state.listening;
   const micMode = speakInBox
     ? 'listening'
-    : micDocked
+    : micDocked || feedbackOpen
       ? 'typing'
       : 'idle';
   const resultText = latest
@@ -398,6 +380,15 @@ export function TranslateScreen({
       <PromoRotator
         onAdFree={() => subscription?.openPaywall()}
         onEarn={() => onOpenReview?.()}
+        ad={
+          <AdSlot
+            surface="translate_idle"
+            embed
+            eligible={active}
+            appActive={active}
+            modalVisible={correctionOpen}
+          />
+        }
       />
 
       <View style={styles.langRow}>
@@ -577,30 +568,6 @@ export function TranslateScreen({
         </View>
       ) : null}
 
-      <ScrollView
-        ref={scrollRef}
-        style={{ flexGrow: 0 }}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        {phase === 'empty' ? (
-          <AdSlot
-            surface="translate_idle"
-            eligible={
-              active &&
-              !state.draft.trim() &&
-              !busy &&
-              !keyboardVisible
-            }
-            keyboardVisible={keyboardVisible}
-            listening={state.listening}
-            speaking={false}
-            translating={state.translating}
-            modalVisible={correctionOpen}
-            appActive={active}
-          />
-        ) : null}
-      </ScrollView>
       </View>
 
       <CorrectionSheet

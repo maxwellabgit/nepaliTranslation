@@ -454,7 +454,7 @@ export const ne: Record<MessageKey, string> = {
   'review.typeHere': 'यहाँ अनुवाद लेख...',
   'review.earnUpTo': 'प्रमाणीकरणपछि {count} क्रेडिटसम्म',
   'review.yourEntered': 'तिमीले लेखेको',
-  'review.currentTranslation': 'हाम्रो अनुवाद',
+  'review.currentTranslation': 'सिफारिस गरिएको',
   'review.fromSystem': 'हाम्रो प्रणालीबाट',
   'review.whichBetter': 'कुन राम्रो?',
   'review.sameMeaning': 'उही अर्थ',

@@ -58,7 +58,7 @@ export type DecideAdPresentationInput = {
   explicitRewardedRequest?: boolean;
 };
 
-const DEFAULT_NETWORK_COOLDOWN = 12 * 60 * 1000;
+const DEFAULT_NETWORK_COOLDOWN = 60 * 1000;
 const DEFAULT_HOUSE_COOLDOWN = 24 * 60 * 1000;
 
 function isAllowedPlacement(
@@ -82,7 +82,7 @@ function inCooldown(
  * 2. inactive / modal / keyboard / audio / translation / Conversation → none
  * 3. offline → house (24m cooldown) on allowed placements
  * 4. online but UMP blocks requests → house
- * 5. eligible online → adaptive banner (12m cooldown)
+ * 5. eligible online → adaptive banner (60s cycle)
  * 6. rewarded only after explicitRewardedRequest (and flags/UMP/online)
  */
 export function decideAdPresentation(

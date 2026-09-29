@@ -6,10 +6,11 @@ type Props = {
   onPress?: () => void;
   accessibilityLabel: string;
   testID?: string;
+  color?: string;
 };
 
 /** Same back control as Learn: Ionicons arrow, 24px, theme text color, 44pt target. */
-export function BackArrow({ onPress, accessibilityLabel, testID }: Props) {
+export function BackArrow({ onPress, accessibilityLabel, testID, color }: Props) {
   const theme = useTheme();
   return (
     <Pressable
@@ -20,7 +21,7 @@ export function BackArrow({ onPress, accessibilityLabel, testID }: Props) {
       hitSlop={12}
       style={styles.btn}
     >
-      <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
+      <Ionicons name="arrow-back" size={24} color={color ?? theme.colors.text} />
     </Pressable>
   );
 }

@@ -1,7 +1,7 @@
 import { INTERSTITIAL_MIN_FOREGROUND_MS } from '../entitlements/decideInterstitialPresentation';
 
-/** What the credits gauge may show. It is not an ad request. */
-export type InterstitialGaugeState = 'countdown' | 'ready' | 'unavailable';
+/** What the credits gauge may show. Zero remaining means the ad is due now. */
+export type InterstitialGaugeState = 'countdown' | 'unavailable';
 
 export type InterstitialSuppressionInput = {
   automaticInterstitialEnabled: boolean;
@@ -13,9 +13,8 @@ export type InterstitialSuppressionInput = {
 };
 
 /**
- * Durable reasons an automatic interstitial will not show, even at a safe
- * point. Keyboard, recording, and the safe-point wait are not suppression:
- * those still count foreground time and can show "Ad ready".
+ * Durable reasons the automatic video stays off. While the app is open and
+ * ads are allowed, the clock counts down and the video shows at zero.
  */
 export function interstitialAdsSuppressed(
   input: InterstitialSuppressionInput,
@@ -47,13 +46,10 @@ export function interstitialGauge(input: {
     ? Math.max(0, input.foregroundActiveMs)
     : 0;
   const remainingMs = Math.max(0, min - elapsed);
-  if (remainingMs === 0) {
-    return { state: 'ready', remainingMs: 0 };
-  }
   return { state: 'countdown', remainingMs };
 }
 
-/** Remaining foreground time until an interstitial may show at a safe point. */
+/** Remaining foreground time until the interrupting video. */
 export function formatInterstitialCountdown(remainingMs: number): string {
   const totalSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
   const minutes = Math.floor(totalSeconds / 60);

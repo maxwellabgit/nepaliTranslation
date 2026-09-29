@@ -44,6 +44,11 @@ type Props = {
   onDismissHouse?: () => void;
   /** Opens bilingual paywall from house-ad CTA when paywall flag is on. */
   onPreferNoAds?: () => void;
+  /**
+   * Top-strip placement. Renders only the network banner so Earn credits can
+   * share that slot. House copy stays on the default placement.
+   */
+  embed?: boolean;
   adapter?: AdAdapter;
   /** When false, skip planning (e.g. no completed translate yet). */
   eligible?: boolean;
@@ -52,7 +57,7 @@ type Props = {
 /**
  * Soft-fail ad slot. Missing SDK / flag off / offline / entitlement → house or none.
  * Never required for translate / Learn. networkAdsEnabled stays false until human gate.
- * Enforces 12m network / 24m house cooldowns via persisted timestamps.
+ * Enforces the network and house cooldowns via persisted timestamps.
  */
 export function AdSlot({
   surface,
@@ -70,6 +75,7 @@ export function AdSlot({
   onShown,
   onDismissHouse,
   onPreferNoAds,
+  embed = false,
   adapter: injected,
   eligible = true,
 }: Props) {
@@ -231,6 +237,7 @@ export function AdSlot({
   ]);
 
   if (!label || label.startsWith('none:') || dismissed) return null;
+  if (embed && label !== 'banner') return null;
   if (label === 'house') {
     return (
       <HouseAd
@@ -250,7 +257,10 @@ export function AdSlot({
   }
   if (label === 'banner') {
     return (
-      <View style={styles.banner} testID={`ad-slot-banner-${surface}`}>
+      <View
+        style={embed ? styles.embed : styles.banner}
+        testID={`ad-slot-banner-${surface}`}
+      >
         <NativeOrPlaceholderBanner unitId={units?.bannerUnitId ?? ''} />
       </View>
     );
@@ -265,5 +275,9 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.divider,
     paddingVertical: 4,
+  },
+  embed: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
 });
