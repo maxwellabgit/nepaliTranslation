@@ -160,16 +160,37 @@ function linesOf(block: TesseractBlock): OcrLine[] {
  * Turn a browser OCR page into the same `OcrDocument` the iOS ML Kit adapter returns.
  * `segmentOcr` / `buildCorrelation` stay the only sentence and highlight path.
  */
+function scaleFrame(frame: OcrFrame, scaleX: number, scaleY: number): OcrFrame {
+  return {
+    x: frame.x * scaleX,
+    y: frame.y * scaleY,
+    width: frame.width * scaleX,
+    height: frame.height * scaleY,
+  };
+}
+
+/**
+ * Tesseract sometimes reports boxes in a resized page. Scale them onto the
+ * upright bitmap the preview shows. A mismatch here paints the tint off the glyphs.
+ */
 export function tesseractPageToOcrDocument(
   page: TesseractPage,
   image: { width: number; height: number },
 ): OcrDocument {
+  const pageWidth = page.width && page.width > 0 ? page.width : image.width;
+  const pageHeight = page.height && page.height > 0 ? page.height : image.height;
+  const scaleX = image.width > 0 && pageWidth > 0 ? image.width / pageWidth : 1;
+  const scaleY = image.height > 0 && pageHeight > 0 ? image.height / pageHeight : 1;
   const blocks: OcrBlock[] = [];
   for (const block of page.blocks ?? []) {
-    const lines = linesOf(block);
+    const lines = linesOf(block).map((line) => {
+      const frame = scaleFrame(line.frame, scaleX, scaleY);
+      return { ...line, frame, cornerPoints: corners(frame) };
+    });
     if (!lines.length) continue;
     const text = lines.map((line) => line.text).join(' ');
-    const frame = frameFromBBox(block.bbox) ?? lines[0].frame;
+    const rawFrame = frameFromBBox(block.bbox);
+    const frame = rawFrame ? scaleFrame(rawFrame, scaleX, scaleY) : lines[0].frame;
     blocks.push({
       text,
       language: lineLanguage(text),

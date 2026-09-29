@@ -67,6 +67,39 @@ describe('browser OCR document mapping', () => {
     ]);
   });
 
+  it('scales page boxes onto the upright bitmap the preview shows', () => {
+    const doc = tesseractPageToOcrDocument(
+      {
+        width: 1600,
+        height: 2400,
+        blocks: [
+          {
+            paragraphs: [
+              {
+                lines: [
+                  {
+                    text: 'OPEN',
+                    bbox: { x0: 80, y0: 160, x1: 400, y1: 240 },
+                    words: [
+                      { text: 'OPEN', bbox: { x0: 80, y0: 160, x1: 400, y1: 240 } },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      { width: 800, height: 1200 },
+    );
+    expect(doc.blocks[0].lines[0].frame).toEqual({
+      x: 40,
+      y: 80,
+      width: 160,
+      height: 40,
+    });
+  });
+
   it('tightens a loose line box to the word glyphs on that row', () => {
     const doc = tesseractPageToOcrDocument(
       {

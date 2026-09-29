@@ -1,6 +1,7 @@
 import { Image } from 'react-native';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { File } from 'expo-file-system';
+import { deleteCapture } from './deleteCapture';
 
 const MAX_PREVIEW_EDGE = 1280;
 
@@ -15,12 +16,13 @@ function getImageSize(uri: string): Promise<{ width: number; height: number }> {
 }
 
 /**
- * Downsample a capture (max edge ~1280) then return an in-memory data URI
- * so the temporary file can be deleted after OCR / exit.
+ * Downsample a capture (max edge ~1280) then return an in-memory data URI.
+ * The resized file is a second temporary capture and is deleted here.
+ * The shutter file stays until retake, exit, or a finished read.
  */
 export async function readCapturePreviewUri(uri: string): Promise<string | null> {
+  let derived: string | null = null;
   try {
-    let sourceUri = uri;
     try {
       const { width, height } = await getImageSize(uri);
       const longEdge = Math.max(width, height);
@@ -34,12 +36,12 @@ export async function readCapturePreviewUri(uri: string): Promise<string | null>
         compress: 0.7,
         format: SaveFormat.JPEG,
       });
-      sourceUri = result.uri;
+      if (result.uri && result.uri !== uri) derived = result.uri;
     } catch {
-      // Fall back to original capture if manipulator is unavailable.
-      sourceUri = uri;
+      derived = null;
     }
 
+    const sourceUri = derived ?? uri;
     const base64 = await new File(sourceUri).base64();
     if (!base64) return null;
     const lower = sourceUri.toLowerCase();
@@ -51,5 +53,7 @@ export async function readCapturePreviewUri(uri: string): Promise<string | null>
     return `data:${mime};base64,${base64}`;
   } catch {
     return null;
+  } finally {
+    if (derived) deleteCapture(derived, 'processed');
   }
 }

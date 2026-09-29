@@ -17,7 +17,7 @@ import {
 import type { OcrDocument, OcrLine } from '../ocrTypes';
 
 describe('camera sentence correlation', () => {
-  it('splits English and Nepali punctuation into sentences', () => {
+  it('keeps one highlight on a visual line even when it contains two sentences', () => {
     const english = segmentOcr({
       width: 100,
       height: 40,
@@ -40,9 +40,9 @@ describe('camera sentence correlation', () => {
       ],
     });
     expect(english.ok && english.sentences.map((s) => s.text)).toEqual([
-      'Hello.',
-      'How are you?',
+      'Hello. How are you?',
     ]);
+    expect(english.ok && english.sentences[0]?.frames).toHaveLength(1);
 
     const nepali = segmentOcr(INSCRIPTION_FIXTURE);
     expect(nepali.ok && nepali.sentences).toHaveLength(3);

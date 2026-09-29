@@ -3,7 +3,7 @@ import { tesseractPageToOcrDocument, type TesseractPage } from './browserOcrMap'
 import type { OcrDocument } from './ocrTypes';
 
 type TessWorker = {
-  recognize: (image: string) => Promise<{ data: TesseractPage }>;
+  recognize: (image: string | Blob) => Promise<{ data: TesseractPage }>;
   setParameters: (params: Record<string, string>) => Promise<void>;
 };
 
@@ -32,24 +32,19 @@ async function localWorker(): Promise<TessWorker> {
 }
 
 /**
- * Read the captured photo at its real size.
- * Enlarging a 640×480 webcam still blurs the screen text and the reader
- * returns a blank page. A data URL is required; a Blob is rejected.
+ * Read the captured photo at its upright size.
+ * `createImageBitmap` applies EXIF, then the canvas bakes that orientation
+ * into pixels. Tesseract ignores EXIF, so handing it the original file
+ * returns tall strips for lines that are horizontal on screen.
+ * Do not enlarge a small webcam still; a blurred page comes back empty.
  */
 async function prepareImage(
   uri: string,
 ): Promise<{ source: string; width: number; height: number }> {
-  if (uri.startsWith('data:')) {
-    const bitmap = await createImageBitmap(await (await fetch(uri)).blob());
-    const size = { width: bitmap.width, height: bitmap.height };
-    bitmap.close();
-    if (size.width <= 0 || size.height <= 0) throw new Error('capture_empty');
-    return { source: uri, ...size };
-  }
   const response = await fetch(uri);
   if (!response.ok) throw new Error(`capture_unreadable:${response.status}`);
   const blob = await response.blob();
-  const bitmap = await createImageBitmap(blob);
+  const bitmap = await createImageBitmap(blob, { imageOrientation: 'from-image' });
   const width = bitmap.width;
   const height = bitmap.height;
   if (width <= 0 || height <= 0) {

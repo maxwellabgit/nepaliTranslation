@@ -1,4 +1,3 @@
-import { splitSentences } from '../mt/sentences';
 import type { OcrDocument, OcrLine, SourceSentence } from './ocrTypes';
 import { sortReadingOrder } from './readingOrder';
 
@@ -13,10 +12,6 @@ function lineLanguage(text: string): 'en' | 'ne' {
   const dev = (text.match(DEVANAGARI) || []).length;
   const lat = (text.match(/[A-Za-z]/g) || []).length;
   return dev > lat ? 'ne' : 'en';
-}
-
-function hasPunctuation(text: string): boolean {
-  return /[.?!।॥]/.test(text);
 }
 
 function compactLen(text: string): number {
@@ -43,9 +38,9 @@ function lineGeometryOk(line: OcrLine, doc: OcrDocument): boolean {
 }
 
 /**
- * Assign each OCR line to exactly one sentence by walking reading order and
- * greedily consuming lines until the sentence's compact character budget is met.
- * Never falls back to "all lines".
+ * Legacy character-budget assignment. Camera highlights do not use this:
+ * `segmentOcr` keeps one box per visual line so a later line cannot be
+ * painted onto an earlier sentence.
  */
 export function assignLinesToSentences(
   pieces: string[],
@@ -77,17 +72,7 @@ export function assignLinesToSentences(
   return assigned;
 }
 
-function geometryFromLines(lines: OcrLine[]): {
-  frames: SourceSentence['frames'];
-  polygons: SourceSentence['polygons'];
-} {
-  return {
-    frames: lines.map((line) => line.frame),
-    polygons: lines.map((line) => line.cornerPoints),
-  };
-}
-
-/** Normalize OCR into stable sentences. Lines without punctuation stay whole. */
+/** One camera highlight per visual OCR line, in reading order. */
 export function segmentOcr(doc: OcrDocument): SegmentResult {
   const lines = sortReadingOrder(doc.blocks.flatMap((block) => block.lines));
   const signaled = lines.filter((line) => lineHasSignal(line.text));
@@ -102,30 +87,18 @@ export function segmentOcr(doc: OcrDocument): SegmentResult {
   });
   if (!usable.length) return { ok: false, reason: 'low-confidence' };
 
-  const joined = usable.map((line) => line.text.trim()).join(' ');
-  const language = lineLanguage(joined);
-
-  let pieces: string[];
-  let lineGroups: OcrLine[][];
-
-  if (hasPunctuation(joined)) {
-    const split = splitSentences(joined);
-    pieces = [...split.complete, split.remainder].filter(Boolean);
-    lineGroups = assignLinesToSentences(pieces, usable);
-  } else {
-    pieces = usable.map((line) => line.text.trim());
-    lineGroups = usable.map((line) => [line]);
-  }
-
-  const sentences: SourceSentence[] = pieces.map((text, index) => {
-    const geometry = geometryFromLines(lineGroups[index] ?? []);
+  // One highlight per visual line. Joining every line and splitting on
+  // punctuation pulls later lines into the wrong box (a tall mash, or a
+  // sensor-space strip painted off the glyphs).
+  const sentences: SourceSentence[] = usable.map((line, index) => {
+    const text = line.text.trim();
     const localLang = lineLanguage(text);
     return {
       id: `s${index + 1}`,
       text,
-      language: localLang === 'ne' || language === 'ne' ? localLang : 'en',
-      frames: geometry.frames,
-      polygons: geometry.polygons,
+      language: localLang,
+      frames: [line.frame],
+      polygons: [line.cornerPoints],
     };
   });
 
