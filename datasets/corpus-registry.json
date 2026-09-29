@@ -13,7 +13,7 @@
       "license": "owner-authorized-public-display",
       "rights_status": "cleared_public_display",
       "visibility": "public_review_gated",
-      "notes": "Owner-authorized prompts plus CC-BY-4.0 IN22-Conv and BPCC pairs added for human review. Each benchmark row records its license and attribution. FLORES+ (CC-BY-SA, eval-only) and benchmarks/gold stay out. Do not use these prompts or public answers for training or ship evaluation."
+      "notes": "Today's 10 lineup. Four rows per English sample: formal and informal Devanagari and roman. Replaces the 200-prompt, 20-day lineup. CC-BY-4.0 English from IN22-Conv and BPCC keeps attribution. FLORES+ and benchmarks/gold stay out. Do not use these prompts or public answers for training or ship evaluation."
     },
     {
       "id": "training-clean-en-ne",

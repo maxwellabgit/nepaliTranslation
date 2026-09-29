@@ -1,6 +1,6 @@
 # Rewarded review prompts
 
-`review_pool/for_review.jsonl` contains the owner-authorized prompts plus CC-BY-4.0 IN22-Conv and BPCC pairs that may be shown to reviewers. The owner authorized the original prompts for public review on 2026-09-25. Gold and FLORES+ are not in this file. The old 40-row blind split is retired: none of these prompts or later reviewer responses may be used for training or ship evaluation. `base_vs_e1_val.jsonl` remains an evaluation-only diagnostic and is never imported into public review.
+`review_pool/for_review.jsonl` is the Today's 10 lineup. It has one row for each English sample in `datasets/sheets/review_pool.csv`, repeated for formal Devanagari, informal Devanagari, formal roman, and informal roman. The previous 200-prompt, 20-day lineup is replaced by this file. Gold and FLORES+ are not in it. The old 40-row blind split is retired: none of these prompts or later reviewer responses may be used for training or ship evaluation. `base_vs_e1_val.jsonl` remains an evaluation-only diagnostic and is never imported into public review.
 
 The `prompts.jsonl` and `candidates.jsonl` files on `main` retain the original 200 sources and 370 unapproved model suggestions. `review_pool/for_review.jsonl` is the selected display projection of those sources: it shows at most one machine suggestion per prompt. The importer reads only the registered review-pool file, never the raw candidate file.
 
