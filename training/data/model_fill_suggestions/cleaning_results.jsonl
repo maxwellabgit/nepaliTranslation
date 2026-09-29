@@ -1,0 +1,637 @@
+{"line": 2, "reason": "gold_exact_match", "english": "Hello"}
+{"line": 3, "reason": "gold_exact_match", "english": "How are you?"}
+{"line": 4, "reason": "gold_exact_match", "english": "What is your name?"}
+{"line": 5, "reason": "gold_exact_match", "english": "Thank you very much."}
+{"line": 6, "reason": "gold_exact_match", "english": "Please sit down."}
+{"line": 7, "reason": "gold_exact_match", "english": "Where is the bathroom?"}
+{"line": 8, "reason": "gold_exact_match", "english": "I need a doctor."}
+{"line": 9, "reason": "gold_exact_match", "english": "Can you help me?"}
+{"line": 10, "reason": "gold_exact_match", "english": "How much does this cost?"}
+{"line": 11, "reason": "gold_exact_match", "english": "I do not understand."}
+{"line": 12, "reason": "gold_exact_match", "english": "Please speak slowly."}
+{"line": 13, "reason": "gold_exact_match", "english": "Where do you live?"}
+{"line": 14, "reason": "gold_exact_match", "english": "Call me tomorrow."}
+{"line": 15, "reason": "gold_exact_match", "english": "Are you hungry?"}
+{"line": 16, "reason": "gold_exact_match", "english": "Welcome."}
+{"line": 17, "reason": "gold_exact_match", "english": "Good morning."}
+{"line": 18, "reason": "gold_exact_match", "english": "Good evening."}
+{"line": 19, "reason": "gold_exact_match", "english": "Good night."}
+{"line": 20, "reason": "gold_exact_match", "english": "Nice to meet you."}
+{"line": 21, "reason": "gold_exact_match", "english": "Excuse me."}
+{"line": 22, "reason": "gold_exact_match", "english": "I am fine."}
+{"line": 23, "reason": "gold_exact_match", "english": "Where is the hospital?"}
+{"line": 24, "reason": "gold_exact_match", "english": "Where is the airport?"}
+{"line": 25, "reason": "gold_exact_match", "english": "Where is the hotel?"}
+{"line": 26, "reason": "gold_exact_match", "english": "I am lost."}
+{"line": 27, "reason": "gold_exact_match", "english": "Please wait a moment."}
+{"line": 28, "reason": "gold_exact_match", "english": "Do you speak English?"}
+{"line": 29, "reason": "gold_exact_match", "english": "I speak a little Nepali."}
+{"line": 30, "reason": "gold_exact_match", "english": "What time is it?"}
+{"line": 31, "reason": "gold_exact_match", "english": "See you later."}
+{"line": 32, "reason": "gold_exact_match", "english": "Have a nice day."}
+{"line": 33, "reason": "gold_exact_match", "english": "I am thirsty."}
+{"line": 34, "reason": "gold_exact_match", "english": "Please give me water."}
+{"line": 35, "reason": "gold_exact_match", "english": "The food is delicious."}
+{"line": 36, "reason": "gold_exact_match", "english": "I am allergic to peanuts."}
+{"line": 37, "reason": "gold_exact_match", "english": "Is this spicy?"}
+{"line": 38, "reason": "gold_exact_match", "english": "The bill, please."}
+{"line": 39, "reason": "gold_exact_match", "english": "Keep the change."}
+{"line": 40, "reason": "gold_exact_match", "english": "How do I get to Kathmandu?"}
+{"line": 41, "reason": "gold_exact_match", "english": "Is this seat free?"}
+{"line": 42, "reason": "gold_exact_match", "english": "Please open the window."}
+{"line": 43, "reason": "gold_exact_match", "english": "Please close the door."}
+{"line": 44, "reason": "gold_exact_match", "english": "I feel sick."}
+{"line": 45, "reason": "gold_exact_match", "english": "My head hurts."}
+{"line": 46, "reason": "gold_exact_match", "english": "Call an ambulance."}
+{"line": 47, "reason": "gold_exact_match", "english": "Where can I buy medicine?"}
+{"line": 48, "reason": "gold_exact_match", "english": "I need a pharmacy."}
+{"line": 49, "reason": "gold_exact_match", "english": "Do you accept cards?"}
+{"line": 50, "reason": "gold_exact_match", "english": "Cash only."}
+{"line": 51, "reason": "gold_exact_match", "english": "Too expensive."}
+{"line": 52, "reason": "gold_exact_match", "english": "Can you lower the price?"}
+{"line": 53, "reason": "gold_exact_match", "english": "I will take this."}
+{"line": 54, "reason": "gold_exact_match", "english": "I am looking for a taxi."}
+{"line": 55, "reason": "gold_exact_match", "english": "Please stop here."}
+{"line": 56, "reason": "gold_exact_match", "english": "How long will it take?"}
+{"line": 57, "reason": "gold_exact_match", "english": "Is Wi‑Fi available?"}
+{"line": 58, "reason": "gold_exact_match", "english": "What is the password?"}
+{"line": 59, "reason": "gold_exact_match", "english": "My phone is dead."}
+{"line": 60, "reason": "gold_exact_match", "english": "Can I charge my phone?"}
+{"line": 61, "reason": "gold_exact_match", "english": "I have a reservation."}
+{"line": 62, "reason": "gold_exact_match", "english": "Under what name?"}
+{"line": 63, "reason": "gold_exact_match", "english": "One room for two nights."}
+{"line": 64, "reason": "gold_exact_match", "english": "Is breakfast included?"}
+{"line": 65, "reason": "gold_exact_match", "english": "The air conditioner is not working."}
+{"line": 66, "reason": "gold_exact_match", "english": "Please clean the room."}
+{"line": 67, "reason": "gold_exact_match", "english": "I need a SIM card."}
+{"line": 68, "reason": "gold_exact_match", "english": "Where is the bus station?"}
+{"line": 69, "reason": "gold_exact_match", "english": "Which bus goes to Pokhara?"}
+{"line": 70, "reason": "gold_exact_match", "english": "Is this the right train?"}
+{"line": 71, "reason": "gold_exact_match", "english": "I missed my flight."}
+{"line": 72, "reason": "gold_exact_match", "english": "Where is baggage claim?"}
+{"line": 73, "reason": "gold_exact_match", "english": "My passport is missing."}
+{"line": 74, "reason": "gold_exact_match", "english": "I need the police."}
+{"line": 75, "reason": "gold_exact_match", "english": "This is an emergency."}
+{"line": 76, "reason": "gold_exact_match", "english": "Please help my child."}
+{"line": 77, "reason": "gold_exact_match", "english": "I am a tourist."}
+{"line": 78, "reason": "gold_exact_match", "english": "I am here for work."}
+{"line": 79, "reason": "gold_exact_match", "english": "Can you write it down?"}
+{"line": 80, "reason": "gold_exact_match", "english": "Please repeat that."}
+{"line": 81, "reason": "gold_exact_match", "english": "Louder, please."}
+{"line": 82, "reason": "gold_exact_match", "english": "I agree."}
+{"line": 83, "reason": "gold_exact_match", "english": "I disagree."}
+{"line": 84, "reason": "gold_exact_match", "english": "That is correct."}
+{"line": 85, "reason": "gold_exact_match", "english": "That is wrong."}
+{"line": 86, "reason": "gold_exact_match", "english": "Congratulations."}
+{"line": 87, "reason": "gold_exact_match", "english": "Happy birthday."}
+{"line": 88, "reason": "gold_exact_match", "english": "Happy New Year."}
+{"line": 89, "reason": "gold_exact_match", "english": "Merry Christmas."}
+{"line": 90, "reason": "gold_exact_match", "english": "Take care."}
+{"line": 91, "reason": "gold_exact_match", "english": "Get well soon."}
+{"line": 92, "reason": "gold_exact_match", "english": "I am sorry for being late."}
+{"line": 93, "reason": "gold_exact_match", "english": "What do you recommend?"}
+{"line": 94, "reason": "gold_exact_match", "english": "Is it far from here?"}
+{"line": 95, "reason": "gold_exact_match", "english": "Can you show me on the map?"}
+{"line": 96, "reason": "gold_exact_match", "english": "I need change for this bill."}
+{"line": 97, "reason": "gold_exact_match", "english": "The meeting is at three."}
+{"line": 98, "reason": "gold_exact_match", "english": "Please send me the address."}
+{"line": 99, "reason": "gold_exact_match", "english": "Is parking available?"}
+{"line": 100, "reason": "gold_exact_match", "english": "No smoking."}
+{"line": 101, "reason": "gold_exact_match", "english": "Please be careful."}
+{"line": 102, "reason": "gold_exact_match", "english": "Could you please look at this document?"}
+{"line": 103, "reason": "gold_exact_match", "english": "What would you like to eat?"}
+{"line": 104, "reason": "gold_exact_match", "english": "I will pick you up at the airport."}
+{"line": 105, "reason": "gold_exact_match", "english": "Please make yourself comfortable."}
+{"line": 106, "reason": "gold_exact_match", "english": "How long have you been waiting?"}
+{"line": 107, "reason": "gold_exact_match", "english": "Do you have any allergies?"}
+{"line": 108, "reason": "gold_exact_match", "english": "The doctor will see you shortly."}
+{"line": 109, "reason": "gold_exact_match", "english": "Please take a seat."}
+{"line": 110, "reason": "gold_exact_match", "english": "Can you show me the way to the temple?"}
+{"line": 111, "reason": "gold_exact_match", "english": "I appreciate your help."}
+{"line": 112, "reason": "gold_exact_match", "english": "Are you feeling better today?"}
+{"line": 113, "reason": "gold_exact_match", "english": "Please fill out this form."}
+{"line": 114, "reason": "gold_exact_match", "english": "Where should I pay?"}
+{"line": 115, "reason": "gold_exact_match", "english": "I need to renew my visa."}
+{"line": 116, "reason": "gold_exact_match", "english": "Is this medicine available over the counter?"}
+{"line": 117, "reason": "gold_exact_match", "english": "Please speak a little louder."}
+{"line": 118, "reason": "gold_exact_match", "english": "I am looking for a room with a view."}
+{"line": 119, "reason": "gold_exact_match", "english": "What time does the bus leave?"}
+{"line": 120, "reason": "gold_exact_match", "english": "Please wake me up at six."}
+{"line": 121, "reason": "gold_exact_match", "english": "Do you accept credit cards?"}
+{"line": 122, "reason": "gold_exact_match", "english": "Could you write that down for me?"}
+{"line": 123, "reason": "gold_exact_match", "english": "How much do I owe you?"}
+{"line": 124, "reason": "gold_exact_match", "english": "Please take care of yourself."}
+{"line": 125, "reason": "gold_exact_match", "english": "Could you tell me where the nearest health center is?"}
+{"line": 126, "reason": "gold_exact_match", "english": "Do you know if there is an ATM nearby?"}
+{"line": 127, "reason": "gold_exact_match", "english": "Can you tell me how to get to the old city from here?"}
+{"line": 128, "reason": "gold_exact_match", "english": "I have landed safely; I will call you soon."}
+{"line": 129, "reason": "gold_exact_match", "english": "Could we see the menu, please?"}
+{"line": 130, "reason": "gold_exact_match", "english": "I have been coughing for three days."}
+{"line": 131, "reason": "gold_exact_match", "english": "I tried to withdraw money but the transaction failed."}
+{"line": 132, "reason": "gold_exact_match", "english": "Which stop should I get off at for the museum?"}
+{"line": 133, "reason": "gold_exact_match", "english": "Please let Grandma know I am doing well."}
+{"line": 134, "reason": "gold_exact_match", "english": "Is lunch included in the room rate?"}
+{"line": 135, "reason": "gold_exact_match", "english": "Where is the nearest pharmacy?"}
+{"line": 136, "reason": "gold_exact_match", "english": "That was delicious."}
+{"line": 137, "reason": "gold_exact_match", "english": "I love Kathmandu."}
+{"line": 138, "reason": "gold_exact_match", "english": "I like Kathmandu."}
+{"line": 139, "reason": "gold_exact_match", "english": "Don't leave me."}
+{"line": 140, "reason": "gold_exact_match", "english": "I lost my way."}
+{"line": 141, "reason": "gold_exact_match", "english": "My name is Ram."}
+{"line": 142, "reason": "gold_exact_match", "english": "Thank you"}
+{"line": 143, "reason": "gold_exact_match", "english": "I need help."}
+{"line": 144, "reason": "gold_exact_match", "english": "How much is this?"}
+{"line": 145, "reason": "gold_exact_match", "english": "See you tomorrow."}
+{"line": 146, "reason": "gold_exact_match", "english": "I am hungry."}
+{"line": 147, "reason": "gold_exact_match", "english": "Please wait."}
+{"line": 148, "reason": "gold_exact_match", "english": "Is there Wi‑Fi?"}
+{"line": 149, "reason": "gold_exact_match", "english": "The AC is not working."}
+{"line": 150, "reason": "gold_exact_match", "english": "Call the police."}
+{"line": 151, "reason": "gold_exact_match", "english": "Please say that again."}
+{"line": 152, "reason": "gold_exact_match", "english": "Where can I get medicine?"}
+{"line": 153, "reason": "gold_exact_match", "english": "Do you take cards?"}
+{"line": 154, "reason": "gold_exact_match", "english": "Please lower the price."}
+{"line": 155, "reason": "gold_exact_match", "english": "What is my name?"}
+{"line": 156, "reason": "gold_exact_match", "english": "Under what name is the booking?"}
+{"line": 157, "reason": "gold_exact_match", "english": "A room for two nights."}
+{"line": 158, "reason": "gold_exact_match", "english": "Please write it down."}
+{"line": 159, "reason": "gold_exact_match", "english": "Please speak louder."}
+{"line": 160, "reason": "gold_exact_match", "english": "Sorry for being late."}
+{"line": 161, "reason": "gold_exact_match", "english": "Please show me on the map."}
+{"line": 162, "reason": "gold_exact_match", "english": "I need small change."}
+{"line": 163, "reason": "gold_exact_match", "english": "Please send the address."}
+{"line": 164, "reason": "gold_exact_match", "english": "Is there parking?"}
+{"line": 165, "reason": "gold_exact_match", "english": "I am sleepy."}
+{"line": 166, "reason": "gold_exact_match", "english": "The weather is nice today."}
+{"line": 167, "reason": "gold_exact_match", "english": "It is raining."}
+{"line": 168, "reason": "gold_exact_match", "english": "I go to school."}
+{"line": 169, "reason": "gold_exact_match", "english": "Where do you work?"}
+{"line": 170, "reason": "gold_exact_match", "english": "What problem are you having?"}
+{"line": 171, "reason": "gold_exact_match", "english": "I am feeling dizzy."}
+{"line": 172, "reason": "gold_exact_match", "english": "Take this medicine after food."}
+{"line": 173, "reason": "gold_exact_match", "english": "The visa has expired."}
+{"line": 174, "reason": "gold_exact_match", "english": "The weather is not good today."}
+{"line": 175, "reason": "gold_exact_match", "english": "I will call you."}
+{"line": 176, "reason": "gold_exact_match", "english": "How far is this place?"}
+{"line": 177, "reason": "gold_exact_match", "english": "Do you understand Nepali?"}
+{"line": 178, "reason": "gold_exact_match", "english": "My stomach hurts."}
+{"line": 179, "reason": "gold_exact_match", "english": "I missed the bus."}
+{"line": 180, "reason": "gold_exact_match", "english": "I want to pay the fare."}
+{"line": 181, "reason": "gold_exact_match", "english": "Is there Wi‑Fi here?"}
+{"line": 182, "reason": "gold_exact_match", "english": "I need water."}
+{"line": 183, "reason": "gold_exact_match", "english": "I feel cold."}
+{"line": 184, "reason": "gold_exact_match", "english": "I have a cold."}
+{"line": 185, "reason": "gold_exact_match", "english": "I need a blood test."}
+{"line": 186, "reason": "gold_exact_match", "english": "Does this card work here?"}
+{"line": 187, "reason": "gold_exact_match", "english": "We have reached the hotel."}
+{"line": 188, "reason": "gold_exact_match", "english": "I do not like salty food."}
+{"line": 189, "reason": "gold_exact_match", "english": "Please do not use too much oil."}
+{"line": 190, "reason": "gold_exact_match", "english": "I am thinking of Dad."}
+{"line": 191, "reason": "gold_exact_match", "english": "This is my first time in Nepal."}
+{"line": 192, "reason": "gold_exact_match", "english": "My passport is at the hotel."}
+{"line": 193, "reason": "gold_exact_match", "english": "Our flight is delayed."}
+{"line": 194, "reason": "gold_exact_match", "english": "Which way to the ward?"}
+{"line": 195, "reason": "gold_exact_match", "english": "I'm out of cash."}
+{"line": 196, "reason": "gold_exact_match", "english": "My name is Ram"}
+{"line": 197, "reason": "gold_exact_match", "english": "I need help"}
+{"line": 198, "reason": "gold_exact_match", "english": "I do not understand"}
+{"line": 199, "reason": "gold_exact_match", "english": "I am fine"}
+{"line": 200, "reason": "gold_exact_match", "english": "Please give me water"}
+{"line": 201, "reason": "gold_exact_match", "english": "See you tomorrow"}
+{"line": 202, "reason": "gold_exact_match", "english": "I am hungry"}
+{"line": 203, "reason": "gold_exact_match", "english": "Welcome"}
+{"line": 204, "reason": "gold_exact_match", "english": "Good morning"}
+{"line": 205, "reason": "gold_exact_match", "english": "Good night"}
+{"line": 206, "reason": "gold_exact_match", "english": "Excuse me"}
+{"line": 207, "reason": "gold_exact_match", "english": "I am lost"}
+{"line": 208, "reason": "gold_exact_match", "english": "Please wait"}
+{"line": 209, "reason": "gold_exact_match", "english": "The food is delicious"}
+{"line": 210, "reason": "gold_exact_match", "english": "The bill, please"}
+{"line": 211, "reason": "gold_exact_match", "english": "Too expensive"}
+{"line": 212, "reason": "gold_exact_match", "english": "I will take this"}
+{"line": 213, "reason": "gold_exact_match", "english": "I am looking for a taxi"}
+{"line": 214, "reason": "gold_exact_match", "english": "Please stop here"}
+{"line": 215, "reason": "gold_exact_match", "english": "My phone is dead"}
+{"line": 216, "reason": "gold_exact_match", "english": "I have a reservation"}
+{"line": 217, "reason": "gold_exact_match", "english": "The AC is not working"}
+{"line": 218, "reason": "gold_exact_match", "english": "Please clean the room"}
+{"line": 219, "reason": "gold_exact_match", "english": "I need a SIM card"}
+{"line": 220, "reason": "gold_exact_match", "english": "I missed my flight"}
+{"line": 221, "reason": "gold_exact_match", "english": "My passport is missing"}
+{"line": 222, "reason": "gold_exact_match", "english": "Call the police"}
+{"line": 223, "reason": "gold_exact_match", "english": "This is an emergency"}
+{"line": 224, "reason": "gold_exact_match", "english": "I am a tourist"}
+{"line": 225, "reason": "gold_exact_match", "english": "Please say that again"}
+{"line": 226, "reason": "gold_exact_match", "english": "I agree"}
+{"line": 227, "reason": "gold_exact_match", "english": "That is correct"}
+{"line": 228, "reason": "gold_exact_match", "english": "Congratulations"}
+{"line": 229, "reason": "gold_exact_match", "english": "Happy birthday"}
+{"line": 230, "reason": "gold_exact_match", "english": "Take care"}
+{"line": 231, "reason": "gold_exact_match", "english": "Get well soon"}
+{"line": 232, "reason": "gold_exact_match", "english": "I am thirsty"}
+{"line": 233, "reason": "gold_exact_match", "english": "I need a doctor"}
+{"line": 234, "reason": "gold_exact_match", "english": "My head hurts"}
+{"line": 235, "reason": "gold_exact_match", "english": "Cash only"}
+{"line": 236, "reason": "gold_exact_match", "english": "Please lower the price"}
+{"line": 237, "reason": "gold_exact_match", "english": "Please open the window"}
+{"line": 238, "reason": "gold_exact_match", "english": "Please close the door"}
+{"line": 239, "reason": "gold_exact_match", "english": "I feel sick"}
+{"line": 240, "reason": "gold_exact_match", "english": "Call an ambulance"}
+{"line": 241, "reason": "gold_exact_match", "english": "I speak a little Nepali"}
+{"line": 242, "reason": "gold_exact_match", "english": "See you later"}
+{"line": 243, "reason": "gold_exact_match", "english": "Have a nice day"}
+{"line": 244, "reason": "gold_exact_match", "english": "I am allergic to peanuts"}
+{"line": 245, "reason": "gold_exact_match", "english": "Keep the change"}
+{"line": 246, "reason": "gold_exact_match", "english": "A room for two nights"}
+{"line": 247, "reason": "gold_exact_match", "english": "Please help my child"}
+{"line": 248, "reason": "gold_exact_match", "english": "I am here for work"}
+{"line": 249, "reason": "gold_exact_match", "english": "Please write it down"}
+{"line": 250, "reason": "gold_exact_match", "english": "Please speak louder"}
+{"line": 251, "reason": "gold_exact_match", "english": "I disagree"}
+{"line": 252, "reason": "gold_exact_match", "english": "That is wrong"}
+{"line": 253, "reason": "gold_exact_match", "english": "Happy New Year"}
+{"line": 254, "reason": "gold_exact_match", "english": "Merry Christmas"}
+{"line": 255, "reason": "gold_exact_match", "english": "Sorry for being late"}
+{"line": 256, "reason": "gold_exact_match", "english": "Please show me on the map"}
+{"line": 257, "reason": "gold_exact_match", "english": "I need small change"}
+{"line": 258, "reason": "gold_exact_match", "english": "The meeting is at three"}
+{"line": 259, "reason": "gold_exact_match", "english": "Please send the address"}
+{"line": 260, "reason": "gold_exact_match", "english": "No smoking"}
+{"line": 261, "reason": "gold_exact_match", "english": "Please be careful"}
+{"line": 262, "reason": "gold_exact_match", "english": "I am sleepy"}
+{"line": 263, "reason": "gold_exact_match", "english": "The weather is nice today"}
+{"line": 264, "reason": "gold_exact_match", "english": "It is raining"}
+{"line": 265, "reason": "gold_exact_match", "english": "I go to school"}
+{"line": 266, "reason": "gold_exact_match", "english": "I want tea"}
+{"line": 267, "reason": "gold_exact_match", "english": "Thank you for your help."}
+{"line": 312, "reason": "incomplete_translation", "english": "Fred is the strongest tropical cyclone ever recorded so far south and east in the Atlantic since the advent of satellite imagery, and only the third major hurricane on record east of 35°W."}
+{"line": 552, "reason": "incomplete_translation", "english": "Last month, there were major protests in Poland when that country signed ACTA, which has led to the Polish government deciding not to ratify the agreement, for now."}
+{"line": 690, "reason": "latin_in_devanagari", "english": "It was based on the German alphabet and one character \"Õ/õ\" was added."}
+{"line": 913, "reason": "incomplete_translation", "english": "In fact, there is not one good thing to learn.Learning takes place in the experience between the learner and the knowledge presented."}
+{"line": 919, "reason": "incomplete_translation", "english": "As mentioned above, though the word \"Eskimo\" remains acceptable in the United States, it is considered pejorative by many non-U.S. Arctic peoples, especially in Canada."}
+{"line": 943, "reason": "incomplete_translation", "english": "This can be done in a normal car with careful planning but a 4x4 is highly advised and many locations are only accessible with a high wheel base 4x4."}
+{"line": 987, "reason": "incomplete_translation", "english": "The Dominican Republic (Spanish: República Dominicana) is a Caribbean country that occupies the eastern half of the island of Hispaniola, which it shares with Haiti"}
+{"line": 1141, "reason": "ui_or_format_string", "english": "If you're feeling more adventurous, take the opportunity to juice or blend up some smoothies:"}
+{"line": 1174, "reason": "incomplete_translation", "english": "They are superior to web proxies for several reasons: They re-route all Internet traffic, not only http."}
+{"line": 1380, "reason": "incomplete_translation", "english": "Hey, you are pursuing.a course in web designing, aren't you?"}
+{"line": 1449, "reason": "incomplete_translation", "english": "Hint: Column %d"}
+{"line": 1454, "reason": "incomplete_translation", "english": "_Close All Folds"}
+{"line": 1457, "reason": "incomplete_translation", "english": "Shift Righ_t and Move"}
+{"line": 1458, "reason": "incomplete_translation", "english": "_Leave messages on server"}
+{"line": 1459, "reason": "ui_or_format_string", "english": "South _European (ISO-8859-3)"}
+{"line": 1463, "reason": "incomplete_translation", "english": "Co_mpile (%s)"}
+{"line": 1465, "reason": "incomplete_translation", "english": "_Contents"}
+{"line": 1467, "reason": "ui_or_format_string", "english": "Copyright © %Id–%Id The Files authors"}
+{"line": 1468, "reason": "incomplete_translation", "english": "_Accept License"}
+{"line": 1470, "reason": "ui_or_format_string", "english": "Valid until:"}
+{"line": 1472, "reason": "incomplete_translation", "english": "Add _Script"}
+{"line": 1475, "reason": "incomplete_translation", "english": "Evolution vCard Importer"}
+{"line": 1476, "reason": "ui_or_format_string", "english": "Wrap after this length:"}
+{"line": 1479, "reason": "ui_or_format_string", "english": "Starting listing at result number:"}
+{"line": 1482, "reason": "incomplete_translation", "english": "Empty entity ';' seen; valid entities are: & &quot; &lt; &gt; &apos;"}
+{"line": 1483, "reason": "ui_or_format_string", "english": "_Stream Comment/Uncomment"}
+{"line": 1491, "reason": "incomplete_translation", "english": "Could not create folder '%s': %s"}
+{"line": 1493, "reason": "incomplete_translation", "english": "Change _Date…"}
+{"line": 1494, "reason": "incomplete_translation", "english": "Arabic (_IBM-864)"}
+{"line": 1500, "reason": "incomplete_translation", "english": "GNOME Games web site"}
+{"line": 1501, "reason": "incomplete_translation", "english": "_Selection"}
+{"line": 1502, "reason": "incomplete_translation", "english": "Screen Number: %d"}
+{"line": 1503, "reason": "incomplete_translation", "english": "D_elete Memo List"}
+{"line": 1505, "reason": "ui_or_format_string", "english": "Use revision:"}
+{"line": 1508, "reason": "incomplete_translation", "english": "_Toggle Bookmark"}
+{"line": 1509, "reason": "incomplete_translation", "english": "make[%d]: Leaving directory `%s'"}
+{"line": 1512, "reason": "incomplete_translation", "english": "_Send Options"}
+{"line": 1513, "reason": "ui_or_format_string", "english": "Card themes:"}
+{"line": 1515, "reason": "incomplete_translation", "english": "O_verride server-supplied folder namespace"}
+{"line": 1520, "reason": "incomplete_translation", "english": "_Priority:"}
+{"line": 1522, "reason": "incomplete_translation", "english": "GNOME port of the once-popular Color Lines game. Five or More is a part of GNOME Games."}
+{"line": 1533, "reason": "incomplete_translation", "english": "Mi_nimize"}
+{"line": 1544, "reason": "incomplete_translation", "english": "Transformation %s"}
+{"line": 1547, "reason": "incomplete_translation", "english": "Reloading will discard changes in: %s You cannot undo this operation."}
+{"line": 1553, "reason": "ui_or_format_string", "english": "Password:"}
+{"line": 1554, "reason": "ui_or_format_string", "english": "Cannot receive calendar objects:"}
+{"line": 1555, "reason": "incomplete_translation", "english": "%s: invalid comment '%s'"}
+{"line": 1559, "reason": "incomplete_translation", "english": "Sending message %d of %d"}
+{"line": 1561, "reason": "incomplete_translation", "english": "Calculates the sinc function, that is sin(x)/x"}
+{"line": 1562, "reason": "ui_or_format_string", "english": "Sho_w items that contain:"}
+{"line": 1563, "reason": "ui_or_format_string", "english": "Please choose the audio output device:"}
+{"line": 1567, "reason": "ui_or_format_string", "english": "The {0} header of this message is malformed and could not be processed. Header: {1}"}
+{"line": 1568, "reason": "incomplete_translation", "english": "_Start game"}
+{"line": 1571, "reason": "incomplete_translation", "english": "_Copy Location"}
+{"line": 1572, "reason": "ui_or_format_string", "english": "Normal message indicator style:"}
+{"line": 1573, "reason": "incomplete_translation", "english": "_Unsubscribe from List"}
+{"line": 1574, "reason": "incomplete_translation", "english": "_Select All"}
+{"line": 1576, "reason": "incomplete_translation", "english": "_Do not Recover"}
+{"line": 1581, "reason": "ui_or_format_string", "english": "Use custom author information:"}
+{"line": 1583, "reason": "incomplete_translation", "english": "Make _transparent"}
+{"line": 1591, "reason": "incomplete_translation", "english": "_Board size:"}
+{"line": 1593, "reason": "incomplete_translation", "english": "The FUSE module could not be loaded. Please check that it is installed properly and try again."}
+{"line": 1595, "reason": "incomplete_translation", "english": "Subkey %d of %s"}
+{"line": 1597, "reason": "incomplete_translation", "english": "Selected Preset : %s"}
+{"line": 1599, "reason": "incomplete_translation", "english": "Unable to connect to the dictionary server at '%s:%d'. The server replied with code %d (server down)"}
+{"line": 1605, "reason": "ui_or_format_string", "english": "Please enter SystemID to find:"}
+{"line": 1608, "reason": "incomplete_translation", "english": "Importing '%s'"}
+{"line": 1610, "reason": "ui_or_format_string", "english": "New All Day _Event..."}
+{"line": 1612, "reason": "incomplete_translation", "english": "Couldn't convert filename '%s' to UTF-8: %s"}
+{"line": 1614, "reason": "ui_or_format_string", "english": "As Sent Folder for Wi_de View"}
+{"line": 1620, "reason": "incomplete_translation", "english": "Key to move W"}
+{"line": 1623, "reason": "incomplete_translation", "english": "_Previous"}
+{"line": 1627, "reason": "incomplete_translation", "english": "MS Excel#8482; 97/2000/XP"}
+{"line": 1630, "reason": "incomplete_translation", "english": "Could not fork: %s"}
+{"line": 1632, "reason": "incomplete_translation", "english": "Non handled data type '%s'"}
+{"line": 1636, "reason": "incomplete_translation", "english": "Go to %s on file “%s”"}
+{"line": 1638, "reason": "incomplete_translation", "english": "Unable to set attribute \"%s\" to \"%s\""}
+{"line": 1640, "reason": "incomplete_translation", "english": "Go to Pa_ge"}
+{"line": 1647, "reason": "incomplete_translation", "english": "_Enable fake bonuses"}
+{"line": 1648, "reason": "ui_or_format_string", "english": "Mark Thread as & Read"}
+{"line": 1649, "reason": "incomplete_translation", "english": "Network _Game"}
+{"line": 1651, "reason": "incomplete_translation", "english": "no output pipe `%s'"}
+{"line": 1654, "reason": "incomplete_translation", "english": "unexpected eof before end of line %d"}
+{"line": 1659, "reason": "incomplete_translation", "english": "Last login: %s on %s"}
+{"line": 1663, "reason": "incomplete_translation", "english": "Ctrl-click to open a link"}
+{"line": 1664, "reason": "incomplete_translation", "english": "%.2f × %.2f inch"}
+{"line": 1669, "reason": "incomplete_translation", "english": "Address type not supported by SOCKS server"}
+{"line": 1670, "reason": "ui_or_format_string", "english": "& Select File..."}
+{"line": 1678, "reason": "ui_or_format_string", "english": "& Search"}
+{"line": 1680, "reason": "incomplete_translation", "english": "You need at least one of the following GStreamer plugins in order to extract CD tracks: • %s → Ogg Vorbis • %s → FLAC • %s → Waveform PCM"}
+{"line": 1682, "reason": "ui_or_format_string", "english": "& Public Only"}
+{"line": 1685, "reason": "incomplete_translation", "english": "Move ~a onto the king of clubs."}
+{"line": 1686, "reason": "incomplete_translation", "english": "6s [total of 6s]"}
+{"line": 1687, "reason": "incomplete_translation", "english": "An unknown error occurred while trying to open \"%s\"."}
+{"line": 1689, "reason": "incomplete_translation", "english": "Can't open %s for writing"}
+{"line": 1694, "reason": "incomplete_translation", "english": "Unable to authenticate to IMAP server. %s"}
+{"line": 1700, "reason": "incomplete_translation", "english": "Create _New Note"}
+{"line": 1703, "reason": "ui_or_format_string", "english": "Related Calendar:"}
+{"line": 1704, "reason": "incomplete_translation", "english": "St_op Animation"}
+{"line": 1705, "reason": "ui_or_format_string", "english": "Unicode (UTF-_16 BE)"}
+{"line": 1706, "reason": "incomplete_translation", "english": "_Time divisions:"}
+{"line": 1707, "reason": "incomplete_translation", "english": "Cannot get supported fields: %s"}
+{"line": 1711, "reason": "ui_or_format_string", "english": "Start offset:"}
+{"line": 1713, "reason": "incomplete_translation", "english": "Y coordinate for dock when floating"}
+{"line": 1718, "reason": "incomplete_translation", "english": "The file \"%B\" cannot be handled because you do not have permissions to read it."}
+{"line": 1720, "reason": "incomplete_translation", "english": "Do _Not Disable"}
+{"line": 1724, "reason": "incomplete_translation", "english": "Zoom _Out"}
+{"line": 1726, "reason": "incomplete_translation", "english": "UPPER:an upper-case version of the string @{text}"}
+{"line": 1727, "reason": "incomplete_translation", "english": "_Profile name:"}
+{"line": 1728, "reason": "incomplete_translation", "english": "Warn About _Unfillable Squares"}
+{"line": 1733, "reason": "incomplete_translation", "english": "Display _All Contacts"}
+{"line": 1735, "reason": "incomplete_translation", "english": "_Check Project"}
+{"line": 1737, "reason": "incomplete_translation", "english": "Convert a vector of ASCII values to a string"}
+{"line": 1745, "reason": "incomplete_translation", "english": "Failed to log removal of listener to gconfd logfile; might erroneously re-add the listener if gconfd exits or shuts down (%s)"}
+{"line": 1750, "reason": "incomplete_translation", "english": "gdb terminated unexpectedly with status %d"}
+{"line": 1755, "reason": "incomplete_translation", "english": "Cannot login to POP server %s: SASL Protocol error"}
+{"line": 1758, "reason": "incomplete_translation", "english": "Unable to open %s. Debugger cannot start."}
+{"line": 1766, "reason": "incomplete_translation", "english": "The match \"%s\" was not found."}
+{"line": 1774, "reason": "incomplete_translation", "english": "Failed to authenticate with LDAP server."}
+{"line": 1780, "reason": "ui_or_format_string", "english": "F_ilename:"}
+{"line": 1783, "reason": "incomplete_translation", "english": "_Restart Evolution after restore"}
+{"line": 1785, "reason": "incomplete_translation", "english": "_Statusbar"}
+{"line": 1789, "reason": "incomplete_translation", "english": "_New Key..."}
+{"line": 1790, "reason": "incomplete_translation", "english": "_Switch image after:"}
+{"line": 1792, "reason": "ui_or_format_string", "english": "Past developers:"}
+{"line": 1794, "reason": "incomplete_translation", "english": "Highlight current _line"}
+{"line": 1795, "reason": "ui_or_format_string", "english": "_X ratio:"}
+{"line": 1796, "reason": "incomplete_translation", "english": "Speak ro_w"}
+{"line": 1797, "reason": "incomplete_translation", "english": "_Unmaximize All"}
+{"line": 1800, "reason": "incomplete_translation", "english": "Basic and _Mailing List Headers (Default)"}
+{"line": 1801, "reason": "incomplete_translation", "english": "Retrieving quota information for '%s'"}
+{"line": 1804, "reason": "incomplete_translation", "english": "method `%s' provides no opener"}
+{"line": 1813, "reason": "incomplete_translation", "english": "_Include subfolders"}
+{"line": 1814, "reason": "incomplete_translation", "english": "Invalid cdr_type \"%s\" on"}
+{"line": 1819, "reason": "incomplete_translation", "english": "H.323 Settings"}
+{"line": 1820, "reason": "incomplete_translation", "english": "Show _Buttons"}
+{"line": 1823, "reason": "incomplete_translation", "english": "GdaDataModel refused value change"}
+{"line": 1825, "reason": "incomplete_translation", "english": "(%s) requires a single bool result"}
+{"line": 1829, "reason": "incomplete_translation", "english": "Could not parse S/MIME message: %s"}
+{"line": 1832, "reason": "incomplete_translation", "english": "Destination folder \"%s\" does not exist. Do you want to create it?"}
+{"line": 1834, "reason": "incomplete_translation", "english": "Command not supported by SOCKS server"}
+{"line": 1837, "reason": "incomplete_translation", "english": "_Previous Image"}
+{"line": 1838, "reason": "ui_or_format_string", "english": "Could not open the following files:"}
+{"line": 1839, "reason": "ui_or_format_string", "english": "cvs_author"}
+{"line": 1846, "reason": "incomplete_translation", "english": "last update: %s"}
+{"line": 1851, "reason": "incomplete_translation", "english": "old %s script"}
+{"line": 1856, "reason": "incomplete_translation", "english": "Odd character '%s', expected a '>' or '/' character to end the start tag of element '%s', or optionally an attribute; perhaps you used an invalid character in an attribute name"}
+{"line": 1858, "reason": "ui_or_format_string", "english": "System Name:"}
+{"line": 1859, "reason": "incomplete_translation", "english": "_Toolbar"}
+{"line": 1861, "reason": "ui_or_format_string", "english": "Are you sure you want to delete the folder %1, discarding its contents? Beware that discarded messages are not saved into your Trash folder and are permanently deleted."}
+{"line": 1862, "reason": "incomplete_translation", "english": "NT_MU function (Möbius mu function) returns 0 if @{n} is divisible by the square of a prime. Otherwise, if @{n} has an odd number of different prime factors, NT_MU returns -1, and if @{n} has an even number of different prime factors, it returns 1. If @{n} = 1, NT_MU returns 1."}
+{"line": 1863, "reason": "ui_or_format_string", "english": "& Use Case Diagram..."}
+{"line": 1864, "reason": "incomplete_translation", "english": "%s: matrix argument must be value only"}
+{"line": 1865, "reason": "incomplete_translation", "english": "Cannot open URL: %s"}
+{"line": 1866, "reason": "incomplete_translation", "english": "_Save Draft"}
+{"line": 1868, "reason": "incomplete_translation", "english": "Genius %s %s%s"}
+{"line": 1873, "reason": "incomplete_translation", "english": "Unknown parent folder: %s"}
+{"line": 1875, "reason": "incomplete_translation", "english": "New %s account"}
+{"line": 1877, "reason": "ui_or_format_string", "english": "Add License Information:"}
+{"line": 1880, "reason": "ui_or_format_string", "english": "Junk Mail Settings..."}
+{"line": 1881, "reason": "incomplete_translation", "english": "Add _Bookmark…"}
+{"line": 1882, "reason": "ui_or_format_string", "english": "Import & Project..."}
+{"line": 1894, "reason": "ui_or_format_string", "english": "Select desired speech system:"}
+{"line": 1898, "reason": "incomplete_translation", "english": "Path format error: %s"}
+{"line": 1901, "reason": "incomplete_translation", "english": "Time: %s %s"}
+{"line": 1902, "reason": "incomplete_translation", "english": "_Calculator"}
+{"line": 1903, "reason": "incomplete_translation", "english": "Error reading multipage indicator: %s"}
+{"line": 1904, "reason": "ui_or_format_string", "english": "Co_mment:"}
+{"line": 1908, "reason": "incomplete_translation", "english": "Failed to start the X server (your graphical interface). It seems that the pointer device (your mouse) is not set up correctly. Would you like to view the X server output to diagnose the problem?"}
+{"line": 1914, "reason": "incomplete_translation", "english": "Creating %s (using AutoGen)… %s"}
+{"line": 1916, "reason": "incomplete_translation", "english": "references %s.%s"}
+{"line": 1922, "reason": "ui_or_format_string", "english": "Invalid Argument \"%1\" to \"%2\""}
+{"line": 1925, "reason": "incomplete_translation", "english": "_Architecture"}
+{"line": 1933, "reason": "incomplete_translation", "english": "_Login method:"}
+{"line": 1934, "reason": "incomplete_translation", "english": "_Index message body data"}
+{"line": 1937, "reason": "incomplete_translation", "english": "%s: Authdir %s does not exist. Aborting."}
+{"line": 1942, "reason": "incomplete_translation", "english": "R.PSNORM:cumulative distribution function of the skew-normal distribution"}
+{"line": 1946, "reason": "ui_or_format_string", "english": "Korean (_ISO-2022-KR)"}
+{"line": 1953, "reason": "incomplete_translation", "english": "Error setting name for workspace %d to \"%s\": %s"}
+{"line": 1954, "reason": "incomplete_translation", "english": "_Paintbrush"}
+{"line": 1960, "reason": "ui_or_format_string", "english": "R_earrange Colormap..."}
+{"line": 1964, "reason": "incomplete_translation", "english": "Save link “%s”"}
+{"line": 1967, "reason": "incomplete_translation", "english": "Automatically synchronize _modified keys with key servers"}
+{"line": 1970, "reason": "incomplete_translation", "english": "Display information on this GNOME version"}
+{"line": 1973, "reason": "ui_or_format_string", "english": "Add Guide:"}
+{"line": 1975, "reason": "incomplete_translation", "english": "%B%s%b is only partly installed; its installation will be completed."}
+{"line": 1979, "reason": "ui_or_format_string", "english": "Cell size:"}
+{"line": 1980, "reason": "incomplete_translation", "english": "Prepend a _header"}
+{"line": 1984, "reason": "incomplete_translation", "english": "Unmerging %s"}
+{"line": 1986, "reason": "incomplete_translation", "english": "(i) Try checking that you spelt the location's name correctly. Remember that capitalisation is significant (\"MyDirectory\" is not the same as \"MYDIRECTORY\" or \"mydirectory\"). (ii) Try saving to a different location."}
+{"line": 1988, "reason": "ui_or_format_string", "english": "Other authors are:"}
+{"line": 1991, "reason": "ui_or_format_string", "english": "Mo_ve All Contacts To..."}
+{"line": 2004, "reason": "ui_or_format_string", "english": "Vo_lume:"}
+{"line": 2006, "reason": "incomplete_translation", "english": "_Address Book"}
+{"line": 2009, "reason": "incomplete_translation", "english": "_Commit…"}
+{"line": 2014, "reason": "incomplete_translation", "english": "Plug-in _Registry"}
+{"line": 2016, "reason": "incomplete_translation", "english": "Failed to create thread: %s"}
+{"line": 2018, "reason": "ui_or_format_string", "english": "{0} Preferences"}
+{"line": 2020, "reason": "ui_or_format_string", "english": "Searching for the Contacts..."}
+{"line": 2021, "reason": "incomplete_translation", "english": "cannot remove old config file `%.250s' (= `%.250s')"}
+{"line": 2024, "reason": "incomplete_translation", "english": "_None (use system theme)"}
+{"line": 2027, "reason": "incomplete_translation", "english": "Preparing device %s for the wireless network '%s'..."}
+{"line": 2028, "reason": "incomplete_translation", "english": "A_llow remote system administrator login"}
+{"line": 2029, "reason": "incomplete_translation", "english": "Diagram Properties: %s"}
+{"line": 2032, "reason": "ui_or_format_string", "english": "Configure Interface..."}
+{"line": 2035, "reason": "incomplete_translation", "english": "Move Tab _Left"}
+{"line": 2037, "reason": "incomplete_translation", "english": "This option corresponds to the -N diff option."}
+{"line": 2041, "reason": "incomplete_translation", "english": "can't remove `%s'"}
+{"line": 2042, "reason": "incomplete_translation", "english": "_Modify red channel"}
+{"line": 2046, "reason": "incomplete_translation", "english": "Launch (C)"}
+{"line": 2054, "reason": "incomplete_translation", "english": "Required Plugin %s not available"}
+{"line": 2055, "reason": "ui_or_format_string", "english": "The location of the .desktop file describing the launcher. This key is only relevant if the object_type key is \"launcher-object\"."}
+{"line": 2057, "reason": "incomplete_translation", "english": "_Restart"}
+{"line": 2058, "reason": "incomplete_translation", "english": "_Top of window"}
+{"line": 2063, "reason": "incomplete_translation", "english": "Unable to open the file: %s"}
+{"line": 2065, "reason": "incomplete_translation", "english": "Unrecognized desktop file Version '%s'"}
+{"line": 2067, "reason": "incomplete_translation", "english": "Unknown CPU model"}
+{"line": 2069, "reason": "incomplete_translation", "english": "This address book cannot be opened. Please check that the path %s exists and that permissions are set to access it."}
+{"line": 2072, "reason": "incomplete_translation", "english": "_Value And Probability Input Range:"}
+{"line": 2074, "reason": "incomplete_translation", "english": "_Use default theme colors"}
+{"line": 2077, "reason": "incomplete_translation", "english": "Error while saving result: %s"}
+{"line": 2079, "reason": "incomplete_translation", "english": "Conv_ert to Appointment..."}
+{"line": 2081, "reason": "ui_or_format_string", "english": "U_se super safe moves"}
+{"line": 2083, "reason": "incomplete_translation", "english": "A_dvanced options for the CSV format"}
+{"line": 2085, "reason": "incomplete_translation", "english": "Send an email message to “%s”"}
+{"line": 2086, "reason": "ui_or_format_string", "english": "Whether, when a video DVD is inserted, gnome-volume-manager should run 'autoplay_dvd_command'."}
+{"line": 2087, "reason": "incomplete_translation", "english": "Could not create folder summary for %s"}
+{"line": 2088, "reason": "incomplete_translation", "english": "Speech synthesi_zer:"}
+{"line": 2091, "reason": "incomplete_translation", "english": "Please enter the password for memo list \"%s\"."}
+{"line": 2092, "reason": "incomplete_translation", "english": "S_hade transparent or image background:"}
+{"line": 2094, "reason": "incomplete_translation", "english": "_Connections List"}
+{"line": 2096, "reason": "incomplete_translation", "english": "_Use custom command to connect to server"}
+{"line": 2099, "reason": "ui_or_format_string", "english": "Export..."}
+{"line": 2102, "reason": "incomplete_translation", "english": "Open '%s'"}
+{"line": 2103, "reason": "incomplete_translation", "english": "Open _Location"}
+{"line": 2109, "reason": "ui_or_format_string", "english": "Se_cond zone:"}
+{"line": 2110, "reason": "ui_or_format_string", "english": "& Delete"}
+{"line": 2116, "reason": "incomplete_translation", "english": "_Lower Layer"}
+{"line": 2118, "reason": "incomplete_translation", "english": "%s: dt must be positive"}
+{"line": 2124, "reason": "incomplete_translation", "english": "_Context Help"}
+{"line": 2127, "reason": "incomplete_translation", "english": "User_name:"}
+{"line": 2129, "reason": "incomplete_translation", "english": "ICQ Work ID 2"}
+{"line": 2134, "reason": "ui_or_format_string", "english": "Restarting computer..."}
+{"line": 2137, "reason": "incomplete_translation", "english": "Remove This _Column"}
+{"line": 2138, "reason": "incomplete_translation", "english": "_Fetch All Headers"}
+{"line": 2140, "reason": "ui_or_format_string", "english": "Search & Replace Preserves Case"}
+{"line": 2141, "reason": "ui_or_format_string", "english": "Use revision/tag:"}
+{"line": 2145, "reason": "incomplete_translation", "english": "Match a_ll selected categories"}
+{"line": 2150, "reason": "incomplete_translation", "english": "Edit _Visible Columns"}
+{"line": 2152, "reason": "incomplete_translation", "english": "_Authenticate"}
+{"line": 2155, "reason": "incomplete_translation", "english": "That feature has not yet been implemented. Sorry. This is a known problem; it is bug #%i within the Bug Tracking System at %s"}
+{"line": 2157, "reason": "ui_or_format_string", "english": "Groupware Compatibility & & Legacy Options"}
+{"line": 2159, "reason": "ui_or_format_string", "english": "Move Item & Up"}
+{"line": 2161, "reason": "incomplete_translation", "english": "Show _Deleted Messages"}
+{"line": 2168, "reason": "ui_or_format_string", "english": "Free space:"}
+{"line": 2170, "reason": "incomplete_translation", "english": "Could not find description for column named '%s'"}
+{"line": 2171, "reason": "ui_or_format_string", "english": "Certificate import status:"}
+{"line": 2174, "reason": "ui_or_format_string", "english": "Artwork:"}
+{"line": 2175, "reason": "incomplete_translation", "english": "GNOME Sudoku"}
+{"line": 2176, "reason": "incomplete_translation", "english": "B_ackground color:"}
+{"line": 2178, "reason": "incomplete_translation", "english": "Proxy _Logout"}
+{"line": 2180, "reason": "incomplete_translation", "english": "_Change Exchange Password..."}
+{"line": 2182, "reason": "ui_or_format_string", "english": "Time zone:"}
+{"line": 2184, "reason": "incomplete_translation", "english": "_User's Manual"}
+{"line": 2185, "reason": "ui_or_format_string", "english": "NNTP Command failed:"}
+{"line": 2186, "reason": "incomplete_translation", "english": "%s through %s wishes to receive the latest information for the following meeting:"}
+{"line": 2188, "reason": "incomplete_translation", "english": "Scan F_older..."}
+{"line": 2189, "reason": "incomplete_translation", "english": "Field type %d is not supported."}
+{"line": 2190, "reason": "incomplete_translation", "english": "%s' is not allowed as defined name."}
+{"line": 2192, "reason": "ui_or_format_string", "english": "Saving file with a new filename..."}
+{"line": 2199, "reason": "incomplete_translation", "english": "Cannot append message to maildir folder: %s:"}
+{"line": 2204, "reason": "ui_or_format_string", "english": "Save photo..."}
+{"line": 2211, "reason": "incomplete_translation", "english": "Could not create directory '%s' ('%s')"}
+{"line": 2212, "reason": "incomplete_translation", "english": "--%s needs a <directory> argument"}
+{"line": 2213, "reason": "incomplete_translation", "english": "Nesting level %d"}
+{"line": 2218, "reason": "ui_or_format_string", "english": "{0}' is a read-only calendar and cannot be modified. Please select a different calendar that can accept appointments."}
+{"line": 2230, "reason": "incomplete_translation", "english": "--%s --pending does not take any non-option arguments"}
+{"line": 2231, "reason": "incomplete_translation", "english": "Failed to connect to IMAP server %s in secure mode:"}
+{"line": 2232, "reason": "incomplete_translation", "english": "Cl_ose current tab"}
+{"line": 2235, "reason": "incomplete_translation", "english": "The file '%s' already exists. Do you want to replace it with the one you are saving?"}
+{"line": 2237, "reason": "ui_or_format_string", "english": "Default format for spreadsheet:"}
+{"line": 2239, "reason": "incomplete_translation", "english": "Autosave failed for %s"}
+{"line": 2241, "reason": "incomplete_translation", "english": "_Compact"}
+{"line": 2250, "reason": "incomplete_translation", "english": "Vietnamese (V_PS)"}
+{"line": 2251, "reason": "incomplete_translation", "english": "Save as _Template"}
+{"line": 2265, "reason": "incomplete_translation", "english": "Unable to get the '%s' key inside the dictionary source definition file: %s"}
+{"line": 2277, "reason": "incomplete_translation", "english": "The archive \"%s\" could not be extracted"}
+{"line": 2279, "reason": "incomplete_translation", "english": "_Manager:"}
+{"line": 2283, "reason": "incomplete_translation", "english": "You cannot move the volume \"%s\" to the trash."}
+{"line": 2285, "reason": "incomplete_translation", "english": "Du_plicate"}
+{"line": 2290, "reason": "ui_or_format_string", "english": "HSV (_counter-clockwise hue)"}
+{"line": 2291, "reason": "incomplete_translation", "english": "View as a F_older"}
+{"line": 2294, "reason": "incomplete_translation", "english": "Draw a vector field. First come the functions dx/dt and dy/dt in terms of x and y then optionally the limits as x1,x2,y1,y2"}
+{"line": 2296, "reason": "ui_or_format_string", "english": "Changes:"}
+{"line": 2298, "reason": "incomplete_translation", "english": "Icons _and Text"}
+{"line": 2301, "reason": "incomplete_translation", "english": "No such folder '%s'."}
+{"line": 2303, "reason": "incomplete_translation", "english": "About the GNOME Desktop"}
+{"line": 2304, "reason": "incomplete_translation", "english": "hour: %s"}
+{"line": 2305, "reason": "incomplete_translation", "english": "\"%s\" expects none or two arguments"}
+{"line": 2310, "reason": "incomplete_translation", "english": "Error during autosaving: %s"}
+{"line": 2315, "reason": "incomplete_translation", "english": "Failed to delete resource &quot;{0}quot;."}
+{"line": 2316, "reason": "ui_or_format_string", "english": "Gir repository's directory:"}
+{"line": 2324, "reason": "ui_or_format_string", "english": "Lives: %1"}
+{"line": 2325, "reason": "incomplete_translation", "english": "Sh_ow offsets column"}
+{"line": 2326, "reason": "incomplete_translation", "english": "Error while opening audio input device %s"}
+{"line": 2327, "reason": "incomplete_translation", "english": "_Select the type of item to create:"}
+{"line": 2333, "reason": "ui_or_format_string", "english": "& Fit image to page"}
+{"line": 2337, "reason": "ui_or_format_string", "english": "Error connecting to server %1"}
+{"line": 2338, "reason": "incomplete_translation", "english": "Enable the _menu accelerator key (F10 by default)"}
+{"line": 2339, "reason": "incomplete_translation", "english": "_New Calendar"}
+{"line": 2341, "reason": "incomplete_translation", "english": "Failed to get lock using fcntl(2): %s"}
+{"line": 2343, "reason": "ui_or_format_string", "english": "Select..."}
+{"line": 2347, "reason": "incomplete_translation", "english": "_Strikeout"}
+{"line": 2350, "reason": "incomplete_translation", "english": "Disable sounds when _away or busy"}
+{"line": 2351, "reason": "incomplete_translation", "english": "_Show Image Selection"}
+{"line": 2352, "reason": "incomplete_translation", "english": "_Quick Search"}
+{"line": 2355, "reason": "incomplete_translation", "english": "_Inherit reminder"}
+{"line": 2356, "reason": "incomplete_translation", "english": "Tar compressed with bzip2 (.tar.bz2)"}
+{"line": 2358, "reason": "incomplete_translation", "english": "During opening: %s"}
+{"line": 2359, "reason": "incomplete_translation", "english": "_Remove all"}
+{"line": 2365, "reason": "incomplete_translation", "english": "Highlight _quotations with"}
+{"line": 2368, "reason": "incomplete_translation", "english": "Can't open output file %s."}
+{"line": 2375, "reason": "ui_or_format_string", "english": "Accessing resource ..."}
+{"line": 2378, "reason": "ui_or_format_string", "english": "Desktop %1"}
+{"line": 2380, "reason": "ui_or_format_string", "english": "Search for Files..."}
+{"line": 2384, "reason": "incomplete_translation", "english": "%s has no use what-so-ever. It only takes up disk space and compilation time, and if loaded it also takes up precious panel space and memory. Anybody found using it should be promptly sent for a psychiatric evaluation."}
+{"line": 2385, "reason": "ui_or_format_string", "english": "You can delete \"%1\" object and create it again."}
+{"line": 2388, "reason": "incomplete_translation", "english": "_Ignore duplicate keypresses (Bounce Keys)"}
+{"line": 2389, "reason": "ui_or_format_string", "english": "Contact:"}
+{"line": 2391, "reason": "incomplete_translation", "english": "Directory '%s' could not be created: g_mkdir_with_parents() failed: %s"}
+{"line": 2396, "reason": "ui_or_format_string", "english": "Depth %1"}
+{"line": 2414, "reason": "incomplete_translation", "english": "Unexpected attribute %s::%s == '%s'."}
+{"line": 2416, "reason": "incomplete_translation", "english": "Update the file \"%s\" in the archive \"%s\"?"}
+{"line": 2417, "reason": "incomplete_translation", "english": "Apply _Alignment"}
+{"line": 2418, "reason": "ui_or_format_string", "english": "F_orward As"}
+{"line": 2420, "reason": "incomplete_translation", "english": "_Transform"}
+{"line": 2421, "reason": "incomplete_translation", "english": "Can't get data model's column type for column %d"}
+{"line": 2422, "reason": "incomplete_translation", "english": "GNOME Screen Magnifier"}
+{"line": 2424, "reason": "incomplete_translation", "english": "Sort by _Activity"}
+{"line": 2434, "reason": "incomplete_translation", "english": "Cannot append message to mbox file: %s:"}
+{"line": 2435, "reason": "incomplete_translation", "english": "Computer playing for %s"}
+{"line": 2441, "reason": "incomplete_translation", "english": "Totem cannot play this type of media (%s) because it is not supported."}
+{"line": 2450, "reason": "ui_or_format_string", "english": "Location sources:"}
+{"line": 2451, "reason": "incomplete_translation", "english": "_Enabled"}
+{"line": 2457, "reason": "incomplete_translation", "english": "Failed to open file '%s': open() failed: %s"}
+{"line": 2461, "reason": "incomplete_translation", "english": "Checking for new mail at '%s'"}
+{"line": 2464, "reason": "ui_or_format_string", "english": "Filtering & action:"}
+{"line": 2468, "reason": "incomplete_translation", "english": "Work Week View: %s. %s"}
+{"line": 2470, "reason": "ui_or_format_string", "english": "%1: no folder found, will create it"}
+{"line": 2472, "reason": "incomplete_translation", "english": "Priorit_y:"}
+{"line": 2473, "reason": "incomplete_translation", "english": "Spool mail file %s"}
+{"line": 2474, "reason": "incomplete_translation", "english": "Start GNOME Commander as root"}
+{"line": 2477, "reason": "incomplete_translation", "english": "Convert EOL to LF"}
+{"line": 2478, "reason": "incomplete_translation", "english": "Regular expression compilation failed: %s: %s"}
+{"line": 2479, "reason": "incomplete_translation", "english": "Referencing an undefined variable %s!"}
+{"line": 2482, "reason": "incomplete_translation", "english": "Selected %d keys"}
+{"line": 2483, "reason": "incomplete_translation", "english": "Address B_ook:"}
+{"line": 2489, "reason": "ui_or_format_string", "english": "Could not make {0} a delegate"}
+{"line": 2491, "reason": "incomplete_translation", "english": "The name \"%s\" is not valid. Please use a different name."}
+{"line": 2492, "reason": "markup", "english": "nested <window> tag"}
+{"line": 2498, "reason": "incomplete_translation", "english": "GNOME Art variation of Circles with a Face Browser"}
+{"line": 2501, "reason": "incomplete_translation", "english": "_Delete datasource"}
+{"line": 2504, "reason": "incomplete_translation", "english": "_Delete Permanently"}
+{"line": 2505, "reason": "incomplete_translation", "english": "Oct 00 0000 at 00:00 PM"}
+{"line": 2506, "reason": "incomplete_translation", "english": "Enable CPU load graph"}
+{"line": 2514, "reason": "incomplete_translation", "english": "%s: --force-online and --offline cannot be used together. Run '%s --help' for more information."}
+{"line": 2516, "reason": "incomplete_translation", "english": "Messages from %s"}
+{"line": 2518, "reason": "incomplete_translation", "english": "Error syncing: %s"}
+{"line": 2519, "reason": "incomplete_translation", "english": "Failed to load theme \"%s\": %s"}
+{"line": 2523, "reason": "incomplete_translation", "english": "_Prefixed name:"}
+{"line": 2610, "reason": "gold_exact_match", "english": "Where is the toilet?"}
