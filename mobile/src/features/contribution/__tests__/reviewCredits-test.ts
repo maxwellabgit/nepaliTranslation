@@ -1,5 +1,8 @@
 import {
+  AWARD_COIN_LEVELS,
   GAUGE_CREDIT_MARK,
+  awardCoinCount,
+  awardFlightMs,
   countSourceWords,
   formatAdFreeClock,
   gaugePresentation,
@@ -19,6 +22,26 @@ describe('scheduledCreditsForWords', () => {
     expect(countSourceWords('one two three four\n')).toBe(4);
     expect(countSourceWords('\n\n')).toBe(0);
     expect(minutesForCredits(3)).toBe(30);
+  });
+});
+
+describe('awardCoinCount', () => {
+  test('steps up every 10 credits and stops growing after 50', () => {
+    expect(awardCoinCount(0)).toBe(0);
+    expect(awardCoinCount(1)).toBe(AWARD_COIN_LEVELS[0]);
+    expect(awardCoinCount(10)).toBe(AWARD_COIN_LEVELS[0]);
+    expect(awardCoinCount(11)).toBe(AWARD_COIN_LEVELS[1]);
+    expect(awardCoinCount(20)).toBe(AWARD_COIN_LEVELS[1]);
+    expect(awardCoinCount(21)).toBe(AWARD_COIN_LEVELS[2]);
+    expect(awardCoinCount(30)).toBe(AWARD_COIN_LEVELS[2]);
+    expect(awardCoinCount(31)).toBe(AWARD_COIN_LEVELS[3]);
+    expect(awardCoinCount(40)).toBe(AWARD_COIN_LEVELS[3]);
+    expect(awardCoinCount(41)).toBe(AWARD_COIN_LEVELS[4]);
+    expect(awardCoinCount(50)).toBe(AWARD_COIN_LEVELS[4]);
+    expect(awardCoinCount(55)).toBe(AWARD_COIN_LEVELS[4]);
+    expect(awardCoinCount(100)).toBe(awardCoinCount(50));
+    expect(awardFlightMs(10)).toBeLessThan(awardFlightMs(50));
+    expect(awardFlightMs(80)).toBe(awardFlightMs(50));
   });
 });
 

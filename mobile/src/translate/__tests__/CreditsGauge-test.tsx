@@ -97,6 +97,42 @@ describe('CreditAwardOverlay', () => {
       fireEvent.press(screen.getByTestId('credit-award-collect'));
     });
     expect(onCollect).toHaveBeenCalled();
+    expect(screen.getByTestId('credit-award-coin-4')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-5')).toBeNull();
+  });
+
+  it('uses a larger burst through 50 credits and the same burst above that', async () => {
+    const services = createTestServices({ offline: false, canRequestAds: true });
+    await act(async () => {
+      render(
+        <AppProviders services={services} bypassStartupConsent>
+          <CreditAwardOverlay
+            credits={45}
+            minutes={450}
+            capped={false}
+            flying={false}
+            onCollect={() => undefined}
+          />
+        </AppProviders>,
+      );
+    });
+    expect(screen.getByTestId('credit-award-coin-23')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-24')).toBeNull();
+    await act(async () => {
+      render(
+        <AppProviders services={services} bypassStartupConsent>
+          <CreditAwardOverlay
+            credits={80}
+            minutes={720}
+            capped
+            flying={false}
+            onCollect={() => undefined}
+          />
+        </AppProviders>,
+      );
+    });
+    expect(screen.getByTestId('credit-award-coin-23')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-24')).toBeNull();
   });
 
   it('stacks a later award on time still left and stops at 12 hours', () => {

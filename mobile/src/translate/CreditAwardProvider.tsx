@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { useAuth } from '../features/auth/AuthProvider';
 import {
+  awardFlightMs,
   minutesForCredits,
   remainingMsUntil,
   stackAdFreeMinutes,
@@ -77,7 +78,7 @@ async function claimPendingRewards(): Promise<CreditClaimRow | null> {
   return data as CreditClaimRow;
 }
 
-function usePump(fromMs: number, toMs: number, active: boolean): number {
+function usePump(fromMs: number, toMs: number, active: boolean, durationMs: number): number {
   const [value, setValue] = useState(fromMs);
   useEffect(() => {
     if (!active) {
@@ -85,7 +86,7 @@ function usePump(fromMs: number, toMs: number, active: boolean): number {
       return;
     }
     const started = Date.now();
-    const duration = 1100;
+    const duration = Math.max(400, durationMs);
     let frame = 0;
     const tick = () => {
       const t = Math.min(1, (Date.now() - started) / duration);
@@ -95,7 +96,7 @@ function usePump(fromMs: number, toMs: number, active: boolean): number {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [active, fromMs, toMs]);
+  }, [active, durationMs, fromMs, toMs]);
   return value;
 }
 
@@ -108,11 +109,15 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
   refreshRef.current = entitlement.refresh;
   const [phase, setPhase] = useState<Phase>('idle');
   const [presentation, setPresentation] = useState<CreditAwardPresentation | null>(null);
+  const [pumpMs, setPumpMs] = useState(1100);
+  const presentationRef = useRef(presentation);
+  presentationRef.current = presentation;
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const pumped = usePump(
     presentation?.fromRemainingMs ?? 0,
     presentation?.toRemainingMs ?? 0,
     phase === 'pump',
+    pumpMs,
   );
 
   useEffect(() => {
@@ -157,14 +162,18 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
   );
 
   const collect = useCallback(() => {
+    const flight = awardFlightMs(presentationRef.current?.credits ?? 0);
+    const pumpAt = 700;
+    const doneAt = flight + 280;
+    setPumpMs(Math.max(900, doneAt - pumpAt));
     setPhase((current) => (current === 'message' ? 'flying' : current));
     timers.current.forEach(clearTimeout);
     timers.current = [
-      setTimeout(() => setPhase('pump'), 700),
+      setTimeout(() => setPhase('pump'), pumpAt),
       setTimeout(() => {
         setPhase('idle');
         setPresentation(null);
-      }, 2000),
+      }, doneAt),
     ];
   }, []);
 

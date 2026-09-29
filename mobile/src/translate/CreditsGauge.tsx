@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AppState, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, AppState, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFeatureFlags } from '../app/FeatureConfigProvider';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
@@ -77,8 +77,33 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   const liveRemaining = remainingMsUntil(entitlement?.earnedAdFreeUntilMs ?? null, nowMs);
   const remainingMs = previewRemainingMs ?? award.displayRemainingMs ?? liveRemaining;
   const face = gaugePresentation(remainingMs);
-  const pumping = award.phase === 'pump' && previewRemainingMs == null;
-  const scale = pumping ? 1.06 : 1;
+  const receiving =
+    previewRemainingMs == null && (award.phase === 'flying' || award.phase === 'pump');
+  const shake = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (!receiving) {
+      shake.setValue(0);
+      return;
+    }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(shake, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shake, {
+          toValue: -1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [receiving, shake]);
   const fillColor = face.fillFull ? OVER : theme.scheme === 'dark' ? FILL_DARK : FILL;
   const timerColor = theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
   const coinColor = timerColor;
@@ -96,7 +121,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
-          transform: [{ scale }],
+          transform: [{ scale: 1 }],
         },
         row: {
           flexDirection: 'row',
@@ -124,8 +149,12 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           textAlign: 'right',
         },
       }),
-    [compact, fillColor, scale, theme.scheme, timerColor],
+    [compact, fillColor, theme.scheme, timerColor],
   );
+  const shakeX = shake.interpolate({
+    inputRange: [-1, 1],
+    outputRange: [-3, 3],
+  });
 
   const accessibilityLabel = face.overMark
     ? t('review.gaugeOverA11y', lang, { clock: face.clock, interstitial: interstitialLabel })
@@ -140,6 +169,12 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
     >
+      <Animated.View
+        testID="credits-gauge-face"
+        style={{
+          transform: [{ translateX: receiving ? shakeX : 0 }, { scale: receiving ? 1.08 : 1 }],
+        }}
+      >
       <View style={styles.row} testID="credits-gauge-total">
         <FontAwesome5 name="coins" size={14} color={coinColor} />
         <View
@@ -156,6 +191,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           {face.clock}
         </Text>
       </View>
+      </Animated.View>
     </Pressable>
   );
 }

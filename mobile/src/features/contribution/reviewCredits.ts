@@ -36,6 +36,29 @@ export function minutesForCredits(credits: number): number {
   return Math.max(0, credits) * MINUTES_PER_CREDIT;
 }
 
+/**
+ * Five coin-burst sizes, one every 10 credits, stopping at 50.
+ * 1–10, 11–20, 21–30, 31–40, then 41 and above all use the largest burst.
+ */
+export const AWARD_COIN_LEVELS = [5, 9, 14, 19, 24] as const;
+export const AWARD_COIN_STAGGER_MS = 60;
+export const AWARD_COIN_FLIGHT_MS = 1200;
+
+export function awardCoinCount(credits: number): number {
+  const safe = Number.isFinite(credits) ? Math.floor(credits) : 0;
+  if (safe <= 0) return 0;
+  const capped = Math.min(safe, GAUGE_CREDIT_MARK);
+  const band = Math.min(AWARD_COIN_LEVELS.length - 1, Math.floor((capped - 1) / 10));
+  return AWARD_COIN_LEVELS[band];
+}
+
+/** Time from the first coin leaving until the last one reaches the timer. */
+export function awardFlightMs(credits: number): number {
+  const count = awardCoinCount(credits);
+  if (count <= 0) return AWARD_COIN_FLIGHT_MS;
+  return (count - 1) * AWARD_COIN_STAGGER_MS + AWARD_COIN_FLIGHT_MS;
+}
+
 /** Stack new minutes on time still left. Never past 12 hours. */
 export function stackAdFreeMinutes(
   remainingMinutes: number,
