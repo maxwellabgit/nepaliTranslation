@@ -286,21 +286,34 @@ function detectReviewCandidate(row: Record<string, unknown>): Detected | null {
     typeof row.source_text !== "string" ||
     !["en-ne", "ne-en"].includes(String(row.direction)) ||
     !(row.proposed_target === null || typeof row.proposed_target === "string") ||
-    !["unverified_machine_suggestion", "source_only"].includes(String(row.suggestion_status))
+    !["unverified_machine_suggestion", "source_only", "licensed_public_reference"].includes(
+      String(row.suggestion_status),
+    )
   ) return null;
+  if (
+    row.suggestion_status === "licensed_public_reference" &&
+    (typeof row.proposed_target !== "string" || row.proposed_target.trim() === "")
+  ) {
+    return null;
+  }
+  const licensed = row.suggestion_status === "licensed_public_reference";
   return {
     source: row.source_text,
     target: row.proposed_target as string | null,
     direction: row.direction as "en-ne" | "ne-en",
     register: typeof row.register === "string" ? row.register : "unspecified",
     script: row.direction === "ne-en" ? "roman" : "deva",
-    licenseNote: "owner_authorized_public_review",
+    licenseNote: licensed
+      ? (typeof row.license === "string" ? row.license : "CC-BY-4.0")
+      : "owner_authorized_public_review",
     metadata: {
       prompt_id: row.id,
       surface: row.surface,
       suggestion_model: row.suggestion_model,
       suggestion_status: row.suggestion_status,
       review_status: "needs_public_review",
+      license: row.license ?? null,
+      attribution: row.attribution ?? null,
     },
   };
 }

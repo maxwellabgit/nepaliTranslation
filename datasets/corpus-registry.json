@@ -13,7 +13,7 @@
       "license": "owner-authorized-public-display",
       "rights_status": "cleared_public_display",
       "visibility": "public_review_gated",
-      "notes": "Owner authorized these 200 prompts for rewarded public review on 2026-09-25. Suggestions are machine generated and unverified. Source-only prompts require an edit. The former 40-row blind split is retired; never use any of these prompts or public answers for training or ship evaluation."
+      "notes": "Owner-authorized prompts plus CC-BY-4.0 IN22-Conv and BPCC pairs added for human review. Each benchmark row records its license and attribution. FLORES+ (CC-BY-SA, eval-only) and benchmarks/gold stay out. Do not use these prompts or public answers for training or ship evaluation."
     },
     {
       "id": "training-clean-en-ne",
