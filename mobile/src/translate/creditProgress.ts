@@ -1,19 +1,18 @@
-/** Explicit credit milestones for the compact gauge. Display never exceeds the cap. */
-export const CREDIT_CAP = 50;
-export const CREDIT_THRESHOLDS = [10, 30, 60, 120, 240] as const;
+/**
+ * Home gauge math. Fifty credits of remaining ad-free time is the visual
+ * full mark only. Earning is not capped there, and the mark is not printed.
+ */
+import { GAUGE_CREDIT_MARK } from '../features/contribution/reviewCredits';
 
-export type CreditProgress = {
-  credits: number;
-  nextThreshold: number | null;
-  /** 0–100 toward the next threshold (100 if past the last). */
-  percent: number;
-  accessibilityLabel: string;
-};
+export {
+  GAUGE_CREDIT_MARK as CREDIT_CAP,
+  formatAdFreeClock,
+  gaugePresentation,
+  stackAdFreeMinutes,
+} from '../features/contribution/reviewCredits';
 
 export type AdFreeBalance = {
-  /** Usable balance: remaining ad-free time, not a credit wallet. */
   remainingLabel: string;
-  /** Lifetime total, never presented as spendable credits. */
   totalEarnedLabel: string;
   accessibilityLabel: string;
 };
@@ -23,7 +22,7 @@ export function adFreeBalance(input: {
   nowMs: number;
   lifetimeCredits: number;
 }): AdFreeBalance {
-  const total = Math.min(CREDIT_CAP, Math.max(0, Math.floor(input.lifetimeCredits)));
+  const total = Math.max(0, Math.floor(input.lifetimeCredits));
   const totalEarnedLabel = `Total earned: ${total}`;
   const until = input.earnedUntilMs;
   if (until == null || !Number.isFinite(until) || until <= input.nowMs) {
@@ -42,32 +41,25 @@ export function adFreeBalance(input: {
   };
 }
 
-export function creditProgress(credits: number): CreditProgress {
-  const safe = Math.min(CREDIT_CAP, Math.max(0, Math.floor(credits)));
-  if (safe >= CREDIT_CAP) {
-    return {
-      credits: CREDIT_CAP,
-      nextThreshold: null,
-      percent: 100,
-      accessibilityLabel: `${CREDIT_CAP} credits. Credit cap reached.`,
-    };
-  }
-  const next = CREDIT_THRESHOLDS.find((t) => t > safe) ?? null;
-  if (next == null) {
-    return {
-      credits: safe,
-      nextThreshold: null,
-      percent: 100,
-      accessibilityLabel: `${safe} credits. All reward thresholds reached.`,
-    };
-  }
-  const prev = [...CREDIT_THRESHOLDS].reverse().find((t) => t <= safe) ?? 0;
-  const span = next - prev;
-  const percent = span <= 0 ? 100 : Math.min(100, Math.round(((safe - prev) / span) * 100));
+export type CreditProgress = {
+  credits: number;
+  fillPercent: number;
+  overMark: boolean;
+  /** Kept so older callers can see the visual mark. Never rendered. */
+  visualMark: number;
+};
+
+/** Remaining-time credits. Does not clamp the returned credit count to 50. */
+export function creditProgress(creditUnits: number): CreditProgress {
+  const credits = Math.max(0, creditUnits);
+  const fillPercent = Math.min(
+    100,
+    (Math.min(credits, GAUGE_CREDIT_MARK) / GAUGE_CREDIT_MARK) * 100,
+  );
   return {
-    credits: safe,
-    nextThreshold: next,
-    percent: Math.max(4, percent),
-    accessibilityLabel: `${safe} credits. ${next - safe} until the next reward at ${next}.`,
+    credits,
+    fillPercent,
+    overMark: credits > GAUGE_CREDIT_MARK,
+    visualMark: GAUGE_CREDIT_MARK,
   };
 }

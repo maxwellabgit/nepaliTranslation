@@ -90,11 +90,11 @@ select is(
   '10 slot rows in the open window'
 );
 
--- Every scheduled credit is 1 or 2, matching the item's length tier at pick time.
+-- Scheduled credits follow the word-count tiers: 1, 2, or 3.
 select is(
-  (select bool_and(scheduled_credits in (1, 2)) from public.review_window_items),
+  (select bool_and(scheduled_credits in (1, 2, 3)) from public.review_window_items),
   true,
-  'all scheduled credits are 1 or 2'
+  'all scheduled credits are 1, 2, or 3'
 );
 
 -- Submit a review for one item.

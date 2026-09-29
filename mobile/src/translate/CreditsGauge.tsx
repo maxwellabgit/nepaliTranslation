@@ -10,19 +10,32 @@ import {
   interstitialAdsSuppressed,
   interstitialGauge,
 } from '../features/ads/interstitialGauge';
+import {
+  gaugePresentation,
+  remainingMsUntil,
+} from '../features/contribution/reviewCredits';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { useServices } from '../services/ServiceContext';
 import { useTheme } from '../theme';
 import { t, useUiLang } from '../i18n';
-import { adFreeBalance, creditProgress } from './creditProgress';
+import { useCreditAwardOptional } from './CreditAwardProvider';
 
 type Props = {
   onPress?: () => void;
   /** Fits in the header between the app icon and Settings. */
   compact?: boolean;
+  /**
+   * Draws a fixed remaining balance. Used by unit tests and the screenshot
+   * harness. Live entitlement is ignored while this is set.
+   */
+  previewRemainingMs?: number;
 };
 
-export function CreditsGauge({ onPress, compact = false }: Props) {
+const FILL = '#C4922A';
+const FILL_DARK = '#F0C14A';
+const OVER = '#D64545';
+
+export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const flags = useFeatureFlags();
@@ -30,6 +43,7 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
   const consent = useAdConsent(services.ads);
   const entitlement = useEntitlementOptional();
   const subscription = useSubscriptionOptional();
+  const award = useCreditAwardOptional();
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [foregroundMs, setForegroundMs] = useState(0);
   useEffect(() => {
@@ -55,92 +69,67 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
       canRequestAds: consent.canRequestAds,
     }),
   });
-  const countdownLabel =
+  const interstitialLabel =
     gauge.state === 'unavailable'
       ? t('ads.interstitialUnavailable', lang)
       : formatInterstitialCountdown(gauge.remainingMs);
-  const lifetimeCredits = entitlement?.lifetimeCredits ?? 0;
-  const balance = adFreeBalance({
-    earnedUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
-    nowMs,
-    lifetimeCredits,
-  });
-  const progress = creditProgress(lifetimeCredits);
-  const fill = progress.credits === 0 ? 0 : progress.percent;
+
+  const liveRemaining = remainingMsUntil(entitlement?.earnedAdFreeUntilMs ?? null, nowMs);
+  const remainingMs = previewRemainingMs ?? award.displayRemainingMs ?? liveRemaining;
+  const face = gaugePresentation(remainingMs);
+  const pumping = award.phase === 'pump' && previewRemainingMs == null;
+  const scale = face.overMark ? 1.08 : pumping ? 1.06 : 1;
+  const fillColor = face.overMark ? OVER : theme.scheme === 'dark' ? FILL_DARK : FILL;
+  const timerColor = face.overMark ? OVER : theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
+  const coinColor = face.overMark ? OVER : theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        wrap: compact
-          ? {
-              flex: 1,
-              marginHorizontal: 6,
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              gap: 3,
-              borderRadius: 12,
-              backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
-              borderWidth: StyleSheet.hairlineWidth,
-              borderColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
-            }
-          : {
-              marginHorizontal: 16,
-              marginTop: 4,
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              gap: 8,
-              borderRadius: 16,
-              backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
-            },
-        balance: {
-          fontSize: 15,
-          fontWeight: '700',
-          color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
+        wrap: {
+          flex: compact ? 1 : undefined,
+          marginHorizontal: compact ? 6 : 16,
+          marginTop: compact ? 0 : 4,
+          paddingHorizontal: compact ? 8 : 16,
+          paddingVertical: compact ? 4 : 12,
+          borderRadius: compact ? 12 : 16,
+          backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
+          transform: [{ scale }],
         },
-        gauge: { gap: 8 },
-        gaugeHeader: {
-          flexDirection: 'row',
-          alignItems: 'baseline',
-          justifyContent: compact ? 'center' : 'space-between',
-        },
-        compactRow: {
+        row: {
           flexDirection: 'row',
           alignItems: 'center',
           gap: 6,
         },
-        trackFlex: { flex: 1 },
-        total: {
-          fontSize: compact ? 11 : 16,
-          fontWeight: '700',
-          color: theme.scheme === 'dark' ? theme.colors.saffron : '#8A6A32',
-        },
-        totalCount: {
-          fontSize: compact ? 13 : 22,
-          fontWeight: '800',
-          color: theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12',
-        },
         track: {
-          height: compact ? 8 : 16,
+          flex: 1,
+          height: face.overMark ? (compact ? 12 : 20) : compact ? 8 : 16,
           borderRadius: 8,
           overflow: 'hidden',
-          backgroundColor: theme.scheme === 'dark' ? '#8A6A32' : '#C4922A',
-        },
-        countdown: {
-          fontSize: compact ? 12 : 14,
-          fontWeight: '800',
-          fontVariant: ['tabular-nums'],
-          color: theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12',
-          minWidth: 40,
-          textAlign: 'right',
+          backgroundColor: theme.scheme === 'dark' ? '#5C4A28' : '#F3E6C4',
         },
         fill: {
           height: '100%',
           borderRadius: 5,
-          backgroundColor: theme.scheme === 'dark' ? '#F0C14A' : '#FFF6D8',
+          backgroundColor: fillColor,
+        },
+        timer: {
+          fontSize: face.overMark ? (compact ? 14 : 20) : compact ? 12 : 16,
+          fontWeight: '800',
+          fontVariant: ['tabular-nums'],
+          color: timerColor,
+          minWidth: compact ? 58 : 72,
+          textAlign: 'right',
         },
       }),
-    [compact, theme],
+    [compact, face.overMark, fillColor, scale, theme.scheme, timerColor],
   );
+
+  const accessibilityLabel = face.overMark
+    ? t('review.gaugeOverA11y', lang, { clock: face.clock, interstitial: interstitialLabel })
+    : t('review.gaugeA11y', lang, { clock: face.clock, interstitial: interstitialLabel });
 
   return (
     <Pressable
@@ -149,50 +138,24 @@ export function CreditsGauge({ onPress, compact = false }: Props) {
       onPress={onPress}
       disabled={!onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${balance.accessibilityLabel} ${countdownLabel} ${t('learn.earnRewardsA11y', lang)}`}
+      accessibilityLabel={accessibilityLabel}
     >
-      {balance.remainingLabel ? (
-        <Text style={styles.balance} testID="credits-gauge-label">
-          {balance.remainingLabel}
-        </Text>
-      ) : null}
-      {compact ? (
-        <View style={styles.compactRow} testID="credits-gauge-total">
-          <FontAwesome5
-            name="coins"
-            size={14}
-            color={theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12'}
+      <View style={styles.row} testID="credits-gauge-total">
+        <FontAwesome5 name="coins" size={face.overMark ? 18 : 14} color={coinColor} />
+        <View
+          style={styles.track}
+          accessibilityRole="progressbar"
+          accessibilityValue={{ min: 0, max: 100, now: Math.round(face.fillPercent) }}
+        >
+          <View
+            testID="credits-gauge-fill"
+            style={[styles.fill, { width: `${face.fillPercent}%` }]}
           />
-          <Text style={styles.totalCount}>{progress.credits}</Text>
-          <View
-            style={[styles.track, styles.trackFlex]}
-            accessibilityRole="progressbar"
-            accessibilityValue={{ min: 0, max: 100, now: fill }}
-          >
-            <View style={[styles.fill, { width: `${fill}%` }]} />
-          </View>
-          <Text style={styles.countdown} testID="credits-ad-countdown">
-            {countdownLabel}
-          </Text>
         </View>
-      ) : (
-        <View style={styles.gauge} testID="credits-gauge-total">
-          <View style={styles.gaugeHeader}>
-            <Text style={styles.total}>Total earned</Text>
-            <Text style={styles.countdown} testID="credits-ad-countdown">
-              {countdownLabel}
-            </Text>
-            <Text style={styles.totalCount}>{progress.credits}</Text>
-          </View>
-          <View
-            style={styles.track}
-            accessibilityRole="progressbar"
-            accessibilityValue={{ min: 0, max: 100, now: fill }}
-          >
-            <View style={[styles.fill, { width: `${fill}%` }]} />
-          </View>
-        </View>
-      )}
+        <Text style={styles.timer} testID="credits-gauge-timer">
+          {face.clock}
+        </Text>
+      </View>
     </Pressable>
   );
 }

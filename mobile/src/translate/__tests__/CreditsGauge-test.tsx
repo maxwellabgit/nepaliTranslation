@@ -1,38 +1,122 @@
+import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { AppProviders } from '../../app/AppProviders';
 import { createTestServices } from '../../services/createTestServices';
+import { CreditAwardOverlay } from '../CreditAwardOverlay';
+import { presentCreditClaim } from '../CreditAwardProvider';
 import { CreditsGauge } from '../CreditsGauge';
 
-function renderGauge(opts: Parameters<typeof createTestServices>[0] = {}) {
-  const services = createTestServices({ offline: false, canRequestAds: true, ...opts });
+const creditMs = (credits: number) => credits * 10 * 60_000;
+
+function renderGauge(previewRemainingMs?: number) {
+  const services = createTestServices({ offline: false, canRequestAds: true });
   return render(
     <AppProviders services={services} bypassStartupConsent>
-      <CreditsGauge compact />
+      <CreditsGauge compact previewRemainingMs={previewRemainingMs} />
     </AppProviders>,
   );
 }
 
-describe('CreditsGauge interstitial status', () => {
+describe('CreditsGauge ad-free timer', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
   });
 
-  it('shows ads off while the automatic interstitial is disabled', async () => {
+  it('shows an empty timer and keeps interstitial status in the label', async () => {
     await act(async () => {
-      renderGauge();
+      renderGauge(0);
     });
-    expect(screen.getByTestId('credits-ad-countdown').props.children).toBe('Ads off');
+    expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('0:00:00');
+    expect(screen.getByTestId('credits-gauge').props.accessibilityLabel).toContain('Ads off');
+    expect(screen.queryByText('50')).toBeNull();
+    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
+    expect(fill.width).toBe('0%');
   });
 
-  it('counts the shared foreground clock when interstitials are enabled', async () => {
+  it('fills to 20 credits of time without turning red', async () => {
     await act(async () => {
-      renderGauge({
-        flags: { automaticInterstitialEnabled: true },
-      });
+      renderGauge(creditMs(20));
     });
-    await waitFor(() => {
-      expect(screen.getByTestId('credits-ad-countdown').props.children).toMatch(/^(?:10:00|9:5\d)$/);
-    }, { timeout: 4000 });
+    expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('3:20:00');
+    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
+    expect(fill.width).toBe('40%');
+    expect(fill.backgroundColor).not.toBe('#D64545');
+  });
+
+  it('fills the mark at 50 credits and stays the normal size', async () => {
+    await act(async () => {
+      renderGauge(creditMs(50));
+    });
+    expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('8:20:00');
+    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
+    expect(fill.width).toBe('100%');
+    expect(fill.backgroundColor).not.toBe('#D64545');
+    const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
+    expect(wrap.transform).toEqual([{ scale: 1 }]);
+    expect(screen.queryByText('50')).toBeNull();
+  });
+
+  it('turns the inner gauge and timer red and enlarges them past 50 credits', async () => {
+    await act(async () => {
+      renderGauge(creditMs(55));
+    });
+    expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('9:10:00');
+    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
+    expect(fill.width).toBe('100%');
+    expect(fill.backgroundColor).toBe('#D64545');
+    const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
+    expect(timer.color).toBe('#D64545');
+    const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
+    expect(wrap.transform).toEqual([{ scale: 1.08 }]);
+  });
+});
+
+describe('CreditAwardOverlay', () => {
+  it('shows the award message and starts the coin flight', async () => {
+    const onCollect = jest.fn();
+    const services = createTestServices({ offline: false, canRequestAds: true });
+    await act(async () => {
+      render(
+        <AppProviders services={services} bypassStartupConsent>
+          <CreditAwardOverlay
+            credits={3}
+            minutes={30}
+            capped={false}
+            flying={false}
+            onCollect={onCollect}
+          />
+        </AppProviders>,
+      );
+    });
+    expect(screen.getByTestId('credit-award-body').props.children).toContain('3');
+    expect(screen.getByText('Credits awarded')).toBeTruthy();
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('credit-award-collect'));
+    });
+    expect(onCollect).toHaveBeenCalled();
+  });
+
+  it('stacks a later award on time still left and stops at 12 hours', () => {
+    const now = Date.parse('2026-09-29T18:00:00.000Z');
+    const open = presentCreditClaim({
+      nowMs: now,
+      earnedUntilMs: now + 40 * 60_000,
+      credits: 3,
+      minutesApplied: 30,
+      capped: false,
+    });
+    expect(open.toRemainingMs - open.fromRemainingMs).toBe(30 * 60_000);
+    expect(open.capped).toBe(false);
+
+    const full = presentCreditClaim({
+      nowMs: now,
+      earnedUntilMs: now + 11 * 60 * 60_000,
+      credits: 18,
+      minutesApplied: 180,
+      capped: false,
+    });
+    expect(full.toRemainingMs).toBe(12 * 60 * 60_000);
+    expect(full.capped).toBe(true);
   });
 });

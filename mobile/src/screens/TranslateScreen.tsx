@@ -22,6 +22,8 @@ import { useRuntime } from '../runtime/RuntimeContext';
 import { updateHistoryTranslation, type HistoryItem } from '../storage/phrasebook';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { CreditsGauge } from '../translate/CreditsGauge';
+import { CreditAwardOverlay } from '../translate/CreditAwardOverlay';
+import { useCreditAwardOptional } from '../translate/CreditAwardProvider';
 import { PromoRotator } from '../components/PromoRotator';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { TranslateComposer } from '../translate/TranslateComposer';
@@ -85,6 +87,7 @@ export function TranslateScreen({
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
+  const award = useCreditAwardOptional();
   const runtime = useRuntime();
   const subscription = useSubscriptionOptional();
   const session = useTranslationSession({ active, seed });
@@ -584,6 +587,15 @@ export function TranslateScreen({
         onClose={() => setCorrectionOpen(false)}
         onNeedAuth={onOpenSettings}
       />
+      {award.presentation && award.phase !== 'idle' ? (
+        <CreditAwardOverlay
+          credits={award.presentation.credits}
+          minutes={award.presentation.minutes}
+          capped={award.presentation.capped}
+          flying={award.phase !== 'message'}
+          onCollect={award.collect}
+        />
+      ) : null}
     </KeyboardAvoidingView>
   );
 }

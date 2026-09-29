@@ -12,9 +12,10 @@ import {
  * Contract (see .governance/V1_G0_DECISIONS.md D1/D2/D6):
  *   * One global 10-item window per America/New_York review day.
  *   * All eligible signed-in reviewers see the SAME ten items.
- *   * Rotation at 5:00 PM America/New_York closes the window, grants
- *     credits (2 credits when the snapshotted source is 0–20 words, 4 when
- *     it is 21 or more; 1 credit = 10 minutes), and opens the next window.
+ *   * Rotation at 5:00 PM America/New_York closes the window and records
+ *     credits from the snapshotted word count (1 credit at 4 words or fewer,
+ *     2 at 5 or 6, 3 at 7 or more; 1 credit = 10 minutes). The ad-free timer
+ *     moves at the reviewer's next sign-in, not at the close itself.
  *   * Copy shown in-app is "Today's 10" with subtitle "Review translations".
  *
  * Not called for guests; the mobile Review surface is signed-in only.
@@ -29,7 +30,8 @@ export type ReviewItem = {
   source_text: string;
   proposed_target: string | null;
   length_tier: 1 | 2;
-  scheduled_credits: 1 | 2 | 4;
+  /** 1, 2, or 3 from the word-count rule. 4 remains for rows snapshotted earlier. */
+  scheduled_credits: 1 | 2 | 3 | 4;
 };
 
 export type ReviewWindowSummary = {

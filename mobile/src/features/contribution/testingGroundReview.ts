@@ -4,6 +4,7 @@
  * Not gold, and not the public-review pool.
  */
 import type { ReviewItem, ReviewWindowSummary } from './publicReviewApi';
+import { countSourceWords, scheduledCreditsForWords } from './reviewCredits';
 
 export const TESTING_GROUND_REVIEW_WINDOW: ReviewWindowSummary = {
   window_id: 'tg-daily-10',
@@ -18,8 +19,8 @@ function row(
   script: string,
   source: string,
   target: string | null,
-  credits: 2 | 4 = 2,
 ): ReviewItem {
+  const credits = scheduledCreditsForWords(countSourceWords(source));
   return {
     slot,
     source_item_id: id,
@@ -28,8 +29,8 @@ function row(
     script,
     source_text: source,
     proposed_target: target,
-    length_tier: credits === 4 ? 2 : 1,
-    scheduled_credits: credits,
+    length_tier: credits >= 3 ? 2 : 1,
+    scheduled_credits: credits === 0 ? 1 : credits,
   };
 }
 
@@ -76,7 +77,6 @@ const ENGLISH: ReviewItem[] = [
     'deva',
     'Please walk past the stone bridge, keep the river on your left, and stop at the small tea shop before the north gate closes.',
     'कृपया ढुङ्गे पुल पार गर्नुहोस्, नदी बायाँ राख्नुहोस्, र उत्तर ढोका बन्द हुनुअघि सानो चिया पसलमा रोक्नुहोस्।',
-    4,
   ),
 ];
 

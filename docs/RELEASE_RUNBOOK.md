@@ -9,9 +9,9 @@ Do not claim App Store submission or external RC from this document or from Wind
 ## Product freeze (must match INTENT)
 
 - Ad-free subscription: **USD 2.99/month** (United States storefront) and **NPR 199/month** (Nepal storefront). The app shows StoreKit/RevenueCat's localized price and does not infer storefront. **Sign-in required** before purchase/restore; RevenueCat ID = Supabase UUID
-- Ads: banners on idle Translate and idle Learn only; automatic interstitial after **15 minutes** of foreground-active time since the last confirmed impression; **no daily cap**; display only after Translate Send, Camera capture, or Learn activity completion has been durably saved; SDK dismiss; remotely disableable. TestFlight = **Google test ad units** and **no revenue**
-- Rewarded video: **2 credits / 30 ad-free minutes** after server-verified SSV
-- Rewards: **1 credit = 15 minutes**; snapshotted original source word count **≤20 → 2 credits**, **≥21 → 4 credits**; close **5:00 PM America/New_York**; automated V1 validation logs a cosine score and returns **PASS**; admin unsatisfactory before close prevents reward; no clawback; late reject → alert only
+- Ads: banners on idle Translate and idle Learn only; automatic interstitial after **10 minutes** of foreground-active time since the last confirmed impression; **no daily cap**; display only after Translate Send, Camera capture, or Learn activity completion has been durably saved; SDK dismiss; remotely disableable. TestFlight = **Google test ad units** and **no revenue**
+- Rewarded video: **2 credits / 20 ad-free minutes** after server-verified SSV
+- Rewards: **1 credit = 10 minutes**; snapshotted original source word count **≤4 → 1 credit**, **5–6 → 2 credits**, **≥7 → 3 credits**; the **5:00 PM America/New_York** close decides them and the next sign-in starts the timer, stacking on time still left up to **12 hours**; the Home gauge full mark is **50** credits of remaining time and is not printed; automated V1 validation logs a cosine score and returns **PASS**; admin unsatisfactory before close prevents reward; no clawback; late reject → alert only
 - Public review: one shared **Today's 10** window (up to 10 items) at 5:00 PM America/New_York; private lookahead minimum 14 days, target 28; eligibility deny-by-default; exposed hashes excluded from train/eval export
 - First launch: language choice plus Terms and Privacy acceptance. **18+** is the signed-in contribution gate, not a guest startup block
 - Contributions: signed-in, current consent, 18+, and the matching default-off toggle; account-linked; withdrawal starts a 30-day deletion with a durable retry record
@@ -84,7 +84,7 @@ Automatic interstitial stays **off** until a human records a decision. Default f
 | Decision | Owner | Date | Build | Notes |
 |----------|-------|------|-------|-------|
 | [ ] Keep `automatic_interstitial_enabled` **off** for public V1 | | | | Recommended until external cohort is clean |
-| [ ] Enable for external TestFlight only | | | | No daily cap; 15 minutes since last confirmed impression; SDK dismiss; remote kill switch verified |
+| [ ] Enable for external TestFlight only | | | | No daily cap; 10 minutes since last confirmed impression; SDK dismiss; remote kill switch verified |
 | [ ] Enable for App Store phased release | | | | Only after seven clean external days + support review |
 
 Do not treat code landing or Playwright as interstitial enablement.

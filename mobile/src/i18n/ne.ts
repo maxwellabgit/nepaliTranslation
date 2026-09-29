@@ -463,7 +463,17 @@ export const ne: Record<MessageKey, string> = {
   'review.actionNext': 'अर्को',
   'review.thanksTitle': 'धन्यवाद',
   'review.thanksBody':
-    'तिम्रा समीक्षा आइपुगे। क्रेडिट हरेक दिन न्यूयोर्क समयको बेलुका ५ बजे दिइन्छ।',
+    'तिम्रा समीक्षा आइपुगे। क्रेडिट न्यूयोर्क समयको बेलुका ५ बजे तय हुन्छ र अर्को साइन इनमा टाइमरमा थपिन्छ।',
+  'review.awardTitle': 'क्रेडिट पाइयो',
+  'review.awardBody':
+    'तिम्रो समीक्षाबाट {credits} क्रेडिट आयो। त्यो {minutes} मिनेट विज्ञापन-रहित समय हो।',
+  'review.awardCapped':
+    'टाइमरमा समय बाँकी छ, र त्यो १२ घण्टामा रोकिन्छ। अट्ने मिनेट मात्र थपियो।',
+  'review.awardCollect': 'टाइमरमा थप',
+  'review.awardA11y': 'क्रेडिट पुरस्कार। {credits} क्रेडिट, {minutes} मिनेट विज्ञापन-रहित समय।',
+  'review.gaugeA11y': 'विज्ञापन-रहित टाइमर {clock}। {interstitial}',
+  'review.gaugeOverA11y':
+    'विज्ञापन-रहित टाइमर {clock}। टाइमर गेजको माथिल्लो चिह्न नाघ्यो। {interstitial}',
   'review.countdownLabel': 'क्रेडिट आउन बाँकी',
   'review.continue': 'जारी राख',
   'review.directionEnNe': 'अङ्ग्रेजी → नेपाली',

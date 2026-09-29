@@ -1,36 +1,30 @@
-import { adFreeBalance, creditProgress, CREDIT_THRESHOLDS } from '../creditProgress';
+import { adFreeBalance, creditProgress } from '../creditProgress';
 
 describe('creditProgress', () => {
-  test('progresses toward the next explicit threshold', () => {
-    expect(CREDIT_THRESHOLDS[0]).toBe(10);
-    const zero = creditProgress(0);
-    expect(zero.nextThreshold).toBe(10);
-    expect(zero.percent).toBeGreaterThanOrEqual(4);
-    expect(zero.accessibilityLabel).toContain('10');
-
-    const mid = creditProgress(5);
-    expect(mid.nextThreshold).toBe(10);
-    expect(mid.percent).toBe(50);
-
-    const past = creditProgress(240);
-    expect(past.credits).toBe(50);
-    expect(past.nextThreshold).toBeNull();
-    expect(past.percent).toBe(100);
+  test('uses 50 as a visual mark and still reports credits past it', () => {
+    expect(creditProgress(0).fillPercent).toBe(0);
+    expect(creditProgress(20).fillPercent).toBe(40);
+    expect(creditProgress(50).fillPercent).toBe(100);
+    expect(creditProgress(50).overMark).toBe(false);
+    const over = creditProgress(55);
+    expect(over.credits).toBe(55);
+    expect(over.fillPercent).toBe(100);
+    expect(over.overMark).toBe(true);
+    expect(over.visualMark).toBe(50);
   });
 });
 
 describe('adFreeBalance', () => {
   const now = Date.parse('2026-09-25T12:00:00.000Z');
 
-  test('shows remaining time and labels lifetime credits as total earned', () => {
+  test('shows remaining time and does not clamp the lifetime label', () => {
     const balance = adFreeBalance({
       earnedUntilMs: now + 30 * 60_000,
       nowMs: now,
-      lifetimeCredits: 7,
+      lifetimeCredits: 55,
     });
     expect(balance.remainingLabel).toBe('30 min ad-free left');
-    expect(balance.totalEarnedLabel).toBe('Total earned: 7');
-    expect(balance.remainingLabel).not.toContain('7');
+    expect(balance.totalEarnedLabel).toBe('Total earned: 55');
   });
 
   test('a passed expiry is not a spendable balance', () => {
@@ -40,7 +34,6 @@ describe('adFreeBalance', () => {
       lifetimeCredits: 4,
     });
     expect(balance.remainingLabel).toBe('');
-    expect(balance.accessibilityLabel).not.toContain('No ad-free time');
     expect(balance.totalEarnedLabel).toBe('Total earned: 4');
   });
 });

@@ -1,4 +1,4 @@
--- Assignment and close use 2 credits at 20 words and 4 credits at 21 words.
+-- Assignment and close use 1 credit at 4 words and 3 credits at 7 words.
 
 begin;
 select no_plan();
@@ -14,12 +14,12 @@ insert into private.review_source_items (
   rights_status, origin_class, anonymization_status
 ) values
 (
-  'c4-words-20',
+  'c4-words-4',
   'test:c4-words',
   'en-ne',
-  'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty',
-  'बीस',
-  100,
+  'one two three four',
+  'चार',
+  18,
   false,
   true,
   'cleared_public_display',
@@ -27,12 +27,12 @@ insert into private.review_source_items (
   'not_required'
 ),
 (
-  'c4-words-21',
+  'c4-words-7',
   'test:c4-words',
   'en-ne',
-  'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty extra',
-  'एक्काइस',
-  110,
+  'one two three four five six seven',
+  'सात',
+  34,
   false,
   true,
   'cleared_public_display',
@@ -54,12 +54,12 @@ insert into private.review_source_items (
 );
 
 select is(private.count_source_words(
-  (select source_text from private.review_source_items where content_hash = 'c4-words-20')
-), 20, '20 source words');
+  (select source_text from private.review_source_items where content_hash = 'c4-words-4')
+), 4, '4 source words');
 
 select is(private.count_source_words(
-  (select source_text from private.review_source_items where content_hash = 'c4-words-21')
-), 21, '21 source words');
+  (select source_text from private.review_source_items where content_hash = 'c4-words-7')
+), 7, '7 source words');
 
 select is(private.count_source_words('   '), 0, 'blank source is empty');
 
@@ -75,25 +75,25 @@ select public.service_rotate_review_window(
 select is(
   (select scheduled_credits from public.review_window_items i
     join private.review_source_items s on s.id = i.source_item_id
-   where s.content_hash = 'c4-words-20'),
-  2::smallint,
-  '20 words snapshot 2 credits'
+   where s.content_hash = 'c4-words-4'),
+  1::smallint,
+  '4 words snapshot 1 credit'
 );
 
 select is(
   (select original_source_word_count from public.review_window_items i
     join private.review_source_items s on s.id = i.source_item_id
-   where s.content_hash = 'c4-words-20'),
-  20,
-  '20 words are snapshotted'
+   where s.content_hash = 'c4-words-4'),
+  4,
+  '4 words are snapshotted'
 );
 
 select is(
   (select scheduled_credits from public.review_window_items i
     join private.review_source_items s on s.id = i.source_item_id
-   where s.content_hash = 'c4-words-21'),
-  4::smallint,
-  '21 words snapshot 4 credits'
+   where s.content_hash = 'c4-words-7'),
+  3::smallint,
+  '7 words snapshot 3 credits'
 );
 
 select is(
@@ -128,22 +128,30 @@ select is(
   (select minutes from public.reward_ledger
     where user_id = '11111111-1111-4111-8111-111111111111'
       and source_id like 'review_submission:%:window_close'
-      and credits = 2
+      and credits = 1
     order by created_at desc
     limit 1),
-  20,
-  'close grants 20 minutes for the 20-word item'
+  10,
+  'close records 10 minutes for the 4-word item'
 );
 
 select is(
   (select minutes from public.reward_ledger
     where user_id = '11111111-1111-4111-8111-111111111111'
       and source_id like 'review_submission:%:window_close'
-      and credits = 4
+      and credits = 3
     order by created_at desc
     limit 1),
-  40,
-  'close grants 40 minutes for the 21-word item'
+  30,
+  'close records 30 minutes for the 7-word item'
+);
+
+select is(
+  (select count(*)::int from public.pending_reward_grants
+    where user_id = '11111111-1111-4111-8111-111111111111'
+      and claimed_at is null),
+  2,
+  'close waits for the next sign-in before starting the timer'
 );
 
 select * from finish();

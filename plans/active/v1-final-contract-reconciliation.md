@@ -29,7 +29,7 @@ Public V1 is NO-GO while the committed English-to-Nepali model certificate fails
 
 | Topic | Required value |
 |-------|----------------|
-| Review credits | 2 if snapshotted original source words are 0–20; 4 if 21 or more |
+| Review credits | 1 if snapshotted original source words are 1–4; 2 if 5–6; 3 if 7 or more. Empty text is not planned and schedules 0. The 5:00 PM New York close decides them. The next sign-in starts the timer, stacking on time still left up to 12 hours. The Home gauge full mark is 50 credits of remaining time and is not printed or an earning cap |
 | Credit duration | 10 ad-free minutes |
 | Rewarded ad | 2 credits after one server-verified confirmation |
 | Review lookahead | Minimum 14 New York days before enablement; target 28; append every 14 days; never reshuffle planned days |
@@ -83,7 +83,7 @@ No public-review enablement flag exists yet. Do not enable public review before 
 - [x] **C1** One Today's 10 route; Translate, Camera, Learn only
 - [ ] **C2** Deny-by-default corpus, rights, and anonymization inventory
 - [ ] **C3** 14/28-day private lookahead and `automations/` schedules
-- [ ] **C4** 2/4-credit rewards and fail-closed export exclusions
+- [ ] **C4** Word-count credit rewards (1 / 2 / 3) and fail-closed export exclusions
 - [ ] **C5** Today's 10 reviewer flow and one admin console
 - [ ] **C6** First-launch legal acceptance separate from account contribution consent
 - [ ] **C7** 30-day rolling authenticated session
@@ -124,11 +124,11 @@ Tests: DST spring-forward and fall-back, exactly one 5:00 PM New York transition
 
 ## C4 — Reward tiers and export exclusions
 
-One Unicode-aware original-word-count function and rule version. Snapshot `original_source_word_count` and `scheduled_credits` (2 or 4) at assignment. Do not recompute from later edits. Reject empty sources before planning. Remove percentile logic from new paths. Historical tier fields stay, marked deprecated. Grant once with a stable key such as `review_submission:{submission_id}:window_close`. Validation logs algorithm/version, normalized hashes, cosine score, PASS, run id, and timestamp. Human unsatisfactory before close prevents reward. Late rejection alerts and leaves the ledger. On exposure, add source and target hashes to the exclusion registry. One fail-closed export library for every train and eval exporter. Manifests state exporter version, datasets, exclusion snapshot, row counts, and zero forbidden hashes. CI fails if a new exporter skips that module. Do not treat an empty exclusion file as proof.
+One Unicode-aware original-word-count function and rule version. Snapshot `original_source_word_count` and `scheduled_credits` (1, 2, or 3) at assignment. Do not recompute from later edits. Reject empty sources before planning. Remove percentile logic from new paths. Historical tier fields stay, marked deprecated. The 5:00 PM New York close records the grant once with a stable key such as `review_submission:{submission_id}:window_close`. The ad-free clock starts when the reviewer next signs in, including a later day, and stacks on time still left up to 12 hours. Validation logs algorithm/version, normalized hashes, cosine score, PASS, run id, and timestamp. Human unsatisfactory before close prevents reward. Late rejection alerts and leaves the ledger. On exposure, add source and target hashes to the exclusion registry. One fail-closed export library for every train and eval exporter. Manifests state exporter version, datasets, exclusion snapshot, row counts, and zero forbidden hashes. CI fails if a new exporter skips that module. Do not treat an empty exclusion file as proof.
 
 ## C5 — Today's 10 and the admin console
 
-Mobile: current window date/time, progress count, one item at a time (source, candidate, Confirm, Edit, Skip, Report), snapshotted 2 or 4 credits, retry-safe submit, rehydrated state, reward-settlement explanation, no future windows, concise bilingual copy.
+Mobile: current window date/time, progress count, one item at a time (source, candidate, Confirm, Edit, Skip, Report), snapshotted 1, 2, or 3 credits, retry-safe submit, rehydrated state, reward-settlement explanation, no future windows, concise bilingual copy. The next sign-in shows the award, flies coins into the Home timer, and pumps that timer. The gauge full mark is 50 credits of remaining time.
 
 Admin: one operational view. Correct source-item versus window identifiers. Filters for current/prior window, pending validation, PASS, human unsatisfactory, late rejection, quarantine, and contributor alerts. Server-side mutations. Prominent always-PASS notice. Paging and code-splitting if needed for the >500 kB admin bundle warning.
 
@@ -184,7 +184,7 @@ Independent review against the base SHA and `origin/main`. Push the reconciliati
 
 Record each area PASS, FAIL, or BLOCKED with an evidence path. “Not run” is not PASS.
 
-Guest core; navigation; review timing including DST; lookahead; review identity and relaunch; confirm/edit/skip/report/recycle/terminal; rewards 0/20/21 plus idempotency and late reject; validation PASS with a logged score; provenance; export safety; consent; sharing toggles; session expiry; deletion; subscription; rewarded SSV; interstitial safe and forbidden points; banners; telemetry sentinels; Camera UX; responsive layout; fresh and upgrade database; four-class model certificate; Expo Doctor, native config, privacy manifest, test ad IDs.
+Guest core; navigation; review timing including DST; lookahead; review identity and relaunch; confirm/edit/skip/report/recycle/terminal; rewards 0/4/5/6/7 plus sign-in delivery, the 12-hour timer cap, idempotency, and late reject; validation PASS with a logged score; provenance; export safety; consent; sharing toggles; session expiry; deletion; subscription; rewarded SSV; interstitial safe and forbidden points; banners; telemetry sentinels; Camera UX; responsive layout; fresh and upgrade database; four-class model certificate; Expo Doctor, native config, privacy manifest, test ad IDs.
 
 ## Human gates (do not mark done)
 

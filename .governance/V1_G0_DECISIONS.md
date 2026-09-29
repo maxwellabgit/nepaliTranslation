@@ -9,9 +9,10 @@
 
 | Topic | Required value | Supersedes |
 |-------|----------------|------------|
-| Review credits | **2** credits when snapshotted original source words are 0–20; **4** credits when 21 or more | Top-half / top-50%-longest / 1-credit and 2-credit percentile tiers |
-| Credit duration | **15** ad-free minutes per credit | Any 5-minute credit |
-| Rewarded ad | **2** credits (30 minutes) after one server-verified confirmation | 1 credit / 15 minutes per rewarded view |
+| Review credits | **1** credit when snapshotted original source words are 1–4; **2** credits when 5–6; **3** credits when 7 or more. Empty text is not planned and schedules 0. Delivered at the next sign-in after the 5:00 PM New York close | 0–20 words → 2 and 21+ → 4, and the older top-half percentile tiers |
+| Credit duration | **10** ad-free minutes per credit. New time stacks on time still left. The timer hard-stops at **12 hours** | Any 5-minute or 15-minute credit, and a clock that starts at close while the reviewer is offline |
+| Gauge | **50** credits of remaining ad-free time is a visual full mark. It is not printed and it does not cap earning. Past the mark, the inner gauge and the timer turn red and grow slightly | A numeric credit cap drawn on the gauge |
+| Rewarded ad | **2** credits (20 minutes) after one server-verified confirmation. Same timer and same gauge mark as review credits | 1 credit / 15 minutes per rewarded view |
 | Review lookahead | Minimum **14** New York days before public review is enabled; target **28**; every 14 days append, never reshuffle | Same-day random 10 with no private horizon |
 | Session inactivity | **30 days**, rolling, on refresh; JWT stays short | Indefinite Supabase auto-refresh |
 | Interstitial cap | **None.** Eligibility after 10 minutes of foreground-active time since the last confirmed impression; display only at Translate Send, Camera capture, and Learn idle-return safe points | Three per America/New_York day |
@@ -144,11 +145,17 @@ Automatic interstitial eligibility requires **15 minutes of foreground-active ti
 
 ### D6 — Credits (**1 credit = 10 minutes**, no clawback)
 
-- **One credit = 10 minutes** of ad-free time (matches one rewarded-video grant).
-- Top-50% longest samples (per D2 rank at assignment) → **2 credits** (20 minutes).
-- Otherwise → **1 credit** (10 minutes).
-- Rewarded video → **1 credit / 10 minutes**.
-- Credits granted at the 5:00 PM close (D1). If an admin marked a submission unsatisfactory before close, that submission grants zero credits.
+Owner revision 2026-09-29. The 2026-09-22 freeze used a top-50% length split (2 credits or 1 credit) and a 1-credit rewarded video. That split is not the rule. Word count, snapshotted at assignment, is.
+
+- **One credit = 10 minutes** of ad-free time.
+- **4 words or fewer → 1 credit** (10 minutes).
+- **5 or 6 words → 2 credits** (20 minutes).
+- **7 words or more → 3 credits** (30 minutes).
+- Empty or invalid source text is rejected before planning and earns nothing.
+- Rewarded video → **2 credits / 20 minutes**, and it adds to the same timer.
+- The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed. Past the mark, the inner gauge and the timer turn red and enlarge slightly.
+- The ad-free timer stacks on time still left and hard-stops at **12 hours**.
+- The **5:00 PM America/New_York** close decides the credits. Use the IANA timezone. The reviewer receives them at the next sign-in after that close, including a later day: an award message, then coins flying into the Home timer, then the timer pumping up to the time those credits are worth. If an admin marked a submission unsatisfactory before close, that submission grants zero credits.
 - **No clawback.** Post-close rejection creates a contributor alert only.
 - Subscription or active earned ad-free window suppresses banners, automatic interstitials, and house ads.
 
@@ -185,7 +192,7 @@ Internal diagnostic builds keep contribution, live ads, and paywall **off** unti
 
 ## Supersedes (historical, 2026-09-22 only)
 
-> This list records what the 2026-09-22 amendment replaced. It is not the living contract. The decision table at the top of this file supersedes this list. In particular, top-50%-longest credits and a universal 18+ startup gate are no longer in force. Word-count rewards are 2 or 4 credits. 18+ applies to contribution features.
+> This list records what the 2026-09-22 amendment replaced. It is not the living contract. The decision table at the top of this file supersedes this list. In particular, top-50%-longest credits and a universal 18+ startup gate are no longer in force. Word-count rewards are 1, 2, or 3 credits (4 or fewer / 5–6 / 7 or more words). 18+ applies to contribution features.
 
 - Prior "up to 10 per reviewer per NY day" cardinality — replaced, on 2026-09-22, by **global 10/day + 5 PM rotation**.
 - Prior "corpus excludes frozen benchmarks / license holds" restriction — replaced by **all corpora eligible for now**, with training / evaluation re-use gated by a separate future verification step.

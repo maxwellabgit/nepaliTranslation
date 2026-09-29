@@ -54,9 +54,11 @@ Re-read staging `app_config` before the build. Force-quit the app after a flag c
 
 ## What the ad UI does
 
-The credits gauge reads the same foreground-time total as interstitial eligibility. It counts only while the app is open. At 15:00 it shows **Ad ready**. The full-screen ad appears only after that, and only at Translate Send, a saved Camera capture, or a finished Learn activity. AdMob owns presentation and dismissal. There is no skippable video when the gauge hits zero.
+The Home gauge is the ad-free timer. It fills toward 50 credits of remaining time (10 minutes each) and does not print that mark. Past 50 credits the inner bar and the clock turn red and grow slightly. The clock hard-stops at 12 hours. Review credits decided at 5:00 PM New York are added the next time the reviewer signs in, with an award message and coins flying into this timer.
 
-**Ads off** means the automatic interstitial is suppressed: the flag is off, the phone is offline, ad consent blocks the request, or subscription / earned ad-free time is active. A confirmed impression resets the gauge to 15:00.
+The automatic interstitial is a separate 10-minute foreground clock. It is not the number on the Home gauge. The full-screen ad appears only after those 10 minutes, and only at Translate Send, a saved Camera capture, or a finished Learn activity. AdMob owns presentation and dismissal.
+
+**Ads off** means the automatic interstitial is suppressed: the flag is off, the phone is offline, ad consent blocks the request, or subscription / earned ad-free time is active. A confirmed impression resets that interstitial clock. It does not zero the ad-free timer.
 
 Banners appear on idle Translate (empty field, keyboard down) and on Learn. The test banner is anchored adaptive.
 
@@ -68,9 +70,9 @@ Check a box only on the installed build above.
 - [ ] Airplane mode: typed translation, Camera, and Learn still work
 - [ ] Idle Translate banner shows a Test Ad
 - [ ] Learn banner shows a Test Ad
-- [ ] Gauge reaches Ad ready only after 15 minutes in the foreground
-- [ ] Full-screen ad appears at a safe point after Ad ready, then the gauge returns to 15:00
-- [ ] Gauge shows Ads off when the interstitial flag is off, or while ad-free / subscribed
+- [ ] Full-screen ad appears at a safe point only after 10 minutes in the foreground, then that interstitial clock resets
+- [ ] Home timer shows remaining ad-free time. It does not show a credit cap of 50. Past that much time the bar and clock are red and slightly larger
+- [ ] Signing in after a 5:00 PM New York close shows the award, then coins move into the timer
 - [ ] Source-only review hides “Our translation”; a typed answer and “Same meaning” submit as edits; skip and report submit as skip and report
 - [ ] Same build on iPhone and iPad
 

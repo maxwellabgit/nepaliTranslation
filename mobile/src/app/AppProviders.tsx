@@ -7,6 +7,7 @@ import { AuthProvider } from '../features/auth/AuthProvider';
 import { AuthStatusBanner } from '../features/auth/AuthStatusBanner';
 import { StartupConsentGate } from '../features/auth/StartupConsentGate';
 import { EntitlementProvider } from '../features/entitlements/EntitlementProvider';
+import { CreditAwardProvider } from '../translate/CreditAwardProvider';
 import { SubscriptionProvider } from '../features/subscription/SubscriptionProvider';
 import { migrateLegacyReviewQueue } from '../storage/contributionOutbox';
 import { ServiceProvider } from '../services/ServiceContext';
@@ -60,6 +61,7 @@ export function AppProviders({
           <RuntimeProvider runtime={runtime}>
             <AuthProvider>
               <EntitlementProvider>
+                <CreditAwardProvider>
                 <FeatureConfigProvider>
                   <SubscriptionProvider>
                   <LegacyOutboxMigration />
@@ -71,6 +73,7 @@ export function AppProviders({
                   </StartupConsentGate>
                   </SubscriptionProvider>
                 </FeatureConfigProvider>
+                </CreditAwardProvider>
               </EntitlementProvider>
             </AuthProvider>
           </RuntimeProvider>

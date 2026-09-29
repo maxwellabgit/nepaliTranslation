@@ -91,12 +91,17 @@ At close, each satisfactory confirm/edit submission receives credits exactly onc
 
 Original source word count, snapshotted at assignment, determines reward:
 
-- 0–20 words: **2 credits**
-- 21 or more words: **4 credits**
+- 4 words or fewer: **1 credit** (10 minutes)
+- 5 or 6 words: **2 credits** (20 minutes)
+- 7 words or more: **3 credits** (30 minutes)
 
-**One credit = 10 ad-free minutes.** A short review earns 20 ad-free minutes. A long review earns 40 ad-free minutes. Empty or invalid source items are rejected before planning.
+**One credit = 10 ad-free minutes.** Empty or invalid source items are rejected before planning and earn nothing.
 
-There is no top-half, percentile, longest-50-percent, or 1-credit/2-credit corpus-relative reward on the new grant path. Historical ledger rows stay as history. New reward rows carry a rule version and an idempotency key.
+The close at **5:00 PM `America/New_York`** decides the credits. The reviewer receives them at the next sign-in after that close, including a later day. Sign-in shows an award message, then coins fly into the Home timer and the timer pumps up to the time those credits are worth. Time still left on the clock is kept. The timer has a hard maximum of **12 hours**.
+
+The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed on the gauge. Remaining time worth more than 50 credits turns the inner gauge and the timer red and enlarges them slightly. Rewarded-video credits use the same timer and the same mark.
+
+There is no top-half, percentile, longest-50-percent, or corpus-relative reward on the new grant path. Historical ledger rows stay as history. New reward rows carry a rule version and an idempotency key.
 
 A skip earns zero.
 
@@ -158,12 +163,13 @@ Flags must be remote-controllable without an app update. Disabling them must not
 
 | Topic | Required value |
 |-------|----------------|
-| Review credits | 2 if original source words ≤ 20; 4 if ≥ 21. Snapshotted at assignment. |
-| Credit duration | 10 ad-free minutes |
-| Rewarded ad | 2 credits (30 minutes), server-verified once |
+| Review credits | 1 if original source words are 1–4; 2 if 5–6; 3 if 7 or more. Empty text is not planned and schedules 0. Snapshotted at assignment. Delivered at the next sign-in after the 5:00 PM New York close. |
+| Credit duration | 10 ad-free minutes. Timer stacks on time still left and hard-stops at 12 hours. |
+| Gauge | 50 credits of remaining ad-free time is a visual full mark only. It is not printed and it does not cap earning. Past that mark the inner gauge and timer turn red and grow slightly. |
+| Rewarded ad | 2 credits (20 minutes), server-verified once |
 | Review lookahead | Minimum 14 days before enablement; target 28; append every 14 days; never reshuffle |
 | Session inactivity | 30 days, rolling; short JWT |
-| Interstitial cap | None. 15 minutes foreground-active since last confirmed impression; safe points only |
+| Interstitial cap | None. 10 minutes foreground-active since last confirmed impression; safe points only |
 | Subscription | USD 2.99/month (US); NPR 199/month (Nepal); StoreKit localized price |
 
 ## Goals (final contract reconciliation — C0–C15)
@@ -171,7 +177,7 @@ Flags must be remote-controllable without an app update. Disabling them must not
 - [ ] **C1** One Today's 10 route; three primary surfaces
 - [ ] **C2** Deny-by-default corpus, rights, and anonymization inventory
 - [ ] **C3** 14/28-day private lookahead
-- [ ] **C4** 2/4-credit rewards and fail-closed export exclusions
+- [ ] **C4** Word-count credit rewards (1 / 2 / 3) and fail-closed export exclusions
 - [ ] **C5** Today's 10 reviewer flow and one admin console
 - [ ] **C6** First-launch legal acceptance separate from account contribution consent
 - [ ] **C7** 30-day rolling authenticated session
@@ -192,7 +198,7 @@ Historical F0–F10, G0–G7, and R0–R9 plans remain recorded. Do not reopen t
 - Must: EN↔NE only in product languages
 - Must: keep Expo SDK **57** for this release
 - Must: server is source of truth for earned rewards; StoreKit/RevenueCat for purchased price and entitlement
-- Must: grant new review rewards only as 2 or 4 credits under the word-count rule, exactly once
+- Must: grant new review rewards as 1, 2, or 3 credits from the snapshotted word count, exactly once, and start the ad-free clock at the next sign-in
 - Must: keep automated V1 review validation visibly always-PASS while still logging a real local cosine score
 - Must: exclude publicly exposed source and target hashes from every train and eval export, fail closed
 - Must: delete linked contribution data by the 30-day deadline, with a durable retry record

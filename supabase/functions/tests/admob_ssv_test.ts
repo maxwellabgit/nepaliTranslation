@@ -28,7 +28,7 @@ async function buildValidQuery(opts?: {
     `ad_network=5450213213286189855`,
     `ad_unit=${opts?.unit ?? UNIT}`,
     `custom_data=${opts?.customData ?? SESSION}`,
-    `reward_amount=${opts?.rewardAmount ?? "30"}`,
+    `reward_amount=${opts?.rewardAmount ?? "20"}`,
     `reward_item=${opts?.rewardItem ?? "ad_free_minutes"}`,
     `timestamp=${timestamp}`,
     `transaction_id=${transactionId}`,
@@ -50,7 +50,7 @@ Deno.test("SSV valid fixture passes", async () => {
     allowedAdUnit: UNIT,
     expectedUserId: USER,
     expectedSessionToken: SESSION,
-    expectedRewardAmount: "30",
+    expectedRewardAmount: "20",
     expectedRewardItem: "ad_free_minutes",
   });
   assertEquals(ok.ok, true);
@@ -62,7 +62,7 @@ Deno.test("SSV accepts Google's signed numeric unit for the configured full ID",
     query: built.query,
     keys: [built.pub],
     allowedAdUnit: "ca-app-pub-1234567890123456/2222222222",
-    expectedRewardAmount: "30",
+    expectedRewardAmount: "20",
     expectedRewardItem: "ad_free_minutes",
   });
   assertEquals(ok.ok, true);
@@ -78,7 +78,7 @@ Deno.test("SSV accepts Google's signed numeric unit for the configured full ID",
 Deno.test("SSV altered query fails", async () => {
   clearAdmobKeyCache();
   const built = await buildValidQuery();
-  const altered = built.query.replace("reward_amount=30", "reward_amount=99");
+  const altered = built.query.replace("reward_amount=20", "reward_amount=99");
   const ok = await verifyAdmobSsv({
     query: altered,
     keys: [built.pub],
@@ -162,7 +162,7 @@ Deno.test("SSV wrong reward fails", async () => {
     query: built.query,
     keys: [built.pub],
     allowedAdUnit: UNIT,
-    expectedRewardAmount: "30",
+    expectedRewardAmount: "20",
     expectedRewardItem: "ad_free_minutes",
   });
   assertEquals(ok.ok, false);
@@ -201,7 +201,7 @@ Deno.test("SSV key rotation: unknown key_id fails; rotated key passes", async ()
     `ad_network=5450213213286189855`,
     `ad_unit=${UNIT}`,
     `custom_data=${SESSION}`,
-    `reward_amount=30`,
+    `reward_amount=20`,
     `reward_item=ad_free_minutes`,
     `timestamp=${timestamp}`,
     `transaction_id=rot_tx_1`,
@@ -226,6 +226,8 @@ Deno.test("SSV key rotation: unknown key_id fails; rotated key passes", async ()
       { keyId: newKeyId, base64: newPair.publicKey.base64 },
     ],
     allowedAdUnit: UNIT,
+    expectedRewardAmount: "20",
+    expectedRewardItem: "ad_free_minutes",
   });
   assertEquals(withRotated.ok, true);
 });

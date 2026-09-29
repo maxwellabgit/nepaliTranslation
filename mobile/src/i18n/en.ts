@@ -459,7 +459,17 @@ export const en = {
   'review.actionNext': 'Next',
   'review.thanksTitle': 'Thank you',
   'review.thanksBody':
-    'Your reviews are in. Credits are awarded at 5:00 PM New York, the same time each day.',
+    'Your reviews are in. Credits are decided at 5:00 PM New York and added to your timer the next time you sign in.',
+  'review.awardTitle': 'Credits awarded',
+  'review.awardBody':
+    'You earned {credits} credits from your reviews. That is {minutes} minutes of ad-free time.',
+  'review.awardCapped':
+    'Your timer already holds time, and it stops at 12 hours. Only the minutes that fit were added.',
+  'review.awardCollect': 'Add to my timer',
+  'review.awardA11y': 'Credit award. {credits} credits, {minutes} minutes of ad-free time.',
+  'review.gaugeA11y': 'Ad-free timer {clock}. {interstitial}',
+  'review.gaugeOverA11y':
+    'Ad-free timer {clock}. The timer is past the top of the gauge. {interstitial}',
   'review.countdownLabel': 'Credits awarded in',
   'review.continue': 'Continue',
   'review.directionEnNe': 'English → Nepali',

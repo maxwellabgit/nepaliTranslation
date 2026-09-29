@@ -95,7 +95,7 @@ describe('decideInterstitialPresentation', () => {
     ).toEqual({ show: false, reason: 'translating' });
   });
 
-  it('enforces the 15-minute foreground gate and has no daily cap', () => {
+  it('enforces the 10-minute foreground gate and has no daily cap', () => {
     expect(
       decideInterstitialPresentation({
         ...base,
