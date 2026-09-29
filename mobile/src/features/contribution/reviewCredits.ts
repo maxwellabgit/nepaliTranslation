@@ -40,7 +40,7 @@ export function minutesForCredits(credits: number): number {
  * Five coin-burst sizes, one every 10 credits, stopping at 50.
  * 1–10, 11–20, 21–30, 31–40, then 41 and above all use the largest burst.
  */
-export const AWARD_COIN_LEVELS = [5, 9, 14, 19, 24] as const;
+export const AWARD_COIN_LEVELS = [7, 12, 17, 22, 30] as const;
 export const AWARD_COIN_STAGGER_MS = 60;
 export const AWARD_COIN_FLIGHT_MS = 1200;
 

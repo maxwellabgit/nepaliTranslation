@@ -28,6 +28,7 @@ describe('scheduledCreditsForWords', () => {
 describe('awardCoinCount', () => {
   test('steps up every 10 credits and stops growing after 50', () => {
     expect(awardCoinCount(0)).toBe(0);
+    expect(AWARD_COIN_LEVELS).toEqual([7, 12, 17, 22, 30]);
     expect(awardCoinCount(1)).toBe(AWARD_COIN_LEVELS[0]);
     expect(awardCoinCount(10)).toBe(AWARD_COIN_LEVELS[0]);
     expect(awardCoinCount(11)).toBe(AWARD_COIN_LEVELS[1]);

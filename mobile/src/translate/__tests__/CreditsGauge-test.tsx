@@ -97,8 +97,8 @@ describe('CreditAwardOverlay', () => {
       fireEvent.press(screen.getByTestId('credit-award-collect'));
     });
     expect(onCollect).toHaveBeenCalled();
-    expect(screen.getByTestId('credit-award-coin-4')).toBeTruthy();
-    expect(screen.queryByTestId('credit-award-coin-5')).toBeNull();
+    expect(screen.getByTestId('credit-award-coin-6')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-7')).toBeNull();
   });
 
   it('uses a larger burst through 50 credits and the same burst above that', async () => {
@@ -116,8 +116,8 @@ describe('CreditAwardOverlay', () => {
         </AppProviders>,
       );
     });
-    expect(screen.getByTestId('credit-award-coin-23')).toBeTruthy();
-    expect(screen.queryByTestId('credit-award-coin-24')).toBeNull();
+    expect(screen.getByTestId('credit-award-coin-29')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-30')).toBeNull();
     await act(async () => {
       render(
         <AppProviders services={services} bypassStartupConsent>
@@ -131,8 +131,8 @@ describe('CreditAwardOverlay', () => {
         </AppProviders>,
       );
     });
-    expect(screen.getByTestId('credit-award-coin-23')).toBeTruthy();
-    expect(screen.queryByTestId('credit-award-coin-24')).toBeNull();
+    expect(screen.getByTestId('credit-award-coin-29')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-30')).toBeNull();
   });
 
   it('stacks a later award on time still left and stops at 12 hours', () => {
