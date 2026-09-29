@@ -1,0 +1,201 @@
+﻿input,output,direction,register,surface,suggestion_status,suggestion_model,review_status,id,source_file
+Could you tell me your name?,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0001,balance_data/review_pool/for_review.jsonl
+What's your name?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0002,balance_data/review_pool/for_review.jsonl
+Would you please repeat that?,के तपाईँ कृपया त्यो दोहोऱ्याउनुहुनेछ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0003,balance_data/review_pool/for_review.jsonl
+Say that again?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0004,balance_data/review_pool/for_review.jsonl
+Are you waiting for someone?,के तपाईँ कसैको प्रतीक्षामा हुनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0005,balance_data/review_pool/for_review.jsonl
+You waiting for someone?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0006,balance_data/review_pool/for_review.jsonl
+Can you help me with this form?,के तपाईँ मलाई यो फारममा मद्दत गर्न सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0007,balance_data/review_pool/for_review.jsonl
+Can you help me fill this out?,के तपाईँ मलाई यो भर्न मद्दत गर्न सक्नुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0008,balance_data/review_pool/for_review.jsonl
+Do you have a moment?,के तपाईँसँग एक क्षण छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0009,balance_data/review_pool/for_review.jsonl
+You got a minute?,तपाईँसँग एक मिनेट छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0010,balance_data/review_pool/for_review.jsonl
+Where are you from?,तपाईँ कहाँबाट हुनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0011,balance_data/review_pool/for_review.jsonl
+Where you from?,तपाईँ कहाँबाट हुनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0012,balance_data/review_pool/for_review.jsonl
+Did you understand me?,के तपाईँले मलाई बुझ्नुभयो?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0013,balance_data/review_pool/for_review.jsonl
+Did you get what I said?,मैले भनेको कुरा तपाईँले बुझ्नुभयो?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0014,balance_data/review_pool/for_review.jsonl
+Could you speak more slowly?,के तपाईँ अझ बिस्तारै बोल्न सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0015,balance_data/review_pool/for_review.jsonl
+"Talk slower, okay?",,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0016,balance_data/review_pool/for_review.jsonl
+What would you like to drink?,तपाईँ के पिउन चाहनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0017,balance_data/review_pool/for_review.jsonl
+What do you want to drink?,तपाईँ के पिउन चाहनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0018,balance_data/review_pool/for_review.jsonl
+Are you feeling cold?,के तपाईँलाई चिसो लाग्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0019,balance_data/review_pool/for_review.jsonl
+You cold?,तपाईँलाई चिसो लाग्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0020,balance_data/review_pool/for_review.jsonl
+Please tell me if you need anything.,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0021,balance_data/review_pool/for_review.jsonl
+Tell me if you need something.,तपाईँलाई केही चाहिएको छ भने मलाई बताउनुहोस्।,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0022,balance_data/review_pool/for_review.jsonl
+Have you eaten yet?,तपाईँले अझै खानुभएको छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0023,balance_data/review_pool/for_review.jsonl
+You eaten yet?,तपाईँले अझै खानुभएको छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0024,balance_data/review_pool/for_review.jsonl
+May I ask you a question?,के म तपाईँलाई एउटा प्रश्न सोध्न सक्छु?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0025,balance_data/review_pool/for_review.jsonl
+Can I ask you something?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0026,balance_data/review_pool/for_review.jsonl
+Do you know the way from here?,के तपाईँलाई यहाँबाट जाने बाटो थाहा छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0027,balance_data/review_pool/for_review.jsonl
+You know the way?,तपाईँलाई बाटो थाहा छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0028,balance_data/review_pool/for_review.jsonl
+Would you like me to call them?,के तपाईँ चाहनुहुन्छ कि म तिनीहरूलाई फोन गर्छु?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0029,balance_data/review_pool/for_review.jsonl
+Want me to call them?,के म तिनीहरूलाई फोन गर्न चाहन्छु?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0030,balance_data/review_pool/for_review.jsonl
+Are you traveling alone?,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0031,balance_data/review_pool/for_review.jsonl
+You here alone?,तपाईँ यहाँ एक्लै हुनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0032,balance_data/review_pool/for_review.jsonl
+Could you note that on paper for me?,के तपाईँ मेरो लागि कागजमा नोट गर्न सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0033,balance_data/review_pool/for_review.jsonl
+Write that down for me?,के यो मेरा लागि लेख्नुहोस्?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0034,balance_data/review_pool/for_review.jsonl
+What time do you close?,तपाईँ कुन समयमा बन्द गर्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0035,balance_data/review_pool/for_review.jsonl
+When do you close?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0036,balance_data/review_pool/for_review.jsonl
+Do you take payment by card?,के तपाईँ कार्डद्वारा भुक्तानी लिनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0037,balance_data/review_pool/for_review.jsonl
+You take cards?,तपाईँ कार्ड लिनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0038,balance_data/review_pool/for_review.jsonl
+Is this seat free for you?,के यो सिट तपाईँका लागि निःशुल्क छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0039,balance_data/review_pool/for_review.jsonl
+You sitting here?,तपाईँ यहाँ बस्नुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0040,balance_data/review_pool/for_review.jsonl
+Please let me know when you are ready.,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0041,balance_data/review_pool/for_review.jsonl
+Tell me when you're ready.,तपाईँ तयार हुँदा मलाई बताउनुहोस्।,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0042,balance_data/review_pool/for_review.jsonl
+Did you bring your ticket?,के तपाईँले आफ्नो टिकट ल्याउनुभयो?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0043,balance_data/review_pool/for_review.jsonl
+You bring your ticket?,तपाईँ आफ्नो टिकट ल्याउनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0044,balance_data/review_pool/for_review.jsonl
+Can you hear me clearly?,के तपाईँ मलाई स्पष्ट रूपमा सुन्न सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0045,balance_data/review_pool/for_review.jsonl
+Can you hear me?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0046,balance_data/review_pool/for_review.jsonl
+Would you mind waiting outside?,के तपाईँ बाहिर पर्खन मन गर्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0047,balance_data/review_pool/for_review.jsonl
+Wait outside a second?,एक सेकेन्ड बाहिर पर्खनुहोस्?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0048,balance_data/review_pool/for_review.jsonl
+How long have you been here?,तपाईँ यहाँ कति समयदेखि हुनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0049,balance_data/review_pool/for_review.jsonl
+How long you been here?,तपाईँ यहाँ कति समयदेखि हुनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0050,balance_data/review_pool/for_review.jsonl
+Are you looking for the office?,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0051,balance_data/review_pool/for_review.jsonl
+You looking for the office?,तपाईँ कार्यालय खोज्दै हुनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0052,balance_data/review_pool/for_review.jsonl
+Please call me when you arrive.,तपाईँ आइपुग्दा कृपया मलाई फोन गर्नुहोस्।,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0053,balance_data/review_pool/for_review.jsonl
+Call me when you get there.,तपाईँ त्यहाँ पुग्दा मलाई फोन गर्नुहोस्।,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0054,balance_data/review_pool/for_review.jsonl
+Do you need a bag?,के तपाईँलाई झोला चाहिन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0055,balance_data/review_pool/for_review.jsonl
+You need a bag?,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0056,balance_data/review_pool/for_review.jsonl
+Could you show me your identification?,के तपाईँ मलाई आफ्नो पहिचान देखाउन सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0057,balance_data/review_pool/for_review.jsonl
+Can I see your ID?,के म तपाईँको आईडी देख्न सक्छु?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0058,balance_data/review_pool/for_review.jsonl
+What is your phone number?,तपाईँको फोन नम्बर के हो?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0059,balance_data/review_pool/for_review.jsonl
+What's your number?,तपाईँको नम्बर के हो?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0060,balance_data/review_pool/for_review.jsonl
+Are you allergic to anything?,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0061,balance_data/review_pool/for_review.jsonl
+You allergic to anything?,तपाईँलाई कुनै पनि कुराले एलर्जी छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0062,balance_data/review_pool/for_review.jsonl
+Would you prefer the window or the aisle?,के तपाईँ झ्याल वा गलियारा मन पराउनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0063,balance_data/review_pool/for_review.jsonl
+Window or aisle?,विन्डो वा आइल?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0064,balance_data/review_pool/for_review.jsonl
+Please tell me if you feel worse.,यदि तपाईँलाई नराम्रो महसुस भयो भने कृपया मलाई बताउनुहोस्।,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0065,balance_data/review_pool/for_review.jsonl
+Tell me if you feel worse.,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0066,balance_data/review_pool/for_review.jsonl
+Do you want this in a smaller size?,के तपाईँ यो सानो आकारमा चाहनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0067,balance_data/review_pool/for_review.jsonl
+You want a smaller one?,तपाईँ एउटा सानो चाहनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0068,balance_data/review_pool/for_review.jsonl
+Can you meet me at the gate?,के तपाईँ मलाई गेटमा भेट्न सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0069,balance_data/review_pool/for_review.jsonl
+Meet me at the gate?,मलाई गेटमा भेट्नुहोस्?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0070,balance_data/review_pool/for_review.jsonl
+Have you been here before?,,en-ne,formal,conversation_you,source_only,,needs_public_review,bal_0071,balance_data/review_pool/for_review.jsonl
+You been here before?,तपाईँ यहाँ पहिले पनि आउनुभएको छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0072,balance_data/review_pool/for_review.jsonl
+Would you like water while you wait?,के तपाईँ पर्खँदा पानी चाहनुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0073,balance_data/review_pool/for_review.jsonl
+Want water while you wait?,तपाईँ पर्खँदा पानी चाहनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0074,balance_data/review_pool/for_review.jsonl
+Please keep your bag with you.,कृपया आफ्नो झोला आफूसँग राख्नुहोस्।,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0075,balance_data/review_pool/for_review.jsonl
+Keep your bag with you.,,en-ne,informal,conversation_you,source_only,,needs_public_review,bal_0076,balance_data/review_pool/for_review.jsonl
+Who are you here to see?,तपाईँ यहाँ कसलाई हेर्न आउनुभएको हो?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0077,balance_data/review_pool/for_review.jsonl
+Who you here to see?,तपाईँ यहाँ कसलाई हेर्न आउनुहुन्छ?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0078,balance_data/review_pool/for_review.jsonl
+Could you confirm your address?,के तपाईँ आफ्नो ठेगाना पुष्टि गर्न सक्नुहुन्छ?,en-ne,formal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0079,balance_data/review_pool/for_review.jsonl
+What's your address again?,तपाईँको ठेगाना फेरि के हो?,en-ne,informal,conversation_you,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0080,balance_data/review_pool/for_review.jsonl
+The next bus to Pokhara leaves at six.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0081,balance_data/review_pool/for_review.jsonl
+Is this the line for domestic departures?,के यो घरेलु प्रस्थानका लागि लाइन हो?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0082,balance_data/review_pool/for_review.jsonl
+Our train is delayed by forty minutes.,हाम्रो रेल चालीस मिनेट ढिलो भयो।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0083,balance_data/review_pool/for_review.jsonl
+"I need a ticket to the airport, one way.","मलाई विमानस्थलको टिकट चाहिन्छ, एक बाटो।",en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0084,balance_data/review_pool/for_review.jsonl
+Where do I collect checked bags?,मैले जाँच गरिएका झोलाहरू कहाँ सङ्कलन गर्ने?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0085,balance_data/review_pool/for_review.jsonl
+The hotel is across from the old bus park.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0086,balance_data/review_pool/for_review.jsonl
+Please stop the taxi at the temple gate.,कृपया मन्दिरको ढोकामा ट्याक्सी रोक्नुहोस्।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0087,balance_data/review_pool/for_review.jsonl
+How much is a shared jeep to the trailhead?,ट्रेलहेडमा साझा जीप कति हुन्छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0088,balance_data/review_pool/for_review.jsonl
+I missed the last cable car down.,मैले अन्तिम केबल कार मिस गरेँ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0089,balance_data/review_pool/for_review.jsonl
+Is there a night bus that has blankets?,के त्यहाँ कम्बल भएको रातको बस छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0090,balance_data/review_pool/for_review.jsonl
+The guesthouse key is at the front desk.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0091,balance_data/review_pool/for_review.jsonl
+We have a reservation under the name Sharma.,हामीसँग शर्माको नाममा आरक्षण छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0092,balance_data/review_pool/for_review.jsonl
+Which platform does the eastbound train use?,पूर्वतर्फ जाने रेलले कुन प्लेटफर्म प्रयोग गर्दछ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0093,balance_data/review_pool/for_review.jsonl
+The road to the village is closed after dark.,गाउँ जाने सडक अँध्यारो भएपछि बन्द हुन्छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0094,balance_data/review_pool/for_review.jsonl
+Can I store this backpack until evening?,के म यो ब्याकप्याक साँझसम्म भण्डारण गर्न सक्छु?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0095,balance_data/review_pool/for_review.jsonl
+The ferry leaves when it is full.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0096,balance_data/review_pool/for_review.jsonl
+I would like a room with a lock on the door.,म ढोकामा ताला भएको कोठा चाहन्छु।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0097,balance_data/review_pool/for_review.jsonl
+Where is the ticket counter for local buses?,स्थानीय बसहरूका लागि टिकट काउन्टर कहाँ छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0098,balance_data/review_pool/for_review.jsonl
+My flight connection is in thirty minutes.,मेरो उडान जडान तीस मिनेटमा छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0099,balance_data/review_pool/for_review.jsonl
+"Please drop me near the footbridge, not the mall.","कृपया मलाई मलमा होइन, फुटब्रिजको छेउमा छोड्नुहोस्।",en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0100,balance_data/review_pool/for_review.jsonl
+Is drinking water sold on this bus?,,en-ne,formal,travel,source_only,,needs_public_review,bal_0101,balance_data/review_pool/for_review.jsonl
+The mountain road is slippery after rain.,पाहाडी सडक वर्षापछि चिप्लिन्छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0102,balance_data/review_pool/for_review.jsonl
+I need to extend my stay by one night.,मैले मेरो प्रवास एक रातसम्म बढाउन आवश्यक छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0103,balance_data/review_pool/for_review.jsonl
+Which stop is closest to the hospital?,अस्पतालको सबैभन्दा नजिकको स्टप कुन हो?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0104,balance_data/review_pool/for_review.jsonl
+The driver said the pass is open today.,चालकले भने कि आज पास खुला छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0105,balance_data/review_pool/for_review.jsonl
+Please write the lodge name in Nepali.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0106,balance_data/review_pool/for_review.jsonl
+We are looking for the trail marked with red paint.,हामी रातो रङले चिन्ह लगाइएको ट्रेल खोज्दैछौँ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0107,balance_data/review_pool/for_review.jsonl
+Is there a luggage rack above the seats?,के सिटहरू माथि सामानको र्याक छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0108,balance_data/review_pool/for_review.jsonl
+The border post closes at four.,सीमा चौकी चार बजे बन्द हुन्छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0109,balance_data/review_pool/for_review.jsonl
+I left my jacket on the last bus.,मैले अन्तिम बसमा मेरो ज्याकेट छोडेको थिएँ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0110,balance_data/review_pool/for_review.jsonl
+How long is the walk from this stop?,,en-ne,formal,travel,source_only,,needs_public_review,bal_0111,balance_data/review_pool/for_review.jsonl
+Please slow down on the curves.,कृपया वक्रहरूमा ढिलो गर्नुहोस्।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0112,balance_data/review_pool/for_review.jsonl
+We need two seats together if possible.,यदि सम्भव छ भने हामीलाई दुई सिटहरू सँगै चाहिन्छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0113,balance_data/review_pool/for_review.jsonl
+The map shows a bridge that is not here.,नक्साले एउटा पुल देखाउँछ जुन यहाँ छैन।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0114,balance_data/review_pool/for_review.jsonl
+Is the museum open on Monday morning?,के सङ्ग्रहालय सोमबार बिहान खुल्छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0115,balance_data/review_pool/for_review.jsonl
+I would like to pay the entrance fee for one adult.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0116,balance_data/review_pool/for_review.jsonl
+Where can I charge a phone for an hour?,म एक घन्टाका लागि फोन कहाँ चार्ज गर्न सक्छु?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0117,balance_data/review_pool/for_review.jsonl
+"The homestay includes breakfast, not dinner.","होमस्टेमा बिहानको खाजा समावेश हुन्छ, रातिको खाना होइन।",en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0118,balance_data/review_pool/for_review.jsonl
+Please point toward the river path.,कृपया नदीको बाटोतिर सङ्केत गर्नुहोस्।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0119,balance_data/review_pool/for_review.jsonl
+Our guide will meet us by the blue gate.,हाम्रो गाइडले हामीलाई निलो गेटबाट भेट्ने छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0120,balance_data/review_pool/for_review.jsonl
+The altitude is making the climb slow.,,en-ne,formal,travel,source_only,,needs_public_review,bal_0121,balance_data/review_pool/for_review.jsonl
+Is there a later jeep if we miss this one?,यदि हामीले यो मिस गर्यौँ भने के त्यहाँ पछिको जीप छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0122,balance_data/review_pool/for_review.jsonl
+Please keep the receipt for the park fee.,कृपया पार्क शुल्कको रसिद राख्नुहोस्।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0123,balance_data/review_pool/for_review.jsonl
+The town center is two stops after the school.,सहरको केन्द्र विद्यालयपछि दुईवटा स्टपहरू छन्।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0124,balance_data/review_pool/for_review.jsonl
+I need a place to sleep that is quiet.,मलाई सुत्नका लागि शान्त ठाउँ चाहिन्छ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0125,balance_data/review_pool/for_review.jsonl
+Which lane is for Kathmandu buses?,,en-ne,formal,travel,source_only,,needs_public_review,bal_0126,balance_data/review_pool/for_review.jsonl
+The boatman asked us to wait on the sand.,नाविकले हामीलाई बालुवामा पर्खन भने।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0127,balance_data/review_pool/for_review.jsonl
+Please tell the driver we get off at the bazaar.,कृपया ड्राइभरलाई भन्नुहोस् कि हामी बजारमा तल झर्छौं।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0128,balance_data/review_pool/for_review.jsonl
+We are lost between the temple and the market.,हामी मन्दिर र बजारको बिचमा हराएको छौँ।,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0129,balance_data/review_pool/for_review.jsonl
+Is the viewpoint worth the extra hour?,के दृष्टिकोण अतिरिक्त घण्टाको लायक छ?,en-ne,formal,travel,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0130,balance_data/review_pool/for_review.jsonl
+My head has hurt since last night.,,en-ne,formal,health,source_only,,needs_public_review,bal_0131,balance_data/review_pool/for_review.jsonl
+I feel dizzy when I stand up.,उठ्दा मलाई चक्कर आउँछ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0132,balance_data/review_pool/for_review.jsonl
+The child has had a fever since morning.,बच्चालाई बिहानदेखि ज्वरो आएको छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0133,balance_data/review_pool/for_review.jsonl
+I am short of breath after one flight of stairs.,सिँढीको एक उडानपछि मेरो सास फेर्न गाह्रो हुन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0134,balance_data/review_pool/for_review.jsonl
+Please look at this cut on my hand.,कृपया मेरो हातमा भएको यो कट हेर्नुहोस्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0135,balance_data/review_pool/for_review.jsonl
+I think I twisted my ankle on the path.,,en-ne,formal,health,source_only,,needs_public_review,bal_0136,balance_data/review_pool/for_review.jsonl
+The cough is worse at night.,खोकी रातमा अझ खराब हुन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0137,balance_data/review_pool/for_review.jsonl
+I need medicine for an upset stomach.,मलाई पेट दुख्ने औषधि चाहिन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0138,balance_data/review_pool/for_review.jsonl
+She has not been able to keep water down.,उनले पानी तल राख्न सकेनन्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0139,balance_data/review_pool/for_review.jsonl
+My tooth hurts on the left side.,मेरो दाँत बायाँतिर दुख्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0140,balance_data/review_pool/for_review.jsonl
+I am allergic to penicillin.,,en-ne,formal,health,source_only,,needs_public_review,bal_0141,balance_data/review_pool/for_review.jsonl
+The bandage keeps slipping off.,पट्टी चिप्लिँदै जान्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0142,balance_data/review_pool/for_review.jsonl
+Please check my blood pressure.,कृपया मेरो रक्तचाप जाँच गर्नुहोस्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0143,balance_data/review_pool/for_review.jsonl
+I have a rash on both arms.,मेरो दुवै हातमा चकत्ते छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0144,balance_data/review_pool/for_review.jsonl
+"The pain is here, under the ribs.","दुखाइ यहाँ छ, पिसाबमुनि।",en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0145,balance_data/review_pool/for_review.jsonl
+I ran out of my daily tablets.,,en-ne,formal,health,source_only,,needs_public_review,bal_0146,balance_data/review_pool/for_review.jsonl
+He fainted for a few seconds and then woke.,उनी केही सेकेन्डका लागि बेहोस भए र त्यसपछि उठे।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0147,balance_data/review_pool/for_review.jsonl
+I need a clean cloth for this burn.,मलाई यो जलेका लागि सफा कपडा चाहिन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0148,balance_data/review_pool/for_review.jsonl
+The clinic told me to rest for two days.,क्लिनिकले मलाई दुई दिन आराम गर्न भन्यो।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0149,balance_data/review_pool/for_review.jsonl
+I cannot sleep because my ear aches.,म सुत्न सक्दिनँ किनभने मेरो कान दुख्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0150,balance_data/review_pool/for_review.jsonl
+"Please speak with the nurse, not only the desk.",,en-ne,formal,health,source_only,,needs_public_review,bal_0151,balance_data/review_pool/for_review.jsonl
+I feel nauseous in the moving bus.,म चलिरहेको बसमा उल्टी महसुस गर्छु।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0152,balance_data/review_pool/for_review.jsonl
+The swelling has not gone down.,सुन्निएको कम भएको छैन।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0153,balance_data/review_pool/for_review.jsonl
+I need help reading this prescription.,मलाई यो प्रिस्क्रिप्शन पढ्न मद्दत चाहिन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0154,balance_data/review_pool/for_review.jsonl
+My back locked up while I was lifting a bag.,मैले झोला उठाउँदै गर्दा मेरो पछाडि बन्द भयो।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0155,balance_data/review_pool/for_review.jsonl
+The baby is crying and will not feed.,,en-ne,formal,health,source_only,,needs_public_review,bal_0156,balance_data/review_pool/for_review.jsonl
+I have chills but no fever yet.,मलाई चिसो छ तर अहिलेसम्म ज्वरो आएको छैन।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0157,balance_data/review_pool/for_review.jsonl
+Please tell me if this pharmacy is open.,कृपया यो फार्मेसी खुला छ कि छैन मलाई बताउनुहोस्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0158,balance_data/review_pool/for_review.jsonl
+I cut my foot on a rock in the river.,मैले नदीको चट्टानमा खुट्टा काटें।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0159,balance_data/review_pool/for_review.jsonl
+The inhaler is empty.,इनहेलर खाली छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0160,balance_data/review_pool/for_review.jsonl
+I need to lie down for a minute.,,en-ne,formal,health,source_only,,needs_public_review,bal_0161,balance_data/review_pool/for_review.jsonl
+The wound looks red around the edges.,घाउ किनाराको वरिपरि रातो देखिन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0162,balance_data/review_pool/for_review.jsonl
+I have had diarrhea since yesterday.,मलाई हिजोदेखि दस्त लागेको छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0163,balance_data/review_pool/for_review.jsonl
+Please bring water before the tablets.,कृपया ट्याब्लेटअघि पानी ल्याउनुहोस्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0164,balance_data/review_pool/for_review.jsonl
+My vision went blurry for a moment.,मेरो दृष्टि एक क्षणका लागि धुवाँलो भयो।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0165,balance_data/review_pool/for_review.jsonl
+I am diabetic and I missed lunch.,,en-ne,formal,health,source_only,,needs_public_review,bal_0166,balance_data/review_pool/for_review.jsonl
+The joint is hot and hard to bend.,जोर्नी तातो र झुक्न गाह्रो हुन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0167,balance_data/review_pool/for_review.jsonl
+I need a doctor who can see me today.,मलाई आज मलाई भेट्न सक्ने डाक्टर चाहिन्छ।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0168,balance_data/review_pool/for_review.jsonl
+Please do not give me aspirin.,कृपया मलाई एस्पिरिन नदिनुहोस्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0169,balance_data/review_pool/for_review.jsonl
+I feel weak and my hands are shaking.,म कमजोर महसुस गर्छु र मेरा हातहरू हल्लाइरहेका छन्।,en-ne,formal,health,unverified_machine_suggestion,indictrans2-1b,needs_public_review,bal_0170,balance_data/review_pool/for_review.jsonl
+malai bau bata phone aako thiyo,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0171,balance_data/review_pool/for_review.jsonl
+tapai kahile aaune ho,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0172,balance_data/review_pool/for_review.jsonl
+yo bus pokhara jaancha ki jaandaina,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0173,balance_data/review_pool/for_review.jsonl
+mero tauko dukhirako cha bihana dekhi,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0174,balance_data/review_pool/for_review.jsonl
+kripaya bistarai bolnus,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0175,balance_data/review_pool/for_review.jsonl
+hjr ko naam k ho,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0176,balance_data/review_pool/for_review.jsonl
+maile ticket harayo,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0177,balance_data/review_pool/for_review.jsonl
+yo bato band cha re,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0178,balance_data/review_pool/for_review.jsonl
+malai ek glass thanda pani deu na,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0179,balance_data/review_pool/for_review.jsonl
+timi kahile sutchau,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0180,balance_data/review_pool/for_review.jsonl
+hospital kati tada cha,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0181,balance_data/review_pool/for_review.jsonl
+mero khutta baliracha,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0182,balance_data/review_pool/for_review.jsonl
+yo room ma taala cha?,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0183,balance_data/review_pool/for_review.jsonl
+bholi bihana niskine,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0184,balance_data/review_pool/for_review.jsonl
+maile bujina k bhandai,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0185,balance_data/review_pool/for_review.jsonl
+sano baccha lai joro aako cha,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0186,balance_data/review_pool/for_review.jsonl
+yo dawaa kati patak khane,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0187,balance_data/review_pool/for_review.jsonl
+gadi ekchin rokdinus,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0188,balance_data/review_pool/for_review.jsonl
+hami harayo bazaar ma,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0189,balance_data/review_pool/for_review.jsonl
+phone charge hune thau cha?,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0190,balance_data/review_pool/for_review.jsonl
+malai yeta samma pugauxa?,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0191,balance_data/review_pool/for_review.jsonl
+rato get tira janu,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0192,balance_data/review_pool/for_review.jsonl
+bato chipplo cha,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0193,balance_data/review_pool/for_review.jsonl
+ma eklai hoina,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0194,balance_data/review_pool/for_review.jsonl
+khana ali piro xa,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0195,balance_data/review_pool/for_review.jsonl
+bato katiko lamo ho,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0196,balance_data/review_pool/for_review.jsonl
+yo seat khali ho?,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0197,balance_data/review_pool/for_review.jsonl
+malai ek glass pani dinus,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0198,balance_data/review_pool/for_review.jsonl
+rato chinha wala bato,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0199,balance_data/review_pool/for_review.jsonl
+ma pachi phone garchu,,ne-en,noisy_roman,roman_noise,source_only,,needs_public_review,bal_0200,balance_data/review_pool/for_review.jsonl
