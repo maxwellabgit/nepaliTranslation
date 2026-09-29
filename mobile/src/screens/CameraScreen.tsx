@@ -299,14 +299,27 @@ export function CameraScreen({ active, onGoHome }: Props) {
     const gen = ++requestGenRef.current;
     dispatch({ type: 'CAPTURE' });
     let uri: string | null = null;
+    const abandon = () => {
+      deleteCapture(uri, 'exit');
+      if (uri && captureUriRef.current === uri) {
+        captureUriRef.current = null;
+        setCaptureUri(null);
+      }
+    };
     try {
       const photo = await cameraRef.current?.takePictureAsync({ quality: 1 });
-      if (gen !== requestGenRef.current) return;
+      if (gen !== requestGenRef.current) {
+        deleteCapture(photo?.uri ?? null, 'exit');
+        return;
+      }
       uri = photo?.uri ?? null;
     } catch {
       uri = null;
     }
-    if (gen !== requestGenRef.current) return;
+    if (gen !== requestGenRef.current) {
+      abandon();
+      return;
+    }
     if (!uri) {
       dispatch({ type: 'FAIL', reasonCode: 'capture_failed' });
       return;
@@ -320,9 +333,15 @@ export function CameraScreen({ active, onGoHome }: Props) {
     dispatch({ type: 'RECOGNIZE_STARTED' });
     try {
       const doc = await runtime.ocr.recognize(uri);
-      if (gen !== requestGenRef.current) return;
+      if (gen !== requestGenRef.current) {
+        abandon();
+        return;
+      }
       const preview = await previewTask;
-      if (gen !== requestGenRef.current) return;
+      if (gen !== requestGenRef.current) {
+        abandon();
+        return;
+      }
       if (preview) setPreviewUri(preview);
       setImageSize({ width: doc.width, height: doc.height });
       setRotation(doc.rotation ?? 0);
@@ -345,7 +364,10 @@ export function CameraScreen({ active, onGoHome }: Props) {
       dispatch({ type: 'TRANSLATE_STARTED' });
       const translated: CorrelatedSentence[] = [];
       for (const sentence of built.sentences) {
-        if (gen !== requestGenRef.current) return;
+        if (gen !== requestGenRef.current) {
+          abandon();
+          return;
+        }
         try {
           const result = await runtime.translation.translate({
             text: sentence.text,
@@ -354,7 +376,10 @@ export function CameraScreen({ active, onGoHome }: Props) {
             script: 'deva',
             forcePreferred: true,
           });
-          if (gen !== requestGenRef.current) return;
+          if (gen !== requestGenRef.current) {
+            abandon();
+            return;
+          }
           let translation = (result.text ?? '').trim();
           if (!translation) {
             try {
@@ -371,7 +396,10 @@ export function CameraScreen({ active, onGoHome }: Props) {
             translation,
           });
         } catch (err) {
-          if (gen !== requestGenRef.current) return;
+          if (gen !== requestGenRef.current) {
+            abandon();
+            return;
+          }
           const message = err instanceof Error ? err.message : String(err);
           const reason =
             /model|onnx|neural|not ready/i.test(message)
@@ -385,7 +413,10 @@ export function CameraScreen({ active, onGoHome }: Props) {
           return;
         }
       }
-      if (gen !== requestGenRef.current) return;
+      if (gen !== requestGenRef.current) {
+        abandon();
+        return;
+      }
       setDetectedLanguage(built.language);
       setSentences(translated);
       // Consented adults: durable-copy for outbox before temp delete (never await flush).
@@ -408,7 +439,10 @@ export function CameraScreen({ active, onGoHome }: Props) {
         cameraActive: true,
       });
     } catch {
-      if (gen !== requestGenRef.current) return;
+      if (gen !== requestGenRef.current) {
+        abandon();
+        return;
+      }
       deleteCapture(uri, 'processed');
       captureUriRef.current = null;
       setCaptureUri(null);

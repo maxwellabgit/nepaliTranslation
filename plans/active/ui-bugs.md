@@ -44,7 +44,9 @@ Repro from a portrait photo of horizontal screen text: highlight views were thin
 - Each visual OCR line is one highlight and one translation row. Line numbers are the non-color cue; the row dot and the photo tint share `colorForIndex`.
 - Result sheet: detected-language pill, rounded photo, tinted rows, copy, Retake, Copy text, Done.
 
-Proof: `npx tsc --noEmit` exit 0; camera unit tests 23 passed (`correlate`, `browserOcrMap`, `ocrFixtures`, `highlightLayout`); `npm run verify:translate` OK. `npm run lint` still reports three pre-existing warnings in `ReviewScreen.tsx`, `TranslateScreen.tsx`, and `TranslateComposer.tsx`. `npm run test:unit` reports 6 pre-existing failures (stale `tabs.translate` expectation, plus Animated `act(...)` console errors in AppShell and Mark incorrect). Integration `App.integration-test.tsx` hits the same pre-existing Animated `act(...)` guard. No gold edits. Device TestFlight of a live capture was not run.
+Independent review FAIL: a resized preview file from `manipulateAsync` was never deleted, and a shutter file taken after leaving Camera was dropped without `deleteCapture`. Both paths now delete those temporary files. The shutter file is still removed on retake, exit, and a finished read.
+
+Proof: `npx tsc --noEmit` exit 0; camera unit tests (`correlate`, `browserOcrMap`, `ocrFixtures`, `highlightLayout`, `readCapturePreview`); `npm run verify:translate` OK. `npm run lint` still reports three pre-existing warnings in `ReviewScreen.tsx`, `TranslateScreen.tsx`, and `TranslateComposer.tsx`. `npm run test:unit` reports 6 pre-existing failures (stale `tabs.translate` expectation, plus Animated `act(...)` console errors in AppShell and Mark incorrect). Integration `App.integration-test.tsx` hits the same pre-existing Animated `act(...)` guard. No gold edits. Device TestFlight of a live capture was not run.
 
 ## Surprises & discoveries
 
