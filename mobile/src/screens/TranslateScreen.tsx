@@ -119,7 +119,7 @@ export function TranslateScreen({
           justifyContent: 'center',
         },
         brandBlock: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
-        mark: { width: 28, height: 28, borderRadius: 6 },
+        mark: { width: 40, height: 40, borderRadius: 10 },
         langRow: {
           flexDirection: 'row',
           alignItems: 'center',

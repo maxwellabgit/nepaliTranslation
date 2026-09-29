@@ -54,7 +54,7 @@
         {
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#FFFFFF"
+          "backgroundColor": "#244580"
         }
       ],
       "onnxruntime-react-native",
