@@ -42,6 +42,14 @@ import {
   readReviewProgress,
   writeReviewProgress,
 } from '../features/contribution/reviewProgress';
+import {
+  loadReviewDay,
+  markCategoryCleared,
+  markExtraBegun,
+  markReviewed,
+  markSampleSeen,
+} from '../features/contribution/reviewDayStore';
+import type { DayCoins } from '../features/contribution/reviewDayPlan';
 
 /**
  * Today's 10. Pick a working-from category, type a blind translation, then
@@ -97,6 +105,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   const [now, setNow] = useState(() => Date.now());
   const [displayFont, setDisplayFont] = useState(false);
   const [progressReady, setProgressReady] = useState(false);
+  const [coins, setCoins] = useState<DayCoins>({ english: 0, deva: 0, roman: 0 });
 
   const shouldFetch =
     testingGround ||
@@ -125,6 +134,10 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     setCloseAt(res.window?.ny_close_at ?? null);
     setItems(loaded);
     setReviewedIds(reviewed);
+    if (testingGround) {
+      const day = await loadReviewDay();
+      setCoins(day.coins);
+    }
     setProgressReady(true);
     setPhase('intro');
     setCategory(null);
@@ -171,6 +184,14 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   );
   const active = activeList[cursor] ?? null;
 
+  const startExtra = useCallback(
+    async (id: ReviewCategoryId) => {
+      await markExtraBegun(id);
+      await refresh();
+    },
+    [refresh],
+  );
+
   const openCategory = useCallback(
     (id: ReviewCategoryId) => {
       const list = grouped[id];
@@ -182,8 +203,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setJudgment(null);
       setError(null);
       setPhase('compose');
+      if (testingGround) void markSampleSeen();
     },
-    [grouped, reviewedIds],
+    [grouped, reviewedIds, testingGround],
   );
 
   const advanceAfter = useCallback(
@@ -198,8 +220,14 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setJudgment(null);
       setCursor(next < 0 ? cursor : next);
       setPhase(next < 0 ? 'thanks' : 'compose');
+      if (testingGround) {
+        void markReviewed(doneId);
+        if (next < 0 && category) {
+          void markCategoryCleared(category).then((day) => setCoins(day.coins));
+        }
+      }
     },
-    [activeList, cursor, reviewedIds],
+    [activeList, category, cursor, reviewedIds, testingGround],
   );
 
   const send = useCallback(
@@ -302,6 +330,20 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           fontWeight: '400',
           lineHeight: 20,
           color: theme.colors.textSecondary,
+        },
+        coinSpot: {
+          position: 'absolute',
+          right: 14,
+          bottom: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 4,
+          zIndex: 2,
+        },
+        coinLabel: {
+          color: '#8A6A12',
+          fontSize: 12,
+          fontWeight: '800',
         },
         arrow: {
           position: 'absolute',
@@ -581,6 +623,22 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                         ? t('review.categoryDone', lang)
                         : t('review.categoryCount', lang, { count: list.length })}
                     </Text>
+                    {coins[id] > 0 ? (
+                      <Pressable
+                        testID={`review-extra-${id}`}
+                        accessibilityRole="button"
+                        disabled={coins[id] !== 1}
+                        onPress={() => void startExtra(id)}
+                        style={dynamic.coinSpot}
+                      >
+                        <FontAwesome5 name="coins" size={18} color="#E8A317" />
+                        {coins[id] === 2 ? (
+                          <FontAwesome5 name="coins" size={18} color="#E8A317" />
+                        ) : (
+                          <Text style={dynamic.coinLabel}>{t('review.extra10', lang)}</Text>
+                        )}
+                      </Pressable>
+                    ) : null}
                     <View
                       style={[
                         dynamic.arrow,

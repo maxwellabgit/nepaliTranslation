@@ -1,0 +1,814 @@
+{"src": "<औपचारिक> यो राम्रो छ।", "tgt": "This is good.", "register": "formal", "id": "1b8fc85ebb82f4cd"}
+{"src": "<अनौपचारिक> यो राम्रो छ।", "tgt": "This is good.", "register": "informal", "id": "1b8fc85ebb82f4cd"}
+{"src": "<औपचारिक> त्यो सही होइन।", "tgt": "That is not right.", "register": "formal", "id": "a3503603759026ba"}
+{"src": "<अनौपचारिक> त्यो सही होइन।", "tgt": "That is not right.", "register": "informal", "id": "a3503603759026ba"}
+{"src": "<औपचारिक> म माफी चाहन्छु।", "tgt": "I am sorry.", "register": "formal", "id": "8112753766a58905"}
+{"src": "<अनौपचारिक> म माफी चाहन्छु।", "tgt": "I am sorry.", "register": "informal", "id": "8112753766a58905"}
+{"src": "<औपचारिक> हो।", "tgt": "Yes.", "register": "formal", "id": "62e7d96e6ce26488"}
+{"src": "<अनौपचारिक> हो।", "tgt": "Yes.", "register": "informal", "id": "62e7d96e6ce26488"}
+{"src": "<औपचारिक> होइन।", "tgt": "No.", "register": "formal", "id": "b7b372ae8465344f"}
+{"src": "<अनौपचारिक> होइन।", "tgt": "No.", "register": "informal", "id": "b7b372ae8465344f"}
+{"src": "<औपचारिक> म नेपालबाट हुँ।", "tgt": "I am from Nepal.", "register": "formal", "id": "bbec9c5a1900aec6"}
+{"src": "<अनौपचारिक> म नेपालबाट हुँ।", "tgt": "I am from Nepal.", "register": "informal", "id": "bbec9c5a1900aec6"}
+{"src": "<औपचारिक> बायाँ घुमाउनुहोस्।", "tgt": "Turn left.", "register": "formal", "id": "c0779b74a130de46"}
+{"src": "<अनौपचारिक> बायाँतिर फर्कनुहोस्।", "tgt": "Turn left.", "register": "informal", "id": "c0779b74a130de46"}
+{"src": "<औपचारिक> दायाँ घुमाउनुहोस्।", "tgt": "Turn right.", "register": "formal", "id": "e21c99dedfcbff4e"}
+{"src": "<अनौपचारिक> दायाँ घुमाउनुहोस्।", "tgt": "Turn right.", "register": "informal", "id": "e21c99dedfcbff4e"}
+{"src": "<औपचारिक> सिधा जानुहोस्।", "tgt": "Go straight.", "register": "formal", "id": "5199aa59ff98c1e5"}
+{"src": "<अनौपचारिक> सिधा जानुहोस्।", "tgt": "Go straight.", "register": "informal", "id": "5199aa59ff98c1e5"}
+{"src": "<औपचारिक> म यो चाहन्छु।", "tgt": "I would like this.", "register": "formal", "id": "11df2fee00bcf7a3"}
+{"src": "<अनौपचारिक> म यो चाहन्छु।", "tgt": "I would like this.", "register": "informal", "id": "11df2fee00bcf7a3"}
+{"src": "<औपचारिक> म यो चाहन्नँ।", "tgt": "I do not want this.", "register": "formal", "id": "4d506ee53148f327"}
+{"src": "<अनौपचारिक> म यो चाहन्नँ।", "tgt": "I do not want this.", "register": "informal", "id": "4d506ee53148f327"}
+{"src": "<औपचारिक> म मासु खाँदिनँ।", "tgt": "I do not eat meat.", "register": "formal", "id": "28ea38d4d7e6927e"}
+{"src": "<अनौपचारिक> म मासु खाँदिनँ।", "tgt": "I do not eat meat.", "register": "informal", "id": "28ea38d4d7e6927e"}
+{"src": "<औपचारिक> मलाई एलर्जी छ।", "tgt": "I have an allergy.", "register": "formal", "id": "24c3b937891400b4"}
+{"src": "<अनौपचारिक> मलाई एलर्जी छ।", "tgt": "I have an allergy.", "register": "informal", "id": "24c3b937891400b4"}
+{"src": "<औपचारिक> म बिरामी छु।", "tgt": "I am sick.", "register": "formal", "id": "8f4bac8f055b9659"}
+{"src": "<अनौपचारिक> म बिरामी छु।", "tgt": "I am sick.", "register": "informal", "id": "8f4bac8f055b9659"}
+{"src": "<औपचारिक> म भोलि आउनेछु।", "tgt": "I will come tomorrow.", "register": "formal", "id": "666fd349b102d861"}
+{"src": "<अनौपचारिक> म भोलि आउनेछु।", "tgt": "I will come tomorrow.", "register": "informal", "id": "666fd349b102d861"}
+{"src": "<औपचारिक> म हिजो आएको हुँ।", "tgt": "I came yesterday.", "register": "formal", "id": "dd5460058fbf95bb"}
+{"src": "<अनौपचारिक> म हिजो आएको हुँ।", "tgt": "I came yesterday.", "register": "informal", "id": "dd5460058fbf95bb"}
+{"src": "<औपचारिक> म काठमाडौँमा बस्छु।", "tgt": "I live in Kathmandu.", "register": "formal", "id": "7b58dcd0a19d8e68"}
+{"src": "<अनौपचारिक> म काठमाडौँमा बस्छु।", "tgt": "I live in Kathmandu.", "register": "informal", "id": "7b58dcd0a19d8e68"}
+{"src": "<औपचारिक> मलाई सन्देश पठाउनुहोस्।", "tgt": "Send me a message.", "register": "formal", "id": "aa2fc3a06d1d72f4"}
+{"src": "<अनौपचारिक> मलाई सन्देश पठाउनुहोस्।", "tgt": "Send me a message.", "register": "informal", "id": "aa2fc3a06d1d72f4"}
+{"src": "<औपचारिक> नेटवर्कले काम गरिरहेको छैन।", "tgt": "The network is not working.", "register": "formal", "id": "93c3f3c5e3325195"}
+{"src": "<अनौपचारिक> नेटवर्कले काम गरिरहेको छैन।", "tgt": "The network is not working.", "register": "informal", "id": "93c3f3c5e3325195"}
+{"src": "<औपचारिक> मेरो फोनमा ब्याट्री छैन।", "tgt": "My phone has no battery.", "register": "formal", "id": "cb59b859692516fe"}
+{"src": "<अनौपचारिक> मेरो फोनमा ब्याट्री छैन।", "tgt": "My phone has no battery.", "register": "informal", "id": "cb59b859692516fe"}
+{"src": "<औपचारिक> मैले बोल्नु समाप्त गरेको छु।", "tgt": "I have finished speaking.", "register": "formal", "id": "18145f436af656aa"}
+{"src": "<अनौपचारिक> मैले बोल्नु समाप्त गरेको छु।", "tgt": "I have finished speaking.", "register": "informal", "id": "18145f436af656aa"}
+{"src": "<औपचारिक> अनुवाद लोड भइरहेको छ।", "tgt": "The translation is loading.", "register": "formal", "id": "b1c9cfc5666df6dc"}
+{"src": "<अनौपचारिक> अनुवाद लोड भइरहेको छ।", "tgt": "The translation is loading.", "register": "informal", "id": "b1c9cfc5666df6dc"}
+{"src": "<औपचारिक> त्यो अनुवाद गलत छ।", "tgt": "That translation is wrong.", "register": "formal", "id": "7ff7e52df0b04bae"}
+{"src": "<अनौपचारिक> त्यो अनुवाद गलत छ।", "tgt": "That translation is wrong.", "register": "informal", "id": "7ff7e52df0b04bae"}
+{"src": "<औपचारिक> त्यो अनुवाद सही छ।", "tgt": "That translation is correct.", "register": "formal", "id": "73cb31fe73043ccd"}
+{"src": "<अनौपचारिक> त्यो अनुवाद सही छ।", "tgt": "That translation is correct.", "register": "informal", "id": "73cb31fe73043ccd"}
+{"src": "<औपचारिक> तपाईँ कहाँ जाँदै हुनुहुन्छ?", "tgt": "Where are you going?", "register": "formal", "id": "65ba362b5eb9ad98"}
+{"src": "<औपचारिक> तिमी कहाँ जाँदै छौ?", "tgt": "Where are you going?", "register": "informal", "id": "65ba362b5eb9ad98"}
+{"src": "<औपचारिक> कृपया भित्र आउनुहोस्।", "tgt": "Please come in.", "register": "formal", "id": "ea01aee9f6fa1fc6"}
+{"src": "<अनौपचारिक> कृपया भित्र आउनुहोस्।", "tgt": "Please come in.", "register": "informal", "id": "ea01aee9f6fa1fc6"}
+{"src": "<औपचारिक> के तपाईँ केही चिया चाहनुहुन्छ?", "tgt": "Would you like some tea?", "register": "formal", "id": "300cb42a2569b232"}
+{"src": "<औपचारिक> के तिमी केही चिया चाहनुहुन्छ?", "tgt": "Would you like some tea?", "register": "informal", "id": "300cb42a2569b232"}
+{"src": "<औपचारिक> तपाईँ पछि।", "tgt": "After you.", "register": "formal", "id": "65c55f7790867044"}
+{"src": "<औपचारिक> तिमी पछि।", "tgt": "After you.", "register": "informal", "id": "65c55f7790867044"}
+{"src": "<औपचारिक> कृपया यहाँ पर्खनुहोस्।", "tgt": "Please wait here.", "register": "formal", "id": "381e5482c49e9e02"}
+{"src": "<अनौपचारिक> कृपया यहाँ पर्खनुहोस्।", "tgt": "Please wait here.", "register": "informal", "id": "381e5482c49e9e02"}
+{"src": "<औपचारिक> के तपाईँ बुझ्नुहुन्छ?", "tgt": "Do you understand?", "register": "formal", "id": "358ecff058614831"}
+{"src": "<औपचारिक> के तिमी बुझ्नुहुन्छ?", "tgt": "Do you understand?", "register": "informal", "id": "358ecff058614831"}
+{"src": "<औपचारिक> यसको अर्थ के हो?", "tgt": "What does this mean?", "register": "formal", "id": "2be68d48df3ea401"}
+{"src": "<अनौपचारिक> यसको अर्थ के हो?", "tgt": "What does this mean?", "register": "informal", "id": "2be68d48df3ea401"}
+{"src": "<औपचारिक> के तपाईँ यसलाई लेख्न सक्नुहुन्छ?", "tgt": "Could you write it down?", "register": "formal", "id": "1a2b30dc90f6e4f0"}
+{"src": "<औपचारिक> के तिमी यसलाई लेख्न सक्छौ?", "tgt": "Could you write it down?", "register": "informal", "id": "1a2b30dc90f6e4f0"}
+{"src": "<औपचारिक> के यो ठीक छ?", "tgt": "Is that okay?", "register": "formal", "id": "d234658d8817d554"}
+{"src": "<अनौपचारिक> के यो ठीक छ?", "tgt": "Is that okay?", "register": "informal", "id": "d234658d8817d554"}
+{"src": "<औपचारिक> कृपया।", "tgt": "Please.", "register": "formal", "id": "2f44a147159d7a94"}
+{"src": "<अनौपचारिक> कृपया।", "tgt": "Please.", "register": "informal", "id": "2f44a147159d7a94"}
+{"src": "<औपचारिक> तपाईँ कहाँबाट हुनुहुन्छ?", "tgt": "Where are you from?", "register": "formal", "id": "2f94522912c725b8"}
+{"src": "<औपचारिक> तिमी कहाँबाट छौ?", "tgt": "Where are you from?", "register": "informal", "id": "2f94522912c725b8"}
+{"src": "<औपचारिक> के तपाईँसँग सानो आकार छ?", "tgt": "Do you have a smaller size?", "register": "formal", "id": "68e74b16cd90395d"}
+{"src": "<औपचारिक> के तिमीसँग सानो आकार छ?", "tgt": "Do you have a smaller size?", "register": "informal", "id": "68e74b16cd90395d"}
+{"src": "<औपचारिक> कृपया मलाई रसिद दिनुहोस्।", "tgt": "Please give me a receipt.", "register": "formal", "id": "8d7ee83a19fffbdf"}
+{"src": "<अनौपचारिक> कृपया मलाई रसिद दिनुहोस्।", "tgt": "Please give me a receipt.", "register": "informal", "id": "8d7ee83a19fffbdf"}
+{"src": "<औपचारिक> के यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "register": "formal", "id": "b6cbe791f2c5eb45"}
+{"src": "<अनौपचारिक> के यो शाकाहारी हो?", "tgt": "Is this vegetarian?", "register": "informal", "id": "b6cbe791f2c5eb45"}
+{"src": "<औपचारिक> यसले कहाँ चोट पुऱ्याउँछ?", "tgt": "Where does it hurt?", "register": "formal", "id": "e65f44ed49896feb"}
+{"src": "<अनौपचारिक> यसले कहाँ चोट पुऱ्याउँछ?", "tgt": "Where does it hurt?", "register": "informal", "id": "e65f44ed49896feb"}
+{"src": "<औपचारिक> कृपया मसँग आउनुहोस्।", "tgt": "Please come with me.", "register": "formal", "id": "b17f3d89d6de1165"}
+{"src": "<अनौपचारिक> कृपया मसँग आउनुहोस्।", "tgt": "Please come with me.", "register": "informal", "id": "b17f3d89d6de1165"}
+{"src": "<औपचारिक> कृपया यहाँ खडा हुनुहोस्।", "tgt": "Please stand here.", "register": "formal", "id": "683b98b691d69d7d"}
+{"src": "<अनौपचारिक> कृपया यहाँ खडा हुनुहोस्।", "tgt": "Please stand here.", "register": "informal", "id": "683b98b691d69d7d"}
+{"src": "<औपचारिक> यो कहिले आइपुग्नेछ?", "tgt": "When will it arrive?", "register": "formal", "id": "bbf75e0897ddefb9"}
+{"src": "<अनौपचारिक> यो कहिले आइपुग्नेछ?", "tgt": "When will it arrive?", "register": "informal", "id": "bbf75e0897ddefb9"}
+{"src": "<औपचारिक> कृपया मलाई फोन गर्नुहोस्।", "tgt": "Please call me.", "register": "formal", "id": "102f5ad63f01894b"}
+{"src": "<अनौपचारिक> कृपया मलाई फोन गर्नुहोस्।", "tgt": "Please call me.", "register": "informal", "id": "102f5ad63f01894b"}
+{"src": "<औपचारिक> कृपया फोन पास गर्नुहोस्।", "tgt": "Please pass the phone.", "register": "formal", "id": "8548bb979b03c608"}
+{"src": "<अनौपचारिक> कृपया फोन पास गर्नुहोस्।", "tgt": "Please pass the phone.", "register": "informal", "id": "8548bb979b03c608"}
+{"src": "<औपचारिक> कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "Please try again.", "register": "formal", "id": "6d82178b85207675"}
+{"src": "<अनौपचारिक> कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "Please try again.", "register": "informal", "id": "6d82178b85207675"}
+{"src": "<औपचारिक> कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "Please check the translation.", "register": "formal", "id": "f48d2e465b1dfe2b"}
+{"src": "<अनौपचारिक> कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "Please check the translation.", "register": "informal", "id": "f48d2e465b1dfe2b"}
+{"src": "<औपचारिक> यो कति टाढाको छ?", "tgt": "How far is it?", "register": "formal", "id": "232947fba84e81bf"}
+{"src": "<अनौपचारिक> यो कति टाढाको छ?", "tgt": "How far is it?", "register": "informal", "id": "232947fba84e81bf"}
+{"src": "<औपचारिक> कृपया मलाई बस स्टेसनमा लैजानुहोस्।", "tgt": "Please take me to the bus station.", "register": "formal", "id": "96a9cce27bd88d20"}
+{"src": "<अनौपचारिक> कृपया मलाई बस स्टेसनमा लैजानुहोस्।", "tgt": "Please take me to the bus station.", "register": "informal", "id": "96a9cce27bd88d20"}
+{"src": "<औपचारिक> के यही थमेलको बाटो हो?", "tgt": "Is this the way to Thamel?", "register": "formal", "id": "a5ecc0d7b44354bb"}
+{"src": "<अनौपचारिक> के यही थमेल जाने बाटो हो?", "tgt": "Is this the way to Thamel?", "register": "informal", "id": "a5ecc0d7b44354bb"}
+{"src": "<औपचारिक> मलाई ट्याक्सी चाहिन्छ।", "tgt": "I need a taxi.", "register": "formal", "id": "396c8d24d42bb733"}
+{"src": "<अनौपचारिक> मलाई ट्याक्सी चाहिन्छ।", "tgt": "I need a taxi.", "register": "informal", "id": "396c8d24d42bb733"}
+{"src": "<औपचारिक> पाटन जाने बस कुन हो?", "tgt": "Which bus goes to Patan?", "register": "formal", "id": "62237e3f88b6cff9"}
+{"src": "<अनौपचारिक> पाटन जाने बस कुन हो?", "tgt": "Which bus goes to Patan?", "register": "informal", "id": "62237e3f88b6cff9"}
+{"src": "<औपचारिक> के त्यहाँ नजिकै सस्तो होटल छ?", "tgt": "Is there a cheaper hotel nearby?", "register": "formal", "id": "428f1632a407572d"}
+{"src": "<अनौपचारिक> के त्यहाँ नजिकै सस्तो होटल छ?", "tgt": "Is there a cheaper hotel nearby?", "register": "informal", "id": "428f1632a407572d"}
+{"src": "<औपचारिक> म सिम कार्ड कहाँ किन्न सक्छु?", "tgt": "Where can I buy a SIM card?", "register": "formal", "id": "48c3116f66343876"}
+{"src": "<अनौपचारिक> म सिम कार्ड कहाँ किन्न सक्छु?", "tgt": "Where can I buy a SIM card?", "register": "informal", "id": "48c3116f66343876"}
+{"src": "<औपचारिक> उडानमा ढिलाइ भएको छ।", "tgt": "The flight is delayed.", "register": "formal", "id": "786e371d787c586c"}
+{"src": "<अनौपचारिक> उडानमा ढिलाइ भएको छ।", "tgt": "The flight is delayed.", "register": "informal", "id": "786e371d787c586c"}
+{"src": "<औपचारिक> मलाई ज्वरो आएको छ।", "tgt": "I have a fever.", "register": "formal", "id": "c03242247fc83ad7"}
+{"src": "<अनौपचारिक> मलाई ज्वरो आएको छ।", "tgt": "I have a fever.", "register": "informal", "id": "c03242247fc83ad7"}
+{"src": "<औपचारिक> मलाई चक्कर आउँछ।", "tgt": "I feel dizzy.", "register": "formal", "id": "bc94223d1876811b"}
+{"src": "<अनौपचारिक> मलाई चक्कर आउँछ।", "tgt": "I feel dizzy.", "register": "informal", "id": "bc94223d1876811b"}
+{"src": "<औपचारिक> मलाई टाउको दुख्ने औषधि चाहिन्छ।", "tgt": "I need medicine for a headache.", "register": "formal", "id": "3f47d2b926052e91"}
+{"src": "<अनौपचारिक> मलाई टाउको दुख्ने औषधि चाहिन्छ।", "tgt": "I need medicine for a headache.", "register": "informal", "id": "3f47d2b926052e91"}
+{"src": "<औपचारिक> के यहाँ चोट लाग्छ?", "tgt": "Does it hurt here?", "register": "formal", "id": "875194e5a978d41b"}
+{"src": "<अनौपचारिक> के यहाँ चोट लाग्छ?", "tgt": "Does it hurt here?", "register": "informal", "id": "875194e5a978d41b"}
+{"src": "<औपचारिक> म गर्भवती छु।", "tgt": "I am pregnant.", "register": "formal", "id": "a73210dd8620dd9b"}
+{"src": "<अनौपचारिक> म गर्भवती छु।", "tgt": "I am pregnant.", "register": "informal", "id": "a73210dd8620dd9b"}
+{"src": "<औपचारिक> कृपया नर्सलाई बोलाउनुहोस्।", "tgt": "Please call a nurse.", "register": "formal", "id": "42570bf7940569e5"}
+{"src": "<अनौपचारिक> कृपया नर्सलाई बोलाउनुहोस्।", "tgt": "Please call a nurse.", "register": "informal", "id": "42570bf7940569e5"}
+{"src": "<औपचारिक> त्यो धेरै महँगो छ।", "tgt": "That is too expensive.", "register": "formal", "id": "b130231389d66100"}
+{"src": "<अनौपचारिक> त्यो धेरै महँगो छ।", "tgt": "That is too expensive.", "register": "informal", "id": "b130231389d66100"}
+{"src": "<औपचारिक> मलाई यो चाहिन्छ।", "tgt": "I want this one.", "register": "formal", "id": "9db38cb1623bd065"}
+{"src": "<अनौपचारिक> मलाई यो चाहिन्छ।", "tgt": "I want this one.", "register": "informal", "id": "9db38cb1623bd065"}
+{"src": "<औपचारिक> के म यसलाई प्रयोग गर्न सक्छु?", "tgt": "Can I try this on?", "register": "formal", "id": "d26e5e3df3b7aeee"}
+{"src": "<अनौपचारिक> के म यसलाई प्रयास गर्न सक्छु?", "tgt": "Can I try this on?", "register": "informal", "id": "d26e5e3df3b7aeee"}
+{"src": "<औपचारिक> म नगदमा भुक्तानी गर्नेछु।", "tgt": "I will pay in cash.", "register": "formal", "id": "fa046ef9793232f6"}
+{"src": "<अनौपचारिक> म नगदमा भुक्तानी गर्नेछु।", "tgt": "I will pay in cash.", "register": "informal", "id": "fa046ef9793232f6"}
+{"src": "<औपचारिक> के म कार्डद्वारा भुक्तानी गर्न सक्छु?", "tgt": "Can I pay by card?", "register": "formal", "id": "61a68acf5c082bdb"}
+{"src": "<अनौपचारिक> के म कार्डद्वारा भुक्तानी गर्न सक्छु?", "tgt": "Can I pay by card?", "register": "informal", "id": "61a68acf5c082bdb"}
+{"src": "<औपचारिक> यो मेरो पासपोर्ट हो।", "tgt": "This is my passport.", "register": "formal", "id": "9fd6ca430ed35e30"}
+{"src": "<अनौपचारिक> यो मेरो पासपोर्ट हो।", "tgt": "This is my passport.", "register": "informal", "id": "9fd6ca430ed35e30"}
+{"src": "<औपचारिक> हाम्रो बारेमा", "tgt": "About Us", "register": "formal", "id": "69f83e09074c8932"}
+{"src": "<अनौपचारिक> हाम्रो बारेमा", "tgt": "About Us", "register": "informal", "id": "69f83e09074c8932"}
+{"src": "<औपचारिक> परिचय", "tgt": "Introduction", "register": "formal", "id": "26aca7941a99d90e"}
+{"src": "<अनौपचारिक> परिचय", "tgt": "Introduction", "register": "informal", "id": "26aca7941a99d90e"}
+{"src": "<औपचारिक> दर्शन र मिसन", "tgt": "Vision and Mission", "register": "formal", "id": "5599bbcb0354cd2c"}
+{"src": "<अनौपचारिक> दर्शन र मिसन", "tgt": "Vision and Mission", "register": "informal", "id": "5599bbcb0354cd2c"}
+{"src": "<औपचारिक> कर्तव्य र शक्तिहरू", "tgt": "Duties and Powers", "register": "formal", "id": "f40c754f44be24d3"}
+{"src": "<अनौपचारिक> कर्तव्य र शक्तिहरू", "tgt": "Duties and Powers", "register": "informal", "id": "f40c754f44be24d3"}
+{"src": "<औपचारिक> सङ्गठन संरचना", "tgt": "Organization Structure", "register": "formal", "id": "befff246233ccb6e"}
+{"src": "<अनौपचारिक> सङ्गठन संरचना", "tgt": "Organization Structure", "register": "informal", "id": "befff246233ccb6e"}
+{"src": "<औपचारिक> अधिकारी र कर्मचारीहरू", "tgt": "Officials and Employees", "register": "formal", "id": "92e871a67f372ec3"}
+{"src": "<अनौपचारिक> अधिकारी र कर्मचारीहरू", "tgt": "Officials and Employees", "register": "informal", "id": "92e871a67f372ec3"}
+{"src": "<औपचारिक> पूर्व अध्यक्षहरू", "tgt": "Former Chairpersons", "register": "formal", "id": "9f1b089bb5dccdcb"}
+{"src": "<अनौपचारिक> पूर्व अध्यक्षहरू", "tgt": "Former Chairpersons", "register": "informal", "id": "9f1b089bb5dccdcb"}
+{"src": "<औपचारिक> सेवाहरू", "tgt": "Services", "register": "formal", "id": "3e7aaa79601ad9b5"}
+{"src": "<अनौपचारिक> सेवाहरू", "tgt": "Services", "register": "informal", "id": "3e7aaa79601ad9b5"}
+{"src": "<औपचारिक> कानूनको मस्यौदा", "tgt": "Law Drafting", "register": "formal", "id": "e6fa837c3854ef2e"}
+{"src": "<अनौपचारिक> कानूनको मस्यौदा", "tgt": "Law Drafting", "register": "informal", "id": "e6fa837c3854ef2e"}
+{"src": "<औपचारिक> अनुसन्धान र अध्ययन", "tgt": "Research and Study", "register": "formal", "id": "935dfb6f7718b0ae"}
+{"src": "<अनौपचारिक> अनुसन्धान र अध्ययन", "tgt": "Research and Study", "register": "informal", "id": "935dfb6f7718b0ae"}
+{"src": "<औपचारिक> विद्यमान कानुनहरू", "tgt": "Existing Laws", "register": "formal", "id": "4cd25d501cce341f"}
+{"src": "<अनौपचारिक> विद्यमान कानुनहरू", "tgt": "Existing Laws", "register": "informal", "id": "4cd25d501cce341f"}
+{"src": "<औपचारिक> संविधान", "tgt": "Constitution", "register": "formal", "id": "ef7573952f0b6222"}
+{"src": "<अनौपचारिक> संविधान", "tgt": "Constitution", "register": "informal", "id": "ef7573952f0b6222"}
+{"src": "<औपचारिक> अधिनियमहरू", "tgt": "Acts", "register": "formal", "id": "eed8f4450b06a45f"}
+{"src": "<अनौपचारिक> अधिनियमहरू", "tgt": "Acts", "register": "informal", "id": "eed8f4450b06a45f"}
+{"src": "<औपचारिक> हालैका कार्यहरू", "tgt": "Recent Acts", "register": "formal", "id": "350e4d42deded600"}
+{"src": "<अनौपचारिक> हालैका अधिनियमहरू", "tgt": "Recent Acts", "register": "informal", "id": "350e4d42deded600"}
+{"src": "<औपचारिक> मात्रा अनुसार", "tgt": "By Volume", "register": "formal", "id": "e019d201e090070e"}
+{"src": "<अनौपचारिक> खण्डद्वारा", "tgt": "By Volume", "register": "informal", "id": "e019d201e090070e"}
+{"src": "<औपचारिक> वर्णमाला सूची", "tgt": "Alphabetical List", "register": "formal", "id": "f5938930ac56401f"}
+{"src": "<अनौपचारिक> वर्णमाला सूची", "tgt": "Alphabetical List", "register": "informal", "id": "f5938930ac56401f"}
+{"src": "<औपचारिक> अध्यादेशहरू", "tgt": "Ordinances", "register": "formal", "id": "27b6c74c9ef47d8f"}
+{"src": "<अनौपचारिक> अध्यादेशहरू", "tgt": "Ordinances", "register": "informal", "id": "27b6c74c9ef47d8f"}
+{"src": "<औपचारिक> नियमहरू", "tgt": "Regulations", "register": "formal", "id": "fe71d44a06fd7d9c"}
+{"src": "<अनौपचारिक> नियमहरू", "tgt": "Regulations", "register": "informal", "id": "fe71d44a06fd7d9c"}
+{"src": "<औपचारिक> गठन आदेशहरू", "tgt": "Formation Orders", "register": "formal", "id": "19d7dad57da444bf"}
+{"src": "<अनौपचारिक> गठन आदेशहरू", "tgt": "Formation Orders", "register": "informal", "id": "19d7dad57da444bf"}
+{"src": "<औपचारिक> खारेज गरिएका कानुनहरू", "tgt": "Repealed Laws", "register": "formal", "id": "199ccae6ded926bd"}
+{"src": "<अनौपचारिक> खारेज गरिएका कानुनहरू", "tgt": "Repealed Laws", "register": "informal", "id": "199ccae6ded926bd"}
+{"src": "<औपचारिक> खारेज गरिएका अधिनियमहरू", "tgt": "Repealed Acts", "register": "formal", "id": "67d4e960efddde89"}
+{"src": "<अनौपचारिक> खारेज गरिएका अधिनियमहरू", "tgt": "Repealed Acts", "register": "informal", "id": "67d4e960efddde89"}
+{"src": "<औपचारिक> खारेज अध्यादेशहरू", "tgt": "Repealed Ordinances", "register": "formal", "id": "2c3507ce6e754891"}
+{"src": "<अनौपचारिक> खारेज अध्यादेशहरू", "tgt": "Repealed Ordinances", "register": "informal", "id": "2c3507ce6e754891"}
+{"src": "<औपचारिक> खारेज गरिएका नियमहरू", "tgt": "Repealed Regulations", "register": "formal", "id": "a5049c36bc2e6f1d"}
+{"src": "<अनौपचारिक> खारेज गरिएका नियमहरू", "tgt": "Repealed Regulations", "register": "informal", "id": "a5049c36bc2e6f1d"}
+{"src": "<औपचारिक> नीतिहरू", "tgt": "Policies", "register": "formal", "id": "e757f5e64a2b87ba"}
+{"src": "<अनौपचारिक> नीतिहरू", "tgt": "Policies", "register": "informal", "id": "e757f5e64a2b87ba"}
+{"src": "<औपचारिक> अन्तर्राष्ट्रिय सन्धि र सम्झौताहरू", "tgt": "International Treaties and Agreements", "register": "formal", "id": "041ce58ece30f424"}
+{"src": "<अनौपचारिक> अन्तर्राष्ट्रिय सन्धि र सम्झौताहरू", "tgt": "International Treaties and Agreements", "register": "informal", "id": "041ce58ece30f424"}
+{"src": "<औपचारिक> ऐतिहासिक दस्तावेजहरू", "tgt": "Historical Documents", "register": "formal", "id": "47818f7794bdb1ca"}
+{"src": "<अनौपचारिक> ऐतिहासिक दस्तावेजहरू", "tgt": "Historical Documents", "register": "informal", "id": "47818f7794bdb1ca"}
+{"src": "<औपचारिक> अन्य", "tgt": "Other", "register": "formal", "id": "d0941e68da8f3815"}
+{"src": "<अनौपचारिक> अन्य", "tgt": "Other", "register": "informal", "id": "d0941e68da8f3815"}
+{"src": "<औपचारिक> सूचना केन्द्र", "tgt": "Information Center", "register": "formal", "id": "31b8356cda8aa1b5"}
+{"src": "<अनौपचारिक> सूचना केन्द्र", "tgt": "Information Center", "register": "informal", "id": "31b8356cda8aa1b5"}
+{"src": "<औपचारिक> वार्षिक प्रतिवेदन", "tgt": "Annual Report", "register": "formal", "id": "d6a141b3dcde655b"}
+{"src": "<अनौपचारिक> वार्षिक प्रतिवेदन", "tgt": "Annual Report", "register": "informal", "id": "d6a141b3dcde655b"}
+{"src": "<औपचारिक> सम्पर्क", "tgt": "Contact", "register": "formal", "id": "1a73af9e7ae00182"}
+{"src": "<अनौपचारिक> सम्पर्क गर्नुहोस्", "tgt": "Contact", "register": "informal", "id": "1a73af9e7ae00182"}
+{"src": "<औपचारिक> सम्पर्क ठेगाना", "tgt": "Contact Address", "register": "formal", "id": "c986b63507a4a16e"}
+{"src": "<अनौपचारिक> सम्पर्क ठेगाना", "tgt": "Contact Address", "register": "informal", "id": "c986b63507a4a16e"}
+{"src": "<औपचारिक> सुझाव र उजुरीहरू", "tgt": "Suggestions and Complaints", "register": "formal", "id": "db42e1cdf23fc8c3"}
+{"src": "<अनौपचारिक> सुझाव र उजुरीहरू", "tgt": "Suggestions and Complaints", "register": "informal", "id": "db42e1cdf23fc8c3"}
+{"src": "<औपचारिक> बारम्बार सोधिने प्रश्नहरू", "tgt": "Frequently Asked Questions", "register": "formal", "id": "8f05665768fdf8a9"}
+{"src": "<अनौपचारिक> बारम्बार सोधिने प्रश्नहरू", "tgt": "Frequently Asked Questions", "register": "informal", "id": "8f05665768fdf8a9"}
+{"src": "<औपचारिक> नेपाल सरकार", "tgt": "Government of Nepal", "register": "formal", "id": "df1b4b6454412ec2"}
+{"src": "<अनौपचारिक> नेपाल सरकार", "tgt": "Government of Nepal", "register": "informal", "id": "df1b4b6454412ec2"}
+{"src": "<औपचारिक> नेपाल कानुन आयोग", "tgt": "Nepal Law Commission", "register": "formal", "id": "94d7bdfb9c2f55fc"}
+{"src": "<अनौपचारिक> नेपाल कानुन आयोग", "tgt": "Nepal Law Commission", "register": "informal", "id": "94d7bdfb9c2f55fc"}
+{"src": "<औपचारिक> नयाँ बनेश्वर, काठमाडौँ", "tgt": "New Baneshwor, Kathmandu", "register": "formal", "id": "2b0575cea953019b"}
+{"src": "<अनौपचारिक> नयाँ बनेश्वर, काठमाडौँ", "tgt": "New Baneshwor, Kathmandu", "register": "informal", "id": "2b0575cea953019b"}
+{"src": "<औपचारिक> भाषा चयन गर्नुहोस्", "tgt": "Select Language", "register": "formal", "id": "1badcd8c85470f7e"}
+{"src": "<अनौपचारिक> भाषा चयन गर्नुहोस्", "tgt": "Select Language", "register": "informal", "id": "1badcd8c85470f7e"}
+{"src": "<औपचारिक> खोज", "tgt": "Search", "register": "formal", "id": "3559d7accf003609"}
+{"src": "<अनौपचारिक> खोज्नुहोस्", "tgt": "Search", "register": "informal", "id": "3559d7accf003609"}
+{"src": "<औपचारिक> महत्त्वपूर्ण सूचना", "tgt": "Important Notice", "register": "formal", "id": "cbc277b7b5b72299"}
+{"src": "<अनौपचारिक> महत्त्वपूर्ण सूचना", "tgt": "Important Notice", "register": "informal", "id": "cbc277b7b5b72299"}
+{"src": "<औपचारिक> कार्यालय समयहरू", "tgt": "Office Hours", "register": "formal", "id": "528f92efb340d80e"}
+{"src": "<अनौपचारिक> कार्यालय समयहरू", "tgt": "Office Hours", "register": "informal", "id": "528f92efb340d80e"}
+{"src": "<औपचारिक> घर", "tgt": "Home", "register": "formal", "id": "e83249bd3ba79932"}
+{"src": "<अनौपचारिक> घर", "tgt": "Home", "register": "informal", "id": "e83249bd3ba79932"}
+{"src": "<औपचारिक> डाउनलोड गर्नुहोस्", "tgt": "Download", "register": "formal", "id": "817248fb77fb5c2c"}
+{"src": "<अनौपचारिक> डाउनलोड गर्नुहोस्", "tgt": "Download", "register": "informal", "id": "817248fb77fb5c2c"}
+{"src": "<औपचारिक> थप पढ्नुहोस्", "tgt": "Read More", "register": "formal", "id": "59a5c610074c286a"}
+{"src": "<अनौपचारिक> थप पढ्नुहोस्", "tgt": "Read More", "register": "informal", "id": "59a5c610074c286a"}
+{"src": "<औपचारिक> अघिल्लो", "tgt": "Previous", "register": "formal", "id": "355f28f2c0c387ad"}
+{"src": "<अनौपचारिक> अघिल्लो", "tgt": "Previous", "register": "informal", "id": "355f28f2c0c387ad"}
+{"src": "<औपचारिक> अर्को", "tgt": "Next", "register": "formal", "id": "edee9402d198b04a"}
+{"src": "<अनौपचारिक> अर्को", "tgt": "Next", "register": "informal", "id": "edee9402d198b04a"}
+{"src": "<औपचारिक> पेश गर्नुहोस्", "tgt": "Submit", "register": "formal", "id": "3fa4054f214f0f80"}
+{"src": "<अनौपचारिक> पेश गर्नुहोस्", "tgt": "Submit", "register": "informal", "id": "3fa4054f214f0f80"}
+{"src": "<औपचारिक> रद्द गर्नुहोस्", "tgt": "Cancel", "register": "formal", "id": "4fd0653c4f2aef3b"}
+{"src": "<अनौपचारिक> रद्द गर्नुहोस्", "tgt": "Cancel", "register": "informal", "id": "4fd0653c4f2aef3b"}
+{"src": "<औपचारिक> बन्द गर्नुहोस्", "tgt": "Close", "register": "formal", "id": "da38860cb875cb64"}
+{"src": "<अनौपचारिक> बन्द गर्नुहोस्", "tgt": "Close", "register": "informal", "id": "da38860cb875cb64"}
+{"src": "<औपचारिक> पछाडि", "tgt": "Back", "register": "formal", "id": "61bb8d29b5be7db3"}
+{"src": "<अनौपचारिक> फिर्ता", "tgt": "Back", "register": "informal", "id": "61bb8d29b5be7db3"}
+{"src": "<औपचारिक> साझेदारी गर्नुहोस्", "tgt": "Share", "register": "formal", "id": "aab90dfe8c6f152a"}
+{"src": "<अनौपचारिक> साझेदारी गर्नुहोस्", "tgt": "Share", "register": "informal", "id": "aab90dfe8c6f152a"}
+{"src": "<औपचारिक> कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "Please use formal language.", "register": "formal", "id": "bb29242eaaaebc98"}
+{"src": "<अनौपचारिक> कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "Please use formal language.", "register": "informal", "id": "bb29242eaaaebc98"}
+{"src": "<औपचारिक> सरकारले सम्बन्धित क्षेत्रका उत्कृष्ट विशेषज्ञहरू मध्येबाट पाँच जनासम्मलाई आयोगको मानार्थ सदस्यका रूपमा नियुक्त गर्न सक्छ।", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "register": "formal", "id": "2d6a1eb98d368ab8"}
+{"src": "<अनौपचारिक> सरकारले सम्बन्धित क्षेत्रका उत्कृष्ट विशेषज्ञहरू मध्येबाट पाँच जनासम्मलाई आयोगको मानार्थ सदस्यका रूपमा नियुक्त गर्न सक्छ।", "tgt": "The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "register": "informal", "id": "2d6a1eb98d368ab8"}
+{"src": "बहुपक्षीय लोकतन्त्रको उदय भए लगत्तै सन् 1953 मा कार्यकारी निर्णयद्वारा नेपाल कानुन आयोग (एनएलसी) गठन गरिएको थियो। दोस्रो, तेस्रो, चौथो र पाँचौँ आयोग क्रमशः सन् 1960,1963,1972 र 1979 मा गठन गरिएको थियो। ती सबै आयोगहरू अस्थायी प्रकृतिका थिए। एनएलसीलाई सन् 1984 मा मात्र स्थायी दर्जा दिइएको थियो। सन् 1990 मा बहुदलीय लोकतन्त्रको पुनर्स्थापनापछि, बदलिएको सन्दर्भ अनुरूप जनादेशसहित एनएलसीको पुनर्गठन गरिएको थियो। सन् 2003 मा यसको जनादेश र संरचनामा समयमै परिवर्तन गर्दै यसलाई पुनः पुनर्गठन गरिएको थियो। अब, आयोग नेपाल कानुन आयोग ऐन, 2007 अन्तर्गत वैधानिक निकाय हो, जुन 14 जनवरी 2007", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "register": "formal", "id": "4165bb0e77db0b94"}
+{"src": "बहुपक्षीय लोकतन्त्रको उदय भए लगत्तै सन् 1953 मा कार्यकारी निर्णयद्वारा नेपाल कानुन आयोग (एनएलसी) गठन गरिएको थियो। दोस्रो, तेस्रो, चौथो र पाँचौँ आयोग क्रमशः सन् 1960,1963,1972 र 1979 मा गठन गरिएको थियो। ती सबै आयोगहरू अस्थायी प्रकृतिका थिए। एनएलसीलाई सन् 1984 मा मात्र स्थायी दर्जा दिइएको थियो। सन् 1990 मा बहुदलीय लोकतन्त्रको पुनर्स्थापनापछि, बदलिएको सन्दर्भ अनुरूप जनादेशसहित एनएलसीको पुनर्गठन गरिएको थियो। सन् 2003 मा यसको जनादेश र संरचनामा समयमै परिवर्तन गर्दै यसलाई पुनः पुनर्गठन गरिएको थियो। अब, आयोग नेपाल कानुन आयोग ऐन, 2007 अन्तर्गत वैधानिक निकाय हो, जुन 14 जनवरी 2007", "tgt": "The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "register": "informal", "id": "4165bb0e77db0b94"}
+{"src": "आयोगले अध्यक्ष, उपाध्यक्ष र सात सदस्यसहित नौ सदस्यहरू समावेश गर्दछ।", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "register": "formal", "id": "8281b622b9f13c3d"}
+{"src": "<अनौपचारिक> आयोग अध्यक्ष, उपाध्यक्ष र सात सदस्यसहित नौ सदस्यहरू मिलेर बनेको छ।", "tgt": "The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "register": "informal", "id": "8281b622b9f13c3d"}
+{"src": "<औपचारिक> अध्यक्ष र उपाध्यक्ष नेपाल सरकारद्वारा पाँच वर्षका लागि नियुक्त गरिन्छ। कम्तिमा एकजना महिला सहितको अन्य तीन सदस्यहरू दुई वर्षका लागि सोहीद्वारा मनोनीत हुन्छन्। सर्वोच्च अदालतका सेवानिवृत्त न्यायाधीश वा यसका लागि योग्य व्यक्ति अध्यक्षको रूपमा नियुक्त हुन योग्य हुन्छन्। नेपाल न्यायिक सेवाको विशेष वर्गको पदबाट सेवानिवृत्त व्यक्ति वा कानुन व्यवसायी वा कानुन शिक्षकको रूपमा पन्ध्र वर्षको अनुभव भएको व्यक्ति वा कानुनी मस्यौदासहित कानून र न्यायको क्षेत्रमा काम गर्ने व्यक्ति उपाध्यक्ष वा आयोगको सदस्यको पदका लागि योग्य हुन सक्छ।", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "register": "formal", "id": "06de037fbd5e75a2"}
+{"src": "<अनौपचारिक> अध्यक्ष र उपाध्यक्ष नेपाल सरकारद्वारा पाँच वर्षका लागि नियुक्त गरिन्छ। कम्तिमा एकजना महिला सहितको अन्य तीन सदस्यहरू दुई वर्षका लागि सोहीद्वारा मनोनीत हुन्छन्। सर्वोच्च अदालतका सेवानिवृत्त न्यायाधीश वा यसका लागि योग्य व्यक्ति अध्यक्षको रूपमा नियुक्त हुन योग्य हुन्छन्। नेपाल न्यायिक सेवाको विशेष वर्गको पदबाट सेवानिवृत्त व्यक्ति वा कानुन व्यवसायी वा कानुन शिक्षकको रूपमा पन्ध्र वर्षको अनुभव भएको व्यक्ति वा कानुनी मस्यौदासहित कानून र न्यायको क्षेत्रमा काम गर्ने व्यक्ति उपाध्यक्ष वा आयोगको सदस्यको पदका लागि योग्य हुन सक्छ।", "tgt": "The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "register": "informal", "id": "06de037fbd5e75a2"}
+{"src": "<औपचारिक> कानुन, न्याय तथा संसदीय मामिला मन्त्रालयका सचिव, प्रधानमन्त्री तथा मन्त्रीपरिषदको कार्यालयमा सचिव (कानून), नेपालका महान्यायाधिवक्ताद्वारा मनोनीत उप महान्यायाधिवक्ता र एनएलसीमा सचिव, जसले सदस्य-सचिवको रूपमा पनि काम गर्छन्, पदेन सदस्य हुन्।", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "register": "formal", "id": "ec5ada53b13a5584"}
+{"src": "<अनौपचारिक> कानुन, न्याय तथा संसदीय मामिला मन्त्रालयका सचिव, प्रधानमन्त्री तथा मन्त्रीपरिषदको कार्यालयमा सचिव (कानून), नेपालका महान्यायाधिवक्ताद्वारा मनोनीत उप महान्यायाधिवक्ता र एनएलसीमा सचिव, जसले सदस्य-सचिवको रूपमा पनि काम गर्छन्, पदेन सदस्य हुन्।", "tgt": "The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "register": "informal", "id": "ec5ada53b13a5584"}
+{"src": "<औपचारिक> आयोगका अध्यक्ष, उपाध्यक्ष र सदस्यहरूको पदमा नियुक्तिका लागि सरकारलाई सिफारिस गर्न कानुन, न्याय तथा संसदीय मामिला मन्त्री, प्रतिनिधि सभाको कानुन, न्याय तथा संसदीय समितिका अध्यक्ष * र नेपाल बार एसोसिएसनका अध्यक्ष मिलेर बनेको सिफारिस समितिको प्रावधान छ।", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "register": "formal", "id": "20b2fc02ab6ac117"}
+{"src": "<अनौपचारिक> आयोगका अध्यक्ष, उपाध्यक्ष र सदस्यहरूको पदमा नियुक्ति गर्न सरकारलाई सिफारिस गर्न कानुन, न्याय तथा संसदीय मामिला मन्त्री, प्रतिनिधि सभाको कानुन, न्याय तथा संसदीय समितिका अध्यक्ष * र नेपाल बार एसोसिएसनका अध्यक्ष मिलेर बनेको सिफारिस समितिको प्रावधान छ।", "tgt": "There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "register": "informal", "id": "20b2fc02ab6ac117"}
+{"src": "<औपचारिक> नयाँ कानुनको मस्यौदा तयार गर्ने र व्याख्यात्मक नोटसहित विधानमा संशोधन गर्ने, विद्यमान कानुनलाई संहिताबद्ध गर्ने, एकीकृत गर्ने र समीक्षा गर्ने, सन्धिको दायित्व समावेश गर्न कानुनको मस्यौदा बनाउने, अन्य देशका कानुन आयोग र कानुनको मस्यौदा बनाउने निकायहरूसँग विचार र सूचना आदानप्रदान गर्ने, कानुनी क्षेत्रमा अध्ययन र अनुसन्धान कार्यहरू गर्ने, हितधारकहरूसँग परामर्श गर्ने, विशेषज्ञ सेवा प्राप्त गर्ने, वार्षिक कार्यक्रम र वार्षिक प्रगति प्रतिवेदन तयार गर्ने, सरकारले निर्धारित गरेको र आयोगले नै आवश्यक ठानेका कानुन र न्यायसँग सम्बन्धित अन्य कार्यहरू पूरा गर्ने, सरकारलाई आवश्यक सिफारिस गर्ने। परामर्श पत्रमा छलफल गर्ने प्रक्रिया", "tgt": "To draft new legislation and amendment of the statute with explanatory notes, To codify, unify and review existing laws, To draft legislation to include treaty obligation, To exchange ideas and information with law commissions and law drafting agencies of other countries, To carry out study and research works on legal field. To make consultation with stakeholders, To obtain expert service. To prepare annual programs and annual progress report, To accomplish other functions relating to law and justice as prescribed by the Government and as deemed necessary by the Commission itself, To make necessary recommendation to the Government. Process of Discussion on Consultation Paper", "register": "formal", "id": "75ad9fe8a8d8e05e"}
+{"src": "<अनौपचारिक> नयाँ कानुनको मस्यौदा तयार गर्ने र व्याख्यात्मक नोटसहित विधानमा संशोधन गर्ने, विद्यमान कानुनलाई संहिताबद्ध गर्ने, एकीकृत गर्ने र समीक्षा गर्ने, सन्धिको दायित्व समावेश गर्न कानुनको मस्यौदा बनाउने, अन्य देशका कानुन आयोग र कानुनको मस्यौदा बनाउने निकायहरूसँग विचार र सूचना आदानप्रदान गर्ने, कानुनी क्षेत्रमा अध्ययन र अनुसन्धान कार्यहरू गर्ने, हितधारकहरूसँग परामर्श गर्ने, विशेषज्ञ सेवा प्राप्त गर्ने, वार्षिक कार्यक्रम र वार्षिक प्रगति प्रतिवेदन तयार गर्ने, सरकारले निर्धारित गरेको र आयोगले नै आवश्यक ठानेका कानुन र न्यायसँग सम्बन्धित अन्य कार्यहरू पूरा गर्ने, सरकारलाई आवश्यक सिफारिस गर्ने। परामर्श पत्रमा छलफल गर्ने प्रक्रिया", "tgt": "To draft new legislation and amendment of the statute with explanatory notes, To codify, unify and review existing laws, To draft legislation to include treaty obligation, To exchange ideas and information with law commissions and law drafting agencies of other countries, To carry out study and research works on legal field. To make consultation with stakeholders, To obtain expert service. To prepare annual programs and annual progress report, To accomplish other functions relating to law and justice as prescribed by the Government and as deemed necessary by the Commission itself, To make necessary recommendation to the Government. Process of Discussion on Consultation Paper", "register": "informal", "id": "75ad9fe8a8d8e05e"}
+{"src": "<औपचारिक> 1 कार्यहरूको प्रारम्भः आयोगले सम्बन्धित मन्त्रालयको रेफरलमा वा आफ्नै तर्फबाट मस्यौदा र कानून सुधार प्रक्रिया सुरु गर्न सक्छ। यसले हितधारकहरू, अर्थात् व्यक्तिगत, गैर-सरकारी सङ्गठन, नागरिक समाज र सामुदायिक सङ्गठनबाट पनि प्रस्ताव प्राप्त गर्न सक्छ।", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "register": "formal", "id": "62201c7fea24ecf4"}
+{"src": "<अनौपचारिक> 1 कार्यहरूको प्रारम्भः आयोगले सम्बन्धित मन्त्रालयको रेफरलमा वा आफ्नै तर्फबाट मस्यौदा र कानून सुधार प्रक्रिया सुरु गर्न सक्छ। यसले हितधारकहरू, अर्थात् व्यक्तिगत, गैर-सरकारी सङ्गठन, नागरिक समाज र सामुदायिक सङ्गठनबाट पनि प्रस्ताव प्राप्त गर्न सक्छ।", "tgt": "1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "register": "informal", "id": "62201c7fea24ecf4"}
+{"src": "<औपचारिक> 2 कार्य टोलीको गठनः आयोगले प्राथमिकताका आधारमा वार्षिक कार्यक्रम निर्णय गर्छ र स्पष्ट जनादेश र समय सीमा प्रदान गरेर स्वीकृत क्षेत्रमा काम गर्न विशेषज्ञहरूलाई संलग्न गर्दै कार्य टोली (डब्ल्युटि) गठन गर्दछ। सामान्यतया, आयोगका एक सदस्यले डब्ल्युटि प्रमुख हुन्छन् वा यसको नेतृत्व सम्बन्धित क्षेत्रका कुनै प्रतिष्ठित व्यक्तित्वले गर्छन्।", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "register": "formal", "id": "3fabedb6161d73b4"}
+{"src": "2 कार्य टोलीको गठनः आयोगले प्राथमिकताका आधारमा वार्षिक कार्यक्रम निर्णय गर्छ र स्पष्ट जनादेश र समय सीमा प्रदान गरेर स्वीकृत क्षेत्रमा काम गर्न विशेषज्ञहरूलाई संलग्न गर्दै कार्य टोली (डब्ल्युटि) गठन गर्दछ। सामान्यतया, आयोगका एक सदस्यले डब्ल्युटि प्रमुख हुन्छन् वा यसको नेतृत्व सम्बन्धित क्षेत्रका कुनै प्रतिष्ठित व्यक्तित्वले गर्छन्।", "tgt": "2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "register": "informal", "id": "3fabedb6161d73b4"}
+{"src": "<औपचारिक> 3 परामर्श पत्रको तयारीः डब्ल्यूटीले समीक्षाको अधीनमा रहेको मुद्दाको गहन अध्ययन गर्दछ। यस उद्देश्यका लागि, डब्ल्यूटीले विशेषज्ञ, हितधारक र सरकारी अधिकारीहरूलाई आमन्त्रित सदस्यको रूपमा परामर्शका लागि आमन्त्रित गर्न सक्छ। डब्ल्यूटीले परामर्श/मुद्दा पत्र तयार गर्दछ र यो इच्छुक कुनै पनि व्यक्तिलाई उपलब्ध गराइन्छ। डब्ल्यूटीले डाटा सङ्कलनका लागि अनुसन्धानको उपयुक्त विधिहरू पनि रोज्न सक्छ।", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "register": "formal", "id": "b1c12b131d30b20b"}
+{"src": "<अनौपचारिक> 3 परामर्श पत्रको तयारीः डब्ल्यूटीले समीक्षामा रहेको मुद्दाको गहन अध्ययन गर्दछ। यस उद्देश्यका लागि, डब्ल्यूटीले विशेषज्ञ, हितधारक र सरकारी अधिकारीहरूलाई आमन्त्रित सदस्यको रूपमा परामर्शका लागि आमन्त्रित गर्न सक्छ। डब्ल्यूटीले परामर्श/मुद्दा पत्र तयार गर्दछ र यो इच्छुक कुनै पनि व्यक्तिलाई उपलब्ध गराइन्छ। डब्ल्यूटीले डाटा सङ्कलनका लागि अनुसन्धानको उपयुक्त विधिहरू पनि रोज्न सक्छ।", "tgt": "3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "register": "informal", "id": "b1c12b131d30b20b"}
+{"src": "<औपचारिक> यो मेरो परिवार हो।", "tgt": "This is my family.", "register": "formal", "id": "7eb7a32c47f82cbc"}
+{"src": "<अनौपचारिक> यो मेरो परिवार हो।", "tgt": "This is my family.", "register": "informal", "id": "7eb7a32c47f82cbc"}
+{"src": "<औपचारिक> तपाईँकी आमा कस्तो छिन्?", "tgt": "How is your mother?", "register": "formal", "id": "593c3c4d05c99c50"}
+{"src": "<औपचारिक> तिमीकी आमा कस्तो छिन्?", "tgt": "How is your mother?", "register": "informal", "id": "593c3c4d05c99c50"}
+{"src": "<औपचारिक> यो मेरो भाइ हो।", "tgt": "This is my brother.", "register": "formal", "id": "946dcfa9524b7b3f"}
+{"src": "<अनौपचारिक> यो मेरो भाइ हो।", "tgt": "This is my brother.", "register": "informal", "id": "946dcfa9524b7b3f"}
+{"src": "<औपचारिक> तपाईँलाई स्वागत छ।", "tgt": "You are welcome.", "register": "formal", "id": "b4832372d2824a89"}
+{"src": "<औपचारिक> तिमीलाई स्वागत छ।", "tgt": "You are welcome.", "register": "informal", "id": "b4832372d2824a89"}
+{"src": "<औपचारिक> यो दुई सय रुपैयाँ हो।", "tgt": "It is two hundred rupees.", "register": "formal", "id": "4597f0363f80519b"}
+{"src": "<अनौपचारिक> यो दुई सय रुपैयाँ हो।", "tgt": "It is two hundred rupees.", "register": "informal", "id": "4597f0363f80519b"}
+{"src": "<औपचारिक> मलाई छ बजे उठाउनुहोस्।", "tgt": "Wake me up at six.", "register": "formal", "id": "f26e7ea4662e8384"}
+{"src": "<अनौपचारिक> मलाई छ बजे उठाउनुहोस्।", "tgt": "Wake me up at six.", "register": "informal", "id": "f26e7ea4662e8384"}
+{"src": "<औपचारिक> साढे तीन बजी भएको छ।", "tgt": "It is half past three.", "register": "formal", "id": "7e835af8139a4a89"}
+{"src": "<अनौपचारिक> साढे तीन बजी भएको छ।", "tgt": "It is half past three.", "register": "informal", "id": "7e835af8139a4a89"}
+{"src": "<औपचारिक> एक हजार रुपैयाँ।", "tgt": "One thousand rupees.", "register": "formal", "id": "59f803d073b2bbe8"}
+{"src": "<अनौपचारिक> एक हजार रुपैयाँ।", "tgt": "One thousand rupees.", "register": "informal", "id": "59f803d073b2bbe8"}
+{"src": "<औपचारिक> के यहाँ वाइ-फाइ निःशुल्क छ?", "tgt": "Is Wi-Fi free here?", "register": "formal", "id": "46c1cd4b5cc1f1b1"}
+{"src": "<अनौपचारिक> के यहाँ वाइ-फाइ निःशुल्क छ?", "tgt": "Is Wi-Fi free here?", "register": "informal", "id": "46c1cd4b5cc1f1b1"}
+{"src": "<औपचारिक> मेरो नाम कुपर हो।", "tgt": "My name is Cooper.", "register": "formal", "id": "3613ab727847e1af"}
+{"src": "<अनौपचारिक> मेरो नाम कुपर हो।", "tgt": "My name is Cooper.", "register": "informal", "id": "3613ab727847e1af"}
+{"src": "<औपचारिक> मलाई दरबार स्क्वायरमा भेट्नुहोस्।", "tgt": "Meet me at Durbar Square.", "register": "formal", "id": "a2f12f810b90c566"}
+{"src": "<अनौपचारिक> मलाई दरबार स्क्वायरमा भेट्नुहोस्।", "tgt": "Meet me at Durbar Square.", "register": "informal", "id": "a2f12f810b90c566"}
+{"src": "<औपचारिक> गुगल नक्सा खोल्नुहोस्।", "tgt": "Open Google Maps.", "register": "formal", "id": "0f8977d1e2d41ed2"}
+{"src": "<अनौपचारिक> गुगल नक्सा खोल्नुहोस्।", "tgt": "Open Google Maps.", "register": "informal", "id": "0f8977d1e2d41ed2"}
+{"src": "<औपचारिक> कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "Please help me.", "register": "formal", "id": "7a2043f12f548012"}
+{"src": "<अनौपचारिक> कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "Please help me.", "register": "informal", "id": "7a2043f12f548012"}
+{"src": "<औपचारिक> <अनौपचारिक> साढे तीन बजी भएको छ।", "tgt": "<informal> It is half past three.", "register": "formal", "id": "8cfa6f0fb95f4eb8"}
+{"src": "<अनौपचारिक> <अनौपचारिक> साढे तीन बजी भएको छ।", "tgt": "<informal> It is half past three.", "register": "informal", "id": "8cfa6f0fb95f4eb8"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया फोन पास गर्नुहोस्।", "tgt": "<informal> Please pass the phone.", "register": "formal", "id": "1906d930bc717292"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया फोन पास गर्नुहोस्।", "tgt": "<informal> Please pass the phone.", "register": "informal", "id": "1906d930bc717292"}
+{"src": "<औपचारिक> <अनौपचारिक> कुन बस पाटन जान्छ?", "tgt": "<informal> Which bus goes to Patan?", "register": "formal", "id": "25f77969b8300e62"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कुन बस पाटन जान्छ?", "tgt": "<informal> Which bus goes to Patan?", "register": "informal", "id": "25f77969b8300e62"}
+{"src": "<औपचारिक> <औपचारिक> म हिजो आएको हुँ।", "tgt": "<formal> I came yesterday.", "register": "formal", "id": "f2b706356b855301"}
+{"src": "<अनौपचारिक> <औपचारिक> म हिजो आएको हुँ।", "tgt": "<formal> I came yesterday.", "register": "informal", "id": "f2b706356b855301"}
+{"src": "<औपचारिक> <औपचारिक> महत्त्वपूर्ण सूचना", "tgt": "<formal> Important Notice", "register": "formal", "id": "3cc8b9f4b98f3305"}
+{"src": "<अनौपचारिक> <औपचारिक> महत्त्वपूर्ण सूचना", "tgt": "<formal> Important Notice", "register": "informal", "id": "3cc8b9f4b98f3305"}
+{"src": "<औपचारिक> <औपचारिक> के तपाईँसँग सानो आकार छ?", "tgt": "<formal> Do you have a smaller size?", "register": "formal", "id": "06753bcc54862891"}
+{"src": "<औपचारिक> <औपचारिक> के तिमीसँग सानो आकार छ?", "tgt": "<formal> Do you have a smaller size?", "register": "informal", "id": "06753bcc54862891"}
+{"src": "<औपचारिक> <अनौपचारिक> दर्शन र मिसन", "tgt": "<informal> Vision and Mission", "register": "formal", "id": "c6fcc05d99f36d24"}
+{"src": "<अनौपचारिक> <अनौपचारिक> दर्शन र मिसन", "tgt": "<informal> Vision and Mission", "register": "informal", "id": "c6fcc05d99f36d24"}
+{"src": "कार्य टोलीको गठनः आयोगले प्राथमिकताका आधारमा वार्षिक कार्यक्रम निर्णय गर्छ र स्पष्ट जनादेश र समय सीमा प्रदान गरेर स्वीकृत क्षेत्रमा काम गर्न विशेषज्ञहरूलाई संलग्न गर्दै कार्य टोली (डब्ल्युटि) गठन गर्दछ। सामान्यतया, आयोगका एक सदस्यले डब्ल्युटि प्रमुख हुन्छन् वा यसको नेतृत्व सम्बन्धित क्षेत्रका कुनै प्रतिष्ठित व्यक्तित्वले गर्छन्।", "tgt": "<formal> 2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "register": "formal", "id": "eb0e9d46ff8fca53"}
+{"src": "<अनौपचारिक> <औपचारिक> 2 कार्य टोलीको गठनः आयोगले प्राथमिकताका आधारमा वार्षिक कार्यक्रम निर्णय गर्छ र स्पष्ट जनादेश र समय सीमा प्रदान गरेर स्वीकृत क्षेत्रमा काम गर्न विशेषज्ञहरूलाई संलग्न गर्दै कार्य टोली (डब्ल्युटि) गठन गर्दछ। सामान्यतया, आयोगका एक सदस्यले डब्ल्युटि प्रमुख हुन्छन् वा यसको नेतृत्व सम्बन्धित क्षेत्रका कुनै प्रतिष्ठित व्यक्तित्वले गर्छन्।", "tgt": "<formal> 2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "register": "informal", "id": "eb0e9d46ff8fca53"}
+{"src": "<औपचारिक> <औपचारिक> पेश गर्नुहोस्", "tgt": "<formal> Submit", "register": "formal", "id": "d3f989662a7c6086"}
+{"src": "<अनौपचारिक> <औपचारिक> पेश गर्नुहोस्", "tgt": "<formal> Submit", "register": "informal", "id": "d3f989662a7c6086"}
+{"src": "<औपचारिक> <औपचारिक> मेरो नाम कुपर हो।", "tgt": "<formal> My name is Cooper.", "register": "formal", "id": "47945659d7813f32"}
+{"src": "<अनौपचारिक> <औपचारिक> मेरो नाम कुपर हो।", "tgt": "<formal> My name is Cooper.", "register": "informal", "id": "47945659d7813f32"}
+{"src": "<औपचारिक> <अनौपचारिक> यो कति टाढाको छ?", "tgt": "<informal> How far is it?", "register": "formal", "id": "18e2066eacbfbae9"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो कति टाढाको छ?", "tgt": "<informal> How far is it?", "register": "informal", "id": "18e2066eacbfbae9"}
+{"src": "<औपचारिक> <औपचारिक> पूर्व अध्यक्षहरू", "tgt": "<formal> Former Chairpersons", "register": "formal", "id": "10a706f3ceb231dc"}
+{"src": "<अनौपचारिक> <औपचारिक> पूर्व अध्यक्षहरू", "tgt": "<formal> Former Chairpersons", "register": "informal", "id": "10a706f3ceb231dc"}
+{"src": "<औपचारिक> <औपचारिक> म भोलि आउनेछु।", "tgt": "<formal> I will come tomorrow.", "register": "formal", "id": "e3b13254006a6996"}
+{"src": "<अनौपचारिक> <औपचारिक> म भोलि आउनेछु।", "tgt": "<formal> I will come tomorrow.", "register": "informal", "id": "e3b13254006a6996"}
+{"src": "<औपचारिक> <औपचारिक> यो मेरो पासपोर्ट हो।", "tgt": "<formal> This is my passport.", "register": "formal", "id": "e7b7e7743f3533c6"}
+{"src": "<अनौपचारिक> <औपचारिक> यो मेरो पासपोर्ट हो।", "tgt": "<formal> This is my passport.", "register": "informal", "id": "e7b7e7743f3533c6"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया यहाँ पर्खनुहोस्।", "tgt": "<informal> Please wait here.", "register": "formal", "id": "e5181893ef1de37c"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया यहाँ पर्खनुहोस्।", "tgt": "<informal> Please wait here.", "register": "informal", "id": "e5181893ef1de37c"}
+{"src": "<औपचारिक> <अनौपचारिक> के यहाँ वाइ-फाइ निःशुल्क छ?", "tgt": "<informal> Is Wi-Fi free here?", "register": "formal", "id": "59a68e4f85f40e21"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के यहाँ वाइ-फाइ निःशुल्क छ?", "tgt": "<informal> Is Wi-Fi free here?", "register": "informal", "id": "59a68e4f85f40e21"}
+{"src": "<औपचारिक> <अनौपचारिक> के यो शाकाहारी हो?", "tgt": "<informal> Is this vegetarian?", "register": "formal", "id": "ae9e14fde5b49d2d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के यो शाकाहारी हो?", "tgt": "<informal> Is this vegetarian?", "register": "informal", "id": "ae9e14fde5b49d2d"}
+{"src": "<औपचारिक> <अनौपचारिक> सङ्गठन संरचना", "tgt": "<informal> Organization Structure", "register": "formal", "id": "f279ea9e4f0a56e6"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सङ्गठन संरचना", "tgt": "<informal> Organization Structure", "register": "informal", "id": "f279ea9e4f0a56e6"}
+{"src": "<औपचारिक> <अनौपचारिक> खण्डद्वारा", "tgt": "<informal> By Volume", "register": "formal", "id": "e39dd715be338e15"}
+{"src": "<अनौपचारिक> <अनौपचारिक> खण्डद्वारा", "tgt": "<informal> By Volume", "register": "informal", "id": "e39dd715be338e15"}
+{"src": "<औपचारिक> <औपचारिक> होइन।", "tgt": "<formal> No.", "register": "formal", "id": "b9610fbf79636281"}
+{"src": "<अनौपचारिक> <औपचारिक> होइन।", "tgt": "<formal> No.", "register": "informal", "id": "b9610fbf79636281"}
+{"src": "<औपचारिक> <अनौपचारिक> यो कहिले आइपुग्नेछ?", "tgt": "<informal> When will it arrive?", "register": "formal", "id": "92064da0c39e443d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो कहिले आइपुग्नेछ?", "tgt": "<informal> When will it arrive?", "register": "informal", "id": "92064da0c39e443d"}
+{"src": "<औपचारिक> <अनौपचारिक> नियमहरू", "tgt": "<informal> Regulations", "register": "formal", "id": "d18fb67545593722"}
+{"src": "<अनौपचारिक> <अनौपचारिक> नियमहरू", "tgt": "<informal> Regulations", "register": "informal", "id": "d18fb67545593722"}
+{"src": "<औपचारिक> <औपचारिक> 3 परामर्श पत्रको तयारीः डब्ल्यूटीले समीक्षामा रहेको मुद्दाको गहन अध्ययन गर्दछ। यस उद्देश्यका लागि, डब्ल्यूटीले विशेषज्ञ, हितधारक र सरकारी अधिकारीहरूलाई आमन्त्रित सदस्यको रूपमा परामर्शका लागि आमन्त्रित गर्न सक्छ। डब्ल्यूटीले परामर्श/मुद्दा पत्र तयार गर्दछ र यो इच्छुक कुनै पनि व्यक्तिलाई उपलब्ध गराइन्छ। डब्ल्यूटीले डाटा सङ्कलनका लागि अनुसन्धानको उपयुक्त विधिहरू पनि रोज्न सक्छ।", "tgt": "<formal> 3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "register": "formal", "id": "ecec7741c74a32fb"}
+{"src": "<अनौपचारिक> <औपचारिक> 3 परामर्श पत्रको तयारीः डब्ल्यूटीले समीक्षाको अधीनमा रहेको मुद्दाको गहन अध्ययन गर्दछ। यस उद्देश्यका लागि, डब्ल्यूटीले विशेषज्ञ, हितधारक र सरकारी अधिकारीहरूलाई आमन्त्रित सदस्यको रूपमा परामर्शका लागि आमन्त्रित गर्न सक्छ। डब्ल्यूटीले परामर्श/मुद्दा पत्र तयार गर्दछ र यो इच्छुक कुनै पनि व्यक्तिलाई उपलब्ध गराइन्छ। डब्ल्यूटीले डाटा सङ्कलनका लागि अनुसन्धानको उपयुक्त विधिहरू पनि रोज्न सक्छ।", "tgt": "<formal> 3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "register": "informal", "id": "ecec7741c74a32fb"}
+{"src": "<औपचारिक> <औपचारिक> गुगल नक्सा खोल्नुहोस्।", "tgt": "<formal> Open Google Maps.", "register": "formal", "id": "cb18c9c24b703652"}
+{"src": "<अनौपचारिक> <औपचारिक> गुगल नक्सा खोल्नुहोस्।", "tgt": "<formal> Open Google Maps.", "register": "informal", "id": "cb18c9c24b703652"}
+{"src": "<औपचारिक> <औपचारिक> यो दुई सय रुपैयाँ हो।", "tgt": "<formal> It is two hundred rupees.", "register": "formal", "id": "ffbd74c97aa645b6"}
+{"src": "<अनौपचारिक> <औपचारिक> यो दुई सय रुपैयाँ हो।", "tgt": "<formal> It is two hundred rupees.", "register": "informal", "id": "ffbd74c97aa645b6"}
+{"src": "आयोगले अध्यक्ष, उपाध्यक्ष र सात सदस्यसहित नौ सदस्यहरू समावेश गर्दछ।", "tgt": "<formal> The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "register": "formal", "id": "188004e7e43677f6"}
+{"src": "आयोगले अध्यक्ष, उपाध्यक्ष र सात सदस्यसहित नौ सदस्यहरू समावेश गर्दछ।", "tgt": "<formal> The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "register": "informal", "id": "188004e7e43677f6"}
+{"src": "<औपचारिक> <अनौपचारिक> नेटवर्कले काम गरिरहेको छैन।", "tgt": "<informal> The network is not working.", "register": "formal", "id": "979ff9f38e8ddab7"}
+{"src": "<अनौपचारिक> <अनौपचारिक> नेटवर्कले काम गरिरहेको छैन।", "tgt": "<informal> The network is not working.", "register": "informal", "id": "979ff9f38e8ddab7"}
+{"src": "<औपचारिक> <औपचारिक> मैले बोल्नु समाप्त गरेको छु।", "tgt": "<formal> I have finished speaking.", "register": "formal", "id": "3ebf8eb5870b016b"}
+{"src": "<अनौपचारिक> <औपचारिक> मैले बोल्नु समाप्त गरेको छु।", "tgt": "<formal> I have finished speaking.", "register": "informal", "id": "3ebf8eb5870b016b"}
+{"src": "<औपचारिक> <अनौपचारिक> कानुन, न्याय तथा संसदीय मामिला मन्त्रालयका सचिव, प्रधानमन्त्री तथा मन्त्रीपरिषदको कार्यालयमा सचिव (कानून), नेपालका महान्यायाधिवक्ताद्वारा मनोनीत उप महान्यायाधिवक्ता र एनएलसीमा सचिव, जसले सदस्य-सचिवको रूपमा पनि काम गर्छन्, पदेन सदस्य हुन्।", "tgt": "<informal> The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "register": "formal", "id": "c511eef2d8a6e5e0"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कानुन, न्याय तथा संसदीय मामिला मन्त्रालयका सचिव, प्रधानमन्त्री तथा मन्त्रीपरिषदको कार्यालयमा सचिव (कानून), नेपालका महान्यायाधिवक्ताद्वारा मनोनीत उप महान्यायाधिवक्ता र एनएलसीमा सचिव, जसले सदस्य-सचिवको रूपमा पनि काम गर्छन्, पदेन सदस्य हुन्।", "tgt": "<informal> The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "register": "informal", "id": "c511eef2d8a6e5e0"}
+{"src": "<औपचारिक> <औपचारिक> रद्द गर्नुहोस्", "tgt": "<formal> Cancel", "register": "formal", "id": "a1a2fccf41b332b7"}
+{"src": "<अनौपचारिक> <औपचारिक> रद्द गर्नुहोस्", "tgt": "<formal> Cancel", "register": "informal", "id": "a1a2fccf41b332b7"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "<informal> Please check the translation.", "register": "formal", "id": "f581c75571d9ad5a"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "<informal> Please check the translation.", "register": "informal", "id": "f581c75571d9ad5a"}
+{"src": "<औपचारिक> <औपचारिक> वार्षिक प्रतिवेदन", "tgt": "<formal> Annual Report", "register": "formal", "id": "1b283d2f46dfd013"}
+{"src": "<अनौपचारिक> <औपचारिक> वार्षिक प्रतिवेदन", "tgt": "<formal> Annual Report", "register": "informal", "id": "1b283d2f46dfd013"}
+{"src": "<औपचारिक> <औपचारिक> डाउनलोड गर्नुहोस्", "tgt": "<formal> Download", "register": "formal", "id": "ef1a953965e3a7f8"}
+{"src": "<अनौपचारिक> <औपचारिक> डाउनलोड गर्नुहोस्", "tgt": "<formal> Download", "register": "informal", "id": "ef1a953965e3a7f8"}
+{"src": "<औपचारिक> <अनौपचारिक> हालैका अधिनियमहरू", "tgt": "<informal> Recent Acts", "register": "formal", "id": "22fe108092751844"}
+{"src": "<अनौपचारिक> <अनौपचारिक> हालैका अधिनियमहरू", "tgt": "<informal> Recent Acts", "register": "informal", "id": "22fe108092751844"}
+{"src": "<औपचारिक> <औपचारिक> सम्पर्क गर्नुहोस्", "tgt": "<formal> Contact", "register": "formal", "id": "3b21560cfe85151d"}
+{"src": "<अनौपचारिक> <औपचारिक> सम्पर्क गर्नुहोस्", "tgt": "<formal> Contact", "register": "informal", "id": "3b21560cfe85151d"}
+{"src": "<औपचारिक> <औपचारिक> म नगदमा भुक्तानी गर्नेछु।", "tgt": "<formal> I will pay in cash.", "register": "formal", "id": "5032d622b458c3cd"}
+{"src": "<अनौपचारिक> <औपचारिक> म नगदमा भुक्तानी गर्नेछु।", "tgt": "<formal> I will pay in cash.", "register": "informal", "id": "5032d622b458c3cd"}
+{"src": "<औपचारिक> <औपचारिक> के तपाईँ यसलाई लेख्न सक्नुहुन्छ?", "tgt": "<formal> Could you write it down?", "register": "formal", "id": "e3740cd7b93c54f8"}
+{"src": "<औपचारिक> <औपचारिक> के तिमी यसलाई लेख्न सक्छौ?", "tgt": "<formal> Could you write it down?", "register": "informal", "id": "e3740cd7b93c54f8"}
+{"src": "<औपचारिक> <औपचारिक> विद्यमान कानुनहरू", "tgt": "<formal> Existing Laws", "register": "formal", "id": "6565a1a31f7c4aba"}
+{"src": "<अनौपचारिक> <औपचारिक> विद्यमान कानुनहरू", "tgt": "<formal> Existing Laws", "register": "informal", "id": "6565a1a31f7c4aba"}
+{"src": "<औपचारिक> <औपचारिक> बायाँतिर फर्कनुहोस्।", "tgt": "<formal> Turn left.", "register": "formal", "id": "154467cb1fdd48ec"}
+{"src": "<अनौपचारिक> <औपचारिक> बायाँतिर फर्कनुहोस्।", "tgt": "<formal> Turn left.", "register": "informal", "id": "154467cb1fdd48ec"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई सन्देश पठाउनुहोस्।", "tgt": "<informal> Send me a message.", "register": "formal", "id": "5d88f81cd910e8e4"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई सन्देश पठाउनुहोस्।", "tgt": "<informal> Send me a message.", "register": "informal", "id": "5d88f81cd910e8e4"}
+{"src": "<औपचारिक> <अनौपचारिक> के म यसलाई प्रयोग गर्न सक्छु?", "tgt": "<informal> Can I try this on?", "register": "formal", "id": "96525457f7adb9aa"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के म यसलाई प्रयोग गर्न सक्छु?", "tgt": "<informal> Can I try this on?", "register": "informal", "id": "96525457f7adb9aa"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई ज्वरो आएको छ।", "tgt": "<informal> I have a fever.", "register": "formal", "id": "4b58f79489c0330d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई ज्वरो आएको छ।", "tgt": "<informal> I have a fever.", "register": "informal", "id": "4b58f79489c0330d"}
+{"src": "<औपचारिक> <औपचारिक> खारेज गरिएका अधिनियमहरू", "tgt": "<formal> Repealed Acts", "register": "formal", "id": "c7201e33182df331"}
+{"src": "<अनौपचारिक> <औपचारिक> खारेज गरिएका अधिनियमहरू", "tgt": "<formal> Repealed Acts", "register": "informal", "id": "c7201e33182df331"}
+{"src": "<औपचारिक> <अनौपचारिक> होइन।", "tgt": "<informal> No.", "register": "formal", "id": "921d470ce57b8869"}
+{"src": "<अनौपचारिक> <अनौपचारिक> होइन।", "tgt": "<informal> No.", "register": "informal", "id": "921d470ce57b8869"}
+{"src": "<औपचारिक> <औपचारिक> अन्य", "tgt": "<formal> Other", "register": "formal", "id": "04cef15a3b8e843d"}
+{"src": "<अनौपचारिक> <औपचारिक> अन्य", "tgt": "<formal> Other", "register": "informal", "id": "04cef15a3b8e843d"}
+{"src": "<औपचारिक> <अनौपचारिक> पूर्व अध्यक्षहरू", "tgt": "<informal> Former Chairpersons", "register": "formal", "id": "f7507f1da383907a"}
+{"src": "<अनौपचारिक> <अनौपचारिक> पूर्व अध्यक्षहरू", "tgt": "<informal> Former Chairpersons", "register": "informal", "id": "f7507f1da383907a"}
+{"src": "<औपचारिक> <औपचारिक> दायाँ घुमाउनुहोस्।", "tgt": "<formal> Turn right.", "register": "formal", "id": "6516e91a0a3d6354"}
+{"src": "<अनौपचारिक> <औपचारिक> दायाँ घुमाउनुहोस्।", "tgt": "<formal> Turn right.", "register": "informal", "id": "6516e91a0a3d6354"}
+{"src": "<औपचारिक> <अनौपचारिक> के यहाँ चोट लाग्छ?", "tgt": "<informal> Does it hurt here?", "register": "formal", "id": "171c48e9ff9911ad"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के यसले यहाँ चोट पुऱ्याउँछ?", "tgt": "<informal> Does it hurt here?", "register": "informal", "id": "171c48e9ff9911ad"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "<informal> Please try again.", "register": "formal", "id": "fe94c67cc2e1701c"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "<informal> Please try again.", "register": "informal", "id": "fe94c67cc2e1701c"}
+{"src": "<औपचारिक> <औपचारिक> खारेज अध्यादेशहरू", "tgt": "<formal> Repealed Ordinances", "register": "formal", "id": "51c82cfde70eaabb"}
+{"src": "<अनौपचारिक> <औपचारिक> खारेज अध्यादेशहरू", "tgt": "<formal> Repealed Ordinances", "register": "informal", "id": "51c82cfde70eaabb"}
+{"src": "<औपचारिक> <औपचारिक> कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "<formal> Please use formal language.", "register": "formal", "id": "b47a0e7c28af61f8"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "<formal> Please use formal language.", "register": "informal", "id": "b47a0e7c28af61f8"}
+{"src": "<औपचारिक> <अनौपचारिक> के त्यहाँ नजिकै सस्तो होटल छ?", "tgt": "<informal> Is there a cheaper hotel nearby?", "register": "formal", "id": "396872d7c95e96fc"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के त्यहाँ नजिकै सस्तो होटल छ?", "tgt": "<informal> Is there a cheaper hotel nearby?", "register": "informal", "id": "396872d7c95e96fc"}
+{"src": "<औपचारिक> <अनौपचारिक> सिधा जानुहोस्।", "tgt": "<informal> Go straight.", "register": "formal", "id": "f7d93edc694dc578"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सिधा जानुहोस्।", "tgt": "<informal> Go straight.", "register": "informal", "id": "f7d93edc694dc578"}
+{"src": "आयोगले अध्यक्ष, उपाध्यक्ष र सात सदस्यसहित नौ सदस्यहरू समावेश गर्दछ।", "tgt": "<informal> The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "register": "formal", "id": "cc4d3fe129eac07b"}
+{"src": "<अनौपचारिक> <अनौपचारिक> आयोगले अध्यक्ष, उपाध्यक्ष र सात सदस्यसहित नौ सदस्यहरू समावेश गर्दछ।", "tgt": "<informal> The Commission consists of nine members including the Chairperson, Vice-chairperson and seven members.", "register": "informal", "id": "cc4d3fe129eac07b"}
+{"src": "<औपचारिक> <अनौपचारिक> के तपाईँ केही चिया चाहनुहुन्छ?", "tgt": "<informal> Would you like some tea?", "register": "formal", "id": "0c361f04ae0467f0"}
+{"src": "<औपचारिक> <अनौपचारिक> के तिमी केही चिया चाहनुहुन्छ?", "tgt": "<informal> Would you like some tea?", "register": "informal", "id": "0c361f04ae0467f0"}
+{"src": "<औपचारिक> <अनौपचारिक> खारेज अध्यादेशहरू", "tgt": "<informal> Repealed Ordinances", "register": "formal", "id": "ed24249525278c3c"}
+{"src": "<अनौपचारिक> <अनौपचारिक> खारेज अध्यादेशहरू", "tgt": "<informal> Repealed Ordinances", "register": "informal", "id": "ed24249525278c3c"}
+{"src": "<औपचारिक> <औपचारिक> सम्पर्क ठेगाना", "tgt": "<formal> Contact Address", "register": "formal", "id": "9b9984602ee34e07"}
+{"src": "<अनौपचारिक> <औपचारिक> सम्पर्क ठेगाना", "tgt": "<formal> Contact Address", "register": "informal", "id": "9b9984602ee34e07"}
+{"src": "<औपचारिक> <अनौपचारिक> यसको अर्थ के हो?", "tgt": "<informal> What does this mean?", "register": "formal", "id": "82845b4440ea1f01"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यसको अर्थ के हो?", "tgt": "<informal> What does this mean?", "register": "informal", "id": "82845b4440ea1f01"}
+{"src": "<औपचारिक> <अनौपचारिक> पेश गर्नुहोस्", "tgt": "<informal> Submit", "register": "formal", "id": "a4955ac8643ccd54"}
+{"src": "<अनौपचारिक> <अनौपचारिक> पेश गर्नुहोस्", "tgt": "<informal> Submit", "register": "informal", "id": "a4955ac8643ccd54"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया यहाँ खडा हुनुहोस्।", "tgt": "<informal> Please stand here.", "register": "formal", "id": "3cb2530363f53854"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया यहाँ खडा हुनुहोस्।", "tgt": "<informal> Please stand here.", "register": "informal", "id": "3cb2530363f53854"}
+{"src": "<औपचारिक> <अनौपचारिक> तपाईँ पछि।", "tgt": "<informal> After you.", "register": "formal", "id": "010c2d480c55ca52"}
+{"src": "<औपचारिक> <अनौपचारिक> तिमी पछि।", "tgt": "<informal> After you.", "register": "informal", "id": "010c2d480c55ca52"}
+{"src": "<औपचारिक> <अनौपचारिक> के तपाईँसँग सानो आकार छ?", "tgt": "<informal> Do you have a smaller size?", "register": "formal", "id": "94a628326e695e51"}
+{"src": "<औपचारिक> <अनौपचारिक> के तिमीसँग सानो आकार छ?", "tgt": "<informal> Do you have a smaller size?", "register": "informal", "id": "94a628326e695e51"}
+{"src": "<औपचारिक> <अनौपचारिक> सम्पर्क ठेगाना", "tgt": "<informal> Contact Address", "register": "formal", "id": "0c3ae2c832aaf1cf"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सम्पर्क ठेगाना", "tgt": "<informal> Contact Address", "register": "informal", "id": "0c3ae2c832aaf1cf"}
+{"src": "<औपचारिक> <अनौपचारिक> तपाईँ कहाँ जाँदै हुनुहुन्छ?", "tgt": "<informal> Where are you going?", "register": "formal", "id": "cb3152dc0508eb74"}
+{"src": "<औपचारिक> <अनौपचारिक> तिमी कहाँ जाँदै छौ?", "tgt": "<informal> Where are you going?", "register": "informal", "id": "cb3152dc0508eb74"}
+{"src": "<औपचारिक> <औपचारिक> सेवाहरू", "tgt": "<formal> Services", "register": "formal", "id": "3f781e3b9bf25a7e"}
+{"src": "<अनौपचारिक> <औपचारिक> सेवाहरू", "tgt": "<formal> Services", "register": "informal", "id": "3f781e3b9bf25a7e"}
+{"src": "<औपचारिक> <अनौपचारिक> अनुवाद लोड भइरहेको छ।", "tgt": "<informal> The translation is loading.", "register": "formal", "id": "6896268e8328b7cf"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अनुवाद लोड भइरहेको छ।", "tgt": "<informal> The translation is loading.", "register": "informal", "id": "6896268e8328b7cf"}
+{"src": "<औपचारिक> <औपचारिक> तपाईँ पछि।", "tgt": "<formal> After you.", "register": "formal", "id": "6547e21bf3df03b1"}
+{"src": "<औपचारिक> <औपचारिक> तिमी पछि।", "tgt": "<formal> After you.", "register": "informal", "id": "6547e21bf3df03b1"}
+{"src": "<औपचारिक> <औपचारिक> खोज्नुहोस्", "tgt": "<formal> Search", "register": "formal", "id": "3f0f26d7399c68af"}
+{"src": "<अनौपचारिक> <औपचारिक> खोज्नुहोस्", "tgt": "<formal> Search", "register": "informal", "id": "3f0f26d7399c68af"}
+{"src": "<औपचारिक> <औपचारिक> अनुवाद लोड भइरहेको छ।", "tgt": "<formal> The translation is loading.", "register": "formal", "id": "2c2407a66c646eca"}
+{"src": "<अनौपचारिक> <औपचारिक> अनुवाद लोड भइरहेको छ।", "tgt": "<formal> The translation is loading.", "register": "informal", "id": "2c2407a66c646eca"}
+{"src": "<औपचारिक> <औपचारिक> के म यसलाई प्रयोग गर्न सक्छु?", "tgt": "<formal> Can I try this on?", "register": "formal", "id": "43945c74656d37c4"}
+{"src": "<अनौपचारिक> <औपचारिक> के म यसलाई प्रयोग गर्न सक्छु?", "tgt": "<formal> Can I try this on?", "register": "informal", "id": "43945c74656d37c4"}
+{"src": "<औपचारिक> <औपचारिक> यो कहिले आइपुग्नेछ?", "tgt": "<formal> When will it arrive?", "register": "formal", "id": "def591ae0fef7295"}
+{"src": "<अनौपचारिक> <औपचारिक> यो कहिले आइपुग्नेछ?", "tgt": "<formal> When will it arrive?", "register": "informal", "id": "def591ae0fef7295"}
+{"src": "<औपचारिक> <अनौपचारिक> म बिरामी छु।", "tgt": "<informal> I am sick.", "register": "formal", "id": "c8ec5f9afb66f6cf"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म बिरामी छु।", "tgt": "<informal> I am sick.", "register": "informal", "id": "c8ec5f9afb66f6cf"}
+{"src": "<औपचारिक> <औपचारिक> के यहाँ चोट लाग्छ?", "tgt": "<formal> Does it hurt here?", "register": "formal", "id": "2c85c59dc6fcdc99"}
+{"src": "<अनौपचारिक> <औपचारिक> के यहाँ चोट लाग्छ?", "tgt": "<formal> Does it hurt here?", "register": "informal", "id": "2c85c59dc6fcdc99"}
+{"src": "<औपचारिक> <अनौपचारिक> बारम्बार सोधिने प्रश्नहरू", "tgt": "<informal> Frequently Asked Questions", "register": "formal", "id": "f4cfd01cd0409637"}
+{"src": "<अनौपचारिक> <अनौपचारिक> बारम्बार सोधिने प्रश्नहरू", "tgt": "<informal> Frequently Asked Questions", "register": "informal", "id": "f4cfd01cd0409637"}
+{"src": "<औपचारिक> <अनौपचारिक> त्यो अनुवाद सही छ।", "tgt": "<informal> That translation is correct.", "register": "formal", "id": "cbd944c9cf1c01fe"}
+{"src": "<अनौपचारिक> <अनौपचारिक> त्यो अनुवाद सही छ।", "tgt": "<informal> That translation is correct.", "register": "informal", "id": "cbd944c9cf1c01fe"}
+{"src": "<औपचारिक> <औपचारिक> बारम्बार सोधिने प्रश्नहरू", "tgt": "<formal> Frequently Asked Questions", "register": "formal", "id": "b86a2fcfb03aefb3"}
+{"src": "<अनौपचारिक> <औपचारिक> बारम्बार सोधिने प्रश्नहरू", "tgt": "<formal> Frequently Asked Questions", "register": "informal", "id": "b86a2fcfb03aefb3"}
+{"src": "<औपचारिक> <अनौपचारिक> तपाईँ कहाँबाट हुनुहुन्छ?", "tgt": "<informal> Where are you from?", "register": "formal", "id": "d501256e8279f1b9"}
+{"src": "<औपचारिक> <अनौपचारिक> तिमी कहाँबाट छौ?", "tgt": "<informal> Where are you from?", "register": "informal", "id": "d501256e8279f1b9"}
+{"src": "<औपचारिक> <अनौपचारिक> आयोगका अध्यक्ष, उपाध्यक्ष र सदस्यहरूको पदमा नियुक्ति गर्न सरकारलाई सिफारिस गर्न कानुन, न्याय तथा संसदीय मामिला मन्त्री, प्रतिनिधि सभाको कानुन, न्याय तथा संसदीय समितिका अध्यक्ष * र नेपाल बार एसोसिएसनका अध्यक्ष मिलेर बनेको सिफारिस समितिको प्रावधान छ।", "tgt": "<informal> There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "register": "formal", "id": "5f13fd2be0acc0f5"}
+{"src": "<अनौपचारिक> आयोगका अध्यक्ष, उपाध्यक्ष र सदस्यहरूको पदमा नियुक्ति गर्न सरकारलाई सिफारिस गर्न कानुन, न्याय तथा संसदीय मामिला मन्त्री, प्रतिनिधि सभाको कानुन, न्याय तथा संसदीय समितिका अध्यक्ष * र नेपाल बार एसोसिएसनका अध्यक्ष मिलेर बनेको सिफारिस समितिको प्रावधान छ।", "tgt": "<informal> There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "register": "informal", "id": "5f13fd2be0acc0f5"}
+{"src": "<औपचारिक> <अनौपचारिक> यसले कहाँ चोट पुऱ्याउँछ?", "tgt": "<informal> Where does it hurt?", "register": "formal", "id": "9441211007102b9e"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यसले कहाँ चोट पुऱ्याउँछ?", "tgt": "<informal> Where does it hurt?", "register": "informal", "id": "9441211007102b9e"}
+{"src": "<औपचारिक> <औपचारिक> कुन बस पाटन जान्छ?", "tgt": "<formal> Which bus goes to Patan?", "register": "formal", "id": "8eb79ade39b895c2"}
+{"src": "<अनौपचारिक> <औपचारिक> कुन बस पाटन जान्छ?", "tgt": "<formal> Which bus goes to Patan?", "register": "informal", "id": "8eb79ade39b895c2"}
+{"src": "<औपचारिक> <औपचारिक> मलाई ट्याक्सी चाहिन्छ।", "tgt": "<formal> I need a taxi.", "register": "formal", "id": "258e3155fb08b812"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई ट्याक्सी चाहिन्छ।", "tgt": "<formal> I need a taxi.", "register": "informal", "id": "258e3155fb08b812"}
+{"src": "<औपचारिक> <औपचारिक> 1 कार्यहरूको प्रारम्भः आयोगले सम्बन्धित मन्त्रालयको रेफरलमा वा आफ्नै तर्फबाट मस्यौदा र कानून सुधार प्रक्रिया सुरु गर्न सक्छ। यसले हितधारकहरू, अर्थात् व्यक्तिगत, गैर-सरकारी सङ्गठन, नागरिक समाज र सामुदायिक सङ्गठनबाट पनि प्रस्ताव प्राप्त गर्न सक्छ।", "tgt": "<formal> 1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "register": "formal", "id": "00ee5cd25e1a18f8"}
+{"src": "<अनौपचारिक> <औपचारिक> 1 कार्यहरूको प्रारम्भः आयोगले सम्बन्धित मन्त्रालयको रेफरलमा वा आफ्नै तर्फबाट मस्यौदा र कानून सुधार प्रक्रिया सुरु गर्न सक्छ। यसले हितधारकहरू, अर्थात् व्यक्तिगत, गैर-सरकारी सङ्गठन, नागरिक समाज र सामुदायिक सङ्गठनबाट पनि प्रस्ताव प्राप्त गर्न सक्छ।", "tgt": "<formal> 1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "register": "informal", "id": "00ee5cd25e1a18f8"}
+{"src": "<औपचारिक> <अनौपचारिक> अधिकारी र कर्मचारीहरू", "tgt": "<informal> Officials and Employees", "register": "formal", "id": "d70ff31f7c0401d5"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अधिकारी र कर्मचारीहरू", "tgt": "<informal> Officials and Employees", "register": "informal", "id": "d70ff31f7c0401d5"}
+{"src": "<औपचारिक> <औपचारिक> मलाई दरबार स्क्वायरमा भेट्नुहोस्।", "tgt": "<formal> Meet me at Durbar Square.", "register": "formal", "id": "7794e0331a83eb27"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई दरबार स्क्वायरमा भेट्नुहोस्।", "tgt": "<formal> Meet me at Durbar Square.", "register": "informal", "id": "7794e0331a83eb27"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई दरबार स्क्वायरमा भेट्नुहोस्।", "tgt": "<informal> Meet me at Durbar Square.", "register": "formal", "id": "2b65503d4b850379"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई दरबार स्क्वायरमा भेट्नुहोस्।", "tgt": "<informal> Meet me at Durbar Square.", "register": "informal", "id": "2b65503d4b850379"}
+{"src": "<औपचारिक> <अनौपचारिक> तपाईँकी आमा कस्तो छिन्?", "tgt": "<informal> How is your mother?", "register": "formal", "id": "8b637ee6b01b8c37"}
+{"src": "<औपचारिक> <अनौपचारिक> तिमीकी आमा कस्तो छिन्?", "tgt": "<informal> How is your mother?", "register": "informal", "id": "8b637ee6b01b8c37"}
+{"src": "<औपचारिक> <अनौपचारिक> कार्यालय समयहरू", "tgt": "<informal> Office Hours", "register": "formal", "id": "24cf46a0281e1c50"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कार्यालय समयहरू", "tgt": "<informal> Office Hours", "register": "informal", "id": "24cf46a0281e1c50"}
+{"src": "<औपचारिक> <औपचारिक> नेपाल सरकार", "tgt": "<formal> Government of Nepal", "register": "formal", "id": "9fec86850c383550"}
+{"src": "<अनौपचारिक> <औपचारिक> नेपाल सरकार", "tgt": "<formal> Government of Nepal", "register": "informal", "id": "9fec86850c383550"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया मसँग आउनुहोस्।", "tgt": "<informal> Please come with me.", "register": "formal", "id": "6268ea602e64277c"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया मसँग आउनुहोस्।", "tgt": "<informal> Please come with me.", "register": "informal", "id": "6268ea602e64277c"}
+{"src": "<औपचारिक> <अनौपचारिक> अध्यक्ष र उपाध्यक्ष नेपाल सरकारद्वारा पाँच वर्षका लागि नियुक्त गरिन्छ। कम्तिमा एकजना महिला सहितको अन्य तीन सदस्यहरू दुई वर्षका लागि सोहीद्वारा मनोनीत हुन्छन्। सर्वोच्च अदालतका सेवानिवृत्त न्यायाधीश वा यसका लागि योग्य व्यक्ति अध्यक्षको रूपमा नियुक्त हुन योग्य हुन्छन्। नेपाल न्यायिक सेवाको विशेष वर्गको पदबाट सेवानिवृत्त व्यक्ति वा कानुन व्यवसायी वा कानुन शिक्षकको रूपमा पन्ध्र वर्षको अनुभव भएको व्यक्ति वा कानुनी मस्यौदासहित कानून र न्यायको क्षेत्रमा काम गर्ने व्यक्ति उपाध्यक्ष वा आयोगका सदस्य पदका लागि योग्य हुन सक्छन्।", "tgt": "<informal> The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "register": "formal", "id": "b23b5b42ae998cfe"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अध्यक्ष र उपाध्यक्ष नेपाल सरकारद्वारा पाँच वर्षका लागि नियुक्त गरिन्छ। कम्तिमा एकजना महिला सहितको अन्य तीन सदस्यहरू दुई वर्षका लागि सोहीद्वारा मनोनीत हुन्छन्। सर्वोच्च अदालतका सेवानिवृत्त न्यायाधीश वा यसका लागि योग्य व्यक्ति अध्यक्षको रूपमा नियुक्त हुन योग्य हुन्छन्। नेपाल न्यायिक सेवाको विशेष वर्गको पदबाट सेवानिवृत्त व्यक्ति वा कानुन व्यवसायी वा कानुन शिक्षकको रूपमा पन्ध्र वर्षको अनुभव भएको व्यक्ति वा कानुनी मस्यौदासहित कानून र न्यायको क्षेत्रमा काम गर्ने व्यक्ति उपाध्यक्ष वा आयोगका सदस्य पदका लागि योग्य हुन सक्छन्।", "tgt": "<informal> The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "register": "informal", "id": "b23b5b42ae998cfe"}
+{"src": "<औपचारिक> <औपचारिक> नियमहरू", "tgt": "<formal> Regulations", "register": "formal", "id": "d57c8ec234fa4cb7"}
+{"src": "<अनौपचारिक> <औपचारिक> नियमहरू", "tgt": "<formal> Regulations", "register": "informal", "id": "d57c8ec234fa4cb7"}
+{"src": "<औपचारिक> <औपचारिक> खण्डद्वारा", "tgt": "<formal> By Volume", "register": "formal", "id": "e72ee3a64b6a728d"}
+{"src": "<अनौपचारिक> <औपचारिक> खण्डद्वारा", "tgt": "<formal> By Volume", "register": "informal", "id": "e72ee3a64b6a728d"}
+{"src": "<औपचारिक> <औपचारिक> कृपया मलाई रसिद दिनुहोस्।", "tgt": "<formal> Please give me a receipt.", "register": "formal", "id": "a5e2e40a4ed59368"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया मलाई रसिद दिनुहोस्।", "tgt": "<formal> Please give me a receipt.", "register": "informal", "id": "a5e2e40a4ed59368"}
+{"src": "<औपचारिक> <अनौपचारिक> भाषा चयन गर्नुहोस्", "tgt": "<informal> Select Language", "register": "formal", "id": "ebefe5bca3aab039"}
+{"src": "<अनौपचारिक> <अनौपचारिक> भाषा चयन गर्नुहोस्", "tgt": "<informal> Select Language", "register": "informal", "id": "ebefe5bca3aab039"}
+{"src": "<औपचारिक> <अनौपचारिक> घर", "tgt": "<informal> Home", "register": "formal", "id": "ed667f6afdeca5b5"}
+{"src": "<अनौपचारिक> <अनौपचारिक> घर", "tgt": "<informal> Home", "register": "informal", "id": "ed667f6afdeca5b5"}
+{"src": "<औपचारिक> <औपचारिक> नेपाल कानुन आयोग", "tgt": "<formal> Nepal Law Commission", "register": "formal", "id": "f9b12d7d734e992a"}
+{"src": "<अनौपचारिक> <औपचारिक> नेपाल कानुन आयोग", "tgt": "<formal> Nepal Law Commission", "register": "informal", "id": "f9b12d7d734e992a"}
+{"src": "<औपचारिक> <औपचारिक> के त्यहाँ नजिकै सस्तो होटल छ?", "tgt": "<formal> Is there a cheaper hotel nearby?", "register": "formal", "id": "77d5a896f802420c"}
+{"src": "<अनौपचारिक> <औपचारिक> के त्यहाँ नजिकै सस्तो होटल छ?", "tgt": "<formal> Is there a cheaper hotel nearby?", "register": "informal", "id": "77d5a896f802420c"}
+{"src": "<औपचारिक> <औपचारिक> कृपया फोन पास गर्नुहोस्।", "tgt": "<formal> Please pass the phone.", "register": "formal", "id": "7972910f1884c862"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया फोन पास गर्नुहोस्।", "tgt": "<formal> Please pass the phone.", "register": "informal", "id": "7972910f1884c862"}
+{"src": "<औपचारिक> <औपचारिक> कृपया मलाई कल गर्नुहोस्।", "tgt": "<formal> Please call me.", "register": "formal", "id": "a0048ffa07e272ca"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया मलाई कल गर्नुहोस्।", "tgt": "<formal> Please call me.", "register": "informal", "id": "a0048ffa07e272ca"}
+{"src": "<औपचारिक> <अनौपचारिक> नेपाल कानुन आयोग", "tgt": "<informal> Nepal Law Commission", "register": "formal", "id": "3e7c54f155b8ac85"}
+{"src": "<अनौपचारिक> <अनौपचारिक> नेपाल कानुन आयोग", "tgt": "<informal> Nepal Law Commission", "register": "informal", "id": "3e7c54f155b8ac85"}
+{"src": "<औपचारिक> <औपचारिक> आयोगका अध्यक्ष, उपाध्यक्ष र सदस्यहरूको पदमा नियुक्ति गर्न सरकारलाई सिफारिस गर्न कानुन, न्याय तथा संसदीय मामिला मन्त्री, प्रतिनिधि सभाको कानुन, न्याय तथा संसदीय समितिका अध्यक्ष * र नेपाल बार एसोसिएसनका अध्यक्ष मिलेर बनेको सिफारिस समितिको प्रावधान छ।", "tgt": "<formal> There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "register": "formal", "id": "a318be31bbd1bea8"}
+{"src": "<अनौपचारिक> <औपचारिक> आयोगका अध्यक्ष, उपाध्यक्ष र सदस्यहरूको पदमा नियुक्ति गर्न सरकारलाई सिफारिस गर्न कानुन, न्याय तथा संसदीय मामिला मन्त्री, प्रतिनिधि सभाको कानुन, न्याय तथा संसदीय समितिका अध्यक्ष * र नेपाल बार एसोसिएसनका अध्यक्ष मिलेर बनेको सिफारिस समितिको प्रावधान छ।", "tgt": "<formal> There is a provision of a Recommendation Committee composed of the Minister for Law, Justice and Parliamentary Affairs, Chairperson of the Law, Justice and Parliamentary Committee of the House of Representatives* and Chairperson of the Nepal Bar Association to recommend to the Government for appointment in the post of Chairperson, Vice-chairperson and members of the Commission.", "register": "informal", "id": "a318be31bbd1bea8"}
+{"src": "<औपचारिक> <औपचारिक> कार्यालय समयहरू", "tgt": "<formal> Office Hours", "register": "formal", "id": "a6eff92cce31ccac"}
+{"src": "<अनौपचारिक> <औपचारिक> कार्यालय समयहरू", "tgt": "<formal> Office Hours", "register": "informal", "id": "a6eff92cce31ccac"}
+{"src": "<औपचारिक> <औपचारिक> मलाई सन्देश पठाउनुहोस्।", "tgt": "<formal> Send me a message.", "register": "formal", "id": "1becfc393503a349"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई सन्देश पठाउनुहोस्।", "tgt": "<formal> Send me a message.", "register": "informal", "id": "1becfc393503a349"}
+{"src": "<औपचारिक> <अनौपचारिक> म काठमाडौँमा बस्छु।", "tgt": "<informal> I live in Kathmandu.", "register": "formal", "id": "e9a1c5f4505458d9"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म काठमाडौँमा बस्छु।", "tgt": "<informal> I live in Kathmandu.", "register": "informal", "id": "e9a1c5f4505458d9"}
+{"src": "<औपचारिक> <औपचारिक> तपाईँलाई स्वागत छ।", "tgt": "<formal> You are welcome.", "register": "formal", "id": "76452a9b5c670428"}
+{"src": "<औपचारिक> <औपचारिक> तिमीलाई स्वागत छ।", "tgt": "<formal> You are welcome.", "register": "informal", "id": "76452a9b5c670428"}
+{"src": "<औपचारिक> <औपचारिक> हो।", "tgt": "<formal> Yes.", "register": "formal", "id": "ccd0fdb170355d2c"}
+{"src": "<अनौपचारिक> <औपचारिक> हो।", "tgt": "<formal> Yes.", "register": "informal", "id": "ccd0fdb170355d2c"}
+{"src": "<औपचारिक> <औपचारिक> कृपया यहाँ खडा हुनुहोस्।", "tgt": "<formal> Please stand here.", "register": "formal", "id": "c262d55e32663f88"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया यहाँ खडा हुनुहोस्।", "tgt": "<formal> Please stand here.", "register": "informal", "id": "c262d55e32663f88"}
+{"src": "<औपचारिक> <अनौपचारिक> यो दुई सय रुपैयाँ हो।", "tgt": "<informal> It is two hundred rupees.", "register": "formal", "id": "c0fb5d42b23d1aa1"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो दुई सय रुपैयाँ हो।", "tgt": "<informal> It is two hundred rupees.", "register": "informal", "id": "c0fb5d42b23d1aa1"}
+{"src": "<औपचारिक> <औपचारिक> त्यो धेरै महँगो छ।", "tgt": "<formal> That is too expensive.", "register": "formal", "id": "5b38ce81437a1630"}
+{"src": "<अनौपचारिक> <औपचारिक> त्यो धेरै महँगो छ।", "tgt": "<formal> That is too expensive.", "register": "informal", "id": "5b38ce81437a1630"}
+{"src": "<औपचारिक> <औपचारिक> थप पढ्नुहोस्", "tgt": "<formal> Read More", "register": "formal", "id": "4d99c6599008b4b7"}
+{"src": "<अनौपचारिक> <औपचारिक> थप पढ्नुहोस्", "tgt": "<formal> Read More", "register": "informal", "id": "4d99c6599008b4b7"}
+{"src": "<औपचारिक> <औपचारिक> तपाईँ कहाँबाट हुनुहुन्छ?", "tgt": "<formal> Where are you from?", "register": "formal", "id": "171f3bd6244c8057"}
+{"src": "<औपचारिक> <औपचारिक> तिमी कहाँबाट छौ?", "tgt": "<formal> Where are you from?", "register": "informal", "id": "171f3bd6244c8057"}
+{"src": "<औपचारिक> <अनौपचारिक> अन्य", "tgt": "<informal> Other", "register": "formal", "id": "afa7b517691c9502"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अन्य", "tgt": "<informal> Other", "register": "informal", "id": "afa7b517691c9502"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया मलाई कल गर्नुहोस्।", "tgt": "<informal> Please call me.", "register": "formal", "id": "eb285a2bcf28272f"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया मलाई कल गर्नुहोस्।", "tgt": "<informal> Please call me.", "register": "informal", "id": "eb285a2bcf28272f"}
+{"src": "<औपचारिक> <औपचारिक> म माफी चाहन्छु।", "tgt": "<formal> I am sorry.", "register": "formal", "id": "57a43d703534967d"}
+{"src": "<अनौपचारिक> <औपचारिक> म माफी चाहन्छु।", "tgt": "<formal> I am sorry.", "register": "informal", "id": "57a43d703534967d"}
+{"src": "<औपचारिक> <औपचारिक> कृपया यहाँ पर्खनुहोस्।", "tgt": "<formal> Please wait here.", "register": "formal", "id": "e19af4e3c617dbb9"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया यहाँ पर्खनुहोस्।", "tgt": "<formal> Please wait here.", "register": "informal", "id": "e19af4e3c617dbb9"}
+{"src": "कानुन, न्याय तथा संसदीय मामिला मन्त्रालयका सचिव, प्रधानमन्त्री तथा मन्त्रीपरिषद्को कार्यालयमा सचिव (कानून), नेपालका महान्यायाधिवक्ताद्वारा मनोनीत उप महान्यायाधिवक्ता र एनएलसीका सचिव, जसले सदस्य-सचिवको रूपमा पनि काम गर्छन्, पदेन सदस्य हुन्।", "tgt": "<formal> The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "register": "formal", "id": "fd494c27f6f4da58"}
+{"src": "<अनौपचारिक> <औपचारिक> कानुन, न्याय तथा संसदीय मामिला मन्त्रालयका सचिव, प्रधानमन्त्री तथा मन्त्रीपरिषदको कार्यालयमा सचिव (कानून), नेपालका महान्यायाधिवक्ताद्वारा मनोनीत उप महान्यायाधिवक्ता र एनएलसीमा सचिव, जसले सदस्य-सचिवको रूपमा पनि काम गर्छन्, पदेन सदस्य हुन्।", "tgt": "<formal> The Secretary at the Ministry of Law, Justice and Parliamentary Affairs, Secretary (Law) at the Office of the Prime Minister and Council of Ministers, Deputy Attorney General nominated by the Attorney General of Nepal and the Secretary at the NLC, who also serves as a Member-Secretary, are ex-officio members.", "register": "informal", "id": "fd494c27f6f4da58"}
+{"src": "<औपचारिक> <अनौपचारिक> सेवाहरू", "tgt": "<informal> Services", "register": "formal", "id": "f232efea563fb8f4"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सेवाहरू", "tgt": "<informal> Services", "register": "informal", "id": "f232efea563fb8f4"}
+{"src": "अध्यक्ष र उपाध्यक्ष नेपाल सरकारद्वारा पाँच वर्षका लागि नियुक्त गरिन्छ। कम्तिमा एकजना महिला सहितको अन्य तीन सदस्य दुई वर्षका लागि सोहीद्वारा मनोनीत हुन्छन्। सर्वोच्च अदालतका सेवानिवृत्त न्यायाधीश वा यसका लागि योग्य व्यक्ति अध्यक्षको रूपमा नियुक्त हुन योग्य हुन्छन्। नेपाल न्यायिक सेवाको विशेष वर्गको पदबाट सेवानिवृत्त व्यक्ति वा कानुन व्यवसायी वा कानुन शिक्षकको रूपमा पन्ध्र वर्षको अनुभव भएको व्यक्ति वा कानुनी मस्यौदासहित कानून र न्यायको क्षेत्रमा काम गर्ने व्यक्ति उपाध्यक्ष वा आयोगका सदस्य पदका लागि योग्य हुन सक्छन्।", "tgt": "<formal> The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "register": "formal", "id": "db377149ae22d3f3"}
+{"src": "<अनौपचारिक> <औपचारिक> अध्यक्ष र उपाध्यक्ष नेपाल सरकारद्वारा पाँच वर्षका लागि नियुक्त गरिन्छ। कम्तिमा एकजना महिला सहितको अन्य तीन सदस्यहरू दुई वर्षका लागि सोहीद्वारा मनोनीत हुन्छन्। सर्वोच्च अदालतका सेवानिवृत्त न्यायाधीश वा यसका लागि योग्य व्यक्ति अध्यक्षको रूपमा नियुक्त हुन योग्य हुन्छन्। नेपाल न्यायिक सेवाको विशेष वर्गको पदबाट सेवानिवृत्त व्यक्ति वा कानुन व्यवसायी वा कानुन शिक्षकको रूपमा पन्ध्र वर्षको अनुभव भएको व्यक्ति वा कानुनी मस्यौदासहित कानून र न्यायको क्षेत्रमा काम गर्ने व्यक्ति उपाध्यक्ष वा आयोगका सदस्य पदका लागि योग्य हुन सक्छन्।", "tgt": "<formal> The Chairperson and the Vice-chairperson are appointed by the Government of Nepal for five years. Other three members consisting of at least one woman are nominated by the same for two years. Retired judge of the Supreme Court or one who is qualified for the same is eligible to be appointed as the Chairperson. Person retired from the post of special class of Nepal Judicial Service or a person having fifteen years of experience as a law practitioner or law teacher or working in the field of law and justice including legal drafting may be eligible for the post of Vice-chairperson or member of the commission.", "register": "informal", "id": "db377149ae22d3f3"}
+{"src": "<औपचारिक> <औपचारिक> अध्यादेशहरू", "tgt": "<formal> Ordinances", "register": "formal", "id": "9808dedbe8efcead"}
+{"src": "<अनौपचारिक> <औपचारिक> अध्यादेशहरू", "tgt": "<formal> Ordinances", "register": "informal", "id": "9808dedbe8efcead"}
+{"src": "<औपचारिक> <औपचारिक> खारेज गरिएका नियमहरू", "tgt": "<formal> Repealed Regulations", "register": "formal", "id": "1e17589e1f654da7"}
+{"src": "<अनौपचारिक> <औपचारिक> खारेज गरिएका नियमहरू", "tgt": "<formal> Repealed Regulations", "register": "informal", "id": "1e17589e1f654da7"}
+{"src": "<औपचारिक> <औपचारिक> कृपया भित्र आउनुहोस्।", "tgt": "<formal> Please come in.", "register": "formal", "id": "38738e711a483352"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया भित्र आउनुहोस्।", "tgt": "<formal> Please come in.", "register": "informal", "id": "38738e711a483352"}
+{"src": "<औपचारिक> <औपचारिक> यो मेरो भाइ हो।", "tgt": "<formal> This is my brother.", "register": "formal", "id": "1809ddee63d2bc01"}
+{"src": "<अनौपचारिक> <औपचारिक> यो मेरो भाइ हो।", "tgt": "<formal> This is my brother.", "register": "informal", "id": "1809ddee63d2bc01"}
+{"src": "<औपचारिक> <औपचारिक> परिचय", "tgt": "<formal> Introduction", "register": "formal", "id": "9b0919865e538020"}
+{"src": "<अनौपचारिक> <औपचारिक> परिचय", "tgt": "<formal> Introduction", "register": "informal", "id": "9b0919865e538020"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया भित्र आउनुहोस्।", "tgt": "<informal> Please come in.", "register": "formal", "id": "e60b0b9dc4fbd2c2"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया भित्र आउनुहोस्।", "tgt": "<informal> Please come in.", "register": "informal", "id": "e60b0b9dc4fbd2c2"}
+{"src": "<औपचारिक> <अनौपचारिक> ऐतिहासिक कागजातहरू", "tgt": "<informal> Historical Documents", "register": "formal", "id": "09613e9e4c8bb2a5"}
+{"src": "<अनौपचारिक> <अनौपचारिक> ऐतिहासिक कागजातहरू", "tgt": "<informal> Historical Documents", "register": "informal", "id": "09613e9e4c8bb2a5"}
+{"src": "<औपचारिक> <अनौपचारिक> गठन आदेशहरू", "tgt": "<informal> Formation Orders", "register": "formal", "id": "4ec0a00dabd8948d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> गठन आदेशहरू", "tgt": "<informal> Formation Orders", "register": "informal", "id": "4ec0a00dabd8948d"}
+{"src": "<औपचारिक> <अनौपचारिक> महत्त्वपूर्ण सूचना", "tgt": "<informal> Important Notice", "register": "formal", "id": "c9c784efb1cd3e59"}
+{"src": "<अनौपचारिक> <अनौपचारिक> महत्त्वपूर्ण सूचना", "tgt": "<informal> Important Notice", "register": "informal", "id": "c9c784efb1cd3e59"}
+{"src": "<औपचारिक> <अनौपचारिक> गुगल नक्सा खोल्नुहोस्।", "tgt": "<informal> Open Google Maps.", "register": "formal", "id": "7aee2d0a63e2b8a2"}
+{"src": "<अनौपचारिक> <अनौपचारिक> गुगल नक्सा खोल्नुहोस्।", "tgt": "<informal> Open Google Maps.", "register": "informal", "id": "7aee2d0a63e2b8a2"}
+{"src": "<औपचारिक> <औपचारिक> कृपया मलाई बस स्टेसनमा लैजानुहोस्।", "tgt": "<formal> Please take me to the bus station.", "register": "formal", "id": "45c3313c5382d57d"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया मलाई बस स्टेसनमा लैजानुहोस्।", "tgt": "<formal> Please take me to the bus station.", "register": "informal", "id": "45c3313c5382d57d"}
+{"src": "<औपचारिक> <औपचारिक> सुझाव र उजुरीहरू", "tgt": "<formal> Suggestions and Complaints", "register": "formal", "id": "28e75541eb040b91"}
+{"src": "<अनौपचारिक> <औपचारिक> सुझाव र उजुरीहरू", "tgt": "<formal> Suggestions and Complaints", "register": "informal", "id": "28e75541eb040b91"}
+{"src": "<औपचारिक> <अनौपचारिक> सरकारले सम्बन्धित क्षेत्रका उत्कृष्ट विशेषज्ञहरू मध्येबाट पाँच जनासम्मलाई आयोगको मानार्थ सदस्यका रूपमा नियुक्त गर्न सक्छ।", "tgt": "<informal> The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "register": "formal", "id": "002b8404ec75df72"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सरकारले सम्बन्धित क्षेत्रका उत्कृष्ट विशेषज्ञहरू मध्येबाट पाँच जनासम्मलाई आयोगको मानार्थ सदस्यका रूपमा नियुक्त गर्न सक्छ।", "tgt": "<informal> The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "register": "informal", "id": "002b8404ec75df72"}
+{"src": "<औपचारिक> <औपचारिक> के तपाईँ बुझ्नुहुन्छ?", "tgt": "<formal> Do you understand?", "register": "formal", "id": "1b081f50ebc01a6d"}
+{"src": "<औपचारिक> <औपचारिक> के तिमी बुझ्नुहुन्छ?", "tgt": "<formal> Do you understand?", "register": "informal", "id": "1b081f50ebc01a6d"}
+{"src": "<औपचारिक> <अनौपचारिक> यो मेरो पासपोर्ट हो।", "tgt": "<informal> This is my passport.", "register": "formal", "id": "f54b8ccc5ced0853"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो मेरो पासपोर्ट हो।", "tgt": "<informal> This is my passport.", "register": "informal", "id": "f54b8ccc5ced0853"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया मलाई रसिद दिनुहोस्।", "tgt": "<informal> Please give me a receipt.", "register": "formal", "id": "07f1301d52bdfb37"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया मलाई रसिद दिनुहोस्।", "tgt": "<informal> Please give me a receipt.", "register": "informal", "id": "07f1301d52bdfb37"}
+{"src": "<औपचारिक> <अनौपचारिक> यो मेरो भाइ हो।", "tgt": "<informal> This is my brother.", "register": "formal", "id": "ba41fc70625052ee"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो मेरो भाइ हो।", "tgt": "<informal> This is my brother.", "register": "informal", "id": "ba41fc70625052ee"}
+{"src": "<औपचारिक> <औपचारिक> भाषा चयन गर्नुहोस्", "tgt": "<formal> Select Language", "register": "formal", "id": "196a967e11660fd1"}
+{"src": "<अनौपचारिक> <औपचारिक> भाषा चयन गर्नुहोस्", "tgt": "<formal> Select Language", "register": "informal", "id": "196a967e11660fd1"}
+{"src": "<औपचारिक> <अनौपचारिक> सम्पर्क गर्नुहोस्", "tgt": "<informal> Contact", "register": "formal", "id": "a4aef4617e27c63d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सम्पर्क गर्नुहोस्", "tgt": "<informal> Contact", "register": "informal", "id": "a4aef4617e27c63d"}
+{"src": "<औपचारिक> <औपचारिक> त्यो अनुवाद सही छ।", "tgt": "<formal> That translation is correct.", "register": "formal", "id": "7cc90e91b186b1b5"}
+{"src": "<अनौपचारिक> <औपचारिक> त्यो अनुवाद सही छ।", "tgt": "<formal> That translation is correct.", "register": "informal", "id": "7cc90e91b186b1b5"}
+{"src": "<औपचारिक> <औपचारिक> कृपया मसँग आउनुहोस्।", "tgt": "<formal> Please come with me.", "register": "formal", "id": "6f226256a9e90cb3"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया मसँग आउनुहोस्।", "tgt": "<formal> Please come with me.", "register": "informal", "id": "6f226256a9e90cb3"}
+{"src": "<औपचारिक> <अनौपचारिक> थप पढ्नुहोस्", "tgt": "<informal> Read More", "register": "formal", "id": "f73e91c01793c746"}
+{"src": "<अनौपचारिक> <अनौपचारिक> थप पढ्नुहोस्", "tgt": "<informal> Read More", "register": "informal", "id": "f73e91c01793c746"}
+{"src": "<औपचारिक> <अनौपचारिक> दायाँतिर फर्कनुहोस्।", "tgt": "<informal> Turn right.", "register": "formal", "id": "88b03c3dd5263c09"}
+{"src": "<अनौपचारिक> <अनौपचारिक> दायाँतिर फर्कनुहोस्।", "tgt": "<informal> Turn right.", "register": "informal", "id": "88b03c3dd5263c09"}
+{"src": "<औपचारिक> <औपचारिक> सूचना केन्द्र", "tgt": "<formal> Information Center", "register": "formal", "id": "06631de882761cd9"}
+{"src": "<अनौपचारिक> <औपचारिक> सूचना केन्द्र", "tgt": "<formal> Information Center", "register": "informal", "id": "06631de882761cd9"}
+{"src": "<औपचारिक> <औपचारिक> अधिकारी र कर्मचारीहरू", "tgt": "<formal> Officials and Employees", "register": "formal", "id": "91f7fbd993f35cad"}
+{"src": "<अनौपचारिक> <औपचारिक> अधिकारी र कर्मचारीहरू", "tgt": "<formal> Officials and Employees", "register": "informal", "id": "91f7fbd993f35cad"}
+{"src": "<औपचारिक> <औपचारिक> गठन आदेशहरू", "tgt": "<formal> Formation Orders", "register": "formal", "id": "4c817a059f8968d2"}
+{"src": "<अनौपचारिक> <औपचारिक> गठन आदेशहरू", "tgt": "<formal> Formation Orders", "register": "informal", "id": "4c817a059f8968d2"}
+{"src": "<औपचारिक> <औपचारिक> यो साढे तीन बजी भएको छ।", "tgt": "<formal> It is half past three.", "register": "formal", "id": "e21ecedb939e011a"}
+{"src": "<अनौपचारिक> <औपचारिक> साढे तीन बजी भएको छ।", "tgt": "<formal> It is half past three.", "register": "informal", "id": "e21ecedb939e011a"}
+{"src": "<औपचारिक> <औपचारिक> के म कार्डद्वारा भुक्तानी गर्न सक्छु?", "tgt": "<formal> Can I pay by card?", "register": "formal", "id": "db5d4baf042d1c8c"}
+{"src": "<अनौपचारिक> <औपचारिक> के म कार्डद्वारा भुक्तानी गर्न सक्छु?", "tgt": "<formal> Can I pay by card?", "register": "informal", "id": "db5d4baf042d1c8c"}
+{"src": "<औपचारिक> <अनौपचारिक> मेरो फोनमा ब्याट्री छैन।", "tgt": "<informal> My phone has no battery.", "register": "formal", "id": "90221117cdc04c69"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मेरो फोनमा ब्याट्री छैन।", "tgt": "<informal> My phone has no battery.", "register": "informal", "id": "90221117cdc04c69"}
+{"src": "<औपचारिक> <अनौपचारिक> म हिजो आएको हुँ।", "tgt": "<informal> I came yesterday.", "register": "formal", "id": "623cff9b388279fa"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म हिजो आएको हुँ।", "tgt": "<informal> I came yesterday.", "register": "informal", "id": "623cff9b388279fa"}
+{"src": "<औपचारिक> <औपचारिक> कर्तव्य र शक्तिहरू", "tgt": "<formal> Duties and Powers", "register": "formal", "id": "5ba821705b1f538d"}
+{"src": "<अनौपचारिक> <औपचारिक> कर्तव्य र शक्तिहरू", "tgt": "<formal> Duties and Powers", "register": "informal", "id": "5ba821705b1f538d"}
+{"src": "<औपचारिक> <अनौपचारिक> 3 परामर्श पत्रको तयारीः डब्ल्यूटीले समीक्षामा रहेको मुद्दाको गहन अध्ययन गर्दछ। यस उद्देश्यका लागि, डब्ल्यूटीले विशेषज्ञ, हितधारक र सरकारी अधिकारीहरूलाई आमन्त्रित सदस्यको रूपमा परामर्शका लागि आमन्त्रित गर्न सक्छ। डब्ल्यूटीले परामर्श/मुद्दा पत्र तयार गर्दछ र यो इच्छुक कुनै पनि व्यक्तिलाई उपलब्ध गराइन्छ। डब्ल्यूटीले डाटा सङ्कलनका लागि अनुसन्धानको उपयुक्त विधिहरू पनि रोज्न सक्छ।", "tgt": "<informal> 3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "register": "formal", "id": "5e2bc2f039238683"}
+{"src": "<अनौपचारिक> <अनौपचारिक> 3 परामर्श पत्रको तयारीः डब्ल्यूटीले समीक्षाको अधीनमा रहेको मुद्दाको गहन अध्ययन गर्दछ। यस उद्देश्यका लागि, डब्ल्यूटीले विशेषज्ञ, हितधारक र सरकारी अधिकारीहरूलाई आमन्त्रित सदस्यको रूपमा परामर्शका लागि आमन्त्रित गर्न सक्छ। डब्ल्यूटीले परामर्श/मुद्दा पत्र तयार गर्दछ र यो इच्छुक कुनै पनि व्यक्तिलाई उपलब्ध गराइन्छ। डब्ल्यूटीले डाटा सङ्कलनका लागि अनुसन्धानको उपयुक्त विधिहरू पनि रोज्न सक्छ।", "tgt": "<informal> 3 Preparation of Consultation Paper: The WT carries out in-depth study of the issue under review. For this purpose, WT may invite expert, stakeholder and government official for consultation as an invitee member. The WT prepares a consultation/issue paper and it is made available to any person interested. WT can also opt appropriate methods of research for data collection.", "register": "informal", "id": "5e2bc2f039238683"}
+{"src": "<औपचारिक> <औपचारिक> हालैका अधिनियमहरू", "tgt": "<formal> Recent Acts", "register": "formal", "id": "81fabd9ae2f11068"}
+{"src": "<अनौपचारिक> <औपचारिक> हालैका अधिनियमहरू", "tgt": "<formal> Recent Acts", "register": "informal", "id": "81fabd9ae2f11068"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया।", "tgt": "<informal> Please.", "register": "formal", "id": "da0ff6951dde8013"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया।", "tgt": "<informal> Please.", "register": "informal", "id": "da0ff6951dde8013"}
+{"src": "<औपचारिक> <अनौपचारिक> संविधान", "tgt": "<informal> Constitution", "register": "formal", "id": "ae547b6662bddc9d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> संविधान", "tgt": "<informal> Constitution", "register": "informal", "id": "ae547b6662bddc9d"}
+{"src": "<औपचारिक> <अनौपचारिक> कर्तव्य र शक्तिहरू", "tgt": "<informal> Duties and Powers", "register": "formal", "id": "059e337f8e824ff8"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कर्तव्य र शक्तिहरू", "tgt": "<informal> Duties and Powers", "register": "informal", "id": "059e337f8e824ff8"}
+{"src": "<औपचारिक> <औपचारिक> सङ्गठन संरचना", "tgt": "<formal> Organization Structure", "register": "formal", "id": "5b3d94074ccfcf7f"}
+{"src": "<अनौपचारिक> <औपचारिक> सङ्गठन संरचना", "tgt": "<formal> Organization Structure", "register": "informal", "id": "5b3d94074ccfcf7f"}
+{"src": "<औपचारिक> <औपचारिक> म सिम कार्ड कहाँ किन्न सक्छु?", "tgt": "<formal> Where can I buy a SIM card?", "register": "formal", "id": "e80ef3e574193a63"}
+{"src": "<अनौपचारिक> <औपचारिक> म सिम कार्ड कहाँ किन्न सक्छु?", "tgt": "<formal> Where can I buy a SIM card?", "register": "informal", "id": "e80ef3e574193a63"}
+{"src": "<औपचारिक> <औपचारिक> ऐतिहासिक दस्तावेजहरू", "tgt": "<formal> Historical Documents", "register": "formal", "id": "f25e2c2b796fd3f7"}
+{"src": "<अनौपचारिक> <औपचारिक> ऐतिहासिक कागजातहरू", "tgt": "<formal> Historical Documents", "register": "informal", "id": "f25e2c2b796fd3f7"}
+{"src": "<औपचारिक> <औपचारिक> मलाई टाउको दुखाइको औषधि चाहिन्छ।", "tgt": "<formal> I need medicine for a headache.", "register": "formal", "id": "16b362b420412b1f"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई टाउको दुखाइको औषधि चाहिन्छ।", "tgt": "<formal> I need medicine for a headache.", "register": "informal", "id": "16b362b420412b1f"}
+{"src": "<औपचारिक> <औपचारिक> दर्शन र मिसन", "tgt": "<formal> Vision and Mission", "register": "formal", "id": "3561ebdb931ffa99"}
+{"src": "<अनौपचारिक> <औपचारिक> दर्शन र मिसन", "tgt": "<formal> Vision and Mission", "register": "informal", "id": "3561ebdb931ffa99"}
+{"src": "<औपचारिक> <अनौपचारिक> त्यो धेरै महँगो छ।", "tgt": "<informal> That is too expensive.", "register": "formal", "id": "f89a02d9983f08da"}
+{"src": "<अनौपचारिक> <अनौपचारिक> त्यो धेरै महँगो छ।", "tgt": "<informal> That is too expensive.", "register": "informal", "id": "f89a02d9983f08da"}
+{"src": "<औपचारिक> <अनौपचारिक> त्यो सही होइन।", "tgt": "<informal> That is not right.", "register": "formal", "id": "d8eaa162e86eafde"}
+{"src": "<अनौपचारिक> <अनौपचारिक> त्यो सही होइन।", "tgt": "<informal> That is not right.", "register": "informal", "id": "d8eaa162e86eafde"}
+{"src": "<औपचारिक> <औपचारिक> म मासु खाँदिनँ।", "tgt": "<formal> I do not eat meat.", "register": "formal", "id": "8b51e19b1b98f534"}
+{"src": "<अनौपचारिक> <औपचारिक> म मासु खाँदिनँ।", "tgt": "<formal> I do not eat meat.", "register": "informal", "id": "8b51e19b1b98f534"}
+{"src": "<औपचारिक> <औपचारिक> फिर्ता", "tgt": "<formal> Back", "register": "formal", "id": "66ab1b8f53fda5cc"}
+{"src": "<अनौपचारिक> <औपचारिक> फिर्ता", "tgt": "<formal> Back", "register": "informal", "id": "66ab1b8f53fda5cc"}
+{"src": "<औपचारिक> <औपचारिक> यो कति टाढाको छ?", "tgt": "<formal> How far is it?", "register": "formal", "id": "9cfa33e8c728f00d"}
+{"src": "<अनौपचारिक> <औपचारिक> यो कति टाढाको छ?", "tgt": "<formal> How far is it?", "register": "informal", "id": "9cfa33e8c728f00d"}
+{"src": "<औपचारिक> <अनौपचारिक> एक हजार रुपैयाँ।", "tgt": "<informal> One thousand rupees.", "register": "formal", "id": "cebe7f58bb64bbc5"}
+{"src": "<अनौपचारिक> <अनौपचारिक> एक हजार रुपैयाँ।", "tgt": "<informal> One thousand rupees.", "register": "informal", "id": "cebe7f58bb64bbc5"}
+{"src": "<औपचारिक> <अनौपचारिक> वर्णमाला सूची", "tgt": "<informal> Alphabetical List", "register": "formal", "id": "bb318378232bda04"}
+{"src": "<अनौपचारिक> <अनौपचारिक> वर्णमाला सूची", "tgt": "<informal> Alphabetical List", "register": "informal", "id": "bb318378232bda04"}
+{"src": "<औपचारिक> <औपचारिक> के यो शाकाहारी हो?", "tgt": "<formal> Is this vegetarian?", "register": "formal", "id": "d492131376a47de7"}
+{"src": "<अनौपचारिक> <औपचारिक> के यो शाकाहारी हो?", "tgt": "<formal> Is this vegetarian?", "register": "informal", "id": "d492131376a47de7"}
+{"src": "<औपचारिक> <औपचारिक> मलाई ज्वरो आएको छ।", "tgt": "<formal> I have a fever.", "register": "formal", "id": "b2810051c21bc550"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई ज्वरो आएको छ।", "tgt": "<formal> I have a fever.", "register": "informal", "id": "b2810051c21bc550"}
+{"src": "<औपचारिक> <औपचारिक> कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "<formal> Please check the translation.", "register": "formal", "id": "9bfa17a6969dd08f"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया अनुवाद जाँच गर्नुहोस्।", "tgt": "<formal> Please check the translation.", "register": "informal", "id": "9bfa17a6969dd08f"}
+{"src": "<औपचारिक> <औपचारिक> अर्को", "tgt": "<formal> Next", "register": "formal", "id": "f17aa7088f6fcc50"}
+{"src": "<अनौपचारिक> <औपचारिक> अर्को", "tgt": "<formal> Next", "register": "informal", "id": "f17aa7088f6fcc50"}
+{"src": "<औपचारिक> <औपचारिक> संविधान", "tgt": "<formal> Constitution", "register": "formal", "id": "4be7fc01e893a59b"}
+{"src": "<अनौपचारिक> <औपचारिक> संविधान", "tgt": "<formal> Constitution", "register": "informal", "id": "4be7fc01e893a59b"}
+{"src": "<औपचारिक> <अनौपचारिक> अध्यादेशहरू", "tgt": "<informal> Ordinances", "register": "formal", "id": "a7385f750d3773f0"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अध्यादेशहरू", "tgt": "<informal> Ordinances", "register": "informal", "id": "a7385f750d3773f0"}
+{"src": "बहुपक्षीय लोकतन्त्रको उदय भए लगत्तै सन् 1953 मा कार्यकारी निर्णयद्वारा नेपाल कानुन आयोग (एनएलसी) गठन गरिएको थियो। दोस्रो, तेस्रो, चौथो र पाँचौँ आयोग क्रमशः सन् 1960,1963,1972 र 1979 मा गठन गरिएको थियो। ती सबै आयोगहरू अस्थायी प्रकृतिका थिए। एनएलसीलाई सन् 1984 मा मात्र स्थायी दर्जा दिइएको थियो। सन् 1990 मा बहुदलीय लोकतन्त्रको पुनर्स्थापनापछि, बदलिएको सन्दर्भ अनुरूप एनएलसीको पुनर्गठन गरिएको थियो। यसको जनादेश र संरचनामा समयमै परिवर्तन गर्दै सन् 2003 मा पुनः पुनर्गठन गरिएको थियो। अब, आयोग नेपाल कानुन आयोग ऐन, 2007 अन्तर्गत वैधानिक निकाय हो, जुन 14 जनवरी 2007 मा जारी गरिएको", "tgt": "<formal> The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "register": "formal", "id": "947c2f6f23a337df"}
+{"src": "बहुपक्षीय लोकतन्त्रको उदय भए लगत्तै सन् 1953 मा कार्यकारी निर्णयद्वारा नेपाल कानुन आयोग (एनएलसी) गठन गरिएको थियो। दोस्रो, तेस्रो, चौथो र पाँचौँ आयोग क्रमशः सन् 1960,1963,1972 र 1979 मा गठन गरिएको थियो। ती सबै आयोगहरू अस्थायी प्रकृतिका थिए। एनएलसीलाई सन् 1984 मा मात्र स्थायी दर्जा दिइएको थियो। सन् 1990 मा बहुदलीय लोकतन्त्रको पुनर्स्थापनापछि, बदलिएको सन्दर्भ अनुरूप एनएलसीको पुनर्गठन गरिएको थियो। यसको जनादेश र संरचनामा समयमै परिवर्तन गर्दै सन् 2003 मा पुनः पुनर्गठन गरिएको थियो। अब, आयोग नेपाल कानुन आयोग ऐन, 2007 अन्तर्गत वैधानिक निकाय हो, जुन 14 जनवरी 2007 मा जारी गरिएको", "tgt": "<formal> The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "register": "informal", "id": "947c2f6f23a337df"}
+{"src": "<औपचारिक> <अनौपचारिक> म यो चाहन्छु।", "tgt": "<informal> I want this one.", "register": "formal", "id": "237d03d9beef4b6d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म यो चाहन्छु।", "tgt": "<informal> I want this one.", "register": "informal", "id": "237d03d9beef4b6d"}
+{"src": "बहुपक्षीय लोकतन्त्रको उदय भए लगत्तै सन् 1953 मा कार्यकारी निर्णयद्वारा नेपाल कानुन आयोग (एनएलसी) गठन गरिएको थियो। दोस्रो, तेस्रो, चौथो र पाँचौँ आयोग क्रमशः सन् 1960,1963,1972 र 1979 मा गठन गरिएको थियो। ती सबै आयोगहरू अस्थायी प्रकृतिका थिए। एनएलसीलाई सन् 1984 मा मात्र स्थायी दर्जा दिइएको थियो। सन् 1990 मा बहुदलीय लोकतन्त्रको पुनर्स्थापनापछि, बदलिएको सन्दर्भ अनुरूप एनएलसीको पुनर्गठन गरिएको थियो। यसको जनादेश र संरचनामा समयमै परिवर्तन गर्दै सन् 2003 मा पुनः पुनर्गठन गरिएको थियो। अब, आयोग नेपाल कानुन आयोग ऐन, 2007 अन्तर्गत वैधानिक निकाय हो, जुन 14 जनवरी 2007 मा जारी गरिएको", "tgt": "<informal> The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "register": "formal", "id": "53c7f2f98bb300f3"}
+{"src": "बहुपक्षीय लोकतन्त्रको उदय भए लगत्तै सन् 1953 मा कार्यकारी निर्णयद्वारा नेपाल कानुन आयोग (एनएलसी) गठन गरिएको थियो। दोस्रो, तेस्रो, चौथो र पाँचौँ आयोग क्रमशः सन् 1960,1963,1972 र 1979 मा गठन गरिएको थियो। ती सबै आयोगहरू अस्थायी प्रकृतिका थिए। एनएलसीलाई सन् 1984 मा मात्र स्थायी दर्जा दिइएको थियो। सन् 1990 मा बहुदलीय लोकतन्त्रको पुनर्स्थापनापछि, बदलिएको सन्दर्भ अनुरूप एनएलसीको पुनर्गठन गरिएको थियो। यसको जनादेश र संरचनामा समयमै परिवर्तन गर्दै सन् 2003 मा पुनः पुनर्गठन गरिएको थियो। अब, आयोग नेपाल कानुन आयोग ऐन, 2007 अन्तर्गत वैधानिक निकाय हो, जुन 14 जनवरी 2007 मा जारी गरिएको", "tgt": "<informal> The Nepal Law Commission (NLC) was first constituted by an executive decision in 1953, immediately after the dawn of multiparty democracy. The second, third, fourth and fifth Commissions were constituted in 1960, 1963, 1972 and 1979 respectively. All those Commissions were temporary in nature. The NLC was given permanent status only in 1984. After the restoration of multiparty democracy in 1990, the NLC was restructured with the mandate commensurate to the changed context. It was again restructured in 2003 with timely changes in its mandate and composition. Now, the Commission is a statutory body under the Nepal Law Commission Act, 2007, which was promulgated on 14th January, 2007. It is to", "register": "informal", "id": "53c7f2f98bb300f3"}
+{"src": "<औपचारिक> <अनौपचारिक> के तपाईँ यसलाई लेख्न सक्नुहुन्छ?", "tgt": "<informal> Could you write it down?", "register": "formal", "id": "6699090509c494fc"}
+{"src": "<औपचारिक> <अनौपचारिक> के तिमी यसलाई लेख्न सक्छौ?", "tgt": "<informal> Could you write it down?", "register": "informal", "id": "6699090509c494fc"}
+{"src": "<औपचारिक> <अनौपचारिक> रद्द गर्नुहोस्", "tgt": "<informal> Cancel", "register": "formal", "id": "2c4d94c21e212e33"}
+{"src": "<अनौपचारिक> <अनौपचारिक> रद्द गर्नुहोस्", "tgt": "<informal> Cancel", "register": "informal", "id": "2c4d94c21e212e33"}
+{"src": "<औपचारिक> <अनौपचारिक> के म कार्डद्वारा भुक्तानी गर्न सक्छु?", "tgt": "<informal> Can I pay by card?", "register": "formal", "id": "47cc973151006141"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के म कार्डद्वारा भुक्तानी गर्न सक्छु?", "tgt": "<informal> Can I pay by card?", "register": "informal", "id": "47cc973151006141"}
+{"src": "<औपचारिक> <औपचारिक> के तपाईँ केही चिया चाहनुहुन्छ?", "tgt": "<formal> Would you like some tea?", "register": "formal", "id": "df78105101245310"}
+{"src": "<औपचारिक> <औपचारिक> के तिमी केही चिया चाहनुहुन्छ?", "tgt": "<formal> Would you like some tea?", "register": "informal", "id": "df78105101245310"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई एलर्जी छ।", "tgt": "<informal> I have an allergy.", "register": "formal", "id": "6acdf58d6d92fcfa"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई एलर्जी छ।", "tgt": "<informal> I have an allergy.", "register": "informal", "id": "6acdf58d6d92fcfa"}
+{"src": "<औपचारिक> <अनौपचारिक> म सिम कार्ड कहाँ किन्न सक्छु?", "tgt": "<informal> Where can I buy a SIM card?", "register": "formal", "id": "2400432d94552865"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म सिम कार्ड कहाँ किन्न सक्छु?", "tgt": "<informal> Where can I buy a SIM card?", "register": "informal", "id": "2400432d94552865"}
+{"src": "<औपचारिक> <औपचारिक> वर्णमाला सूची", "tgt": "<formal> Alphabetical List", "register": "formal", "id": "83040c79f36f6908"}
+{"src": "<अनौपचारिक> <औपचारिक> वर्णमाला सूची", "tgt": "<formal> Alphabetical List", "register": "informal", "id": "83040c79f36f6908"}
+{"src": "<औपचारिक> <अनौपचारिक> त्यो अनुवाद गलत छ।", "tgt": "<informal> That translation is wrong.", "register": "formal", "id": "817f158e93271f43"}
+{"src": "<अनौपचारिक> <अनौपचारिक> त्यो अनुवाद गलत छ।", "tgt": "<informal> That translation is wrong.", "register": "informal", "id": "817f158e93271f43"}
+{"src": "<औपचारिक> <औपचारिक> मलाई चक्कर आउँछ।", "tgt": "<formal> I feel dizzy.", "register": "formal", "id": "4a3f9882f18861d5"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई चक्कर आउँछ।", "tgt": "<formal> I feel dizzy.", "register": "informal", "id": "4a3f9882f18861d5"}
+{"src": "<औपचारिक> <अनौपचारिक> के यही थमेलको बाटो हो?", "tgt": "<informal> Is this the way to Thamel?", "register": "formal", "id": "ffd0f2c5b3ea1904"}
+{"src": "<अनौपचारिक> <अनौपचारिक> के यही थमेलको बाटो हो?", "tgt": "<informal> Is this the way to Thamel?", "register": "informal", "id": "ffd0f2c5b3ea1904"}
+{"src": "<औपचारिक> <अनौपचारिक> वार्षिक प्रतिवेदन", "tgt": "<informal> Annual Report", "register": "formal", "id": "83285665d88cc9b3"}
+{"src": "<अनौपचारिक> <अनौपचारिक> वार्षिक प्रतिवेदन", "tgt": "<informal> Annual Report", "register": "informal", "id": "83285665d88cc9b3"}
+{"src": "<औपचारिक> <अनौपचारिक> खारेज गरिएका अधिनियमहरू", "tgt": "<informal> Repealed Acts", "register": "formal", "id": "478b209c504aa946"}
+{"src": "<अनौपचारिक> <अनौपचारिक> खारेज गरिएका अधिनियमहरू", "tgt": "<informal> Repealed Acts", "register": "informal", "id": "478b209c504aa946"}
+{"src": "<औपचारिक> <औपचारिक> नयाँ बनेश्वर, काठमाडौँ", "tgt": "<formal> New Baneshwor, Kathmandu", "register": "formal", "id": "2a611b8563b9d63e"}
+{"src": "<अनौपचारिक> <औपचारिक> नयाँ बनेश्वर, काठमाडौँ", "tgt": "<formal> New Baneshwor, Kathmandu", "register": "informal", "id": "2a611b8563b9d63e"}
+{"src": "<औपचारिक> <औपचारिक> एक हजार रुपैयाँ।", "tgt": "<formal> One thousand rupees.", "register": "formal", "id": "4bdee084c4f5548a"}
+{"src": "<अनौपचारिक> <औपचारिक> एक हजार रुपैयाँ।", "tgt": "<formal> One thousand rupees.", "register": "informal", "id": "4bdee084c4f5548a"}
+{"src": "<औपचारिक> <अनौपचारिक> के तपाईँ बुझ्नुहुन्छ?", "tgt": "<informal> Do you understand?", "register": "formal", "id": "75b70ac2001005d6"}
+{"src": "<औपचारिक> <अनौपचारिक> के तिमी बुझ्नुहुन्छ?", "tgt": "<informal> Do you understand?", "register": "informal", "id": "75b70ac2001005d6"}
+{"src": "<औपचारिक> <औपचारिक> त्यो अनुवाद गलत छ।", "tgt": "<formal> That translation is wrong.", "register": "formal", "id": "56d9930c777e3a5d"}
+{"src": "<अनौपचारिक> <औपचारिक> त्यो अनुवाद गलत छ।", "tgt": "<formal> That translation is wrong.", "register": "informal", "id": "56d9930c777e3a5d"}
+{"src": "<औपचारिक> <अनौपचारिक> म गर्भवती छु।", "tgt": "<informal> I am pregnant.", "register": "formal", "id": "cd93c82971d516be"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म गर्भवती छु।", "tgt": "<informal> I am pregnant.", "register": "informal", "id": "cd93c82971d516be"}
+{"src": "<औपचारिक> <अनौपचारिक> सुझाव र उजुरीहरू", "tgt": "<informal> Suggestions and Complaints", "register": "formal", "id": "ae165cc3eb59ca1a"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सुझाव र उजुरीहरू", "tgt": "<informal> Suggestions and Complaints", "register": "informal", "id": "ae165cc3eb59ca1a"}
+{"src": "<औपचारिक> <अनौपचारिक> यो राम्रो छ।", "tgt": "<informal> This is good.", "register": "formal", "id": "ba7c975e884c5e69"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो राम्रो छ।", "tgt": "<informal> This is good.", "register": "informal", "id": "ba7c975e884c5e69"}
+{"src": "<औपचारिक> <औपचारिक> यो मेरो परिवार हो।", "tgt": "<formal> This is my family.", "register": "formal", "id": "643cfdead3d405e5"}
+{"src": "<अनौपचारिक> <औपचारिक> यो मेरो परिवार हो।", "tgt": "<formal> This is my family.", "register": "informal", "id": "643cfdead3d405e5"}
+{"src": "<औपचारिक> <औपचारिक> कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "<formal> Please try again.", "register": "formal", "id": "d6c4d797bc387532"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया फेरि प्रयास गर्नुहोस्।", "tgt": "<formal> Please try again.", "register": "informal", "id": "d6c4d797bc387532"}
+{"src": "<औपचारिक> <अनौपचारिक> अघिल्लो", "tgt": "<informal> Previous", "register": "formal", "id": "dd09cd11daee38fb"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अघिल्लो", "tgt": "<informal> Previous", "register": "informal", "id": "dd09cd11daee38fb"}
+{"src": "<औपचारिक> <औपचारिक> घर", "tgt": "<formal> Home", "register": "formal", "id": "485e0defcd0a3e04"}
+{"src": "<अनौपचारिक> <औपचारिक> घर", "tgt": "<formal> Home", "register": "informal", "id": "485e0defcd0a3e04"}
+{"src": "<औपचारिक> <औपचारिक> तपाईँ कहाँ जाँदै हुनुहुन्छ?", "tgt": "<formal> Where are you going?", "register": "formal", "id": "f7fee48931a6f776"}
+{"src": "<औपचारिक> <औपचारिक> तिमी कहाँ जाँदै छौ?", "tgt": "<formal> Where are you going?", "register": "informal", "id": "f7fee48931a6f776"}
+{"src": "<औपचारिक> <अनौपचारिक> म भोलि आउनेछु।", "tgt": "<informal> I will come tomorrow.", "register": "formal", "id": "48cb765bad3ef282"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म भोलि आउनेछु।", "tgt": "<informal> I will come tomorrow.", "register": "informal", "id": "48cb765bad3ef282"}
+{"src": "<औपचारिक> <अनौपचारिक> म माफी चाहन्छु।", "tgt": "<informal> I am sorry.", "register": "formal", "id": "44feca933a0d1c5b"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म माफी चाहन्छु।", "tgt": "<informal> I am sorry.", "register": "informal", "id": "44feca933a0d1c5b"}
+{"src": "<औपचारिक> <औपचारिक> अघिल्लो", "tgt": "<formal> Previous", "register": "formal", "id": "36b2049a50b0e9bd"}
+{"src": "<अनौपचारिक> <औपचारिक> अघिल्लो", "tgt": "<formal> Previous", "register": "informal", "id": "36b2049a50b0e9bd"}
+{"src": "<औपचारिक> <औपचारिक> अनुसन्धान र अध्ययन", "tgt": "<formal> Research and Study", "register": "formal", "id": "08549b18649af1d7"}
+{"src": "<अनौपचारिक> <औपचारिक> अनुसन्धान र अध्ययन", "tgt": "<formal> Research and Study", "register": "informal", "id": "08549b18649af1d7"}
+{"src": "<औपचारिक> <अनौपचारिक> नयाँ बनेश्वर, काठमाडौँ", "tgt": "<informal> New Baneshwor, Kathmandu", "register": "formal", "id": "2c3f15295b92f163"}
+{"src": "<अनौपचारिक> <अनौपचारिक> नयाँ बनेश्वर, काठमाडौँ", "tgt": "<informal> New Baneshwor, Kathmandu", "register": "informal", "id": "2c3f15295b92f163"}
+{"src": "<औपचारिक> <अनौपचारिक> यो मेरो परिवार हो।", "tgt": "<informal> This is my family.", "register": "formal", "id": "b897779e1f258287"}
+{"src": "<अनौपचारिक> <अनौपचारिक> यो मेरो परिवार हो।", "tgt": "<informal> This is my family.", "register": "informal", "id": "b897779e1f258287"}
+{"src": "<औपचारिक> <अनौपचारिक> म मासु खाँदिनँ।", "tgt": "<informal> I do not eat meat.", "register": "formal", "id": "a1f30533634a3052"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म मासु खाँदिनँ।", "tgt": "<informal> I do not eat meat.", "register": "informal", "id": "a1f30533634a3052"}
+{"src": "<औपचारिक> <अनौपचारिक> नेपाल सरकार", "tgt": "<informal> Government of Nepal", "register": "formal", "id": "8e2b6d8ff2c8412a"}
+{"src": "<अनौपचारिक> <अनौपचारिक> नेपाल सरकार", "tgt": "<informal> Government of Nepal", "register": "informal", "id": "8e2b6d8ff2c8412a"}
+{"src": "<औपचारिक> <अनौपचारिक> अर्को", "tgt": "<informal> Next", "register": "formal", "id": "4edb38f72761c879"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अर्को", "tgt": "<informal> Next", "register": "informal", "id": "4edb38f72761c879"}
+{"src": "<औपचारिक> <अनौपचारिक> मैले बोल्नु समाप्त गरेको छु।", "tgt": "<informal> I have finished speaking.", "register": "formal", "id": "bd4962bfc2796b21"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मैले बोल्नु समाप्त गरेको छु।", "tgt": "<informal> I have finished speaking.", "register": "informal", "id": "bd4962bfc2796b21"}
+{"src": "<औपचारिक> <औपचारिक> यसले कहाँ चोट पुऱ्याउँछ?", "tgt": "<formal> Where does it hurt?", "register": "formal", "id": "42fa8011dd46f1ee"}
+{"src": "<अनौपचारिक> <औपचारिक> यसले कहाँ चोट पुऱ्याउँछ?", "tgt": "<formal> Where does it hurt?", "register": "informal", "id": "42fa8011dd46f1ee"}
+{"src": "<औपचारिक> <औपचारिक> म काठमाडौँमा बस्छु।", "tgt": "<formal> I live in Kathmandu.", "register": "formal", "id": "bcf864bd00453e8c"}
+{"src": "<अनौपचारिक> <औपचारिक> म काठमाडौँमा बस्छु।", "tgt": "<formal> I live in Kathmandu.", "register": "informal", "id": "bcf864bd00453e8c"}
+{"src": "<औपचारिक> <औपचारिक> सरकारले सम्बन्धित क्षेत्रका उत्कृष्ट विशेषज्ञहरू मध्येबाट पाँच जनासम्मलाई आयोगको मानार्थ सदस्यका रूपमा नियुक्त गर्न सक्छ।", "tgt": "<formal> The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "register": "formal", "id": "1d6c81ca3dea41a0"}
+{"src": "<अनौपचारिक> <औपचारिक> सरकारले सम्बन्धित क्षेत्रका उत्कृष्ट विशेषज्ञहरू मध्येबाट पाँच जनासम्मलाई आयोगको मानार्थ सदस्यका रूपमा नियुक्त गर्न सक्छ।", "tgt": "<formal> The Government may appoint up to five members as honorary members to the Commission from amongst outstanding experts in the pertinent field.", "register": "informal", "id": "1d6c81ca3dea41a0"}
+{"src": "<औपचारिक> <औपचारिक> नीतिहरू", "tgt": "<formal> Policies", "register": "formal", "id": "089cfa3bf7e6f60f"}
+{"src": "<अनौपचारिक> <औपचारिक> नीतिहरू", "tgt": "<formal> Policies", "register": "informal", "id": "089cfa3bf7e6f60f"}
+{"src": "<औपचारिक> <औपचारिक> सिधा जानुहोस्।", "tgt": "<formal> Go straight.", "register": "formal", "id": "3cda33bb78ae80f2"}
+{"src": "<अनौपचारिक> <औपचारिक> सिधा जानुहोस्।", "tgt": "<formal> Go straight.", "register": "informal", "id": "3cda33bb78ae80f2"}
+{"src": "<औपचारिक> <औपचारिक> कानूनको मस्यौदा", "tgt": "<formal> Law Drafting", "register": "formal", "id": "3efb607f5c39a154"}
+{"src": "<अनौपचारिक> <औपचारिक> कानुनको मस्यौदा", "tgt": "<formal> Law Drafting", "register": "informal", "id": "3efb607f5c39a154"}
+{"src": "<औपचारिक> <अनौपचारिक> अनुसन्धान र अध्ययन", "tgt": "<informal> Research and Study", "register": "formal", "id": "a3252866adf3bb75"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अनुसन्धान र अध्ययन", "tgt": "<informal> Research and Study", "register": "informal", "id": "a3252866adf3bb75"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया मलाई बस स्टेसनमा लैजानुहोस्।", "tgt": "<informal> Please take me to the bus station.", "register": "formal", "id": "aa5488d60aa13be8"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया मलाई बस स्टेसनमा लैजानुहोस्।", "tgt": "<informal> Please take me to the bus station.", "register": "informal", "id": "aa5488d60aa13be8"}
+{"src": "<औपचारिक> <अनौपचारिक> 2 कार्य टोलीको गठनः आयोगले प्राथमिकताका आधारमा वार्षिक कार्यक्रम निर्णय गर्छ र स्पष्ट जनादेश र समय सीमा प्रदान गरेर स्वीकृत क्षेत्रमा काम गर्न विशेषज्ञहरूलाई संलग्न गर्दै कार्य टोली (डब्ल्युटि) गठन गर्दछ। सामान्यतया, आयोगका एक सदस्यले डब्ल्युटि प्रमुख हुन्छन् वा यसको नेतृत्व सम्बन्धित क्षेत्रका कुनै प्रतिष्ठित व्यक्तित्वले गर्छन्।", "tgt": "<informal> 2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "register": "formal", "id": "926e5ca8d5534edc"}
+{"src": "2 कार्य टोलीको गठनः आयोगले प्राथमिकताका आधारमा वार्षिक कार्यक्रम निर्णय गर्छ र स्पष्ट जनादेश र समय सीमा प्रदान गरेर स्वीकृत क्षेत्रमा काम गर्न विशेषज्ञहरूलाई संलग्न गर्दै कार्य टोली (डब्ल्युटि) गठन गर्छ। सामान्यतया, आयोगका एक सदस्यले डब्ल्युटि प्रमुख हुन्छन् वा यसको नेतृत्व सम्बन्धित क्षेत्रका कुनै प्रतिष्ठित व्यक्तित्वले गर्छन्।", "tgt": "<informal> 2 Formation of Working Team: The Commission decides annual program on the basis of the priority and forms working team (WT) involving experts to work on approved area by providing clear mandate and time frame. Generally, one member of the Commission heads the WT or it is headed by any reputed personality in the relevant field.", "register": "informal", "id": "926e5ca8d5534edc"}
+{"src": "<औपचारिक> <औपचारिक> तपाईँकी आमा कस्तो छिन्?", "tgt": "<formal> How is your mother?", "register": "formal", "id": "11d9fb7dab760432"}
+{"src": "<औपचारिक> <औपचारिक> तिमीकी आमा कस्तो छिन्?", "tgt": "<formal> How is your mother?", "register": "informal", "id": "11d9fb7dab760432"}
+{"src": "<औपचारिक> <औपचारिक> कृपया।", "tgt": "<formal> Please.", "register": "formal", "id": "7a96a972ad70c51b"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया।", "tgt": "<formal> Please.", "register": "informal", "id": "7a96a972ad70c51b"}
+{"src": "<औपचारिक> <अनौपचारिक> खारेज गरिएका नियमहरू", "tgt": "<informal> Repealed Regulations", "register": "formal", "id": "ce3316d02800146c"}
+{"src": "<अनौपचारिक> <अनौपचारिक> खारेज गरिएका नियमहरू", "tgt": "<informal> Repealed Regulations", "register": "informal", "id": "ce3316d02800146c"}
+{"src": "<औपचारिक> <औपचारिक> मेरो फोनमा ब्याट्री छैन।", "tgt": "<formal> My phone has no battery.", "register": "formal", "id": "6c63b321f4a8c72c"}
+{"src": "<अनौपचारिक> <औपचारिक> मेरो फोनमा ब्याट्री छैन।", "tgt": "<formal> My phone has no battery.", "register": "informal", "id": "6c63b321f4a8c72c"}
+{"src": "<औपचारिक> <अनौपचारिक> 1 कार्यहरूको प्रारम्भः आयोगले सम्बन्धित मन्त्रालयको रेफरलमा वा आफ्नै तर्फबाट मस्यौदा र कानून सुधार प्रक्रिया सुरु गर्न सक्छ। यसले हितधारकहरू, अर्थात् व्यक्तिगत, गैर-सरकारी सङ्गठन, नागरिक समाज र सामुदायिक सङ्गठनबाट पनि प्रस्ताव प्राप्त गर्न सक्छ।", "tgt": "<informal> 1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "register": "formal", "id": "f9b68d8c6f06b547"}
+{"src": "<अनौपचारिक> <अनौपचारिक> 1 कार्यहरूको प्रारम्भः आयोगले सम्बन्धित मन्त्रालयको रेफरलमा वा आफ्नै तर्फबाट मस्यौदा र कानून सुधार प्रक्रिया सुरु गर्न सक्छ। यसले हितधारकहरू, अर्थात् व्यक्तिगत, गैर-सरकारी सङ्गठन, नागरिक समाज र सामुदायिक सङ्गठनबाट पनि प्रस्ताव प्राप्त गर्न सक्छ।", "tgt": "<informal> 1 Initiation of tasks: The commission may initiate drafting and law reform process either on referral of the concerned ministry or on its own. It may also receive a proposal from stakeholders, i.e. individual, non-governmental organization, civil society and community organization.", "register": "informal", "id": "f9b68d8c6f06b547"}
+{"src": "<औपचारिक> <अनौपचारिक> तपाईँलाई स्वागत छ।", "tgt": "<informal> You are welcome.", "register": "formal", "id": "0bd780a772148af0"}
+{"src": "<औपचारिक> <अनौपचारिक> तिमीलाई स्वागत छ।", "tgt": "<informal> You are welcome.", "register": "informal", "id": "0bd780a772148af0"}
+{"src": "<औपचारिक> <औपचारिक> अधिनियमहरू", "tgt": "<formal> Acts", "register": "formal", "id": "5a105e9f48835021"}
+{"src": "<अनौपचारिक> <औपचारिक> अधिनियमहरू", "tgt": "<formal> Acts", "register": "informal", "id": "5a105e9f48835021"}
+{"src": "<औपचारिक> <औपचारिक> उडानमा ढिलाइ भएको छ।", "tgt": "<formal> The flight is delayed.", "register": "formal", "id": "650d16ae09ec6e8b"}
+{"src": "<अनौपचारिक> <औपचारिक> उडानमा ढिलाइ भएको छ।", "tgt": "<formal> The flight is delayed.", "register": "informal", "id": "650d16ae09ec6e8b"}
+{"src": "<औपचारिक> <अनौपचारिक> बायाँतिर फर्कनुहोस्।", "tgt": "<informal> Turn left.", "register": "formal", "id": "37df38480449f3c5"}
+{"src": "<अनौपचारिक> <अनौपचारिक> बायाँतिर फर्कनुहोस्।", "tgt": "<informal> Turn left.", "register": "informal", "id": "37df38480449f3c5"}
+{"src": "<औपचारिक> <औपचारिक> म यो चाहन्नँ।", "tgt": "<formal> I do not want this.", "register": "formal", "id": "ab8e8c99e3bdd004"}
+{"src": "<अनौपचारिक> <औपचारिक> म यो चाहन्नँ।", "tgt": "<formal> I do not want this.", "register": "informal", "id": "ab8e8c99e3bdd004"}
+{"src": "<औपचारिक> <औपचारिक> त्यो सही होइन।", "tgt": "<formal> That is not right.", "register": "formal", "id": "69c06212f43205e7"}
+{"src": "<अनौपचारिक> <औपचारिक> त्यो सही होइन।", "tgt": "<formal> That is not right.", "register": "informal", "id": "69c06212f43205e7"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "<informal> Please use formal language.", "register": "formal", "id": "7f50a52c52f63dec"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया औपचारिक भाषा प्रयोग गर्नुहोस्।", "tgt": "<informal> Please use formal language.", "register": "informal", "id": "7f50a52c52f63dec"}
+{"src": "<औपचारिक> <औपचारिक> म गर्भवती छु।", "tgt": "<formal> I am pregnant.", "register": "formal", "id": "fbdb7a0347d12397"}
+{"src": "<अनौपचारिक> <औपचारिक> म गर्भवती छु।", "tgt": "<formal> I am pregnant.", "register": "informal", "id": "fbdb7a0347d12397"}
+{"src": "<औपचारिक> <अनौपचारिक> म नगदमा भुक्तानी गर्नेछु।", "tgt": "<informal> I will pay in cash.", "register": "formal", "id": "733844ca8184081a"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म नगदमा भुक्तानी गर्नेछु।", "tgt": "<informal> I will pay in cash.", "register": "informal", "id": "733844ca8184081a"}
+{"src": "<औपचारिक> <अनौपचारिक> हो।", "tgt": "<informal> Yes.", "register": "formal", "id": "4e625c84dc76aec1"}
+{"src": "<अनौपचारिक> <अनौपचारिक> हो।", "tgt": "<informal> Yes.", "register": "informal", "id": "4e625c84dc76aec1"}
+{"src": "<औपचारिक> <औपचारिक> यसको अर्थ के हो?", "tgt": "<formal> What does this mean?", "register": "formal", "id": "3b3caba130a913e8"}
+{"src": "<अनौपचारिक> <औपचारिक> यसको अर्थ के हो?", "tgt": "<formal> What does this mean?", "register": "informal", "id": "3b3caba130a913e8"}
+{"src": "<औपचारिक> <औपचारिक> नेटवर्कले काम गरिरहेको छैन।", "tgt": "<formal> The network is not working.", "register": "formal", "id": "940988ca63020157"}
+{"src": "<अनौपचारिक> <औपचारिक> नेटवर्कले काम गरिरहेको छैन।", "tgt": "<formal> The network is not working.", "register": "informal", "id": "940988ca63020157"}
+{"src": "<औपचारिक> <अनौपचारिक> उडानमा ढिलाइ भएको छ।", "tgt": "<informal> The flight is delayed.", "register": "formal", "id": "25f02d1cc3deb091"}
+{"src": "<अनौपचारिक> <अनौपचारिक> उडानमा ढिलाइ भएको छ।", "tgt": "<informal> The flight is delayed.", "register": "informal", "id": "25f02d1cc3deb091"}
+{"src": "<औपचारिक> <अनौपचारिक> अधिनियमहरू", "tgt": "<informal> Acts", "register": "formal", "id": "95fcf4e392e8f336"}
+{"src": "<अनौपचारिक> <अनौपचारिक> अधिनियमहरू", "tgt": "<informal> Acts", "register": "informal", "id": "95fcf4e392e8f336"}
+{"src": "<औपचारिक> <अनौपचारिक> नीतिहरू", "tgt": "<informal> Policies", "register": "formal", "id": "98a20038b4a7391f"}
+{"src": "<अनौपचारिक> <अनौपचारिक> नीतिहरू", "tgt": "<informal> Policies", "register": "informal", "id": "98a20038b4a7391f"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई टाउको दुखाइको औषधि चाहिन्छ।", "tgt": "<informal> I need medicine for a headache.", "register": "formal", "id": "9c5eeb45ec70fb9e"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई टाउको दुख्ने औषधि चाहिन्छ।", "tgt": "<informal> I need medicine for a headache.", "register": "informal", "id": "9c5eeb45ec70fb9e"}
+{"src": "<औपचारिक> <औपचारिक> कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "<formal> Please help me.", "register": "formal", "id": "dcbe17d9becb22a7"}
+{"src": "<अनौपचारिक> <औपचारिक> कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "<formal> Please help me.", "register": "informal", "id": "dcbe17d9becb22a7"}
+{"src": "<औपचारिक> <अनौपचारिक> परिचय", "tgt": "<informal> Introduction", "register": "formal", "id": "876d3cda41109499"}
+{"src": "<अनौपचारिक> <अनौपचारिक> परिचय", "tgt": "<informal> Introduction", "register": "informal", "id": "876d3cda41109499"}
+{"src": "<औपचारिक> <अनौपचारिक> फिर्ता", "tgt": "<informal> Back", "register": "formal", "id": "bacc2c26682a269d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> फिर्ता", "tgt": "<informal> Back", "register": "informal", "id": "bacc2c26682a269d"}
+{"src": "<औपचारिक> <औपचारिक> के यही थमेलको बाटो हो?", "tgt": "<formal> Is this the way to Thamel?", "register": "formal", "id": "1495e25f2349020e"}
+{"src": "<अनौपचारिक> <औपचारिक> के यही थमेलको बाटो हो?", "tgt": "<formal> Is this the way to Thamel?", "register": "informal", "id": "1495e25f2349020e"}
+{"src": "<औपचारिक> <अनौपचारिक> विद्यमान कानुनहरू", "tgt": "<informal> Existing Laws", "register": "formal", "id": "20e40af2bd3203df"}
+{"src": "<अनौपचारिक> <अनौपचारिक> विद्यमान कानुनहरू", "tgt": "<informal> Existing Laws", "register": "informal", "id": "20e40af2bd3203df"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई चक्कर आउँछ।", "tgt": "<informal> I feel dizzy.", "register": "formal", "id": "260fa2fb4df6087d"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई चक्कर आउँछ।", "tgt": "<informal> I feel dizzy.", "register": "informal", "id": "260fa2fb4df6087d"}
+{"src": "<औपचारिक> <अनौपचारिक> म यो चाहन्नँ।", "tgt": "<informal> I do not want this.", "register": "formal", "id": "f581061c7af539e9"}
+{"src": "<अनौपचारिक> <अनौपचारिक> म यो चाहन्नँ।", "tgt": "<informal> I do not want this.", "register": "informal", "id": "f581061c7af539e9"}
+{"src": "<औपचारिक> <अनौपचारिक> मलाई ट्याक्सी चाहिन्छ।", "tgt": "<informal> I need a taxi.", "register": "formal", "id": "55b8df367e05b62c"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मलाई ट्याक्सी चाहिन्छ।", "tgt": "<informal> I need a taxi.", "register": "informal", "id": "55b8df367e05b62c"}
+{"src": "<औपचारिक> <औपचारिक> म बिरामी छु।", "tgt": "<formal> I am sick.", "register": "formal", "id": "340d697e47e831b8"}
+{"src": "<अनौपचारिक> <औपचारिक> म बिरामी छु।", "tgt": "<formal> I am sick.", "register": "informal", "id": "340d697e47e831b8"}
+{"src": "<औपचारिक> <औपचारिक> मलाई एलर्जी छ।", "tgt": "<formal> I have an allergy.", "register": "formal", "id": "1ed30f55a3a34315"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई एलर्जी छ।", "tgt": "<formal> I have an allergy.", "register": "informal", "id": "1ed30f55a3a34315"}
+{"src": "<औपचारिक> <औपचारिक> मलाई यो चाहिन्छ।", "tgt": "<formal> I want this one.", "register": "formal", "id": "872dd39c03e58c83"}
+{"src": "<अनौपचारिक> <औपचारिक> मलाई यो चाहिन्छ।", "tgt": "<formal> I want this one.", "register": "informal", "id": "872dd39c03e58c83"}
+{"src": "<औपचारिक> <औपचारिक> के यहाँ वाइ-फाइ निःशुल्क छ?", "tgt": "<formal> Is Wi-Fi free here?", "register": "formal", "id": "f35abf3d2e64c6bd"}
+{"src": "<अनौपचारिक> <औपचारिक> के यहाँ वाइ-फाइ निःशुल्क छ?", "tgt": "<formal> Is Wi-Fi free here?", "register": "informal", "id": "f35abf3d2e64c6bd"}
+{"src": "<औपचारिक> <अनौपचारिक> खोज्नुहोस्", "tgt": "<informal> Search", "register": "formal", "id": "04f89c9beee76a7b"}
+{"src": "<अनौपचारिक> <अनौपचारिक> खोज्नुहोस्", "tgt": "<informal> Search", "register": "informal", "id": "04f89c9beee76a7b"}
+{"src": "<औपचारिक> <अनौपचारिक> डाउनलोड गर्नुहोस्", "tgt": "<informal> Download", "register": "formal", "id": "55d5c604f07ff2f1"}
+{"src": "<अनौपचारिक> <अनौपचारिक> डाउनलोड गर्नुहोस्", "tgt": "<informal> Download", "register": "informal", "id": "55d5c604f07ff2f1"}
+{"src": "<औपचारिक> <अनौपचारिक> कानुनको मस्यौदा", "tgt": "<informal> Law Drafting", "register": "formal", "id": "0197b0f6b1038397"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कानुनको मस्यौदा", "tgt": "<informal> Law Drafting", "register": "informal", "id": "0197b0f6b1038397"}
+{"src": "<औपचारिक> <औपचारिक> यो राम्रो छ।", "tgt": "<formal> This is good.", "register": "formal", "id": "83991f495c41aedc"}
+{"src": "<अनौपचारिक> <औपचारिक> यो राम्रो छ।", "tgt": "<formal> This is good.", "register": "informal", "id": "83991f495c41aedc"}
+{"src": "<औपचारिक> <अनौपचारिक> सूचना केन्द्र", "tgt": "<informal> Information Center", "register": "formal", "id": "b8eff0d4ca9c66b0"}
+{"src": "<अनौपचारिक> <अनौपचारिक> सूचना केन्द्र", "tgt": "<informal> Information Center", "register": "informal", "id": "b8eff0d4ca9c66b0"}
+{"src": "<औपचारिक> <अनौपचारिक> कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "<informal> Please help me.", "register": "formal", "id": "2f7900527fa50113"}
+{"src": "<अनौपचारिक> <अनौपचारिक> कृपया मलाई मद्दत गर्नुहोस्।", "tgt": "<informal> Please help me.", "register": "informal", "id": "2f7900527fa50113"}
+{"src": "<औपचारिक> <अनौपचारिक> मेरो नाम कुपर हो।", "tgt": "<informal> My name is Cooper.", "register": "formal", "id": "60d00f38071cddaa"}
+{"src": "<अनौपचारिक> <अनौपचारिक> मेरो नाम कुपर हो।", "tgt": "<informal> My name is Cooper.", "register": "informal", "id": "60d00f38071cddaa"}
+{"src": "<औपचारिक> नमस्कार।", "tgt": "Hello.", "register": "formal", "id": "19bd4372b8ff2951"}
+{"src": "<अनौपचारिक> नमस्कार।", "tgt": "Hello.", "register": "informal", "id": "19bd4372b8ff2951"}
+{"src": "<औपचारिक> धन्यवाद।", "tgt": "Thank you.", "register": "formal", "id": "a6f59e1a0b4bbe4a"}
+{"src": "<अनौपचारिक> धन्यवाद।", "tgt": "Thank you.", "register": "informal", "id": "a6f59e1a0b4bbe4a"}
+{"src": "<औपचारिक> मेरो नाम राम हो।", "tgt": "My name is Ram.", "register": "formal", "id": "9729352f10812016"}
+{"src": "<अनौपचारिक> मेरो नाम राम हो।", "tgt": "My name is Ram.", "register": "informal", "id": "9729352f10812016"}
+{"src": "<औपचारिक> कृपया फेरि भन्नुहोस्।", "tgt": "Please say that again.", "register": "formal", "id": "5b3a00583383f9ee"}
+{"src": "<अनौपचारिक> कृपया फेरि भन्नुहोस्।", "tgt": "Please say that again.", "register": "informal", "id": "5b3a00583383f9ee"}
+{"src": "<औपचारिक> मलाई सहयोग चाहिन्छ।", "tgt": "I need help.", "register": "formal", "id": "93277f0b66d96869"}
+{"src": "<अनौपचारिक> मलाई सहयोग चाहिन्छ।", "tgt": "I need help.", "register": "informal", "id": "93277f0b66d96869"}
+{"src": "<औपचारिक> पुलिसलाई फोन गर्नुहोस्।", "tgt": "Call the police.", "register": "formal", "id": "49862eb6dbcacb74"}
+{"src": "<अनौपचारिक> पुलिसलाई फोन गर्नुहोस्।", "tgt": "Call the police.", "register": "informal", "id": "49862eb6dbcacb74"}
+{"src": "<औपचारिक> शौचालय कहाँ छ?", "tgt": "Where is the toilet?", "register": "formal", "id": "cc847a46a42d0a8d"}
+{"src": "<अनौपचारिक> शौचालय कहाँ छ?", "tgt": "Where is the toilet?", "register": "informal", "id": "cc847a46a42d0a8d"}
+{"src": "<औपचारिक> कृपया मलाई नक्सामा देखाउनुहोस्।", "tgt": "Please show me on the map.", "register": "formal", "id": "fc414081b45a6f1d"}
+{"src": "<अनौपचारिक> कृपया मलाई नक्सामा देखाउनुहोस्।", "tgt": "Please show me on the map.", "register": "informal", "id": "fc414081b45a6f1d"}
+{"src": "<औपचारिक> मलाई भोक लागेको छ।", "tgt": "I am hungry.", "register": "formal", "id": "0d7d033cb36faa5e"}
+{"src": "<अनौपचारिक> मलाई भोक लागेको छ।", "tgt": "I am hungry.", "register": "informal", "id": "0d7d033cb36faa5e"}

@@ -262,7 +262,7 @@
       {
         "id": "flores-40",
         "eng_Latn": "John Grant, from WNED Buffalo (Reading Rainbow's home station) said \"Reading Rainbow taught kids why to read,... the love of reading — [the show] encouraged kids to pick up a book and to read.\"",
-        "npi_Deva": "WNED बफेलोका, जोन ग्रान्टले (रेन्बोको होम स्टेसन पढ्दै) भने, “रेन्बो पढ्नाले बच्चाहरूलाई किन पढ्ने भन्ने सिकायो, ......पढाइको प्रेम - (कार्यक्रमले) बच्चाहरूलाई पुस्तक लिन र पढ्न प्रोत्साहित गर्‍यो।”",
+        "npi_Deva": "WNED बफेलोका, जोन ग्रान्टले (रेन्बोको होम स्टेसन पढ्दै) भने, “रेन्बो पढ्नाले बच्चाहरूलाई किन पढ्ने भन्ने सिकायो,......पढाइको प्रेम - (कार्यक्रमले) बच्चाहरूलाई पुस्तक लिन र पढ्न प्रोत्साहित गर्‍यो।”",
         "domain": "flores"
       },
       {
@@ -507,7 +507,7 @@
       },
       {
         "id": "flores-81",
-        "eng_Latn": "Hesperonychus elizabethae is a species of the family Dromaeosauridae and is a cousin of Velociraptor .",
+        "eng_Latn": "Hesperonychus elizabethae is a species of the family Dromaeosauridae and is a cousin of Velociraptor.",
         "npi_Deva": "हेस्पेरोनिकस एलिजावेथी ड्रोमियोसौरिडी परिवारको एक प्रजाति हो र भेलोसिरेप्टरको वंश हो।",
         "domain": "flores"
       },
@@ -855,7 +855,7 @@
       },
       {
         "id": "flores-139",
-        "eng_Latn": "At its peak, Tropical Cyclone Gonu, named for a bag of palm leaves in the language of the Maldives, reached sustained winds of 240 kilometers an hour (149 miles per hour) .",
+        "eng_Latn": "At its peak, Tropical Cyclone Gonu, named for a bag of palm leaves in the language of the Maldives, reached sustained winds of 240 kilometers an hour (149 miles per hour).",
         "npi_Deva": "यसको चरम विन्दुमा, मालदिभ्सको भाषामा ताडको पातको झोलाका लागि नाम दिइएको, ट्रपिकल साइक्लोन गोनु, 240 किलोमिटर प्रति घण्टा (149 माइल प्रति घण्टा) को निरन्तर हावासम्म पुग्यो।",
         "domain": "flores"
       },
@@ -2860,7 +2860,7 @@
       {
         "id": "flores-473",
         "eng_Latn": "This marked an important change, as European powers would no longer have the pretext of being religious wars. Thus, the Thirty Years' War would be the last war to be labeled a religious war.",
-        "npi_Deva": "युरोपेली शक्तिहरूसँग अब धार्मिक युद्धहरू हुनुको बहाना नभए सँगै , यसलाई महत्त्वपूर्ण परिवर्तनको रूपमा चिन्हित गर्न सकिन्छ। यसर्थ, तीस वर्षको युद्ध अन्तिम धार्मिक युद्धको रूपमा अङ्कित हुनेछ।",
+        "npi_Deva": "युरोपेली शक्तिहरूसँग अब धार्मिक युद्धहरू हुनुको बहाना नभए सँगै, यसलाई महत्त्वपूर्ण परिवर्तनको रूपमा चिन्हित गर्न सकिन्छ। यसर्थ, तीस वर्षको युद्ध अन्तिम धार्मिक युद्धको रूपमा अङ्कित हुनेछ।",
         "domain": "flores"
       },
       {
@@ -8490,7 +8490,7 @@
       {
         "id": "opus100-660",
         "eng_Latn": "Odd character '%s', expected a '>' or '/' character to end the start tag of element '%s', or optionally an attribute; perhaps you used an invalid character in an attribute name",
-        "npi_Deva": "बिजोड क्यारेक्टर '%s', तत्व '%s' को सुरु ट्याग अन्त्य गर्नलाई अपेक्षा गरिएको एउटा '>' वा '/' क्यारेक्टर, वा वैकल्पिक रूपमा एउटा विशेषता ,सायद तपाईँले एउटा विशेषता नाममा अवैध क्यारेक्टर प्रयोग गर्नुभयो",
+        "npi_Deva": "बिजोड क्यारेक्टर '%s', तत्व '%s' को सुरु ट्याग अन्त्य गर्नलाई अपेक्षा गरिएको एउटा '>' वा '/' क्यारेक्टर, वा वैकल्पिक रूपमा एउटा विशेषता,सायद तपाईँले एउटा विशेषता नाममा अवैध क्यारेक्टर प्रयोग गर्नुभयो",
         "domain": "opus100_test"
       },
       {
@@ -9695,8 +9695,8 @@
       },
       {
         "id": "opus100-1026",
-        "eng_Latn": "The location of the .desktop file describing the launcher. This key is only relevant if the object_type key is \"launcher-object\".",
-        "npi_Deva": "सुरुआतकर्ता वर्णन गर्ने .डेस्कटप फाइको स्थान । वस्तु प्रकार कुञ्जी \"सुरुआतकर्ता-वस्तु\" भएमा मात्र यो कुञ्जी उपयुक्त हुन्छ ।",
+        "eng_Latn": "The location of the.desktop file describing the launcher. This key is only relevant if the object_type key is \"launcher-object\".",
+        "npi_Deva": "सुरुआतकर्ता वर्णन गर्ने.डेस्कटप फाइको स्थान । वस्तु प्रकार कुञ्जी \"सुरुआतकर्ता-वस्तु\" भएमा मात्र यो कुञ्जी उपयुक्त हुन्छ ।",
         "domain": "opus100_test"
       },
       {
@@ -9954,7 +9954,7 @@
       {
         "id": "opus100-1105",
         "eng_Latn": "View, delete and report different scenarios",
-        "npi_Deva": "विभिन्न परिदृश्य हेर्नुहोस् , मेट्नुहोस् र प्रतिवेदन दिनुहोस्",
+        "npi_Deva": "विभिन्न परिदृश्य हेर्नुहोस्, मेट्नुहोस् र प्रतिवेदन दिनुहोस्",
         "domain": "opus100_test"
       },
       {
@@ -11693,8 +11693,8 @@
       },
       {
         "id": "opus100-1679",
-        "eng_Latn": "Accessing resource ...",
-        "npi_Deva": "संसाधन पहुँच गर्दै ...",
+        "eng_Latn": "Accessing resource...",
+        "npi_Deva": "संसाधन पहुँच गर्दै...",
         "domain": "opus100_test"
       },
       {
@@ -13109,7 +13109,7 @@
     {
       "id": "flores-40",
       "eng_Latn": "John Grant, from WNED Buffalo (Reading Rainbow's home station) said \"Reading Rainbow taught kids why to read,... the love of reading — [the show] encouraged kids to pick up a book and to read.\"",
-      "npi_Deva": "WNED बफेलोका, जोन ग्रान्टले (रेन्बोको होम स्टेसन पढ्दै) भने, “रेन्बो पढ्नाले बच्चाहरूलाई किन पढ्ने भन्ने सिकायो, ......पढाइको प्रेम - (कार्यक्रमले) बच्चाहरूलाई पुस्तक लिन र पढ्न प्रोत्साहित गर्‍यो।”",
+      "npi_Deva": "WNED बफेलोका, जोन ग्रान्टले (रेन्बोको होम स्टेसन पढ्दै) भने, “रेन्बो पढ्नाले बच्चाहरूलाई किन पढ्ने भन्ने सिकायो,......पढाइको प्रेम - (कार्यक्रमले) बच्चाहरूलाई पुस्तक लिन र पढ्न प्रोत्साहित गर्‍यो।”",
       "domain": "flores"
     },
     {
@@ -13354,7 +13354,7 @@
     },
     {
       "id": "flores-81",
-      "eng_Latn": "Hesperonychus elizabethae is a species of the family Dromaeosauridae and is a cousin of Velociraptor .",
+      "eng_Latn": "Hesperonychus elizabethae is a species of the family Dromaeosauridae and is a cousin of Velociraptor.",
       "npi_Deva": "हेस्पेरोनिकस एलिजावेथी ड्रोमियोसौरिडी परिवारको एक प्रजाति हो र भेलोसिरेप्टरको वंश हो।",
       "domain": "flores"
     },
@@ -13702,7 +13702,7 @@
     },
     {
       "id": "flores-139",
-      "eng_Latn": "At its peak, Tropical Cyclone Gonu, named for a bag of palm leaves in the language of the Maldives, reached sustained winds of 240 kilometers an hour (149 miles per hour) .",
+      "eng_Latn": "At its peak, Tropical Cyclone Gonu, named for a bag of palm leaves in the language of the Maldives, reached sustained winds of 240 kilometers an hour (149 miles per hour).",
       "npi_Deva": "यसको चरम विन्दुमा, मालदिभ्सको भाषामा ताडको पातको झोलाका लागि नाम दिइएको, ट्रपिकल साइक्लोन गोनु, 240 किलोमिटर प्रति घण्टा (149 माइल प्रति घण्टा) को निरन्तर हावासम्म पुग्यो।",
       "domain": "flores"
     },
@@ -15707,7 +15707,7 @@
     {
       "id": "flores-473",
       "eng_Latn": "This marked an important change, as European powers would no longer have the pretext of being religious wars. Thus, the Thirty Years' War would be the last war to be labeled a religious war.",
-      "npi_Deva": "युरोपेली शक्तिहरूसँग अब धार्मिक युद्धहरू हुनुको बहाना नभए सँगै , यसलाई महत्त्वपूर्ण परिवर्तनको रूपमा चिन्हित गर्न सकिन्छ। यसर्थ, तीस वर्षको युद्ध अन्तिम धार्मिक युद्धको रूपमा अङ्कित हुनेछ।",
+      "npi_Deva": "युरोपेली शक्तिहरूसँग अब धार्मिक युद्धहरू हुनुको बहाना नभए सँगै, यसलाई महत्त्वपूर्ण परिवर्तनको रूपमा चिन्हित गर्न सकिन्छ। यसर्थ, तीस वर्षको युद्ध अन्तिम धार्मिक युद्धको रूपमा अङ्कित हुनेछ।",
       "domain": "flores"
     },
     {
@@ -21335,7 +21335,7 @@
     {
       "id": "opus100-660",
       "eng_Latn": "Odd character '%s', expected a '>' or '/' character to end the start tag of element '%s', or optionally an attribute; perhaps you used an invalid character in an attribute name",
-      "npi_Deva": "बिजोड क्यारेक्टर '%s', तत्व '%s' को सुरु ट्याग अन्त्य गर्नलाई अपेक्षा गरिएको एउटा '>' वा '/' क्यारेक्टर, वा वैकल्पिक रूपमा एउटा विशेषता ,सायद तपाईँले एउटा विशेषता नाममा अवैध क्यारेक्टर प्रयोग गर्नुभयो",
+      "npi_Deva": "बिजोड क्यारेक्टर '%s', तत्व '%s' को सुरु ट्याग अन्त्य गर्नलाई अपेक्षा गरिएको एउटा '>' वा '/' क्यारेक्टर, वा वैकल्पिक रूपमा एउटा विशेषता,सायद तपाईँले एउटा विशेषता नाममा अवैध क्यारेक्टर प्रयोग गर्नुभयो",
       "domain": "opus100_test"
     },
     {
@@ -22540,8 +22540,8 @@
     },
     {
       "id": "opus100-1026",
-      "eng_Latn": "The location of the .desktop file describing the launcher. This key is only relevant if the object_type key is \"launcher-object\".",
-      "npi_Deva": "सुरुआतकर्ता वर्णन गर्ने .डेस्कटप फाइको स्थान । वस्तु प्रकार कुञ्जी \"सुरुआतकर्ता-वस्तु\" भएमा मात्र यो कुञ्जी उपयुक्त हुन्छ ।",
+      "eng_Latn": "The location of the.desktop file describing the launcher. This key is only relevant if the object_type key is \"launcher-object\".",
+      "npi_Deva": "सुरुआतकर्ता वर्णन गर्ने.डेस्कटप फाइको स्थान । वस्तु प्रकार कुञ्जी \"सुरुआतकर्ता-वस्तु\" भएमा मात्र यो कुञ्जी उपयुक्त हुन्छ ।",
       "domain": "opus100_test"
     },
     {
@@ -22799,7 +22799,7 @@
     {
       "id": "opus100-1105",
       "eng_Latn": "View, delete and report different scenarios",
-      "npi_Deva": "विभिन्न परिदृश्य हेर्नुहोस् , मेट्नुहोस् र प्रतिवेदन दिनुहोस्",
+      "npi_Deva": "विभिन्न परिदृश्य हेर्नुहोस्, मेट्नुहोस् र प्रतिवेदन दिनुहोस्",
       "domain": "opus100_test"
     },
     {
@@ -24538,8 +24538,8 @@
     },
     {
       "id": "opus100-1679",
-      "eng_Latn": "Accessing resource ...",
-      "npi_Deva": "संसाधन पहुँच गर्दै ...",
+      "eng_Latn": "Accessing resource...",
+      "npi_Deva": "संसाधन पहुँच गर्दै...",
       "domain": "opus100_test"
     },
     {

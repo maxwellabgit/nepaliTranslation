@@ -531,4 +531,13 @@ export const ne: Record<MessageKey, string> = {
   'creditsAward.rewardName': 'हिजोको आजका १०',
   'creditsAward.continue': 'अनुवाद जारी राख',
   'creditsAward.view': 'मेरा क्रेडिट हेर',
+  'dailyOpen.title': 'आजको एउटा सिक्का',
+  'dailyOpen.body': 'तिमीले १ सिक्का पायौ। त्यो १० मिनेट हो, त्यसैले टाइमर १०:०० देखिन्छ।',
+  'dailyOpen.noReview':
+    'तिमीले आजका १० खोल्यौ र समीक्षा पठाएनौ, त्यसैले त्यो सेटबाट सिक्का छैन।',
+  'dailyOpen.continue': 'जारी राख',
+  'dailyOpen.adTitle': 'विज्ञापन-रहित जाऊ',
+  'dailyOpen.adBody': 'मासिक पासले विज्ञापन हटाउँछ। यो अहिले नमूना हो।',
+  'dailyOpen.adClose': 'अहिले होइन',
+  'review.extra10': 'थप १०',
 };

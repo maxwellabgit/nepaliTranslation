@@ -1,10 +1,6 @@
 import { readPublicEnv } from '../../config/env';
 import { getSupabase } from '../../services/supabase';
-import {
-  isTestingGroundHarness,
-  TESTING_GROUND_DAILY_REVIEW,
-  TESTING_GROUND_REVIEW_WINDOW,
-} from './testingGroundReview';
+import { isTestingGroundHarness } from './testingGroundReview';
 
 /**
  * G1 public review pool client.
@@ -109,10 +105,18 @@ function mapError(code: string | undefined): ReviewSubmitResult {
 
 export async function fetchCurrentReviewWindow(): Promise<ReviewCurrent> {
   if (isTestingGroundHarness()) {
+    const { loadReviewDay } = await import('./reviewDayStore');
+    const { itemsForReviewDay, reviewWindowId } = await import('./reviewDayItems');
+    const now = new Date();
+    const day = await loadReviewDay(now);
     return {
       ok: true,
-      window: TESTING_GROUND_REVIEW_WINDOW,
-      items: TESTING_GROUND_DAILY_REVIEW,
+      window: {
+        window_id: reviewWindowId(day, now),
+        ny_close_at: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+        size: 30,
+      },
+      items: itemsForReviewDay(day, now),
       mine: [],
     };
   }

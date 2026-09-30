@@ -89,6 +89,7 @@ export function InterstitialController() {
     presentingRef.current = true;
     if (Platform.OS === 'web') {
       setVideoOpen(true);
+      resetClock(Date.now());
       return;
     }
     void runInterstitialOpportunity({
@@ -106,10 +107,8 @@ export function InterstitialController() {
         hasSubscription: Boolean(subscription?.hasSubscription()),
       },
     })
-      .then((result) => {
-        if (result && 'presented' in result && result.presented) {
-          resetClock(Date.now());
-        }
+      .then(() => {
+        resetClock(Date.now());
       })
       .catch(() => undefined)
       .finally(() => {

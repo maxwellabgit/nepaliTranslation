@@ -16,7 +16,7 @@ export function NativeOrPlaceholderBanner(_props: { unitId: string }) {
 const styles = StyleSheet.create({
   sample: {
     width: '100%',
-    minHeight: 52,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F7F1D8',

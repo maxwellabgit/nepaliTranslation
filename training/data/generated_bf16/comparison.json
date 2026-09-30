@@ -1,0 +1,12 @@
+{
+  "int8": {
+    "benchmark_en_ne": 0.7219287860569444,
+    "benchmark_ne_en": 0.6598376765501176,
+    "train_sample_en_ne": 0.7419985554431083,
+    "train_sample_ne_en": 0.5491844064709926
+  },
+  "adapted": {
+    "benchmark_en_ne": 0.7370062175106716,
+    "benchmark_ne_en": 0.6939012118757115
+  }
+}

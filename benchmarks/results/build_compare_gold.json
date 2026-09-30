@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-09-30T12:32:01.814654+00:00",
+  "holdout": "benchmarks/gold",
+  "metric": "chrF_mean_char_trigram",
+  "decode": "greedy, max_new_tokens=96, phone formal/informal prefix, shipped romanizer",
+  "old": "mobile INT8 ONNX",
+  "new": "dist-200M BF16 plus generated-data LoRA, not yet exported to ONNX",
+  "int8": {
+    "en_ne_formal": {
+      "n": 137,
+      "chrf_mean": 0.474,
+      "min_chrf": 0.55,
+      "pass_chrf": false,
+      "tapai_rate": 0.2117,
+      "pass_tapai": true,
+      "taan_rate": 0.0,
+      "pass_taan": true
+    },
+    "en_ne_informal": {
+      "n": 139,
+      "chrf_mean": 0.3976,
+      "min_chrf": 0.5,
+      "pass_chrf": false,
+      "timi_rate": 0.0,
+      "pass_timi": false,
+      "taan_rate": 0.0,
+      "pass_taan": true
+    },
+    "ne_en_deva": {
+      "n": 133,
+      "chrf_mean": 0.6901,
+      "min_chrf": 0.55,
+      "pass_chrf": true
+    },
+    "ne_en_roman": {
+      "n": 134,
+      "chrf_mean": 0.3818,
+      "min_chrf": 0.4,
+      "pass_chrf": false
+    }
+  },
+  "adapter": {
+    "en_ne_formal": {
+      "n": 137,
+      "chrf_mean": 0.5288,
+      "min_chrf": 0.55,
+      "pass_chrf": false,
+      "tapai_rate": 0.2117,
+      "pass_tapai": true,
+      "taan_rate": 0.0,
+      "pass_taan": true
+    },
+    "en_ne_informal": {
+      "n": 139,
+      "chrf_mean": 0.4081,
+      "min_chrf": 0.5,
+      "pass_chrf": false,
+      "timi_rate": 0.0,
+      "pass_timi": false,
+      "taan_rate": 0.0,
+      "pass_taan": true
+    },
+    "ne_en_deva": {
+      "n": 133,
+      "chrf_mean": 0.7153,
+      "min_chrf": 0.55,
+      "pass_chrf": true
+    },
+    "ne_en_roman": {
+      "n": 134,
+      "chrf_mean": 0.3548,
+      "min_chrf": 0.4,
+      "pass_chrf": false
+    }
+  }
+}

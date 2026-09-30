@@ -526,6 +526,15 @@ export const en = {
   'creditsAward.rewardName': "Yesterday's Today's 10",
   'creditsAward.continue': 'Continue Translating',
   'creditsAward.view': 'View My Credits',
+  'dailyOpen.title': 'One coin for today',
+  'dailyOpen.body': 'You received 1 coin. That is 10 minutes, so the timer reads 10:00.',
+  'dailyOpen.noReview':
+    "You opened Today's 10 and did not submit a review, so that set earned no coins.",
+  'dailyOpen.continue': 'Continue',
+  'dailyOpen.adTitle': 'Go ad-free',
+  'dailyOpen.adBody': 'A monthly pass removes ads. This is a placeholder.',
+  'dailyOpen.adClose': 'Not now',
+  'review.extra10': 'Extra 10',
 } as const;
 
 export type MessageKey = keyof typeof en;

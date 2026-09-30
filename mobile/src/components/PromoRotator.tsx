@@ -5,6 +5,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { t, useUiLang } from '../i18n';
 
 const ROTATE_MS = 60_000;
+/** One height for Earn credits, the Google banner, and Go ad-free. */
+const SLOT_HEIGHT = 52;
 
 type SlideId = 'earn' | 'ad' | 'adfree';
 
@@ -12,60 +14,74 @@ type Props = {
   onAdFree: () => void;
   onEarn: () => void;
   /**
-   * Network banner (or the testing-ground stand-in) shown in this same top slot.
-   * Earn credits stays in the rotation when this is present, including once a
-   * live ad fills the slot.
+   * Google banner (or the testing-ground stand-in) for this same top slot.
+   * Earn credits is the house creative: it has its own turn, and it also
+   * fills the Google turn when no banner is loaded.
    */
   ad?: ReactNode;
+  /** False while the Google banner has nothing to show. */
+  adFilled?: boolean;
 };
 
-/** Top homepage strip. Earn credits, the banner ad, and go ad-free share one slot. */
-export function PromoRotator({ onAdFree, onEarn, ad }: Props) {
+/** Top homepage strip. Earn credits, the Google banner, and go ad-free share one slot. */
+export function PromoRotator({ onAdFree, onEarn, ad, adFilled = false }: Props) {
   const lang = useUiLang();
   const [tick, setTick] = useState(0);
   const slides: SlideId[] = ad ? ['earn', 'ad', 'adfree'] : ['earn', 'adfree'];
   const active = slides[tick % slides.length] ?? 'earn';
+  const showNetwork = active === 'ad' && adFilled;
 
   useEffect(() => {
     const timer = setInterval(() => setTick((current) => current + 1), ROTATE_MS);
     return () => clearInterval(timer);
   }, []);
 
+  const house = (earn: boolean, covered = false) => {
+    const title = earn ? t('earnBanner.title', lang) : t('promo.adFreeTitle', lang);
+    const body = earn ? t('earnBanner.body', lang) : t('promo.adFreeBody', lang);
+    const action = earn ? t('earnBanner.seeHow', lang) : t('promo.seeOptions', lang);
+    return (
+      <Pressable
+        onPress={earn ? onEarn : onAdFree}
+        accessibilityRole="button"
+        accessibilityLabel={
+          earn ? t('earnBanner.seeHowA11y', lang) : t('promo.seeOptionsA11y', lang)
+        }
+        style={covered ? [styles.wrap, styles.covered] : styles.wrap}
+        testID="promo-rotator"
+      >
+        <FontAwesome5 name="coins" size={16} color="#F0C14A" />
+        <View style={styles.copy}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.body} numberOfLines={1}>
+            {body}
+          </Text>
+        </View>
+        <View style={styles.seeHow} testID={earn ? 'promo-earn' : 'promo-ad-free'}>
+          <Text style={styles.seeHowText}>{action} →</Text>
+        </View>
+      </Pressable>
+    );
+  };
+
   if (active === 'ad') {
     return (
       <View style={styles.adWrap} testID="promo-ad-slide">
-        {ad}
+        {showNetwork ? (
+          ad
+        ) : (
+          <>
+            <View style={styles.preload} pointerEvents="none">
+              {ad}
+            </View>
+            {house(true, true)}
+          </>
+        )}
       </View>
     );
   }
 
-  const earn = active === 'earn';
-  const title = earn ? t('earnBanner.title', lang) : t('promo.adFreeTitle', lang);
-  const body = earn ? t('earnBanner.body', lang) : t('promo.adFreeBody', lang);
-  const action = earn ? t('earnBanner.seeHow', lang) : t('promo.seeOptions', lang);
-
-  return (
-    <Pressable
-      onPress={earn ? onEarn : onAdFree}
-      accessibilityRole="button"
-      accessibilityLabel={
-        earn ? t('earnBanner.seeHowA11y', lang) : t('promo.seeOptionsA11y', lang)
-      }
-      style={styles.wrap}
-      testID="promo-rotator"
-    >
-      <FontAwesome5 name="coins" size={16} color="#F0C14A" />
-      <View style={styles.copy}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.body} numberOfLines={1}>
-          {body}
-        </Text>
-      </View>
-      <View style={styles.seeHow} testID={earn ? 'promo-earn' : 'promo-ad-free'}>
-        <Text style={styles.seeHowText}>{action} →</Text>
-      </View>
-    </Pressable>
-  );
+  return house(active === 'earn');
 }
 
 const styles = StyleSheet.create({
@@ -75,7 +91,8 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     marginHorizontal: 8,
     marginBottom: 8,
-    paddingVertical: 6,
+    height: SLOT_HEIGHT,
+    paddingVertical: 0,
     paddingLeft: 10,
     paddingRight: 10,
     borderRadius: 12,
@@ -86,8 +103,23 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     marginHorizontal: 8,
     marginBottom: 8,
+    height: SLOT_HEIGHT,
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  covered: {
+    marginHorizontal: 0,
+    marginBottom: 0,
+    zIndex: 1,
+  },
+  preload: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 1,
+    height: 1,
+    overflow: 'hidden',
+    opacity: 0,
   },
   copy: { flex: 1, minWidth: 0 },
   title: {

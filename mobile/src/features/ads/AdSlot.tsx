@@ -49,6 +49,8 @@ type Props = {
    * share that slot. House copy stays on the default placement.
    */
   embed?: boolean;
+  /** Reports whether a Google banner is actually on screen. */
+  onFillChange?: (filled: boolean) => void;
   adapter?: AdAdapter;
   /** When false, skip planning (e.g. no completed translate yet). */
   eligible?: boolean;
@@ -76,6 +78,7 @@ export function AdSlot({
   onDismissHouse,
   onPreferNoAds,
   embed = false,
+  onFillChange,
   adapter: injected,
   eligible = true,
 }: Props) {
@@ -235,6 +238,12 @@ export function AdSlot({
     trustedNowMs,
     units,
   ]);
+
+  const bannerFilled = label === 'banner' && !dismissed;
+  useEffect(() => {
+    onFillChange?.(bannerFilled);
+  }, [bannerFilled, onFillChange]);
+  useEffect(() => () => onFillChange?.(false), [onFillChange]);
 
   if (!label || label.startsWith('none:') || dismissed) return null;
   if (embed && label !== 'banner') return null;

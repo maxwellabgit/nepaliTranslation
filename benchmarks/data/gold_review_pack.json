@@ -2549,7 +2549,7 @@
         "dataset_id": "premium_word_choice",
         "trust": "high",
         "tier": "premium_word_choice",
-        "note": "have allergy→लाई ... छ",
+        "note": "have allergy→लाई... छ",
         "seed_parents": [
           "in22_conv",
           "flores_plus_prompt",

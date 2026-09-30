@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -93,6 +92,7 @@ export function TranslateScreen({
   const session = useTranslationSession({ active, seed });
   const { state, uiPhase } = session;
   const [correctionOpen, setCorrectionOpen] = useState(false);
+  const [bannerFilled, setBannerFilled] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackDraft, setFeedbackDraft] = useState('');
   const [boxFocus, setBoxFocus] = useState<'source' | 'result'>('source');
@@ -118,8 +118,6 @@ export function TranslateScreen({
           alignItems: 'center',
           justifyContent: 'center',
         },
-        brandBlock: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
-        mark: { width: 40, height: 40, borderRadius: 10 },
         langRow: {
           flexDirection: 'row',
           alignItems: 'center',
@@ -365,9 +363,6 @@ export function TranslateScreen({
         >
           <Ionicons name="time-outline" size={22} color={theme.colors.text} />
         </Pressable>
-        <View style={styles.brandBlock}>
-          <Image source={require('../../assets/icon.png')} style={styles.mark} />
-        </View>
         <CreditsGauge compact onPress={onOpenReview} />
         <Pressable
           onPress={onOpenSettings}
@@ -383,6 +378,7 @@ export function TranslateScreen({
       <PromoRotator
         onAdFree={() => subscription?.openPaywall()}
         onEarn={() => onOpenReview?.()}
+        adFilled={bannerFilled}
         ad={
           <AdSlot
             surface="translate_idle"
@@ -390,6 +386,7 @@ export function TranslateScreen({
             eligible={active}
             appActive={active}
             modalVisible={correctionOpen}
+            onFillChange={setBannerFilled}
           />
         }
       />

@@ -19,6 +19,7 @@ import { useServices } from '../services/ServiceContext';
 import { useTheme } from '../theme';
 import { t, useUiLang } from '../i18n';
 import { useCreditAwardOptional } from './CreditAwardProvider';
+import { readDailyOpen } from '../features/contribution/dailyOpen';
 
 type Props = {
   onPress?: () => void;
@@ -46,6 +47,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   const award = useCreditAwardOptional();
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [foregroundMs, setForegroundMs] = useState(0);
+  const [dailyUntilMs, setDailyUntilMs] = useState<number | null>(null);
   useEffect(() => {
     const tick = () => setNowMs(Date.now());
     const timer = setInterval(tick, 1_000);
@@ -58,13 +60,28 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
     };
   }, []);
   useEffect(() => subscribeForegroundActiveMs(setForegroundMs), []);
+  useEffect(() => {
+    const pull = () => {
+      void readDailyOpen().then((record) => {
+        setDailyUntilMs(record && record.untilMs > Date.now() ? record.untilMs : null);
+      });
+    };
+    pull();
+    const timer = setInterval(pull, 5_000);
+    return () => clearInterval(timer);
+  }, []);
+  const earnedUntilMs = entitlement?.earnedAdFreeUntilMs ?? null;
+  const untilMs =
+    dailyUntilMs != null && (earnedUntilMs == null || dailyUntilMs > earnedUntilMs)
+      ? dailyUntilMs
+      : earnedUntilMs;
   const gauge = interstitialGauge({
     foregroundActiveMs: foregroundMs,
     suppressed: interstitialAdsSuppressed({
       automaticInterstitialEnabled: flags.automaticInterstitialEnabled,
       hasSubscription: Boolean(subscription?.hasSubscription()),
-      earnedAdFreeUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
-      trustedNowMs: entitlement?.trustedNow() ?? null,
+      earnedAdFreeUntilMs: untilMs,
+      trustedNowMs: dailyUntilMs != null ? nowMs : entitlement?.trustedNow() ?? null,
       offline: services.network.isOffline(),
       canRequestAds: consent.canRequestAds,
     }),
@@ -74,7 +91,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
       ? t('ads.interstitialUnavailable', lang)
       : formatInterstitialCountdown(gauge.remainingMs);
 
-  const liveRemaining = remainingMsUntil(entitlement?.earnedAdFreeUntilMs ?? null, nowMs);
+  const liveRemaining = remainingMsUntil(untilMs, nowMs);
   const remainingMs = previewRemainingMs ?? award.displayRemainingMs ?? liveRemaining;
   const face = gaugePresentation(remainingMs);
   const receiving =
@@ -188,7 +205,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           />
         </View>
         <Text style={styles.timer} testID="credits-gauge-timer">
-          {face.clock}
+          {gauge.state === 'countdown' ? interstitialLabel : face.clock}
         </Text>
       </View>
       </Animated.View>
