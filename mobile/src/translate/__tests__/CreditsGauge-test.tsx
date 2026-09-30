@@ -92,7 +92,7 @@ describe('CreditAwardOverlay', () => {
       );
     });
     expect(screen.getByTestId('credit-award-body').props.children).toContain('3');
-    expect(screen.getByText('Credits awarded')).toBeTruthy();
+    expect(screen.getByText('Credits Awarded!')).toBeTruthy();
     await act(async () => {
       fireEvent.press(screen.getByTestId('credit-award-collect'));
     });

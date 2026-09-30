@@ -592,6 +592,7 @@ export function TranslateScreen({
           credits={award.presentation.credits}
           minutes={award.presentation.minutes}
           capped={award.presentation.capped}
+          totalCredits={Math.floor(award.presentation.toRemainingMs / 600_000)}
           flying={award.phase !== 'message'}
           onCollect={award.collect}
         />

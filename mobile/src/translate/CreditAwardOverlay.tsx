@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {
+  Animated,
+  Easing,
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
   awardCoinCount,
@@ -8,12 +17,16 @@ import {
 } from '../features/contribution/reviewCredits';
 import { t, useUiLang } from '../i18n';
 
+const background = require('../../assets/credits/credits-awarded-bg.png');
+
 type Props = {
   credits: number;
   minutes: number;
   capped: boolean;
   flying: boolean;
   onCollect: () => void;
+  /** Remaining ad-free credits after this award. Hidden until the claim has a balance. */
+  totalCredits?: number;
 };
 
 /**
@@ -21,7 +34,14 @@ type Props = {
  * Burst size steps up every 10 credits and stops growing after 50.
  * The parent grows and shakes the timer while the coins are in flight.
  */
-export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect }: Props) {
+export function CreditAwardOverlay({
+  credits,
+  minutes,
+  capped,
+  flying,
+  onCollect,
+  totalCredits,
+}: Props) {
   const lang = useUiLang();
   const { height } = useWindowDimensions();
   const count = awardCoinCount(credits);
@@ -68,51 +88,82 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
         root: {
           ...StyleSheet.absoluteFill,
           zIndex: 30,
+          backgroundColor: '#1A1410',
         },
-        dim: {
-          ...StyleSheet.absoluteFill,
-          backgroundColor: 'rgba(28, 18, 8, 0.45)',
+        frame: {
+          flex: 1,
+          paddingHorizontal: 22,
+          paddingTop: 28,
+          paddingBottom: 18,
         },
-        cardWrap: {
-          ...StyleSheet.absoluteFill,
+        title: {
+          color: '#1B2A4A',
+          fontSize: 34,
+          lineHeight: 40,
+          fontWeight: '800',
+          textAlign: 'center',
+        },
+        body: {
+          marginTop: 10,
+          color: '#24344F',
+          fontSize: 17,
+          lineHeight: 24,
+          fontWeight: '600',
+          textAlign: 'center',
+        },
+        cap: {
+          marginTop: 8,
+          fontSize: 14,
+          lineHeight: 20,
+          textAlign: 'center',
+          color: '#8A3B2A',
+        },
+        spacer: { flex: 1, minHeight: 80 },
+        card: {
+          backgroundColor: 'rgba(255,248,240,0.94)',
+          borderRadius: 18,
+          borderWidth: 1.5,
+          borderColor: '#E4C98A',
+          paddingVertical: 6,
+          paddingHorizontal: 16,
+        },
+        row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
+        rowIcon: { width: 28 },
+        rowLabel: { flex: 1, color: '#3A3328', fontSize: 16, fontWeight: '600' },
+        rowValue: { color: '#1B2A4A', fontSize: 16, fontWeight: '800', marginLeft: 8 },
+        rule: { height: StyleSheet.hairlineWidth, backgroundColor: '#E6D7BE' },
+        button: {
+          marginTop: 16,
+          backgroundColor: '#9B2335',
+          borderRadius: 28,
+          minHeight: 52,
+          paddingHorizontal: 20,
+          flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: 8,
         },
-        card: {
-          width: '86%',
-          maxWidth: 360,
-          borderRadius: 22,
-          paddingHorizontal: 22,
-          paddingTop: 22,
-          paddingBottom: 18,
-          backgroundColor: '#FFF8E8',
-          borderWidth: 1,
-          borderColor: '#E2C27A',
-          alignItems: 'center',
-          gap: 10,
+        buttonText: { color: '#FFF8F0', fontWeight: '700', fontSize: 17 },
+        view: {
+          marginTop: 14,
+          textAlign: 'center',
+          color: '#FFF8F0',
+          fontSize: 16,
+          fontWeight: '700',
         },
-        title: { fontSize: 22, fontWeight: '800', color: '#6B4A12', textAlign: 'center' },
-        body: { fontSize: 16, lineHeight: 22, textAlign: 'center', color: '#3A3018' },
-        cap: { fontSize: 14, lineHeight: 20, textAlign: 'center', color: '#8A3B2A' },
-        button: {
-          marginTop: 6,
-          backgroundColor: '#C4922A',
-          borderRadius: 999,
-          paddingHorizontal: 18,
-          paddingVertical: 12,
-        },
-        buttonText: { color: '#FFF8E8', fontWeight: '800', fontSize: 16 },
         coin: { position: 'absolute', top: height * 0.46 },
       }),
     [height],
   );
 
+  const showTotal = typeof totalCredits === 'number' && totalCredits > 0;
+
   return (
     <View style={styles.root} testID="credit-award-overlay" accessibilityViewIsModal>
-      <Animated.View style={[styles.dim, { opacity: cardFade }]} />
+      <ImageBackground source={background} style={StyleSheet.absoluteFill} resizeMode="cover" />
       <Animated.View
         style={[
-          styles.cardWrap,
+          styles.frame,
           {
             opacity: cardFade,
             transform: [
@@ -122,27 +173,53 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
         ]}
         testID="credit-award-card"
       >
-        <View style={styles.card}>
-          <Text style={styles.title}>{t('review.awardTitle', lang)}</Text>
-          <Text style={styles.body} testID="credit-award-body">
-            {t('review.awardBody', lang, { credits, minutes })}
+        <Text style={styles.title}>{t('creditsAward.title', lang)}</Text>
+        <Text style={styles.body} testID="credit-award-body">
+          {t('creditsAward.body', lang, { count: credits })}
+        </Text>
+        {capped ? (
+          <Text style={styles.cap} testID="credit-award-capped">
+            {t('review.awardCapped', lang)}
           </Text>
-          {capped ? (
-            <Text style={styles.cap} testID="credit-award-capped">
-              {t('review.awardCapped', lang)}
-            </Text>
+        ) : null}
+        <View style={styles.spacer} />
+        <View style={styles.card}>
+          <View style={styles.row}>
+            <FontAwesome5 name="star" size={16} color="#E8A317" solid style={styles.rowIcon} />
+            <Text style={styles.rowLabel}>{t('creditsAward.added', lang)}</Text>
+            <Text style={styles.rowValue}>{credits}</Text>
+          </View>
+          {showTotal ? (
+            <>
+              <View style={styles.rule} />
+              <View style={styles.row}>
+                <FontAwesome5 name="coins" size={16} color="#C4A35A" solid style={styles.rowIcon} />
+                <Text style={styles.rowLabel}>{t('creditsAward.total', lang)}</Text>
+                <Text style={styles.rowValue}>{totalCredits}</Text>
+              </View>
+            </>
           ) : null}
-          <Pressable
-            style={styles.button}
-            testID="credit-award-collect"
-            accessibilityRole="button"
-            accessibilityLabel={t('review.awardA11y', lang, { credits, minutes })}
-            onPress={onCollect}
-            disabled={flying}
-          >
-            <Text style={styles.buttonText}>{t('review.awardCollect', lang)}</Text>
-          </Pressable>
+          <View style={styles.rule} />
+          <View style={styles.row}>
+            <FontAwesome5 name="gift" size={16} color="#C23B22" solid style={styles.rowIcon} />
+            <Text style={styles.rowLabel}>{t('creditsAward.reward', lang)}</Text>
+            <Text style={styles.rowValue}>{t('creditsAward.rewardName', lang)}</Text>
+          </View>
         </View>
+        <Pressable
+          style={styles.button}
+          testID="credit-award-collect"
+          accessibilityRole="button"
+          accessibilityLabel={t('review.awardA11y', lang, { credits, minutes })}
+          onPress={onCollect}
+          disabled={flying}
+        >
+          <Text style={styles.buttonText}>{t('creditsAward.continue', lang)}</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#FFF8F0" />
+        </Pressable>
+        <Pressable accessibilityRole="button" onPress={onCollect} disabled={flying}>
+          <Text style={styles.view}>{t('creditsAward.view', lang)}</Text>
+        </Pressable>
       </Animated.View>
       {coins.map((coin, index) => {
         const across = count <= 1 ? 0.5 : index / (count - 1);

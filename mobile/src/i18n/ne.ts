@@ -523,4 +523,12 @@ export const ne: Record<MessageKey, string> = {
   'review.errorWindowClosed': 'तपाईंको प्रस्तुतीकरण अघि विन्डो बन्द भयो।',
   'review.errorInvalid': 'पेस गर्नुअघि सुधारिएको लक्ष्य लेख्नुहोस्।',
   'review.errorUnavailable': 'केही गलत भयो। छिट्टै फेरि प्रयास गर्नुहोस्।',
+  'creditsAward.title': 'क्रेडिट पाइयो!',
+  'creditsAward.body': 'हिजोको आजका १० बाट तिमीले {count} क्रेडिट पायौ।',
+  'creditsAward.added': 'थपिएको क्रेडिट',
+  'creditsAward.total': 'जम्मा क्रेडिट',
+  'creditsAward.reward': 'पुरस्कार',
+  'creditsAward.rewardName': 'हिजोको आजका १०',
+  'creditsAward.continue': 'अनुवाद जारी राख',
+  'creditsAward.view': 'मेरा क्रेडिट हेर',
 };

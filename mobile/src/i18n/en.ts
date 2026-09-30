@@ -517,6 +517,15 @@ export const en = {
   'review.errorWindowClosed': 'The window closed before your submission.',
   'review.errorInvalid': 'Please enter a corrected target before submitting.',
   'review.errorUnavailable': 'Something went wrong. Try again shortly.',
+  'creditsAward.title': 'Credits Awarded!',
+  'creditsAward.body':
+    "You earned {count} credits from yesterday's Today's 10.",
+  'creditsAward.added': 'Credits Added',
+  'creditsAward.total': 'Total Credits',
+  'creditsAward.reward': 'Reward',
+  'creditsAward.rewardName': "Yesterday's Today's 10",
+  'creditsAward.continue': 'Continue Translating',
+  'creditsAward.view': 'View My Credits',
 } as const;
 
 export type MessageKey = keyof typeof en;
