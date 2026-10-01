@@ -27,6 +27,9 @@ type Props = {
   onCollect: () => void;
   /** Remaining ad-free credits after this award. Hidden until the claim has a balance. */
   totalCredits?: number;
+  title?: string;
+  body?: string;
+  rewardName?: string;
 };
 
 /**
@@ -41,6 +44,9 @@ export function CreditAwardOverlay({
   flying,
   onCollect,
   totalCredits,
+  title,
+  body,
+  rewardName,
 }: Props) {
   const lang = useUiLang();
   const { height } = useWindowDimensions();
@@ -173,9 +179,9 @@ export function CreditAwardOverlay({
         ]}
         testID="credit-award-card"
       >
-        <Text style={styles.title}>{t('creditsAward.title', lang)}</Text>
+        <Text style={styles.title}>{title ?? t('creditsAward.title', lang)}</Text>
         <Text style={styles.body} testID="credit-award-body">
-          {t('creditsAward.body', lang, { count: credits })}
+          {body ?? t('creditsAward.body', lang, { count: credits })}
         </Text>
         {capped ? (
           <Text style={styles.cap} testID="credit-award-capped">
@@ -203,7 +209,7 @@ export function CreditAwardOverlay({
           <View style={styles.row}>
             <FontAwesome5 name="gift" size={16} color="#C23B22" solid style={styles.rowIcon} />
             <Text style={styles.rowLabel}>{t('creditsAward.reward', lang)}</Text>
-            <Text style={styles.rowValue}>{t('creditsAward.rewardName', lang)}</Text>
+            <Text style={styles.rowValue}>{rewardName ?? t('creditsAward.rewardName', lang)}</Text>
           </View>
         </View>
         <Pressable

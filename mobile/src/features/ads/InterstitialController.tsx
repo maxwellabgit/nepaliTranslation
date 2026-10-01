@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Platform, type AppStateStatus } from 'react-native';
 
 import { useFeatureFlags } from '../../app/FeatureConfigProvider';
+import { laterActiveUntil, peekDailyOpen, readDailyOpen } from '../contribution/dailyOpen';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
 import { useSubscriptionOptional } from '../subscription/SubscriptionProvider';
 import { useServices } from '../../services/ServiceContext';
@@ -10,12 +11,12 @@ import {
   loadForegroundActiveMs,
   resetForegroundActiveMs,
 } from './foregroundAdTimer';
-import { INTERSTITIAL_MIN_FOREGROUND_MS } from '../entitlements/decideInterstitialPresentation';
 import {
   persistForegroundActiveMs,
   runInterstitialOpportunity,
   type InterstitialOpportunityRequest,
 } from './interstitialOpportunity';
+import { interstitialInterruptDue } from './interstitialGauge';
 import { SampleVideoAd } from './SampleVideoAd';
 
 type Listener = (req: InterstitialOpportunityRequest) => void;
@@ -45,6 +46,18 @@ function appIsOpen(): boolean {
   return state !== 'background' && state !== 'inactive';
 }
 
+/** Same ad-free clock the gauge shows, including the local daily grant. */
+function visibleAdFreeUntil(
+  earnedUntilMs: number | null,
+  trustedNowMs: number | null,
+): { untilMs: number | null; trustedNowMs: number | null } {
+  const now = Date.now();
+  const daily = peekDailyOpen();
+  const untilMs = laterActiveUntil(earnedUntilMs, daily?.untilMs, now);
+  const trusted = daily != null ? now : trustedNowMs;
+  return { untilMs, trustedNowMs: trusted };
+}
+
 /** Fire a presentation attempt from screens / shell (soft-fail if none listening). */
 export function requestInterstitialOpportunity(
   req: InterstitialOpportunityRequest,
@@ -66,6 +79,7 @@ export function InterstitialController() {
   const accumRef = useRef(createForegroundAccumulator(0));
   const readyRef = useRef(false);
   const presentingRef = useRef(false);
+  const retryAfterRef = useRef(0);
   const [videoOpen, setVideoOpen] = useState(false);
   const presentDueRef = useRef<(ms: number) => void>(() => undefined);
 
@@ -78,18 +92,27 @@ export function InterstitialController() {
   }, []);
 
   presentDueRef.current = (ms: number) => {
-    if (presentingRef.current || ms < INTERSTITIAL_MIN_FOREGROUND_MS) return;
-    if (!flags.automaticInterstitialEnabled) return;
-    if (services.network.isOffline()) return;
-    if (!services.ads.getConsentState().canRequestAds) return;
-    if (subscription?.hasSubscription()) return;
-    const until = entitlement?.earnedAdFreeUntilMs ?? null;
-    const trusted = entitlement?.trustedNow() ?? null;
-    if (until != null && trusted != null && until > trusted) return;
+    if (presentingRef.current || Date.now() < retryAfterRef.current) return;
+    const adFree = visibleAdFreeUntil(
+      entitlement?.earnedAdFreeUntilMs ?? null,
+      entitlement?.trustedNow() ?? null,
+    );
+    if (
+      !interstitialInterruptDue({
+        automaticInterstitialEnabled: flags.automaticInterstitialEnabled,
+        hasSubscription: Boolean(subscription?.hasSubscription()),
+        earnedAdFreeUntilMs: adFree.untilMs,
+        trustedNowMs: adFree.trustedNowMs,
+        offline: services.network.isOffline(),
+        canRequestAds: services.ads.getConsentState().canRequestAds,
+        foregroundActiveMs: ms,
+      })
+    ) {
+      return;
+    }
     presentingRef.current = true;
     if (Platform.OS === 'web') {
       setVideoOpen(true);
-      resetClock(Date.now());
       return;
     }
     void runInterstitialOpportunity({
@@ -97,8 +120,8 @@ export function InterstitialController() {
       offline: false,
       canRequestAds: true,
       appActive: true,
-      earnedAdFreeUntilMs: until,
-      trustedNowMs: trusted,
+      earnedAdFreeUntilMs: adFree.untilMs,
+      trustedNowMs: adFree.trustedNowMs,
       foregroundActiveMs: ms,
       adapter: services.ads.adapter,
       req: {
@@ -107,10 +130,16 @@ export function InterstitialController() {
         hasSubscription: Boolean(subscription?.hasSubscription()),
       },
     })
-      .then(() => {
-        resetClock(Date.now());
+      .then((result) => {
+        if (result && 'presented' in result && result.presented) {
+          resetClock(Date.now());
+          return;
+        }
+        retryAfterRef.current = Date.now() + 15_000;
       })
-      .catch(() => undefined)
+      .catch(() => {
+        retryAfterRef.current = Date.now() + 15_000;
+      })
       .finally(() => {
         presentingRef.current = false;
       });
@@ -126,7 +155,9 @@ export function InterstitialController() {
       if (appIsOpen()) {
         accumRef.current.onActive(Date.now());
       }
-      presentDueRef.current(ms);
+      void readDailyOpen().finally(() => {
+        if (!cancelled) presentDueRef.current(accumRef.current.flush(Date.now()));
+      });
     });
     return () => {
       cancelled = true;
@@ -178,13 +209,17 @@ export function InterstitialController() {
       if (presentingRef.current) return;
       presentingRef.current = true;
       const foregroundActiveMs = accumRef.current.flush(Date.now());
+      const adFree = visibleAdFreeUntil(
+        entitlement?.earnedAdFreeUntilMs ?? null,
+        entitlement?.trustedNow() ?? null,
+      );
       void runInterstitialOpportunity({
         automaticInterstitialEnabled: flags.automaticInterstitialEnabled,
         offline: services.network.isOffline(),
         canRequestAds: services.ads.getConsentState().canRequestAds,
         appActive: AppState.currentState === 'active',
-        earnedAdFreeUntilMs: entitlement?.earnedAdFreeUntilMs ?? null,
-        trustedNowMs: entitlement?.trustedNow() ?? null,
+        earnedAdFreeUntilMs: adFree.untilMs,
+        trustedNowMs: adFree.trustedNowMs,
         foregroundActiveMs,
         adapter: services.ads.adapter,
         req: {

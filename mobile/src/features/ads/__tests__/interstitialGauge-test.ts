@@ -3,6 +3,7 @@ import {
   formatInterstitialCountdown,
   interstitialAdsSuppressed,
   interstitialGauge,
+  interstitialInterruptDue,
 } from '../interstitialGauge';
 
 const open = {
@@ -38,6 +39,29 @@ describe('interstitial gauge', () => {
     });
     expect(reset.state).toBe('countdown');
     expect(formatInterstitialCountdown(reset.remainingMs)).toBe('10:00');
+  });
+
+  it('interrupts only when the countdown is at zero and ads are allowed', () => {
+    expect(
+      interstitialInterruptDue({
+        ...open,
+        foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS - 1,
+      }),
+    ).toBe(false);
+    expect(
+      interstitialInterruptDue({
+        ...open,
+        foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
+      }),
+    ).toBe(true);
+    expect(
+      interstitialInterruptDue({
+        ...open,
+        foregroundActiveMs: INTERSTITIAL_MIN_FOREGROUND_MS,
+        earnedAdFreeUntilMs: 5_000,
+        trustedNowMs: 1_000,
+      }),
+    ).toBe(false);
   });
 
   it('stays unavailable while ads are suppressed', () => {

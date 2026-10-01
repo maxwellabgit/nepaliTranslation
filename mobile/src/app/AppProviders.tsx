@@ -66,11 +66,11 @@ export function AppProviders({
                   <SubscriptionProvider>
                   <LegacyOutboxMigration />
                   <LifecycleCoordinator />
-                  <InterstitialController />
                   <AuthStatusBanner />
                   <StartupConsentGate initialAcknowledged={bypassStartupConsent}>
                     {children}
                   </StartupConsentGate>
+                  <InterstitialController />
                   </SubscriptionProvider>
                 </FeatureConfigProvider>
                 </CreditAwardProvider>

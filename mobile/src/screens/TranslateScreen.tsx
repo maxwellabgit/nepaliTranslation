@@ -590,6 +590,9 @@ export function TranslateScreen({
           minutes={award.presentation.minutes}
           capped={award.presentation.capped}
           totalCredits={Math.floor(award.presentation.toRemainingMs / 600_000)}
+          title={award.presentation.title}
+          body={award.presentation.body}
+          rewardName={award.presentation.rewardName}
           flying={award.phase !== 'message'}
           onCollect={award.collect}
         />

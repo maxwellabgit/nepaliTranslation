@@ -33,6 +33,17 @@ export function interstitialAdsSuppressed(
   return false;
 }
 
+/** True when the visible countdown has hit zero and the video should interrupt. */
+export function interstitialInterruptDue(
+  input: InterstitialSuppressionInput & { foregroundActiveMs: number },
+): boolean {
+  if (interstitialAdsSuppressed(input)) return false;
+  const elapsed = Number.isFinite(input.foregroundActiveMs)
+    ? Math.max(0, input.foregroundActiveMs)
+    : 0;
+  return elapsed >= INTERSTITIAL_MIN_FOREGROUND_MS;
+}
+
 export function interstitialGauge(input: {
   foregroundActiveMs: number;
   suppressed: boolean;

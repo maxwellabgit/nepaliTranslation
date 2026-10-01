@@ -158,7 +158,7 @@ export function beginExtra(
   return { ...state, extra: category };
 }
 
-/** Review popup coins: none when they only looked. The daily open coin is separate. */
+/** Review popup coins: none when they only looked. The daily open award is separate. */
 export function reviewPopupCoins(state: ReviewDayState): number {
   if (state.seen && state.reviewed.length === 0) return 0;
   return state.reviewed.length > 0 ? 1 : 0;

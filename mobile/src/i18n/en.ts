@@ -89,6 +89,7 @@ export const en = {
   'camera.allow': 'Allow camera',
   'camera.capture': 'Capture',
   'camera.captureA11y': 'Capture photo',
+  'camera.focusA11y': 'Tap to focus',
   'camera.reading': 'Reading…',
   'camera.translating': 'Translating…',
   'camera.retake': 'Retake',
@@ -526,8 +527,13 @@ export const en = {
   'creditsAward.rewardName': "Yesterday's Today's 10",
   'creditsAward.continue': 'Continue Translating',
   'creditsAward.view': 'View My Credits',
-  'dailyOpen.title': 'One coin for today',
-  'dailyOpen.body': 'You received 1 coin. That is 10 minutes, so the timer reads 10:00.',
+  'dailyOpen.title': 'Credits for today',
+  'dailyOpen.body':
+    'You received {count} credits for today. That is {minutes} minutes.',
+  'openAward.welcomeBody':
+    'You received {count} credits to start. That is {minutes} minutes.',
+  'openAward.welcomeReward': 'Welcome',
+  'openAward.dailyReward': 'Today',
   'dailyOpen.noReview':
     "You opened Today's 10 and did not submit a review, so that set earned no coins.",
   'dailyOpen.continue': 'Continue',

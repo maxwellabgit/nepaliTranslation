@@ -74,9 +74,10 @@ The review pool CSV has 378 meanings and 1,512 rows (four forms of each meaning)
 
 - A user who never sees the first sample of any category stays on that day's set. Unseen samples are not thrown out.
 - Seeing one sample, even with no review submitted, rotates that user to the next day. The daily popup says that set earned no review coins.
-- A user who never opens Today's 10 still gets the first-open popup.
-- Every user receives **1 coin** on the first open of a New York day, including the first open ever. One coin is 10 minutes, so an empty timer reads **10:00**.
-- After that coin popup, a second popup uses the three category pictures and advertises the ad-free pass. The offer is a placeholder.
+- A user who never opens Today's 10 still gets the first-open welcome and the daily credit award.
+- The first time the app opens, the award is **10 credits** (100 minutes). Each later New York day, the first open awards **5 credits** (50 minutes). Time still left is kept, up to 12 hours.
+- First-open welcome cards are the list in `mobile/src/features/contribution/openWelcome.ts`. Append a card to extend the welcome.
+- After the welcome on a first open, and on later days with nothing ahead of it, a popup uses the three category pictures and advertises the ad-free pass. The offer is a placeholder. The credit award animation starts when that last popup closes.
 - Finishing a category's 10 puts one gold coin at the bottom right of that card and unlocks **Extra 10** for that category only. Extra 10 is the next day's 10 for that category.
 - Finishing the Extra 10 puts a second gold coin on that card. Those samples are spent, so the next day does not show them again.
 - Skipping Extra 10 and waiting for the next day puts the user back on the same set as everyone else.

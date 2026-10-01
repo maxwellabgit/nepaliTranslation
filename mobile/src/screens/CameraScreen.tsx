@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type GestureResponderEvent,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Clipboard from 'expo-clipboard';
@@ -8,6 +16,7 @@ import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import { BackArrow } from '../components/BackArrow';
 import { buildCorrelation } from '../camera/correlate';
+import { focusPointFromTap } from '../camera/focusPoint';
 import { deleteCapture } from '../camera/deleteCapture';
 import { containedPhotoSize, highlightPercents } from '../camera/highlightLayout';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
@@ -89,6 +98,9 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const [imageSize, setImageSize] = useState({ width: 800, height: 1200 });
   const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
+  const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
+  const [focusRing, setFocusRing] = useState<{ x: number; y: number } | null>(null);
+  const focusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const phase = phaseState.phase;
 
@@ -136,6 +148,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
         },
         // Shutter plate is always light; keep dark ink for contrast in both schemes.
         shutterText: { fontWeight: '800', color: '#1A1410' },
+        focusRing: {
+          position: 'absolute',
+          width: 56,
+          height: 56,
+          borderRadius: 4,
+          borderWidth: 1.5,
+          borderColor: '#F7F1EA',
+        },
         retakeBtn: {
           minHeight: MIN_TOUCH,
           justifyContent: 'center',
@@ -281,6 +301,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       bumpGeneration();
       deleteCapture(captureUriRef.current, 'exit');
       captureUriRef.current = null;
+      if (focusTimer.current) clearTimeout(focusTimer.current);
     };
   }, []);
 
@@ -544,6 +565,19 @@ export function CameraScreen({ active, onGoHome }: Props) {
         ? t('camera.translating', lang)
         : t('camera.capture', lang);
 
+  const onFocusTap = (event: GestureResponderEvent) => {
+    const { locationX, locationY } = event.nativeEvent;
+    const point = focusPointFromTap(locationX, locationY, previewSize.width, previewSize.height);
+    if (!point) return;
+    setFocusRing({ x: locationX, y: locationY });
+    if (focusTimer.current) clearTimeout(focusTimer.current);
+    focusTimer.current = setTimeout(() => setFocusRing(null), 800);
+    const camera = cameraRef.current;
+    if (camera && typeof camera.focusAt === 'function') {
+      void camera.focusAt(point).catch(() => undefined);
+    }
+  };
+
   return (
     <View style={styles.root} testID="camera-screen">
       <View style={[styles.header, showResult && styles.headerNight]}>
@@ -592,8 +626,29 @@ export function CameraScreen({ active, onGoHome }: Props) {
       phase !== 'empty' &&
       phase !== 'lowConfidence' &&
       phase !== 'error' ? (
-        <View style={styles.previewWrap} testID="camera-live">
+        <View
+          style={styles.previewWrap}
+          testID="camera-live"
+          onLayout={(event) => {
+            const { width, height } = event.nativeEvent.layout;
+            setPreviewSize({ width, height });
+          }}
+        >
           <CameraView ref={cameraRef} style={styles.preview} facing="back" active={active} />
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            testID="camera-focus"
+            accessibilityRole="button"
+            accessibilityLabel={t('camera.focusA11y', lang)}
+            onPress={onFocusTap}
+          />
+          {focusRing ? (
+            <View
+              pointerEvents="none"
+              testID="camera-focus-ring"
+              style={[styles.focusRing, { left: focusRing.x - 28, top: focusRing.y - 28 }]}
+            />
+          ) : null}
           <Pressable
             style={styles.shutter}
             testID="camera-shutter"

@@ -27,21 +27,27 @@ export function SampleVideoAd({ visible, onFinished }: Props) {
   const canSkip = elapsed >= SKIP_AFTER_SECONDS;
   const skipLabel = canSkip ? 'Skip' : `Skip in ${SKIP_AFTER_SECONDS - elapsed}`;
 
+  const card = (
+    <View style={styles.scrim} testID="sample-video-ad">
+      <Text style={styles.badge}>TEST AD</Text>
+      <Text style={styles.title}>Sample video</Text>
+      <Text style={styles.body}>This interrupts the screen. Testing ground only.</Text>
+      <Pressable
+        style={[styles.skip, !canSkip && styles.skipLocked]}
+        disabled={!canSkip}
+        onPress={onFinished}
+        testID="sample-video-skip"
+      >
+        <Text style={styles.skipText}>{skipLabel}</Text>
+      </Pressable>
+    </View>
+  );
+
+  if (!visible) return null;
+
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={() => undefined}>
-      <View style={styles.scrim} testID="sample-video-ad">
-        <Text style={styles.badge}>TEST AD</Text>
-        <Text style={styles.title}>Sample video</Text>
-        <Text style={styles.body}>This interrupts the screen. Testing ground only.</Text>
-        <Pressable
-          style={[styles.skip, !canSkip && styles.skipLocked]}
-          disabled={!canSkip}
-          onPress={onFinished}
-          testID="sample-video-skip"
-        >
-          <Text style={styles.skipText}>{skipLabel}</Text>
-        </Pressable>
-      </View>
+    <Modal visible transparent animationType="fade" onRequestClose={() => undefined}>
+      {card}
     </Modal>
   );
 }

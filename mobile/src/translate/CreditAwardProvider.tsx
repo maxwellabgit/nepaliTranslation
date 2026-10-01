@@ -15,6 +15,11 @@ import {
   remainingMsUntil,
   stackAdFreeMinutes,
 } from '../features/contribution/reviewCredits';
+import {
+  extendDailyUntil,
+  laterActiveUntil,
+  readDailyOpen,
+} from '../features/contribution/dailyOpen';
 import { useEntitlement } from '../features/entitlements/EntitlementProvider';
 import { getSupabase } from '../services/supabase';
 
@@ -24,6 +29,10 @@ export type CreditAwardPresentation = {
   capped: boolean;
   fromRemainingMs: number;
   toRemainingMs: number;
+  /** Set for the first-open and daily awards. Review claims use the default copy. */
+  title?: string;
+  body?: string;
+  rewardName?: string;
 };
 
 type CreditClaimRow = {
@@ -35,12 +44,21 @@ type CreditClaimRow = {
 
 type Phase = 'idle' | 'message' | 'flying' | 'pump';
 
+type QueuedAward =
+  | { type: 'claim'; row: CreditClaimRow }
+  | { type: 'ready'; presentation: CreditAwardPresentation };
+
 type CreditAwardValue = {
   phase: Phase;
   presentation: CreditAwardPresentation | null;
   /** While an award is on screen, the gauge shows this clock instead of the live one. */
   displayRemainingMs: number | null;
   collect: () => void;
+  /** Hold review claims until the post-signup popups close. */
+  holdAwards: () => void;
+  releaseAwards: () => void;
+  /** Show this award immediately. A review claim already on screen waits behind it. */
+  startAward: (presentation: CreditAwardPresentation) => void;
 };
 
 const IDLE: CreditAwardValue = {
@@ -48,6 +66,9 @@ const IDLE: CreditAwardValue = {
   presentation: null,
   displayRemainingMs: null,
   collect: () => undefined,
+  holdAwards: () => undefined,
+  releaseAwards: () => undefined,
+  startAward: () => undefined,
 };
 
 const CreditAwardContext = createContext<CreditAwardValue | null>(null);
@@ -113,6 +134,9 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
   const presentationRef = useRef(presentation);
   presentationRef.current = presentation;
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const held = useRef(false);
+  const phaseRef = useRef<Phase>('idle');
+  const queue = useRef<QueuedAward[]>([]);
   const pumped = usePump(
     presentation?.fromRemainingMs ?? 0,
     presentation?.toRemainingMs ?? 0,
@@ -120,31 +144,77 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
     pumpMs,
   );
 
+  const showReady = useCallback((next: CreditAwardPresentation) => {
+    phaseRef.current = 'message';
+    setPresentation(next);
+    setPhase('message');
+  }, []);
+
+  const drainRef = useRef<() => void>(() => undefined);
+
+  const showClaim = useCallback(async (row: CreditClaimRow) => {
+    const credits = Number(row.credits ?? 0);
+    const minutesApplied = Number(row.minutes_applied ?? 0);
+    if (!Number.isFinite(credits) || credits <= 0) {
+      drainRef.current();
+      return;
+    }
+    phaseRef.current = 'message';
+    try {
+      const nowMs = Date.now();
+      const daily = await readDailyOpen();
+      const beforeUntil = laterActiveUntil(untilRef.current, daily?.untilMs, nowMs);
+      const next = presentCreditClaim({
+        nowMs,
+        earnedUntilMs: beforeUntil,
+        credits,
+        minutesApplied: Number.isFinite(minutesApplied)
+          ? minutesApplied
+          : minutesForCredits(credits),
+        capped: Boolean(row.capped),
+      });
+      await extendDailyUntil(nowMs + next.toRemainingMs);
+      setPresentation(next);
+      setPhase('message');
+      await refreshRef.current();
+    } catch {
+      phaseRef.current = 'idle';
+      setPhase('idle');
+      setPresentation(null);
+    }
+  }, []);
+
+  const drain = useCallback(() => {
+    if (held.current || phaseRef.current !== 'idle') return;
+    const next = queue.current.shift();
+    if (!next) return;
+    if (next.type === 'ready') {
+      showReady(next.presentation);
+      return;
+    }
+    void showClaim(next.row);
+  }, [showClaim, showReady]);
+  drainRef.current = drain;
+
+  useEffect(() => {
+    phaseRef.current = phase;
+    if (phase === 'idle') drain();
+  }, [drain, phase]);
+
   useEffect(() => {
     if (status !== 'signed-in' || !userId || !entitlement.ready) return;
     let cancel = false;
-    const nowMs = Date.now();
-    const beforeUntil = untilRef.current;
     void (async () => {
       try {
         const row = await claimPendingRewards();
-        if (cancel) return;
-        const credits = Number(row?.credits ?? 0);
-        const minutesApplied = Number(row?.minutes_applied ?? 0);
+        if (cancel || !row) return;
+        const credits = Number(row.credits ?? 0);
         if (!Number.isFinite(credits) || credits <= 0) return;
-        setPresentation(
-          presentCreditClaim({
-            nowMs,
-            earnedUntilMs: beforeUntil,
-            credits,
-            minutesApplied: Number.isFinite(minutesApplied)
-              ? minutesApplied
-              : minutesForCredits(credits),
-            capped: Boolean(row?.capped),
-          }),
-        );
-        setPhase('message');
-        await refreshRef.current();
+        if (held.current || phaseRef.current !== 'idle') {
+          queue.current.push({ type: 'claim', row });
+          return;
+        }
+        await showClaim(row);
       } catch {
         // An older server without the claim function leaves the timer unchanged.
       }
@@ -152,7 +222,27 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
     return () => {
       cancel = true;
     };
-  }, [status, userId, entitlement.ready]);
+  }, [showClaim, status, userId, entitlement.ready]);
+
+  const holdAwards = useCallback(() => {
+    held.current = true;
+  }, []);
+
+  const releaseAwards = useCallback(() => {
+    held.current = false;
+    drain();
+  }, [drain]);
+
+  const startAward = useCallback(
+    (next: CreditAwardPresentation) => {
+      if (phaseRef.current !== 'idle') {
+        queue.current.unshift({ type: 'ready', presentation: next });
+        return;
+      }
+      showReady(next);
+    },
+    [showReady],
+  );
 
   useEffect(
     () => () => {
@@ -190,8 +280,11 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
       presentation,
       displayRemainingMs,
       collect,
+      holdAwards,
+      releaseAwards,
+      startAward,
     }),
-    [phase, presentation, displayRemainingMs, collect],
+    [phase, presentation, displayRemainingMs, collect, holdAwards, releaseAwards, startAward],
   );
 
   return <CreditAwardContext.Provider value={value}>{children}</CreditAwardContext.Provider>;

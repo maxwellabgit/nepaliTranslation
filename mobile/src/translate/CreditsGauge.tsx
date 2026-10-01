@@ -19,7 +19,7 @@ import { useServices } from '../services/ServiceContext';
 import { useTheme } from '../theme';
 import { t, useUiLang } from '../i18n';
 import { useCreditAwardOptional } from './CreditAwardProvider';
-import { readDailyOpen } from '../features/contribution/dailyOpen';
+import { peekDailyOpen, readDailyOpen, subscribeDailyOpen } from '../features/contribution/dailyOpen';
 
 type Props = {
   onPress?: () => void;
@@ -61,14 +61,19 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   }, []);
   useEffect(() => subscribeForegroundActiveMs(setForegroundMs), []);
   useEffect(() => {
+    const apply = (record: { untilMs: number } | null) => {
+      setDailyUntilMs(record && record.untilMs > Date.now() ? record.untilMs : null);
+    };
     const pull = () => {
-      void readDailyOpen().then((record) => {
-        setDailyUntilMs(record && record.untilMs > Date.now() ? record.untilMs : null);
-      });
+      void readDailyOpen().then(apply);
     };
     pull();
     const timer = setInterval(pull, 5_000);
-    return () => clearInterval(timer);
+    const stop = subscribeDailyOpen(() => apply(peekDailyOpen()));
+    return () => {
+      clearInterval(timer);
+      stop();
+    };
   }, []);
   const earnedUntilMs = entitlement?.earnedAdFreeUntilMs ?? null;
   const untilMs =
