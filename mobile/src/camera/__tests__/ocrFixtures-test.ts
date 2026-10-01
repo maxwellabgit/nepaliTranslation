@@ -56,7 +56,7 @@ describe('camera OCR fixtures', () => {
         line('asdf', { x: 0, y: 0, width: 790, height: 1180 }, null),
       ]),
     );
-    expect(texture).toEqual({ ok: false, reason: 'low-confidence' });
+    expect(texture).toEqual({ ok: false, reason: 'empty' });
 
     const blur = segmentOcr(
       doc([line('shop', { x: 40, y: 40, width: 120, height: 28 }, 0.1)]),
@@ -68,7 +68,7 @@ describe('camera OCR fixtures', () => {
     const stop = segmentOcr(
       doc([line('A', { x: 40, y: 40, width: 36, height: 28 }, null)]),
     );
-    expect(stop.ok).toBe(true);
+    expect(stop).toEqual({ ok: false, reason: 'empty' });
 
     const english = segmentOcr(
       doc([line('OPEN', { x: 40, y: 80, width: 160, height: 40 }, null)]),

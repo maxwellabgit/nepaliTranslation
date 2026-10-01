@@ -1,7 +1,7 @@
 import { captureShouldBeDeleted } from '../cleanup';
 import { buildCorrelation } from '../correlate';
 import { dedupeOcrDocument, frameIoU, normalizeOcrText } from '../dedupeOcr';
-import { colorForSentence } from '../sentenceColors';
+import { colorForIndex } from '../sentenceColors';
 import {
   mapFrameToView,
   mapSentenceFramesToView,
@@ -9,7 +9,7 @@ import {
   rotatePoint,
 } from '../overlayGeometry';
 import { sortReadingOrder } from '../readingOrder';
-import { assignLinesToSentences, segmentOcr } from '../segmentSentences';
+import { segmentOcr } from '../segmentSentences';
 import {
   INSCRIPTION_FIXTURE,
   INSCRIPTION_TRANSLATIONS,
@@ -122,10 +122,6 @@ describe('camera sentence correlation', () => {
     expect(segmented.sentences[0]?.frames).not.toEqual(
       expect.arrayContaining([lineB.frame]),
     );
-
-    const assigned = assignLinesToSentences(['Hello.', 'How are you?'], [lineA, lineB]);
-    expect(assigned[0]).toEqual([lineA]);
-    expect(assigned[1]).toEqual([lineB]);
   });
 
   it('letterboxes frames, rotates points, and maps oriented sentence unions', () => {
@@ -161,9 +157,12 @@ describe('camera sentence correlation', () => {
     expect(oriented!.height).toBeGreaterThan(0);
   });
 
-  it('uses one color for a sentence id', () => {
-    expect(colorForSentence('s1')).toBe(colorForSentence('s1'));
-    expect(colorForSentence('s1')).not.toBe(colorForSentence('s2'));
+  it('cycles crimson, saffron, and blue in order', () => {
+    expect(colorForIndex(0)).toBe('#C8102E');
+    expect(colorForIndex(1)).toBe('#E8A317');
+    expect(colorForIndex(2)).toBe('#1A73E8');
+    expect(colorForIndex(3)).toBe(colorForIndex(0));
+    expect(colorForIndex(0)).not.toBe(colorForIndex(1));
   });
 
   it('rejects empty and low-confidence captures but skips unknown confidence', () => {
@@ -177,16 +176,16 @@ describe('camera sentence correlation', () => {
         height: 10,
         blocks: [
           {
-            text: 'x',
+            text: 'nope',
             language: 'en',
             confidence: 0.1,
             frame: { x: 0, y: 0, width: 1, height: 1 },
             cornerPoints: [],
             lines: [
               {
-                text: 'x',
+                text: 'nope',
                 confidence: 0.1,
-                frame: { x: 0, y: 0, width: 1, height: 1 },
+                frame: { x: 0, y: 0, width: 8, height: 4 },
                 cornerPoints: [],
               },
             ],
@@ -239,7 +238,36 @@ describe('camera sentence correlation', () => {
         },
       ],
     });
-    expect(noBox).toEqual({ ok: false, reason: 'low-confidence' });
+    expect(noBox).toEqual({ ok: false, reason: 'empty' });
+  });
+
+  it('ignores a distant sign and keeps foreground text', () => {
+    const photo = (height: number, text: string) =>
+      segmentOcr({
+        width: 3000,
+        height: 4000,
+        blocks: [
+          {
+            text,
+            language: 'en',
+            confidence: null,
+            frame: { x: 80, y: 80, width: 500, height },
+            cornerPoints: [],
+            lines: [
+              {
+                text,
+                confidence: null,
+                frame: { x: 80, y: 80, width: 500, height },
+                cornerPoints: [],
+              },
+            ],
+          },
+        ],
+      });
+    expect(photo(40, 'PARK')).toEqual({ ok: false, reason: 'empty' });
+    const close = photo(120, 'PARK');
+    expect(close.ok).toBe(true);
+    if (close.ok) expect(close.sentences[0]?.text).toBe('PARK');
   });
 
   it('deletes captures on retake, exit, and success only', () => {
