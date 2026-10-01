@@ -127,7 +127,7 @@ One capture recognizes English, Devanagari, and Romanized Nepali. Switching “T
 | Highlights | English crimson, Devanagari saffron, Romanized blue, stable across targets. The drawing is not highlighted |
 | Omission | Tesseract did not return `dhognu`. Romanized spelling lost macrons and a few words |
 
-Screenshots from that run stayed in `testing-ground/output/mixed-capture/` and are not in git.
+Screenshots from that run are `testing-ground/output/mixed-capture/expanded-en.png`, `target-deva.png`, and `target-roman.png`.
 
 ## Independent review
 
