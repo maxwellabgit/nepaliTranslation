@@ -21,8 +21,7 @@ import { useRuntime } from '../runtime/RuntimeContext';
 import { updateHistoryTranslation, type HistoryItem } from '../storage/phrasebook';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { CreditsGauge } from '../translate/CreditsGauge';
-import { CreditAwardOverlay } from '../translate/CreditAwardOverlay';
-import { useCreditAwardOptional } from '../translate/CreditAwardProvider';
+import { setAwardSurfaceBusy } from '../translate/awardSurface';
 import { PromoRotator } from '../components/PromoRotator';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { TranslateComposer } from '../translate/TranslateComposer';
@@ -86,7 +85,6 @@ export function TranslateScreen({
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
-  const award = useCreditAwardOptional();
   const runtime = useRuntime();
   const subscription = useSubscriptionOptional();
   const session = useTranslationSession({ active, seed });
@@ -101,6 +99,17 @@ export function TranslateScreen({
   const latest = state.turns[state.turns.length - 1];
   const showFailure = mtWarmStatus === MT_WARM_FAILED;
   const status = statusCopy(uiPhase.phase, uiPhase.reasonCode, lang);
+  const translateBusy =
+    uiPhase.phase === 'listening' ||
+    uiPhase.phase === 'finalizingTranscript' ||
+    uiPhase.phase === 'translating' ||
+    uiPhase.phase === 'requestingPermission' ||
+    state.listening ||
+    state.translating;
+  useEffect(() => {
+    setAwardSurfaceBusy('translate', translateBusy);
+    return () => setAwardSurfaceBusy('translate', false);
+  }, [translateBusy]);
 
   const styles = useMemo(
     () =>
@@ -375,21 +384,23 @@ export function TranslateScreen({
         </Pressable>
       </View>
 
-      <PromoRotator
-        onAdFree={() => subscription?.openPaywall()}
-        onEarn={() => onOpenReview?.()}
-        adFilled={bannerFilled}
-        ad={
-          <AdSlot
-            surface="translate_idle"
-            embed
-            eligible={active}
-            appActive={active}
-            modalVisible={correctionOpen}
-            onFillChange={setBannerFilled}
-          />
-        }
-      />
+      {resultText ? null : (
+        <PromoRotator
+          onAdFree={() => subscription?.openPaywall()}
+          onEarn={() => onOpenReview?.()}
+          adFilled={bannerFilled}
+          ad={
+            <AdSlot
+              surface="translate_idle"
+              embed
+              eligible={active}
+              appActive={active}
+              modalVisible={correctionOpen}
+              onFillChange={setBannerFilled}
+            />
+          }
+        />
+      )}
 
       <View style={styles.langRow}>
         <Pressable
@@ -587,19 +598,6 @@ export function TranslateScreen({
         onClose={() => setCorrectionOpen(false)}
         onNeedAuth={onOpenSettings}
       />
-      {award.presentation && award.phase !== 'idle' ? (
-        <CreditAwardOverlay
-          credits={award.presentation.credits}
-          minutes={award.presentation.minutes}
-          capped={award.presentation.capped}
-          totalCredits={Math.floor(award.presentation.toRemainingMs / 600_000)}
-          title={award.presentation.title}
-          body={award.presentation.body}
-          rewardName={award.presentation.rewardName}
-          flying={award.phase !== 'message'}
-          onCollect={award.collect}
-        />
-      ) : null}
     </KeyboardAvoidingView>
   );
 }

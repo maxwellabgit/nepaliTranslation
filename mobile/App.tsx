@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AppProviders } from './src/app/AppProviders';
 import { AppShell } from './src/app/AppShell';
 import { DailyOpenPopups } from './src/features/contribution/DailyOpenPopups';
+import { CreditAwardHost } from './src/translate/CreditAwardHost';
 import { TranslateScreen } from './src/screens/TranslateScreen';
 import { CameraScreen } from './src/screens/CameraScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
@@ -103,6 +104,7 @@ export function NepTranslateApp({
         TodaysReviewOverlay={(props) => <ReviewScreen {...props} />}
       />
       <DailyOpenPopups />
+      <CreditAwardHost />
     </AppProviders>
   );
 }

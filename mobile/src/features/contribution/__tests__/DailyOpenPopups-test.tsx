@@ -48,7 +48,7 @@ describe('DailyOpenPopups', () => {
       fireEvent.press(screen.getByTestId('daily-open-ad-close'));
     });
     await waitFor(() => {
-      expect(screen.getByTestId('award-probe').props.children).toContain('message:10:');
+      expect(screen.getByTestId('award-probe').props.children).toContain('flying:10:');
     });
     expect(screen.getByTestId('award-probe').props.children).toContain('10 credits to start');
     expect(screen.queryByTestId('daily-open-ad')).toBeNull();
@@ -71,7 +71,7 @@ describe('DailyOpenPopups', () => {
       fireEvent.press(screen.getByTestId('daily-open-ad-close'));
     });
     await waitFor(() => {
-      expect(screen.getByTestId('award-probe').props.children).toContain('message:5:');
+      expect(screen.getByTestId('award-probe').props.children).toContain('flying:5:');
     });
     expect(screen.getByTestId('award-probe').props.children).toContain('5 credits for today');
   });

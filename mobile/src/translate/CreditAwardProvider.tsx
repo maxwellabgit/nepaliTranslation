@@ -16,6 +16,7 @@ import {
   stackAdFreeMinutes,
 } from '../features/contribution/reviewCredits';
 import {
+  clearPendingFlight,
   extendDailyUntil,
   laterActiveUntil,
   readDailyOpen,
@@ -54,6 +55,8 @@ type CreditAwardValue = {
   /** While an award is on screen, the gauge shows this clock instead of the live one. */
   displayRemainingMs: number | null;
   collect: () => void;
+  /** Start the coin flight without a Collect press. Welcome and daily grants use this. */
+  startFlight: () => void;
   /** Hold review claims until the post-signup popups close. */
   holdAwards: () => void;
   releaseAwards: () => void;
@@ -66,6 +69,7 @@ const IDLE: CreditAwardValue = {
   presentation: null,
   displayRemainingMs: null,
   collect: () => undefined,
+  startFlight: () => undefined,
   holdAwards: () => undefined,
   releaseAwards: () => undefined,
   startAward: () => undefined,
@@ -145,6 +149,7 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
   );
 
   const showReady = useCallback((next: CreditAwardPresentation) => {
+    presentationRef.current = next;
     phaseRef.current = 'message';
     setPresentation(next);
     setPhase('message');
@@ -251,21 +256,35 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const collect = useCallback(() => {
-    const flight = awardFlightMs(presentationRef.current?.credits ?? 0);
+  const startFlight = useCallback(() => {
+    if (!presentationRef.current) return;
+    if (phaseRef.current === 'flying' || phaseRef.current === 'pump') return;
+    const flight = awardFlightMs(presentationRef.current.credits ?? 0);
     const pumpAt = 700;
     const doneAt = flight + 280;
     setPumpMs(Math.max(900, doneAt - pumpAt));
-    setPhase((current) => (current === 'message' ? 'flying' : current));
+    phaseRef.current = 'flying';
+    setPhase('flying');
     timers.current.forEach(clearTimeout);
     timers.current = [
-      setTimeout(() => setPhase('pump'), pumpAt),
       setTimeout(() => {
+        phaseRef.current = 'pump';
+        setPhase('pump');
+      }, pumpAt),
+      setTimeout(() => {
+        phaseRef.current = 'idle';
         setPhase('idle');
         setPresentation(null);
+        presentationRef.current = null;
+        void clearPendingFlight();
       }, doneAt),
     ];
   }, []);
+
+  const collect = useCallback(() => {
+    if (phaseRef.current !== 'message') return;
+    startFlight();
+  }, [startFlight]);
 
   const displayRemainingMs =
     phase === 'message' || phase === 'flying'
@@ -280,11 +299,21 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
       presentation,
       displayRemainingMs,
       collect,
+      startFlight,
       holdAwards,
       releaseAwards,
       startAward,
     }),
-    [phase, presentation, displayRemainingMs, collect, holdAwards, releaseAwards, startAward],
+    [
+      phase,
+      presentation,
+      displayRemainingMs,
+      collect,
+      startFlight,
+      holdAwards,
+      releaseAwards,
+      startAward,
+    ],
   );
 
   return <CreditAwardContext.Provider value={value}>{children}</CreditAwardContext.Provider>;

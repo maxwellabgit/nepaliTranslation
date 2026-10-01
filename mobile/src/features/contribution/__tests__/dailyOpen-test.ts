@@ -37,4 +37,25 @@ describe('daily open credits', () => {
     expect(next.untilMs - nextAt).toBe(carried + DAILY_OPEN_CREDITS * 10 * MINUTE);
     expect((await readDailyOpen())?.nyDate).toBe('2026-09-30');
   });
+
+  it('treats an existing v1 record as welcome already used', async () => {
+    await AsyncStorage.setItem(
+      'neptranslate.dailyOpen.v1',
+      JSON.stringify({
+        nyDate: '2026-09-29',
+        untilMs: Date.parse('2026-09-29T16:40:00.000Z'),
+        adDismissed: true,
+      }),
+    );
+    const migrated = await readDailyOpen();
+    expect(migrated?.welcomed).toBe(true);
+    expect(migrated?.untilMs).toBe(Date.parse('2026-09-29T16:40:00.000Z'));
+    const sameDay = await grantDailyOpenCoin(new Date('2026-09-29T18:00:00.000Z'));
+    expect(sameDay.untilMs).toBe(Date.parse('2026-09-29T16:40:00.000Z'));
+    const next = await grantDailyOpenCoin(new Date('2026-09-30T15:00:00.000Z'));
+    expect(next.untilMs - Date.parse('2026-09-30T15:00:00.000Z')).toBe(
+      DAILY_OPEN_CREDITS * 10 * MINUTE,
+    );
+    expect(next.receipt.endsWith(':2026-09-30')).toBe(true);
+  });
 });

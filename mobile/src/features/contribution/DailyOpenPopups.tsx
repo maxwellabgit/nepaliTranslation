@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AppState, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { t, useUiLang } from '../../i18n';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
 import { presentCreditClaim, useCreditAwardOptional } from '../../translate/CreditAwardProvider';
 import { minutesForCredits } from './reviewCredits';
-import { dismissDailyAd, grantDailyOpenCoin, laterActiveUntil, readDailyOpen } from './dailyOpen';
+import {
+  dismissDailyAd,
+  grantDailyOpenCoin,
+  laterActiveUntil,
+  readDailyOpen,
+  type PendingFlight,
+} from './dailyOpen';
+import { awardSurfaceIsBusy, subscribeAwardSurface } from '../../translate/awardSurface';
 import {
   DAILY_OPEN_CREDITS,
   FIRST_OPEN_CREDITS,
@@ -46,45 +53,110 @@ export function DailyOpenPopups() {
   const entitlementUntil = useRef<number | null>(null);
   const langRef = useRef(lang);
   const closing = useRef(false);
+  const queuedStep = useRef<Step | null>(null);
+  const stepRef = useRef(step);
+  const awardPhase = useRef(award.phase);
+  stepRef.current = step;
   entitlementUntil.current = entitlement?.earnedAdFreeUntilMs ?? null;
   langRef.current = lang;
+  awardPhase.current = award.phase;
+
+  const reveal = (next: Step) => {
+    if (next !== 'off') closing.current = false;
+    if (next !== 'off' && awardSurfaceIsBusy()) {
+      queuedStep.current = next;
+      return;
+    }
+    queuedStep.current = null;
+    setStep(next);
+  };
+
+  const launchFlight = (flight: PendingFlight, untilMs: number) => {
+    const nowMs = Date.now();
+    const remaining = Math.max(0, untilMs - nowMs);
+    const copy = openAwardCopy(flight.kind, langRef.current, flight.credits);
+    const presentation =
+      flight.kind === 'welcome' || flight.kind === 'daily'
+        ? presentCreditClaim({
+            nowMs,
+            earnedUntilMs: untilMs - minutesForCredits(flight.credits) * 60_000,
+            credits: flight.credits,
+            minutesApplied: minutesForCredits(flight.credits),
+            capped: false,
+          })
+        : null;
+    award.startAward({
+      credits: flight.credits,
+      minutes: minutesForCredits(flight.credits),
+      capped: presentation?.capped ?? false,
+      fromRemainingMs: presentation?.fromRemainingMs ?? remaining,
+      toRemainingMs: presentation?.toRemainingMs ?? remaining,
+      ...copy,
+    });
+    setStep('off');
+    award.releaseAwards();
+    setTimeout(() => award.startFlight(), 0);
+  };
+
+  const consider = async (cancelled: () => boolean) => {
+    if (stepRef.current !== 'off') return;
+    const today = nyDateKey(Date.now());
+    const before = await readDailyOpen();
+    const day = await loadReviewDay();
+    if (cancelled()) return;
+    setPeeked(day.seen && day.reviewed.length === 0);
+    if (before?.pendingFlight && before.nyDate === today && before.adDismissed) {
+      launchFlight(before.pendingFlight, before.untilMs);
+      return;
+    }
+    if (before?.pendingFlight && before.nyDate === today && !before.adDismissed) {
+      planRef.current = null;
+      reveal('ad');
+      return;
+    }
+    const grantedToday = before?.nyDate === today;
+    planRef.current = grantedToday
+      ? null
+      : {
+          kind: before?.welcomed ? 'daily' : 'welcome',
+          credits: before?.welcomed ? DAILY_OPEN_CREDITS : FIRST_OPEN_CREDITS,
+          beforeUntilMs: before && before.untilMs > Date.now() ? before.untilMs : null,
+        };
+    if (!before && FIRST_OPEN_WELCOME.length > 0) {
+      setWelcomeIndex(0);
+      reveal('welcome');
+      return;
+    }
+    if (!grantedToday || !before.adDismissed) {
+      reveal('ad');
+      return;
+    }
+    award.releaseAwards();
+  };
 
   useEffect(() => {
     award.holdAwards();
     let cancelled = false;
-    void (async () => {
-      try {
-        const today = nyDateKey(Date.now());
-        const before = await readDailyOpen();
-        const day = await loadReviewDay();
-        if (cancelled) return;
-        setPeeked(day.seen && day.reviewed.length === 0);
-        const grantedToday = before?.nyDate === today;
-        planRef.current = grantedToday
-          ? null
-          : {
-              kind: before ? 'daily' : 'welcome',
-              credits: before ? DAILY_OPEN_CREDITS : FIRST_OPEN_CREDITS,
-              beforeUntilMs: before && before.untilMs > Date.now() ? before.untilMs : null,
-            };
-        if (!before && FIRST_OPEN_WELCOME.length > 0) {
-          setWelcomeIndex(0);
-          setStep('welcome');
-          return;
-        }
-        if (!grantedToday || !before.adDismissed) {
-          setStep('ad');
-          return;
-        }
-        award.releaseAwards();
-      } catch {
-        if (!cancelled) award.releaseAwards();
-      }
-    })();
+    void consider(() => cancelled).catch(() => {
+      if (!cancelled) award.releaseAwards();
+    });
+    const resume = subscribeAwardSurface(() => {
+      if (awardSurfaceIsBusy() || !queuedStep.current) return;
+      const next = queuedStep.current;
+      queuedStep.current = null;
+      setStep(next);
+    });
+    const app = AppState.addEventListener('change', (next) => {
+      if (next !== 'active') return;
+      if (awardPhase.current !== 'idle') return;
+      void consider(() => cancelled).catch(() => undefined);
+    });
     return () => {
       cancelled = true;
+      resume();
+      app.remove();
     };
-    // Hold once on mount. Award callbacks are stable.
+    // Plan once on mount, then when the app returns to the foreground.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,9 +167,20 @@ export function DailyOpenPopups() {
       const plan = planRef.current;
       const now = new Date();
       try {
+        const existing = await readDailyOpen();
+        if (!plan && existing?.pendingFlight) {
+          await dismissDailyAd(now);
+          const fresh = (await readDailyOpen()) ?? existing;
+          launchFlight(existing.pendingFlight, fresh.untilMs);
+          return;
+        }
         if (plan) {
           const nowMs = now.getTime();
-          const beforeUntil = laterActiveUntil(plan.beforeUntilMs, entitlementUntil.current, nowMs);
+          const beforeUntil = laterActiveUntil(
+            plan.beforeUntilMs,
+            entitlementUntil.current,
+            nowMs,
+          );
           const presentation = presentCreditClaim({
             nowMs,
             earnedUntilMs: beforeUntil,
@@ -106,12 +189,15 @@ export function DailyOpenPopups() {
             capped: false,
           });
           const copy = openAwardCopy(plan.kind, langRef.current, plan.credits);
-          await grantDailyOpenCoin(now, beforeUntil);
+          const saved = await grantDailyOpenCoin(now, beforeUntil);
           await dismissDailyAd(now);
-          award.startAward({ ...presentation, ...copy });
-        } else {
-          await dismissDailyAd(now);
+          award.startAward({ ...presentation, ...copy, credits: saved.pendingFlight?.credits ?? plan.credits });
+          setStep('off');
+          award.releaseAwards();
+          setTimeout(() => award.startFlight(), 0);
+          return;
         }
+        await dismissDailyAd(now);
       } finally {
         setStep('off');
         award.releaseAwards();

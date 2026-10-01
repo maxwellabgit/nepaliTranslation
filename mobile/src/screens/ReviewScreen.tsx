@@ -211,12 +211,8 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       if (next < 0 && category) {
         void markCategoryCleared(category).then((day) => setCoins(day.coins));
       }
-      void recordCompletedSample({
-        sampleId: doneId,
-        userId: auth.status === 'signed-in' ? auth.userId : null,
-      });
     },
-    [activeList, auth.status, auth.userId, category, cursor, reviewedIds],
+    [activeList, category, cursor, reviewedIds],
   );
 
   const send = useCallback(
@@ -236,9 +232,15 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         return;
       }
       setStatus('ready');
+      if (action === 'confirm' || action === 'edit') {
+        void recordCompletedSample({
+          sampleId: active.source_item_id,
+          userId: auth.status === 'signed-in' ? auth.userId : null,
+        });
+      }
       advanceAfter(active.source_item_id);
     },
-    [active, advanceAfter, windowId],
+    [active, advanceAfter, auth.status, auth.userId, windowId],
   );
 
   const backToSets = useCallback(() => {
