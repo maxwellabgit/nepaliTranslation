@@ -41,10 +41,11 @@ export type SpeechRecognitionStartOpts = {
 };
 
 export type SpeechRecognitionEvent = {
-  kind: 'result' | 'end' | 'error';
+  kind: 'result' | 'end' | 'error' | 'audio';
   transcript?: string;
   isFinal?: boolean;
   reason?: string;
+  audioUri?: string;
 };
 
 export type SpeechRecognitionPort = {

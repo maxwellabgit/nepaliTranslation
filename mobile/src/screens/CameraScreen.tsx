@@ -28,8 +28,6 @@ import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { withAlpha } from '../camera/sentenceColors';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
-import { useAuth } from '../features/auth/AuthProvider';
-import { enqueueEligibleMedia } from '../services/mediaEnqueue';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { useRuntime } from '../runtime/RuntimeContext';
 import {
@@ -82,7 +80,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
   const runtime = useRuntime();
-  const { status: authStatus, authConfigured, userId } = useAuth();
   const [permission, requestPermission] = useCameraPermissions();
   const granted = permission?.granted === true;
   const [phaseState, setPhaseState] = useState<CameraPhaseState>(() =>
@@ -229,6 +226,12 @@ export function CameraScreen({ active, onGoHome }: Props) {
           borderRadius: 2,
           backgroundColor: RESULT_NIGHT.sand,
         },
+        contiguous: {
+          color: RESULT_NIGHT.text,
+          fontSize: 17,
+          lineHeight: 26,
+          fontWeight: '600',
+        },
         translationTitle: { color: RESULT_NIGHT.text, fontSize: 18, fontWeight: '700' },
         translationSubtitle: { color: RESULT_NIGHT.sand, fontSize: 13 },
         detectedCorner: {
@@ -237,35 +240,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
           fontWeight: '700',
           textAlign: 'right',
           maxWidth: 120,
-        },
-        translationRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderRadius: 14,
-          paddingLeft: 10,
-          paddingRight: 4,
-          paddingVertical: 8,
-          gap: 8,
-        },
-        lineIndex: {
-          width: 18,
-          color: RESULT_NIGHT.sand,
-          fontSize: 12,
-          fontWeight: '700',
-        },
-        colorDot: { width: 10, height: 10, borderRadius: 5 },
-        translationText: {
-          flex: 1,
-          color: RESULT_NIGHT.text,
-          fontSize: 15,
-          lineHeight: 21,
-          fontWeight: '600',
-        },
-        copyBtn: {
-          width: MIN_TOUCH,
-          height: MIN_TOUCH,
-          alignItems: 'center',
-          justifyContent: 'center',
         },
         copied: {
           textAlign: 'center',
@@ -557,15 +531,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
       }
       setDetectedLanguage(built.language);
       setSentences(translated);
-      // Consented adults: durable-copy for outbox before temp delete (never await flush).
-      await enqueueEligibleMedia({
-        kind: 'photo',
-        sourceUri: uri,
-        signedIn: authStatus === 'signed-in',
-        authConfigured,
-        userId,
-        metadata: { surface: 'camera', sentence_count: translated.length },
-      });
       deleteCapture(uri, 'processed');
       captureUriRef.current = null;
       setCaptureUri(null);
@@ -904,51 +869,31 @@ export function CameraScreen({ active, onGoHome }: Props) {
             </View>
             <ScrollView
               style={{ flexGrow: 1, flexShrink: 1, minHeight: 0 }}
-              contentContainerStyle={{ gap: 8, paddingBottom: 4 }}
+              contentContainerStyle={{ paddingBottom: 8 }}
             >
-              {sentences.map((sentence, index) => (
-                <View
-                  key={sentence.id}
-                  style={[
-                    styles.translationRow,
-                    {
-                      backgroundColor: withAlpha(sentence.color, 0.34),
-                      borderWidth: selected === sentence.id ? 2 : 0,
-                      borderColor: sentence.color,
-                    },
-                  ]}
-                >
-                  <Pressable
-                    testID={`camera-row-${sentence.id}`}
+              <Text style={styles.contiguous} testID="camera-output">
+                {sentences.map((sentence, index) => (
+                  <Text
+                    key={sentence.id}
+                    testID={`camera-span-${sentence.id}`}
                     accessibilityLabel={t('camera.sentenceTranslationA11y', lang, {
                       n: index + 1,
                     })}
-                    onPress={() => setSelected(sentence.id)}
-                    style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}
-                  >
-                    <Text style={styles.lineIndex}>{index + 1}</Text>
-                    <View style={[styles.colorDot, { backgroundColor: sentence.color }]} />
-                    <Text style={styles.translationText}>{sentence.translation}</Text>
-                  </Pressable>
-                  <Pressable
-                    testID={`camera-copy-${sentence.id}`}
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      copiedId === sentence.id
-                        ? t('camera.copied', lang)
-                        : t('camera.copyLine', lang)
+                    onPress={() =>
+                      setSelected((current) => (current === sentence.id ? null : sentence.id))
                     }
-                    onPress={() => copyText(sentence.translation, sentence.id)}
-                    style={styles.copyBtn}
+                    style={{
+                      backgroundColor: withAlpha(
+                        sentence.color,
+                        selected === sentence.id ? 0.7 : 0.38,
+                      ),
+                    }}
                   >
-                    <Ionicons
-                      name={copiedId === sentence.id ? 'checkmark' : 'copy-outline'}
-                      size={18}
-                      color={copiedId === sentence.id ? RESULT_NIGHT.gold : RESULT_NIGHT.sand}
-                    />
-                  </Pressable>
-                </View>
-              ))}
+                    {sentence.translation.trim()}
+                    {index < sentences.length - 1 ? ' ' : ''}
+                  </Text>
+                ))}
+              </Text>
             </ScrollView>
             {copiedId ? (
               <Text

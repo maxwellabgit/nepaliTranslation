@@ -101,6 +101,7 @@ export async function enqueueEligibleMedia(
       photosEnabled: flags.contributionPhotosEnabled,
     });
     if (!gate.ok) return null;
+    if (input.kind === 'photo') return null;
     if (!input.userId) return null;
     const sharing = await loadSharingToggles(input.userId);
     if (input.kind === 'speech' && !sharing.speech) return null;

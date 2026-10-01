@@ -2,9 +2,6 @@ import * as Speech from 'expo-speech';
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 import { hardStopRecognition } from '../stt/sttSupport';
 import { sharedTranslationEngine } from '../mt/TranslationEngine';
-import { enqueueEligibleSpeechRecording } from '../services/mediaEnqueue';
-import { readPublicEnv } from '../config/env';
-import { getSupabase } from '../services/supabase';
 import type { RuntimePorts, SpeechRecognitionEvent } from './ports';
 
 /**
@@ -34,21 +31,7 @@ export function createProductionRuntime(): RuntimePorts {
     ExpoSpeechRecognitionModule.addListener('audioend', (event) => {
       const uri = event?.uri;
       if (!uri) return;
-      void (async () => {
-        try {
-          const env = readPublicEnv();
-          const supabase = getSupabase();
-          const session = supabase ? await supabase.auth.getSession() : null;
-          await enqueueEligibleSpeechRecording({
-            sourceUri: uri,
-            signedIn: Boolean(session?.data.session?.user),
-            authConfigured: env.authConfigured,
-            userId: session?.data.session?.user?.id ?? null,
-          });
-        } catch {
-          /* recognition must not depend on the upload */
-        }
-      })();
+      emitSpeech({ kind: 'audio', audioUri: uri });
     }),
     ExpoSpeechRecognitionModule.addListener('error', (event) => {
       emitSpeech({ kind: 'error', reason: event.error ?? 'stt_error' });

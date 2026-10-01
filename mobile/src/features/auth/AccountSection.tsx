@@ -46,9 +46,7 @@ export function AccountSection({
   onSaveConsent,
   onDeleteAccount,
   speechSharing = false,
-  photoSharing = false,
   onToggleSpeechSharing,
-  onTogglePhotoSharing,
   onWithdrawConsent,
 }: Props) {
   const theme = useTheme();
@@ -254,17 +252,6 @@ export function AccountSection({
       >
         <Text style={styles.body}>
           {speechSharing ? '☑' : '☐'} {t('auth.shareSpeech', lang)}
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => onTogglePhotoSharing?.(!photoSharing)}
-        accessibilityRole="switch"
-        accessibilityState={{ checked: photoSharing }}
-        accessibilityLabel={t('auth.sharePhotos', lang)}
-        testID="share-photos"
-      >
-        <Text style={styles.body}>
-          {photoSharing ? '☑' : '☐'} {t('auth.sharePhotos', lang)}
         </Text>
       </Pressable>
       <Pressable

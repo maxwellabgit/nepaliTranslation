@@ -109,7 +109,7 @@ describe('mediaEnqueue gates', () => {
     expect(result).toBeNull();
   });
 
-  test('consented adult with photos flag and sharing toggle enqueues', async () => {
+  test('camera photos are not collected', async () => {
     setSharingTogglesForTests({ speech: true, photos: true });
     const result = await enqueueEligibleMedia({
       kind: 'photo',
@@ -118,9 +118,8 @@ describe('mediaEnqueue gates', () => {
       authConfigured: true,
       userId: 'user-a',
     });
-    expect(result).not.toBeNull();
-    expect(mockEnqueueMediaItem).toHaveBeenCalled();
-    expect(mockEnqueueMediaItem.mock.calls[0][0].owner_id).toBe('user-a');
+    expect(result).toBeNull();
+    expect(mockEnqueueMediaItem).not.toHaveBeenCalled();
   });
 
   test('a signed-in capture without an account id enqueues nothing', async () => {

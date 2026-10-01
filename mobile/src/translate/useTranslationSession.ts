@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { getSttSupport, hardStopRecognition } from '../stt/sttSupport';
+import { MAX_UTTERANCE_MS, saveUtterance, utteranceAllowed } from '../features/contribution/utteranceCapture';
 import { addHistory } from '../storage/phrasebook';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
@@ -54,6 +55,42 @@ export function useTranslationSession({ active, seed }: Options) {
   activeRef.current = active;
   const requestRef = useRef(0);
   const sttSupportRef = useRef<{ en: boolean; ne: boolean } | null>(null);
+  const captureRef = useRef<{
+    startedAt: number;
+    transcript: string;
+    audioUri: string | null;
+    ended: boolean;
+  } | null>(null);
+  const listenTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [utteranceOffer, setUtteranceOffer] = useState<{
+    transcript: string;
+    audioUri: string;
+    durationMs: number;
+    language: 'en' | 'ne';
+  } | null>(null);
+
+  const finishCapture = useCallback(() => {
+    const cap = captureRef.current;
+    if (!cap?.ended || !cap.audioUri) return;
+    const durationMs = Date.now() - cap.startedAt;
+    const transcript = cap.transcript.trim();
+    const language = stateRef.current.activeSide;
+    captureRef.current = null;
+    if (listenTimer.current) {
+      clearTimeout(listenTimer.current);
+      listenTimer.current = null;
+    }
+    if (!transcript || !utteranceAllowed(durationMs)) {
+      setUtteranceOffer(null);
+      return;
+    }
+    setUtteranceOffer({
+      transcript,
+      audioUri: cap.audioUri,
+      durationMs,
+      language,
+    });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,13 +215,23 @@ export function useTranslationSession({ active, seed }: Options) {
       if (event.kind === 'result') {
         if (!stateRef.current.listening) return;
         const text = event.transcript ?? '';
-        if (text) dispatch({ type: 'setDraft', text });
+        if (text) {
+          dispatch({ type: 'setDraft', text });
+          if (captureRef.current) captureRef.current.transcript = text;
+        }
+        return;
+      }
+      if (event.kind === 'audio') {
+        if (captureRef.current && event.audioUri) captureRef.current.audioUri = event.audioUri;
+        finishCapture();
         return;
       }
       if (event.kind === 'end') {
-        if (!stateRef.current.listening) return;
+        if (!stateRef.current.listening && !captureRef.current) return;
         dispatch({ type: 'setListening', listening: false });
         dispatchPhase({ type: 'TRANSCRIPT_FINAL' });
+        if (captureRef.current) captureRef.current.ended = true;
+        finishCapture();
         void submit();
         return;
       }
@@ -197,7 +244,7 @@ export function useTranslationSession({ active, seed }: Options) {
         });
       }
     });
-  }, [runtime.speechRecognition, submit]);
+  }, [runtime.speechRecognition, submit, finishCapture]);
 
   const pass = useCallback(() => {
     hardStopRecognition();
@@ -278,6 +325,16 @@ export function useTranslationSession({ active, seed }: Options) {
     dispatchPhase({ type: 'PERMISSION_GRANTED' });
     dispatch({ type: 'setListening', listening: true });
     dispatchPhase({ type: 'LISTENING_STARTED' });
+    captureRef.current = {
+      startedAt: Date.now(),
+      transcript: '',
+      audioUri: null,
+      ended: false,
+    };
+    if (listenTimer.current) clearTimeout(listenTimer.current);
+    listenTimer.current = setTimeout(() => {
+      runtime.speechRecognition.stop();
+    }, MAX_UTTERANCE_MS);
     try {
       runtime.speechRecognition.start({
         lang: stateRef.current.activeSide === 'en' ? 'en-US' : 'ne-NP',
@@ -289,6 +346,22 @@ export function useTranslationSession({ active, seed }: Options) {
       dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'stt_unavailable' });
     }
   }, [cancelListen, runtime.speechRecognition]);
+
+  const rateUtterance = useCallback(
+    (feedback: 'up' | 'down') => {
+      const offer = utteranceOffer;
+      setUtteranceOffer(null);
+      if (!offer) return;
+      void saveUtterance({
+        transcript: offer.transcript,
+        audioUri: offer.audioUri,
+        feedback,
+        durationMs: offer.durationMs,
+        language: offer.language,
+      });
+    },
+    [utteranceOffer],
+  );
 
   const setFormality = useCallback((formalOn: boolean) => {
     dispatch({ type: 'setFormality', formality: formalOn ? 'formal' : 'informal' });
@@ -327,6 +400,8 @@ export function useTranslationSession({ active, seed }: Options) {
     retry,
     toggleListen,
     cancelListen,
+    rateUtterance,
+    utteranceOffer,
     clearError,
     setFormality,
     setScript,

@@ -17,8 +17,8 @@ use ATT / IDFA.
 | Contact info (email) | No in-app collection | — | — | — | Support mailbox is out-of-band (`support@neptranslate.app`) |
 | Name / phone / physical address | No | — | — | — | — |
 | Health / sensitive | No | — | — | — | — |
-| Photos / videos | **Yes (optional)** | Yes (account) | No | App functionality (consented contribution) | Camera path local by default; upload only after 18+ versioned consent + flags. Not sent to analytics. |
-| Audio data | **Yes (optional)** | Yes (account) | No | App functionality (consented contribution) | Speech contribution pipeline when gated; not analytics. |
+| Photos / videos | **No** | — | No | — | Camera photos are processed on device for OCR and then deleted. Bola does not upload them. |
+| Audio data | **Yes (optional)** | Yes (account) | No | App functionality (consented contribution) | Mic utterances up to 60 seconds, with transcript and thumbs up/down, upload only after consent and the speech toggle. |
 | Product content (translations / transcripts) | **Yes (optional)** | Yes (account) | No | App functionality (contribution) | First-party Supabase contribution path only — **never** third-party analytics. |
 | User ID | Yes when signed in | Yes | No | App functionality / account | Sign in with Apple → Supabase Auth |
 | Device ID | Possibly via ads SDK | See AdMob | No ATT tracking this release | Advertising (contextual / non-personalized default) | `react-native-google-mobile-ads` when network ads flags on |

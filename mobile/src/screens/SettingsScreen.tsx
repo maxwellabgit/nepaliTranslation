@@ -315,7 +315,6 @@ export function SettingsScreen({
             void auth.deleteAccount();
           }}
           speechSharing={sharing.speech}
-          photoSharing={sharing.photos}
           onToggleSpeechSharing={(enabled) => {
             const next = { ...sharing, speech: enabled };
             setSharing(next);
@@ -323,15 +322,6 @@ export function SettingsScreen({
             void recordSharingToggles(next);
             if (!enabled && auth.userId) {
               void stopPendingSharingKind(auth.userId, 'speech');
-            }
-          }}
-          onTogglePhotoSharing={(enabled) => {
-            const next = { ...sharing, photos: enabled };
-            setSharing(next);
-            void saveSharingToggles(auth.userId, next);
-            void recordSharingToggles(next);
-            if (!enabled && auth.userId) {
-              void stopPendingSharingKind(auth.userId, 'photo');
             }
           }}
           onWithdrawConsent={() => {

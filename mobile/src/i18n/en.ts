@@ -47,6 +47,8 @@ export const en = {
   'translate.placeholderEn': 'Type to translate...',
   'translate.placeholderNe': 'टाइप गर्नुहोस्...',
   'translate.tapToSpeak': 'Tap to speak',
+  'translate.utteranceUp': 'This recording is useful',
+  'translate.utteranceDown': 'This recording is not useful',
   'translate.resultHintEn': 'Your translation will appear here...',
   'translate.resultHintNe': 'तिम्रो अनुवाद यहाँ देखिन्छ',
   'translate.inputA11y': 'Translate input',
@@ -85,7 +87,7 @@ export const en = {
   'camera.directionNeEn': 'Nepali → English',
   'camera.directionEnNe': 'English → Nepali',
   'camera.privacyNote':
-    'Camera OCR runs on this phone. Captures are temporary and are deleted after you retake, leave, or finish — nothing is saved to your photo library.',
+    'Camera OCR runs on this phone. Photos are temporary and are deleted after you retake, leave, or finish. Bola does not upload Camera photos or save them to your photo library.',
   'camera.allow': 'Allow camera',
   'camera.capture': 'Capture',
   'camera.captureA11y': 'Capture photo',
@@ -361,9 +363,9 @@ export const en = {
     'Sign-in is not configured in this build. Translation, history, and settings still work.',
   'auth.supportUserId': 'Support user ID',
   'auth.consentDraftMeta':
-    'Draft {version}. Covers text, speech, photos, OCR/transcripts, retention, and withdrawal. Legal review required before live collection.',
+    'Draft {version}. Covers text, speech, transcripts, retention, and withdrawal. Legal review required before live collection.',
   'auth.contributionConsentBody':
-    'By saving consent you agree that Bola may upload and store contribution text you submit, speech recordings you allow, Camera photos you capture for translation, transcripts and OCR text, your edits, model outputs, and related technical metadata for human review and for improving and commercializing language data and models. Contributed media may be retained indefinitely until you withdraw consent or delete your account; withdrawal or deletion schedules purge of linked contribution data within 30 days. Processors include our hosting and storage providers needed to run this pipeline. Ordinary guest translation history, clipboard, and non-consented media stay on this device only. Core Translate, Camera OCR, History, Settings, and Learn work without signing in or consenting. Do not contribute personal or sensitive content. Deleting the app account does not cancel an Apple subscription.',
+    'By saving consent you agree that Bola may upload and store contribution text you submit, speech recordings you allow, transcripts of those recordings, your edits, model outputs, and related technical metadata for human review and for improving and commercializing language data and models. Bola does not upload Camera photos. Contributed speech may be retained indefinitely until you withdraw consent or delete your account; withdrawal or deletion schedules purge of linked contribution data within 30 days. Processors include our hosting and storage providers needed to run this pipeline. Ordinary guest translation history, clipboard, and non-consented recordings stay on this device only. Core Translate, Camera OCR, History, Settings, and Learn work without signing in or consenting. Do not contribute personal or sensitive content. Deleting the app account does not cancel an Apple subscription.',
   'auth.signInApple': 'Sign in with Apple',
   'auth.signInUnavailable':
     'Sign in with Apple is not available on this device. Translation still works offline.',
@@ -426,7 +428,7 @@ export const en = {
   'startupConsent.terms':
     'I have read and accept the Bola Terms & Conditions.',
   'startupConsent.privacy':
-    'I have read and accept the Bola Privacy Policy, including that optional speech recordings, Camera photos, and public-review corrections may be uploaded after I sign in and my account is retained until I withdraw consent or delete my account (30-day purge SLA).',
+    'I have read and accept the Bola Privacy Policy, including that optional speech recordings and their transcripts may be uploaded after I sign in and my account is retained until I withdraw consent or delete my account (30-day purge SLA). Camera photos stay on this device.',
   'startupConsent.age': 'I am 18 years of age or older.',
   'startupConsent.readTerms': 'Read Terms & Conditions',
   'startupConsent.readPrivacy': 'Read Privacy Policy',

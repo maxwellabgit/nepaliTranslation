@@ -41,6 +41,8 @@ type Props = {
   micDisabled?: boolean;
   micTestId?: string;
   onPlaySource?: () => void;
+  /** Show thumbs after a mic utterance is ready to save. */
+  onUtteranceFeedback?: (feedback: 'up' | 'down') => void;
 };
 
 export function TranslateComposer({
@@ -61,6 +63,7 @@ export function TranslateComposer({
   micDisabled = false,
   micTestId = 'speak-hero',
   onPlaySource,
+  onUtteranceFeedback,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
@@ -207,6 +210,7 @@ export function TranslateComposer({
           justifyContent: 'space-between',
           zIndex: 2,
         },
+        feedback: { flexDirection: 'row', alignItems: 'center', gap: 12 },
         options: {
           minWidth: 44,
           minHeight: 44,
@@ -320,6 +324,28 @@ export function TranslateComposer({
         ) : null}
         <View style={styles.footer}>
           <Text style={styles.count}>{value.length}/240</Text>
+          {onUtteranceFeedback ? (
+            <View style={styles.feedback} testID="utterance-feedback">
+              <Pressable
+                onPress={() => onUtteranceFeedback('up')}
+                accessibilityRole="button"
+                accessibilityLabel={t('translate.utteranceUp', lang)}
+                testID="utterance-up"
+                hitSlop={8}
+              >
+                <Ionicons name="thumbs-up-outline" size={22} color={theme.colors.text} />
+              </Pressable>
+              <Pressable
+                onPress={() => onUtteranceFeedback('down')}
+                accessibilityRole="button"
+                accessibilityLabel={t('translate.utteranceDown', lang)}
+                testID="utterance-down"
+                hitSlop={8}
+              >
+                <Ionicons name="thumbs-down-outline" size={22} color={theme.colors.text} />
+              </Pressable>
+            </View>
+          ) : null}
           {onPlaySource ? (
             <Pressable
               onPress={onPlaySource}

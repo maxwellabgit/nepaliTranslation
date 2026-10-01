@@ -458,6 +458,9 @@ export function TranslateScreen({
           setMicDocked(true);
           void session.toggleListen();
         }}
+        onUtteranceFeedback={
+          session.utteranceOffer ? (feedback) => session.rateUtterance(feedback) : undefined
+        }
         micDisabled={
           speechUnavailable ||
           (state.translating && uiPhase.phase !== 'listening')

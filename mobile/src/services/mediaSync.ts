@@ -217,6 +217,19 @@ async function doFlush(
     return { ok: false, reason: 'unauthorized' };
   }
 
+  try {
+    const { tryUploadPendingUtterances } = await import(
+      '../features/contribution/utteranceCapture'
+    );
+    await tryUploadPendingUtterances({
+      signedIn: true,
+      authConfigured: true,
+      userId,
+    });
+  } catch {
+    /* a local utterance queue must not block the media flush */
+  }
+
   const sharing = await loadSharingToggles(userId);
   const consent = await loadLocalConsent();
   const generation = await readCancelGeneration(userId);
