@@ -78,6 +78,10 @@ export type EnqueueEligibleMediaInput = {
   userId?: string | null;
   contentType?: string;
   metadata?: Record<string, unknown>;
+  /** The file is already the durable outbox copy. Do not copy it again. */
+  alreadyDurable?: boolean;
+  byteSize?: number;
+  idempotencyKey?: string;
 };
 
 /**
@@ -104,22 +108,18 @@ export async function enqueueEligibleMedia(
     if (input.kind === 'photo') return null;
     if (!input.userId) return null;
     const sharing = await loadSharingToggles(input.userId);
-    if (input.kind === 'speech' && !sharing.speech) return null;
-    if (input.kind === 'photo' && !sharing.photos) return null;
+    if (!sharing.speech) return null;
 
-    const contentType =
-      input.contentType ?? contentTypeForUri(input.sourceUri, input.kind);
-    const copied = await copyToMediaOutboxDir(
-      input.sourceUri,
-      input.kind,
-      contentType,
-    );
+    const contentType = input.contentType ?? contentTypeForUri(input.sourceUri, 'speech');
+    const copied = input.alreadyDurable
+      ? { uri: input.sourceUri, byteSize: input.byteSize && input.byteSize > 0 ? input.byteSize : 1 }
+      : await copyToMediaOutboxDir(input.sourceUri, 'speech', contentType);
     if (!copied) return null;
 
     const generation = await readCancelGeneration(input.userId);
     return enqueueMediaItem({
-      idempotency_key: newMediaIdempotencyKey(),
-      kind: input.kind,
+      idempotency_key: input.idempotencyKey ?? newMediaIdempotencyKey(),
+      kind: 'speech',
       local_uri: copied.uri,
       content_type: contentType,
       byte_size: copied.byteSize,
@@ -129,7 +129,7 @@ export async function enqueueEligibleMedia(
       cancellation_generation: generation,
       metadata: {
         ...input.metadata,
-        source: input.kind === 'photo' ? 'camera' : 'speech',
+        source: 'speech',
       },
     });
   } catch {

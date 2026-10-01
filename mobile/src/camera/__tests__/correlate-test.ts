@@ -268,6 +268,15 @@ describe('camera sentence correlation', () => {
     const close = photo(120, 'PARK');
     expect(close.ok).toBe(true);
     if (close.ok) expect(close.sentences[0]?.text).toBe('PARK');
+    const letter = photo(120, 'A');
+    expect(letter.ok).toBe(true);
+    if (letter.ok) expect(letter.sentences[0]?.text).toBe('A');
+    const room = photo(120, '12');
+    expect(room.ok).toBe(true);
+    const syllable = photo(120, 'क');
+    expect(syllable.ok).toBe(true);
+    expect(photo(120, '\u093E')).toEqual({ ok: false, reason: 'empty' });
+    expect(photo(40, 'A')).toEqual({ ok: false, reason: 'empty' });
   });
 
   it('deletes captures on retake, exit, and success only', () => {

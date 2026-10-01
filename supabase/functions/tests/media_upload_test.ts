@@ -3,7 +3,7 @@ import { z } from "npm:zod@3.24.2";
 import { mapRpcError, statusForError } from "../_shared/http.ts";
 
 const createMediaSchema = z.object({
-  kind: z.enum(["speech", "photo"]),
+  kind: z.enum(["speech"]),
   idempotency_key: z.string().min(8).max(128),
   content_type: z.string().min(3).max(120),
   byte_size: z.number().int().positive().max(26_214_400),
@@ -15,7 +15,7 @@ const completeMediaSchema = z.object({
   sha256: z.string().min(8).max(128).optional().nullable(),
 });
 
-Deno.test("create-media-upload schema accepts speech and photo", () => {
+Deno.test("create-media-upload schema accepts speech and rejects photo", () => {
   const speech = createMediaSchema.safeParse({
     kind: "speech",
     idempotency_key: "idemp-speech-1",
@@ -30,14 +30,14 @@ Deno.test("create-media-upload schema accepts speech and photo", () => {
     content_type: "image/jpeg",
     byte_size: 2048,
   });
-  assertEquals(photo.success, true);
+  assertEquals(photo.success, false);
 });
 
 Deno.test("create-media-upload schema rejects guests-style empty keys", () => {
   const bad = createMediaSchema.safeParse({
-    kind: "photo",
+    kind: "speech",
     idempotency_key: "short",
-    content_type: "image/jpeg",
+    content_type: "audio/mp4",
     byte_size: 100,
   });
   assertEquals(bad.success, false);

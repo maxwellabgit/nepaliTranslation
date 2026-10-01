@@ -16,10 +16,18 @@ function lineLanguage(text: string): 'en' | 'ne' {
   return dev > lat ? 'ne' : 'en';
 }
 
-/** At least two letters. A speck or a single noise glyph is not a line. */
+/** Combining marks and vedic signs with no base letter or digit. */
+const ISOLATED_MARK = /^[\u0900-\u0903\u093A-\u094F\u0951-\u0957\u0962-\u0963]+$/u;
+
+/**
+ * A useful line has a letter or a number at a size the caller already checked.
+ * One "A", a room number, a price, or one Nepali syllable can be a sign.
+ * An isolated combining mark is not.
+ */
 function lineReadable(text: string): boolean {
-  const letters = text.match(/[\u0900-\u097FA-Za-z]/gu);
-  return (letters?.length ?? 0) >= 2;
+  const trimmed = text.trim();
+  if (!trimmed || ISOLATED_MARK.test(trimmed)) return false;
+  return /[\u0904-\u097F0-9A-Za-z]/u.test(trimmed);
 }
 
 function lineLargeEnough(line: OcrLine, doc: OcrDocument): boolean {

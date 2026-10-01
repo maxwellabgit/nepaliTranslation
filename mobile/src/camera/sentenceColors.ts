@@ -1,10 +1,18 @@
-/** Crimson, saffron, then blue. Neighbors never share a color. */
-export const LINE_HIGHLIGHTS = ['#C8102E', '#E8A317', '#1A73E8'] as const;
+import { getTheme, type ColorScheme } from '../theme';
 
-export function colorForIndex(index: number): string {
-  const size = LINE_HIGHLIGHTS.length;
+/** Crimson, saffron, then blue, from the shared theme tokens. */
+export function lineHighlights(scheme: ColorScheme = 'light'): readonly [string, string, string] {
+  const colors = getTheme(scheme).colors;
+  return [colors.crimson, colors.saffron, colors.blue];
+}
+
+export const LINE_HIGHLIGHTS = lineHighlights('light');
+
+export function colorForIndex(index: number, scheme: ColorScheme = 'light'): string {
+  const palette = scheme === 'light' ? LINE_HIGHLIGHTS : lineHighlights(scheme);
+  const size = palette.length;
   const slot = ((index % size) + size) % size;
-  return LINE_HIGHLIGHTS[slot];
+  return palette[slot];
 }
 
 export function withAlpha(hex: string, alpha: number): string {

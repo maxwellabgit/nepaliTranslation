@@ -2,8 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   LOCAL_UTTERANCE_KEEP,
   MAX_UTTERANCE_MS,
+  PENDING_UTTERANCE_CAP,
   readPendingUtterances,
   saveUtterance,
+  tryUploadPendingUtterances,
 } from '../utteranceCapture';
 
 describe('utterance capture', () => {
@@ -46,5 +48,42 @@ describe('utterance capture', () => {
     );
     expect(saved).toEqual({ ok: false, reason: 'too_long' });
     expect(await readPendingUtterances()).toHaveLength(0);
+  });
+
+  it('stops at the pending cap and does not hand an ownerless clip to the next account', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: 10 }));
+    const upload = jest.fn(async () => null);
+    for (let n = 0; n < PENDING_UTTERANCE_CAP; n += 1) {
+      const saved = await saveUtterance(
+        {
+          transcript: `clip ${n}`,
+          audioUri: `file:///tmp/cap-${n}.m4a`,
+          feedback: 'unrated',
+          durationMs: 1_000,
+          language: 'ne',
+        },
+        { copy, upload },
+      );
+      expect(saved.ok).toBe(true);
+    }
+    const full = await saveUtterance(
+      {
+        transcript: 'one more',
+        audioUri: 'file:///tmp/cap-extra.m4a',
+        durationMs: 1_000,
+        language: 'en',
+        userId: 'user-b',
+      },
+      { copy, upload },
+    );
+    expect(full).toEqual({ ok: false, reason: 'not_saved' });
+    expect(await readPendingUtterances()).toHaveLength(PENDING_UTTERANCE_CAP);
+    expect(upload).not.toHaveBeenCalled();
+    const handed = await tryUploadPendingUtterances(
+      { signedIn: true, authConfigured: true, userId: 'user-b' },
+      upload,
+    );
+    expect(handed).toBe(0);
+    expect(upload).not.toHaveBeenCalled();
   });
 });

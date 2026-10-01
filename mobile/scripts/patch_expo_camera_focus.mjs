@@ -22,8 +22,19 @@ function write(entry, next) {
 }
 
 if (!fs.existsSync(camera)) {
-  console.log('patch_expo_camera_focus: expo-camera is not installed');
-  process.exit(0);
+  throw new Error('patch_expo_camera_focus: expo-camera is not installed');
+}
+
+const required = [
+  'ios/CameraViewModule.swift',
+  'ios/Current/CameraView.swift',
+  'android/src/main/java/expo/modules/camera/CameraViewModule.kt',
+  'android/src/main/java/expo/modules/camera/ExpoCameraView.kt',
+];
+for (const rel of required) {
+  if (!fs.existsSync(path.join(camera, rel))) {
+    throw new Error(`patch_expo_camera_focus: missing ${rel}`);
+  }
 }
 
 const iosModule = read('ios/CameraViewModule.swift');

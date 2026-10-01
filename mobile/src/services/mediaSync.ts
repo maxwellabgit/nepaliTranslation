@@ -4,8 +4,11 @@ import { sessionInactiveNow } from '../features/auth/sessionExpiry';
 import { loadLocalConsent } from '../storage/contributionConsent';
 import { loadSharingToggles } from '../storage/sharingToggles';
 import { getSupabase } from './supabase';
+import { File } from 'expo-file-system';
+import { tryUploadPendingUtterances } from '../features/contribution/utteranceCapture';
 import {
   computeMediaNextAttemptAt,
+  loadMediaOutbox,
   markMediaRejected,
   markMediaRetry,
   markMediaSynced,
@@ -69,6 +72,9 @@ export async function uploadMediaItem(
   fetchImpl: typeof fetch = fetch,
   stillAuthorized: () => Promise<boolean> = async () => true,
 ): Promise<MediaUploadOutcome> {
+  if (item.kind === 'photo') {
+    return { kind: 'rejected', code: 'photo_collection_retired' };
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -201,9 +207,25 @@ async function applyOutcome(
 
 let flushMutex: Promise<MediaFlushResult> | null = null;
 
+async function retireLegacyPhotoRows(): Promise<void> {
+  const items = await loadMediaOutbox();
+  for (const item of items) {
+    if (item.kind !== 'photo') continue;
+    if (item.status === 'rejected' && item.lastErrorCode === 'photo_collection_retired') continue;
+    await markMediaRejected(item.idempotency_key, 'photo_collection_retired');
+    try {
+      const file = new File(item.local_uri);
+      if (file.exists) file.delete();
+    } catch {
+      /* a missing photo copy is already retired */
+    }
+  }
+}
+
 async function doFlush(
   fetchImpl: typeof fetch = fetch,
 ): Promise<MediaFlushResult> {
+  await retireLegacyPhotoRows();
   const env = readPublicEnv();
   const supabase = getSupabase();
   if (!env.authConfigured || !supabase) {
@@ -218,9 +240,6 @@ async function doFlush(
   }
 
   try {
-    const { tryUploadPendingUtterances } = await import(
-      '../features/contribution/utteranceCapture'
-    );
     await tryUploadPendingUtterances({
       signedIn: true,
       authConfigured: true,

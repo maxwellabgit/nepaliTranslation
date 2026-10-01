@@ -26,7 +26,7 @@
       "package": "com.neptranslate.app",
       "adaptiveIcon": {
         "backgroundColor": "#C8102E",
-        "foregroundImage": "./assets/android-icon-foreground.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
@@ -39,7 +39,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       [
@@ -52,7 +52,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash-icon.png",
+          "image": "./assets/icon.png",
           "resizeMode": "contain",
           "backgroundColor": "#244580"
         }

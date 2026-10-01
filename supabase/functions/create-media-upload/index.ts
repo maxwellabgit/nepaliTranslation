@@ -9,7 +9,7 @@ import {
 } from "../_shared/http.ts";
 
 const bodySchema = z.object({
-  kind: z.enum(["speech", "photo"]),
+  kind: z.enum(["speech"]),
   idempotency_key: z.string().min(8).max(128),
   content_type: z.string().min(3).max(120),
   byte_size: z.number().int().positive().max(26_214_400),

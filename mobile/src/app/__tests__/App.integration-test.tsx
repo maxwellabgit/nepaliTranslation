@@ -179,7 +179,7 @@ describe('NepTranslateApp production composition', () => {
     });
     await fireEvent.press(screen.getByTestId('speak-hero'));
     await waitFor(() => {
-      expect(screen.getByText(/Microphone permission denied/i)).toBeTruthy();
+      expect(screen.getByText(/Microphone blocked/i)).toBeTruthy();
     });
     expect(screen.getByTestId('translate-status-dismiss')).toBeTruthy();
   });
@@ -342,10 +342,14 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.getByTestId('learn-glyph-a')).toBeTruthy();
     expect(screen.queryByTestId('learn-earn-rewards')).toBeNull();
     expect(screen.getByLabelText('Translation tab')).toBeTruthy();
+    expect(screen.getByTestId('tab-learn').props.accessibilityState?.selected).toBe(true);
+    expect(screen.getByTestId('tab-translate').props.accessibilityState?.selected).toBe(
+      false,
+    );
+    await fireEvent.press(screen.getByTestId('tab-translate'));
     expect(screen.getByTestId('tab-translate').props.accessibilityState?.selected).toBe(
       true,
     );
-    await fireEvent.press(screen.getByTestId('tab-translate'));
     await fireEvent.press(screen.getByLabelText('History'));
     expect(screen.getByTestId('overlay-history')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('history-close'));
@@ -386,7 +390,7 @@ describe('NepTranslateApp production composition', () => {
     });
     await renderApp(services);
     await waitFor(() => {
-      expect(screen.getByTestId('ad-slot-house-translate_idle')).toBeTruthy();
+      expect(screen.getByTestId('promo-earn')).toBeTruthy();
     });
     expect(services.ads.networkCalls()).toEqual([]);
 
@@ -397,7 +401,8 @@ describe('NepTranslateApp production composition', () => {
         'नमस्ते',
       );
     });
-    expect(screen.queryByTestId('ad-slot-house-translate_idle')).toBeNull();
+    expect(screen.queryByTestId('promo-earn')).toBeNull();
+    expect(screen.queryByTestId('promo-rotator')).toBeNull();
     expect(screen.queryByTestId('ad-slot-house-translate_result')).toBeNull();
     expect(services.ads.networkCalls()).toEqual([]);
   });

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AccessibilityInfo,
   Animated,
   Easing,
   Image,
@@ -29,6 +30,7 @@ import { withAlpha } from '../camera/sentenceColors';
 import { getCameraTestFixture } from '../camera/testFixture';
 import type { CorrelatedSentence } from '../camera/ocrTypes';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
+import { setAwardSurfaceBusy } from '../translate/awardSurface';
 import { useRuntime } from '../runtime/RuntimeContext';
 import {
   initialCameraPhase,
@@ -102,6 +104,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const focusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyGen = useRef(0);
   const sheetProgress = useRef(new Animated.Value(0)).current;
   const progressRef = useRef(0);
   const grantProgress = useRef(0);
@@ -302,6 +305,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       captureUriRef.current = null;
       if (focusTimer.current) clearTimeout(focusTimer.current);
       if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyGen.current += 1;
     };
   }, []);
 
@@ -313,22 +317,52 @@ export function CameraScreen({ active, onGoHome }: Props) {
   }, [sheetProgress]);
 
   useEffect(() => {
+    setAwardSurfaceBusy('camera', isCameraBusy(phase));
+    return () => setAwardSurfaceBusy('camera', false);
+  }, [phase]);
+
+  useEffect(() => {
     if (phase !== 'result') {
       playedResultAnim.current = false;
       sheetProgress.setValue(0);
       setSheetOpen(false);
       return;
     }
+    setSheetOpen(true);
     if (stageSize.height <= 0 || playedResultAnim.current) return;
     playedResultAnim.current = true;
     sheetProgress.setValue(0);
-    setSheetOpen(true);
-    Animated.timing(sheetProgress, {
-      toValue: 1,
-      duration: 420,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: false,
-    }).start();
+    let cancelled = false;
+    const motionQuery = AccessibilityInfo.isReduceMotionEnabled?.();
+    const motion = motionQuery && typeof motionQuery.then === 'function'
+      ? motionQuery
+      : Promise.resolve(false);
+    void motion
+      .then((reduce) => {
+        if (cancelled) return;
+        if (reduce) {
+          sheetProgress.setValue(1);
+          return;
+        }
+        Animated.timing(sheetProgress, {
+          toValue: 1,
+          duration: 420,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: false,
+        }).start();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        Animated.timing(sheetProgress, {
+          toValue: 1,
+          duration: 420,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: false,
+        }).start();
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [phase, sheetProgress, stageSize.height]);
 
   const snapSheet = (open: boolean) => {
@@ -492,16 +526,13 @@ export function CameraScreen({ active, onGoHome }: Props) {
             abandon();
             return;
           }
-          let translation = (result.text ?? '').trim();
+          const translation = (result.text ?? '').trim();
           if (!translation) {
-            try {
-              const { translateCapturedLine } = await import('../camera/translateCapture');
-              translation = (
-                await translateCapturedLine(sentence.text, direction)
-              ).trim();
-            } catch {
-              translation = '';
-            }
+            deleteCapture(uri, 'processed');
+            captureUriRef.current = null;
+            setCaptureUri(null);
+            dispatch({ type: 'FAIL', reasonCode: 'translate_failed' });
+            return;
           }
           translated.push({
             ...sentence,
@@ -564,6 +595,13 @@ export function CameraScreen({ active, onGoHome }: Props) {
     setSentences([]);
     setDetectedLanguage(null);
     setSelected(null);
+    if (focusTimer.current) clearTimeout(focusTimer.current);
+    focusTimer.current = null;
+    setFocusRing(null);
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    copyTimer.current = null;
+    copyGen.current += 1;
+    setCopiedId(null);
     dispatch({ type: 'RETAKE' });
     if (!granted) {
       setPhaseState({ phase: 'permission', reasonCode: null });
@@ -578,11 +616,20 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const copyText = (value: string, id: string) => {
     const text = value.trim();
     if (!text) return;
-    void Clipboard.setStringAsync(text).then(() => {
-      setCopiedId(id);
-      if (copyTimer.current) clearTimeout(copyTimer.current);
-      copyTimer.current = setTimeout(() => setCopiedId(null), 1600);
-    });
+    const gen = (copyGen.current += 1);
+    void Clipboard.setStringAsync(text).then(
+      (copied) => {
+        if (gen !== copyGen.current || copied === false) return;
+        setCopiedId(id);
+        if (copyTimer.current) clearTimeout(copyTimer.current);
+        copyTimer.current = setTimeout(() => {
+          if (gen === copyGen.current) setCopiedId(null);
+        }, 1600);
+      },
+      () => {
+        if (gen === copyGen.current) setCopiedId(null);
+      },
+    );
   };
 
   const copyAllTranslations = () => {
@@ -590,7 +637,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       sentences
         .map((sentence) => sentence.translation.trim())
         .filter(Boolean)
-        .join('\n'),
+        .join(' '),
       'all',
     );
   };
@@ -645,13 +692,22 @@ export function CameraScreen({ active, onGoHome }: Props) {
     const { locationX, locationY } = event.nativeEvent;
     const point = focusPointFromTap(locationX, locationY, previewSize.width, previewSize.height);
     if (!point) return;
-    setFocusRing({ x: locationX, y: locationY });
+    const camera = cameraRef.current as {
+      focusAt?: (next: { x: number; y: number }) => Promise<'accepted' | 'unsupported' | 'failed' | void>;
+    } | null;
+    if (!camera || typeof camera.focusAt !== 'function') return;
     if (focusTimer.current) clearTimeout(focusTimer.current);
-    focusTimer.current = setTimeout(() => setFocusRing(null), 800);
-    const camera = cameraRef.current;
-    if (camera && typeof camera.focusAt === 'function') {
-      void camera.focusAt(point).catch(() => undefined);
-    }
+    void camera.focusAt(point).then(
+      (status) => {
+        if (status === 'failed' || status === 'unsupported') {
+          setFocusRing(null);
+          return;
+        }
+        setFocusRing({ x: locationX, y: locationY });
+        focusTimer.current = setTimeout(() => setFocusRing(null), 800);
+      },
+      () => setFocusRing(null),
+    );
   };
 
   return (

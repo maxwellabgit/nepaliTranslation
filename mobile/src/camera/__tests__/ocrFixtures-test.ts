@@ -68,7 +68,12 @@ describe('camera OCR fixtures', () => {
     const stop = segmentOcr(
       doc([line('A', { x: 40, y: 40, width: 36, height: 28 }, null)]),
     );
-    expect(stop).toEqual({ ok: false, reason: 'empty' });
+    expect(stop.ok).toBe(true);
+    if (stop.ok) expect(stop.sentences[0]?.text).toBe('A');
+    const distant = segmentOcr(
+      doc([line('A', { x: 40, y: 40, width: 12, height: 8 }, null)]),
+    );
+    expect(distant).toEqual({ ok: false, reason: 'empty' });
 
     const english = segmentOcr(
       doc([line('OPEN', { x: 40, y: 80, width: 160, height: 40 }, null)]),

@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { getSttSupport, hardStopRecognition } from '../stt/sttSupport';
-import { MAX_UTTERANCE_MS, saveUtterance, utteranceAllowed } from '../features/contribution/utteranceCapture';
+import {
+  MAX_UTTERANCE_MS,
+  newUtteranceId,
+  saveUtterance,
+  updateUtteranceFeedback,
+  utteranceAllowed,
+} from '../features/contribution/utteranceCapture';
+import { useAuth } from '../features/auth/AuthProvider';
+import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { addHistory } from '../storage/phrasebook';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
@@ -31,6 +39,9 @@ function directionFor(side: Side): 'en-ne' | 'ne-en' {
 
 export function useTranslationSession({ active, seed }: Options) {
   const runtime = useRuntime();
+  const auth = useAuth();
+  const authRef = useRef(auth);
+  authRef.current = auth;
   const [state, dispatch] = useReducer(reduceSession, seed, (item) =>
     initialSession(
       item
@@ -56,13 +67,16 @@ export function useTranslationSession({ active, seed }: Options) {
   const requestRef = useRef(0);
   const sttSupportRef = useRef<{ en: boolean; ne: boolean } | null>(null);
   const captureRef = useRef<{
+    utteranceId: string;
     startedAt: number;
+    stoppedAt: number | null;
     transcript: string;
     audioUri: string | null;
     ended: boolean;
   } | null>(null);
   const listenTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [utteranceOffer, setUtteranceOffer] = useState<{
+    id: string;
     transcript: string;
     audioUri: string;
     durationMs: number;
@@ -72,9 +86,11 @@ export function useTranslationSession({ active, seed }: Options) {
   const finishCapture = useCallback(() => {
     const cap = captureRef.current;
     if (!cap?.ended || !cap.audioUri) return;
-    const durationMs = Date.now() - cap.startedAt;
+    const durationMs = (cap.stoppedAt ?? Date.now()) - cap.startedAt;
     const transcript = cap.transcript.trim();
     const language = stateRef.current.activeSide;
+    const utteranceId = cap.utteranceId;
+    const audioUri = cap.audioUri;
     captureRef.current = null;
     if (listenTimer.current) {
       clearTimeout(listenTimer.current);
@@ -84,9 +100,26 @@ export function useTranslationSession({ active, seed }: Options) {
       setUtteranceOffer(null);
       return;
     }
-    setUtteranceOffer({
+    const account = authRef.current;
+    void saveUtterance({
+      id: utteranceId,
       transcript,
-      audioUri: cap.audioUri,
+      audioUri,
+      feedback: 'unrated',
+      durationMs,
+      language,
+      signedIn: account.status === 'signed-in',
+      authConfigured: account.authConfigured,
+      userId: account.status === 'signed-in' ? account.userId : null,
+      eligible:
+        account.status === 'signed-in' &&
+        account.ageConfirmed &&
+        account.consentVersion === CONTRIBUTION_CONSENT_VERSION,
+    });
+    setUtteranceOffer({
+      id: utteranceId,
+      transcript,
+      audioUri,
       durationMs,
       language,
     });
@@ -230,7 +263,10 @@ export function useTranslationSession({ active, seed }: Options) {
         if (!stateRef.current.listening && !captureRef.current) return;
         dispatch({ type: 'setListening', listening: false });
         dispatchPhase({ type: 'TRANSCRIPT_FINAL' });
-        if (captureRef.current) captureRef.current.ended = true;
+        if (captureRef.current) {
+          if (captureRef.current.stoppedAt == null) captureRef.current.stoppedAt = Date.now();
+          captureRef.current.ended = true;
+        }
         finishCapture();
         void submit();
         return;
@@ -326,13 +362,18 @@ export function useTranslationSession({ active, seed }: Options) {
     dispatch({ type: 'setListening', listening: true });
     dispatchPhase({ type: 'LISTENING_STARTED' });
     captureRef.current = {
+      utteranceId: newUtteranceId(),
       startedAt: Date.now(),
+      stoppedAt: null,
       transcript: '',
       audioUri: null,
       ended: false,
     };
     if (listenTimer.current) clearTimeout(listenTimer.current);
     listenTimer.current = setTimeout(() => {
+      if (captureRef.current && captureRef.current.stoppedAt == null) {
+        captureRef.current.stoppedAt = Date.now();
+      }
       runtime.speechRecognition.stop();
     }, MAX_UTTERANCE_MS);
     try {
@@ -352,13 +393,7 @@ export function useTranslationSession({ active, seed }: Options) {
       const offer = utteranceOffer;
       setUtteranceOffer(null);
       if (!offer) return;
-      void saveUtterance({
-        transcript: offer.transcript,
-        audioUri: offer.audioUri,
-        feedback,
-        durationMs: offer.durationMs,
-        language: offer.language,
-      });
+      void updateUtteranceFeedback(offer.id, feedback);
     },
     [utteranceOffer],
   );

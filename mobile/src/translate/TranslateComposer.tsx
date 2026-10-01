@@ -350,7 +350,7 @@ export function TranslateComposer({
             <Pressable
               onPress={onPlaySource}
               accessibilityRole="button"
-              accessibilityLabel={t('translate.playA11y', lang)}
+              accessibilityLabel={t('translate.playSourceA11y', lang)}
               testID="play-source"
               hitSlop={8}
               style={styles.options}

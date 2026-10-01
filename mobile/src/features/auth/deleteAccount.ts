@@ -5,6 +5,7 @@ import { clearCachedEntitlement } from '../entitlements/entitlementCache';
 import { clearLocalConsent } from '../../storage/contributionConsent';
 import { clearContributionCaches } from '../../storage/contributionOutbox';
 import { discardOwnerContributionFiles } from '../../services/mediaEnqueue';
+import { discardUtterancesForOwner } from '../contribution/utteranceCapture';
 import {
   clearAppleIdentity,
   loadAppleUserId,
@@ -245,6 +246,7 @@ export async function performAccountDeletion(
     await clearCachedEntitlement();
     await clearContributionCaches();
     await discardOwnerContributionFiles(input.userId);
+    await discardUtterancesForOwner(input.userId);
     return { ok: true, scheduled, deletionDueAt };
   }
 

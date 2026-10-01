@@ -63,6 +63,7 @@ export const ne: Record<MessageKey, string> = {
   'translate.devanagari': 'देवनागरी',
   'translate.roman': 'रोमन नेपाली',
   'translate.playA11y': 'अनुवाद सुनाउनुहोस्',
+  'translate.playSourceA11y': 'मूल पाठ सुनाउनुहोस्',
   'translate.copyA11y': 'अनुवाद कपी गर्नुहोस्',
   'translate.retryA11y': 'अनुवाद फेरि प्रयास',
   'translate.retryBusyA11y': 'अनुवाद हुँदा फेरि प्रयास उपलब्ध छैन',
@@ -378,7 +379,7 @@ export const ne: Record<MessageKey, string> = {
   'auth.copyUserIdA11y': 'सहायता युजर ID कपी',
   'auth.ageConfirm': 'म १८ वर्ष वा माथि छु भनी पुष्टि गर्छु',
   'auth.shareSpeech': 'बोली रेकर्डिङ साझा गर्नुहोस्',
-  'auth.sharePhotos': 'क्यामेरा फोटो साझा गर्नुहोस्',
+  'auth.sharePhotos': 'क्यामेराका फोटो यसै फोनमा रहन्छन्',
   'auth.withdrawConsent': 'योगदान सहमति फिर्ता लिनुहोस्',
   'auth.withdrawConsentTitle': 'सहमति फिर्ता लिने?',
   'auth.withdrawConsentBody':

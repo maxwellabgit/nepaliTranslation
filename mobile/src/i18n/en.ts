@@ -59,6 +59,7 @@ export const en = {
   'translate.devanagari': 'Devanagari',
   'translate.roman': 'Roman Nepali',
   'translate.playA11y': 'Speak translation aloud',
+  'translate.playSourceA11y': 'Speak source aloud',
   'translate.copyA11y': 'Copy translation',
   'translate.retryA11y': 'Retry translation',
   'translate.retryBusyA11y': 'Retry unavailable while translating',
@@ -373,7 +374,7 @@ export const en = {
   'auth.copyUserIdA11y': 'Copy support user ID',
   'auth.ageConfirm': 'I confirm I am 18 or older',
   'auth.shareSpeech': 'Share speech recordings',
-  'auth.sharePhotos': 'Share Camera photos',
+  'auth.sharePhotos': 'Camera photos stay on this phone',
   'auth.withdrawConsent': 'Withdraw contribution consent',
   'auth.withdrawConsentTitle': 'Withdraw consent?',
   'auth.withdrawConsentBody':

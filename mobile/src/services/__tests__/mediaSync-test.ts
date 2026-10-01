@@ -34,9 +34,9 @@ describe('mediaSync', () => {
   test('flag_disabled rejects without retry storm', async () => {
     const item = await enqueueMediaItem({
       idempotency_key: 'm-flag',
-      kind: 'photo',
-      local_uri: 'file:///tmp/x.jpg',
-      content_type: 'image/jpeg',
+      kind: 'speech',
+      local_uri: 'file:///tmp/x.m4a',
+      content_type: 'audio/mp4',
       byte_size: 100,
       consent_version: '2026-09-21.media',
     });
@@ -63,9 +63,9 @@ describe('mediaSync', () => {
   test('withdrawn authorization skips completion after the bytes are uploaded', async () => {
     const item = await enqueueMediaItem({
       idempotency_key: 'm-inflight',
-      kind: 'photo',
-      local_uri: 'file:///tmp/inflight.jpg',
-      content_type: 'image/jpeg',
+      kind: 'speech',
+      local_uri: 'file:///tmp/inflight.m4a',
+      content_type: 'audio/mp4',
       byte_size: 100,
       consent_version: '2026-09-21.media',
       owner_id: 'user-a',
@@ -120,9 +120,9 @@ describe('mediaSync', () => {
       },
     } as never);
     await enqueueMediaItem({
-      kind: 'photo',
-      local_uri: 'file:///tmp/y.jpg',
-      content_type: 'image/jpeg',
+      kind: 'speech',
+      local_uri: 'file:///tmp/y.m4a',
+      content_type: 'audio/mp4',
       byte_size: 50,
       consent_version: '2026-09-21.media',
     });
@@ -160,9 +160,9 @@ describe('mediaSync', () => {
   test('account B does not upload account A files', async () => {
     await enqueueMediaItem({
       idempotency_key: 'm-owner-a',
-      kind: 'photo',
-      local_uri: 'file:///tmp/a.jpg',
-      content_type: 'image/jpeg',
+      kind: 'speech',
+      local_uri: 'file:///tmp/a.m4a',
+      content_type: 'audio/mp4',
       byte_size: 80,
       consent_version: '2026-09-21.media',
       owner_id: 'user-a',
@@ -184,5 +184,33 @@ describe('mediaSync', () => {
     const items = await loadMediaOutbox();
     expect(items[0].status).toBe('queued');
     expect(items[0].owner_id).toBe('user-a');
+  });
+
+  test('a legacy photo row is rejected before any upload', async () => {
+    await enqueueMediaItem({
+      idempotency_key: 'm-photo-old',
+      kind: 'photo',
+      local_uri: 'file:///tmp/old.jpg',
+      content_type: 'image/jpeg',
+      byte_size: 80,
+      consent_version: '2026-09-21.media',
+      owner_id: 'user-a',
+      consent_epoch: '2026-09-21.media',
+    });
+    mockedGetSupabase.mockReturnValue({
+      auth: {
+        getSession: async () => ({ data: { session: null } }),
+      },
+    } as never);
+    const fetchImpl = jest.fn() as unknown as typeof fetch;
+    const result = await flushPendingMedia(fetchImpl);
+    expect(result).toEqual({ ok: false, reason: 'unauthorized' });
+    expect(fetchImpl).not.toHaveBeenCalled();
+    const items = await loadMediaOutbox();
+    expect(items[0].status).toBe('rejected');
+    expect(items[0].lastErrorCode).toBe('photo_collection_retired');
+    const again = await flushPendingMedia(fetchImpl);
+    expect(again).toEqual({ ok: false, reason: 'unauthorized' });
+    expect((await loadMediaOutbox())[0].status).toBe('rejected');
   });
 });

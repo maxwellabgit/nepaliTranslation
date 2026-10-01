@@ -22,6 +22,7 @@ import {
   discardOwnerContributionFiles,
   stopPendingSharingKind,
 } from '../services/mediaEnqueue';
+import { discardUtterancesForOwner } from '../features/contribution/utteranceCapture';
 import { recordSharingToggles } from '../features/auth/recordSharingToggles';
 import { useAuth } from '../features/auth/AuthProvider';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
@@ -333,7 +334,10 @@ export function SettingsScreen({
                 );
                 return;
               }
-              if (auth.userId) void discardOwnerContributionFiles(auth.userId);
+              if (auth.userId) {
+                void discardOwnerContributionFiles(auth.userId);
+                void discardUtterancesForOwner(auth.userId);
+              }
               void auth.refreshAccountSummary();
             });
           }}
