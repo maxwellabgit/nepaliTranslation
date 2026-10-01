@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Animated,
+  Easing,
   Image,
+  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -18,7 +21,8 @@ import { BackArrow } from '../components/BackArrow';
 import { buildCorrelation } from '../camera/correlate';
 import { focusPointFromTap } from '../camera/focusPoint';
 import { deleteCapture } from '../camera/deleteCapture';
-import { containedPhotoSize, highlightPercents } from '../camera/highlightLayout';
+import { highlightPercents } from '../camera/highlightLayout';
+import { photoAboveSheet, resultSheetTops } from '../camera/resultLayout';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
 import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { withAlpha } from '../camera/sentenceColors';
@@ -50,8 +54,6 @@ const RESULT_NIGHT = {
   gold: '#E8A317',
   button: '#2A2418',
 };
-/** Photo is 12% smaller than the result stage; the card covers its lower half. */
-const PHOTO_SCALE = 0.88;
 
 /** 1×1 placeholder so a test fixture can mount line highlights without a capture. */
 const FIXTURE_PREVIEW =
@@ -103,6 +105,12 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const focusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sheetProgress = useRef(new Animated.Value(0)).current;
+  const progressRef = useRef(0);
+  const grantProgress = useRef(0);
+  const topsRef = useRef(resultSheetTops(0));
+  const playedResultAnim = useRef(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const phase = phaseState.phase;
 
@@ -171,7 +179,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
           justifyContent: 'center',
           backgroundColor: '#1A1410',
         },
-        photoFrame: { alignSelf: 'center' },
+        photoFrame: { position: 'absolute' },
         overlay: { position: 'absolute', borderRadius: 8 },
         detectedPill: {
           flexDirection: 'row',
@@ -206,13 +214,21 @@ export function CameraScreen({ active, onGoHome }: Props) {
           bottom: 8,
           backgroundColor: RESULT_NIGHT.card,
           borderRadius: 22,
-          paddingTop: 14,
+          paddingTop: 4,
+          overflow: 'hidden',
           paddingHorizontal: 12,
           gap: 8,
           borderWidth: 1,
           borderColor: '#5A4A28',
         },
         translationHead: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, paddingHorizontal: 4 },
+        handleHit: { alignItems: 'center', paddingTop: 8, paddingBottom: 6 },
+        handle: {
+          width: 36,
+          height: 4,
+          borderRadius: 2,
+          backgroundColor: RESULT_NIGHT.sand,
+        },
         translationTitle: { color: RESULT_NIGHT.text, fontSize: 18, fontWeight: '700' },
         translationSubtitle: { color: RESULT_NIGHT.sand, fontSize: 13 },
         detectedCorner: {
@@ -314,6 +330,70 @@ export function CameraScreen({ active, onGoHome }: Props) {
       if (copyTimer.current) clearTimeout(copyTimer.current);
     };
   }, []);
+
+  useEffect(() => {
+    const id = sheetProgress.addListener(({ value }) => {
+      progressRef.current = value;
+    });
+    return () => sheetProgress.removeListener(id);
+  }, [sheetProgress]);
+
+  useEffect(() => {
+    if (phase !== 'result') {
+      playedResultAnim.current = false;
+      sheetProgress.setValue(0);
+      setSheetOpen(false);
+      return;
+    }
+    if (stageSize.height <= 0 || playedResultAnim.current) return;
+    playedResultAnim.current = true;
+    sheetProgress.setValue(0);
+    setSheetOpen(true);
+    Animated.timing(sheetProgress, {
+      toValue: 1,
+      duration: 420,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  }, [phase, sheetProgress, stageSize.height]);
+
+  const snapSheet = (open: boolean) => {
+    setSheetOpen(open);
+    Animated.spring(sheetProgress, {
+      toValue: open ? 1 : 0,
+      useNativeDriver: false,
+      friction: 9,
+      tension: 68,
+    }).start();
+  };
+  const snapSheetRef = useRef(snapSheet);
+  snapSheetRef.current = snapSheet;
+  const sheetPan = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gesture) =>
+        Math.abs(gesture.dy) > 8 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
+      onPanResponderGrant: () => {
+        grantProgress.current = progressRef.current;
+      },
+      onPanResponderMove: (_, gesture) => {
+        const { expanded, collapsed } = topsRef.current;
+        const span = Math.max(1, collapsed - expanded);
+        const next = grantProgress.current - gesture.dy / span;
+        sheetProgress.setValue(Math.min(1, Math.max(0, next)));
+      },
+      onPanResponderRelease: (_, gesture) => {
+        const tap = Math.abs(gesture.dy) < 10 && Math.abs(gesture.dx) < 10;
+        if (tap) {
+          if (progressRef.current < 0.5) snapSheetRef.current(true);
+          return;
+        }
+        const open =
+          gesture.vy < -0.4 || (gesture.vy < 0.4 && progressRef.current > 0.5);
+        snapSheetRef.current(open);
+      },
+    }),
+  ).current;
 
   useEffect(() => {
     if (!active) {
@@ -556,16 +636,32 @@ export function CameraScreen({ active, onGoHome }: Props) {
     detectedLanguage === 'ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
   const targetLanguageName =
     direction === 'en-ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
-  const photoBox = containedPhotoSize(imageSize, rotation, {
-    width: Math.max(0, stageSize.width * PHOTO_SCALE),
-    height: Math.max(0, stageSize.height * PHOTO_SCALE),
+  const tops = resultSheetTops(stageSize.height);
+  topsRef.current = tops;
+  const raisedPhoto = photoAboveSheet(imageSize, rotation, stageSize, tops.expanded);
+  const loweredPhoto = photoAboveSheet(imageSize, rotation, stageSize, tops.collapsed);
+  const photoMotion = {
+    top: sheetProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [loweredPhoto.top, raisedPhoto.top],
+    }),
+    left: sheetProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [loweredPhoto.left, raisedPhoto.left],
+    }),
+    width: sheetProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [loweredPhoto.width, raisedPhoto.width],
+    }),
+    height: sheetProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [loweredPhoto.height, raisedPhoto.height],
+    }),
+  };
+  const sheetTop = sheetProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [tops.collapsed, tops.expanded],
   });
-  const photoTop = Math.max(0, (stageSize.height - photoBox.height) / 2);
-  const photoLeft = Math.max(0, (stageSize.width - photoBox.width) / 2);
-  const sheetTop =
-    photoBox.height > 0
-      ? photoTop + photoBox.height * 0.42
-      : Math.max(0, stageSize.height * 0.42);
 
   const showResult = phase === 'result';
   const showError =
@@ -732,20 +828,15 @@ export function CameraScreen({ active, onGoHome }: Props) {
           }}
         >
           {previewUri ? (
-            <View
-              style={[
-                styles.photoFrame,
-                styles.photoClip,
-                photoBox,
-                { position: 'absolute', top: photoTop, left: photoLeft },
-              ]}
+            <Animated.View
+              style={[styles.photoFrame, styles.photoClip, photoMotion]}
               testID="camera-photo"
             >
               <Image
                 testID="camera-photo-image"
                 source={{ uri: previewUri }}
                 style={StyleSheet.absoluteFill}
-                resizeMode="stretch"
+                resizeMode="contain"
                 accessibilityIgnoresInvertColors
               />
               {sentences.map((sentence, sentenceIndex) =>
@@ -778,14 +869,25 @@ export function CameraScreen({ active, onGoHome }: Props) {
                   );
                 }),
               )}
-            </View>
+            </Animated.View>
           ) : null}
-          <View
+          <Animated.View
             testID="camera-drawer"
-            accessibilityState={{ expanded: true }}
+            accessibilityState={{ expanded: sheetOpen }}
             style={[styles.translationCard, { top: sheetTop }]}
           >
-            <View style={styles.translationHead}>
+            <View
+              testID="camera-drawer-handle"
+              accessibilityRole="button"
+              accessibilityLabel={
+                sheetOpen ? t('camera.sheetLower', lang) : t('camera.sheetShow', lang)
+              }
+              {...sheetPan.panHandlers}
+            >
+              <View style={styles.handleHit}>
+                <View style={styles.handle} />
+              </View>
+              <View style={styles.translationHead}>
               <Ionicons name="sparkles" size={18} color={RESULT_NIGHT.gold} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.translationTitle}>{t('camera.translation', lang)}</Text>
@@ -798,6 +900,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
                   {t('camera.detected', lang, { language: sourceLanguageName })}
                 </Text>
               ) : null}
+            </View>
             </View>
             <ScrollView
               style={{ flexGrow: 1, flexShrink: 1, minHeight: 0 }}
@@ -889,7 +992,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
                 <Text style={styles.actionPrimaryText}>{t('camera.done', lang)}</Text>
               </Pressable>
             </View>
-          </View>
+          </Animated.View>
         </View>
       ) : null}
     </View>

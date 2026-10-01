@@ -102,6 +102,8 @@ export const en = {
   'camera.copyLine': 'Copy line',
   'camera.copyText': 'Copy text',
   'camera.copied': 'Copied',
+  'camera.sheetShow': 'Show translations',
+  'camera.sheetLower': 'Lower translations',
   'camera.done': 'Done',
   'camera.doneA11y': 'Done reviewing photo',
   'camera.error.capture': 'Capture failed. Try again.',
