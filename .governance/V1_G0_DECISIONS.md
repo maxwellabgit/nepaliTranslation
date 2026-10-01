@@ -1,5 +1,12 @@
 # V1 product decisions
 
+**2026-10-01 superseding notes.** These override the table below where they conflict. Historical rows stay as history.
+
+- Welcome credit is **10** once per installation. Each later New York date grants **5**. A stored v1 daily-open record already used the welcome. Same-day grants stay. The flight starts when the last startup popup closes.
+- Bundled samples are on-device meanings. A crossing is strict **> 90%** of distinct `meaning_id`s (333/370 does not fire; 334/370 does). Confirm and edit count. Open, skip, and report do not. The record is not a reward.
+- New Camera photo uploads are closed. Speech remains the only new contribution media. Historical photo objects are not purged by this change.
+- The interrupt-until-presented interstitial is removed. Daily-open ad-free time still suppresses the automatic interstitial.
+
 **Living contract date:** 2026-09-23
 **Selected base:** `034f1cc66b991bf5c7ba5062bfebee7ec87f1d42` (`origin/cursor/v1-r6-r9-blockers-5907`), a verified descendant of `origin/main` `71c85df5a4a7ba238c3496ed243ea0b25b027d91`
 **Authority:** [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md) and [`.governance/INTENT.md`](./INTENT.md)

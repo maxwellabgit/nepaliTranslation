@@ -42,8 +42,12 @@ Deno.serve(async (req) => {
     headers,
     body: JSON.stringify({ p_as_of: new Date().toISOString() }),
   });
-  if (!closeRes.ok) return errorResponse("unavailable", 503, requestId);
-  const closeBody = await closeRes.json() as Record<string, unknown>;
+  let closeBody: Record<string, unknown> = { ok: false };
+  if (closeRes.ok) {
+    closeBody = await closeRes.json() as Record<string, unknown>;
+  } else {
+    closeBody = { ok: false, status: closeRes.status };
+  }
 
   const dueRes = await fetch(`${url}/rest/v1/rpc/service_list_due_deletion_requests`, {
     method: "POST",

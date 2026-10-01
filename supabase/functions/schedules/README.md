@@ -3,7 +3,8 @@
 Templates for the hosted scheduler that drives:
 
 - The 5:00 PM America/New_York contribution-credit close (`service_close_ny_reward_window`).
-- The global public-review 10/day rotation (`service_rotate_review_window`).
+- Public-review rotation is retired. `public-review` returns `review_retired`.
+  Deletion still runs when `service_close_ny_reward_window` fails.
 - The 30-day account-deletion purge (`service_list_deletion_due_users` → `service_purge_scheduled_deletion` → auth admin delete).
 
 ## Files

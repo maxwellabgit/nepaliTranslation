@@ -1,13 +1,16 @@
 # Production operations (R8)
 
+**2026-10-01 source contract.** `process-scheduled-jobs` still closes the historical reward window, then always continues to deletion even when that close fails. It does not call `service_rotate_review_window`. `public-review` answers `review_retired`. `record-sample-progress` stores a count and does not grant credits. New photo registration is `photo_collection_retired`. Applying the migration `20261001150000_retire_photo_review_sample_progress.sql` and the Edge functions on a hosted project is still a human step. This page is not proof that those jobs are deployed.
+
+
 **Status:** template — every item on this page requires human-owned setup on Supabase, hosting, and third-party consoles. Do not treat this document as evidence that production infrastructure is running. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Ship program: [`plans/active/v1-testflight-runbook.md`](../plans/active/v1-testflight-runbook.md).
 
 ## Hosted scheduler (5:00 PM America/New_York rotation + 30-day purge)
 
-The `process-scheduled-jobs` Supabase Edge Function does three things:
+The `process-scheduled-jobs` Supabase Edge Function, in source, does two things. A failed reward close does not skip deletion. It does not plan or rotate public review.
 
-1. Closes the current NY reward window and grants scheduled contribution credits (`service_close_ny_reward_window`).
-2. **Review queue:** `service_plan_review_lookahead` appends private New York days toward a 28-day horizon. Fourteen planned days never enable public review automatically: the owner must separately approve public release and enable `public_review_enabled` after rights and hosted proofs. `service_rotate_review_window` still closes a due window and records snapshotted credits (1 for 4 original source words or fewer, 2 for 5 or 6, 3 for 7 or more). It opens a public window only when that flag is on, promoting the planned day when one exists. Behaviour:
+1. Closes the current NY reward window when that RPC still exists (`service_close_ny_reward_window`). A non-2xx response is recorded and deletion continues.
+2. **Historical review queue, not invoked by the worker:** `service_plan_review_lookahead` and `service_rotate_review_window` remain in old migrations. The Edge function does not call them. `public-review` returns `review_retired`. Bundled samples record a local count. Behaviour of the retired SQL, kept so old databases still explain themselves:
    - Advisory-lock-owned: concurrent invocations return `{status: 'busy'}` and mutate nothing.
    - `not_due`: if the current open window's `ny_close_at > p_as_of`, no mutation; returns `{status: 'not_due', ...}`. Monitoring counts these to confirm the scheduler is alive between 5 PM ticks.
    - At close, records credit **only** for `confirm` and `edit` submissions that were not marked `unsatisfactory` before close; `skip` and `report` grant zero; `report` also flips the source item to `public_review_eligible=false`. The ledger row is written at close. One credit is 10 minutes. `earned_ad_free_until` advances when the reviewer next signs in and claims it, stacking on time still left up to 12 hours. The Home gauge's full mark is 50 credits of remaining ad-free time; that mark is not an earning cap and is not printed. A daily-cap refusal leaves `reward_granted` false so a later close can record it.

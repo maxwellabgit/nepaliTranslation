@@ -1,11 +1,12 @@
 # Supabase Scheduled Functions descriptor for process-scheduled-jobs.
 #
 # Boundary (see docs/OPERATIONS.md):
-#   * The endpoint owns three RPC calls per invocation:
-#       - service_close_ny_reward_window  (5:00 PM America/New_York grant)
-#       - service_rotate_review_window    (G1 global 10/day rotation)
+#   * The endpoint owns the reward close and the deletion purge.
+#       - service_close_ny_reward_window  (historical 5:00 PM America/New_York grant)
 #       - service_list_deletion_due_users -> purge -> auth admin delete
 #         (30-day account deletion SLA)
+#   * A failed reward close does not skip deletion.
+#   * service_rotate_review_window is not scheduled. Public review is retired.
 #   * Idempotent. Rotation only triggers when the current window's
 #     ny_close_at has passed. Reward close is idempotent per receipt.
 #   * Every-minute cadence keeps the 5:00 PM NY rotation on time across
@@ -22,8 +23,8 @@ schedule: "* * * * *"
 timezone: UTC
 retries: 0
 description: |
-  V1 hosted scheduler: NY reward close + global 10/day public-review
-  rotation + 30-day deletion purge. See docs/OPERATIONS.md.
+  Hosted scheduler template: reward close, then deletion purge even if
+  that close fails. Review rotation is not part of this job.
 
 request:
   method: POST

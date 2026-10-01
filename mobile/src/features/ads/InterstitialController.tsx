@@ -79,7 +79,6 @@ export function InterstitialController() {
   const accumRef = useRef(createForegroundAccumulator(0));
   const readyRef = useRef(false);
   const presentingRef = useRef(false);
-  const retryAfterRef = useRef(0);
   const [videoOpen, setVideoOpen] = useState(false);
   const presentDueRef = useRef<(ms: number) => void>(() => undefined);
 
@@ -92,7 +91,7 @@ export function InterstitialController() {
   }, []);
 
   presentDueRef.current = (ms: number) => {
-    if (presentingRef.current || Date.now() < retryAfterRef.current) return;
+    if (presentingRef.current) return;
     const adFree = visibleAdFreeUntil(
       entitlement?.earnedAdFreeUntilMs ?? null,
       entitlement?.trustedNow() ?? null,
@@ -113,6 +112,8 @@ export function InterstitialController() {
     presentingRef.current = true;
     if (Platform.OS === 'web') {
       setVideoOpen(true);
+      resetClock(Date.now());
+      presentingRef.current = false;
       return;
     }
     void runInterstitialOpportunity({
@@ -130,16 +131,10 @@ export function InterstitialController() {
         hasSubscription: Boolean(subscription?.hasSubscription()),
       },
     })
-      .then((result) => {
-        if (result && 'presented' in result && result.presented) {
-          resetClock(Date.now());
-          return;
-        }
-        retryAfterRef.current = Date.now() + 15_000;
+      .then(() => {
+        resetClock(Date.now());
       })
-      .catch(() => {
-        retryAfterRef.current = Date.now() + 15_000;
-      })
+      .catch(() => undefined)
       .finally(() => {
         presentingRef.current = false;
       });
