@@ -1,16 +1,16 @@
-import { colorForIndex } from './sentenceColors';
 import { dedupeOcrDocument } from './dedupeOcr';
 import { segmentOcr, type SegmentResult } from './segmentSentences';
+import { colorForCategory } from './sourceCategory';
 import type { CorrelatedSentence, OcrDocument } from './ocrTypes';
 
 export function correlateSentences(
   segmented: Extract<SegmentResult, { ok: true }>,
   translate: (text: string) => string,
 ): CorrelatedSentence[] {
-  return segmented.sentences.map((sentence, index) => ({
+  return segmented.sentences.map((sentence) => ({
     ...sentence,
     translation: translate(sentence.text),
-    color: colorForIndex(index),
+    color: colorForCategory(sentence.category),
   }));
 }
 

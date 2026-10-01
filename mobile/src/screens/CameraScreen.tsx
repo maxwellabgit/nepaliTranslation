@@ -19,16 +19,28 @@ import { t, useUiLang, type UiLang } from '../i18n';
 import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import { BackArrow } from '../components/BackArrow';
-import { buildCorrelation } from '../camera/correlate';
+import {
+  acceptLatestTarget,
+  captureResultKey,
+  materializeCaptureGroups,
+  type CaptureTarget,
+  type TranslateRoute,
+} from '../camera/captureTarget';
+import { noteCaptureOcrCall, publishOcrLines } from '../camera/captureMetrics';
+import { dedupeOcrDocument } from '../camera/dedupeOcr';
 import { focusPointFromTap } from '../camera/focusPoint';
 import { deleteCapture } from '../camera/deleteCapture';
-import { highlightPercents } from '../camera/highlightLayout';
+import { highlightPercentsForFrames } from '../camera/highlightLayout';
+import { applyClipboardResult } from '../camera/copyAcknowledgement';
 import { photoAboveSheet, resultSheetTops } from '../camera/resultLayout';
 import { INSCRIPTION_TRANSLATIONS } from '../camera/inscriptionFixture';
 import { readCapturePreviewUri } from '../camera/readCapturePreview';
 import { withAlpha } from '../camera/sentenceColors';
-import { getCameraTestFixture } from '../camera/testFixture';
-import type { CorrelatedSentence } from '../camera/ocrTypes';
+import { segmentOcr } from '../camera/segmentSentences';
+import { getCameraTestFixture, getTestingGroundCaptureUri } from '../camera/testFixture';
+import type { CorrelatedSentence, SourceSentence } from '../camera/ocrTypes';
+import type { SourceCategory } from '../camera/sourceCategory';
+import { devanagariToRoman } from '../mt/romanize';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { setAwardSurfaceBusy } from '../translate/awardSurface';
 import { useRuntime } from '../runtime/RuntimeContext';
@@ -59,6 +71,20 @@ const RESULT_NIGHT = {
 const FIXTURE_PREVIEW =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
+const CAPTURE_TARGETS: CaptureTarget[] = ['en', 'ne-deva', 'ne-roman'];
+
+function targetMessage(target: CaptureTarget): 'camera.targetEn' | 'camera.targetNeDeva' | 'camera.targetNeRoman' {
+  if (target === 'ne-deva') return 'camera.targetNeDeva';
+  if (target === 'ne-roman') return 'camera.targetNeRoman';
+  return 'camera.targetEn';
+}
+
+function categoryMessage(
+  category: SourceCategory,
+): 'camera.targetEn' | 'camera.targetNeDeva' | 'camera.targetNeRoman' {
+  return targetMessage(category);
+}
+
 function cameraErrorCopy(reason: string | null, lang: UiLang): string {
   switch (reason) {
     case 'capture_failed':
@@ -88,14 +114,38 @@ export function CameraScreen({ active, onGoHome }: Props) {
     initialCameraPhase(false),
   );
   const [sentences, setSentences] = useState<CorrelatedSentence[]>([]);
+  const [sourceGroups, setSourceGroups] = useState<SourceSentence[]>([]);
   const [detectedLanguage, setDetectedLanguage] = useState<'en' | 'ne' | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
-  const [direction, setDirection] = useState<'ne-en' | 'en-ne'>('ne-en');
+  const [target, setTarget] = useState<CaptureTarget>('en');
+  const [targetMenu, setTargetMenu] = useState(false);
+  const [targetBusy, setTargetBusy] = useState(false);
+  const [retryNonce, setRetryNonce] = useState(0);
   const [captureUri, setCaptureUri] = useState<string | null>(null);
   const [previewUri, setPreviewUri] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const captureUriRef = useRef<string | null>(null);
   const requestGenRef = useRef(0);
+  const captureSerialRef = useRef(0);
+  const targetGenRef = useRef(0);
+  const resultCacheRef = useRef(new Map<string, CorrelatedSentence>());
+  const runtimeRef = useRef(runtime);
+  runtimeRef.current = runtime;
+  const translatorRef = useRef<(text: string, route: TranslateRoute) => Promise<string>>(
+    async (text, route) => {
+      const result = await runtimeRef.current.translation.translate({
+        text,
+        preferred: route.direction,
+        formality: 'formal',
+        script: route.script,
+        forcePreferred: true,
+      });
+      const raw = (result.text ?? '').trim();
+      if (route.script === 'roman' && /[\u0900-\u097F]/.test(raw)) return devanagariToRoman(raw);
+      return raw;
+    },
+  );
+  const harnessStarted = useRef(false);
   const [imageSize, setImageSize] = useState({ width: 800, height: 1200 });
   const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
@@ -126,7 +176,32 @@ export function CameraScreen({ active, onGoHome }: Props) {
           paddingTop: 4,
           paddingBottom: 4,
           backgroundColor: theme.colors.bg,
+          zIndex: 20,
         },
+        targetMenu: {
+          position: 'absolute',
+          top: 64,
+          left: 48,
+          right: 48,
+          zIndex: 40,
+          backgroundColor: RESULT_NIGHT.card,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: '#5A4A28',
+          overflow: 'hidden',
+        },
+        targetOption: {
+          minHeight: MIN_TOUCH,
+          justifyContent: 'center',
+          paddingHorizontal: 16,
+        },
+        targetOptionText: { color: RESULT_NIGHT.text, fontWeight: '700', fontSize: 15 },
+        selectorGold: { color: RESULT_NIGHT.gold, fontWeight: '700' },
+        sectionBlock: { marginBottom: 10 },
+        labelRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+        dot: { width: 10, height: 10, borderRadius: 5 },
+        sectionLabel: { color: RESULT_NIGHT.text, fontWeight: '700', fontSize: 14 },
+        sectionBody: { borderRadius: 14, paddingHorizontal: 12, paddingVertical: 10, marginTop: 6 },
         headerSide: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
         headerCenter: { flex: 1, alignItems: 'center', gap: 4 },
         title: { color: theme.colors.text, fontSize: 18, fontWeight: '700' },
@@ -195,7 +270,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
         detectedText: { color: theme.colors.text, fontSize: 13, fontWeight: '700' },
         headerNight: { backgroundColor: RESULT_NIGHT.bg },
         titleNight: { color: RESULT_NIGHT.text },
-        directionNight: { color: RESULT_NIGHT.sand },
+        directionNight: { color: RESULT_NIGHT.gold },
         resultSheet: {
           flex: 1,
           minHeight: 0,
@@ -293,7 +368,12 @@ export function CameraScreen({ active, onGoHome }: Props) {
   useEffect(() => {
     if (granted && phase === 'permission') {
       dispatch({ type: 'PERMISSION_GRANTED' });
-    } else if (!granted && phase !== 'permission' && phase !== 'result') {
+    } else if (
+      !granted &&
+      phase !== 'permission' &&
+      phase !== 'result' &&
+      !getTestingGroundCaptureUri()
+    ) {
       dispatch({ type: 'PERMISSION_NEEDED' });
     }
   }, [granted, phase]);
@@ -412,37 +492,61 @@ export function CameraScreen({ active, onGoHome }: Props) {
       setCaptureUri(null);
       setPreviewUri(null);
       setSentences([]);
+      setSourceGroups([]);
       setDetectedLanguage(null);
       setSelected(null);
+      setTargetBusy(false);
+      harnessStarted.current = false;
       setPhaseState(initialCameraPhase(granted));
       return;
     }
 
     const fixture = getCameraTestFixture();
     if (!fixture) return;
+    translatorRef.current = async (text, route) => {
+      if (route.direction !== 'ne-en') return '';
+      return INSCRIPTION_TRANSLATIONS[text] ?? '';
+    };
     setImageSize({ width: fixture.width, height: fixture.height });
     setRotation(fixture.rotation ?? 0);
     setPreviewUri(FIXTURE_PREVIEW);
-    const built = buildCorrelation(
-      fixture,
-      (text) => INSCRIPTION_TRANSLATIONS[text] ?? '',
-    );
+    const built = segmentOcr(dedupeOcrDocument(fixture));
     if (!built.ok) {
       setDetectedLanguage(null);
+      setSourceGroups([]);
       setPhaseState({
         phase: built.reason === 'empty' ? 'empty' : 'lowConfidence',
         reasonCode: built.reason === 'empty' ? 'no_text' : 'low_confidence',
       });
       return;
     }
+    resultCacheRef.current.clear();
+    captureSerialRef.current += 1;
     setDetectedLanguage(built.language);
-    setSentences(built.sentences);
+    setSourceGroups(built.sentences);
     setPhaseState({ phase: 'result', reasonCode: null });
   }, [active, granted, runtime.translation]);
 
-  const onCapture = async () => {
+  const onCapture = () => {
+    void runCapture(null);
+  };
+
+  const runCapture = async (forcedUri: string | null) => {
     if (isCameraBusy(phase) || phase === 'result') return;
+    translatorRef.current = async (text, route) => {
+      const result = await runtimeRef.current.translation.translate({
+        text,
+        preferred: route.direction,
+        formality: 'formal',
+        script: route.script,
+        forcePreferred: true,
+      });
+      const raw = (result.text ?? '').trim();
+      if (route.script === 'roman' && /[\u0900-\u097F]/.test(raw)) return devanagariToRoman(raw);
+      return raw;
+    };
     const gen = ++requestGenRef.current;
+    if (forcedUri) dispatch({ type: 'PERMISSION_GRANTED' });
     dispatch({ type: 'CAPTURE' });
     let uri: string | null = null;
     const abandon = () => {
@@ -453,7 +557,9 @@ export function CameraScreen({ active, onGoHome }: Props) {
       }
     };
     try {
-      const photo = await cameraRef.current?.takePictureAsync({ quality: 1 });
+      const photo = forcedUri
+        ? { uri: forcedUri }
+        : await cameraRef.current?.takePictureAsync({ quality: 1 });
       if (gen !== requestGenRef.current) {
         deleteCapture(photo?.uri ?? null, 'exit');
         return;
@@ -478,7 +584,18 @@ export function CameraScreen({ active, onGoHome }: Props) {
     const previewTask = readCapturePreviewUri(uri);
     dispatch({ type: 'RECOGNIZE_STARTED' });
     try {
+      noteCaptureOcrCall();
       const doc = await runtime.ocr.recognize(uri);
+      publishOcrLines(
+        doc.blocks.flatMap((block) =>
+          block.lines.map((line) => ({
+            text: line.text,
+            confidence: line.confidence,
+            y: Math.round(line.frame.y),
+            h: Math.round(line.frame.height),
+          })),
+        ),
+      );
       if (gen !== requestGenRef.current) {
         abandon();
         return;
@@ -489,10 +606,11 @@ export function CameraScreen({ active, onGoHome }: Props) {
         return;
       }
       if (preview) setPreviewUri(preview);
+      else if (/^(https?:|data:|blob:)/i.test(uri)) setPreviewUri(uri);
       setImageSize({ width: doc.width, height: doc.height });
       setRotation(doc.rotation ?? 0);
 
-      const built = buildCorrelation(doc, () => '');
+      const built = segmentOcr(dedupeOcrDocument(doc));
       if (!built.ok) {
         setDetectedLanguage(null);
         deleteCapture(uri, 'processed');
@@ -507,61 +625,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
         return;
       }
 
-      dispatch({ type: 'TRANSLATE_STARTED' });
-      const translated: CorrelatedSentence[] = [];
-      for (const sentence of built.sentences) {
-        if (gen !== requestGenRef.current) {
-          abandon();
-          return;
-        }
-        try {
-          const result = await runtime.translation.translate({
-            text: sentence.text,
-            preferred: direction,
-            formality: 'formal',
-            script: 'deva',
-            forcePreferred: true,
-          });
-          if (gen !== requestGenRef.current) {
-            abandon();
-            return;
-          }
-          const translation = (result.text ?? '').trim();
-          if (!translation) {
-            deleteCapture(uri, 'processed');
-            captureUriRef.current = null;
-            setCaptureUri(null);
-            dispatch({ type: 'FAIL', reasonCode: 'translate_failed' });
-            return;
-          }
-          translated.push({
-            ...sentence,
-            translation,
-          });
-        } catch (err) {
-          if (gen !== requestGenRef.current) {
-            abandon();
-            return;
-          }
-          const message = err instanceof Error ? err.message : String(err);
-          const reason =
-            /model|onnx|neural|not ready/i.test(message)
-              ? 'model_failed'
-              : 'translate_failed';
-          // Preserve preview on recoverable translate failure.
-          deleteCapture(uri, 'processed');
-          captureUriRef.current = null;
-          setCaptureUri(null);
-          dispatch({ type: 'FAIL', reasonCode: reason });
-          return;
-        }
-      }
       if (gen !== requestGenRef.current) {
         abandon();
         return;
       }
+      resultCacheRef.current.clear();
+      captureSerialRef.current += 1;
       setDetectedLanguage(built.language);
-      setSentences(translated);
+      setSourceGroups(built.sentences);
       deleteCapture(uri, 'processed');
       captureUriRef.current = null;
       setCaptureUri(null);
@@ -585,14 +656,78 @@ export function CameraScreen({ active, onGoHome }: Props) {
     }
   };
 
+  useEffect(() => {
+    if (!sourceGroups.length) {
+      setSentences([]);
+      setTargetBusy(false);
+      return;
+    }
+    const requestGeneration = ++targetGenRef.current;
+    const requestCapture = captureSerialRef.current;
+    const groups = sourceGroups;
+    const selected = target;
+    const ready = groups.every((group) => {
+      const cached = resultCacheRef.current.get(captureResultKey(requestCapture, group.id, selected));
+      return cached != null && !cached.failed;
+    });
+    if (ready) {
+      setSentences(
+        groups.map(
+          (group) => resultCacheRef.current.get(captureResultKey(requestCapture, group.id, selected))!,
+        ),
+      );
+      setTargetBusy(false);
+      return;
+    }
+    let cancelled = false;
+    setTargetBusy(true);
+    void materializeCaptureGroups({
+      groups,
+      target: selected,
+      captureId: requestCapture,
+      cache: resultCacheRef.current,
+      translate: (text, route) => translatorRef.current(text, route),
+    }).then((next) => {
+      if (cancelled) return;
+      if (
+        !acceptLatestTarget({
+          requestGeneration,
+          currentGeneration: targetGenRef.current,
+          requestCapture,
+          currentCapture: captureSerialRef.current,
+        })
+      ) {
+        return;
+      }
+      setSentences(next);
+      setTargetBusy(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [sourceGroups, target, retryNonce]);
+
+  useEffect(() => {
+    if (!active) return;
+    const uri = getTestingGroundCaptureUri();
+    if (!uri || getCameraTestFixture() || harnessStarted.current) return;
+    harnessStarted.current = true;
+    void runCapture(uri);
+  }, [active]);
+
   const onRetake = () => {
     bumpGeneration();
+    targetGenRef.current += 1;
+    resultCacheRef.current.clear();
+    captureSerialRef.current += 1;
     runtime.translation.cancelAll();
     deleteCapture(captureUriRef.current, 'retake');
     captureUriRef.current = null;
     setCaptureUri(null);
     setPreviewUri(null);
     setSentences([]);
+    setSourceGroups([]);
+    setTargetBusy(false);
     setDetectedLanguage(null);
     setSelected(null);
     if (focusTimer.current) clearTimeout(focusTimer.current);
@@ -617,37 +752,48 @@ export function CameraScreen({ active, onGoHome }: Props) {
     const text = value.trim();
     if (!text) return;
     const gen = (copyGen.current += 1);
-    void Clipboard.setStringAsync(text).then(
-      (copied) => {
-        if (gen !== copyGen.current || copied === false) return;
-        setCopiedId(id);
-        if (copyTimer.current) clearTimeout(copyTimer.current);
-        copyTimer.current = setTimeout(() => {
-          if (gen === copyGen.current) setCopiedId(null);
-        }, 1600);
-      },
-      () => {
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    copyTimer.current = null;
+    const finish = (copied: boolean | 'error') => {
+      const next = applyClipboardResult({
+        requestGeneration: gen,
+        currentGeneration: copyGen.current,
+        copied,
+        id,
+        visibleId: copiedId,
+      });
+      if (gen !== copyGen.current) return;
+      setCopiedId(next.visibleId);
+      if (!next.startTimer) return;
+      copyTimer.current = setTimeout(() => {
         if (gen === copyGen.current) setCopiedId(null);
-      },
+      }, 1600);
+    };
+    void Clipboard.setStringAsync(text).then(
+      (copied) => finish(copied === false ? false : true),
+      () => finish('error'),
     );
   };
 
   const copyAllTranslations = () => {
+    if (targetBusy) return;
     copyText(
       sentences
+        .filter((sentence) => !sentence.failed)
         .map((sentence) => sentence.translation.trim())
         .filter(Boolean)
-        .join(' '),
+        .join('\n\n'),
       'all',
     );
   };
 
+  const chooseTarget = (next: CaptureTarget) => {
+    setTargetMenu(false);
+    if (next !== target) setTarget(next);
+  };
+
   if (!active) return null;
 
-  const sourceLanguageName =
-    detectedLanguage === 'ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
-  const targetLanguageName =
-    direction === 'en-ne' ? t('camera.languageNe', lang) : t('camera.languageEn', lang);
   const tops = resultSheetTops(stageSize.height);
   topsRef.current = tops;
   const raisedPhoto = photoAboveSheet(imageSize, rotation, stageSize, tops.expanded);
@@ -676,6 +822,12 @@ export function CameraScreen({ active, onGoHome }: Props) {
   });
 
   const showResult = phase === 'result';
+  const highlightBoxes = highlightPercentsForFrames(
+    sentences.flatMap((sentence) => sentence.frames),
+    imageSize,
+    rotation,
+  );
+  let highlightIndex = 0;
   const showError =
     phase === 'empty' || phase === 'lowConfidence' || phase === 'error'
       ? cameraErrorCopy(phaseState.reasonCode, lang)
@@ -722,20 +874,33 @@ export function CameraScreen({ active, onGoHome }: Props) {
         <View style={styles.headerCenter}>
         <Text style={[styles.title, showResult && styles.titleNight]}>{t('camera.title', lang)}</Text>
         <Pressable
-          onPress={() => setDirection((d) => (d === 'ne-en' ? 'en-ne' : 'ne-en'))}
+          onPress={() => setTargetMenu((open) => !open)}
           accessibilityRole="button"
-          accessibilityLabel={t('camera.directionA11y', lang)}
-          testID="camera-direction"
+          accessibilityLabel={t('camera.targetA11y', lang)}
+          testID="camera-target"
         >
-          <Text style={[styles.direction, showResult && styles.directionNight]}>
-            {direction === 'ne-en'
-              ? t('camera.directionNeEn', lang)
-              : t('camera.directionEnNe', lang)}
+          <Text style={[styles.direction, showResult ? styles.selectorGold : null]}>
+            {t('camera.targetPrefix', lang)} {t(targetMessage(target), lang)} ⌄
           </Text>
         </Pressable>
         </View>
         <View style={styles.headerSide} />
       </View>
+      {targetMenu ? (
+        <View style={styles.targetMenu} testID="camera-target-menu">
+          {CAPTURE_TARGETS.map((option) => (
+            <Pressable
+              key={option}
+              testID={`camera-target-${option}`}
+              style={styles.targetOption}
+              accessibilityRole="button"
+              onPress={() => chooseTarget(option)}
+            >
+              <Text style={styles.targetOptionText}>{t(targetMessage(option), lang)}</Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
 
       {!granted && !showResult ? (
         <View style={styles.center} testID="camera-permission">
@@ -861,8 +1026,9 @@ export function CameraScreen({ active, onGoHome }: Props) {
                 accessibilityIgnoresInvertColors
               />
               {sentences.map((sentence, sentenceIndex) =>
-                sentence.frames.map((frame, lineIndex) => {
-                  const box = highlightPercents(frame, imageSize, rotation);
+                sentence.frames.map((_frame, lineIndex) => {
+                  const box = highlightBoxes[highlightIndex];
+                  highlightIndex += 1;
                   if (!box) return null;
                   return (
                     <Pressable
@@ -912,44 +1078,71 @@ export function CameraScreen({ active, onGoHome }: Props) {
               <Ionicons name="sparkles" size={18} color={RESULT_NIGHT.gold} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.translationTitle}>{t('camera.translation', lang)}</Text>
-                <Text style={styles.translationSubtitle}>
-                  {t('camera.translatedTo', lang, { language: targetLanguageName })}
-                </Text>
               </View>
-              {detectedLanguage ? (
-                <Text style={styles.detectedCorner} testID="camera-detected">
-                  {t('camera.detected', lang, { language: sourceLanguageName })}
-                </Text>
-              ) : null}
             </View>
             </View>
             <ScrollView
+              testID="camera-output"
               style={{ flexGrow: 1, flexShrink: 1, minHeight: 0 }}
               contentContainerStyle={{ paddingBottom: 8 }}
             >
-              <Text style={styles.contiguous} testID="camera-output">
-                {sentences.map((sentence, index) => (
-                  <Text
+              {sentences.map((sentence, index) => {
+                const label = t('camera.detected', lang, {
+                  language: t(categoryMessage(sentence.category), lang),
+                });
+                const body = targetBusy
+                  ? t('camera.translating', lang)
+                  : sentence.failed
+                    ? t('camera.error.translate', lang)
+                    : sentence.translation.trim();
+                return (
+                  <Pressable
                     key={sentence.id}
-                    testID={`camera-span-${sentence.id}`}
-                    accessibilityLabel={t('camera.sentenceTranslationA11y', lang, {
-                      n: index + 1,
-                    })}
+                    testID={`camera-section-${sentence.id}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${label}. ${sentence.text}`}
                     onPress={() =>
                       setSelected((current) => (current === sentence.id ? null : sentence.id))
                     }
-                    style={{
-                      backgroundColor: withAlpha(
-                        sentence.color,
-                        selected === sentence.id ? 0.7 : 0.38,
-                      ),
-                    }}
+                    style={styles.sectionBlock}
                   >
-                    {sentence.translation.trim()}
-                    {index < sentences.length - 1 ? ' ' : ''}
-                  </Text>
-                ))}
-              </Text>
+                    <View style={styles.labelRow}>
+                      <View style={[styles.dot, { backgroundColor: sentence.color }]} />
+                      <Text
+                        style={[styles.sectionLabel, { color: sentence.color }]}
+                        testID={index === 0 ? 'camera-detected' : undefined}
+                      >
+                        {label}
+                      </Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.sectionBody,
+                        {
+                          backgroundColor: withAlpha(
+                            sentence.color,
+                            selected === sentence.id ? 0.42 : 0.28,
+                          ),
+                        },
+                      ]}
+                    >
+                      <Text style={styles.contiguous} testID={`camera-span-${sentence.id}`}>
+                        {body}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+              {sentences.some((sentence) => sentence.failed) && !targetBusy ? (
+                <Pressable
+                  testID="camera-translate-retry"
+                  style={styles.actionBtn}
+                  onPress={() => setRetryNonce((value) => value + 1)}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.actionText}>{t('camera.retry', lang)}</Text>
+                </Pressable>
+              ) : null}
             </ScrollView>
             {copiedId ? (
               <Text

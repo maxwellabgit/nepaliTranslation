@@ -68,6 +68,11 @@ export type TestingGroundBootConfig = {
    * Not native ML Kit parity on Windows.
    */
   ocrFixture?: TgOcrDocument | 'inscription' | null;
+  /**
+   * Unchanged photo URL. The Camera screen runs its normal post-capture
+   * pipeline on this file. It is not an OCR transcript or a translation.
+   */
+  captureSource?: string | null;
   /** Optional feature-flag overrides for Playwright (TG harness only). */
   featureFlags?: Partial<{
     contributionTextEnabled: boolean;

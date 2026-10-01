@@ -1,11 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { enqueueMediaItem, loadMediaOutbox } from '../../../storage/mediaOutbox';
 import {
+  discardUtterancesForOwner,
   LOCAL_UTTERANCE_KEEP,
+  markUtteranceServerAck,
   MAX_UTTERANCE_MS,
+  PENDING_BYTE_CAP,
   PENDING_UTTERANCE_CAP,
   readPendingUtterances,
   saveUtterance,
   tryUploadPendingUtterances,
+  updateUtteranceFeedback,
 } from '../utteranceCapture';
 
 describe('utterance capture', () => {
@@ -85,5 +90,207 @@ describe('utterance capture', () => {
     );
     expect(handed).toBe(0);
     expect(upload).not.toHaveBeenCalled();
+  });
+
+  it('counts clips that are only queued locally toward the offline cap', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: 10 }));
+    const upload = jest.fn(async () => ({ id: 'queued' }));
+    for (let n = 0; n < PENDING_UTTERANCE_CAP; n += 1) {
+      const saved = await saveUtterance(
+        {
+          id: `utt-${n}`,
+          transcript: `queued ${n}`,
+          audioUri: `file:///tmp/q-${n}.m4a`,
+          durationMs: 1_000,
+          language: 'en',
+          userId: 'user-a',
+          eligible: true,
+          signedIn: true,
+          authConfigured: true,
+        },
+        { copy, upload },
+      );
+      expect(saved.ok).toBe(true);
+    }
+    const extra = await saveUtterance(
+      {
+        transcript: 'past the cap',
+        audioUri: 'file:///tmp/q-extra.m4a',
+        durationMs: 1_000,
+        language: 'en',
+        userId: 'user-a',
+        eligible: true,
+        signedIn: true,
+        authConfigured: true,
+      },
+      { copy, upload },
+    );
+    expect(extra).toEqual({ ok: false, reason: 'not_saved' });
+    expect(await readPendingUtterances()).toHaveLength(PENDING_UTTERANCE_CAP);
+    expect(upload).toHaveBeenCalledTimes(PENDING_UTTERANCE_CAP);
+  });
+
+  it('keeps every concurrent save', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: 8 }));
+    const upload = jest.fn(async () => null);
+    const saved = await Promise.all(
+      [0, 1, 2, 3].map((n) =>
+        saveUtterance(
+          {
+            id: `race-${n}`,
+            transcript: `race ${n}`,
+            audioUri: `file:///tmp/race-${n}.m4a`,
+            durationMs: 1_000,
+            language: 'ne',
+            userId: 'user-a',
+            eligible: true,
+          },
+          { copy, upload },
+        ),
+      ),
+    );
+    expect(saved.every((item) => item.ok)).toBe(true);
+    expect(await readPendingUtterances()).toHaveLength(4);
+  });
+
+  it('deletes the copy when the byte cap refuses it', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: PENDING_BYTE_CAP }));
+    const deleteFile = jest.fn();
+    const first = await saveUtterance(
+      {
+        id: 'bytes-1',
+        transcript: 'first',
+        audioUri: 'file:///tmp/bytes-1.m4a',
+        durationMs: 1_000,
+        language: 'en',
+      },
+      { copy, deleteFile, upload: jest.fn() },
+    );
+    expect(first.ok).toBe(true);
+    const second = await saveUtterance(
+      {
+        id: 'bytes-2',
+        transcript: 'second',
+        audioUri: 'file:///tmp/bytes-2.m4a',
+        durationMs: 1_000,
+        language: 'en',
+      },
+      { copy, deleteFile, upload: jest.fn() },
+    );
+    expect(second).toEqual({ ok: false, reason: 'not_saved' });
+    expect(deleteFile).toHaveBeenCalledWith('file:///tmp/bytes-2.m4a.kept');
+    expect(await readPendingUtterances()).toHaveLength(1);
+  });
+
+  it('keeps unsent clips and only prunes acknowledged files past the local keep', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: 4 }));
+    const deleteFile = jest.fn();
+    for (let n = 0; n < LOCAL_UTTERANCE_KEEP + 2; n += 1) {
+      await saveUtterance(
+        {
+          id: `ack-${n}`,
+          transcript: `ack ${n}`,
+          audioUri: `file:///tmp/ack-${n}.m4a`,
+          durationMs: 1_000,
+          language: 'en',
+          userId: 'user-a',
+          capturedAt: new Date(1_000 + n).toISOString(),
+        },
+        { copy, deleteFile, upload: jest.fn(async () => null) },
+      );
+    }
+    await saveUtterance(
+      {
+        id: 'still-local',
+        transcript: 'unsent',
+        audioUri: 'file:///tmp/unsent.m4a',
+        durationMs: 1_000,
+        language: 'ne',
+        userId: 'user-b',
+      },
+      { copy, deleteFile, upload: jest.fn(async () => null) },
+    );
+    for (let n = 0; n < LOCAL_UTTERANCE_KEEP + 2; n += 1) {
+      await markUtteranceServerAck(`ack-${n}`, 1, deleteFile);
+    }
+    const pending = await readPendingUtterances();
+    expect(pending.map((item) => item.id)).toEqual(['still-local']);
+    expect(deleteFile).toHaveBeenCalledWith('file:///tmp/ack-0.m4a.kept');
+    expect(deleteFile).toHaveBeenCalledWith('file:///tmp/ack-1.m4a.kept');
+    expect(deleteFile).not.toHaveBeenCalledWith('file:///tmp/unsent.m4a.kept');
+  });
+
+  it('deletes every file for the withdrawn account and leaves the other account', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: 4 }));
+    const deleteFile = jest.fn();
+    await saveUtterance(
+      {
+        id: 'mine',
+        transcript: 'mine',
+        audioUri: 'file:///tmp/mine.m4a',
+        durationMs: 1_000,
+        language: 'en',
+        userId: 'user-a',
+      },
+      { copy, deleteFile, upload: jest.fn(async () => null) },
+    );
+    await saveUtterance(
+      {
+        id: 'theirs',
+        transcript: 'theirs',
+        audioUri: 'file:///tmp/theirs.m4a',
+        durationMs: 1_000,
+        language: 'ne',
+        userId: 'user-b',
+      },
+      { copy, deleteFile, upload: jest.fn(async () => null) },
+    );
+    const dropped = await discardUtterancesForOwner('user-a', deleteFile);
+    expect(dropped).toEqual(['file:///tmp/mine.m4a.kept']);
+    expect(deleteFile).toHaveBeenCalledWith('file:///tmp/mine.m4a.kept');
+    expect((await readPendingUtterances()).map((item) => item.id)).toEqual(['theirs']);
+  });
+
+  it('stores a later thumb on the existing row without another audio upload', async () => {
+    const copy = jest.fn(async (uri: string) => ({ uri: `${uri}.kept`, byteSize: 4 }));
+    const upload = jest.fn(async (input: { idempotencyKey?: string; sourceUri: string; byteSize?: number; userId?: string | null; metadata?: Record<string, unknown> }) =>
+      enqueueMediaItem({
+        idempotency_key: input.idempotencyKey,
+        kind: 'speech',
+        local_uri: input.sourceUri,
+        content_type: 'audio/mp4',
+        byte_size: input.byteSize && input.byteSize > 0 ? input.byteSize : 4,
+        consent_version: '2026-09-21.media',
+        owner_id: input.userId,
+        metadata: input.metadata,
+      }),
+    );
+    const saved = await saveUtterance(
+      {
+        id: 'rate-me',
+        transcript: 'hello',
+        audioUri: 'file:///tmp/rate.m4a',
+        durationMs: 1_000,
+        language: 'en',
+        userId: 'user-a',
+        eligible: true,
+        signedIn: true,
+        authConfigured: true,
+      },
+      { copy, upload },
+    );
+    expect(saved.ok).toBe(true);
+    const uploadAgain = jest.fn(async () => {
+      throw new Error('second upload');
+    });
+    const rated = await updateUtteranceFeedback('rate-me', 'down', uploadAgain);
+    expect(rated?.feedback).toBe('down');
+    expect(rated?.feedbackRevision).toBe(2);
+    expect(uploadAgain).not.toHaveBeenCalled();
+    const rows = await loadMediaOutbox();
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.metadata.feedback).toBe('down');
+    expect(rows[0]?.feedback_pending).toBe(true);
+    expect(rows[0]?.local_uri).toBe('file:///tmp/rate.m4a.kept');
   });
 });

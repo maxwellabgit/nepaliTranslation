@@ -1,6 +1,7 @@
 import {
   containedPhotoSize,
   highlightPercents,
+  highlightPercentsForFrames,
   isHorizontalHighlight,
   padLineFrames,
 } from '../highlightLayout';
@@ -31,9 +32,30 @@ describe('camera highlight layout', () => {
       { x: 10, y: 80, width: 120, height: 16 },
     ];
     const padded = padLineFrames(frames, { width: 200, height: 200 });
-    expect(padded[0].y + padded[0].height).toBeLessThan(padded[1].y);
+    expect(padded[0].y + padded[0].height).toBeLessThanOrEqual(padded[1].y);
     expect(padded[0].width).toBeGreaterThan(padded[0].height);
     expect(padded[1].width).toBeGreaterThan(padded[1].height);
+  });
+
+  it('keeps two tightly spaced lines from overlapping when padded together', () => {
+    const image = { width: 200, height: 80 };
+    const frames = [
+      { x: 10, y: 10, width: 100, height: 20 },
+      { x: 10, y: 32, width: 100, height: 20 },
+    ];
+    const boxes = highlightPercentsForFrames(frames, image, 0);
+    const top0 = Number.parseFloat(boxes[0]!.top);
+    const height0 = Number.parseFloat(boxes[0]!.height);
+    const top1 = Number.parseFloat(boxes[1]!.top);
+    expect(top0 + height0).toBeLessThanOrEqual(top1 + 0.001);
+    const separate = [
+      highlightPercents(frames[0], image, 0),
+      highlightPercents(frames[1], image, 0),
+    ];
+    const separateBottom =
+      Number.parseFloat(separate[0]!.top) + Number.parseFloat(separate[0]!.height);
+    const separateTop = Number.parseFloat(separate[1]!.top);
+    expect(separateBottom).toBeGreaterThan(separateTop);
   });
 
   it('letterboxes the photo inside the stage', () => {

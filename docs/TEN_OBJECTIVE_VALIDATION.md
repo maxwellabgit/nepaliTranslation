@@ -28,9 +28,9 @@ The interrupt-until-presented clock from `cc79fab2f8511d7d84b0b5131694ac1dd82de7
 
 ## Decision
 
-**IMPLEMENTATION COMPLETE / DEVICE OR DEPLOYMENT VALIDATION PENDING**
+**SOURCE REPAIRS IN PROGRESS / DEVICE OR DEPLOYMENT VALIDATION PENDING**
 
-No objective is complete. Objectives 1, 2, 4, 7, and 10 have local tests for the code paths that can run here. Objectives 3, 5, 6, 8, and 9 still need the external proof named in the table. Nothing was merged to `main`. No production or staging project was migrated.
+No objective is complete. The October 1 post-push review found functional gaps after `a9d8cc8d8aace77b2946d416fac0b2b14125b263`. This working tree repairs sample delivery, speech feedback and offline limits, tight camera highlights, a stuck Copied label, and the native camera permission text. Those repairs are not device proof, a hosted migration, or a measured install size.
 
 ## Status
 
@@ -96,6 +96,39 @@ Not performed. Names to apply on a non-production project first:
 - Pending speech stops at 20 clips or 32 MiB. A full queue returns `not_saved` and does not drop clips. Guest and non-consented clips are `localOnly`.
 - Camera highlights use the theme tokens. Copy-all matches the spaced paragraph. A blank translation is `translate_failed`.
 
+## Post-push repair
+
+The review of `a9d8cc8d8aace77b2946d416fac0b2b14125b263` reproduced these defects. The source repair is:
+
+| Defect | Repair |
+|--------|--------|
+| Sample progress had no caller, and the insert had no policy | Confirm/edit and the signed-in media flush call `deliverSampleProgress`. A new migration grants authenticated insert with `user_id = auth.uid()`, allows only manifest `review-roster-370`, and keeps the strict ratio. An acknowledged crossing is not queued again. |
+| A later thumb stayed local after upload | `revise_media_feedback` updates the same speech row. The outbox keeps `synced` and sets `feedback_pending` until that revision is acknowledged. |
+| Offline handoff bypassed the 20-clip / 32 MiB cap and evicted unsent audio | Unsent means not server-acknowledged. A full queue refuses the new clip. After acknowledgement, each account keeps four recent local copies and older acknowledged files are deleted. Withdrawal deletes that account's files. Utterance writes share one queue. Thumbs appear only after the save succeeds. |
+| Tight camera lines overlapped, and a failed repeat copy left Copied on screen | Highlights for one photo are padded together against both neighbors. A `false` or rejected clipboard result clears the label; an older result does not. |
+| Native permission text offered photo contributions | Camera purpose strings now say photos are temporary on-device translation input and are not uploaded. |
+
+Hosted SQL is not applied by this repair. Native focus, gesture, audio duration, and install size remain unproven.
+
+## Mixed-language Camera capture
+
+Date: 2026-10-01. Windows testing ground, web export, Tesseract `eng+nep`. Not on-device ML Kit. Sample `nepTextEx2.jpg` SHA-256 `BDC678F679C96B69077ACDC7A881F315CB5A11BF3221F862633A90795F3CFA7A`, 334×598. The photo and the target mockup stay local.
+
+One capture recognizes English, Devanagari, and Romanized Nepali. Switching “Translate to” reuses that capture. In the final Playwright run the OCR count stayed 1 across English, Nepali (Devanagari), and Nepali (Romanized).
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` in `mobile/` | Exit 0 |
+| Camera unit tests (`captureRouting`, `correlate`, `ocrFixtures`, `browserOcrMap`) and `App.integration-test.tsx` | Passed |
+| English passthrough | “35. Paying Respects”, “to bow down, salute.”, and “ear.” stay as recognized |
+| Devanagari target | The Devanagari story stays the recognized paragraph |
+| Romanized target | That Devanagari is transliterated, not sent through English |
+| Nepali to English | Fail closed. This browser has no IndicTrans2 model, so those sections show a retry. The literary English sentence was not inserted |
+| Highlights | English crimson, Devanagari saffron, Romanized blue, stable across targets. The drawing is not highlighted |
+| Omission | Tesseract did not return `dhognu`. Romanized spelling lost macrons and a few words |
+
+Screenshots from that run stayed in `testing-ground/output/mixed-capture/` and are not in git.
+
 ## Independent review
 
-A fresh read-only pass reported no material findings against the 2026-10-01 contract: grant amounts, strict sample ratio, photo rejection, ownerless audio, and this file's refusal to mark objectives complete.
+The note on `a9d8cc8` that a read-only pass found no material gaps does not match the post-push review. The table above is the source repair for those gaps. Objectives stay incomplete until the missing device and hosted checks pass.

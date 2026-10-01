@@ -48,6 +48,7 @@ describe('mediaSync', () => {
       }),
     ) as unknown as typeof fetch;
 
+    if (!item) throw new Error('enqueue failed');
     const outcome = await uploadMediaItem(
       item,
       'tok',
@@ -99,6 +100,7 @@ describe('mediaSync', () => {
         json: async () => ({ status: 'uploaded' }),
       };
     }) as unknown as typeof fetch;
+    if (!item) throw new Error('enqueue failed');
     const outcome = await uploadMediaItem(
       item,
       'tok',
@@ -141,6 +143,7 @@ describe('mediaSync', () => {
       byte_size: 200,
       consent_version: '2026-09-21.media',
     });
+    if (!item) throw new Error('enqueue failed');
     await markMediaSynced(item.idempotency_key);
     mockedGetSupabase.mockReturnValue({
       auth: {

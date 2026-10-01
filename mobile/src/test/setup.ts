@@ -2,7 +2,8 @@ import '@testing-library/react-native/matchers';
 import { configure } from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import './consoleGuard';
-import { setCameraTestFixture } from '../camera/testFixture';
+import { resetCaptureMetrics } from '../camera/captureMetrics';
+import { setCameraTestFixture, setTestingGroundCaptureUri } from '../camera/testFixture';
 
 configure({ asyncUtilTimeout: 8000 });
 
@@ -258,6 +259,8 @@ jest.mock('expo-camera', () => {
 
 beforeEach(async () => {
   setCameraTestFixture(null);
+  setTestingGroundCaptureUri(null);
+  resetCaptureMetrics();
   (globalThis as { __nepSecureStore?: Map<string, string> }).__nepSecureStore?.clear();
   await AsyncStorage.clear();
 });

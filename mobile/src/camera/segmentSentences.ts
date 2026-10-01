@@ -1,7 +1,8 @@
+import { groupCaptureLines } from './groupCaptureLines';
 import type { OcrDocument, OcrLine, SourceSentence } from './ocrTypes';
 import { sortReadingOrder } from './readingOrder';
+import { classifySourceText } from './sourceCategory';
 
-const DEVANAGARI = /[\u0900-\u097F]/;
 const LOW_CONFIDENCE = 0.5;
 /** Distant signs are a small slice of the frame. Foreground text is not. */
 export const MIN_TEXT_HEIGHT_RATIO = 0.02;
@@ -9,12 +10,6 @@ export const MIN_TEXT_HEIGHT_RATIO = 0.02;
 export type SegmentResult =
   | { ok: true; sentences: SourceSentence[]; language: 'en' | 'ne' }
   | { ok: false; reason: 'empty' | 'low-confidence' };
-
-function lineLanguage(text: string): 'en' | 'ne' {
-  const dev = (text.match(DEVANAGARI) || []).length;
-  const lat = (text.match(/[A-Za-z]/g) || []).length;
-  return dev > lat ? 'ne' : 'en';
-}
 
 /** Combining marks and vedic signs with no base letter or digit. */
 const ISOLATED_MARK = /^[\u0900-\u0903\u093A-\u094F\u0951-\u0957\u0962-\u0963]+$/u;
@@ -34,6 +29,17 @@ function lineLargeEnough(line: OcrLine, doc: OcrDocument): boolean {
   const shorter = Math.min(doc.width, doc.height);
   if (!(shorter > 0) || !(line.frame.height > 0)) return false;
   return line.frame.height >= shorter * MIN_TEXT_HEIGHT_RATIO;
+}
+
+/**
+ * A text line is a strip. A box tall enough to cover a drawing is a region,
+ * and letting it into a paragraph pulls later lines into the same group.
+ * Tiny test documents are left alone.
+ */
+function lineIsTextStrip(line: OcrLine, doc: OcrDocument): boolean {
+  const shorter = Math.min(doc.width, doc.height);
+  if (shorter < 400) return true;
+  return line.frame.height <= doc.height * 0.08;
 }
 
 /**
@@ -57,7 +63,7 @@ export function segmentOcr(doc: OcrDocument): SegmentResult {
   if (!readable.length) return { ok: false, reason: 'empty' };
 
   const foreground = readable.filter(
-    (line) => lineGeometryOk(line, doc) && lineLargeEnough(line, doc),
+    (line) => lineGeometryOk(line, doc) && lineLargeEnough(line, doc) && lineIsTextStrip(line, doc),
   );
   if (!foreground.length) return { ok: false, reason: 'empty' };
 
@@ -69,16 +75,17 @@ export function segmentOcr(doc: OcrDocument): SegmentResult {
   });
   if (!usable.length) return { ok: false, reason: 'low-confidence' };
 
-  const sentences: SourceSentence[] = usable.map((line, index) => {
-    const text = line.text.trim();
-    return {
-      id: `s${index + 1}`,
-      text,
-      language: lineLanguage(text),
-      frames: [line.frame],
-      polygons: [line.cornerPoints],
-    };
-  });
+  const sentences = groupCaptureLines(
+    usable.map((line) => {
+      const text = line.text.trim();
+      return {
+        text,
+        category: classifySourceText(text),
+        frame: line.frame,
+        polygon: line.cornerPoints,
+      };
+    }),
+  );
 
   const nepali = sentences.filter((sentence) => sentence.language === 'ne').length;
   return {

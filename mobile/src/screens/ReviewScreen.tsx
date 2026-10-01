@@ -14,7 +14,10 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../features/auth/AuthProvider';
-import { recordCompletedSample } from '../features/contribution/sampleAllotment';
+import {
+  deliverSampleProgress,
+  recordCompletedSample,
+} from '../features/contribution/sampleAllotment';
 import {
   fetchCurrentReviewWindow,
   submitReview,
@@ -233,9 +236,14 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       }
       setStatus('ready');
       if (action === 'confirm' || action === 'edit') {
+        const userId = auth.status === 'signed-in' ? auth.userId : null;
         void recordCompletedSample({
           sampleId: active.source_item_id,
-          userId: auth.status === 'signed-in' ? auth.userId : null,
+          userId,
+        }).then((state) => {
+          if (state.pendingDelivery?.userId) {
+            void deliverSampleProgress(state.pendingDelivery.userId);
+          }
         });
       }
       advanceAfter(active.source_item_id);

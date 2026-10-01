@@ -36,7 +36,22 @@ export type MediaOutboxItem = {
   lastAttemptAt?: string | null;
   nextAttemptAt?: string | null;
   lastErrorCode?: string | null;
+  /** Latest local rating is newer than the revision the server has acknowledged. */
+  feedback_pending?: boolean;
 };
+
+/** Unsent speech stops here. Matches the utterance store; new clips are refused, not evicted. */
+export const SPEECH_OUTBOX_CAP = 20;
+export const SPEECH_OUTBOX_BYTE_CAP = 32 * 1024 * 1024;
+
+export function feedbackRevisionOf(metadata: Record<string, unknown> | undefined): number {
+  const value = metadata?.feedbackRevision;
+  return typeof value === 'number' && Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+}
+
+function unsentMedia(item: MediaOutboxItem): boolean {
+  return item.status !== 'synced' && item.status !== 'rejected';
+}
 
 function shortHash(seed: string): string {
   let h = 2166136261;
@@ -130,6 +145,7 @@ export function normalizeMediaItem(raw: unknown): MediaOutboxItem | null {
       typeof row.nextAttemptAt === 'string' ? row.nextAttemptAt : null,
     lastErrorCode:
       typeof row.lastErrorCode === 'string' ? row.lastErrorCode : null,
+    feedback_pending: row.feedback_pending === true,
   };
 }
 
@@ -181,10 +197,10 @@ export type EnqueueMediaInput = {
   metadata?: Record<string, unknown>;
 };
 
-/** Auto-queue eligible media. Idempotent by key or local_uri among active rows. */
+/** Auto-queue eligible media. Idempotent by key. A full speech queue returns null and keeps every unsent row. */
 export async function enqueueMediaItem(
   input: EnqueueMediaInput,
-): Promise<MediaOutboxItem> {
+): Promise<MediaOutboxItem | null> {
   return updateMediaOutbox((items) => {
     const now = new Date().toISOString();
     const byKey = input.idempotency_key
@@ -200,13 +216,29 @@ export async function enqueueMediaItem(
           d.status !== 'rejected',
       );
     if (byUri) {
+      const incomingRevision = feedbackRevisionOf(input.metadata);
+      const storedRevision = feedbackRevisionOf(byUri.metadata);
+      const metadata =
+        input.metadata && incomingRevision >= storedRevision
+          ? { ...byUri.metadata, ...input.metadata }
+          : byUri.metadata;
       const next: MediaOutboxItem = {
         ...byUri,
-        ...input,
+        content_type: input.content_type || byUri.content_type,
+        byte_size: input.byte_size > 0 ? input.byte_size : byUri.byte_size,
+        consent_version: input.consent_version || byUri.consent_version,
+        owner_id: input.owner_id ?? byUri.owner_id,
+        consent_epoch: input.consent_epoch ?? byUri.consent_epoch,
+        cancellation_generation:
+          input.cancellation_generation ?? byUri.cancellation_generation,
+        metadata,
+        feedback_pending:
+          incomingRevision > storedRevision ? true : byUri.feedback_pending === true,
+        status: byUri.status,
         id: byUri.id,
         idempotency_key: byUri.idempotency_key,
-        metadata: input.metadata ?? byUri.metadata,
-        status: byUri.status === 'synced' ? 'synced' : byUri.status,
+        local_uri: byUri.local_uri,
+        kind: byUri.kind,
         created_at: byUri.created_at,
         updated_at: now,
       };
@@ -214,6 +246,16 @@ export async function enqueueMediaItem(
         items: items.map((d) => (d.id === byUri.id ? next : d)),
         result: next,
       };
+    }
+    if (input.kind === 'speech') {
+      const pending = items.filter((item) => item.kind === 'speech' && unsentMedia(item));
+      const bytes = pending.reduce((total, item) => total + item.byte_size, 0);
+      if (
+        pending.length >= SPEECH_OUTBOX_CAP ||
+        bytes + input.byte_size > SPEECH_OUTBOX_BYTE_CAP
+      ) {
+        return { items, result: null };
+      }
     }
     const item: MediaOutboxItem = {
       id: `media_${shortHash(`${input.local_uri}|${now}`)}`,
@@ -227,6 +269,7 @@ export async function enqueueMediaItem(
       consent_epoch: input.consent_epoch ?? input.consent_version,
       cancellation_generation: input.cancellation_generation ?? 0,
       metadata: input.metadata ?? {},
+      feedback_pending: false,
       status: 'queued',
       media_id: null,
       object_path: null,
@@ -238,10 +281,49 @@ export async function enqueueMediaItem(
       updated_at: now,
     };
     return {
-      items: [item, ...items].slice(0, 100),
+      items: [item, ...items],
       result: item,
     };
   });
+}
+
+/** Attach a newer rating to the existing row. A missing row is left for the original upload. */
+export async function mergeMediaFeedback(
+  idempotencyKey: string,
+  metadata: Record<string, unknown>,
+): Promise<MediaOutboxItem | null> {
+  if (!idempotencyKey) return null;
+  return updateMediaOutbox((items) => {
+    const current = items.find((item) => item.idempotency_key === idempotencyKey);
+    if (!current || current.status === 'rejected') return { items, result: null };
+    const incomingRevision = feedbackRevisionOf(metadata);
+    const storedRevision = feedbackRevisionOf(current.metadata);
+    if (incomingRevision < storedRevision) return { items, result: current };
+    const next: MediaOutboxItem = {
+      ...current,
+      metadata: { ...current.metadata, ...metadata },
+      feedback_pending: incomingRevision > storedRevision || current.feedback_pending === true,
+      updated_at: new Date().toISOString(),
+    };
+    return {
+      items: items.map((item) => (item.id === current.id ? next : item)),
+      result: next,
+    };
+  });
+}
+
+export async function clearMediaFeedbackPending(
+  idempotencyKey: string,
+  ackedRevision: number,
+): Promise<void> {
+  await updateMediaOutbox((items) => ({
+    items: items.map((item) => {
+      if (item.idempotency_key !== idempotencyKey) return item;
+      if (feedbackRevisionOf(item.metadata) > ackedRevision) return item;
+      return { ...item, feedback_pending: false };
+    }),
+    result: undefined,
+  }));
 }
 
 export async function markMediaSynced(idempotencyKey: string): Promise<void> {

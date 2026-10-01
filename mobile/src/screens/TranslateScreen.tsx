@@ -472,6 +472,13 @@ export function TranslateScreen({
         onUtteranceFeedback={
           session.utteranceOffer ? (feedback) => session.rateUtterance(feedback) : undefined
         }
+        utteranceNotice={
+          session.utteranceNotice === 'not_saved'
+            ? t('translate.utteranceQueueFull', lang)
+            : session.utteranceNotice === 'invalid'
+              ? t('translate.utteranceNotSaved', lang)
+              : null
+        }
         micDisabled={
           speechUnavailable ||
           (state.translating && uiPhase.phase !== 'listening')

@@ -1,5 +1,6 @@
 import { unionFrames } from './overlayGeometry';
 import type { OcrBlock, OcrDocument, OcrFrame, OcrLine, OcrPoint } from './ocrTypes';
+import { classifySourceText } from './sourceCategory';
 
 /** Axis-aligned box from Tesseract.js (`x0,y0` → `x1,y1`). */
 export type TesseractBBox = {
@@ -61,11 +62,23 @@ function corners(frame: OcrFrame): OcrPoint[] {
   ];
 }
 
-/** Tesseract reports 0–100. The correlation pipeline expects 0–1, or null. */
+/**
+ * Tesseract reports 0–100. The correlation pipeline expects 0–1.
+ * Missing confidence stays null. A reported zero stays zero.
+ */
 export function tesseractConfidence(value: number | null | undefined): number | null {
-  if (value == null || !Number.isFinite(value) || value <= 0) return null;
+  if (value == null || !Number.isFinite(value) || value < 0) return null;
   if (value > 1) return Math.min(1, value / 100);
   return value;
+}
+
+/** Same readable-text rule as sentence segmentation: a letter or a digit counts. */
+function lineHasReadableText(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed || /^[\u0900-\u0903\u093A-\u094F\u0951-\u0957\u0962-\u0963]+$/u.test(trimmed)) {
+    return false;
+  }
+  return /[\u0904-\u097F0-9A-Za-z]/u.test(trimmed);
 }
 
 function lineLanguage(text: string): 'en' | 'ne' | 'unknown' {
@@ -104,31 +117,40 @@ function linesFromWords(entry: TesseractLine): OcrLine[] {
     const kept = ordered.filter((word) => {
       if (word.confidence == null) return true;
       if (/[\u0900-\u097F]/.test(word.text)) return word.confidence >= 0.4;
-      return word.confidence >= 0.55;
+      return word.confidence >= 0.45;
     });
     if (!kept.length) return [];
-    const text = kept.map((word) => word.text).join(' ').trim();
-    const frame = unionFrames(kept.map((word) => word.frame));
-    if (!text || !frame) return [];
-    if (!/[\u0900-\u097F]/.test(text) && !/[A-Za-z]{2,}/.test(text)) return [];
-    const confs = kept
-      .map((word) => word.confidence)
-      .filter((value): value is number => value != null)
-      .sort((a, b) => a - b);
-    const mid = Math.floor(confs.length / 2);
-    const confidence = confs.length
-      ? confs.length % 2
-        ? confs[mid]
-        : (confs[mid - 1] + confs[mid]) / 2
-      : null;
-    return [
-      {
-        text,
-        frame,
-        cornerPoints: corners(frame),
-        confidence,
-      },
-    ];
+    const runs: (typeof kept)[] = [];
+    for (const word of kept) {
+      const category = classifySourceText(word.text);
+      const current = runs[runs.length - 1];
+      const previous = current?.[0] ? classifySourceText(current[0].text) : null;
+      if (current && previous === category) current.push(word);
+      else runs.push([word]);
+    }
+    return runs.flatMap((run) => {
+      const text = run.map((word) => word.text).join(' ').trim();
+      const frame = unionFrames(run.map((word) => word.frame));
+      if (!text || !frame || !lineHasReadableText(text)) return [];
+      const confs = run
+        .map((word) => word.confidence)
+        .filter((value): value is number => value != null)
+        .sort((a, b) => a - b);
+      const mid = Math.floor(confs.length / 2);
+      const confidence = confs.length
+        ? confs.length % 2
+          ? confs[mid]
+          : (confs[mid - 1] + confs[mid]) / 2
+        : null;
+      return [
+        {
+          text,
+          frame,
+          cornerPoints: corners(frame),
+          confidence,
+        },
+      ];
+    });
   });
 }
 

@@ -137,10 +137,12 @@ export async function recordCompletedSample(input: {
             crossedAtMs: input.nowMs ?? Date.now(),
           }
         : null);
+    // A second pass over an already acknowledged crossing must not queue again.
+    const createdNow = current.crossing == null && crossed != null;
     const next: Partition = {
       completedMeaningIds,
       crossing: crossed,
-      pendingDelivery: current.pendingDelivery ?? crossed,
+      pendingDelivery: current.pendingDelivery ?? (createdNow ? crossed : null),
     };
     const written: Store = {
       schemaVersion: 2,
@@ -193,8 +195,9 @@ export async function acknowledgeAllotmentDelivery(
 }
 
 /**
- * Send a pending crossing to the authenticated progress record.
+ * Send a pending crossing through `record_sample_progress`.
  * Counts are not rewards. Offline and failed calls leave the pending row in place.
+ * The Edge wrapper is not used; this RPC is the only client delivery route.
  */
 export async function deliverSampleProgress(
   userId: string | null,
@@ -203,19 +206,32 @@ export async function deliverSampleProgress(
   const state = await readAllotmentState(userId);
   const pending = state.pendingDelivery;
   if (!pending) return 'skipped';
+  if (
+    pending.manifestVersion !== SAMPLE_MANIFEST_VERSION ||
+    pending.allotted <= 0 ||
+    pending.completed < 0 ||
+    pending.completed > pending.allotted ||
+    !passedAllotmentRatio(pending.completed, pending.allotted)
+  ) {
+    return 'pending';
+  }
   const client = getSupabase();
-  if (!client) return 'pending';
-  const rpc = client.rpc.bind(client) as unknown as (
-    fn: string,
-    args: Record<string, unknown>,
-  ) => Promise<{ error: unknown }>;
-  const { error } = await rpc('record_sample_progress', {
-    p_corpus_version: pending.manifestVersion,
-    p_allotted: pending.allotted,
-    p_completed: pending.completed,
-    p_crossed_at: new Date(pending.crossedAtMs).toISOString(),
-  });
-  if (error) return 'pending';
+  if (!client || typeof client.rpc !== 'function') return 'pending';
+  try {
+    const rpc = client.rpc.bind(client) as unknown as (
+      fn: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ error: unknown }>;
+    const { error } = await rpc('record_sample_progress', {
+      p_corpus_version: pending.manifestVersion,
+      p_allotted: pending.allotted,
+      p_completed: pending.completed,
+      p_crossed_at: new Date(pending.crossedAtMs).toISOString(),
+    });
+    if (error) return 'pending';
+  } catch {
+    return 'pending';
+  }
   await acknowledgeAllotmentDelivery(userId, pending.manifestVersion);
   return 'delivered';
 }

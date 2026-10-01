@@ -82,6 +82,7 @@ export function useTranslationSession({ active, seed }: Options) {
     durationMs: number;
     language: 'en' | 'ne';
   } | null>(null);
+  const [utteranceNotice, setUtteranceNotice] = useState<'not_saved' | 'invalid' | null>(null);
 
   const finishCapture = useCallback(() => {
     const cap = captureRef.current;
@@ -98,6 +99,7 @@ export function useTranslationSession({ active, seed }: Options) {
     }
     if (!transcript || !utteranceAllowed(durationMs)) {
       setUtteranceOffer(null);
+      setUtteranceNotice(null);
       return;
     }
     const account = authRef.current;
@@ -115,13 +117,20 @@ export function useTranslationSession({ active, seed }: Options) {
         account.status === 'signed-in' &&
         account.ageConfirmed &&
         account.consentVersion === CONTRIBUTION_CONSENT_VERSION,
-    });
-    setUtteranceOffer({
-      id: utteranceId,
-      transcript,
-      audioUri,
-      durationMs,
-      language,
+    }).then((saved) => {
+      if (!saved.ok) {
+        setUtteranceOffer(null);
+        setUtteranceNotice(saved.reason === 'not_saved' ? 'not_saved' : 'invalid');
+        return;
+      }
+      setUtteranceNotice(null);
+      setUtteranceOffer({
+        id: saved.item.id,
+        transcript: saved.item.transcript,
+        audioUri: saved.item.audioUri,
+        durationMs: saved.item.durationMs,
+        language: saved.item.language,
+      });
     });
   }, []);
 
@@ -437,6 +446,7 @@ export function useTranslationSession({ active, seed }: Options) {
     cancelListen,
     rateUtterance,
     utteranceOffer,
+    utteranceNotice,
     clearError,
     setFormality,
     setScript,

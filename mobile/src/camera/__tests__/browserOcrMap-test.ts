@@ -175,7 +175,40 @@ describe('browser OCR document mapping', () => {
     expect(doc.blocks[0].lines[0].frame.x).toBe(215);
   });
 
-  it('drops blank lines and keeps unknown confidence', () => {
+  it('splits one row into Devanagari, Roman, and English runs', () => {
+    const doc = tesseractPageToOcrDocument(
+      {
+        blocks: [
+          {
+            paragraphs: [
+              {
+                lines: [
+                  {
+                    words: [
+                      { text: '1)', confidence: 90, bbox: { x0: 10, y0: 40, x1: 28, y1: 58 } },
+                      { text: 'ढोग्नु', confidence: 96, bbox: { x0: 36, y0: 40, x1: 80, y1: 58 } },
+                      { text: 'dhognu', confidence: 90, bbox: { x0: 90, y0: 42, x1: 140, y1: 56 } },
+                      { text: 'to', confidence: 94, bbox: { x0: 150, y0: 42, x1: 170, y1: 56 } },
+                      { text: 'bow', confidence: 94, bbox: { x0: 176, y0: 42, x1: 210, y1: 56 } },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      { width: 400, height: 200 },
+    );
+    expect(doc.blocks[0].lines.map((line) => line.text)).toEqual([
+      '1)',
+      'ढोग्नु',
+      'dhognu',
+      'to bow',
+    ]);
+  });
+
+  it('drops blank lines and keeps a reported zero', () => {
     const doc = tesseractPageToOcrDocument(
       {
         blocks: [
@@ -195,7 +228,8 @@ describe('browser OCR document mapping', () => {
       { width: 100, height: 100 },
     );
     expect(doc.blocks).toHaveLength(1);
-    expect(doc.blocks[0].lines[0].confidence).toBeNull();
-    expect(doc.blocks[0].confidence).toBeNull();
+    expect(doc.blocks[0].lines[0].text).toBe('Hi');
+    expect(doc.blocks[0].lines[0].confidence).toBe(0);
+    expect(doc.blocks[0].confidence).toBe(0);
   });
 });

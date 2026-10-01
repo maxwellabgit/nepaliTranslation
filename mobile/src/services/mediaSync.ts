@@ -5,9 +5,15 @@ import { loadLocalConsent } from '../storage/contributionConsent';
 import { loadSharingToggles } from '../storage/sharingToggles';
 import { getSupabase } from './supabase';
 import { File } from 'expo-file-system';
-import { tryUploadPendingUtterances } from '../features/contribution/utteranceCapture';
+import { deliverSampleProgress } from '../features/contribution/sampleAllotment';
+import {
+  markUtteranceServerAck,
+  tryUploadPendingUtterances,
+} from '../features/contribution/utteranceCapture';
+import { deliverSpeechFeedback } from './mediaEnqueue';
 import {
   computeMediaNextAttemptAt,
+  feedbackRevisionOf,
   loadMediaOutbox,
   markMediaRejected,
   markMediaRetry,
@@ -190,6 +196,11 @@ async function applyOutcome(
 ): Promise<'synced' | 'failed' | 'rejected'> {
   if (outcome.kind === 'synced') {
     await markMediaSynced(item.idempotency_key);
+    const utteranceId =
+      typeof item.metadata.utteranceId === 'string' ? item.metadata.utteranceId : '';
+    if (utteranceId) {
+      await markUtteranceServerAck(utteranceId, feedbackRevisionOf(item.metadata));
+    }
     return 'synced';
   }
   if (outcome.kind === 'rejected') {
@@ -240,6 +251,12 @@ async function doFlush(
   }
 
   try {
+    await deliverSampleProgress(userId);
+  } catch {
+    /* a failed progress receipt stays pending for the next foreground flush */
+  }
+
+  try {
     await tryUploadPendingUtterances({
       signedIn: true,
       authConfigured: true,
@@ -282,8 +299,11 @@ async function doFlush(
       continue;
     }
     await markMediaSyncing(item.idempotency_key);
+    const fresh =
+      (await loadMediaOutbox()).find((row) => row.idempotency_key === item.idempotency_key) ??
+      item;
     const outcome = await uploadMediaItem(
-      item,
+      fresh,
       token,
       {
         supabaseUrl: env.supabaseUrl,
@@ -307,10 +327,17 @@ async function doFlush(
         );
       },
     );
-    const applied = await applyOutcome(item, outcome);
+    const applied = await applyOutcome(fresh, outcome);
     if (applied === 'synced') synced += 1;
     else if (applied === 'rejected') rejected += 1;
     else failed += 1;
+  }
+
+  const feedbackRows = (await loadMediaOutbox()).filter(
+    (item) => item.owner_id === userId && item.feedback_pending === true && item.status !== 'rejected',
+  );
+  for (const item of feedbackRows) {
+    await deliverSpeechFeedback(item.idempotency_key, item.metadata);
   }
 
   return { ok: true, synced, failed, rejected };

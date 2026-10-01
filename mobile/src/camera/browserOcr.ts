@@ -38,9 +38,13 @@ async function localWorker(): Promise<TessWorker> {
  * returns tall strips for lines that are horizontal on screen.
  * Do not enlarge a small webcam still; a blurred page comes back empty.
  */
-async function prepareImage(
-  uri: string,
-): Promise<{ source: string; width: number; height: number }> {
+async function prepareImage(uri: string): Promise<{
+  source: string;
+  width: number;
+  height: number;
+  recognizedWidth: number;
+  recognizedHeight: number;
+}> {
   const response = await fetch(uri);
   if (!response.ok) throw new Error(`capture_unreadable:${response.status}`);
   const blob = await response.blob();
@@ -51,25 +55,42 @@ async function prepareImage(
     bitmap.close();
     throw new Error('capture_empty');
   }
+  // Small captures lose short lines. Recognize a larger bitmap and map
+  // boxes back onto the original upright pixels. The file itself is unchanged.
+  const shortEdge = Math.min(width, height);
+  const scale = shortEdge > 0 && shortEdge < 1000 ? Math.min(3, 1000 / shortEdge) : 1;
   const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = Math.max(1, Math.round(width * scale));
+  canvas.height = Math.max(1, Math.round(height * scale));
   const context = canvas.getContext('2d');
   if (!context) {
     bitmap.close();
     throw new Error('capture_unreadable');
   }
-  context.drawImage(bitmap, 0, 0);
+  context.imageSmoothingEnabled = true;
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
-  return { source: canvas.toDataURL('image/png'), width, height };
+  return {
+    source: canvas.toDataURL('image/png'),
+    width,
+    height,
+    recognizedWidth: canvas.width,
+    recognizedHeight: canvas.height,
+  };
 }
 
 /** Recognize text in a photo that has already been captured. */
 export async function recognizeBrowserOcr(uri: string): Promise<OcrDocument> {
-  const [{ source, width, height }, worker] = await Promise.all([
-    prepareImage(uri),
-    localWorker(),
-  ]);
-  const result = await worker.recognize(source);
-  return tesseractPageToOcrDocument(result.data, { width, height });
+  const [prepared, worker] = await Promise.all([prepareImage(uri), localWorker()]);
+  const result = await worker.recognize(prepared.source);
+  // Word boxes are in the bitmap Tesseract saw. That bitmap may be larger
+  // than the upright photo. Map them back onto the photo.
+  return tesseractPageToOcrDocument(
+    {
+      ...result.data,
+      width: prepared.recognizedWidth,
+      height: prepared.recognizedHeight,
+    },
+    { width: prepared.width, height: prepared.height },
+  );
 }

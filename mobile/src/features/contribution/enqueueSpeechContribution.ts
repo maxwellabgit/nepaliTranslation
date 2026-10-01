@@ -68,5 +68,6 @@ export async function enqueueSpeechContribution(input: {
     consent_version: consent?.consent_version ?? '',
     metadata: input.metadata,
   });
+  if (!item) return { ok: false, reason: 'invalid' };
   return { ok: true, item };
 }

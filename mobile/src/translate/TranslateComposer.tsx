@@ -41,8 +41,10 @@ type Props = {
   micDisabled?: boolean;
   micTestId?: string;
   onPlaySource?: () => void;
-  /** Show thumbs after a mic utterance is ready to save. */
+  /** Show thumbs after a mic utterance is saved. */
   onUtteranceFeedback?: (feedback: 'up' | 'down') => void;
+  /** Shown when the recording could not be stored. Thumbs stay hidden. */
+  utteranceNotice?: string | null;
 };
 
 export function TranslateComposer({
@@ -64,6 +66,7 @@ export function TranslateComposer({
   micTestId = 'speak-hero',
   onPlaySource,
   onUtteranceFeedback,
+  utteranceNotice,
 }: Props) {
   const theme = useTheme();
   const lang = useUiLang();
@@ -324,6 +327,11 @@ export function TranslateComposer({
         ) : null}
         <View style={styles.footer}>
           <Text style={styles.count}>{value.length}/240</Text>
+          {utteranceNotice ? (
+            <Text style={styles.count} testID="utterance-save-error">
+              {utteranceNotice}
+            </Text>
+          ) : null}
           {onUtteranceFeedback ? (
             <View style={styles.feedback} testID="utterance-feedback">
               <Pressable

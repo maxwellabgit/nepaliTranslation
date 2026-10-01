@@ -36,6 +36,8 @@ export type SourceSentence = {
   id: string;
   text: string;
   language: 'en' | 'ne';
+  /** Writing system of the recognized text. Stable for the life of the capture. */
+  category: 'en' | 'ne-deva' | 'ne-roman';
   frames: OcrFrame[];
   polygons: OcrPoint[][];
 };
@@ -43,4 +45,6 @@ export type SourceSentence = {
 export type CorrelatedSentence = SourceSentence & {
   translation: string;
   color: string;
+  /** True when this target could not be produced. Empty text is not a finished translation. */
+  failed?: boolean;
 };

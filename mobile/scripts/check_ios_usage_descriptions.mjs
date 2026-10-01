@@ -27,5 +27,10 @@ for (const key of [
   'NSPhotoLibraryUsageDescription',
 ]) {
   assert.ok(typeof infoPlist[key] === 'string' && infoPlist[key].trim(), `${key} missing from generated Info.plist`);
+  assert.equal(
+    infoPlist[key].toLowerCase().includes('photo contribution'),
+    false,
+    `${key} still offers photo contributions`,
+  );
 }
 console.log('iOS Camera, microphone, speech, and photo purpose strings present in generated Info.plist');

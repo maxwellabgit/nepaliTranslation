@@ -424,7 +424,7 @@ describe('NepTranslateApp production composition', () => {
       true,
     );
     expect(screen.getByTestId('camera-detected')).toBeTruthy();
-    expect(screen.getByText('Detected: Nepali')).toBeTruthy();
+    expect(screen.getAllByText('Detected: Nepali (Devanagari)').length).toBeGreaterThan(0);
     expect(screen.getByText('Hail to Lord Shiva.')).toBeTruthy();
     expect(screen.queryByTestId('sign-in-apple')).toBeNull();
     expect(screen.queryByTestId('camera-preview')).toBeNull();

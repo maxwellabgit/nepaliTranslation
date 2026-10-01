@@ -7,10 +7,13 @@ import {
 import { getRuntimeFeatureFlags } from '../app/featureFlags';
 import { loadLocalConsent } from '../storage/contributionConsent';
 import { loadSharingToggles } from '../storage/sharingToggles';
+import { getSupabase } from './supabase';
 import {
   bumpCancelGeneration,
   cancelPendingKind,
+  clearMediaFeedbackPending,
   enqueueMediaItem,
+  feedbackRevisionOf,
   newMediaIdempotencyKey,
   readCancelGeneration,
   removeMediaForOwner,
@@ -117,7 +120,7 @@ export async function enqueueEligibleMedia(
     if (!copied) return null;
 
     const generation = await readCancelGeneration(input.userId);
-    return enqueueMediaItem({
+    const queued = await enqueueMediaItem({
       idempotency_key: input.idempotencyKey ?? newMediaIdempotencyKey(),
       kind: 'speech',
       local_uri: copied.uri,
@@ -132,6 +135,8 @@ export async function enqueueEligibleMedia(
         source: 'speech',
       },
     });
+    if (!queued && !input.alreadyDurable) deleteDurableMediaFile(copied.uri);
+    return queued;
   } catch {
     return null;
   }
@@ -142,7 +147,7 @@ export async function enqueueEligibleMedia(
  * On-device STT (expo-speech-recognition) does not currently produce one —
  * call this only when a recording file exists. See ExecPlan F3 blocker.
  */
-function deleteLocalUri(uri: string): void {
+export function deleteDurableMediaFile(uri: string): void {
   try {
     const file = new File(uri);
     if (file.exists) file.delete();
@@ -151,12 +156,39 @@ function deleteLocalUri(uri: string): void {
   }
 }
 
+/**
+ * Send the latest rating for one speech object. A missing server row stays pending.
+ * This does not upload another audio file.
+ */
+export async function deliverSpeechFeedback(
+  idempotencyKey: string,
+  metadata: Record<string, unknown>,
+): Promise<boolean> {
+  const client = getSupabase();
+  if (!client || typeof client.rpc !== 'function') return false;
+  try {
+    const rpc = client.rpc.bind(client) as unknown as (
+      fn: string,
+      args: Record<string, unknown>,
+    ) => Promise<{ error: unknown }>;
+    const { error } = await rpc('revise_media_feedback', {
+      p_idempotency_key: idempotencyKey,
+      p_metadata: metadata,
+    });
+    if (error) return false;
+    await clearMediaFeedbackPending(idempotencyKey, feedbackRevisionOf(metadata));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Withdrawal and account deletion drop that account's pending contribution files. */
 export async function discardOwnerContributionFiles(ownerId: string): Promise<void> {
   if (!ownerId) return;
   await bumpCancelGeneration(ownerId);
   const uris = await removeMediaForOwner(ownerId);
-  for (const uri of uris) deleteLocalUri(uri);
+  for (const uri of uris) deleteDurableMediaFile(uri);
 }
 
 /** Toggle-off cancels pending rows of that kind so they cannot transfer later. */
@@ -166,7 +198,7 @@ export async function stopPendingSharingKind(
 ): Promise<void> {
   if (!ownerId) return;
   const uris = await cancelPendingKind(ownerId, kind);
-  for (const uri of uris) deleteLocalUri(uri);
+  for (const uri of uris) deleteDurableMediaFile(uri);
 }
 
 export async function enqueueEligibleSpeechRecording(

@@ -1,13 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getSupabase } from '../../../services/supabase';
 import {
+  acknowledgeAllotmentDelivery,
   allottedSampleCount,
+  deliverSampleProgress,
   passedAllotmentRatio,
+  readAllotmentState,
   recordCompletedSample,
 } from '../sampleAllotment';
+
+jest.mock('../../../services/supabase', () => ({
+  getSupabase: jest.fn(() => null),
+}));
+
+const mockedGetSupabase = getSupabase as jest.MockedFunction<typeof getSupabase>;
 
 describe('shipped review samples', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
+    mockedGetSupabase.mockReturnValue(null);
   });
 
   it('includes at least 150 samples in the download', () => {
@@ -61,5 +72,49 @@ describe('shipped review samples', () => {
     });
     expect(other.crossing).toBeNull();
     expect(other.completedIds).toEqual(['s-1']);
+  });
+
+  it('does not queue a crossing again after it was acknowledged', async () => {
+    for (let n = 1; n <= 10; n += 1) {
+      await recordCompletedSample({
+        sampleId: `s-${n}`,
+        userId: 'user-a',
+        allotted: 10,
+        nowMs: 2_000,
+      });
+    }
+    await acknowledgeAllotmentDelivery('user-a');
+    const again = await recordCompletedSample({
+      sampleId: 's-1',
+      userId: 'user-a',
+      allotted: 10,
+      nowMs: 9_000,
+    });
+    expect(again.pendingDelivery).toBeNull();
+    expect(again.crossing?.crossedAtMs).toBe(2_000);
+    expect(await deliverSampleProgress('user-a')).toBe('skipped');
+  });
+
+  it('delivers a pending crossing once and leaves it pending when the server refuses', async () => {
+    const rpc = jest.fn(async (): Promise<{ error: { message: string } | null }> => ({
+      error: { message: 'rls' },
+    }));
+    mockedGetSupabase.mockReturnValue({ rpc } as never);
+    for (let n = 1; n <= 10; n += 1) {
+      await recordCompletedSample({
+        sampleId: `m-${n}`,
+        userId: 'user-a',
+        allotted: 10,
+        nowMs: 5_000,
+      });
+    }
+    expect(await deliverSampleProgress('user-a')).toBe('pending');
+    expect((await readAllotmentState('user-a')).pendingDelivery?.completed).toBe(10);
+    rpc.mockResolvedValue({ error: null });
+    expect(await deliverSampleProgress('user-a')).toBe('delivered');
+    expect(rpc).toHaveBeenCalledTimes(2);
+    expect((await readAllotmentState('user-a')).pendingDelivery).toBeNull();
+    expect(await deliverSampleProgress('user-a')).toBe('skipped');
+    mockedGetSupabase.mockReturnValue(null);
   });
 });
