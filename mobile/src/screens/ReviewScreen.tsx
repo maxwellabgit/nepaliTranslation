@@ -14,6 +14,7 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../features/auth/AuthProvider';
+import { recordCompletedSample } from '../features/contribution/sampleAllotment';
 import {
   fetchCurrentReviewWindow,
   submitReview,
@@ -34,10 +35,8 @@ import {
 import { BackArrow } from '../components/BackArrow';
 import { AppButton } from '../components/AppPrimitives';
 import { REVIEW_CATEGORY_FACE, ReviewCategoryImage } from './reviewCategoryArt';
-import { t, useNetworkOffline, useUiLang } from '../i18n';
+import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
-import { useFeatureFlags } from '../app/FeatureConfigProvider';
-import { isTestingGroundHarness } from '../features/contribution/testingGroundReview';
 import {
   readReviewProgress,
   writeReviewProgress,
@@ -87,10 +86,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   const insets = useSafeAreaInsets();
   const lang = useUiLang();
   const auth = useAuth();
-  const offline = useNetworkOffline();
-  const flags = useFeatureFlags();
-  const testingGround = isTestingGroundHarness();
-
   const [items, setItems] = useState<ReviewItem[]>([]);
   const [windowId, setWindowId] = useState<string | null>(null);
   const [closeAt, setCloseAt] = useState<string | null>(null);
@@ -106,12 +101,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   const [displayFont, setDisplayFont] = useState(false);
   const [progressReady, setProgressReady] = useState(false);
   const [coins, setCoins] = useState<DayCoins>({ english: 0, deva: 0, roman: 0 });
-
-  const shouldFetch =
-    testingGround ||
-    (!offline &&
-      auth.status === 'signed-in' &&
-      Boolean(flags.contributionTextEnabled));
 
   const refresh = useCallback(async () => {
     setStatus('loading');
@@ -134,10 +123,8 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     setCloseAt(res.window?.ny_close_at ?? null);
     setItems(loaded);
     setReviewedIds(reviewed);
-    if (testingGround) {
-      const day = await loadReviewDay();
-      setCoins(day.coins);
-    }
+    const day = await loadReviewDay();
+    setCoins(day.coins);
     setProgressReady(true);
     setPhase('intro');
     setCategory(null);
@@ -148,8 +135,8 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   }, []);
 
   useEffect(() => {
-    if (shouldFetch) void refresh();
-  }, [shouldFetch, refresh]);
+    void refresh();
+  }, [refresh]);
 
   useEffect(() => {
     let cancelled = false;
@@ -203,9 +190,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setJudgment(null);
       setError(null);
       setPhase('compose');
-      if (testingGround) void markSampleSeen();
+      void markSampleSeen();
     },
-    [grouped, reviewedIds, testingGround],
+    [grouped, reviewedIds],
   );
 
   const advanceAfter = useCallback(
@@ -220,14 +207,16 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setJudgment(null);
       setCursor(next < 0 ? cursor : next);
       setPhase(next < 0 ? 'thanks' : 'compose');
-      if (testingGround) {
-        void markReviewed(doneId);
-        if (next < 0 && category) {
-          void markCategoryCleared(category).then((day) => setCoins(day.coins));
-        }
+      void markReviewed(doneId);
+      if (next < 0 && category) {
+        void markCategoryCleared(category).then((day) => setCoins(day.coins));
       }
+      void recordCompletedSample({
+        sampleId: doneId,
+        userId: auth.status === 'signed-in' ? auth.userId : null,
+      });
     },
-    [activeList, category, cursor, reviewedIds, testingGround],
+    [activeList, auth.status, auth.userId, category, cursor, reviewedIds],
   );
 
   const send = useCallback(
@@ -498,13 +487,8 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   );
 
   const blocking =
-    (offline && !testingGround) ||
-    (!flags.contributionTextEnabled && !testingGround) ||
-    (auth.status !== 'signed-in' && !testingGround) ||
     status === 'loading' ||
     error === 'consent_required' ||
-    error === 'flag_disabled' ||
-    error === 'window_closed' ||
     error === 'unavailable' ||
     (items.length === 0 && status !== 'idle');
 
@@ -550,19 +534,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         </View>
 
         <ScrollView style={dynamic.scroll} contentContainerStyle={{ paddingBottom: 8 }}>
-          {offline && !testingGround ? (
-            <Text style={dynamic.stateNote} testID="review-state-offline">
-              {t('review.stateOffline', lang)}
-            </Text>
-          ) : !flags.contributionTextEnabled && !testingGround ? (
-            <Text style={dynamic.stateNote} testID="review-state-flag-off">
-              {t('review.stateFlagOff', lang)}
-            </Text>
-          ) : auth.status !== 'signed-in' && !testingGround ? (
-            <Text style={dynamic.stateNote} testID="review-state-sign-in">
-              {t('review.stateSignIn', lang)}
-            </Text>
-          ) : status === 'loading' ? (
+          {status === 'loading' ? (
             <View testID="review-state-loading">
               <ActivityIndicator />
               <Text style={dynamic.stateNote}>{t('review.stateLoading', lang)}</Text>

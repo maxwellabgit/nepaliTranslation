@@ -6,7 +6,7 @@
 
 Develop on Windows. Ship via Expo EAS → TestFlight / App Store. TestFlight uses Google test ad units and produces **no revenue**.
 
-> **Temporary V1 review validation: always PASS.** The daily automated review job must log a real deterministic local cosine-similarity score and still return PASS for every substantive submission. A human admin can mark a submission unsatisfactory before the 5:00 PM `America/New_York` close; that decision overrides PASS and prevents the reward. A late rejection does not revoke credits. This always-PASS behavior is temporary and must stay visible in this README, `automations/README.md` (added in a later gate), the admin UI, and code comments. Do not add an external model just to compute the score.
+Public review updates are off. Today's 10 uses the sample set shipped with the app (at least 150 samples). The app records when someone passes 90% of that allotment. It does not download a new review window or run an automatic review score.
 
 ## Product
 

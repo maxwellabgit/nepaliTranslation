@@ -101,6 +101,7 @@ export const en = {
   'camera.translatedTo': 'Detected text translated to {language}',
   'camera.copyLine': 'Copy line',
   'camera.copyText': 'Copy text',
+  'camera.copied': 'Copied',
   'camera.done': 'Done',
   'camera.doneA11y': 'Done reviewing photo',
   'camera.error.capture': 'Capture failed. Try again.',

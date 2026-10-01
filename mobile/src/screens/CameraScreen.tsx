@@ -100,7 +100,9 @@ export function CameraScreen({ active, onGoHome }: Props) {
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
   const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
   const [focusRing, setFocusRing] = useState<{ x: number; y: number } | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const focusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const phase = phaseState.phase;
 
@@ -249,6 +251,13 @@ export function CameraScreen({ active, onGoHome }: Props) {
           alignItems: 'center',
           justifyContent: 'center',
         },
+        copied: {
+          textAlign: 'center',
+          color: RESULT_NIGHT.gold,
+          fontWeight: '800',
+          fontSize: 13,
+          marginBottom: 6,
+        },
         actions: { flexDirection: 'row', gap: 8, paddingBottom: 8 },
         actionBtn: {
           flex: 1,
@@ -302,6 +311,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       deleteCapture(captureUriRef.current, 'exit');
       captureUriRef.current = null;
       if (focusTimer.current) clearTimeout(focusTimer.current);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
     };
   }, []);
 
@@ -520,10 +530,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
     else onRetake();
   };
 
-  const copyText = (value: string) => {
+  const copyText = (value: string, id: string) => {
     const text = value.trim();
     if (!text) return;
-    void Clipboard.setStringAsync(text);
+    void Clipboard.setStringAsync(text).then(() => {
+      setCopiedId(id);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopiedId(null), 1600);
+    });
   };
 
   const copyAllTranslations = () => {
@@ -532,6 +546,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
         .map((sentence) => sentence.translation.trim())
         .filter(Boolean)
         .join('\n'),
+      'all',
     );
   };
 
@@ -815,15 +830,32 @@ export function CameraScreen({ active, onGoHome }: Props) {
                   <Pressable
                     testID={`camera-copy-${sentence.id}`}
                     accessibilityRole="button"
-                    accessibilityLabel={t('camera.copyLine', lang)}
-                    onPress={() => copyText(sentence.translation)}
+                    accessibilityLabel={
+                      copiedId === sentence.id
+                        ? t('camera.copied', lang)
+                        : t('camera.copyLine', lang)
+                    }
+                    onPress={() => copyText(sentence.translation, sentence.id)}
                     style={styles.copyBtn}
                   >
-                    <Ionicons name="copy-outline" size={18} color={RESULT_NIGHT.sand} />
+                    <Ionicons
+                      name={copiedId === sentence.id ? 'checkmark' : 'copy-outline'}
+                      size={18}
+                      color={copiedId === sentence.id ? RESULT_NIGHT.gold : RESULT_NIGHT.sand}
+                    />
                   </Pressable>
                 </View>
               ))}
             </ScrollView>
+            {copiedId ? (
+              <Text
+                style={styles.copied}
+                testID="camera-copied"
+                accessibilityLiveRegion="polite"
+              >
+                {t('camera.copied', lang)}
+              </Text>
+            ) : null}
             <View style={styles.actions}>
               <Pressable
                 testID="camera-retake"
@@ -839,9 +871,13 @@ export function CameraScreen({ active, onGoHome }: Props) {
                 style={styles.actionBtn}
                 onPress={copyAllTranslations}
                 accessibilityRole="button"
-                accessibilityLabel={t('camera.copyText', lang)}
+                accessibilityLabel={
+                  copiedId === 'all' ? t('camera.copied', lang) : t('camera.copyText', lang)
+                }
               >
-                <Text style={styles.actionText}>{t('camera.copyText', lang)}</Text>
+                <Text style={styles.actionText}>
+                  {copiedId === 'all' ? t('camera.copied', lang) : t('camera.copyText', lang)}
+                </Text>
               </Pressable>
               <Pressable
                 testID="camera-done"

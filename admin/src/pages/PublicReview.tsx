@@ -65,9 +65,8 @@ export function PublicReviewPage({ api }: { api: AdminClient }) {
     <section data-testid="admin-public-review">
       <header>
         <p data-testid="admin-always-pass-notice">
-          Temporary V1 rule: automated cosine review logs a real score and
-          always returns PASS. A human unsatisfactory mark before close still
-          prevents the reward.
+          Automatic public-review updates are off. The app ships its sample
+          set and records when a user passes 90% of that allotment.
         </p>
         <h1>Today's 10 — current window</h1>
         <p>

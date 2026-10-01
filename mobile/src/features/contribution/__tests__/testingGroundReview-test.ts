@@ -27,8 +27,11 @@ describe('testing ground daily review', () => {
     const result = await fetchCurrentReviewWindow();
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.items).toHaveLength(30);
-      expect(result.window?.window_id).toBe('tg-daily-10');
+      const shipped = groupReviewItems(result.items);
+      expect(shipped.deva).toHaveLength(10);
+      expect(shipped.roman).toHaveLength(10);
+      expect(shipped.english).toHaveLength(10);
+      expect(result.window?.window_id.startsWith('review-day-')).toBe(true);
     }
 
     const saved = await submitReview({

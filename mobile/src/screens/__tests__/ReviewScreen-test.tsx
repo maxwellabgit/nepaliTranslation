@@ -88,26 +88,58 @@ describe('ReviewScreen', () => {
     await AsyncStorage.clear();
   });
 
-  it('shows the sign-in state for guests without fetching', async () => {
+  it('loads shipped samples for guests while public review is paused', async () => {
     useAuth.mockReturnValue(guestAuth);
+    fetchCurrentReviewWindow.mockResolvedValue({
+      ok: true,
+      window: { window_id: 'bundled', ny_close_at: '2027-01-01T22:00:00Z', size: 1 },
+      items: [{
+        slot: 1,
+        source_item_id: 'en-1',
+        direction: 'en-ne',
+        register: 'formal',
+        script: 'deva',
+        source_text: 'Hello',
+        proposed_target: 'नमस्ते',
+        length_tier: 1,
+        scheduled_credits: 1,
+      }],
+      mine: [],
+    });
     await act(async () => {
       renderScreen();
     });
     await waitFor(() => {
-      expect(screen.getByTestId('review-state-sign-in')).toBeTruthy();
+      expect(screen.getByTestId('review-category-english')).toBeTruthy();
     });
-    expect(fetchCurrentReviewWindow).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('review-state-sign-in')).toBeNull();
   });
 
-  it('shows the flag-off state when contribution_text_enabled is false', async () => {
+  it('loads shipped samples when the public review flag is off', async () => {
     useAuth.mockReturnValue(signedInAuth);
+    fetchCurrentReviewWindow.mockResolvedValue({
+      ok: true,
+      window: { window_id: 'bundled', ny_close_at: '2027-01-01T22:00:00Z', size: 1 },
+      items: [{
+        slot: 1,
+        source_item_id: 'en-1',
+        direction: 'en-ne',
+        register: 'formal',
+        script: 'deva',
+        source_text: 'Hello',
+        proposed_target: 'नमस्ते',
+        length_tier: 1,
+        scheduled_credits: 1,
+      }],
+      mine: [],
+    });
     await act(async () => {
       renderScreen({ textFlag: false });
     });
     await waitFor(() => {
-      expect(screen.getByTestId('review-state-flag-off')).toBeTruthy();
+      expect(screen.getByTestId('review-category-english')).toBeTruthy();
     });
-    expect(fetchCurrentReviewWindow).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('review-state-flag-off')).toBeNull();
   });
 
   async function openEnglishAndType(text: string) {

@@ -1,20 +1,11 @@
-import { readPublicEnv } from '../../config/env';
-import { getSupabase } from '../../services/supabase';
 import { isTestingGroundHarness } from './testingGroundReview';
+import { itemsForReviewDay, reviewWindowId } from './reviewDayItems';
+import { loadReviewDay } from './reviewDayStore';
 
 /**
- * G1 public review pool client.
- *
- * Contract (see .governance/V1_G0_DECISIONS.md D1/D2/D6):
- *   * One global 10-item window per America/New_York review day.
- *   * All eligible signed-in reviewers see the SAME ten items.
- *   * Rotation at 5:00 PM America/New_York closes the window and records
- *     credits from the snapshotted word count (1 credit at 4 words or fewer,
- *     2 at 5 or 6, 3 at 7 or more; 1 credit = 10 minutes). The ad-free timer
- *     moves at the reviewer's next sign-in, not at the close itself.
- *   * Copy shown in-app is "Today's 10" with subtitle "Review translations".
- *
- * Not called for guests; the mobile Review surface is signed-in only.
+ * Today's 10 reads the samples shipped with the app.
+ * Public review is paused, so this client does not download or submit a
+ * server window.
  */
 
 export type ReviewItem = {
@@ -69,79 +60,19 @@ export type ReviewSubmitResult =
         | 'invalid';
     };
 
-async function authHeaders(): Promise<
-  | { ok: true; token: string; url: string; anon: string }
-  | { ok: false; reason: 'unavailable' | 'sign_in' }
-> {
-  const env = readPublicEnv();
-  const supabase = getSupabase();
-  if (!env.authConfigured || !supabase) return { ok: false, reason: 'unavailable' };
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) return { ok: false, reason: 'sign_in' };
-  return {
-    ok: true,
-    token,
-    url: env.supabaseUrl,
-    anon: env.supabaseAnonKey,
-  };
-}
-
-function mapError(code: string | undefined): ReviewSubmitResult {
-  switch (code) {
-    case 'sign_in_required':
-    case 'unauthorized':
-      return { ok: false, reason: 'sign_in' };
-    case 'window_closed':
-      return { ok: false, reason: 'window_closed' };
-    case 'already_submitted':
-      return { ok: false, reason: 'already_submitted' };
-    case 'invalid_payload':
-      return { ok: false, reason: 'invalid' };
-    default:
-      return { ok: false, reason: 'unavailable' };
-  }
-}
-
 export async function fetchCurrentReviewWindow(): Promise<ReviewCurrent> {
-  if (isTestingGroundHarness()) {
-    const { loadReviewDay } = await import('./reviewDayStore');
-    const { itemsForReviewDay, reviewWindowId } = await import('./reviewDayItems');
-    const now = new Date();
-    const day = await loadReviewDay(now);
-    return {
-      ok: true,
-      window: {
-        window_id: reviewWindowId(day, now),
-        ny_close_at: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
-        size: 30,
-      },
-      items: itemsForReviewDay(day, now),
-      mine: [],
-    };
-  }
-  const auth = await authHeaders();
-  if (!auth.ok) return { ok: false, reason: auth.reason };
-  const res = await fetch(`${auth.url}/functions/v1/public-review`, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${auth.token}`,
-      apikey: auth.anon,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({ op: 'current' }),
-  });
-  if (!res.ok) return { ok: false, reason: 'unavailable' };
-  const body = (await res.json()) as {
-    window?: ReviewWindowSummary | null;
-    items?: ReviewItem[];
-    mine?: ReviewMine[];
-  };
+  const now = new Date();
+  const day = await loadReviewDay(now);
+  const items = itemsForReviewDay(day, now);
   return {
     ok: true,
-    window: body.window ?? null,
-    items: body.items ?? [],
-    mine: body.mine ?? [],
+    window: {
+      window_id: reviewWindowId(day, now),
+      ny_close_at: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+      size: items.length,
+    },
+    items,
+    mine: [],
   };
 }
 
@@ -175,31 +106,15 @@ export async function submitReview(input: {
       },
     };
   }
-  const auth = await authHeaders();
-  if (!auth.ok) return { ok: false, reason: auth.reason };
-  const res = await fetch(`${auth.url}/functions/v1/public-review`, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${auth.token}`,
-      apikey: auth.anon,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      op: 'submit',
+  return {
+    ok: true,
+    submission: {
+      local: true,
       window_id: input.windowId,
       source_item_id: input.sourceItemId,
       action: input.action,
-      corrected_text: input.correctedText ?? null,
-    }),
-  });
-  if (!res.ok) {
-    const body = (await res.json().catch(() => null)) as {
-      error?: { code?: string };
-    } | null;
-    return mapError(body?.error?.code);
-  }
-  const body = (await res.json()) as { submission: Record<string, unknown> };
-  return { ok: true, submission: body.submission };
+    },
+  };
 }
 
 export function creditLabelForCredits(credits: number): string {

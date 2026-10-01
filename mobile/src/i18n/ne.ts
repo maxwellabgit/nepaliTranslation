@@ -106,6 +106,7 @@ export const ne: Record<MessageKey, string> = {
   'camera.translatedTo': 'पहिचान गरिएको पाठ {language} मा अनुवाद भयो',
   'camera.copyLine': 'लाइन कपी गर्नुहोस्',
   'camera.copyText': 'पाठ कपी गर्नुहोस्',
+  'camera.copied': 'कपी भयो',
   'camera.done': 'सकियो',
   'camera.doneA11y': 'तस्बिर समीक्षा सकियो',
   'camera.error.capture': 'खिच्न सकिएन। फेरि प्रयास गर।',
