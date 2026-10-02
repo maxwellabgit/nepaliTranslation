@@ -2,7 +2,7 @@
 
 “I edited the files” is never Done. Use the checklist for **your lane only**.
 
-Shared (every lane that changes mobile runtime, configuration, assets or dependencies; docs-only C0 uses its documentation checks below):
+Shared (every lane that touches `mobile/`):
 
 - [ ] `cd mobile && npm ci`
 - [ ] `cd mobile && npm run lint`
@@ -17,27 +17,19 @@ Shared (every lane that changes mobile runtime, configuration, assets or depende
 - [ ] `/independent-reviewer` reported no material findings
 
 ## V1 final contract (C0–C15)
-Current authority: 2026-10-01 INTENT/decisions and the active reconciliation plan. The pre-edit [DONE snapshot](../docs/history/2026-10-01-contract/DONE.md) records earlier criteria; changed requirements are revalidated.
 
-- [ ] One coherent gate per commit on cursor/v1-final-contract-reconciliation-5907; no direct push to main.
-- [ ] Required behavior is distinguished from source existence, local tests, hosted proof and physical-device proof.
-- [ ] C0 docs-only: living contract/ledger/runbook aligned; pivot inventory records referenced legacy code; snapshots match baseline; links/diff checks and fresh independent review pass. Do not run unrelated full mobile tests for docs-only work.
-- [ ] C1 design: physical iPhone 16 current-build/state screenshots, originals unaltered, one agent per generated proposal, absolute before/after paths, prompt/agent manifest and owner approval. No browser/simulator substitution.
-- [ ] Core offline guest surfaces have no hard dependency on optional services; no secret/raw-content telemetry introduced.
-- [ ] Today's 10 local gamification/Extra 10 and actual response capture; confirm/edit distinct meanings, strict >90% count once; no scheduled review reward, lookahead or always-PASS validator.
-- [ ] Speech and typed thumbs link source/result/rating/revision and optional audio; private standardized records retrievable/exportable. Completion count alone is not contribution capture.
-- [ ] Consent separate from startup Terms/Privacy; current opt-in, sign-in, 18+, session and flag enforced server-side; default-off speech toggle; blocked states and ownerless clips never upload.
-- [ ] Camera photos stay temporary/local; no photo toggle or new photo upload; preserve deletion of historical objects.
-- [ ] Actual audio files <=60 seconds; at least four clips survive offline/restart; bounded queues preserve unsent data; revision/concurrency retries are idempotent.
-- [ ] Welcome ten / later New York dates five credits, ten minutes per credit, no same-day double award, restart-safe flight after last popup, 12-hour stacking and gauge rules.
-- [ ] Rewarded two credits/twenty minutes verified server-side once; localized storefront prices USD 2.99/NPR 199 if supported; signed-in UUID purchase/restore.
-- [ ] Ten-minute foreground ads at safe points, no daily cap, retained main reset behavior explicitly tested; local grants/subscriptions suppress; banners idle Translate/Learn with stable sixty-second house rotation.
-- [ ] Withdrawal/deletion completes within original thirty-day deadline; durable retries, storage/database/auth sequencing and account isolation.
-- [ ] Rights/exposure exclusions/gold protections unchanged; raw user content stays private and out of telemetry.
-- [ ] Appropriate mobile/admin/backend/browser gates pass on exact candidate; fresh and upgraded databases; no material independent-review findings.
-- [ ] No invented device, hosted, ads, price, model or revenue proof. Model optimization excluded, recorded certification unchanged and no public-gate waiver inferred.
-- [ ] Current plan/state/ledger record exact commands and blockers; FINALIZATION_COMPLETE is code-owned only.
-- [ ] Public submission follows docs/RELEASE_RUNBOOK.md, same-code iPhone+iPad proof, hosted operations and owner legal/store/live-service approvals.
+Apply on every reconciliation commit. Authoritative plan: `plans/active/v1-final-contract-reconciliation.md`. State: `.agent/V1_FINAL_CONTRACT_STATE.md`.
+
+- [ ] One coherent gate in the commit; gate ID in the subject; branch `cursor/v1-final-contract-reconciliation-5907`; do not push to `main`
+- [ ] Distinguish "implemented in repo" from "deployed and proven on hosted infrastructure"
+- [ ] Core translate path still has **no** hard dependency on Supabase, AdMob, RevenueCat, or admin
+- [ ] No production secret, tunnel URL, test password (`1234`), service role, or embedded review-sync secret introduced
+- [ ] Optional-service failure or session expiry leaves Translate, Camera, History, Settings, and Learn usable
+- [ ] Contract matches INTENT: review credits **1** (≤4 original source words), **2** (5–6), or **3** (≥7); delivered at the next sign-in after the 5:00 PM New York close; **1 credit = 10 minutes**; timer stacks up to **12 hours**; gauge full mark is **50** credits of remaining time and is not printed; rewarded ad = **2 credits / 20 minutes**; lookahead minimum **14** / target **28** / append every 14 days; session inactivity **30 days**; interstitial cap **none**; subscription **USD 2.99** (US) / **NPR 199** (Nepal); StoreKit price authoritative; Today's 10 is the only public correction route; 18+ is the contribution gate, not the guest startup gate; automated V1 validation logs a cosine score and returns **PASS**
+- [ ] Risky/network feature flags default off until hosted proof
+- [ ] No claim of physical-device, hosted-scheduler, model-pass, StoreKit, AdMob, or revenue proof without evidence
+- [ ] Human blockers recorded honestly. `FINALIZATION_COMPLETE` is code-owned only
+- [ ] Public exposure excludes source and target hashes from train/eval export. Known checks are not copied from gold. Historical migrations and benchmark failures stay intact
 
 ## Historical V1-wide gates (R0–R9)
 
@@ -183,7 +175,7 @@ F0–F10 checklists remain in git history / `plans/active/beta-release.md` for a
 
 ## Release go/no-go (public App Store)
 
-> Historical G0–G7 submit list. Public V1 now follows `docs/RELEASE_RUNBOOK.md` and the active C0–C15 plan. A completed G0–G7 checklist is not the living definition of Done.
+> Historical G0–G7 submit list. Public V1 now follows the “Public V1” paragraph in `plans/active/v1-final-contract-reconciliation.md`. A completed G0–G7 checklist is not the living definition of Done.
 
 The list below is what the G0–G7 program required:
 

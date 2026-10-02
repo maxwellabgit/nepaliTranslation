@@ -1,245 +1,53 @@
 # INTENT
-Last updated: 2026-09-23 (final contract reconciliation, base `034f1cc`)
+Last updated: 2026-10-01. Current code baseline: `9aaf493`.
 
 ## North Star
-An **offline, on-device iOS / iPadOS app** that translates **English ↔ Nepali** in real time for live conversation and everyday text. Core speech recognition, machine translation, and Camera OCR run on the device. Developed on Windows; shipped via Expo EAS → TestFlight / App Store.
+**Bola (repository name NepTranslate)** is a polished, offline-first English ↔ Nepali translator for iPhone and iPad. Typed translation, speech, Camera OCR, local history, Settings, and Learn work without an account or optional online services. Core STT, MT, and OCR run on-device; Expo SDK 57 is the release boundary.
 
-**2026-10-01.** Camera photos are not contribution uploads. Bundled meanings are local samples with a strict greater-than-90% count and no review reward. The first installation open grants 10 credits; later New York dates grant 5. Where the sections below still describe photo sharing, Today's 10 rewards, or an always-PASS cosine job, those sentences are history.
+V1 completes whole user journeys: a clear bilingual startup, useful translation and Camera results, real production advertising, and simple optional contributions that the owner can retrieve. Model improvement is outside this finalization effort. Existing model evidence and frozen gold protections are preserved; this scope change does not assert certification or waive a public-release gate.
 
-**Optional online services** (account, consented speech sharing, ads, subscription, admin, telemetry) may use Supabase, AdMob, and RevenueCat. They must never be required for typed translation, Camera processing, local history, Settings, or Learn. A failure, sign-out, or session expiry in any optional service must leave the offline core usable.
+The sole active ship program is [the C0–C15 ExecPlan](../plans/active/v1-final-contract-reconciliation.md). [The decision contract](V1_G0_DECISIONS.md) defines required behavior; [the state file](../.agent/V1_FINAL_CONTRACT_STATE.md) records evidence. The [pre-reconciliation documents](../docs/history/2026-10-01-contract/README.md) are history, not current implementation instructions.
 
-**Program status:** Foundation through `9b17ac9`, source slices **F0–F10**, gates **G0–G5** on `main` at `71c85df`, and remediation **R0–R9** integrated at `034f1cc` (`origin/cursor/v1-r6-r9-blockers-5907`) are historical evidence. They are not, by themselves, a release. The living ship contract is [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md) (gates **C0–C15**) on branch `cursor/v1-final-contract-reconciliation-5907`. Progress lives in [`.agent/V1_FINAL_CONTRACT_STATE.md`](../.agent/V1_FINAL_CONTRACT_STATE.md). Older active plans stay in the tree as history. Nothing labeled "implemented" is "deployed and operating" until hosted proof exists. The committed on-device model certificate still fails the English-to-Nepali formal and informal floors; that failure remains a public-release blocker.
+## Product and UI
+Exactly three primary surfaces: Translate, Camera, Learn. Conversation stays in Translate; Account is inside Settings. Today's 10 has one existing route reachable from Learn/Settings; it is not a fourth tab. UI languages are English and Nepali. First-launch language selection must immediately update policy and acceptance text. Formal/informal uses तपाईं / तिमी, never तँ.
 
-## Product
-**NepTranslate** — Nepali-first translation companion.
+Camera takes a portrait photo, runs on-device OCR, and shows the image above a contiguous translated passage with matched highlights and a non-color cue. Cycle crimson, saffron, blue; reject no-text and distant tiny-text captures promptly. The result sheet lowers/reopens predictably; copying reports actual clipboard success. Temporary files are deleted after retake, exit, or successful processing. Photos are never contribution uploads; no photo-library access for this capture path.
 
-Public UI languages are **English** and **Nepali**. A language selector is available on first launch and later in Settings > General. Changing language updates first-launch text immediately.
+For additional UI improvements, use screenshots of the current installed app on a **physical iPhone 16**, with build/state provenance, before proposing exact changes. One separate image-generation agent produces each screenshot-based proposal. Return original and proposed images with absolute paths for owner review; implement only approved designs. Browser and simulator screenshots may supplement, but cannot satisfy this native baseline. Do not invent new popups to fill a design brief.
 
-### Primary surfaces
-Exactly three: **Translate**, **Camera**, and **Learn**. There is no fourth bottom-navigation destination. The former Conversation experience stays inside Translate. Account is a section inside Settings, not a tab.
+## Startup, identity, and consent
+First launch requires bilingual Terms + Privacy acceptance and language choice, but no sign-in or 18+ attestation. Core surfaces remain guest-accessible.
+Optional uploads, purchase, and restore require sign-in. Sessions expire after 30 days of inactivity without disabling guest core features. RevenueCat identity is the Supabase UUID.
 
-1. **Translate** — Typing, speaking, translations, and multi-turn exchange on one screen. Usable without an account and without optional network services.
-2. **Camera** — On-device photo translation in both directions (Nepali → English and English → Nepali). Capture is portrait-oriented. Each detected sentence has a stable correlation identifier and one translucent highlight color shared by the image overlay and the translated sentence. Translated text sits below the captured image. A non-color cue (sentence number or focus synchronization) is required. Temporary capture files are deleted after retake, exit, or successful processing.
-3. **Learn** — Bundled Nepali alphabet. Offline and login-free.
+Contribution permission is separate from legal acceptance: current versioned opt-in, 18+ attestation, valid session, and the matching remote flag are required. The speech-sharing toggle defaults off. Typed feedback and Today's 10 responses require text-contribution authorization; a thumb tap is not consent. Record consent version/time/subject; do not repeat prompts after valid acceptance. Ordinary guest/local review is not an upload.
 
-**Today's 10** is the only public correction surface. The title is “Today's 10”; the descriptive subtitle is “Review translations” (natural Nepali equivalents). Learn and Settings may link to that one route. There is one screen, one API, one submission model, and one reward path. A local “Edit translation” action may change local history only and must not create a rewarded public review.
+Guest, signed-out, expired, declined, outdated-consent, under-18, and flag-off states upload nothing. Ownerless clips must never be attached to a later account. Server authorization owns these boundaries.
 
-### First launch versus account consent
-First launch contains bilingual legal acceptance (Terms and Privacy Policy) and language choice. It does not require an account and does not require an 18+ attestation. The 18+ attestation is part of the signed-in contribution gate (public review and media sharing). Guests use Translate, Camera, local history, Settings, and Learn after first-launch legal acceptance.
+## Simple contribution methods
+**Today's 10:** use the bundled, rights-cleared sample roster (at least 150 distinct meanings), gamified category progress and existing Extra 10 behavior. Category coins are completion badges, not ad-free rewards. Keep local progress and resume offline; do not restart the retired global review window, lookahead, cosine validator, or word-count reward pipeline.
+Confirm/edit count distinct meaning IDs; skip/report/open do not count toward the strict **>90%** allotment metric. With 370 meanings, 333 does not cross and 334 does. Persist the crossing and deliver it once when authorized. The metric does not replace the user's actual answer/correction, which must be durably captured and retrievable for eligible contributions.
 
-### Toggles and UI language
-- **Formal** — ON = formal Nepali; OFF = informal. Informal = **तिमी**, not तँ.
-- **देवनागरी** — ON = Devanagari; OFF = Roman Nepali.
-- **UI language** — English or नेपाली, on first launch and in Settings > General.
+**Speech and typed feedback:** unobtrusive thumbs beside the completed translation, immediate selected-state acknowledgement, and no repeated consent modal. Link the source, translated result, rating, optional correction, language settings, and optional audio by stable IDs. Save locally before asynchronous upload. Maximum utterance is 60 seconds of actual recorded audio. Preserve unsent clips across restart and queue saturation; retain at least four local clips for offline/slow-upload recovery. Queue bounds, withdrawal cleanup, and feedback revision handling must be explicit and verified.
 
-### Platforms
-**iPhone and iPad** are both in V1 scope. Camera capture stays portrait-oriented. Chrome respects tablet size classes and supported iPad multitasking widths.
+**Capture standard:** reuse the existing outbox/storage paths. One versioned, lightweight record shape carries an idempotency key, authenticated owner, method, source/result, direction/register/script, feedback revision, optional audio reference/duration, and consent metadata. Keep original text; normalize a separate export representation. No model-generated truth labels, automatic training, or public exposure of raw recordings. Clean retrieval means a working authorized admin view/export, not a manually entered export metadata record.
 
-### Optional services (not core)
+## Data, deletion, and optional services
+Resolved provenance/license/public-display rights are required for bundled public samples. Collected text remains private unless anonymization is certified. Publicly exposed source/target hashes remain excluded from train/eval exports. Never train on or alter gold answers to improve scores; never derive known checks from gold/private holdouts.
 
-#### Identity
-Supabase Auth + Sign in with Apple. Sign-in is required before any contribution, purchase, or restore. Authenticated sessions use a rolling inactivity expiration of **30 days**. Access tokens stay short-lived; the 30-day figure is inactivity timeout, not JWT lifetime. Session expiry signs the account out of account features and must not disable guest translation, Camera, history, Settings, or Learn.
+Withdrawal immediately stops contributions and clears that account's pending contribution files, preserves the account/core/subscription, and requests linked-data deletion within 30 days. Block re-consent while the purge is pending. Account deletion removes auth only after storage/database completion. Retry records survive failures; historical photo objects remain covered by deletion duties even though new photo collection is retired. No retention promise changes without owner-approved legal copy.
 
-RevenueCat `app_user_id` is the signed-in Supabase UUID before paywall or restore.
+Ads, account, subscriptions, admin, and telemetry fail soft. Flags default off until subsystem-specific hosted/device proof. New photos remain disabled regardless of flag state. Private buckets and server RLS are required. Secrets never enter mobile/admin bundles; raw content never enters telemetry.
 
-#### Account contribution consent
-Separate from first-launch legal acceptance. Stored once per account for the current material consent version. A material version change requires new consent. Ordinary restarts do not.
+## Credits and monetization
+- First installation open: 10 credits / 100 minutes, replacing the daily award on that date. Each later America/New_York date: 5 credits / 50 minutes. Persist once per installation/date, preserve leftover time, cap at 12 hours. Start the flight after the final startup popup; restart must not double-grant.
+- One credit = 10 ad-free minutes. Today's 10 has no review reward. Historical ledger balances are preserved with no clawback.
+- Gauge full mark: 50 credits of remaining time, visual only and unprinted. Full inner fill turns red; pill/clock size and color stay fixed.
+- Banners: idle Translate and idle Learn only. Bundled house creatives rotate every 60 seconds of eligible foreground display with stable slot geometry; not network revenue.
+- Automatic interstitial: ten minutes of foreground-active eligibility, no daily cap, presentation only at Translate Send, durable Camera capture, or Learn activity completion. Welcome/daily ad-free time and subscription suppress it. Preserve the owner-approved main-branch reset behavior; inspect and test both source reset paths explicitly. A timer tick alone must not bypass safe-point restrictions. SDK owns dismissal.
+- Rewarded video: optional user action, two credits / 20 minutes, exactly once after server-verified callback.
+- Subscription: USD 2.99/month US, NPR 199/month Nepal if StoreKit supports the price point; show the localized StoreKit/RevenueCat price. Sign-in before purchase/restore. Core features are never paywalled.
+- TestFlight uses Google test units and produces no revenue. Production needs owner IDs, UMP, app readiness, app-ads.txt, approved live flags, and actual serving proof. No ATT/IDFA.
 
-Before public-review submission or speech/photo sharing, the account must have:
-
-- explicit acceptance of the current versioned contribution/media consent;
-- an 18+ attestation.
-
-Settings > Account holds sign-in state, subscription controls, consent status/version, exactly two sharing toggles, withdraw contribution consent, and delete account.
-
-- **Share speech recordings** — default off.
-- **Share Camera photos** — default off.
-
-Consent is the master authorization. The toggles are not a third consent switch. They cannot turn on until contribution consent and 18+ are recorded. Server-side checks enforce this; a client boolean is not authorization.
-
-After consent, an eligible raw speech recording or Camera photo uploads automatically only when its matching toggle is on, the session is valid, and the remote flag is on. Uploads are non-blocking, account-linked, encrypted in transit, and stored in private buckets. Translation and OCR never wait on upload success.
-
-Turning a toggle off stops new uploads of that media type. It is not consent withdrawal.
-
-Withdrawing contribution consent stops every contribution upload immediately, clears that account's local pending contribution media, blocks public-review submission, preserves the auth account, subscription, translations, local history, and unrelated settings, and creates a durable deletion request with `due_at` = request time + 30 days. Re-consent is blocked while a withdrawal purge is pending.
-
-Account deletion does all of the above and deletes the auth account only after linked storage and database data are confirmed deleted.
-
-Account-linked contribution media/content is retained indefinitely until consent withdrawal or account deletion. Independently certified, irreversibly anonymized artifacts may be retained. Removing metadata or a user ID alone is not anonymization. Raw voice and face/environment photos are not presumed anonymous.
-
-Deletion completes no later than the 30-day deadline. A 14-day reconciler repairs missing or stalled requests without moving the original deadline later. A separate frequent due-date executor performs deletion. A job that runs only every 14 days is not sufficient. Deletion stages retry idempotently. The only retry/state record is never deleted before object storage, database content, and, when applicable, auth deletion are confirmed.
-
-#### Public review (“Today's 10”)
-One shared global window opens or rotates at **5:00 PM `America/New_York`** every day. Use the IANA timezone. Never encode EST as a fixed UTC offset. A window contains up to 10 items. Fewer than 10 is valid. Every eligible reviewer sees the same items. A reviewer submits at most once for a given item in a given window.
-
-Public-review eligibility is deny-by-default. Training and benchmark items may be eligible only when provenance, license, and public-display rights are resolved. Collected data may be eligible only after complete anonymization is certified. Unresolved rights mean `admin_only`. Account-linked raw media is not publicly correctable in V1.
-
-Maintain an explicit inventory of training data, benchmark data, collected/user data, and reviewed/exposed data.
-
-Future daily items are randomly preselected into a private lookahead. Bootstrap at least **14** days before enabling public review. Fill to a **28-day** target when eligible inventory permits. Every 14 days, append enough future days to restore a 28-day lookahead. New inventory joins the back of the queue and never displaces already planned days. A source item occupies at most one planned or open day at a time.
-
-If nobody submitted a substantive review by close, return the item to the eligible pool at the back of the queue. If at least one substantive review was submitted, the item is terminal for public review. Confirm and edit are substantive. Skip is not. Report earns zero and quarantines the item for admin review.
-
-Public exposure alone excludes the exposed source and target hashes from all future training and evaluation exports. A planned future item is private and not yet exposed. Record export exclusions when a window opens or the item is first served, whichever occurs first.
-
-When an item is assigned to a planned window, snapshot source text, reference/target text when present, language directions, normalized hashes, provenance, rights state, anonymization state, and original source word count.
-
-#### Review validation and rewards
-A daily automated review job calculates and logs a deterministic local cosine-similarity score for each unprocessed substantive submission. For V1 the automated result is always **PASS** regardless of the score. That temporary behavior must stay highly visible in the root README, `automations/README.md`, admin UI, and code comments. Do not add an external AI dependency merely to compute the temporary score.
-
-A human admin may mark a submission unsatisfactory before the window closes. That decision overrides the automatic PASS and prevents its reward. A human late rejection never revokes credits. It creates an admin-visible contributor alert only.
-
-At close, each satisfactory confirm/edit submission receives credits exactly once.
-
-Original source word count, snapshotted at assignment, determines reward:
-
-- 4 words or fewer: **1 credit** (10 minutes)
-- 5 or 6 words: **2 credits** (20 minutes)
-- 7 words or more: **3 credits** (30 minutes)
-
-**One credit = 10 ad-free minutes.** Empty or invalid source items are rejected before planning and earn nothing.
-
-The close at **5:00 PM `America/New_York`** decides the credits. The reviewer receives them at the next sign-in after that close, including a later day. Sign-in shows an award message, then coins fly into the Home timer and the timer pumps up to the time those credits are worth. Time still left on the clock is kept. The timer has a hard maximum of **12 hours**.
-
-The Home gauge treats **50 credits** of remaining ad-free time as a visual full mark. That mark is not an earning cap and is not printed on the gauge. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color. Rewarded-video credits use the same timer and the same mark.
-
-There is no top-half, percentile, longest-50-percent, or corpus-relative reward on the new grant path. Historical ledger rows stay as history. New reward rows carry a rule version and an idempotency key.
-
-A skip earns zero.
-
-#### Advertising
-- **Banners:** only idle Translate and idle Learn landing. Never overlap input, keyboard, camera, results, consent, or purchase UI.
-- **Automatic interstitial:** eligible after **10 minutes of foreground-active time** since the last confirmed interstitial impression. There is **no per-day maximum**. Reaching 10 minutes sets pending eligibility and does not itself display an ad. Display is allowed only at durable safe points: Translate immediately after Send has committed the input and queued or produced the translation; Camera immediately after a captured photo and its processing task are durably recorded; Learn after a completed learning activity returns to an idle state. Never on launch, resume, tab press, permission flow, error recovery, app exit, while recording, while an edit is unsaved, or while the only copy of user input is transient. A failed or no-fill interstitial does not reset the timer. A confirmed impression resets the timer. SDK-owned dismiss. Remotely disableable.
-- **Rewarded video:** explicit user action only. One server-verified, idempotent confirmation grants **2 credits** (20 ad-free minutes). Client-only claims are rejected. Preserve an existing rewarded-ad abuse cap unless a test proves it conflicts; count two-credit rewards correctly.
-- TestFlight and internal builds use Google's test ad units and produce **no revenue**. Live revenue requires an App Store production configuration, live AdMob IDs, AdMob readiness, UMP, app-ads.txt, production flags, and valid impressions after release.
-- V1 uses contextual/non-personalized ads. Do not request ATT and do not access IDFA. Keep UMP consent-form and privacy-options support.
-- Subscription or active earned ad-free time suppresses ads according to entitlement rules.
-
-#### Subscription
-Optional. One App Store subscription product with storefront-specific pricing when App Store Connect permits it:
-
-- **USD 2.99/month** for the United States storefront
-- **NPR 199/month** for the Nepal storefront
-
-NPR is the ISO currency code. Do not display “NRP.” The app displays StoreKit/RevenueCat's localized price. It never infers storefront from language, IP address, GPS, or device locale. If NPR 199 is not an available Apple price point, stop and ask the owner. Do not approximate.
-
-Sign-in is required before purchase or restore. Translation quality, Camera, speech, and Learn are never paywalled.
-
-#### Admin
-One operational console for the public-review window: pre-close unsatisfactory, late rejection, quarantine, contributor alerts, provenance inspection without raw private media. Authorization is server-side. Show the temporary notice that automated cosine review logs a score and always returns PASS.
-
-#### Telemetry
-Allowed: crash, performance, anonymous feature/usage, and UI-flow events. Forbidden in telemetry: raw translation text, transcript text, OCR text, photo/audio bytes, file paths, email, auth identifiers, tokens, and other raw user content. Raw speech and photos are contribution content, never analytics payloads. Default to no raw context and no automatic breadcrumbs that capture text fields.
-
-### Feature flags
-Recorded at base `034f1cc`. Risky and network features stay **default off** until hosted proof exists. Learn is core and is forced on at runtime even though the bundled default object sets `learnEnabled` false before that override.
-
-| Flag | Client default (`DEFAULT_FEATURE_FLAGS`) | Database default | Until proof |
-|------|------------------------------------------|------------------|-------------|
-| `contribution_text_enabled` | off | off (local `supabase/seed.sql` turns it on for RPC tests only) | off |
-| `contribution_speech_enabled` | off | off | off |
-| `contribution_photos_enabled` | off | off | off |
-| `rewards_enabled` | off | off | off |
-| `network_ads_enabled` | off | off | off |
-| `rewarded_ads_enabled` | off | off | off |
-| `automatic_interstitial_enabled` | off | off | off |
-| `paywall_enabled` | off | off | off |
-| `telemetry_enabled` | off | off | off |
-| `deletion_processing_enabled` | (server flag) | off | off |
-| `learn_enabled` | bundled false; runtime forced true | — | core, on |
-
-`contributions_enabled` is a legacy server column. Local seed sets it true for tests. Production column defaults stay off. There is no separate public-review flag yet; public review stays disabled until the 14-day lookahead gate and hosted proof exist.
-
-Flags must be remote-controllable without an app update. Disabling them must not impair offline Translate, Camera, History, Settings, or Learn.
-
-## V1 scope
-- Languages: **English ↔ Nepali only**.
-- Surfaces: **Expo iOS / iPadOS** (`mobile/`). Android / Google Play out of scope.
-- Inference: on-device STT + on-device MT + on-device Camera OCR. No cloud translation or cloud OCR for the product path.
-- Learn V1: Nepali alphabet only.
-- Quality gate: exact bundled models must pass the recorded four-class ship evaluation before **public** release. Do not lower thresholds. Translation smoke tests are not certification. Current committed evidence fails English-to-Nepali formal and informal floors.
-- Audience: general. 18+ governs contribution features, not the account-free core. Not a Kids category.
-- Distribution: internal TestFlight may proceed only under the plan's internal gate, with test ad units, optional server features off, and the model-certification failure called out. Public/external V1 may not ship while a stop-ship gate remains.
-
-## Changed values (decision table)
-
-| Topic | Required value |
-|-------|----------------|
-| Review credits | 1 if original source words are 1–4; 2 if 5–6; 3 if 7 or more. Empty text is not planned and schedules 0. Snapshotted at assignment. Delivered at the next sign-in after the 5:00 PM New York close. |
-| Credit duration | 10 ad-free minutes. Timer stacks on time still left and hard-stops at 12 hours. |
-| Gauge | 50 credits of remaining ad-free time is a visual full mark only. It is not printed and it does not cap earning. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color. |
-| Rewarded ad | 2 credits (20 minutes), server-verified once |
-| Review lookahead | Minimum 14 days before enablement; target 28; append every 14 days; never reshuffle |
-| Session inactivity | 30 days, rolling; short JWT |
-| Interstitial cap | None. 10 minutes foreground-active since last confirmed impression; safe points only |
-| Subscription | USD 2.99/month (US); NPR 199/month (Nepal); StoreKit localized price |
-
-## Goals (final contract reconciliation — C0–C15)
-- [ ] **C0** Contract rebase and honest baseline
-- [ ] **C1** One Today's 10 route; three primary surfaces
-- [ ] **C2** Deny-by-default corpus, rights, and anonymization inventory
-- [ ] **C3** 14/28-day private lookahead
-- [ ] **C4** Word-count credit rewards (1 / 2 / 3) and fail-closed export exclusions
-- [ ] **C5** Today's 10 reviewer flow and one admin console
-- [ ] **C6** First-launch legal acceptance separate from account contribution consent
-- [ ] **C7** 30-day rolling authenticated session
-- [ ] **C8** Account-linked speech/photo uploads
-- [ ] **C9** Idempotent 30-day deletion state machine
-- [ ] **C10** USD 2.99 / NPR 199 subscription copy and 2-credit rewarded ads
-- [ ] **C11** Interstitial safe points; no daily cap
-- [ ] **C12** Telemetry, privacy, dependency triage, repo hygiene
-- [ ] **C13** Offline core, Camera correlation, responsive UI, honest model gate
-- [ ] **C14** Fresh and upgrade database proof; staging jobs
-- [ ] **C15** Full regression and exact-SHA review
-
-Historical F0–F10, G0–G7, and R0–R9 plans remain recorded. Do not reopen them as the ship program. Do not rewrite their evidence to match this contract.
-
-## Constraints
-- Must: run fully offline for core translate after models are on device
-- Must: ship iOS / iPadOS via Expo/EAS from Windows
-- Must: EN↔NE only in product languages
-- Must: keep Expo SDK **57** for this release
-- Must: server is source of truth for earned rewards; StoreKit/RevenueCat for purchased price and entitlement
-- Must: grant new review rewards as 1, 2, or 3 credits from the snapshotted word count, exactly once, and start the ad-free clock at the next sign-in
-- Must: keep automated V1 review validation visibly always-PASS while still logging a real local cosine score
-- Must: exclude publicly exposed source and target hashes from every train and eval export, fail closed
-- Must: delete linked contribution data by the 30-day deadline, with a durable retry record
-- Must not: require login or 18+ for guest Translate, Camera, history, Settings, or Learn
-- Must not: add a fourth primary tab
-- Must not: use a fixed UTC offset for `America/New_York`
-- Must not: claw back credits after a late rejection
-- Must not: treat an empty exclusion file as proof
-- Must not: send raw translations, transcripts, OCR, audio, or photos to telemetry
-- Must not: request ATT or IDFA
-- Must not: show banners outside idle Translate / idle Learn
-- Must not: show automatic interstitials except at the allowlisted safe points
-- Must not: treat TestFlight test ads or sandbox IAP as production revenue
-- Must not: treat smoke translation tests as four-class model certification
-- Must not: edit `benchmarks/gold/` references to raise scores, or train on gold
-- Must not: build contributor known checks from gold, training holdouts, or private evaluation answers
-- Must not: rewrite historical migrations or falsify old benchmarks
-- Must not: put service/secret keys in the app bundle or admin browser code
-- Must not: request photo-library permission for the camera translation path
-- Must not: display “NRP” or hard-code a Nepal price for a non-Nepal storefront
-
-## Not Doing (this release)
-- PC or cloud product MT / OCR
-- Android / Google Play ship
-- A fourth primary tab
-- ATT / IDFA
-- Annual, lifetime, or free-trial IAP
-- Automatic model training from contributions
-- Cash value for credits
-- Competing public correction implementations
-- Approximating NPR 199 when Apple does not offer that price point
-
-## Definition of Done
-Code-owned finalization is complete only when C0–C15 are green on an exact pushed SHA, fresh and upgrade database paths are green, and `.agent/V1_FINAL_CONTRACT_STATE.md` is current. `FINALIZATION_COMPLETE` does not mean App Store, AdMob, hosted production, physical-device, or public V1 gates were completed. Those stay `WAITING_HUMAN` until evidence exists. Public V1 stays blocked while the committed model certificate fails its floors.
-
-## Sensitive areas
-- Apple Developer / EAS / App Store Connect credentials and storefront prices (USD 2.99 / NPR 199)
-- Supabase project, Apple provider, service role (Edge Functions only), private media buckets
-- AdMob / RevenueCat keys and webhooks
-- Bundled model weights and the honest failing EN→NE certificate
-- Private gold benchmark answers
-- Contribution consent, Privacy Policy, Terms, and deletion (legal review required before live collection)
+## Release evidence
+Compile success, a source screenshot, and a green helper test are not a completed journey. Prove consent → local capture → retry → authorized storage → admin retrieval → withdrawal/deletion. Prove offline core, native iPhone/iPad interaction, and owner-unit ads separately.
+Submission target: October 2 morning, America/New_York, conditional on recorded release gates; not a guaranteed Apple approval date. Model optimization is not in this work; existing unresolved certificates remain disclosed. Keep exact SHA/build IDs, full CI, fresh/upgrade database proof, fresh independent review, hosted receipts, and device results. Public V1 stays NO-GO while a required stop-ship gate remains.

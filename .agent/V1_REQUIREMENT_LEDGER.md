@@ -1,38 +1,28 @@
 # V1 requirement ledger
+Contract: 2026-10-01. Code baseline: 9aaf4933bb0cdecd45c67a3e36a4af4a819612f1.
+Statuses below describe current proof, not code presence. Historical ledger and its PASS entries are preserved in [the snapshot](../docs/history/2026-10-01-contract/V1_REQUIREMENT_LEDGER.md).
 
-Candidate SHA: recorded in `.agent/V1_FINAL_CONTRACT_STATE.md`.
-A PASS requires a run against that SHA. Source presence is not a PASS.
+- Contract reconciliation: PASS for docs scope; .agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md records validation and fresh independent review. Runtime discrepancies remain open.
+- Physical iPhone 16 baseline / proposed images: BLOCKED; native screenshots/build manifest absent; no images generated.
+- Owner-approved popup implementation: NOT RUN; prior mockups are not approved native-reference implementations.
+- Startup language/legal acceptance and separate opt-in: SOURCE EXISTS; native/server current-version proof pending.
+- Today's 10 gamified local progress / >90%: SOURCE + LOCAL TESTS RECORDED in TEN_OBJECTIVE_VALIDATION; device persistence/hosted receipts unproven.
+- Actual Today's 10 answer/correction capture: GAP; local submission acknowledgement does not retain correction text.
+- Typed thumbs / result-linked speech feedback: GAP; existing thumbs target saved utterances, typed journey incomplete.
+- Speech queue/duration/revision/restart: SOURCE + LOCAL TESTS RECORDED; actual audio file duration, process-kill, account isolation and hosted revision proof pending.
+- Admin retrieval/export of Today’s 10 + typed + audio records: NOT PROVEN; existing triage/metadata pages are not a verified unified export.
+- Closed new photo uploads: SOURCE GUARDS; October migrations/Edge deployment and hosted denial still pending.
+- Session inactivity, withdrawal, account deletion: HISTORICAL TESTS EXIST; current deployed/private storage and deadline receipts needed.
+- Credits 10 welcome / 5 daily, 10 minutes each, 12-hour cap: LOCAL TESTS RECORDED; native day/restart/flight/suppression proof pending.
+- Ten-minute safe-point ads: GAP; timer_elapsed controller path remains; approved main reset behavior not device-verified.
+- Banners/house rotation/native ads: SOURCE EXISTS; native owner-unit serving/geometry/consent proof pending.
+- Rewarded ad two-credit SSV: HOSTED/DEVICE PROOF PENDING.
+- Storefront price, purchase/restore: OWNER CONFIG + DEVICE PROOF PENDING.
+- Offline core, Camera/speech/clipboard/accessibility/iPad: NATIVE PROOF PENDING.
+- Fresh/upgrade backend, mobile/admin/browser CI: EXACT-CANDIDATE FULL RUN PENDING; earlier results do not certify new changes.
+- Rights, authorization, clean export, telemetry/secret exclusion: CURRENT-PIPELINE PROOF PENDING.
+- Model certificate: PREVIOUS FAILURE PRESERVED; no optimization or waiver in this effort.
+- App Store legal/bilingual metadata/production rollout: OWNER GATES PENDING.
+
 Internal TestFlight: NO-GO. Public V1: NO-GO.
-
-| ID | Area | Status | Evidence |
-| --- | --- | --- | --- |
-| 1 | First launch, guest core | NOT RUN | No guest device capture |
-| 2 | Bilingual UI | NOT RUN | No bilingual device pass |
-| 3 | Legal URLs live | BLOCKED | URLs are not a hosted proof |
-| 4 | EN→NE model quality | FAIL | 2026-09-25 `--require-weights`: formal chrF 0.6582 passes 0.55, तपाईं rate 0.0 fails 0.15 |
-| 5 | NE→EN model quality | NOT RUN | Exact-weight certificate not re-run |
-| 6 | Register floors | FAIL | 2026-09-25: formal तपाईं 0.0 and informal तिमी 0.0 |
-| 7 | Offline model availability | NOT RUN | No low-storage or interrupted-download device run |
-| 8 | English on-device speech | BLOCKED | No physical iPhone or iPad |
-| 9 | Nepali on-device speech | BLOCKED | No physical device; local Nepali model is not the wired runtime |
-| 10 | Camera OCR and temp files | BLOCKED | No native device proof |
-| 11 | Camera layout | BLOCKED | No iPad proof |
-| 12 | Learn alphabet | NOT RUN | No bilingual reviewer or device audio check |
-| 13 | History stays local for guests | NOT RUN | No device proof |
-| 14 | Startup consent subject | PASS | Fresh and upgrade `supabase test db`, including test 26, at the candidate that contains `20260924120000` |
-| 15 | Sharing toggles per account | PASS | Same SQL suite; pre-fix profile kept its row and sharing defaulted off |
-| 16 | Media queue owner | NOT RUN | Mobile unit tests only. No signed-URL race or private-bucket round trip |
-| 17 | 30-day deletion | NOT RUN | One deletion row surviving migration is not retry, failure recovery, or the original deadline. Hosted executor receipts are still required |
-| 18 | Today's 10 one route | NOT RUN | No two-user review day |
-| 19 | Rights deny-by-default | PASS | Node `reviewEligibility.test.mjs` and pgTAP 19 / 22 on fresh and upgrade databases |
-| 20 | Lookahead 14/28 and DST | PASS | Node `reviewLookahead.test.mjs` and pgTAP 24. Fourteen days do not enable public review |
-| 21 | Credits 2 / 4 and no clawback | PASS | Node `sourceWordCount.test.mjs` and pgTAP 23. No concurrent-close device proof |
-| 22 | Source and target exclusions | NOT RUN on live corpus | `node scripts/check_review_exclusions.mjs` must print `positive exclusion fixture: PASS` before the corpus scan. A scan of 4,998 rows with 0 committed exclusions is not this proof. pgTAP 19 checks hashes after close on a fresh database |
-| 23 | Ad-free time display | NOT RUN | Gauge unit test only. No hosted entitlement proof |
-| 24 | Rewarded video 30 minutes | NOT RUN | Deno SSV signature tests passed earlier. No hosted callback |
-| 25 | Interstitial 15 minutes, no daily cap | NOT RUN | No native impression proof |
-| 26 | Subscription price and restore | BLOCKED | StoreKit and NPR 199 price point are not configured |
-| 27 | Ads suppressed while entitled | NOT RUN | No device ad run |
-| 28 | Privacy of optional services | NOT RUN | Flags default off. No hosted secret or RLS audit on a deployed project |
-| 29 | Exact model certificate | FAIL | 2026-09-25 `--require-weights` exit 1. Roman class did not finish because `npx` was missing in the cert subprocess |
-| 30 | Release operations | BLOCKED | No EAS build, staging jobs, or physical-device matrix |
+No device, hosted, model, or production gate was closed by a documentation rewrite.

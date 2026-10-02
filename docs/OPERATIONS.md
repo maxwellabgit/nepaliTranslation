@@ -1,3 +1,7 @@
+# Operations reference status — 2026-10-01
+Current functional release instructions are in [RELEASE_RUNBOOK.md](RELEASE_RUNBOOK.md) and [the active plan](../plans/active/v1-final-contract-reconciliation.md). The body below is a **historical R8 operations template**, not current policy or evidence. Do not enable photo collection, review rotation, cosine validation or new review rewards from it. October source/deploy gaps are listed in [V1_PIVOT_INVENTORY.md](V1_PIVOT_INVENTORY.md).
+
+## Historical template (preserved)
 # Production operations (R8)
 
 **2026-10-01 source contract.** `process-scheduled-jobs` still closes the historical reward window, then always continues to deletion even when that close fails. It does not call `service_rotate_review_window`. `public-review` answers `review_retired`. `record-sample-progress` stores a count and does not grant credits. New photo registration is `photo_collection_retired`. Applying the migration `20261001150000_retire_photo_review_sample_progress.sql` and the Edge functions on a hosted project is still a human step. This page is not proof that those jobs are deployed.

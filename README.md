@@ -18,11 +18,14 @@ Public UI languages are English and Nepali. Primary surfaces are **Translate**, 
 | **Camera** | Portrait on-device photo translation in both directions. Each sentence keeps one correlation color on the image and in the text below the image. |
 | **Learn** | Offline Nepali alphabet. |
 
-**Today's 10** (subtitle: Review translations) is the only public correction flow. The 5:00 PM `America/New_York` close decides the credits from the snapshotted original source: **1 credit** for 4 words or fewer, **2 credits** for 5 or 6 words, **3 credits** for 7 or more. One credit is 10 ad-free minutes. The timer starts at the next sign-in, keeps time still left, and stops at 12 hours. The Home gauge treats 50 credits of remaining ad-free time as a visual full mark. That mark is not printed and it does not cap earning. When the inner bar is full, that fill turns red. The pill and the clock stay the same size and color. Under one hour the clock reads m:ss, starting at 0:00. At one hour it becomes h:mm:ss.
+**Today's 10** (subtitle: Review translations) uses bundled local samples, category progress and Extra 10 completion badges. It awards no ad-free review credits. Eligible responses and speech/typed-result feedback must be captured privately and retrievable; the current source does not yet prove those complete journeys. Confirm/edit count distinct meanings toward a strict **>90%** metric; the metric is separate from actual answer capture.
 
+The first installation open grants **10 credits** (100 minutes), replacing that day's daily award; each later New York date grants **5** (50 minutes). Preserve leftover time up to 12 hours. Gauge full mark is 50 unprinted credits, not an earning cap; full inner fill turns red without changing the pill/clock.
 **Subscription target:** USD 2.99/month on the United States storefront and NPR 199/month on the Nepal storefront. The app shows the localized StoreKit/RevenueCat price.
 
 **Register:** Formal / informal Nepali uses `तपाईं` vs `तिमी`. Informal is तिमी, not तँ.
+
+UI improvements require current physical iPhone 16 screenshots, one separate image agent per proposal, and owner review. See [native baseline intake](docs/design/v1-ui/README.md). [Pivot inventory](docs/V1_PIVOT_INVENTORY.md) distinguishes source from missing capture/retrieval proof.
 
 Living contract: [`.governance/INTENT.md`](.governance/INTENT.md) and [`plans/active/v1-final-contract-reconciliation.md`](plans/active/v1-final-contract-reconciliation.md).
 
@@ -48,8 +51,8 @@ Owner authorization is required before `eas build` or `eas submit`. The commands
 ```powershell
 cd mobile
 npx eas-cli login
-npx eas build --platform ios --profile production
-npx eas submit --platform ios --latest
+npx eas build --platform ios --profile testflight
+npx eas submit --platform ios --profile testflight --id <EAS_BUILD_ID>
 ```
 
 See [`mobile/README.md`](mobile/README.md) for one-time Apple Developer + EAS setup.
@@ -68,12 +71,12 @@ plans/active/    One living plan per line of effort
 .cursor/agents/  Subagents: one per lane + independent reviewer
 ```
 
-## Today's 10 lineup
+## Today's 10 lineup (bundled local behavior; native proof pending)
 
 The review pool CSV has 378 meanings and 1,512 rows (four forms of each meaning). That lines up **37 days** of 10 in English, 10 in Devanagari, and 10 in Romanized. Eight leftover meanings are not a full day, so they are not scheduled. Days are not repeated.
 
 - A user who never sees the first sample of any category stays on that day's set. Unseen samples are not thrown out.
-- Seeing one sample, even with no review submitted, rotates that user to the next day. The daily popup says that set earned no review coins.
+- Seeing one sample, even with no review submitted, rotates that user to the next day. Category coins are local completion badges; there are no review-earned ad-free credits.
 - A user who never opens Today's 10 still gets the first-open welcome and the daily credit award.
 - The first time the app opens, the award is **10 credits** (100 minutes). Each later New York day, the first open awards **5 credits** (50 minutes). Time still left is kept, up to 12 hours.
 - First-open welcome cards are the list in `mobile/src/features/contribution/openWelcome.ts`. Append a card to extend the welcome.

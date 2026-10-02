@@ -1,3 +1,7 @@
+# Certification reference status — 2026-10-01
+The statuses below are historical, not certification of 9aaf493 or this documentation change. Current requirements/proof gaps are [the ledger](../.agent/V1_REQUIREMENT_LEDGER.md), [INTENT](../.governance/INTENT.md), and [the active plan](../plans/active/v1-final-contract-reconciliation.md). Photo sharing and global review rewards are retired. Existing model results remain unchanged and unresolved.
+
+## Historical certification record (preserved)
 # Certification checklist (accessibility, privacy, quality)
 
 Source-side items can be marked **source-proven**. Device-only items stay open until a physical iPhone/iPad pass is recorded in [`DEVICE_PROOF.md`](./DEVICE_PROOF.md). Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Living contract: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md).

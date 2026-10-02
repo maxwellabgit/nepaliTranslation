@@ -1,6 +1,6 @@
 # Data classification — public review, training, benchmarks
 
-**Living contract:** 2026-09-23
+**Living contract:** 2026-10-01. Rights/anonymization/exposure protections below remain binding. The former global public-review scheduling predicates are historical and do not authorize new uploads or rewards. Current bundled Today's 10 requires cleared public-display rights; collected user responses stay private unless certified separately.
 **Authority:** [`.governance/INTENT.md`](./INTENT.md), [`.governance/V1_G0_DECISIONS.md`](./V1_G0_DECISIONS.md), [`plans/active/v1-final-contract-reconciliation.md`](../plans/active/v1-final-contract-reconciliation.md)
 
 ## Living rules (deny by default)
