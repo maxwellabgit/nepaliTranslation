@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, within } from '@testing-library/react-native';
 import { AppProviders } from '../../app/AppProviders';
 import { createTestServices } from '../../services/createTestServices';
 import { CreditAwardOverlay } from '../CreditAwardOverlay';
@@ -30,6 +30,8 @@ describe('CreditsGauge ad-free timer', () => {
     expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('0:00');
     expect(screen.getByTestId('credits-gauge').props.accessibilityLabel).toContain('Ads off');
     expect(screen.queryByText('50')).toBeNull();
+    expect(screen.getByTestId('credits-gauge-coin')).toBeTruthy();
+    expect(within(screen.getByTestId('credits-gauge-face')).queryByTestId('credits-gauge-coin')).toBeNull();
     expect(screen.queryByTestId('credits-gauge-fill')).toBeNull();
   });
 
@@ -41,7 +43,7 @@ describe('CreditsGauge ad-free timer', () => {
     expect(screen.queryByTestId('credits-gauge-fill')).toBeNull();
   });
 
-  it('keeps the compact pill the same size at eight hours', async () => {
+  it('keeps the compact pill vertically centered at eight hours', async () => {
     await act(async () => {
       renderGauge(creditMs(50));
     });
@@ -50,7 +52,7 @@ describe('CreditsGauge ad-free timer', () => {
     const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
     expect(timer.color).not.toBe('#D64545');
     const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
-    expect(wrap.transform).toEqual([{ scale: 1 }]);
+    expect(wrap.alignSelf).toBe('center');
     expect(screen.queryByText('50')).toBeNull();
   });
 
@@ -63,7 +65,7 @@ describe('CreditsGauge ad-free timer', () => {
     const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
     expect(timer.color).not.toBe('#D64545');
     const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
-    expect(wrap.transform).toEqual([{ scale: 1 }]);
+    expect(wrap.alignSelf).toBe('center');
   });
 });
 

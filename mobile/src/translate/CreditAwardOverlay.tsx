@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Animated, Easing, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Animated, Easing, Image, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { awardCoinCount, AWARD_COIN_FLIGHT_MS, AWARD_COIN_STAGGER_MS } from '../features/contribution/reviewCredits';
@@ -27,8 +27,11 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
       {!flying && <Modal transparent visible animationType="fade" onRequestClose={onCollect}>
       <View style={styles.scrim} accessibilityViewIsModal>
         <View style={[styles.card, { maxHeight: Math.max(120, height - insets.top - insets.bottom - 32) }]} testID="credit-award-card">
-          <ScrollView style={styles.scroll} contentContainerStyle={styles.cardContent}>
-          <FontAwesome5 name="coins" size={38} color="#C4922A" />
+          <ScrollView style={styles.scroll}>
+          <View style={styles.artFrame}>
+            <Image source={require('../../assets/credits/credits-awarded-bg.png')} style={styles.art} resizeMode="cover" testID="credit-award-art" accessible={false} />
+          </View>
+          <View style={styles.cardContent}>
           <Text style={styles.title}>{title ?? t('creditsAward.title', lang)}</Text>
           <Text style={styles.body} testID="credit-award-body">{body ?? t('creditsAward.body', lang, { count: credits })}</Text>
           <View style={styles.amount}><Text style={styles.number}>{credits}</Text><Text style={styles.caption}>{t('creditsAward.added', lang)}</Text></View>
@@ -37,6 +40,7 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
             accessibilityLabel={t('review.awardA11y', lang, { credits, minutes })} onPress={onCollect}>
             <Text style={styles.buttonText}>{t('dailyOpen.continue', lang)}</Text>
           </Pressable>
+          </View>
           </ScrollView>
         </View>
       </View></Modal>}
@@ -55,6 +59,8 @@ const styles = StyleSheet.create({
   scrim: { flex: 1, backgroundColor: 'rgba(26,20,16,0.38)', justifyContent: 'center', alignItems: 'center', padding: 16 },
   card: { width: '100%', maxWidth: 400, borderRadius: 24, backgroundColor: '#FFF8F0', overflow: 'hidden' },
   scroll: { flexGrow: 0 },
+  artFrame: { width: '100%', height: 150, overflow: 'hidden' },
+  art: { width: '100%', height: 340, position: 'absolute', top: 0 },
   cardContent: { padding: 28, alignItems: 'center', gap: 16 },
   title: { fontSize: 27, lineHeight: 33, fontWeight: '800', color: '#1B2A4A', textAlign: 'center' },
   body: { fontSize: 16, lineHeight: 23, color: '#3A3328', textAlign: 'center' },

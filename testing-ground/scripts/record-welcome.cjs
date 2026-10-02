@@ -53,6 +53,7 @@ const consent = { version:'2026-09-23.startup', terms:true, privacy:true, age18P
       await page.screenshot({path:path.join(output,name+'_popup.png')});
       const popupBounds=await page.getByTestId('credit-award-card').boundingBox();
       const pillBounds=await page.getByTestId('credits-gauge').boundingBox();
+      const timerBefore=await page.getByTestId('credits-gauge-face').boundingBox();
       if (popupBounds.height>=700 || pillBounds.width>=150 || pillBounds.x<200) throw new Error('Popup/pill geometry violates requested layout');
       const unacknowledged=await context.storageState();
       const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('neptranslate.dailyOpen.v2')));
@@ -66,6 +67,9 @@ const consent = { version:'2026-09-23.startup', terms:true, privacy:true, age18P
       await page.getByTestId('credit-award-overlay').waitFor({state:'hidden'}); mark('award_finished');
       await page.waitForTimeout(3000);
       await page.screenshot({path:path.join(output,name+'_home.png')});
+      const timerAfter=await page.getByTestId('credits-gauge-face').boundingBox();
+      const coinAfter=await page.getByTestId('credits-gauge-coin').boundingBox();
+      if (timerAfter.width <= timerBefore.width || coinAfter.x + coinAfter.width > timerAfter.x) throw new Error('Timer did not widen or coin overlaps pill');
       const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('neptranslate.dailyOpen.v2')));
       if (after.untilMs!==before.untilMs || after.pendingFlight!==null) throw new Error('Grant changed or pending flight not cleared');
       const complete=await context.storageState();
@@ -86,7 +90,7 @@ const consent = { version:'2026-09-23.startup', terms:true, privacy:true, age18P
         if (record.untilMs!==before.untilMs || record.receipt!==before.receipt) throw new Error('Restart double-granted '+state);
         recovery.push({state,grantUnchanged:true}); await recoveryContext.close();
       }
-      results.push({name,events,popupBounds,pillBounds,before,after,recovery,native:false,animationSpeed:'normal'});
+      results.push({name,events,popupBounds,pillBounds,timerBefore,timerAfter,coinAfter,before,after,recovery,native:false,animationSpeed:'normal'});
     }
     fs.writeFileSync(path.join(output,'updated_welcome_proof.json'),JSON.stringify(results,null,2));
   } finally { await browser.close(); }

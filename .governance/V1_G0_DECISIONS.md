@@ -15,7 +15,7 @@ The [previous freeze and amendments](../docs/history/2026-10-01-contract/V1_G0_D
 - Standard data: stable IDs and feedback revisions link original source, translation, optional correction/audio, settings and consent. Versioned normalization is separate from original text; idempotent private retrieval/export, no automatic training.
 - Audio: real file duration ≤60 seconds; at least four local clips survive offline/slow upload, restart, and queue pressure. Verify actual files, not just duration metadata.
 - Daily credits: 10 first-ever installation open; 5 on each later New York date; no same-day extra five. V1 daily-open records do not receive a second welcome. Flight follows the final startup popup.
-- Credit duration: ten minutes; preserve remaining time; 12-hour cap. Owner amendment 2026-10-02 retires the filling bar: a compact top-right timer pill receives the coin flight.
+- Credit duration: ten minutes; preserve remaining time; 12-hour cap. Owner amendment 2026-10-02 retires the filling bar: compact top-right timer pill widens for the increasing time; the coin icon and flight destination remain outside it. Keep the original mountain/coin image within the readable award popup.
 - Rewarded ad: two credits / twenty minutes after one verified server callback; preserve historical grants without clawback.
 - Automatic ads: ten-minute foreground eligibility, no daily cap, allowlisted safe points only; subscription/local ad-free grants suppress. Main-branch reset behavior stands; timer-triggered presentation is not accepted proof of safe-point compliance.
 - Banners: idle Translate/Learn; house rotation 60 seconds foreground-visible; steady slot; no photo/recording/consent/keyboard overlap.

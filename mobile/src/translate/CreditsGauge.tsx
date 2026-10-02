@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, AppState, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, AppState, Easing, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFeatureFlags } from '../app/FeatureConfigProvider';
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
@@ -96,6 +96,18 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   const liveRemaining = remainingMsUntil(untilMs, nowMs);
   const remainingMs = previewRemainingMs ?? award.displayRemainingMs ?? liveRemaining;
   const face = gaugePresentation(remainingMs);
+  const clock = gauge.state === 'countdown' ? interstitialLabel : face.clock;
+  const { fontScale } = useWindowDimensions();
+  const timerWidth = Math.max(compact ? 52 : 70, clock.length * (compact ? 12 : 16) * .7 * fontScale + (compact ? 18 : 24));
+  const pillWidth = useRef(new Animated.Value(timerWidth)).current;
+  const lastTimerWidth = useRef(timerWidth);
+  useEffect(() => {
+    if (lastTimerWidth.current === timerWidth) return;
+    lastTimerWidth.current = timerWidth;
+    const grow = Animated.timing(pillWidth, { toValue: timerWidth, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: false });
+    grow.start();
+    return () => grow.stop();
+  }, [pillWidth, timerWidth]);
   const receiving =
     previewRemainingMs == null && (award.phase === 'flying' || award.phase === 'pump');
   const shake = useRef(new Animated.Value(0)).current;
@@ -129,10 +141,15 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        wrap: {
+        outer: {
           alignSelf: compact ? 'center' : 'flex-end',
           marginHorizontal: compact ? 0 : 16,
           marginTop: compact ? 0 : 4,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+        },
+        wrap: {
           paddingHorizontal: compact ? 9 : 12,
           paddingVertical: compact ? 5 : 8,
           borderRadius: compact ? 12 : 16,
@@ -151,7 +168,6 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           fontWeight: '800',
           fontVariant: ['tabular-nums'],
           color: timerColor,
-          minWidth: compact ? 58 : 72,
           textAlign: 'right',
         },
       }),
@@ -170,10 +186,10 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
   return (
     <Pressable
       ref={pill}
-      onLayout={() => pill.current?.measureInWindow((x, y, width, height) => {
-        award.setCoinTarget({ x: x + width / 2, y: y + height / 2 });
+      onLayout={() => pill.current?.measureInWindow((x, y, _width, height) => {
+        award.setCoinTarget({ x: x + 7, y: y + height / 2 });
       })}
-      style={styles.wrap}
+      style={styles.outer}
       testID="credits-gauge"
       onPress={onPress}
       disabled={!onPress}
@@ -181,15 +197,17 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
       accessibilityLabel={accessibilityLabel}
     >
       <Animated.View
-        testID="credits-gauge-face"
+        testID="credits-gauge-coin"
         style={{
           transform: [{ translateX: receiving ? shakeX : 0 }, { scale: 1 }],
         }}
       >
-      <View style={styles.row} testID="credits-gauge-total">
         <FontAwesome5 name="coins" size={14} color={coinColor} />
-        <Text style={styles.timer} testID="credits-gauge-timer">
-          {gauge.state === 'countdown' ? interstitialLabel : face.clock}
+      </Animated.View>
+      <Animated.View style={[styles.wrap, { width: pillWidth }]} testID="credits-gauge-face">
+      <View style={styles.row} testID="credits-gauge-total">
+        <Text numberOfLines={1} style={styles.timer} testID="credits-gauge-timer">
+          {clock}
         </Text>
       </View>
       </Animated.View>
