@@ -18,6 +18,15 @@ const BRIDGE_BOOT = `
     var host = window.parent && window.parent.__NEPTRANSLATE_TG_HOST__;
     if (host && typeof host.getBootConfig === 'function') {
       window.__NEPTRANSLATE_TG__ = host.getBootConfig();
+      var resetId = window.__NEPTRANSLATE_TG__.runId;
+      if (window.__NEPTRANSLATE_TG__.resetTimers && resetId && sessionStorage.getItem('neptranslate.tg.lastTimerReset') !== resetId) {
+        ['nepx.entitlement.v1', 'neptranslate.ads.provisional_grant.v1', '@neptranslate/banner_cooldown_v1', '@neptranslate/ads/foregroundActiveMs', '@neptranslate/ads/interstitialNyDay', '@neptranslate/ads/interstitialNyCount', 'neptranslate.dailyOpen.v1'].forEach(function(key) { localStorage.removeItem(key); });
+        var installationId = localStorage.getItem('neptranslate.installation.v1') || 'inst_testing_ground_reset';
+        localStorage.setItem('neptranslate.installation.v1', installationId);
+        var nyDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+        localStorage.setItem('neptranslate.dailyOpen.v2', JSON.stringify({ schemaVersion: 2, installationId: installationId, nyDate: nyDate, untilMs: 0, adDismissed: true, welcomed: true, pendingFlight: null, receipt: installationId + ':' + nyDate }));
+        sessionStorage.setItem('neptranslate.tg.lastTimerReset', resetId);
+      }
     }
   } catch (e) {}
   window.addEventListener('message', function (ev) {
@@ -97,3 +106,13 @@ const rewritten = rewriteIndex(fs.readFileSync(indexPath, 'utf8'));
 fs.writeFileSync(indexPath, rewritten, 'utf8');
 rewriteHostedAssetPaths(dest);
 console.log(`[prepare-hosted-app] Wrote ${dest}`);
+
+// Local neural assets: copied from the same pinned bundles packaged into iOS.
+const modelSource = path.join(repoRoot, 'mobile', 'assets', 'models');
+if (fs.existsSync(modelSource)) copyDir(modelSource, path.join(root, 'public', 'models'));
+const runtimeSource = path.join(repoRoot, 'mobile', 'node_modules', 'onnxruntime-web', 'dist');
+const runtimeDest = path.join(root, 'public', 'model-runtime');
+fs.mkdirSync(runtimeDest, { recursive: true });
+for (const name of ['ort.wasm.min.js', 'ort-wasm-simd-threaded.mjs', 'ort-wasm-simd-threaded.wasm']) {
+  fs.copyFileSync(path.join(runtimeSource, name), path.join(runtimeDest, name));
+}

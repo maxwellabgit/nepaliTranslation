@@ -96,9 +96,9 @@ export function NepTranslateApp({
       <AppShell
         neuralReady={neuralReady}
         mtWarmStatus={mtWarmStatus}
-        TranslatePane={(props) => <TranslateScreen {...props} />}
-        CameraPane={(props) => <CameraScreen {...props} />}
-        LearnPane={(props) => <LearnScreen {...props} />}
+        TranslatePane={TranslateScreen}
+        CameraPane={CameraScreen}
+        LearnPane={LearnScreen}
         HistoryOverlay={(props) => <HistoryScreen {...props} />}
         SettingsOverlay={(props) => <SettingsScreen {...props} />}
         TodaysReviewOverlay={(props) => <ReviewScreen {...props} />}
@@ -117,6 +117,7 @@ export default function App() {
           window as unknown as {
             __NEPTRANSLATE_TG__?: {
               harness?: string;
+              translateMode?: 'fast-fallback' | 'recorded' | 'local-neural';
               offline?: boolean;
               featureFlags?: Record<string, boolean>;
               iapSoftFail?: boolean;
@@ -138,7 +139,7 @@ export default function App() {
     <NepTranslateApp
       services={harnessServices ?? createProductionServices()}
       runtime={harnessRuntime}
-      skipWarmUp={Boolean(harnessRuntime)}
+      skipWarmUp={Boolean(harnessRuntime) && boot?.translateMode !== 'local-neural'}
       bypassStartupConsent={bypassStartupConsent}
     />
   );

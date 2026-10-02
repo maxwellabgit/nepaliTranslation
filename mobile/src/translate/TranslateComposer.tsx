@@ -214,6 +214,7 @@ export function TranslateComposer({
           alignItems: 'center',
           justifyContent: 'space-between',
           zIndex: 2,
+          paddingRight: '50%',
         },
         feedback: { flexDirection: 'row', alignItems: 'center', gap: 12 },
         options: {
@@ -223,19 +224,24 @@ export function TranslateComposer({
           justifyContent: 'center',
         },
         send: {
-          minHeight: 44,
-          borderRadius: 22,
-          paddingHorizontal: 14,
+          position: 'absolute',
+          left: '50%',
+          marginLeft: MIC / 2,
+          right: 0,
+          bottom: 0,
+          height: BAR,
+          zIndex: 4,
+          paddingHorizontal: 4,
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
           gap: 6,
-          backgroundColor: theme.colors.crimson,
+          backgroundColor: '#00875A',
         },
         sendText: { color: theme.colors.onPrimary, fontSize: 14, fontWeight: '700' },
         count: {
           flex: 1,
-          textAlign: 'right',
+          textAlign: 'left',
           fontSize: 11,
           color: theme.colors.textPlaceholder,
           paddingRight: 8,
@@ -379,13 +385,13 @@ export function TranslateComposer({
               <Ionicons name="volume-high-outline" size={20} color={theme.colors.text} />
             </Pressable>
           ) : null}
-          <Pressable onPress={onSubmit} disabled={submitDisabled || !value.trim()}
-            accessibilityRole="button" accessibilityLabel={t('translate.sendA11y', lang)}
-            testID="translate-send" style={[styles.send, (submitDisabled || !value.trim()) && { opacity: .45 }]}>
-            <Text style={styles.sendText}>{t('translate.send', lang)}</Text>
-            <Ionicons name="arrow-forward" size={18} color={theme.colors.onPrimary} />
-          </Pressable>
         </View>
+        <Pressable onPress={onSubmit} disabled={submitDisabled || !value.trim()}
+          accessibilityRole="button" accessibilityLabel={t('translate.sendA11y', lang)}
+          testID="translate-send" style={styles.send}>
+          <Text style={styles.sendText}>{t('translate.send', lang)}</Text>
+          <Ionicons name="arrow-forward" size={18} color={theme.colors.onPrimary} />
+        </Pressable>
         {onPressMic ? (
           <>
             <Animated.View style={[styles.bar, { height: barHeight, backgroundColor: micColor }]} />

@@ -15,7 +15,7 @@ export const TRANSLATE_MODE_LABELS: Record<
   'local-neural': {
     label: 'local-neural',
     honesty:
-      'Stub on Windows testing ground — does not claim IndicTrans2 / native iOS parity. Marks neuralReady when configured; decode still uses the test adapter unless a future bridge wires real WASM/ONNX.',
+      'Runs the pinned IndicTrans2 models locally in browser WASM. Loading is automatic; readiness requires successful model initialization. Native iOS performance is separate.',
   },
 };
 
@@ -24,7 +24,7 @@ export function defaultBootConfig(
 ): TestingGroundBootConfig {
   return {
     harness: 'neptranslate-testing-ground',
-    translateMode: 'fast-fallback',
+    translateMode: 'local-neural',
     offline: true,
     neuralReady: false,
     speechPermission: 'granted',
@@ -44,7 +44,7 @@ export function applyTranslateMode(
   mode: TranslateModeId,
 ): TestingGroundBootConfig {
   if (mode === 'local-neural') {
-    return { ...config, translateMode: mode, neuralReady: true };
+    return { ...config, translateMode: mode, neuralReady: false };
   }
   if (mode === 'recorded') {
     return { ...config, translateMode: mode, neuralReady: false };

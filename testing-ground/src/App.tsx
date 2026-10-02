@@ -145,6 +145,7 @@ export default function App() {
         const fresh = defaultBootConfig({
           runId: newRunId(),
           seed: scenario.seed,
+          resetTimers: true,
           translateMode: bootConfig.translateMode,
         });
         setScenario({

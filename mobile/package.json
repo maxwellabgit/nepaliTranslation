@@ -23,6 +23,7 @@
     "expo-status-bar": "~57.0.1",
     "neptranslate-ocr": "file:./modules/neptranslate-ocr",
     "onnxruntime-react-native": "^1.24.3",
+    "onnxruntime-web": "^1.24.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",

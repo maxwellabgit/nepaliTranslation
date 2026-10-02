@@ -1,10 +1,12 @@
 /**
  * Web: read window.__NEPTRANSLATE_TG__ (testing-ground host) and build
- * deterministic adapters via createTestRuntime. Product iOS path is untouched.
+ * real local models by default, or explicit deterministic fixture adapters.
+ * Product iOS path is untouched.
  */
 import { setCameraTestFixture, setTestingGroundCaptureUri } from '../camera/testFixture';
 import { INSCRIPTION_FIXTURE } from '../camera/inscriptionFixture';
 import type { OcrDocument } from '../camera/ocrTypes';
+import { sharedTranslationEngine } from '../mt/TranslationEngine';
 import { createTestRuntime, type TestRuntimeOptions } from './createTestRuntime';
 import type { RuntimePorts, TranslateRequest } from './ports';
 
@@ -74,13 +76,9 @@ export function resolveBootRuntime(): RuntimePorts | undefined {
     },
   }));
 
-  // local-neural: honest stub — flag may be true, but decode still uses test adapters.
-  const neuralReady =
-    mode === 'local-neural'
-      ? Boolean(boot.neuralReady ?? true)
-      : Boolean(boot.neuralReady);
+  const neuralReady = false;
 
-  return createTestRuntime({
+  const runtime = createTestRuntime({
     offline: boot.offline ?? true,
     neuralReady,
     speechPermission: boot.speechPermission ?? 'granted',
@@ -89,6 +87,15 @@ export function resolveBootRuntime(): RuntimePorts | undefined {
     translations,
     recognizeCapturedPhoto: true,
   });
+  if (mode === 'local-neural') {
+    const loading = sharedTranslationEngine.warmUp();
+    runtime.translation = {
+      translate: async req => { await loading; return sharedTranslationEngine.translate(req); },
+      cancelAll: () => sharedTranslationEngine.cancelAll(),
+      isNeuralReady: () => sharedTranslationEngine.isNeuralReady(),
+    };
+  }
+  return runtime;
 }
 
 declare global {

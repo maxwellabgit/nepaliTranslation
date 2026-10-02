@@ -59,6 +59,8 @@ export type TestingGroundBootConfig = {
   translateMode: TranslateModeId;
   offline?: boolean;
   neuralReady?: boolean;
+  /** Reset ad counters and seed an acknowledged zero-time daily grant, harness only. */
+  resetTimers?: boolean;
   speechPermission?: 'granted' | 'denied' | 'undetermined';
   cameraPermission?: 'granted' | 'denied' | 'undetermined';
   translations?: RecordedTranslateFixture[];

@@ -8,3 +8,6 @@ test-results/
 *.log
 .DS_Store
 /public/intro-recordings/
+
+/public/models/
+/public/model-runtime/
