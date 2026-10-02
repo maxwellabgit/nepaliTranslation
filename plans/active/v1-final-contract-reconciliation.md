@@ -1,7 +1,7 @@
 # v1-final-contract-reconciliation: Finish Bola's functional V1
 
 ## Goal
-Complete polished startup, native translation UX, real monetization, and lightweight consented Today’s 10/speech/typed-feedback capture through retrievable data. Current owner-approved steps are **1 contract reconciliation** and **2 native screenshot baseline/design proposals**. Later functionality, production deployment, and build submission are planned work, not actions performed by this run.
+Complete polished startup, native translation UX, real monetization, and lightweight consented Today’s 10/speech/typed-feedback capture through retrievable data. Current owner-approved steps are **1 contract reconciliation** and **2 native screenshot baseline/design proposals**. The owner additionally authorized an internal TestFlight screenshot build on 2026-10-01 so the physical-device references can be supplied. Public production deployment remains gated.
 
 ## Context (paths, commands, constraints)
 - Code baseline: `9aaf493`; required branch: `cursor/v1-final-contract-reconciliation-5907`, fast-forwarded from `4797385`. No push to main.
@@ -9,7 +9,7 @@ Complete polished startup, native translation UX, real monetization, and lightwe
 - Prior plan/evidence: [immutable snapshot](../../docs/history/2026-10-01-contract/v1-final-contract-reconciliation.md); F/G/R programs are historical.
 - Current evidence: [ten-objective validation](../../docs/TEN_OBJECTIVE_VALIDATION.md). Old CI/device/hosted results do not certify this SHA.
 - Scope: EN↔NE iOS/iPadOS, SDK 57, offline core. No model improvement, gold edits, live flags, legal approval, or production deployment in steps 1–2.
-- One coherent gate per commit. This run is C0 contract documentation; C1 screenshot/design preparation remains gated by actual native screenshots.
+- One coherent gate per commit. C0 is committed; C1 screenshot/design preparation remains gated by actual native screenshots. A separate C13 preflight slice fixes existing Camera lint blockers for the explicitly authorized diagnostic binary; it does not close C13 or waive public release gates.
 - Preserve historical migrations, ledger balances, raw evidence and benchmarks. Runtime retirement requires separate verified gates; do not delete a scheduler shared with deletion.
 
 ## Done when
@@ -43,6 +43,7 @@ Historical C0/C1 completion is not carried forward as completion of changed requ
 2026-10-01: inspected `9aaf493`, advanced the required reconciliation branch by fast-forward, and rewrote living documents against the owner-approved functional direction. Preserved pre-edit documents under docs/history/2026-10-01-contract. No runtime, schema, flags, or model changes.
 Step 1 documents/inventory complete: eight archive snapshots match, 41 local links resolve, required plan/scope/manifest checks and final diff check pass. Fresh independent reviewer PASS; two clarity nits fixed. [Verification record](../../.agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md).
 Step 2: no native apps/device surface exposed by capture inventory; physical iPhone 16 screenshot provenance is missing. Requested an existing local screenshot directory. No generated proposal or design approval claimed.
+2026-10-01/02 follow-up: owner requested immediate TestFlight delivery for screenshots. EAS account/project and prior build 1.7.0 (22) verified. Camera lint preflight repairs preserve current layout and capture/highlight behavior. SDK 57 patch alignment, locked install/focus patch, lint/typecheck, 466 unit tests, 19 integration tests, translation/model pins/usage strings, Expo Doctor 21/21 and fresh independent source/dependency review PASS. Full verify:ci stops at contribution/entitlement/ad coverage ratchets; no baseline lowered and C15 remains open. Proceeding only with the explicitly authorized diagnostic build. [Build evidence](../../.agent/TESTFLIGHT_SCREENSHOT_BUILD_2026-10-01.md).
 
 ## Surprises & discoveries
 See [pivot inventory](../../docs/V1_PIVOT_INVENTORY.md). The runtime still exposes reward copy for local samples; submitReview returns a local acknowledgement without storing corrections; thumbs are tied to a saved utterance; the interstitial controller attempts timer_elapsed presentation. These are future code work, not features certified by these docs.
@@ -54,6 +55,7 @@ The old living plan, DONE and release documents still required photo toggles, gl
 - 2026-10-01: native screenshots precede all new UI proposals. No browser/simulator substitution; one image agent per proposal after references exist.
 - 2026-10-01: model quality is not an implementation focus; existing certification remains preserved and is not silently waived.
 - 2026-10-01: runtime discrepancies are explicitly deferred to their coherent C-gates; documentation does not claim to remove or deploy code.
+- 2026-10-01: explicit owner authorization permits a diagnostic TestFlight build to obtain the missing screenshots despite unfinished V1 gates. Use the existing testflight profile and Google test units, submit the exact EAS build ID, preserve all existing service flags, and record upload/processing/installation separately. No public release or new design approval is inferred.
 
 ## Commands that actually ran
 - git status -sb; git merge-base --is-ancestor cursor/v1-final-contract-reconciliation-5907 HEAD: clean baseline, ancestry exit 0.
@@ -65,7 +67,7 @@ The old living plan, DONE and release documents still required photo toggles, gl
 - First diff check identified EOF whitespace; fixed. Final git -c core.safecrlf=false diff --check: exit 0. Fresh independent reviewer: PASS, no material findings; clarity nits fixed.
 
 ## Remaining work
-Native screenshot intake and separate-agent proposals; owner design review; all unproven functional gates above. No new App Store or TestFlight build has been created by this run.
+Deliver the authorized diagnostic TestFlight build, then native screenshot intake and separate-agent proposals; owner design review; all unproven functional gates above. The evidence record owns actual build/submission status.
 
 ## Blockers (concrete; cannot be solved from this repo)
 - Physical iPhone 16 running the current app, with build/source provenance and affected screen captures. Need a supplied local screenshot folder or device-capture capability.

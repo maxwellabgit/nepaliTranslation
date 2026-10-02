@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   Animated,
@@ -115,7 +115,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
   );
   const [sentences, setSentences] = useState<CorrelatedSentence[]>([]);
   const [sourceGroups, setSourceGroups] = useState<SourceSentence[]>([]);
-  const [detectedLanguage, setDetectedLanguage] = useState<'en' | 'ne' | null>(null);
+  const [, setDetectedLanguage] = useState<'en' | 'ne' | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [target, setTarget] = useState<CaptureTarget>('en');
   const [targetMenu, setTargetMenu] = useState(false);
@@ -353,9 +353,9 @@ export function CameraScreen({ active, onGoHome }: Props) {
     [theme],
   );
 
-  const dispatch = (event: CameraPhaseEvent) => {
+  const dispatch = useCallback((event: CameraPhaseEvent) => {
     setPhaseState((prev) => reduceCameraPhase(prev, event));
-  };
+  }, []);
 
   const bumpGeneration = () => {
     requestGenRef.current += 1;
@@ -376,7 +376,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
     ) {
       dispatch({ type: 'PERMISSION_NEEDED' });
     }
-  }, [granted, phase]);
+  }, [granted, phase, dispatch]);
 
   useEffect(() => {
     return () => {
@@ -531,7 +531,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
     void runCapture(null);
   };
 
-  const runCapture = async (forcedUri: string | null) => {
+  const runCapture = useCallback(async (forcedUri: string | null) => {
     if (isCameraBusy(phase) || phase === 'result') return;
     translatorRef.current = async (text, route) => {
       const result = await runtimeRef.current.translation.translate({
@@ -654,7 +654,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
       // Preserve preview on recoverable OCR failure.
       dispatch({ type: 'FAIL', reasonCode: 'ocr_failed' });
     }
-  };
+  }, [phase, runtime.ocr, dispatch]);
 
   useEffect(() => {
     if (!sourceGroups.length) {
@@ -713,7 +713,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
     if (!uri || getCameraTestFixture() || harnessStarted.current) return;
     harnessStarted.current = true;
     void runCapture(uri);
-  }, [active]);
+  }, [active, runCapture]);
 
   const onRetake = () => {
     bumpGeneration();
@@ -822,12 +822,14 @@ export function CameraScreen({ active, onGoHome }: Props) {
   });
 
   const showResult = phase === 'result';
+  const highlightFrames = sentences.flatMap((sentence, sentenceIndex) =>
+    sentence.frames.map((frame, lineIndex) => ({ frame, sentence, sentenceIndex, lineIndex })),
+  );
   const highlightBoxes = highlightPercentsForFrames(
-    sentences.flatMap((sentence) => sentence.frames),
+    highlightFrames.map(({ frame }) => frame),
     imageSize,
     rotation,
   );
-  let highlightIndex = 0;
   const showError =
     phase === 'empty' || phase === 'lowConfidence' || phase === 'error'
       ? cameraErrorCopy(phaseState.reasonCode, lang)
@@ -1025,37 +1027,34 @@ export function CameraScreen({ active, onGoHome }: Props) {
                 resizeMode="contain"
                 accessibilityIgnoresInvertColors
               />
-              {sentences.map((sentence, sentenceIndex) =>
-                sentence.frames.map((_frame, lineIndex) => {
-                  const box = highlightBoxes[highlightIndex];
-                  highlightIndex += 1;
-                  if (!box) return null;
-                  return (
-                    <Pressable
-                      key={`${sentence.id}-${lineIndex}`}
-                      testID={
-                        lineIndex === 0
-                          ? `camera-overlay-${sentence.id}`
-                          : `camera-overlay-${sentence.id}-${lineIndex}`
-                      }
-                      accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
-                        n: sentenceIndex + 1,
-                      })}
-                      onPress={() => setSelected(sentence.id)}
-                      style={[
-                        styles.overlay,
-                        box,
-                        {
-                          backgroundColor: withAlpha(
-                            sentence.color,
-                            selected === sentence.id ? 0.55 : 0.38,
-                          ),
-                        },
-                      ]}
-                    />
-                  );
-                }),
-              )}
+              {highlightFrames.map(({ sentence, sentenceIndex, lineIndex }, highlightIndex) => {
+                const box = highlightBoxes[highlightIndex];
+                if (!box) return null;
+                return (
+                  <Pressable
+                    key={`${sentence.id}-${lineIndex}`}
+                    testID={
+                      lineIndex === 0
+                        ? `camera-overlay-${sentence.id}`
+                        : `camera-overlay-${sentence.id}-${lineIndex}`
+                    }
+                    accessibilityLabel={t('camera.sentenceSourceA11y', lang, {
+                      n: sentenceIndex + 1,
+                    })}
+                    onPress={() => setSelected(sentence.id)}
+                    style={[
+                      styles.overlay,
+                      box,
+                      {
+                        backgroundColor: withAlpha(
+                          sentence.color,
+                          selected === sentence.id ? 0.55 : 0.38,
+                        ),
+                      },
+                    ]}
+                  />
+                );
+              })}
             </Animated.View>
           ) : null}
           <Animated.View

@@ -10,8 +10,7 @@ import {
 import { resetCaptureMetrics, captureMetricSnapshot } from '../captureMetrics';
 import { segmentOcr } from '../segmentSentences';
 import { classifySourceText } from '../sourceCategory';
-import type { SourceSentence } from '../ocrTypes';
-import type { OcrFrame } from '../ocrTypes';
+import type { SourceSentence, OcrFrame } from '../ocrTypes';
 
 function frame(y: number, x = 10, width = 200, height = 20): OcrFrame {
   return { x, y, width, height };
