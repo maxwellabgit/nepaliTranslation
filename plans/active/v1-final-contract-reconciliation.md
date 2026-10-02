@@ -44,6 +44,7 @@ Historical C0/C1 completion is not carried forward as completion of changed requ
 Step 1 documents/inventory complete: eight archive snapshots match, 41 local links resolve, required plan/scope/manifest checks and final diff check pass. Fresh independent reviewer PASS; two clarity nits fixed. [Verification record](../../.agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md).
 Step 2: no native apps/device surface exposed by capture inventory; physical iPhone 16 screenshot provenance is missing. Requested an existing local screenshot directory. No generated proposal or design approval claimed.
 2026-10-01/02 follow-up: owner requested immediate TestFlight delivery for screenshots. EAS account/project and prior build 1.7.0 (22) verified. Camera lint preflight repairs preserve current layout and capture/highlight behavior. SDK 57 patch alignment, locked install/focus patch, lint/typecheck, 466 unit tests, 19 integration tests, translation/model pins/usage strings, Expo Doctor 21/21 and fresh independent source/dependency review PASS. Full verify:ci stops at contribution/entitlement/ad coverage ratchets; no baseline lowered and C15 remains open. Proceeding only with the explicitly authorized diagnostic build. [Build evidence](../../.agent/TESTFLIGHT_SCREENSHOT_BUILD_2026-10-01.md).
+2026-10-02: preflight commit ef69b2f; separate web export PASS. EAS d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8 compiled version 1.7.0 (23). Exact submission d220d753-276c-4d02-a479-a8ba0850796b failed with Apple missing/expired agreement. Owner action requested; same-build retry prepared. Automatic approval review separately rejected GitHub branch publication; candidate remains local and uploaded to EAS, not pushed to GitHub.
 
 ## Surprises & discoveries
 See [pivot inventory](../../docs/V1_PIVOT_INVENTORY.md). The runtime still exposes reward copy for local samples; submitReview returns a local acknowledgement without storing corrections; thumbs are tied to a saved utterance; the interstitial controller attempts timer_elapsed presentation. These are future code work, not features certified by these docs.
@@ -71,6 +72,7 @@ Deliver the authorized diagnostic TestFlight build, then native screenshot intak
 
 ## Blockers (concrete; cannot be solved from this repo)
 - Physical iPhone 16 running the current app, with build/source provenance and affected screen captures. Need a supplied local screenshot folder or device-capture capability.
-- iPad/device matrix; Apple/EAS provisioning and processing; legal/bilingual sign-off; owner console/config/live-ads approvals.
+- Apple required agreement missing/expired blocks build-23 upload; Account Holder resolution requested. Existing signed binary can be retried.
+- iPad/device matrix; Apple processing; legal/bilingual sign-off; owner console/config/live-ads approvals.
 - Hosted deployment and receipt collection for the October migrations/functions remain unverified.
 - Existing model certificate remains unresolved, with no model work authorized in this effort.

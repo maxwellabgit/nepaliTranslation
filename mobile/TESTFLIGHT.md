@@ -1,11 +1,11 @@
 # TestFlight — current Bola functional candidate
-Updated 2026-10-01. This checklist supersedes [the old build-20 checklist](../docs/history/2026-10-01-contract/TESTFLIGHT.md). That delivery remains historical; no newer accepted/installed binary is asserted.
+Updated 2026-10-02. This checklist supersedes [the old build-20 checklist](../docs/history/2026-10-01-contract/TESTFLIGHT.md). Build 23 compiled; its upload is blocked by a missing/expired Apple agreement. No installed binary is asserted.
 Contract: [INTENT](../.governance/INTENT.md). Release gates: [runbook](../docs/RELEASE_RUNBOOK.md).
 
 ## Candidate identity (fill only from evidence)
-- Git SHA: UNRECORDED for a new binary. Source baseline is 9aaf493.
-- App version/build: UNRECORDED.
-- EAS profile/build ID/submission ID: UNRECORDED.
+- Git SHA: ef69b2f0491cf495e21cfc3c54bbf27bb200fbe1; contains refreshed origin/main 9aaf493.
+- App version/build: 1.7.0 (23), diagnostic screenshot baseline.
+- EAS profile: testflight; build d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8 FINISHED; submission d220d753-276c-4d02-a479-a8ba0850796b ERRORED, SUBMISSION_SERVICE_IOS_MISSING_REQUIRED_AGREEMENT.
 - Apple processing accepted: NOT VERIFIED.
 - Installed iPhone 16 / iPad and iOS version: NOT VERIFIED.
 - Runtime server endpoints/feature flags: NOT VERIFIED.
@@ -15,6 +15,7 @@ testflight uses Google demo units, no revenue. testflight-ssv uses owner units o
 Build with npx eas build --platform ios --profile testflight.
 Submit exactly that build with npx eas submit --platform ios --profile testflight --id <EAS_BUILD_ID>.
 Apple upload, processing, installation and public approval are different statuses.
+Current [build evidence and exact retry](../.agent/TESTFLIGHT_SCREENSHOT_BUILD_2026-10-01.md): Account Holder agreement resolution is pending. No rebuild is needed to retry this binary.
 
 ## Native baseline
 Capture [the specified iPhone 16 states](../docs/design/v1-ui/README.md) from the current installed app before design. Record exact build/source differences; no browser substitution. Generated proposals are not device proof.
@@ -35,4 +36,4 @@ Capture [the specified iPhone 16 states](../docs/design/v1-ui/README.md) from th
 - [ ] Withdrawal/account deletion and queue cleanup; hosted deletion receipts attached separately.
 - [ ] Accessibility/text-size/iPad layout and zero material reviewer findings.
 
-No box is checked from source presence, old screenshots or prior-SHA tests. This run creates no build/device/ads/revenue proof.
+No box is checked from source presence, old screenshots or prior-SHA tests. Build-23 native compilation passed; unit/integration/translation/Expo Doctor and separate export passed; full verify:ci stopped at existing coverage ratchets. No installed-device/hosted/live-ads/revenue proof is claimed.
