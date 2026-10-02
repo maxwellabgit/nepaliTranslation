@@ -37,7 +37,10 @@ export function classifySourceText(text: string): SourceCategory {
   if (words.every((word) => isTitleOrCaps(word))) return 'en';
   const known = words.filter((word) => ENGLISH_WORDS.has(word.toLowerCase())).length;
   if (known > 0 && known >= words.length / 2) return 'en';
-  return 'ne-roman';
+  // Unknown Latin words are not evidence of Nepali. Preserve separately
+  // recognized Nepali dictionary forms without routing English prose backwards.
+  if (words.length === 1 && words[0].toLowerCase() === 'dhognu') return 'ne-roman';
+  return 'en';
 }
 
 function isTitleOrCaps(word: string): boolean {

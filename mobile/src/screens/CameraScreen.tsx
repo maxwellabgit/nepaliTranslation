@@ -12,7 +12,6 @@ import {
   View,
   type GestureResponderEvent,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Clipboard from 'expo-clipboard';
 import { t, useUiLang, type UiLang } from '../i18n';
@@ -744,8 +743,7 @@ export function CameraScreen({ active, onGoHome }: Props) {
   };
 
   const onDone = () => {
-    if (onGoHome) onGoHome();
-    else onRetake();
+    onRetake();
   };
 
   const copyText = (value: string, id: string) => {
@@ -868,8 +866,8 @@ export function CameraScreen({ active, onGoHome }: Props) {
     <View style={styles.root} testID="camera-screen">
       <View style={[styles.header, showResult && styles.headerNight]}>
         <BackArrow
-          onPress={onGoHome}
-          accessibilityLabel={t('common.backHome', lang)}
+          onPress={showResult ? onRetake : onGoHome}
+          accessibilityLabel={t(showResult ? 'camera.retakeA11y' : 'common.backHome', lang)}
           testID="back-home"
           color={showResult ? RESULT_NIGHT.text : undefined}
         />
@@ -1073,12 +1071,6 @@ export function CameraScreen({ active, onGoHome }: Props) {
               <View style={styles.handleHit}>
                 <View style={styles.handle} />
               </View>
-              <View style={styles.translationHead}>
-              <Ionicons name="sparkles" size={18} color={RESULT_NIGHT.gold} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.translationTitle}>{t('camera.translation', lang)}</Text>
-              </View>
-            </View>
             </View>
             <ScrollView
               testID="camera-output"

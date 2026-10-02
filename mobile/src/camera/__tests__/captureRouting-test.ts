@@ -38,6 +38,11 @@ describe('mixed-language capture routing', () => {
     expect(classifySourceText('namaste timi')).toBe('ne-roman');
   });
 
+  it.each(['fresh vegetables', 'emergency assembly point', 'please keep this door closed', 'parking entrance', 'restaurant menu'])('defaults ambiguous Latin OCR to English: %s', (text) => {
+    expect(classifySourceText(text)).toBe('en');
+    expect(routeCapture(classifySourceText(text), 'ne-deva')).toMatchObject({ direction: 'en-ne' });
+  });
+
   it('drops a drawing-sized box on a photo and keeps the title line', () => {
     const doc = segmentOcr({
       width: 600,

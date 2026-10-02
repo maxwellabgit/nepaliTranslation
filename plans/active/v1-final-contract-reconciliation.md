@@ -84,3 +84,4 @@ Deliver the authorized diagnostic TestFlight build, then native screenshot intak
 - Existing model certificate remains unresolved, with no model work authorized in this effort.
 `2026-10-02 C4 scoped refinement`: Expanded existing artwork, centered timer, bounded coin fans. Beta/export, popup-only browser evidence and independent review PASS; no full gate closure.
 `2026-10-02 C13 scoped UX repair`: Preserve drafts, visible localized Translate action, dark result text and safe cancellation. Final beta 478 unit/22 integration, browser and independent review PASS; full C13 remains open.
+`2026-10-02 C2 scoped repair`: Result Back/Done resets Camera in place, redundant header removed, ambiguous Latin OCR defaults English. Owner requests retiring generated recordings, GitHub main fast-forward and diagnostic TestFlight delivery. This explicit main authorization supersedes branch-only rule for this delivery; full gates remain open.

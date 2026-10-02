@@ -11,6 +11,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react-native';
 
 import { NepTranslateApp } from '../../../App';
@@ -454,6 +455,19 @@ describe('NepTranslateApp production composition', () => {
     expect(screen.queryByTestId('promo-rotator')).toBeNull();
     expect(screen.queryByTestId('ad-slot-house-translate_result')).toBeNull();
     expect(services.ads.networkCalls()).toEqual([]);
+  });
+
+  it.each(['camera-done', 'back-home'])('clears photo results and stays in Camera using %s', async (button) => {
+    setCameraTestFixture(INSCRIPTION_FIXTURE);
+    await renderApp(createTestServices({ offline: true, authConfigured: false }));
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    await waitFor(() => expect(screen.getByTestId('camera-drawer')).toBeTruthy());
+    expect(within(screen.getByTestId('camera-drawer')).queryByText('Translation')).toBeNull();
+    await fireEvent.press(screen.getByTestId(button));
+    expect(screen.getByTestId('pane-camera')).toBeTruthy();
+    expect(screen.queryByTestId('camera-drawer')).toBeNull();
+    expect(screen.queryByTestId('camera-overlay-s1')).toBeNull();
+    expect(screen.getByTestId('camera-permission')).toBeTruthy();
   });
 
   it('shows line highlights and the translation sheet without signing in', async () => {
