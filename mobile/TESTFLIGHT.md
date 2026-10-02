@@ -1,11 +1,12 @@
 # TestFlight — current Bola functional candidate
-Updated 2026-10-02. This checklist supersedes [the old build-20 checklist](../docs/history/2026-10-01-contract/TESTFLIGHT.md). Build 23 compiled; its upload is blocked by a missing/expired Apple agreement. No installed binary is asserted.
+Updated 2026-10-02. This checklist supersedes [the old build-20 checklist](../docs/history/2026-10-01-contract/TESTFLIGHT.md). Build 23 compiled; initial upload failed with a missing/expired agreement, and post-sign-in retries failed without details. App Store Connect still shows latest build 22; Paid Apps Agreement remains New. No installed build-23 binary is asserted.
 Contract: [INTENT](../.governance/INTENT.md). Release gates: [runbook](../docs/RELEASE_RUNBOOK.md).
 
 ## Candidate identity (fill only from evidence)
 - Git SHA: ef69b2f0491cf495e21cfc3c54bbf27bb200fbe1; contains refreshed origin/main 9aaf493.
 - App version/build: 1.7.0 (23), diagnostic screenshot baseline.
 - EAS profile: testflight; build d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8 FINISHED; submission d220d753-276c-4d02-a479-a8ba0850796b ERRORED, SUBMISSION_SERVICE_IOS_MISSING_REQUIRED_AGREEMENT.
+- Post-sign-in retry 74931267-8130-45a2-864a-53f1bd2f80a2 and direct submission b2055dbf-f14d-4c40-944e-278ff24f0ecd ERRORED with no details/logs. Latest cause unconfirmed; pending Paid Apps Agreement observed directly in authenticated Business page.
 - Apple processing accepted: NOT VERIFIED.
 - Installed iPhone 16 / iPad and iOS version: NOT VERIFIED.
 - Runtime server endpoints/feature flags: NOT VERIFIED.

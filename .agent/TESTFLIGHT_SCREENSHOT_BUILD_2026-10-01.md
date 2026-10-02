@@ -12,8 +12,9 @@ Purpose: deliver the current native UI to the owner for physical iPhone 16 basel
 - Bundle: com.neptranslate.app; app version: 1.7.0.
 - Build/submit profile: testflight; existing preview environment / testflight-internal channel / Google test units. Configuration and hosted flags unchanged.
 - EAS build ID: d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8; version/build: 1.7.0 (23); created 2026-10-02T04:02:11.870Z; FINISHED 2026-10-02T04:07:50.699Z. Native signing/compilation completed successfully.
-- Submission ID: d220d753-276c-4d02-a479-a8ba0850796b; scheduled against that exact build ID; ERRORED 2026-10-02T04:08:56.138Z. Apple rejected upload: SUBMISSION_SERVICE_IOS_MISSING_REQUIRED_AGREEMENT, "A required agreement is missing or has expired. Sign the agreement on the Apple Developer Portal to resolve this error."
-- Apple processing/availability: unverified.
+- Initial submission: d220d753-276c-4d02-a479-a8ba0850796b; ERRORED 2026-10-02T04:08:56.138Z. Apple rejected upload: SUBMISSION_SERVICE_IOS_MISSING_REQUIRED_AGREEMENT, "A required agreement is missing or has expired. Sign the agreement on the Apple Developer Portal to resolve this error."
+- After owner reported Apple sign-in complete: submit:retry created 74931267-8130-45a2-864a-53f1bd2f80a2, ERRORED 2026-10-02T04:14:21.016Z; error null / no log files. Direct exact-build submission b2055dbf-f14d-4c40-944e-278ff24f0ecd also ERRORED 2026-10-02T04:15:46.820Z, error null / no log files. Neither is claimed successful; latest failures do not identify a cause.
+- Apple availability: authenticated App Store Connect TestFlight page inspected after retries; latest upload/build is 22. Build 23 absent at this check.
 - Installed device/native screenshots: unverified.
 
 ## Preflight slice and evidence
@@ -29,19 +30,19 @@ No layout redesign. Camera rendering now correlates highlights by immutable flat
 
 ## Delivery observations
 - Refreshed GitHub: origin/main remains 9aaf493, included in this candidate.
-- Separate GitHub branch push was rejected by automatic approval review: TestFlight authorization did not establish separate source/evidence publication or remote privacy. Not retried; local candidate preserved.
+- Initial separate GitHub branch push was rejected by automatic approval review. Owner subsequently explicitly approved "Yes—push the existing branch". Push to cursor/v1-final-contract-reconciliation-5907 succeeded, and local/remote HEAD both verified as 9cfc1a257a4ad833a23d67be9380fda0ca77706c before this follow-up evidence edit. Main unchanged.
 - EAS build accepted existing local provisioning validation despite a local Apple 401 while checking profiles.
 - CLI App Store status/group setup also received Apple 401; server upload credentials are separately selected. This does not yet establish an upload failure.
 - First scheduling attempt with What to Test failed because EAS changelog submission requires Enterprise; no submission was created. Retried without changelog and with existing groups unchanged (--no-auto-testflight-setup): successfully scheduled d220d753-276c-4d02-a479-a8ba0850796b.
 - No Apple account, API key, tester group, production flag or live advertising setting was changed.
 
 ## Required owner action and exact retry
-The Account Holder must review and resolve the pending Apple agreement at https://developer.apple.com/account (also check App Store Connect Business if no banner appears). Agreement acceptance is a human legal/account step; no acceptance is inferred from TestFlight build authorization. Owner was asked asynchronously and response is pending.
+Owner reported Apple sign-in complete and upload was retried. Authenticated browser inspection shows Apple Developer Program License Agreement accepted July 19, 2026; App Store Connect Business shows Free Apps Agreement Active and Paid Apps Agreement New with "View and Agree to Terms". The paid agreement is an outstanding owner account/legal step; the generic retry failures do not prove that it caused those failures. Owner was asked to review/resolve this specific agreement. No agreement, payment, tax or banking declaration was accepted or supplied by the agent.
 
-After the owner reports resolution, retry the existing submission, without rebuilding or selecting latest:
+After the owner reports resolution, retry the latest submission, without rebuilding or selecting latest:
 
 ```powershell
-npx --yes eas-cli submit:retry d220d753-276c-4d02-a479-a8ba0850796b --non-interactive
+npx --yes eas-cli submit:retry b2055dbf-f14d-4c40-944e-278ff24f0ecd --non-interactive
 ```
 
 If EAS no longer permits retry, create a new submission of build d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8 with the testflight profile, --non-interactive --no-wait --no-auto-testflight-setup. Capture the actual new ID/result. Then verify upload/Apple processing and request build-23 originals. Do not claim the failed upload reached TestFlight.
