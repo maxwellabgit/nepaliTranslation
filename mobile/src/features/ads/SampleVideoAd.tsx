@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const SKIP_AFTER_SECONDS = 5;
+const COMPLETE_AFTER_SECONDS = 15;
 
 type Props = {
   visible: boolean;
-  onFinished: () => void;
+  onFinished: (completed: boolean) => void;
 };
 
 /**
@@ -14,10 +15,17 @@ type Props = {
  */
 export function SampleVideoAd({ visible, onFinished }: Props) {
   const [elapsed, setElapsed] = useState(0);
+  const finished = useRef(false);
+  const finish = (completed: boolean) => {
+    if (finished.current) return;
+    finished.current = true;
+    onFinished(completed);
+  };
 
   useEffect(() => {
     if (!visible) {
       setElapsed(0);
+      finished.current = false;
       return;
     }
     const id = setInterval(() => setElapsed((value) => value + 1), 1_000);
@@ -25,6 +33,12 @@ export function SampleVideoAd({ visible, onFinished }: Props) {
   }, [visible]);
 
   const canSkip = elapsed >= SKIP_AFTER_SECONDS;
+  useEffect(() => {
+    if (visible && elapsed >= COMPLETE_AFTER_SECONDS && !finished.current) {
+      finished.current = true;
+      onFinished(true);
+    }
+  }, [visible, elapsed, onFinished]);
   const skipLabel = canSkip ? 'Skip' : `Skip in ${SKIP_AFTER_SECONDS - elapsed}`;
 
   const card = (
@@ -35,7 +49,7 @@ export function SampleVideoAd({ visible, onFinished }: Props) {
       <Pressable
         style={[styles.skip, !canSkip && styles.skipLocked]}
         disabled={!canSkip}
-        onPress={onFinished}
+        onPress={() => finish(false)}
         testID="sample-video-skip"
       >
         <Text style={styles.skipText}>{skipLabel}</Text>

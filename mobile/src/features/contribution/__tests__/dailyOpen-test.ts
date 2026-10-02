@@ -1,10 +1,43 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { extendDailyUntil, grantDailyOpenCoin, readDailyOpen } from '../dailyOpen';
+import { extendDailyUntil, grantDailyOpenCoin, grantLocalAdCredits, readDailyOpen } from '../dailyOpen';
 import { DAILY_OPEN_CREDITS, FIRST_OPEN_CREDITS } from '../openWelcome';
 
 const MINUTE = 60 * 1000;
 
 describe('daily open credits', () => {
+  it('retains verified reward receipts through NY date rollover and restart replay', async () => {
+    const now = Date.parse('2026-10-02T03:59:00Z');
+    await grantDailyOpenCoin(new Date(now));
+    await grantLocalAdCredits(2, now, null, 'owner:session-before-rollover');
+    const next = now + 2 * MINUTE;
+    await grantDailyOpenCoin(new Date(next));
+    const persisted = await readDailyOpen();
+    expect(persisted?.verifiedAdSessions).toEqual(['owner:session-before-rollover']);
+    expect(await grantLocalAdCredits(2, next, null, 'owner:session-before-rollover')).toBeNull();
+    expect((await readDailyOpen())?.untilMs).toBe(persisted?.untilMs);
+  });
+  it('stacks concurrent ad rewards without lost time and caps at twelve hours', async () => {
+    const now = Date.parse('2026-10-02T16:00:00Z');
+    await grantDailyOpenCoin(new Date(now));
+    await Promise.all([grantLocalAdCredits(1, now, null), grantLocalAdCredits(2, now, null)]);
+    expect((await readDailyOpen())!.untilMs - now).toBe(130 * MINUTE);
+    await extendDailyUntil(now + 715 * MINUTE);
+    const capped = await grantLocalAdCredits(2, now, null);
+    expect(capped?.minutes).toBe(5);
+    expect(capped?.capped).toBe(true);
+    expect(capped?.toRemainingMs).toBe(720 * MINUTE);
+  });
+  it('persists a verified session once on local welcome time, preserving skips', async () => {
+    const now = Date.parse('2026-10-02T16:00:00Z');
+    await grantDailyOpenCoin(new Date(now));
+    await grantLocalAdCredits(1, now, null);
+    await Promise.all([
+      grantLocalAdCredits(2, now, null, 'owner:verified-session'),
+      grantLocalAdCredits(2, now, null, 'owner:verified-session'),
+    ]);
+    expect((await readDailyOpen())!.untilMs).toBe(now + 130 * MINUTE);
+    expect((await readDailyOpen())!.verifiedAdSessions).toEqual(['owner:verified-session']);
+  });
   beforeEach(async () => {
     await AsyncStorage.clear();
   });

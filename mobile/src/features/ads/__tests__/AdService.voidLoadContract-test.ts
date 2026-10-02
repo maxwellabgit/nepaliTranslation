@@ -217,6 +217,20 @@ describe('AdService v17 void-load contract (G3)', () => {
     await expect(showPromise).resolves.toEqual({ earned: true });
   });
 
+  it('rewarded skip is eligible only after IMPRESSION and CLOSED', async () => {
+    const ads = createProductionAdService();
+    await ads.prepareConsentAndSdk();
+    const load = ads.adapter.loadRewarded('skip');
+    await Promise.resolve();
+    const mocked = getMocked();
+    mocked.rewarded?.emit(mocked.RewardedAdEventType.LOADED);
+    await load;
+    const show = ads.adapter.showRewarded('skip');
+    mocked.rewarded?.emit('impression');
+    mocked.rewarded?.emit(mocked.AdEventType.CLOSED);
+    await expect(show).resolves.toEqual({ earned: false, impression: true });
+  });
+
   it('rewarded show without EARNED_REWARD resolves earned=false on CLOSED', async () => {
     const ads = createProductionAdService();
     await ads.prepareConsentAndSdk();

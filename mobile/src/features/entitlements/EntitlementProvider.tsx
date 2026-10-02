@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 
+import { grantLocalAdCredits } from '../contribution/dailyOpen';
 import { useAuth } from '../auth/AuthProvider';
 import { getSupabase } from '../../services/supabase';
 import {
@@ -32,6 +33,7 @@ import {
 
 type EntitlementState = {
   ready: boolean;
+  durableAdFreeUntilMs?: number | null;
   /** Effective ad-free until: max(server earned, provisional local). */
   earnedAdFreeUntilMs: number | null;
   lifetimeCredits: number;
@@ -65,11 +67,17 @@ function readTrustedNow(clock: TrustedClock | null): number | null {
 }
 
 export function EntitlementProvider({ children }: { children: ReactNode }) {
+  const [nowMs, setNowMs] = useState(() => Date.now());
   const { status, userId } = useAuth();
   const [cache, setCache] = useState<CachedEntitlement>(EMPTY);
   // In-process only — never restore monoAtSyncMs across restarts (it resets).
   const [clock, setClock] = useState<TrustedClock | null>(null);
   const [provisional, setProvisional] = useState<ProvisionalGrant | null>(null);
+  useEffect(() => {
+    if (!provisional) return;
+    const timer = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [provisional]);
   const [ready, setReady] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -83,8 +91,8 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const nowMs = Date.now();
-    let localProv = reconcileProvisional(await loadProvisionalGrant(), nowMs);
+    let localProv = await loadProvisionalGrant();
+    if (localProv?.userId && localProv.userId !== userId) localProv = null;
     await saveProvisionalGrant(localProv);
 
     const client = getSupabase();
@@ -131,17 +139,15 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
         : null;
       const serverUntil = Number.isFinite(until) ? until : null;
 
-      // Reconcile provisional once server earned window covers the session.
-      if (
-        localProv &&
-        !localProv.verified &&
-        serverUntil != null &&
-        serverUntil >= localProv.untilMs
-      ) {
-        localProv = reconcileProvisional(localProv, deviceNow, {
-          verifiedSessionToken: localProv.sessionToken,
-        });
-        await saveProvisionalGrant(localProv);
+      // Only this authenticated session's consumed SSV receipt can commit local stacking.
+      if (localProv && localProv.userId === userId) {
+        const receipt = await client.rpc('rewarded_session_verified', { p_session_token: localProv.sessionToken });
+        if (!receipt.error && receipt.data === true) {
+          await grantLocalAdCredits(2, deviceNow, localProv.durableUntilMs ?? null,
+            `${userId}:${localProv.sessionToken}`);
+          localProv = null;
+          await saveProvisionalGrant(null);
+        }
       }
 
       const next: CachedEntitlement = {
@@ -172,9 +178,16 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
     })();
   }, [refresh]);
 
+  useEffect(() => {
+    if (!provisional || status !== 'signed-in') return;
+    // SSV often arrives after CLOSED; retry the exact receipt without replaying animation.
+    const timer = setInterval(() => { void refresh(); }, 30_000);
+    return () => clearInterval(timer);
+  }, [provisional, refresh, status]);
+
   const value = useMemo<EntitlementState>(() => {
     const serverExpiry = cache.earnedAdFreeUntilMs;
-    const provisionalUntil = provisional?.untilMs ?? null;
+    const provisionalUntil = provisionalEarnedUntilMs(provisional, nowMs);
     const combinedUntil =
       serverExpiry == null
         ? provisionalUntil
@@ -183,6 +196,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
           : Math.max(serverExpiry, provisionalUntil);
     return {
       ready,
+      durableAdFreeUntilMs: serverExpiry,
       earnedAdFreeUntilMs: combinedUntil,
       lifetimeCredits: cache.lifetimeCredits,
       version: cache.version,
@@ -197,7 +211,7 @@ export function EntitlementProvider({ children }: { children: ReactNode }) {
       trustedNow: () => readTrustedNow(clock),
       refresh,
     };
-  }, [cache, clock, provisional, ready, refresh]);
+  }, [cache, clock, provisional, ready, refresh, nowMs]);
 
   return (
     <EntitlementContext.Provider value={value}>

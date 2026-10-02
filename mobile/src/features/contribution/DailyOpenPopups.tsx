@@ -29,7 +29,7 @@ export function DailyOpenPopups() {
         const before = await readDailyOpen();
         if (cancelled) return;
         if (before?.nyDate === nyDateKey(nowMs) && !before.pendingFlight) return;
-        const beforeUntil = laterActiveUntil(before?.untilMs, current.current.entitlement?.earnedAdFreeUntilMs, nowMs);
+        const beforeUntil = laterActiveUntil(before?.untilMs, current.current.entitlement?.durableAdFreeUntilMs, nowMs);
         const saved = await grantDailyOpenCoin(new Date(nowMs), beforeUntil);
         if (cancelled || !saved.pendingFlight) return;
         const flight = saved.pendingFlight;

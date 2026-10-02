@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import {
@@ -7,6 +8,8 @@ import {
   useEntitlementOptional,
 } from '../EntitlementProvider';
 import { getSupabase } from '../../../services/supabase';
+import { grantDailyOpenCoin, grantLocalAdCredits, readDailyOpen } from '../../contribution/dailyOpen';
+import { createProvisionalGrant, saveProvisionalGrant, loadProvisionalGrant } from '../../ads/provisionalGrant';
 import { saveCachedEntitlement } from '../entitlementCache';
 import { useAuth } from '../../auth/AuthProvider';
 
@@ -35,6 +38,39 @@ describe('EntitlementProvider', () => {
       status: 'guest',
       userId: null,
     });
+  });
+
+  test.each([0, 16 * 60_000])('exact SSV receipt commits once even after pending expiry (%i ms)', async (ageMs) => {
+    const now = Date.now();
+    await grantDailyOpenCoin(new Date(now));
+    const pending = { ...createProvisionalGrant('session-1', now - ageMs), userId: 'user-1',
+      durableUntilMs: null, untilMs: now + 120 * 60_000 };
+    await saveProvisionalGrant(pending);
+    mockUseAuth.mockReturnValue({ status: 'signed-in', userId: 'user-1' });
+    let verified = false;
+    (getSupabase as jest.Mock).mockReturnValue({
+      from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({
+        data: { earned_ad_free_until: new Date(now + 20 * 60_000).toISOString() }, error: null,
+      }) }) }) }),
+      rpc: jest.fn(async (name: string) => ({ error: null,
+        data: name === 'server_time' ? new Date(now).toISOString() : verified })),
+    });
+    let refresh: () => Promise<void> = async () => undefined;
+    function RefreshProbe() {
+      const ent = useEntitlement();
+      useEffect(() => { refresh = ent.refresh; }, [ent.refresh]);
+      return <Text testID="durable">{String(ent.durableAdFreeUntilMs)}</Text>;
+    }
+    await act(async () => { render(<EntitlementProvider><RefreshProbe /></EntitlementProvider>); });
+    await grantLocalAdCredits(1, now, null);
+    expect((await readDailyOpen())!.untilMs).toBe(now + 110 * 60_000);
+    expect((await loadProvisionalGrant())!.verified).toBe(false);
+    verified = true;
+    await act(async () => { await refresh(); await refresh(); });
+    const daily = await readDailyOpen();
+    expect(Math.abs(daily!.untilMs - (now + 130 * 60_000))).toBeLessThan(1000);
+    expect(daily!.verifiedAdSessions).toEqual(['user-1:session-1']);
+    expect(await loadProvisionalGrant()).toBeNull();
   });
 
   test('guest clears cache and reports not ad-free', async () => {

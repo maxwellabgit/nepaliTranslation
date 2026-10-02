@@ -9,8 +9,10 @@ const STORAGE_KEY = 'neptranslate.ads.provisional_grant.v1';
 
 export type ProvisionalGrant = {
   sessionToken: string;
+  userId?: string;
+  durableUntilMs?: number | null;
   startedAtMs: number;
-  /** Local ad-free until (started + 10 min). */
+  /** Local ad-free until (started + 20 min); verification deadline remains bounded. */
   untilMs: number;
   /** Drop unverified remainder after this (started + 15 min). */
   expireAtMs: number;

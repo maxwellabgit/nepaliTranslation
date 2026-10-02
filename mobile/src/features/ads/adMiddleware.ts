@@ -30,7 +30,7 @@ export type AdAdapter = {
   showBanner: (unitId: string) => Promise<void>;
   loadRewarded: (unitId: string, opts?: RewardedLoadOpts) => Promise<void>;
   /** Resolves with earned=true only after the client reward callback (EARNED_REWARD). */
-  showRewarded: (unitId: string) => Promise<{ earned: boolean }>;
+  showRewarded: (unitId: string) => Promise<{ earned: boolean; impression?: boolean }>;
   loadInterstitial: (unitId: string) => Promise<void>;
   /**
    * SDK owns presentation and dismissal — no custom skip UI.
@@ -113,7 +113,7 @@ export async function executeAdPlan(
       await adapter.loadRewarded(plan.unitId, rewardedOpts);
       const result = await adapter.showRewarded(plan.unitId);
       return {
-        executed: result.earned ? 'rewarded' : 'rewarded_not_earned',
+        executed: result.earned ? 'rewarded' : result.impression ? 'rewarded_skipped' : 'rewarded_not_earned',
       };
     }
     default: {

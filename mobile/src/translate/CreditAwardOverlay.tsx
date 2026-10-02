@@ -7,14 +7,14 @@ import { t, useUiLang } from '../i18n';
 import { useCreditAwardOptional } from './CreditAwardProvider';
 
 type Props = { credits: number; minutes: number; capped: boolean; flying: boolean; onCollect: () => void;
-  totalCredits?: number; title?: string; body?: string; rewardName?: string };
+  totalCredits?: number; title?: string; body?: string; rewardName?: string; coinCount?: number };
 
-export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect, title, body }: Props) {
+export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect, title, body, coinCount }: Props) {
   const lang = useUiLang();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const award = useCreditAwardOptional();
-  const coins = useMemo(() => Array.from({ length: awardCoinCount(credits) }, () => new Animated.Value(0)), [credits]);
+  const coins = useMemo(() => Array.from({ length: coinCount ?? awardCoinCount(credits) }, () => new Animated.Value(0)), [credits, coinCount]);
   useEffect(() => {
     if (!flying) return;
     Animated.stagger(AWARD_COIN_STAGGER_MS, coins.map(coin => Animated.timing(coin, {
@@ -24,7 +24,7 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
   const target = award.coinTarget ?? { x: width - 85, y: 74 };
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents={flying ? 'none' : 'auto'} testID="credit-award-overlay">
-      {!flying && <Modal transparent visible animationType="fade" onRequestClose={onCollect}>
+      {!flying && !award.presentation?.automaticFlight && <Modal transparent visible animationType="fade" onRequestClose={onCollect}>
       <View style={styles.scrim} accessibilityViewIsModal>
         <View style={[styles.card, { maxHeight: Math.max(120, height - insets.top - insets.bottom - 32) }]} testID="credit-award-card">
           <ScrollView style={styles.scroll}>

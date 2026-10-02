@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 import { AppButton } from '../../components/AppPrimitives';
@@ -18,6 +18,9 @@ import {
   supportMessageForExpiredProvisional,
 } from './provisionalGrant';
 import { requestRewardedSession } from './rewardedSession';
+import { awardDismissedAd, publishAdCreditAward } from './adCreditEvents';
+import { laterActiveUntil, readDailyOpen } from '../contribution/dailyOpen';
+import { presentCreditClaim } from '../../translate/CreditAwardProvider';
 
 type Props = {
   offline?: boolean;
@@ -39,6 +42,7 @@ export function RewardedAdButton({
   const services = useServices();
   const lang = useUiLang();
   const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
   const cta = t('ads.rewardedCta', lang);
 
   const offline = offlineProp ?? services.network.isOffline();
@@ -46,7 +50,7 @@ export function RewardedAdButton({
     hasSubscription || Boolean(subscription?.hasSubscription());
 
   const onPress = useCallback(async () => {
-    if (busy) return;
+    if (busyRef.current) return;
     if (auth.status !== 'signed-in' || !auth.userId) {
       Alert.alert(
         t('ads.signInRequiredTitle', lang),
@@ -54,6 +58,7 @@ export function RewardedAdButton({
       );
       return;
     }
+    busyRef.current = true;
     setBusy(true);
     try {
       const units = resolveAdUnitConfig();
@@ -89,11 +94,19 @@ export function RewardedAdButton({
       }).then(async (result) => {
         // Provisional only after client EARNED_REWARD — never from show() alone.
         if (result.executed !== 'rewarded') {
+          if (result.executed === 'rewarded_skipped') await awardDismissedAd(1, entitlement.durableAdFreeUntilMs ?? null);
           return;
         }
         const now = Date.now();
+        const daily = await readDailyOpen();
+        const beforeUntil = laterActiveUntil(entitlement.earnedAdFreeUntilMs, daily?.untilMs, now);
         const current = await loadProvisionalGrant();
         const next = createProvisionalGrant(session.session.sessionToken, now);
+        const presentation = presentCreditClaim({ nowMs: now, earnedUntilMs: beforeUntil,
+          credits: 2, minutesApplied: 20, capped: false });
+        next.userId = auth.userId ?? undefined;
+        next.durableUntilMs = entitlement.durableAdFreeUntilMs ?? null;
+        next.untilMs = now + presentation.toRemainingMs;
         const accepted = acceptProvisionalGrant(current, next, now);
         if (!accepted.ok) {
           Alert.alert(
@@ -103,17 +116,18 @@ export function RewardedAdButton({
           return;
         }
         await saveProvisionalGrant(accepted.grant);
+        publishAdCreditAward(presentation);
         await entitlement.refresh();
       });
     } catch {
       Alert.alert('Ad unavailable', supportMessageForExpiredProvisional());
     } finally {
+      busyRef.current = false;
       setBusy(false);
     }
   }, [
     auth.status,
     auth.userId,
-    busy,
     entitlement,
     flags.networkAdsEnabled,
     flags.rewardedAdsEnabled,

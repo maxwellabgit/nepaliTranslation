@@ -120,7 +120,7 @@ export function validateAdUnitConfig(config: AdUnitConfig): void {
 
 export const HOUSE_BANNER_COOLDOWN_MS = 24 * 60 * 1000;
 export const NETWORK_BANNER_COOLDOWN_MS = 60 * 1000;
-export const PROVISIONAL_AD_FREE_MS = 10 * 60 * 1000;
+export const PROVISIONAL_AD_FREE_MS = 20 * 60 * 1000;
 export const PROVISIONAL_EXPIRE_MS = 15 * 60 * 1000;
 
 /** English fallbacks; UI prefers `t('ads.*')` via HouseAd / RewardedAdButton. */

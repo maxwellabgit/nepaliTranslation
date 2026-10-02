@@ -10,6 +10,7 @@ export function CreditAwardHost() {
     <View pointerEvents="box-none" style={styles.host}>
       <CreditAwardOverlay
         credits={award.presentation.credits}
+        coinCount={award.presentation.coinCount}
         minutes={award.presentation.minutes}
         capped={award.presentation.capped}
         totalCredits={Math.floor(award.presentation.toRemainingMs / 600_000)}

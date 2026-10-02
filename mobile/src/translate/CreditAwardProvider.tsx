@@ -24,6 +24,7 @@ import {
 } from '../features/contribution/dailyOpen';
 import { useEntitlement } from '../features/entitlements/EntitlementProvider';
 import { getSupabase } from '../services/supabase';
+import { subscribeAdCreditAwards } from '../features/ads/adCreditEvents';
 
 export type CreditAwardPresentation = {
   openAwardKind?: 'welcome' | 'daily';
@@ -36,6 +37,8 @@ export type CreditAwardPresentation = {
   title?: string;
   body?: string;
   rewardName?: string;
+  coinCount?: number;
+  automaticFlight?: boolean;
 };
 
 type CreditClaimRow = {
@@ -257,6 +260,8 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
     [showReady],
   );
 
+  useEffect(() => subscribeAdCreditAwards(startAward), [startAward]);
+
   useEffect(
     () => () => {
       timers.current.forEach(clearTimeout);
@@ -295,6 +300,10 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
     collecting.current = true;
     void dismissDailyAd().then(startFlight).catch(() => undefined).finally(() => { collecting.current = false; });
   }, [startFlight]);
+
+  useEffect(() => {
+    if (phase === 'message' && presentation?.automaticFlight) startFlight();
+  }, [phase, presentation, startFlight]);
 
   const displayRemainingMs =
     phase === 'message' || phase === 'flying'

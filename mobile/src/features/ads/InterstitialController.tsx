@@ -18,6 +18,7 @@ import {
 } from './interstitialOpportunity';
 import { interstitialInterruptDue } from './interstitialGauge';
 import { SampleVideoAd } from './SampleVideoAd';
+import { awardDismissedAd } from './adCreditEvents';
 
 type Listener = (req: InterstitialOpportunityRequest) => void;
 
@@ -131,8 +132,11 @@ export function InterstitialController() {
         hasSubscription: Boolean(subscription?.hasSubscription()),
       },
     })
-      .then(() => {
+      .then(async result => {
         resetClock(Date.now());
+        if (result.presented) {
+          await awardDismissedAd(1, entitlement?.durableAdFreeUntilMs ?? null);
+        }
       })
       .catch(() => undefined)
       .finally(() => {
@@ -223,7 +227,7 @@ export function InterstitialController() {
             req.hasSubscription ?? Boolean(subscription?.hasSubscription()),
         },
       })
-        .then((result) => {
+        .then(async (result) => {
           if (result && 'presented' in result && result.presented) {
             const now = Date.now();
             accumRef.current.onInactive(now);
@@ -233,6 +237,7 @@ export function InterstitialController() {
             }
             publishForegroundMs(0);
             void resetForegroundActiveMs();
+            await awardDismissedAd(1, entitlement?.durableAdFreeUntilMs ?? null);
           }
         })
         .catch(() => undefined)
@@ -250,10 +255,11 @@ export function InterstitialController() {
   return (
     <SampleVideoAd
       visible={videoOpen}
-      onFinished={() => {
+      onFinished={(completed) => {
         setVideoOpen(false);
         resetClock(Date.now());
         presentingRef.current = false;
+        void awardDismissedAd(completed ? 2 : 1, entitlement?.durableAdFreeUntilMs ?? null);
       }}
     />
   );

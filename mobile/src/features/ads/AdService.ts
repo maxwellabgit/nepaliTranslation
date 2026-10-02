@@ -183,8 +183,10 @@ export function createProductionAdService(): AdService {
       const ad = rewardedRef;
       rewardedRef = null;
       if (!ad) return { earned: false };
-      return await new Promise<{ earned: boolean }>((resolve) => {
+      return await new Promise<{ earned: boolean; impression?: boolean }>((resolve) => {
         let earned = false;
+        let impression = false;
+        let closed = false;
         let settled = false;
         const done = () => {
           if (settled) return;
@@ -193,13 +195,15 @@ export function createProductionAdService(): AdService {
           unsubEarn();
           unsubClose();
           unsubErr();
-          resolve({ earned });
+          unsubImpression();
+          resolve(closed && impression ? { earned, impression: true } : { earned });
         };
         const unsubEarn = ad.addAdEventListener(earnedEventType, () => {
           earned = true;
         });
-        const unsubClose = ad.addAdEventListener(rewardedClosedEvent, done);
-        const unsubErr = ad.addAdEventListener(rewardedErrorEvent, done);
+        const unsubImpression = ad.addAdEventListener('impression', () => { impression = true; });
+        const unsubClose = ad.addAdEventListener(rewardedClosedEvent, () => { closed = true; done(); });
+        const unsubErr = ad.addAdEventListener(rewardedErrorEvent, () => { earned = false; done(); });
         // R5: bounded timeout so a missing native CLOSED/ERROR cannot
         // leave the promise pending forever. On timeout we treat the show
         // as not-earned; server-side SSV remains the authoritative grant.
@@ -210,6 +214,7 @@ export function createProductionAdService(): AdService {
         try {
           ad.show();
         } catch {
+          earned = false;
           done();
         }
       });

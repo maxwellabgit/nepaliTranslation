@@ -59,6 +59,7 @@ export type DailyOpenRecord = {
   pendingFlight: PendingFlight | null;
   /** installation+welcome, or installation plus the New York date. */
   receipt: string;
+  verifiedAdSessions?: string[];
 };
 
 type LegacyDailyOpen = {
@@ -94,6 +95,7 @@ function asRecord(raw: unknown, installationId: string): DailyOpenRecord | null 
     adDismissed: Boolean(parsed.adDismissed),
     welcomed,
     pendingFlight: parsed.pendingFlight?.credits ? parsed.pendingFlight : null,
+    verifiedAdSessions: parsed.verifiedAdSessions ?? [],
     receipt:
       parsed.receipt ||
       (welcomed ? `${installationId}:${parsed.nyDate}` : `${installationId}:welcome`),
@@ -182,6 +184,7 @@ export async function grantDailyOpenCoin(
       untilMs: now.getTime() + stacked.remainingMinutes * 60_000,
       adDismissed: false,
       welcomed: true,
+      verifiedAdSessions: existing?.verifiedAdSessions ?? [],
       pendingFlight: {
         kind,
         credits,
@@ -201,6 +204,22 @@ export async function extendDailyUntil(untilMs: number): Promise<void> {
     const existing = await loadRecord();
     if (!existing || !(untilMs > existing.untilMs)) return;
     await writeRecord({ ...existing, untilMs });
+  });
+}
+
+/** SDK-confirmed dismissed ad; serialized with installation/date awards. */
+export async function grantLocalAdCredits(credits: 1 | 2, nowMs: number, durableUntilMs: number | null, verifiedSession?: string) {
+  return enqueue(async () => {
+    const existing = await loadRecord();
+    if (!existing) return null;
+    if (verifiedSession && existing.verifiedAdSessions?.includes(verifiedSession)) return null;
+    const before = laterActiveUntil(existing.untilMs, durableUntilMs, nowMs);
+    const fromRemainingMs = Math.max(0, (before ?? nowMs) - nowMs);
+    const stacked = stackAdFreeMinutes(fromRemainingMs / 60_000, minutesForCredits(credits));
+    await writeRecord({ ...existing, untilMs: nowMs + stacked.remainingMinutes * 60_000,
+      verifiedAdSessions: verifiedSession ? [...(existing.verifiedAdSessions ?? []), verifiedSession] : existing.verifiedAdSessions });
+    return { credits, minutes: stacked.appliedMinutes, capped: stacked.capped,
+      fromRemainingMs, toRemainingMs: stacked.remainingMinutes * 60_000 };
   });
 }
 
