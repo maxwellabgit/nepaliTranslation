@@ -16,3 +16,4 @@ evidence: .agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md records current documenta
 model_scope: No optimization/training/gold changes. Existing failing certificate is preserved; no release waiver inferred.
 historical_state: docs/history/2026-10-01-contract/V1_FINAL_CONTRACT_STATE.md
 updated_local_date: 2026-10-02 America/New_York
+c4_expanded_art: Owner-directed larger artwork and centered timer; coin scaling tested; popup-only recordings and fresh review PASS. Full native/C4 gates open.

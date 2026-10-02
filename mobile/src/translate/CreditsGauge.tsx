@@ -161,6 +161,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
         row: {
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'center',
           gap: 6,
         },
         timer: {
@@ -168,7 +169,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           fontWeight: '800',
           fontVariant: ['tabular-nums'],
           color: timerColor,
-          textAlign: 'right',
+          textAlign: 'center',
         },
       }),
     [compact, theme.scheme, timerColor],

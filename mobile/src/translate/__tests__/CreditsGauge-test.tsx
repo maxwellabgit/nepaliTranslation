@@ -70,6 +70,17 @@ describe('CreditsGauge ad-free timer', () => {
 });
 
 describe('CreditAwardOverlay', () => {
+  it.each([[5, 7], [10, 7], [20, 12], [30, 17], [40, 22], [50, 30], [80, 30]])(
+    'renders %i credits with %i animated coins', async (credits, count) => {
+      await act(async () => {
+        render(<AppProviders services={createTestServices()} bypassStartupConsent>
+          <CreditAwardOverlay credits={credits} minutes={credits * 10} capped={false} flying onCollect={() => undefined} />
+        </AppProviders>);
+      });
+      expect(screen.getByTestId(`credit-award-coin-${count - 1}`)).toBeTruthy();
+      expect(screen.queryByTestId(`credit-award-coin-${count}`)).toBeNull();
+    },
+  );
   it('shows the award message and starts the coin flight', async () => {
     const onCollect = jest.fn();
     const services = createTestServices({ offline: false, canRequestAds: true });

@@ -5,9 +5,10 @@ const path = require('node:path');
 const output = process.argv[2];
 if (!output) throw new Error('Pass an absolute artifact output directory');
 const baseURL = process.env.WELCOME_BASE_URL || 'http://127.0.0.1:5173';
+const popupOnly = process.argv.includes('--popup-only');
 const boot = { harness:'neptranslate-testing-ground', translateMode:'recorded', offline:true,
   neuralReady:false, speechPermission:'granted', cameraPermission:'granted',
-  acknowledgeStartupConsent:'require', ocrFixture:null, translations:[], seed:'welcome-updated' };
+  acknowledgeStartupConsent:popupOnly ? 'auto-accept' : 'require', ocrFixture:null, translations:[], seed:'welcome-updated' };
 const consent = { version:'2026-09-23.startup', terms:true, privacy:true, age18Plus:false, accepted_at:'2026-10-01T12:00:00Z' };
 
 (async () => {
@@ -33,7 +34,7 @@ const consent = { version:'2026-09-23.startup', terms:true, privacy:true, age18P
       const started = Date.now(); const events = [];
       const mark = label => { const event={label,elapsedMs:Date.now()-started}; events.push(event); console.log(name,JSON.stringify(event)); };
       await page.goto(baseURL+'/hosted-app/index.html',{waitUntil:'domcontentloaded'});
-      if (!daily) {
+      if (!daily && !popupOnly) {
         await page.getByTestId('startup-consent-gate').waitFor(); mark('consent_visible');
         await page.waitForTimeout(10000);
         await page.getByTestId('startup-consent-terms').click();
@@ -90,7 +91,7 @@ const consent = { version:'2026-09-23.startup', terms:true, privacy:true, age18P
         if (record.untilMs!==before.untilMs || record.receipt!==before.receipt) throw new Error('Restart double-granted '+state);
         recovery.push({state,grantUnchanged:true}); await recoveryContext.close();
       }
-      results.push({name,events,popupBounds,pillBounds,timerBefore,timerAfter,coinAfter,before,after,recovery,native:false,animationSpeed:'normal'});
+      results.push({name,events,popupBounds,pillBounds,timerBefore,timerAfter,coinAfter,before,after,recovery,popupOnly,native:false,animationSpeed:'normal'});
     }
     fs.writeFileSync(path.join(output,'updated_welcome_proof.json'),JSON.stringify(results,null,2));
   } finally { await browser.close(); }

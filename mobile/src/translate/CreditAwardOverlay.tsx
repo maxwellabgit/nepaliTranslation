@@ -48,7 +48,11 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
         pointerEvents="none" style={{ position: 'absolute', left: width / 2 - 12, top: height / 2 - 12,
           opacity: coin.interpolate({ inputRange: [0, .08, .85, 1], outputRange: [0, 1, 1, 0] }),
           transform: [
-            { translateX: coin.interpolate({ inputRange: [0, .3, 1], outputRange: [(index - 3) * 10, (index - 3) * 14, target.x - width / 2] }) },
+            { translateX: coin.interpolate({ inputRange: [0, .3, 1], outputRange: [
+              (index - (coins.length - 1) / 2) * Math.min(10, width * .35 / Math.max(1, coins.length - 1)),
+              (index - (coins.length - 1) / 2) * Math.min(14, width * .45 / Math.max(1, coins.length - 1)),
+              target.x - width / 2,
+            ] }) },
             { translateY: coin.interpolate({ inputRange: [0, 1], outputRange: [0, target.y - height / 2] }) },
             { scale: coin.interpolate({ inputRange: [0, .2, 1], outputRange: [.6, 1, .35] }) },
           ] }}><FontAwesome5 name="coins" size={24} color="#C4922A" /></Animated.View>)}
@@ -59,8 +63,8 @@ const styles = StyleSheet.create({
   scrim: { flex: 1, backgroundColor: 'rgba(26,20,16,0.38)', justifyContent: 'center', alignItems: 'center', padding: 16 },
   card: { width: '100%', maxWidth: 400, borderRadius: 24, backgroundColor: '#FFF8F0', overflow: 'hidden' },
   scroll: { flexGrow: 0 },
-  artFrame: { width: '100%', height: 150, overflow: 'hidden' },
-  art: { width: '100%', height: 340, position: 'absolute', top: 0 },
+  artFrame: { width: '100%', height: 240, overflow: 'hidden' },
+  art: { width: '100%', height: 420, position: 'absolute', top: 0 },
   cardContent: { padding: 28, alignItems: 'center', gap: 16 },
   title: { fontSize: 27, lineHeight: 33, fontWeight: '800', color: '#1B2A4A', textAlign: 'center' },
   body: { fontSize: 16, lineHeight: 23, color: '#3A3328', textAlign: 'center' },
