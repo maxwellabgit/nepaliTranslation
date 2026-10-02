@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSupabase } from '../supabase';
 import { readPublicEnv } from '../../config/env';
+import { DEFAULT_FEATURE_FLAGS, setRuntimeFeatureFlags } from '../../app/featureFlags';
+import { saveLocalConsent } from '../../storage/contributionConsent';
 import {
   enqueueDraft,
   loadOutbox,
@@ -63,6 +65,48 @@ describe('contributionSync H2', () => {
     expect(await flushPendingDrafts(send)).toEqual({ ok: false, reason: 'unavailable' });
     expect(send).not.toHaveBeenCalled();
     expect((await loadOutbox())[0]?.status).toBe('queued');
+  });
+
+  test('review revisions upload only for their authorized owner, rechecking consent for each row', async () => {
+    setRuntimeFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, contributionTextEnabled: true });
+    const consent = await saveLocalConsent(true);
+    let owner = 'other';
+    mockedGetSupabase.mockReturnValue({ auth: { getSession: async () => ({ data: { session: { access_token: 'tok', user: { id: owner } } } }) } } as never);
+    for (const revision of [1, 2]) await enqueueDraft({
+      idempotency_key: `review-owner-${revision}`, local_fingerprint: `review-owner-${revision}`, owner_user_id: 'owner',
+      surface: 'live_translate', source_text: 'Hello', model_output: 'नमस्ते', correction_text: `answer ${revision}`,
+      source_lang: 'en', formality: 'formal', script: 'deva', translation_method: 'todays_10',
+      consent_version: consent.consent_version, status: 'queued', review_metadata: { revision, answer: `answer ${revision}` },
+    });
+    const send = jest.fn(async () => {
+      setRuntimeFeatureFlags(DEFAULT_FEATURE_FLAGS);
+      return { status: 200, json: async () => ({}) } as Response;
+    });
+    await flushPendingDrafts(send);
+    expect(send).not.toHaveBeenCalled();
+    owner = 'owner';
+    await flushPendingDrafts(send);
+    expect(send).toHaveBeenCalledTimes(1);
+    expect((await loadOutbox()).filter((row) => row.status === 'synced')).toHaveLength(1);
+    expect((await loadOutbox()).filter((row) => row.status === 'queued')).toHaveLength(1);
+    setRuntimeFeatureFlags(DEFAULT_FEATURE_FLAGS);
+  });
+
+  test('ineligible newer rows cannot starve eligible older review revisions', async () => {
+    setRuntimeFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, contributionTextEnabled: true });
+    const consent = await saveLocalConsent(true);
+    mockedGetSupabase.mockReturnValue({ auth: { getSession: async () => ({ data: { session: { access_token: 'tok', user: { id: 'owner' } } } }) } } as never);
+    for (let index = 0; index < 25; index += 1) await enqueueDraft({
+      idempotency_key: `review-starve-${index}`, local_fingerprint: `review-starve-${index}`,
+      owner_user_id: index === 0 ? 'owner' : 'other', surface: 'live_translate', source_text: 'Hello', model_output: 'नमस्ते', correction_text: `answer ${index}`,
+      source_lang: 'en', formality: 'formal', script: 'deva', translation_method: 'todays_10',
+      consent_version: consent.consent_version, status: 'queued',
+    });
+    const send = jest.fn<Promise<Response>, Parameters<typeof fetch>>(async () => ({ status: 200, json: async () => ({}) } as Response));
+    await flushPendingDrafts(send);
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(send.mock.calls[0]![1]!.body as string).idempotency_key).toBe('review-starve-0');
+    setRuntimeFeatureFlags(DEFAULT_FEATURE_FLAGS);
   });
 
   test('rejects unlabeled or unconsented corrections before the network boundary', async () => {

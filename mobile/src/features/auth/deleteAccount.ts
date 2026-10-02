@@ -4,6 +4,7 @@ import { getSupabase } from '../../services/supabase';
 import { clearCachedEntitlement } from '../entitlements/entitlementCache';
 import { clearLocalConsent } from '../../storage/contributionConsent';
 import { clearContributionCaches } from '../../storage/contributionOutbox';
+import { clearReviewResponseUploads } from '../contribution/reviewResponses';
 import { discardOwnerContributionFiles } from '../../services/mediaEnqueue';
 import { discardUtterancesForOwner } from '../contribution/utteranceCapture';
 import {
@@ -245,6 +246,7 @@ export async function performAccountDeletion(
     await clearLocalConsent();
     await clearCachedEntitlement();
     await clearContributionCaches();
+    await clearReviewResponseUploads(input.userId);
     await discardOwnerContributionFiles(input.userId);
     await discardUtterancesForOwner(input.userId);
     return { ok: true, scheduled, deletionDueAt };

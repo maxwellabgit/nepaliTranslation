@@ -1,6 +1,8 @@
 import { isTestingGroundHarness } from './testingGroundReview';
 import { itemsForReviewDay, reviewWindowId } from './reviewDayItems';
 import { loadReviewDay } from './reviewDayStore';
+import { nextNewYorkFivePm } from './reviewFlow';
+import { readReviewResponses } from './reviewResponses';
 
 /**
  * Today's 10 reads the samples shipped with the app.
@@ -60,7 +62,7 @@ export type ReviewSubmitResult =
         | 'invalid';
     };
 
-export async function fetchCurrentReviewWindow(): Promise<ReviewCurrent> {
+export async function fetchCurrentReviewWindow(ownerUserId: string | null = null): Promise<ReviewCurrent> {
   const now = new Date();
   const day = await loadReviewDay(now);
   const items = itemsForReviewDay(day, now);
@@ -68,11 +70,11 @@ export async function fetchCurrentReviewWindow(): Promise<ReviewCurrent> {
     ok: true,
     window: {
       window_id: reviewWindowId(day, now),
-      ny_close_at: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+      ny_close_at: nextNewYorkFivePm(now).toISOString(),
       size: items.length,
     },
     items,
-    mine: [],
+    mine: (await readReviewResponses()).filter((row) => (row.userId === null || row.userId === ownerUserId) && items.some((item) => item.source_item_id === row.sourceItemId)).map((row) => ({ source_item_id: row.sourceItemId, action: row.action, corrected_text: row.answer, reward_granted: false })),
   };
 }
 

@@ -19,3 +19,4 @@ updated_local_date: 2026-10-02 America/New_York
 c4_expanded_art: Owner-directed larger artwork and centered timer; coin scaling tested; popup-only recordings and fresh review PASS. Full native/C4 gates open.
 c13_typed_ux: Draft retained across direction/submission; visible Translate button and dark results; cancellation regression covered. Final beta/browser/fresh review PASS. Full C13/native gates open.
 c2_camera_followup: Owner-directed reset/header/conservative Latin routing slice; no new visual media; independent source review PASS, final beta pending. Owner explicitly authorizes GitHub main fast-forward and new internal TestFlight build; public V1 still NO-GO.
+c5_response_revisions: Owner-directed immutable answers/revisions through existing private outbox; subject-consent/races/cleanup repaired. Final beta535 tests and independent source review PASS; hosted retrieval/deletion/native remain open.

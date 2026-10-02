@@ -16,6 +16,8 @@ export type OutboxStatus =
   | 'rejected';
 
 export type ContributionDraft = {
+  owner_user_id?: string | null;
+  review_metadata?: Record<string, unknown> | null;
   id: string;
   /** Random immutable UUID — server idempotency key. */
   idempotency_key: string;
@@ -144,6 +146,8 @@ export function normalizeDraft(raw: unknown): ContributionDraft | null {
       : newIdempotencyKey();
   const now = new Date().toISOString();
   return {
+    owner_user_id: typeof row.owner_user_id === 'string' ? row.owner_user_id : null,
+    review_metadata: row.review_metadata && typeof row.review_metadata === 'object' ? row.review_metadata as Record<string, unknown> : null,
     id:
       typeof row.id === 'string' && row.id
         ? row.id
@@ -238,6 +242,8 @@ export async function findDraftByFingerprint(
 }
 
 export type EnqueueInput = {
+  owner_user_id?: string | null;
+  review_metadata?: Record<string, unknown> | null;
   idempotency_key?: string;
   local_fingerprint: string;
   surface: OutboxSurface;
@@ -308,7 +314,8 @@ export async function enqueueDraft(
       updated_at: now,
     };
     return {
-      items: [draft, ...items].slice(0, 200),
+      // Never discard unsent data when the UX history exceeds its target size.
+      items: [draft, ...items].filter((row, index) => index < 200 || !['synced', 'rejected'].includes(row.status)),
       result: draft,
     };
   });

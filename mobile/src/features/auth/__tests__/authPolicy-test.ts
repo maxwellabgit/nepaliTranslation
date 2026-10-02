@@ -12,6 +12,13 @@ import { readPublicEnv } from '../../../config/env';
 import { isForbiddenAuthorizationCodeStorage } from '../appleIdentity';
 
 describe('auth policy', () => {
+  test('an account switch cannot inherit the prior account contribution consent', () => {
+    const a = { ...INITIAL_AUTH, userId: 'a', consentVersion: 'current', ageConfirmed: true };
+    const b = authReducer(a, { type: 'ready_session', userId: 'b' });
+    expect(b.consentVersion).toBeNull();
+    expect(b.ageConfirmed).toBe(false);
+    expect(authReducer(a, { type: 'ready_session', userId: 'a' }).consentVersion).toBe('current');
+  });
   test('cancelled Apple sign-in returns to guest without an alert', () => {
     const signing = authReducer(INITIAL_AUTH, { type: 'start_sign_in' });
     const next = authReducer(signing, { type: 'apple_cancelled' });

@@ -17,6 +17,15 @@ describe('contributionOutbox H2', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
   });
+  test('queue pressure preserves every unsent revision beyond the history target', async () => {
+    for (let index = 0; index < 205; index += 1) await enqueueDraft({
+      local_fingerprint: `immutable-${index}`, idempotency_key: `immutable-${index}`, surface: 'live_translate',
+      source_text: 'Hello', model_output: 'नमस्ते', correction_text: `answer-${index}`,
+      source_lang: 'en', formality: 'formal', script: 'deva', consent_version: 'current', status: 'queued',
+    });
+    expect(await loadOutbox()).toHaveLength(205);
+    expect((await loadOutbox()).some((row) => row.idempotency_key === 'immutable-0')).toBe(true);
+  });
 
   test('enqueue is idempotent on the same fingerprint and keeps UUID', async () => {
     const fp = contributionFingerprintFor({

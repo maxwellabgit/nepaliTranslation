@@ -1,5 +1,9 @@
 import { readPublicEnv } from '../config/env';
 import { getSupabase } from './supabase';
+import { getRuntimeFeatureFlags } from '../app/featureFlags';
+import { loadLocalConsent } from '../storage/contributionConsent';
+import { canSubmitContribution } from '../features/auth/consent';
+import { sessionInactiveNow } from '../features/auth/sessionExpiry';
 import {
   computeNextAttemptAt,
   markRejected,
@@ -83,6 +87,7 @@ export async function postTranslationReport(
             local_fingerprint: draft.local_fingerprint,
             translation_method: draft.translation_method ?? null,
             model_version: draft.model_version ?? null,
+            ...(draft.review_metadata ?? {}),
           },
         }),
         signal: controller.signal,
@@ -141,13 +146,24 @@ async function doFlush(
   const token = data.session?.access_token;
   if (!token) return { ok: false, reason: 'unauthorized' };
 
-  const pending = (await pendingDrafts()).slice(0, MAX_BATCH);
+  const pending = await pendingDrafts();
   let synced = 0;
   let failed = 0;
   let rejected = 0;
+  let attempted = 0;
 
   for (const draft of pending) {
+    if (attempted >= MAX_BATCH) break;
     if (draft.status === 'draft') continue;
+    if (draft.translation_method === 'todays_10') {
+      const consent = await loadLocalConsent();
+      const latest = (await supabase.auth.getSession()).data.session;
+      const userId = latest?.user?.id;
+      if (!userId || userId !== draft.owner_user_id || latest?.access_token !== token || !getRuntimeFeatureFlags().contributionTextEnabled ||
+        !canSubmitContribution({ authConfigured: env.authConfigured, signedIn: true, consentVersion: consent?.consent_version ?? null, ageConfirmed: Boolean(consent?.age_confirmed) }).ok ||
+        draft.consent_version !== consent?.consent_version || await sessionInactiveNow(userId)) continue;
+    }
+    attempted += 1;
     await markSyncing(draft.idempotency_key);
     const outcome = await postTranslationReport(
       draft,

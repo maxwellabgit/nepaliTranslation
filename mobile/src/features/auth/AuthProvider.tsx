@@ -51,9 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   stateRef.current = state;
 
   const refreshAccountSummary = useCallback(async () => {
-    if (!stateRef.current.userId) return;
+    const subject = stateRef.current.userId;
+    if (!subject) return;
     const result = await fetchAccountSummary();
-    if (!result.ok) return;
+    if (!result.ok || stateRef.current.userId !== subject) return;
     if (isServerDeletionComplete(result.summary.deletionCompletedAt)) {
       await clearPendingDeletionDue();
     }

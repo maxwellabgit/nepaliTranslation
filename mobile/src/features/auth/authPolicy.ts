@@ -66,7 +66,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
       };
     case 'ready_session':
       return {
-        ...state,
+        ...(state.userId === action.userId ? state : INITIAL_AUTH),
         status: 'signed-in',
         userId: action.userId,
         error: null,

@@ -1,5 +1,7 @@
 import { readPublicEnv } from '../../config/env';
 import { getSupabase } from '../../services/supabase';
+import { clearLocalConsent } from '../../storage/contributionConsent';
+import { clearReviewResponseUploads } from '../contribution/reviewResponses';
 
 /**
  * R4 client-side wrapper for `service_withdraw_contribution_consent`.
@@ -45,6 +47,8 @@ export async function withdrawContributionConsent(): Promise<WithdrawContributio
     },
   );
   if (res.ok) {
+    await clearLocalConsent();
+    await clearReviewResponseUploads(userId);
     const body = (await res.json().catch(() => null)) as
       | { deletion_due_at?: string }
       | null;
