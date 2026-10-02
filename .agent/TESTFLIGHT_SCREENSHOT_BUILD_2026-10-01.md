@@ -14,7 +14,8 @@ Purpose: deliver the current native UI to the owner for physical iPhone 16 basel
 - EAS build ID: d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8; version/build: 1.7.0 (23); created 2026-10-02T04:02:11.870Z; FINISHED 2026-10-02T04:07:50.699Z. Native signing/compilation completed successfully.
 - Initial submission: d220d753-276c-4d02-a479-a8ba0850796b; ERRORED 2026-10-02T04:08:56.138Z. Apple rejected upload: SUBMISSION_SERVICE_IOS_MISSING_REQUIRED_AGREEMENT, "A required agreement is missing or has expired. Sign the agreement on the Apple Developer Portal to resolve this error."
 - After owner reported Apple sign-in complete: submit:retry created 74931267-8130-45a2-864a-53f1bd2f80a2, ERRORED 2026-10-02T04:14:21.016Z; error null / no log files. Direct exact-build submission b2055dbf-f14d-4c40-944e-278ff24f0ecd also ERRORED 2026-10-02T04:15:46.820Z, error null / no log files. Neither is claimed successful; latest failures do not identify a cause.
-- Apple availability: authenticated App Store Connect TestFlight page inspected after retries; latest upload/build is 22. Build 23 absent at this check.
+- Owner reported Apple account ready again, 2026-10-02: submit:retry created 649e8b8a-75e6-4299-a5a3-49da350b8e18 against the same completed build, created 2026-10-02T16:26:48.870Z. EAS FINISHED 2026-10-02T16:32:36.776Z (12:32 PM America/New_York), error null.
+- Apple availability: authenticated App Store Connect initially showed build 23 Processing, Oct 2 12:27 PM NY; after refresh, build 23 appears in version 1.7.0 with Ready to Submit / 90-day expiry, assigned to existing internal Team (Expo), two invites. Apple processing and internal group assignment verified. External beta/public review not submitted. Installed device remains unverified.
 - Installed device/native screenshots: unverified.
 
 ## Preflight slice and evidence
@@ -38,14 +39,15 @@ No layout redesign. Camera rendering now correlates highlights by immutable flat
 
 ## Required owner action and exact retry
 Owner reported Apple sign-in complete and upload was retried. Authenticated browser inspection shows Apple Developer Program License Agreement accepted July 19, 2026; App Store Connect Business shows Free Apps Agreement Active and Paid Apps Agreement New with "View and Agree to Terms". The paid agreement is an outstanding owner account/legal step; the generic retry failures do not prove that it caused those failures. Owner was asked to review/resolve this specific agreement. No agreement, payment, tax or banking declaration was accepted or supplied by the agent.
+Later owner reported readiness; the same-build retry completed successfully and Apple processing finished with existing internal group assignment. Earlier agreement observations remain historical; no current agreement/tax/bank completion is inferred beyond the observed upload acceptance.
 
-After the owner reports resolution, retry the latest submission, without rebuilding or selecting latest:
+Historical retry used after the owner reported readiness (already succeeded; do not submit another duplicate):
 
 ```powershell
 npx --yes eas-cli submit:retry b2055dbf-f14d-4c40-944e-278ff24f0ecd --non-interactive
 ```
 
-If EAS no longer permits retry, create a new submission of build d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8 with the testflight profile, --non-interactive --no-wait --no-auto-testflight-setup. Capture the actual new ID/result. Then verify upload/Apple processing and request build-23 originals. Do not claim the failed upload reached TestFlight.
+No further upload is needed for this binary. Current next action is owner installation and physical iPhone 16 screenshot intake.
 
 ## Capture handoff
 Once available, install the new version/build on the physical iPhone 16. Capture original PNGs, English/Nepali and popup states, Today's 10 answer/correction/completion, typed and saved-audio feedback, and Camera results as specified in docs/design/v1-ui/README.md. Record build number, iOS version, theme and text size. An absent control remains an absent control.
