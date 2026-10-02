@@ -40,6 +40,7 @@ Historical C0/C1 completion is not carried forward as completion of changed requ
 - [ ] **C15** Full regression, exact-SHA independent review, same-code candidate device proof and owner release checklist.
 
 ## Progress
+2026-10-02 C4 scoped owner-requested UI follow-up: one persistent award replaces Welcome/Go ad-free, Continue launches non-blocking coins over Home, compact top-right timer retires the filling bar. Locked install, verify:beta (470 unit + 19 integration), Expo Doctor 21/21, final web export and six restart recovery checks PASS. Fresh independent review PASS after repairing large-text scrolling. Two normal-speed final browser recordings and decoded frames verified. [Proof](../../.agent/C4_WELCOME_UI_2026-10-02.md). No native-build/device/C1/full-C4 completion is inferred.
 2026-10-01: inspected `9aaf493`, advanced the required reconciliation branch by fast-forward, and rewrote living documents against the owner-approved functional direction. Preserved pre-edit documents under docs/history/2026-10-01-contract. No runtime, schema, flags, or model changes.
 Step 1 documents/inventory complete: eight archive snapshots match, 41 local links resolve, required plan/scope/manifest checks and final diff check pass. Fresh independent reviewer PASS; two clarity nits fixed. [Verification record](../../.agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md).
 Step 2: no native apps/device surface exposed by capture inventory; physical iPhone 16 screenshot provenance is missing. Requested an existing local screenshot directory. No generated proposal or design approval claimed.
@@ -55,6 +56,7 @@ page-screenshots contains older images, but no native-device/build manifest; mix
 The old living plan, DONE and release documents still required photo toggles, global reward windows and always-PASS validation despite the October superseding notes.
 
 ## Decision log
+- 2026-10-02: owner explicitly directed a C4 welcome/timer UI slice from the reviewed browser recordings: one readable award over Home for first-ever/later daily opens, no Welcome/Go ad-free popup, Continue starts non-blocking coins, smaller top-right timer without a filling bar. Implement this specified design and supply two new recordings. This scoped authorization does not close C1 native screenshot proof or any release gate.
 - 2026-10-01: owner approved steps 1–2 of the eight-step functional completion plan. Keep Today's 10 as a contribution method with local gamification, without reviving scheduled review rewards.
 - 2026-10-01: native screenshots precede all new UI proposals. No browser/simulator substitution; one image agent per proposal after references exist.
 - 2026-10-01: model quality is not an implementation focus; existing certification remains preserved and is not silently waived.

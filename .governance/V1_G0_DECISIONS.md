@@ -15,7 +15,7 @@ The [previous freeze and amendments](../docs/history/2026-10-01-contract/V1_G0_D
 - Standard data: stable IDs and feedback revisions link original source, translation, optional correction/audio, settings and consent. Versioned normalization is separate from original text; idempotent private retrieval/export, no automatic training.
 - Audio: real file duration ≤60 seconds; at least four local clips survive offline/slow upload, restart, and queue pressure. Verify actual files, not just duration metadata.
 - Daily credits: 10 first-ever installation open; 5 on each later New York date; no same-day extra five. V1 daily-open records do not receive a second welcome. Flight follows the final startup popup.
-- Credit duration: ten minutes; preserve remaining time; 12-hour cap. Gauge full mark 50 unprinted credits; only full inner fill changes to red.
+- Credit duration: ten minutes; preserve remaining time; 12-hour cap. Owner amendment 2026-10-02 retires the filling bar: a compact top-right timer pill receives the coin flight.
 - Rewarded ad: two credits / twenty minutes after one verified server callback; preserve historical grants without clawback.
 - Automatic ads: ten-minute foreground eligibility, no daily cap, allowlisted safe points only; subscription/local ad-free grants suppress. Main-branch reset behavior stands; timer-triggered presentation is not accepted proof of safe-point compliance.
 - Banners: idle Translate/Learn; house rotation 60 seconds foreground-visible; steady slot; no photo/recording/consent/keyboard overlap.
@@ -28,5 +28,7 @@ The [previous freeze and amendments](../docs/history/2026-10-01-contract/V1_G0_D
 - Model work: no training/optimization in this functional finalization; preserve recorded certificate and thresholds. No certification waiver inferred from owner prioritization.
 
 ## Evidence and rollout
+2026-10-02 scoped owner direction: implement the explicitly specified first-ever/daily award popup and compact timer changes after review of continuous browser recordings. This authorizes this C4 UI slice directly; it does not satisfy C1 native baseline/design proof or approve unrelated redesigns. A single readable award replaces Welcome and Go ad-free; Continue dismisses it before non-blocking flight over Home. Record both changed browser journeys, without claiming native proof.
+
 Every optional subsystem remains off until its code, server authorization, hosted round trip, and device proof pass. Text and speech are independent flags. Retired photo/public-review flags must not resurrect old flows. The scheduler's remaining historical reward-close call is inventoried, not approved for new review grants.
 C0–C15 are revalidated against the revised contract. Historical PASS entries remain historical; [current state](../.agent/V1_FINAL_CONTRACT_STATE.md) owns readiness.

@@ -32,11 +32,8 @@ type Props = {
   previewRemainingMs?: number;
 };
 
-const FILL = '#C4922A';
-const FILL_DARK = '#F0C14A';
-const OVER = '#D64545';
-
 export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: Props) {
+  const pill = useRef<View>(null);
   const theme = useTheme();
   const lang = useUiLang();
   const flags = useFeatureFlags();
@@ -126,7 +123,6 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
     loop.start();
     return () => loop.stop();
   }, [receiving, shake]);
-  const fillColor = face.fillFull ? OVER : theme.scheme === 'dark' ? FILL_DARK : FILL;
   const timerColor = theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12';
   const coinColor = timerColor;
 
@@ -134,11 +130,11 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
     () =>
       StyleSheet.create({
         wrap: {
-          flex: compact ? 1 : undefined,
-          marginHorizontal: compact ? 6 : 16,
+          alignSelf: compact ? 'center' : 'flex-end',
+          marginHorizontal: compact ? 0 : 16,
           marginTop: compact ? 0 : 4,
-          paddingHorizontal: compact ? 8 : 16,
-          paddingVertical: compact ? 4 : 12,
+          paddingHorizontal: compact ? 9 : 12,
+          paddingVertical: compact ? 5 : 8,
           borderRadius: compact ? 12 : 16,
           backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
           borderWidth: StyleSheet.hairlineWidth,
@@ -150,18 +146,6 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           alignItems: 'center',
           gap: 6,
         },
-        track: {
-          flex: 1,
-          height: compact ? 8 : 16,
-          borderRadius: 8,
-          overflow: 'hidden',
-          backgroundColor: theme.scheme === 'dark' ? '#5C4A28' : '#F3E6C4',
-        },
-        fill: {
-          height: '100%',
-          borderRadius: 5,
-          backgroundColor: fillColor,
-        },
         timer: {
           fontSize: compact ? 12 : 16,
           fontWeight: '800',
@@ -171,19 +155,24 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           textAlign: 'right',
         },
       }),
-    [compact, fillColor, theme.scheme, timerColor],
+    [compact, theme.scheme, timerColor],
   );
   const shakeX = shake.interpolate({
     inputRange: [-1, 1],
     outputRange: [-3, 3],
   });
 
-  const accessibilityLabel = face.overMark
-    ? t('review.gaugeOverA11y', lang, { clock: face.clock, interstitial: interstitialLabel })
-    : t('review.gaugeA11y', lang, { clock: face.clock, interstitial: interstitialLabel });
+  const accessibilityLabel = t('review.gaugeA11y', lang, {
+    clock: face.clock,
+    interstitial: interstitialLabel,
+  });
 
   return (
     <Pressable
+      ref={pill}
+      onLayout={() => pill.current?.measureInWindow((x, y, width, height) => {
+        award.setCoinTarget({ x: x + width / 2, y: y + height / 2 });
+      })}
       style={styles.wrap}
       testID="credits-gauge"
       onPress={onPress}
@@ -194,21 +183,11 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
       <Animated.View
         testID="credits-gauge-face"
         style={{
-          transform: [{ translateX: receiving ? shakeX : 0 }, { scale: receiving ? 1.08 : 1 }],
+          transform: [{ translateX: receiving ? shakeX : 0 }, { scale: 1 }],
         }}
       >
       <View style={styles.row} testID="credits-gauge-total">
         <FontAwesome5 name="coins" size={14} color={coinColor} />
-        <View
-          style={styles.track}
-          accessibilityRole="progressbar"
-          accessibilityValue={{ min: 0, max: 100, now: Math.round(face.fillPercent) }}
-        >
-          <View
-            testID="credits-gauge-fill"
-            style={[styles.fill, { width: `${face.fillPercent}%` }]}
-          />
-        </View>
         <Text style={styles.timer} testID="credits-gauge-timer">
           {gauge.state === 'countdown' ? interstitialLabel : face.clock}
         </Text>

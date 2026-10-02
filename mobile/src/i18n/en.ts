@@ -533,6 +533,7 @@ export const en = {
   'review.errorInvalid': 'Please enter a corrected target before submitting.',
   'review.errorUnavailable': 'Something went wrong. Try again shortly.',
   'creditsAward.title': 'Credits Awarded!',
+  'openAward.cappedBody': 'You received {count} credits. {minutes} ad-free minutes were added within the 12-hour limit.',
   'creditsAward.body':
     "You earned {count} credits from yesterday's Today's 10.",
   'creditsAward.added': 'Credits Added',

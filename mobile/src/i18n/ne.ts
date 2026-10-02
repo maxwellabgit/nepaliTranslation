@@ -539,6 +539,7 @@ export const ne: Record<MessageKey, string> = {
   'review.errorInvalid': 'पेस गर्नुअघि सुधारिएको लक्ष्य लेख्नुहोस्।',
   'review.errorUnavailable': 'केही गलत भयो। छिट्टै फेरि प्रयास गर्नुहोस्।',
   'creditsAward.title': 'क्रेडिट पाइयो!',
+  'openAward.cappedBody': 'तिमीले {count} क्रेडिट पायौ। १२ घण्टाको सीमाभित्र {minutes} विज्ञापन-रहित मिनेट थपियो।',
   'creditsAward.body': 'हिजोको आजका १० बाट तिमीले {count} क्रेडिट पायौ।',
   'creditsAward.added': 'थपिएको क्रेडिट',
   'creditsAward.total': 'जम्मा क्रेडिट',

@@ -29,7 +29,7 @@ Current authority: 2026-10-01 INTENT/decisions and the active reconciliation pla
 - [ ] Consent separate from startup Terms/Privacy; current opt-in, sign-in, 18+, session and flag enforced server-side; default-off speech toggle; blocked states and ownerless clips never upload.
 - [ ] Camera photos stay temporary/local; no photo toggle or new photo upload; preserve deletion of historical objects.
 - [ ] Actual audio files <=60 seconds; at least four clips survive offline/restart; bounded queues preserve unsent data; revision/concurrency retries are idempotent.
-- [ ] Welcome ten / later New York dates five credits, ten minutes per credit, no same-day double award, restart-safe flight after last popup, 12-hour stacking and gauge rules.
+- [ ] Welcome ten / later New York dates five credits, ten minutes per credit, no same-day double award, restart-safe flight after Continue, 12-hour stacking; owner 2026-10-02 compact top-right timer with no filling bar.
 - [ ] Rewarded two credits/twenty minutes verified server-side once; localized storefront prices USD 2.99/NPR 199 if supported; signed-in UUID purchase/restore.
 - [ ] Ten-minute foreground ads at safe points, no daily cap, retained main reset behavior explicitly tested; local grants/subscriptions suppress; banners idle Translate/Learn with stable sixty-second house rotation.
 - [ ] Withdrawal/deletion completes within original thirty-day deadline; durable retries, storage/database/auth sequencing and account isolation.

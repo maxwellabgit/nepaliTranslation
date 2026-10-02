@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { grantDailyOpenCoin, readDailyOpen } from '../dailyOpen';
+import { extendDailyUntil, grantDailyOpenCoin, readDailyOpen } from '../dailyOpen';
 import { DAILY_OPEN_CREDITS, FIRST_OPEN_CREDITS } from '../openWelcome';
 
 const MINUTE = 60 * 1000;
@@ -26,6 +26,18 @@ describe('daily open credits', () => {
     expect(next.untilMs - Date.parse('2026-09-30T15:00:00.000Z')).toBe(
       DAILY_OPEN_CREDITS * 10 * MINUTE,
     );
+  });
+
+  it('persists the actual capped minutes and prior balance for restart presentation', async () => {
+    const now = Date.parse('2026-10-02T16:00:00Z');
+    await grantDailyOpenCoin(new Date(now - 24 * 60 * MINUTE));
+    const prior = now + 710 * MINUTE;
+    await extendDailyUntil(prior);
+    const capped = await grantDailyOpenCoin(new Date(now));
+    expect(capped.untilMs).toBe(now + 720 * MINUTE);
+    expect(capped.pendingFlight).toEqual({ kind: 'daily', credits: 5,
+      fromUntilMs: prior, minutesApplied: 10, capped: true });
+    expect((await readDailyOpen())?.pendingFlight).toEqual(capped.pendingFlight);
   });
 
   it('stacks the daily grant on time still left', async () => {

@@ -17,6 +17,7 @@ import {
 } from '../features/contribution/reviewCredits';
 import {
   clearPendingFlight,
+  dismissDailyAd,
   extendDailyUntil,
   laterActiveUntil,
   readDailyOpen,
@@ -25,6 +26,7 @@ import { useEntitlement } from '../features/entitlements/EntitlementProvider';
 import { getSupabase } from '../services/supabase';
 
 export type CreditAwardPresentation = {
+  openAwardKind?: 'welcome' | 'daily';
   credits: number;
   minutes: number;
   capped: boolean;
@@ -50,14 +52,16 @@ type QueuedAward =
   | { type: 'ready'; presentation: CreditAwardPresentation };
 
 type CreditAwardValue = {
+  coinTarget: { x: number; y: number } | null;
+  setCoinTarget: (target: { x: number; y: number }) => void;
   phase: Phase;
   presentation: CreditAwardPresentation | null;
   /** While an award is on screen, the gauge shows this clock instead of the live one. */
   displayRemainingMs: number | null;
   collect: () => void;
-  /** Start the coin flight without a Collect press. Welcome and daily grants use this. */
+  /** Resume an already acknowledged award without showing its message twice. */
   startFlight: () => void;
-  /** Hold review claims until the post-signup popups close. */
+  /** Hold pending claims while the installation award is prepared. */
   holdAwards: () => void;
   releaseAwards: () => void;
   /** Show this award immediately. A review claim already on screen waits behind it. */
@@ -65,6 +69,8 @@ type CreditAwardValue = {
 };
 
 const IDLE: CreditAwardValue = {
+  coinTarget: null,
+  setCoinTarget: () => undefined,
   phase: 'idle',
   presentation: null,
   displayRemainingMs: null,
@@ -126,6 +132,8 @@ function usePump(fromMs: number, toMs: number, active: boolean, durationMs: numb
 }
 
 export function CreditAwardProvider({ children }: { children: ReactNode }) {
+  const [coinTarget, setCoinTarget] = useState<{ x: number; y: number } | null>(null);
+  const collecting = useRef(false);
   const { status, userId } = useAuth();
   const entitlement = useEntitlement();
   const untilRef = useRef(entitlement.earnedAdFreeUntilMs);
@@ -282,8 +290,10 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const collect = useCallback(() => {
-    if (phaseRef.current !== 'message') return;
-    startFlight();
+    if (phaseRef.current !== 'message' || collecting.current) return;
+    if (!presentationRef.current?.openAwardKind) { startFlight(); return; }
+    collecting.current = true;
+    void dismissDailyAd().then(startFlight).catch(() => undefined).finally(() => { collecting.current = false; });
   }, [startFlight]);
 
   const displayRemainingMs =
@@ -295,6 +305,8 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CreditAwardValue>(
     () => ({
+      coinTarget,
+      setCoinTarget,
       phase,
       presentation,
       displayRemainingMs,
@@ -305,6 +317,7 @@ export function CreditAwardProvider({ children }: { children: ReactNode }) {
       startAward,
     }),
     [
+      coinTarget,
       phase,
       presentation,
       displayRemainingMs,

@@ -372,6 +372,7 @@ export function TranslateScreen({
         >
           <Ionicons name="time-outline" size={22} color={theme.colors.text} />
         </Pressable>
+        <View style={{ flex: 1 }} />
         <CreditsGauge compact onPress={onOpenReview} />
         <Pressable
           onPress={onOpenSettings}

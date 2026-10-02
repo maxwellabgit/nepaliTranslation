@@ -40,6 +40,10 @@ export function subscribeDailyOpen(listener: Listener): () => void {
 export type PendingFlight = {
   kind: 'welcome' | 'daily';
   credits: number;
+  /** Durable presentation data so a capped award resumes without inventing time. */
+  fromUntilMs?: number | null;
+  minutesApplied?: number;
+  capped?: boolean;
 };
 
 export type DailyOpenRecord = {
@@ -178,7 +182,13 @@ export async function grantDailyOpenCoin(
       untilMs: now.getTime() + stacked.remainingMinutes * 60_000,
       adDismissed: false,
       welcomed: true,
-      pendingFlight: { kind, credits },
+      pendingFlight: {
+        kind,
+        credits,
+        fromUntilMs: prior,
+        minutesApplied: stacked.appliedMinutes,
+        capped: stacked.capped,
+      },
       receipt: kind === 'welcome' ? `${installationId}:welcome` : `${installationId}:${nyDate}`,
     };
     return writeRecord(record);

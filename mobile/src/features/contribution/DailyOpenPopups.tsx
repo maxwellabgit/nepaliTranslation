@@ -1,292 +1,63 @@
-import { useEffect, useRef, useState } from 'react';
-import { AppState, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { t, useUiLang } from '../../i18n';
+import { useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
+import { useUiLang } from '../../i18n';
 import { useEntitlementOptional } from '../entitlements/EntitlementProvider';
 import { presentCreditClaim, useCreditAwardOptional } from '../../translate/CreditAwardProvider';
 import { minutesForCredits } from './reviewCredits';
-import {
-  dismissDailyAd,
-  grantDailyOpenCoin,
-  laterActiveUntil,
-  readDailyOpen,
-  type PendingFlight,
-} from './dailyOpen';
+import { grantDailyOpenCoin, laterActiveUntil, readDailyOpen } from './dailyOpen';
 import { awardSurfaceIsBusy, subscribeAwardSurface } from '../../translate/awardSurface';
-import {
-  DAILY_OPEN_CREDITS,
-  FIRST_OPEN_CREDITS,
-  FIRST_OPEN_WELCOME,
-  openAwardCopy,
-  type OpenAwardKind,
-} from './openWelcome';
-import { loadReviewDay } from './reviewDayStore';
+import { openAwardCopy } from './openWelcome';
 import { nyDateKey } from './reviewDayPlan';
 
-const ART = {
-  english: require('../../../assets/review/english.png'),
-  deva: require('../../../assets/review/devanagari.png'),
-  roman: require('../../../assets/review/romanized.png'),
-} as const;
-
-type Step = 'welcome' | 'ad' | 'off';
-
-type Plan = {
-  kind: OpenAwardKind;
-  credits: number;
-  beforeUntilMs: number | null;
-};
-
-/**
- * After startup consent: first-open welcome cards, then the ad-free popup.
- * The credit award animation starts when that last popup closes.
- * First open grants 10 credits. Each later New York day's first open grants 5.
- */
+/** One readable award over Home; Continue dismisses it and starts the flight. */
 export function DailyOpenPopups() {
   const lang = useUiLang();
   const award = useCreditAwardOptional();
   const entitlement = useEntitlementOptional();
-  const [step, setStep] = useState<Step>('off');
-  const [welcomeIndex, setWelcomeIndex] = useState(0);
-  const [peeked, setPeeked] = useState(false);
-  const planRef = useRef<Plan | null>(null);
-  const entitlementUntil = useRef<number | null>(null);
-  const langRef = useRef(lang);
-  const closing = useRef(false);
-  const queuedStep = useRef<Step | null>(null);
-  const stepRef = useRef(step);
-  const awardPhase = useRef(award.phase);
-  stepRef.current = step;
-  entitlementUntil.current = entitlement?.earnedAdFreeUntilMs ?? null;
-  langRef.current = lang;
-  awardPhase.current = award.phase;
-
-  const reveal = (next: Step) => {
-    if (next !== 'off') closing.current = false;
-    if (next !== 'off' && awardSurfaceIsBusy()) {
-      queuedStep.current = next;
-      return;
-    }
-    queuedStep.current = null;
-    setStep(next);
-  };
-
-  const launchFlight = (flight: PendingFlight, untilMs: number) => {
-    const nowMs = Date.now();
-    const remaining = Math.max(0, untilMs - nowMs);
-    const copy = openAwardCopy(flight.kind, langRef.current, flight.credits);
-    const presentation =
-      flight.kind === 'welcome' || flight.kind === 'daily'
-        ? presentCreditClaim({
-            nowMs,
-            earnedUntilMs: untilMs - minutesForCredits(flight.credits) * 60_000,
-            credits: flight.credits,
-            minutesApplied: minutesForCredits(flight.credits),
-            capped: false,
-          })
-        : null;
-    award.startAward({
-      credits: flight.credits,
-      minutes: minutesForCredits(flight.credits),
-      capped: presentation?.capped ?? false,
-      fromRemainingMs: presentation?.fromRemainingMs ?? remaining,
-      toRemainingMs: presentation?.toRemainingMs ?? remaining,
-      ...copy,
-    });
-    setStep('off');
-    award.releaseAwards();
-    setTimeout(() => award.startFlight(), 0);
-  };
-
-  const consider = async (cancelled: () => boolean) => {
-    if (stepRef.current !== 'off') return;
-    const today = nyDateKey(Date.now());
-    const before = await readDailyOpen();
-    const day = await loadReviewDay();
-    if (cancelled()) return;
-    setPeeked(day.seen && day.reviewed.length === 0);
-    if (before?.pendingFlight && before.nyDate === today && before.adDismissed) {
-      launchFlight(before.pendingFlight, before.untilMs);
-      return;
-    }
-    if (before?.pendingFlight && before.nyDate === today && !before.adDismissed) {
-      planRef.current = null;
-      reveal('ad');
-      return;
-    }
-    const grantedToday = before?.nyDate === today;
-    planRef.current = grantedToday
-      ? null
-      : {
-          kind: before?.welcomed ? 'daily' : 'welcome',
-          credits: before?.welcomed ? DAILY_OPEN_CREDITS : FIRST_OPEN_CREDITS,
-          beforeUntilMs: before && before.untilMs > Date.now() ? before.untilMs : null,
-        };
-    if (!before && FIRST_OPEN_WELCOME.length > 0) {
-      setWelcomeIndex(0);
-      reveal('welcome');
-      return;
-    }
-    if (!grantedToday || !before.adDismissed) {
-      reveal('ad');
-      return;
-    }
-    award.releaseAwards();
-  };
-
+  const current = useRef({ lang, award, entitlement });
+  current.current = { lang, award, entitlement };
   useEffect(() => {
-    award.holdAwards();
     let cancelled = false;
-    void consider(() => cancelled).catch(() => {
-      if (!cancelled) award.releaseAwards();
-    });
-    const resume = subscribeAwardSurface(() => {
-      if (awardSurfaceIsBusy() || !queuedStep.current) return;
-      const next = queuedStep.current;
-      queuedStep.current = null;
-      setStep(next);
-    });
-    const app = AppState.addEventListener('change', (next) => {
-      if (next !== 'active') return;
-      if (awardPhase.current !== 'idle') return;
-      void consider(() => cancelled).catch(() => undefined);
-    });
-    return () => {
-      cancelled = true;
-      resume();
-      app.remove();
-    };
-    // Plan once on mount, then when the app returns to the foreground.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const finish = () => {
-    if (closing.current) return;
-    closing.current = true;
-    void (async () => {
-      const plan = planRef.current;
-      const now = new Date();
+    let preparing = false;
+    const consider = async () => {
+      if (cancelled || preparing || awardSurfaceIsBusy() || current.current.award.phase !== 'idle') return;
+      preparing = true;
+      const api = current.current.award;
+      api.holdAwards();
       try {
-        const existing = await readDailyOpen();
-        if (!plan && existing?.pendingFlight) {
-          await dismissDailyAd(now);
-          const fresh = (await readDailyOpen()) ?? existing;
-          launchFlight(existing.pendingFlight, fresh.untilMs);
-          return;
-        }
-        if (plan) {
-          const nowMs = now.getTime();
-          const beforeUntil = laterActiveUntil(
-            plan.beforeUntilMs,
-            entitlementUntil.current,
-            nowMs,
-          );
-          const presentation = presentCreditClaim({
-            nowMs,
-            earnedUntilMs: beforeUntil,
-            credits: plan.credits,
-            minutesApplied: minutesForCredits(plan.credits),
-            capped: false,
-          });
-          const copy = openAwardCopy(plan.kind, langRef.current, plan.credits);
-          const saved = await grantDailyOpenCoin(now, beforeUntil);
-          await dismissDailyAd(now);
-          award.startAward({ ...presentation, ...copy, credits: saved.pendingFlight?.credits ?? plan.credits });
-          setStep('off');
-          award.releaseAwards();
-          setTimeout(() => award.startFlight(), 0);
-          return;
-        }
-        await dismissDailyAd(now);
+        const nowMs = Date.now();
+        const before = await readDailyOpen();
+        if (cancelled) return;
+        if (before?.nyDate === nyDateKey(nowMs) && !before.pendingFlight) return;
+        const beforeUntil = laterActiveUntil(before?.untilMs, current.current.entitlement?.earnedAdFreeUntilMs, nowMs);
+        const saved = await grantDailyOpenCoin(new Date(nowMs), beforeUntil);
+        if (cancelled || !saved.pendingFlight) return;
+        const flight = saved.pendingFlight;
+        const presentation = presentCreditClaim({
+          nowMs,
+          earnedUntilMs: flight.fromUntilMs !== undefined
+            ? flight.fromUntilMs
+            : before?.pendingFlight
+              ? Math.max(nowMs, saved.untilMs - minutesForCredits(flight.credits) * 60_000)
+              : beforeUntil,
+          credits: flight.credits,
+          minutesApplied: flight.minutesApplied ?? minutesForCredits(flight.credits),
+          capped: flight.capped ?? false,
+        });
+        api.startAward({ ...presentation, toRemainingMs: Math.max(0, saved.untilMs - nowMs),
+          ...openAwardCopy(flight.kind, current.current.lang, flight.credits, flight.capped ? flight.minutesApplied : undefined), openAwardKind: flight.kind });
+        if (saved.adDismissed) api.startFlight();
       } finally {
-        setStep('off');
-        award.releaseAwards();
+        preparing = false;
+        api.releaseAwards();
       }
-    })();
-  };
-
-  const closeWelcome = () => {
-    const next = welcomeIndex + 1;
-    if (next < FIRST_OPEN_WELCOME.length) {
-      setWelcomeIndex(next);
-      return;
-    }
-    setStep('ad');
-  };
-
-  if (step === 'off') return null;
-
-  const card = FIRST_OPEN_WELCOME[welcomeIndex];
-
-  return (
-    <Modal
-      visible
-      transparent
-      animationType="fade"
-      onRequestClose={step === 'welcome' ? closeWelcome : finish}
-    >
-      <View style={styles.scrim}>
-        {step === 'welcome' && card ? (
-          <View style={styles.card} testID="welcome-card">
-            <FontAwesome5 name="coins" size={28} color="#E8A317" />
-            <Text style={styles.title} testID="welcome-title">
-              {card.title[lang]}
-            </Text>
-            <Text style={styles.body} testID="welcome-body">
-              {card.body[lang]}
-            </Text>
-            <Pressable style={styles.button} testID="welcome-continue" onPress={closeWelcome}>
-              <Text style={styles.buttonText}>{t('dailyOpen.continue', lang)}</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <View style={styles.card} testID="daily-open-ad">
-            <View style={styles.artRow}>
-              <Image source={ART.english} style={styles.art} />
-              <Image source={ART.deva} style={styles.art} />
-              <Image source={ART.roman} style={styles.art} />
-            </View>
-            <Text style={styles.title}>{t('dailyOpen.adTitle', lang)}</Text>
-            <Text style={styles.body}>{t('dailyOpen.adBody', lang)}</Text>
-            {peeked ? <Text style={styles.note}>{t('dailyOpen.noReview', lang)}</Text> : null}
-            <Pressable style={styles.button} testID="daily-open-ad-close" onPress={finish}>
-              <Text style={styles.buttonText}>{t('dailyOpen.adClose', lang)}</Text>
-            </Pressable>
-          </View>
-        )}
-      </View>
-    </Modal>
-  );
+    };
+    void consider().catch(() => undefined);
+    const resume = subscribeAwardSurface(() => { void consider().catch(() => undefined); });
+    const app = AppState.addEventListener('change', state => {
+      if (state === 'active') void consider().catch(() => undefined);
+    });
+    return () => { cancelled = true; resume(); app.remove(); };
+  }, []);
+  return null;
 }
-
-const styles = StyleSheet.create({
-  scrim: {
-    flex: 1,
-    backgroundColor: 'rgba(26,20,16,0.45)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: '#FFF8F0',
-    borderRadius: 18,
-    padding: 20,
-    alignItems: 'center',
-    gap: 10,
-  },
-  title: { fontSize: 22, fontWeight: '800', color: '#1B2A4A', textAlign: 'center' },
-  body: { fontSize: 16, lineHeight: 22, color: '#3A3328', textAlign: 'center' },
-  note: { fontSize: 14, lineHeight: 20, color: '#8A3B2A', textAlign: 'center' },
-  button: {
-    marginTop: 6,
-    backgroundColor: '#9B2335',
-    borderRadius: 24,
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-  },
-  buttonText: { color: '#FFF8F0', fontWeight: '700', fontSize: 16 },
-  artRow: { flexDirection: 'row', gap: 8 },
-  art: { width: 88, height: 64, borderRadius: 10 },
-});

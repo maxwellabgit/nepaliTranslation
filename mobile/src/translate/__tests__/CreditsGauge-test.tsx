@@ -30,28 +30,23 @@ describe('CreditsGauge ad-free timer', () => {
     expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('0:00');
     expect(screen.getByTestId('credits-gauge').props.accessibilityLabel).toContain('Ads off');
     expect(screen.queryByText('50')).toBeNull();
-    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
-    expect(fill.width).toBe('0%');
+    expect(screen.queryByTestId('credits-gauge-fill')).toBeNull();
   });
 
-  it('fills to 20 credits of time without turning red', async () => {
+  it('shows remaining time without a filling bar', async () => {
     await act(async () => {
       renderGauge(creditMs(20));
     });
     expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('3:20:00');
-    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
-    expect(fill.width).toBe('40%');
-    expect(fill.backgroundColor).not.toBe('#D64545');
+    expect(screen.queryByTestId('credits-gauge-fill')).toBeNull();
   });
 
-  it('fills the mark at 50 credits and stays the normal size', async () => {
+  it('keeps the compact pill the same size at eight hours', async () => {
     await act(async () => {
       renderGauge(creditMs(50));
     });
     expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('8:20:00');
-    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
-    expect(fill.width).toBe('100%');
-    expect(fill.backgroundColor).toBe('#D64545');
+    expect(screen.queryByTestId('credits-gauge-fill')).toBeNull();
     const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
     expect(timer.color).not.toBe('#D64545');
     const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
@@ -59,14 +54,12 @@ describe('CreditsGauge ad-free timer', () => {
     expect(screen.queryByText('50')).toBeNull();
   });
 
-  it('keeps a full inner bar red past 50 credits without resizing the gauge', async () => {
+  it('keeps the timer readable above the retired gauge mark', async () => {
     await act(async () => {
       renderGauge(creditMs(55));
     });
     expect(screen.getByTestId('credits-gauge-timer').props.children).toBe('9:10:00');
-    const fill = StyleSheet.flatten(screen.getByTestId('credits-gauge-fill').props.style);
-    expect(fill.width).toBe('100%');
-    expect(fill.backgroundColor).toBe('#D64545');
+    expect(screen.queryByTestId('credits-gauge-fill')).toBeNull();
     const timer = StyleSheet.flatten(screen.getByTestId('credits-gauge-timer').props.style);
     expect(timer.color).not.toBe('#D64545');
     const wrap = StyleSheet.flatten(screen.getByTestId('credits-gauge').props.style);
@@ -97,7 +90,7 @@ describe('CreditAwardOverlay', () => {
       fireEvent.press(screen.getByTestId('credit-award-collect'));
     });
     expect(onCollect).toHaveBeenCalled();
-    expect(screen.getByTestId('credit-award-coin-6')).toBeTruthy();
+    expect(screen.queryByTestId('credit-award-coin-6')).toBeNull();
     expect(screen.queryByTestId('credit-award-coin-7')).toBeNull();
   });
 
@@ -110,7 +103,7 @@ describe('CreditAwardOverlay', () => {
             credits={45}
             minutes={450}
             capped={false}
-            flying={false}
+            flying={true}
             onCollect={() => undefined}
           />
         </AppProviders>,
@@ -125,7 +118,7 @@ describe('CreditAwardOverlay', () => {
             credits={80}
             minutes={720}
             capped
-            flying={false}
+            flying={true}
             onCollect={() => undefined}
           />
         </AppProviders>,

@@ -9,10 +9,10 @@
  *
  * One credit is 10 ad-free minutes. Empty text schedules nothing and is
  * rejected before a window is planned. The Home gauge treats 50 credits of
- * remaining ad-free time as a visual full mark. That mark is not an earning
- * cap and is not printed. When the inner bar is full, that fill turns red.
- * The pill and the clock stay the same size and color. The timer itself
- * hard-stops at 12 hours.
+ * remaining ad-free time as a historical visual mark. The 2026-10-02
+ * owner amendment removes that filling bar from the compact timer pill.
+ * Historical gauge arithmetic remains for compatibility and coin-burst
+ * sizing; the timer itself hard-stops at 12 hours.
  */
 
 export const MINUTES_PER_CREDIT = 10;
