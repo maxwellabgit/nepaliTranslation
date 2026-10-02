@@ -27,6 +27,7 @@ type Props = {
   side: Side;
   onChangeText: (text: string) => void;
   onSubmit: () => void;
+  submitDisabled?: boolean;
   /** On is formal, off is informal. */
   formal?: boolean;
   onFormality?: (formal: boolean) => void;
@@ -52,6 +53,7 @@ export function TranslateComposer({
   side,
   onChangeText,
   onSubmit,
+  submitDisabled = false,
   formal = true,
   onFormality,
   expanded = false,
@@ -220,6 +222,17 @@ export function TranslateComposer({
           alignItems: 'center',
           justifyContent: 'center',
         },
+        send: {
+          minHeight: 44,
+          borderRadius: 22,
+          paddingHorizontal: 14,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 6,
+          backgroundColor: theme.colors.crimson,
+        },
+        sendText: { color: theme.colors.onPrimary, fontSize: 14, fontWeight: '700' },
         count: {
           flex: 1,
           textAlign: 'right',
@@ -302,7 +315,7 @@ export function TranslateComposer({
           ref={inputRef}
           value={value}
           onChangeText={onChangeText}
-          onSubmitEditing={onSubmit}
+          onSubmitEditing={() => { if (!submitDisabled) onSubmit(); }}
           onFocus={onFocusField}
           onBlur={onBlurField}
           placeholder={
@@ -366,6 +379,12 @@ export function TranslateComposer({
               <Ionicons name="volume-high-outline" size={20} color={theme.colors.text} />
             </Pressable>
           ) : null}
+          <Pressable onPress={onSubmit} disabled={submitDisabled || !value.trim()}
+            accessibilityRole="button" accessibilityLabel={t('translate.sendA11y', lang)}
+            testID="translate-send" style={[styles.send, (submitDisabled || !value.trim()) && { opacity: .45 }]}>
+            <Text style={styles.sendText}>{t('translate.send', lang)}</Text>
+            <Ionicons name="arrow-forward" size={18} color={theme.colors.onPrimary} />
+          </Pressable>
         </View>
         {onPressMic ? (
           <>

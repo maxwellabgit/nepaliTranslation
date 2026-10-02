@@ -242,7 +242,7 @@ export function TranslateScreen({
         resultText: {
           fontSize: 22,
           fontWeight: '700',
-          color: theme.colors.text,
+          color: theme.scheme === 'dark' ? theme.colors.text : '#000000',
         },
         resultHintText: {
           fontSize: 22,
@@ -406,6 +406,7 @@ export function TranslateScreen({
       <View style={styles.langRow}>
         <Pressable
           onPress={() => session.dispatch({ type: 'setSide', side: 'en' })}
+          disabled={translateBusy}
           style={[styles.langPill, state.activeSide === 'en' && styles.langOn]}
           accessibilityRole="radio"
           accessibilityState={{ selected: state.activeSide === 'en' }}
@@ -422,6 +423,7 @@ export function TranslateScreen({
               side: state.activeSide === 'en' ? 'ne' : 'en',
             })
           }
+          disabled={translateBusy}
           accessibilityRole="button"
           accessibilityLabel={t('translate.swapA11y', lang)}
         >
@@ -429,6 +431,7 @@ export function TranslateScreen({
         </Pressable>
         <Pressable
           onPress={() => session.dispatch({ type: 'setSide', side: 'ne' })}
+          disabled={translateBusy}
           style={[styles.langPill, state.activeSide === 'ne' && styles.langOn]}
           accessibilityRole="radio"
           accessibilityState={{ selected: state.activeSide === 'ne' }}
@@ -445,7 +448,8 @@ export function TranslateScreen({
         value={state.draft}
         side={state.activeSide}
         onChangeText={(text) => session.dispatch({ type: 'setDraft', text })}
-        onSubmit={() => void session.submit()}
+        onSubmit={() => { Keyboard.dismiss(); void session.submit(); }}
+        submitDisabled={translateBusy}
         formal={state.formality === 'formal'}
         onFormality={session.setFormality}
         expanded
@@ -499,7 +503,7 @@ export function TranslateScreen({
         <View style={styles.resultHead}>
           <Text
             style={[
-              resultText && boxFocus === 'result'
+              resultText
                 ? styles.resultText
                 : styles.resultHintText,
               { flex: 1 },

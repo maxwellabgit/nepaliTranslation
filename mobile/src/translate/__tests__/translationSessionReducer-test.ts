@@ -6,6 +6,13 @@ import {
 } from '../translationSessionReducer';
 
 describe('translation session', () => {
+  it('preserves the draft when changing the input language', () => {
+    let state = reduceSession(initialSession(null), { type: 'setDraft', text: 'Hello\nworld' });
+    state = reduceSession(state, { type: 'setSide', side: 'ne' });
+    expect(state.draft).toBe('Hello\nworld');
+    state = reduceSession(state, { type: 'setSide', side: 'en' });
+    expect(state.draft).toBe('Hello\nworld');
+  });
   it('returns to English after one pass from each person', () => {
     let state = initialSession(null);
     expect(sessionPhase(state)).toBe('empty');

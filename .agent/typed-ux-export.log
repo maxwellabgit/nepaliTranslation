@@ -1,0 +1,52 @@
+
+> neptranslate@1.7.0 export:web
+> npx expo export --platform web
+
+Using src/app as the root directory for Expo Router.
+Starting Metro Bundler
+
+Web Bundled 733ms index.ts (749 modules)
+
+› Assets (27):
+assets\credits\credits-awarded-bg.c12663687a038b2cd0d135d8273c53a4.png (195KB)
+assets\fonts\PlusJakartaSans-Bold.e05d8101e6de185813387dbb6295c900.ttf (30KB)
+assets\fonts\PlusJakartaSans-ExtraBold.8ac4bf0bb59d36398d0e61ce57321567.ttf (30KB)
+assets\fonts\PlusJakartaSans-Regular.c7960ae86272d0aca99da5432b6d635e.ttf (30KB)
+assets\review\devanagari.beb8bcdb8b12fa53ce94a29cb5ece725.png (50KB)
+assets\review\english.34eb67c820b99026caea799e5ac28e10.png (57KB)
+assets\review\romanized.8f5971b0ad3118e5394b13a53673d868.png (59KB)
+assets\review\todays10-card.69e7184e33efaaada65ab5ff53cc94df.png (66KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\AntDesign.3f78af31cca60105799838a1a7a59fbd.ttf (130KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Entypo.31b5ffea3daddc69dd01a1f3d6cf63c5.ttf (66KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\EvilIcons.140c53a7643ea949007aa9a282153849.ttf (13KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Feather.ca4b48e04dc1ce10bfbddb262c8b835f.ttf (56KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome.b06871f281fee6b241d60582ae9369b9.ttf (166KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome5_Brands.3b89dd103490708d19a95adcae52210e.ttf (134KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome5_Regular.1f77739ca9ff2188b539c36f30ffa2be.ttf (34KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome5_Solid.605ed7926cf39a2ad5ec2d1f9d391d3d.ttf (203KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome6_Brands.56c8d80832e37783f12c05db7c8849e2.ttf (209KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome6_Regular.370dd5af19f8364907b6e2c41f45dbbf.ttf (68KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\FontAwesome6_Solid.adec7d6f310bc577f05e8fe06a5daccf.ttf (424KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Fontisto.b49ae8ab2dbccb02c4d11caaacf09eab.ttf (314KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Foundation.e20945d7c929279ef7a6f1db184a4470.ttf (57KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Ionicons.b4eb097d35f44ed943676fd56f6bdc51.ttf (390KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\MaterialCommunityIcons.6e435534bd35da5fef04168860a9b8fa.ttf (1.3MB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\MaterialIcons.4e85bc9ebe07e0340c9c4fc2f6c38908.ttf (357KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Octicons.871378c6eab492a3e689a9385dc45a12.ttf (69KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\SimpleLineIcons.d2285965fe34b05465047401b8595dd0.ttf (54KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Zocial.1681f34aaca71b8dfb70756bca331eb2.ttf (26KB)
+
+› web bundles (6):
+_expo/static/js/web/__common-8deadf397891470a9c0297079956a97f.js (19KB)
+_expo/static/js/web/__expo-metro-runtime-e61693ae33497368646febbbae1b21fe.js (10KB)
+_expo/static/js/web/index-00ad04dd9be87733b0c3a09498b40fd2.js (45KB)
+_expo/static/js/web/index-3415b92ea378e55b989faccf99ce7212.js (212B)
+_expo/static/js/web/index-4e4569899e6b95a124d87c091a529dea.js (3.1MB)
+_expo/static/js/web/recognizeCapture-fd3202c844103e611b672cffb206ec9e.js (4.4KB)
+
+› Files (3):
+favicon.ico (15KB)
+index.html (1.4KB)
+metadata.json (49B)
+
+Exported: dist

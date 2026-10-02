@@ -1,0 +1,193 @@
+
+> neptranslate@1.7.0 verify:beta
+> npm run export:lexicon && npm run lint && npm run typecheck && npm run test:unit && npm run test:integration && node --test scripts/testflightAdsConfig.test.cjs && npm run verify:translate && npm run check:model-hash && node scripts/check_ios_usage_descriptions.mjs && npx expo-doctor
+
+
+> neptranslate@1.7.0 export:lexicon
+> node ./scripts/export_meaning_lexicon.mjs
+
+[lexicon] wrote src\mt\generated\meaningLexicon.json (86 KB) en=140 ne=194 romanSent=256 romanWords=302
+
+> neptranslate@1.7.0 lint
+> eslint App.tsx src --max-warnings 0
+
+
+> neptranslate@1.7.0 typecheck
+> tsc --noEmit
+
+
+> neptranslate@1.7.0 test:unit
+> jest --runInBand --testPathIgnorePatterns=integration-test
+
+PASS src/translate/__tests__/CreditsGauge-test.tsx
+PASS src/screens/__tests__/TranslateScreenMarkIncorrect-test.tsx
+PASS src/screens/__tests__/ReviewScreen-test.tsx
+PASS src/features/contribution/__tests__/DailyOpenPopups-test.tsx
+PASS src/screens/__tests__/LearnScreen-test.tsx
+PASS src/screens/__tests__/SettingsAds-test.tsx
+PASS src/screens/__tests__/HistoryLocalEdit-test.tsx
+PASS src/app/__tests__/AppShell-test.tsx
+PASS src/screens/__tests__/HistoryScreen-test.tsx
+PASS src/features/auth/__tests__/StartupConsentGate-test.tsx
+PASS src/app/__tests__/LifecycleCoordinator-test.tsx
+PASS src/features/contribution/__tests__/CorrectionSheet-test.tsx
+PASS src/components/__tests__/PromoRotator-test.tsx
+PASS src/features/ads/__tests__/RewardedAdButton-test.tsx
+PASS src/features/subscription/__tests__/PaywallSheet-test.tsx
+PASS src/features/auth/__tests__/AuthProvider-expanded-test.tsx
+PASS src/services/__tests__/mediaSync-test.ts
+PASS src/features/ads/__tests__/AdSlot-test.tsx
+PASS src/features/auth/__tests__/AccountSection-test.tsx
+PASS src/learn/__tests__/RewardSummaryCard-test.tsx
+PASS src/i18n/__tests__/uiLang-test.tsx
+PASS src/features/contribution/__tests__/utteranceCapture-test.ts
+PASS src/features/contribution/__tests__/dailyOpen-test.ts
+PASS src/features/auth/__tests__/AuthStatusBanner-test.tsx
+PASS src/features/ads/__tests__/HouseAd-test.tsx
+PASS src/features/auth/__tests__/deleteAccount-test.ts
+PASS src/i18n/__tests__/i18n-test.ts
+PASS src/features/auth/__tests__/AuthProvider-test.tsx
+PASS src/services/__tests__/featureConfig-test.ts
+PASS src/features/entitlements/__tests__/EntitlementProvider-test.tsx
+PASS src/services/__tests__/productionServices-test.ts
+PASS src/mt/onnx/__tests__/modelAssets-test.ts
+PASS src/telemetry/__tests__/telemetry-test.ts
+PASS src/features/ads/__tests__/interstitial-test.ts
+PASS src/features/ads/__tests__/AdService.voidLoadContract-test.ts
+PASS src/features/ads/__tests__/AdService-test.ts
+PASS src/features/contribution/__tests__/reviewDayPlan-test.ts
+PASS src/features/ads/__tests__/adMiddleware-test.ts
+PASS src/features/ads/__tests__/AdService.r5-timeouts-test.ts
+PASS src/features/subscription/__tests__/PurchaseService-test.ts
+PASS src/features/ads/__tests__/runInterstitialOpportunity-test.ts
+PASS src/features/auth/__tests__/withdrawContributionConsent-test.ts
+PASS src/features/ads/__tests__/provisionalGrant-test.ts
+PASS src/features/auth/__tests__/authPolicy-test.ts
+PASS src/config/__tests__/legalUrls-test.ts
+PASS src/features/ads/__tests__/adConfig-test.ts
+PASS src/camera/__tests__/readCapturePreview-test.ts
+PASS src/camera/__tests__/correlate-test.ts
+PASS src/components/__tests__/EmptyState-test.tsx
+PASS src/runtime/__tests__/diagnostics-test.ts
+PASS src/features/auth/__tests__/recordSharingToggles-test.ts
+PASS src/camera/__tests__/browserOcrMap-test.ts
+PASS src/features/contribution/__tests__/sampleAllotment-test.ts
+PASS src/features/contribution/__tests__/reviewCredits-test.ts
+PASS src/storage/__tests__/contributionOutbox-test.ts
+PASS src/runtime/__tests__/waitForIdle-test.ts
+PASS src/features/contribution/__tests__/contributionApi-test.ts
+PASS src/stt/__tests__/sttSupport-test.ts
+PASS src/features/auth/__tests__/sessionExpiry-test.ts
+PASS src/features/auth/__tests__/recordStartupConsent-test.ts
+PASS src/camera/__tests__/captureRouting-test.ts
+PASS src/__tests__/theme-test.ts
+PASS src/camera/__tests__/highlightLayout-test.ts
+PASS src/features/entitlements/__tests__/decideAdPresentation-test.ts
+PASS src/features/contribution/__tests__/reviewFlow-test.ts
+PASS src/features/contribution/__tests__/enqueueSpeechContribution-test.ts
+PASS src/features/entitlements/__tests__/entitlementCache-test.ts
+PASS src/features/contribution/__tests__/publicReviewApi-test.ts
+PASS src/storage/__tests__/storageParse-test.ts
+PASS src/services/__tests__/contributionSync-test.ts
+PASS src/features/contribution/__tests__/testingGroundReview-test.ts
+PASS src/storage/__tests__/mediaOutbox-test.ts
+PASS src/camera/__tests__/copyAcknowledgement-test.ts
+PASS src/app/__tests__/hardStopAudio-test.ts
+PASS src/runtime/machines/__tests__/translatePhase-test.ts
+PASS src/features/subscription/__tests__/PurchaseService.native-test.ts
+PASS src/features/ads/__tests__/AdService.testDeviceConfig-test.ts
+PASS src/storage/__tests__/startupConsent-test.ts
+PASS src/storage/__tests__/phrasebookEdit-test.ts
+PASS src/storage/__tests__/pendingDeletion-test.ts
+PASS src/app/__tests__/shellRoutes-test.ts
+PASS src/runtime/machines/__tests__/cameraPhase-test.ts
+PASS src/features/auth/__tests__/consent-test.ts
+PASS src/features/contribution/__tests__/reviewProgress-test.ts
+PASS src/features/ads/__tests__/adConfigLiveBundle-test.ts
+PASS src/i18n/__tests__/catalogCoverage-test.ts
+PASS src/camera/__tests__/resultLayout-test.ts
+PASS src/camera/__tests__/focusPoint-test.ts
+PASS src/config/__tests__/buildProvenance-test.ts
+PASS src/features/entitlements/__tests__/trustedTime-test.ts
+PASS src/features/entitlements/__tests__/decideInterstitialPresentation-test.ts
+PASS src/features/ads/__tests__/rewardedSession-test.ts
+PASS src/learn/__tests__/alphabet-test.ts
+PASS src/translate/__tests__/translationSessionReducer-test.ts
+PASS src/services/__tests__/mediaEnqueue-test.ts
+PASS src/features/auth/__tests__/accountSummary-test.ts
+PASS src/mt/__tests__/cleanText-test.ts
+PASS src/camera/__tests__/ocrFixtures-test.ts
+PASS src/translate/__tests__/passLogic-test.ts
+PASS src/layout/__tests__/sizeClass-test.ts
+PASS src/features/subscription/__tests__/subscriptionAdSuppress-test.ts
+PASS src/features/ads/__tests__/interstitialGauge-test.ts
+PASS src/features/ads/__tests__/AdService.web-test.ts
+PASS src/translate/__tests__/creditProgress-test.ts
+PASS src/features/ads/__tests__/bannerCooldown-test.ts
+PASS src/features/auth/__tests__/recordConsent-test.ts
+
+Test Suites: 106 passed, 106 total
+Tests:       478 passed, 478 total
+Snapshots:   0 total
+Time:        24.923 s
+Ran all test suites.
+
+> neptranslate@1.7.0 test:integration
+> jest --runInBand --testPathPattern=integration-test
+
+PASS src/app/__tests__/App.integration-test.tsx
+PASS src/app/__tests__/AppShell.integration-test.tsx
+
+Test Suites: 2 passed, 2 total
+Tests:       22 passed, 22 total
+Snapshots:   0 total
+Time:        3.996 s, estimated 4 s
+Ran all test suites matching /integration-test/i.
+TAP version 13
+# Subtest: TestFlight reads staging variables from preview and production stays separate
+ok 1 - TestFlight reads staging variables from preview and production stays separate
+  ---
+  duration_ms: 0.6269
+  ...
+# Subtest: TestFlight bundles Google test IDs even with shared live-ad environment variables
+ok 2 - TestFlight bundles Google test IDs even with shared live-ad environment variables
+  ---
+  duration_ms: 0.4646
+  ...
+# Subtest: SSV TestFlight refuses owner units without registered test devices
+ok 3 - SSV TestFlight refuses owner units without registered test devices
+  ---
+  duration_ms: 0.5116
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 54.9014
+
+> neptranslate@1.7.0 verify:translate
+> node scripts/verify_translate_fix.mjs && node scripts/verify_romanize.mjs
+
+{"label":"no phrase translator","ok":true}
+{"label":"no sentence lexicon","ok":true}
+{"label":"english selects en-ne","ok":true}
+{"label":"devanagari selects ne-en","ok":true}
+{"label":"chat roman selects ne-en","ok":true}
+OK
+{"label":"deva to latin letters","ok":true,"out":"namaste"}
+{"label":"syllable parse stays in devanagari","ok":true,"out":"नमस्ते"}
+{"label":"chat roman still detected","ok":true}
+{"label":"plain english is not roman nepali","ok":true}
+OK
+
+> neptranslate@1.7.0 check:model-hash
+> node ./scripts/check_model_hash.mjs
+
+model-hash-check: ok (18 pins, schemaVersion=1)
+iOS Camera, microphone, speech, and photo purpose strings present in generated Info.plist
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!

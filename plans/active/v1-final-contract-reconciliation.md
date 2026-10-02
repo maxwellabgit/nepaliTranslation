@@ -83,3 +83,4 @@ Deliver the authorized diagnostic TestFlight build, then native screenshot intak
 - Hosted deployment and receipt collection for the October migrations/functions remain unverified.
 - Existing model certificate remains unresolved, with no model work authorized in this effort.
 `2026-10-02 C4 scoped refinement`: Expanded existing artwork, centered timer, bounded coin fans. Beta/export, popup-only browser evidence and independent review PASS; no full gate closure.
+`2026-10-02 C13 scoped UX repair`: Preserve drafts, visible localized Translate action, dark result text and safe cancellation. Final beta 478 unit/22 integration, browser and independent review PASS; full C13 remains open.

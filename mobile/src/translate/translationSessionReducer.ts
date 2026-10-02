@@ -143,8 +143,8 @@ export function reduceSession(state: SessionState, action: SessionAction): Sessi
       return {
         ...state,
         activeSide: action.side,
-        draft: '',
         listening: false,
+        pendingPass: false,
       };
     default:
       return state;

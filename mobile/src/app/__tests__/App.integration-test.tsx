@@ -106,6 +106,22 @@ describe('NepTranslateApp production composition', () => {
     });
     expect(screen.getByTestId('mark-incorrect')).toBeTruthy();
     expect(screen.getByLabelText('Speak translation aloud')).toBeTruthy();
+    expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
+    expect(StyleSheet.flatten(screen.getByTestId('translate-output').props.style).color).toBe('#000000');
+  });
+
+  it('keeps typed text across language switches and submits using the visible button', async () => {
+    await renderApp();
+    expect(screen.getByTestId('translate-send').props.accessibilityState?.disabled).toBe(true);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent.press(screen.getByLabelText('Nepali'));
+    expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
+    await fireEvent.press(screen.getByLabelText('English'));
+    expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
+    await fireEvent.press(screen.getByTestId('translate-send'));
+    await waitFor(() => expect(screen.getByTestId('translate-output').props.children).toBe('नमस्ते'));
+    expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
+    expect(StyleSheet.flatten(screen.getByTestId('translate-output').props.style).color).toBe('#000000');
   });
 
   it('translates through a recorded runtime adapter without the neural engine', async () => {
@@ -129,6 +145,39 @@ describe('NepTranslateApp production composition', () => {
         'नमस्ते',
       );
     });
+  });
+
+  it('guards language switches during translation and preserves edits made while waiting', async () => {
+    const runtime = createTestRuntime();
+    const result = { text: 'नमस्ते', method: 'phrase' as const, direction: 'en-ne' as const };
+    let finish!: () => void;
+    const pending = new Promise<typeof result>((resolve) => { finish = () => resolve(result); });
+    runtime.translation.translate = jest.fn(() => pending);
+    await renderApp(createTestServices({ offline: true }), runtime);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent.press(screen.getByTestId('translate-send'));
+    await fireEvent.press(screen.getByLabelText('Nepali'));
+    expect(screen.getByLabelText('English').props.accessibilityState.selected).toBe(true);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello again');
+    await act(async () => { finish(); });
+    await waitFor(() => expect(screen.getByTestId('translate-output').props.children).toBe('नमस्ते'));
+    expect(screen.getByTestId('translate-input').props.value).toBe('Hello again');
+  });
+
+  it('clears pending translation when leaving and ignores its late result', async () => {
+    const runtime = createTestRuntime();
+    const result = { text: 'नमस्ते', method: 'phrase' as const, direction: 'en-ne' as const };
+    let finish!: () => void;
+    runtime.translation.translate = jest.fn(() => new Promise<typeof result>((resolve) => { finish = () => resolve(result); }));
+    await renderApp(createTestServices({ offline: true }), runtime);
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Hello');
+    await fireEvent.press(screen.getByTestId('translate-send'));
+    await fireEvent.press(screen.getByTestId('tab-camera'));
+    await act(async () => { finish(); });
+    await fireEvent.press(screen.getByTestId('tab-translate'));
+    expect(screen.getByTestId('translate-send').props.accessibilityState.disabled).toBe(false);
+    expect(screen.getByTestId('translate-input').props.value).toBe('Hello');
+    expect(screen.getByTestId('translate-output').props.children).not.toBe('नमस्ते');
   });
 
   it('keeps typed translation working when on-device speech is unsupported', async () => {

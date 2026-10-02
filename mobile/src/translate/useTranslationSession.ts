@@ -164,6 +164,7 @@ export function useTranslationSession({ active, seed }: Options) {
     runtime.speechRecognition.abort();
     runtime.speechSynthesis.stop();
     runtime.translation.cancelAll();
+    dispatch({ type: 'setTranslating', translating: false });
     dispatch({ type: 'setListening', listening: false });
     dispatch({ type: 'cancelPass' });
     dispatchPhase({ type: 'INTERRUPT' });
@@ -220,7 +221,8 @@ export function useTranslationSession({ active, seed }: Options) {
     dispatchPhase({ type: 'TRANSLATE_STARTED' });
     try {
       const result = await translateSide(text, current.activeSide);
-      if (!activeRef.current || result.cancelled || requestId !== requestRef.current) {
+      if (requestId !== requestRef.current) return;
+      if (!activeRef.current || result.cancelled) {
         dispatch({ type: 'setTranslating', translating: false });
         dispatchPhase({ type: 'CANCEL' });
         return;
@@ -238,7 +240,7 @@ export function useTranslationSession({ active, seed }: Options) {
         method: result.method,
         direction: result.direction,
       };
-      dispatch({ type: 'commitTurn', turn, keepDraft: false });
+      dispatch({ type: 'commitTurn', turn, keepDraft: true });
       dispatchPhase({ type: 'TRANSLATE_SUCCEEDED' });
       runtime.speechSynthesis.stop();
       runtime.speechSynthesis.speak(turn.translation, {
@@ -246,6 +248,7 @@ export function useTranslationSession({ active, seed }: Options) {
       });
       await remember(turn);
     } catch {
+      if (requestId !== requestRef.current) return;
       dispatch({ type: 'setTranslating', translating: false });
       dispatchPhase({ type: 'TRANSLATE_FAILED', reasonCode: 'translate_error' });
     }
