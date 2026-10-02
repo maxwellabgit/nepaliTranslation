@@ -1,0 +1,11 @@
+{
+  "observedAt": "launch-only",
+  "id": "bb81f441-9ebe-43c2-ae4b-9b3cc8c08628",
+  "status": "NEW",
+  "appVersion": "1.7.0",
+  "appBuildVersion": "24",
+  "gitCommitHash": "eb148ca8ca54215a9c9f7ea92090b43365b53373",
+  "buildProfile": "testflight",
+  "createdAt": "2026-10-02T19:28:49.688Z",
+  "submission": "not initiated; owner paused"
+}

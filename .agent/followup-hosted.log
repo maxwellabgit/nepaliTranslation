@@ -1,0 +1,5 @@
+
+> neptranslate-testing-ground@0.1.0 prepare:hosted
+> node ./scripts/prepare-hosted-app.mjs
+
+[prepare-hosted-app] Wrote C:\Users\maxwe\.cursor\nepaliTranslation\testing-ground\public\hosted-app
