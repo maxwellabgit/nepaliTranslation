@@ -473,8 +473,7 @@ export const en = {
   'review.neitherRight': 'Neither is right',
   'review.actionNext': 'Next',
   'review.thanksTitle': 'Thank you',
-  'review.thanksBody':
-    'Your reviews are in. Credits are decided at 5:00 PM New York and added to your timer the next time you sign in.',
+  'review.thanksBody': 'Your answers are saved. You can reopen a set to change them, or try another ten.',
   'review.awardTitle': 'Credits awarded',
   'review.awardBody':
     'You earned {credits} credits from your reviews. That is {minutes} minutes of ad-free time.',
@@ -485,7 +484,7 @@ export const en = {
   'review.gaugeA11y': 'Ad-free timer {clock}. {interstitial}',
   'review.gaugeOverA11y':
     'Ad-free timer {clock}. The timer is past the top of the gauge. {interstitial}',
-  'review.countdownLabel': 'Credits awarded in',
+  'review.countdownLabel': 'Next daily set in',
   'review.continue': 'Continue',
   'review.directionEnNe': 'English → Nepali',
   'review.directionNeEn': 'Nepali → English',
@@ -521,7 +520,7 @@ export const en = {
   'review.actionEditDisabled': 'Enter a corrected target to enable',
   'review.actionSkip': 'Skip',
   'review.actionSubmit': 'Submit',
-  'review.settle': 'Rewards settle at 5:00 PM New York.',
+  'review.settle': 'Daily sets refresh at 5:00 PM New York.',
   'review.prevA11y': 'Previous sample',
   'review.nextA11y': 'Next sample',
   'review.actionReport': 'Report',
@@ -557,6 +556,9 @@ export const en = {
   'dailyOpen.adTitle': 'Go ad-free',
   'dailyOpen.adBody': 'A monthly pass removes ads. This is a placeholder.',
   'dailyOpen.adClose': 'Not now',
+  'review.wantExtra10': 'Want to do an extra 10?',
+  'review.reopenSet': 'Reopen set {number}',
+  'review.noExtraSets': 'You have completed all available sets. You can still reopen your answers.',
   'review.extra10': 'Extra 10',
 } as const;
 

@@ -104,6 +104,23 @@ describe('review day lineup', () => {
 
   it('counts New York dates from the lineup epoch', () => {
     expect(globalDayIndex(Date.parse('2026-09-29T16:00:00.000Z'))).toBe(0);
-    expect(globalDayIndex(Date.parse('2026-09-30T16:00:00.000Z'))).toBe(1);
+    expect(globalDayIndex(Date.parse('2026-09-30T20:59:59.999Z'))).toBe(0);
+    expect(globalDayIndex(Date.parse('2026-09-30T21:00:00.000Z'))).toBe(1);
+  });
+  it('subtracts a calendar day before 5 PM across DST boundaries', () => {
+    expect(globalDayIndex(Date.parse('2026-03-09T04:30:00Z'), '2026-03-07')).toBe(1);
+    expect(globalDayIndex(Date.parse('2026-11-02T05:30:00Z'), '2026-10-31')).toBe(1);
+  });
+  it('keeps extra batches visible for editing and advances repeated extras without repetition', () => {
+    let state = beginExtra(noteCategoryCleared(freshReviewDay(0), 'english'), 'english', days, 0);
+    expect(categoryMeanings(days, state, 0, 'english').map((r) => r.id)).toEqual(['b1', 'b2']);
+    state = noteCategoryCleared(state, 'english');
+    expect(categoryMeanings(days, state, 0, 'english').map((r) => r.id)).toEqual(['b1', 'b2']);
+    state = beginExtra(state, 'english', days, 0);
+    expect(categoryMeanings(days, state, 0, 'english').map((r) => r.id)).toEqual(['c1', 'c2']);
+    expect(state.categoryHistory?.english).toEqual([0, 1, 2]);
+    const reopened = { ...state, categoryDays: { english: 0 } };
+    expect(categoryMeanings(days, reopened, 0, 'english').map((r) => r.id)).toEqual(['a1', 'a2']);
+    expect(rollReviewDay({ ...state, seen: true }, 1).categoryHistory?.english).toEqual([0, 1, 2]);
   });
 });

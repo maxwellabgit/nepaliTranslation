@@ -3,6 +3,8 @@ import { act, render, screen, waitFor, fireEvent } from '@testing-library/react-
 import { AppProviders } from '../../app/AppProviders';
 import { ReviewScreen } from '../ReviewScreen';
 import { createTestServices } from '../../services/createTestServices';
+import { captureReviewResponse, readReviewResponses } from '../../features/contribution/reviewResponses';
+import { REVIEW_DAYS } from '../../features/contribution/reviewRoster';
 
 jest.mock('../../features/contribution/publicReviewApi', () => {
   const actual = jest.requireActual('../../features/contribution/publicReviewApi');
@@ -232,8 +234,8 @@ describe('ReviewScreen', () => {
 
     await openEnglishAndType('नमस्ते संसार');
     expect(screen.getByTestId('review-item-source').props.children).toBe('Hello world');
-    expect(screen.getByTestId('review-credits-note')).toBeTruthy();
-    expect(screen.getByTestId('review-settle')).toBeTruthy();
+    expect(screen.queryByTestId('review-credits-note')).toBeNull();
+    expect(screen.queryByTestId('review-countdown')).toBeNull();
 
     await act(async () => {
       fireEvent.press(screen.getByTestId('review-action-submit'));
@@ -560,7 +562,7 @@ describe('ReviewScreen', () => {
     expect(screen.queryByTestId('review-action-submit')).toBeNull();
   });
 
-  it('ends a category on a thank-you countdown and only continues forward', async () => {
+  it('ends a category on a thank-you countdown and keeps it reopenable', async () => {
     useAuth.mockReturnValue(signedInAuth);
     fetchCurrentReviewWindow.mockResolvedValue({
       ok: true,
@@ -612,6 +614,90 @@ describe('ReviewScreen', () => {
     await waitFor(() => {
       expect(screen.getByTestId('review-intro')).toBeTruthy();
     });
-    expect(screen.getByTestId('review-category-english').props.accessibilityState.disabled).toBe(true);
+    expect(screen.getByTestId('review-category-english').props.accessibilityState.disabled).toBe(false);
+    await openEnglishAndType('updated');
+    expect(screen.getByTestId('review-item-correction').props.value).toBe('updated');
+  });
+
+  it('skips never finish ten; completed sets and extra batches reopen after restart', async () => {
+    useAuth.mockReturnValue(guestAuth);
+    fetchCurrentReviewWindow.mockImplementation(jest.requireActual('../../features/contribution/publicReviewApi').fetchCurrentReviewWindow);
+    submitReview.mockResolvedValue({ ok: true, submission: {} });
+    let rendered!: Awaited<ReturnType<typeof renderScreen>>;
+    await act(async () => { rendered = await renderScreen(); });
+    await openEnglishAndType('');
+    const originalSource = screen.getByTestId('review-item-source').props.children;
+    for (let index = 0; index < 10; index += 1) {
+      await act(async () => { fireEvent.press(screen.getByTestId('review-action-skip')); });
+      expect(screen.queryByTestId('review-thanks')).toBeNull();
+    }
+    expect(screen.getByTestId('review-item-source').props.children).toBe(originalSource);
+    for (let index = 0; index < 10; index += 1) {
+      await act(async () => {
+        fireEvent.changeText(screen.getByTestId('review-item-correction'), `answer ${index}`);
+      });
+      await act(async () => { fireEvent.press(screen.getByTestId('review-action-submit')); });
+      await act(async () => { fireEvent.press(screen.getByTestId('review-judgment-same')); });
+      await act(async () => { fireEvent.press(screen.getByTestId('review-action-next')); });
+      if (index < 9) expect(screen.queryByTestId('review-thanks')).toBeNull();
+    }
+    expect(screen.getByTestId('review-thanks')).toBeTruthy();
+    expect(screen.getByTestId('review-extra-card')).toBeTruthy();
+    await act(async () => { fireEvent.press(screen.getByTestId('review-extra-card')); });
+    await waitFor(() => expect(screen.getByTestId('review-intro')).toBeTruthy());
+    const batches = screen.getAllByTestId(/^review-set-english-/);
+    expect(batches).toHaveLength(2);
+    const originalBatchId = batches[0].props.testID;
+    await act(async () => { fireEvent.press(batches[0]); });
+    await waitFor(() => expect(screen.getByTestId('review-item-correction').props.value).toBe('answer 0'));
+    expect(screen.getByTestId('review-item-source').props.children).toBe(originalSource);
+    await act(async () => {
+      fireEvent.changeText(screen.getByTestId('review-item-correction'), 'changed answer');
+    });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-submit')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-judgment-same')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('review-action-next')); });
+    expect(screen.queryByTestId('review-thanks')).toBeNull();
+    expect(screen.getByTestId('review-item-correction').props.value).toBe('answer 1');
+    expect((await readReviewResponses()).filter((row) => row.action === 'confirm')).toHaveLength(11);
+    await act(async () => { rendered.unmount(); });
+    await act(async () => { rendered = await renderScreen(); });
+    await waitFor(() => expect(screen.getByTestId(originalBatchId)).toBeTruthy());
+    await act(async () => { fireEvent.press(screen.getByTestId(originalBatchId)); });
+    await waitFor(() => expect(screen.getByTestId('review-item-correction').props.value).toBe('changed answer'));
+    await act(async () => { rendered.unmount(); });
+  });
+  it('keeps archived sets reopenable after the roster is exhausted', async () => {
+    useAuth.mockReturnValue(guestAuth);
+    await AsyncStorage.setItem('neptranslate.reviewDay.v1', JSON.stringify({ heldDay: 1000, seen: false, reviewed: [], consumed: [], coins: { english: 0, deva: 0, roman: 0 }, extra: null, categoryHistory: { english: [0] } }));
+    const meaning = REVIEW_DAYS[0][0];
+    await captureReviewResponse({ windowId: 'old', item: { slot: 1, source_item_id: `${meaning.id}:english`, direction: 'en-ne', register: 'formal', script: 'deva', source_text: meaning.english, proposed_target: meaning.deva, length_tier: 1, scheduled_credits: 1 }, action: 'confirm', answer: 'saved answer', userId: null });
+    fetchCurrentReviewWindow.mockImplementation(jest.requireActual('../../features/contribution/publicReviewApi').fetchCurrentReviewWindow);
+    await act(async () => { renderScreen(); });
+    await waitFor(() => expect(screen.getByTestId('review-state-all-done')).toBeTruthy());
+    expect(screen.getByTestId('review-category-english').props.accessibilityState.disabled).toBe(false);
+    await act(async () => { fireEvent.press(screen.getByTestId('review-set-english-0')); });
+    await waitFor(() => expect(screen.getByTestId('review-item-correction').props.value).toBe('saved answer'));
+    expect(screen.getByTestId('review-item-source').props.children).toBe(meaning.english);
+  });
+  it('ignores a deferred private A refresh after the active account changes to B', async () => {
+    const module = require('../../features/contribution/reviewResponses');
+    let resolveHistory!: (rows: []) => void;
+    const pendingHistory = new Promise<[]>((resolve) => { resolveHistory = resolve; });
+    const read = jest.spyOn(module, 'readReviewResponses').mockImplementationOnce(() => pendingHistory).mockResolvedValue([]);
+    useAuth.mockReturnValue({ ...signedInAuth, userId: 'A' });
+    fetchCurrentReviewWindow.mockImplementation(async (owner: string) => ({ ok: true, window: { window_id: 'w', ny_close_at: '', size: 1 }, items: [{ slot: 1, source_item_id: owner, direction: 'en-ne', register: 'formal', script: 'deva', source_text: `source ${owner}`, proposed_target: 'target', length_tier: 1, scheduled_credits: 1 }], mine: owner === 'A' ? [{ source_item_id: 'A', action: 'confirm', corrected_text: 'private A answer', reward_granted: false }] : [] }));
+    let rendered!: Awaited<ReturnType<typeof renderScreen>>;
+    await act(async () => { rendered = await renderScreen(); });
+    await waitFor(() => expect(read).toHaveBeenCalled());
+    useAuth.mockReturnValue({ ...signedInAuth, userId: 'B' });
+    await act(async () => { await rendered.rerender(<AppProviders services={createTestServices({ authConfigured: true })} bypassStartupConsent><ReviewScreen onClose={() => undefined} /></AppProviders>); });
+    await openEnglishAndType('B answer');
+    expect(screen.getByTestId('review-item-source').props.children).toBe('source B');
+    await act(async () => { resolveHistory([]); });
+    expect(screen.getByTestId('review-item-source').props.children).toBe('source B');
+    expect(screen.getByTestId('review-item-correction').props.value).toBe('B answer');
+    read.mockRestore();
+    await act(async () => { rendered.unmount(); });
   });
 });

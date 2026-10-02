@@ -138,10 +138,7 @@ function zonedLocalToUtc(
 export function nextNewYorkFivePm(now: Date): Date {
   const parts = zonedParts(now, CREDIT_AWARD_ZONE);
   let { year, month, day } = parts;
-  const past =
-    parts.hour > CREDIT_AWARD_HOUR ||
-    (parts.hour === CREDIT_AWARD_HOUR &&
-      (parts.minute > 0 || parts.second > 0));
+  const past = parts.hour >= CREDIT_AWARD_HOUR;
   if (past) {
     const next = new Date(Date.UTC(year, month - 1, day) + 24 * 60 * 60 * 1000);
     year = next.getUTCFullYear();
@@ -151,18 +148,14 @@ export function nextNewYorkFivePm(now: Date): Date {
   return zonedLocalToUtc(year, month, day, CREDIT_AWARD_HOUR, 0, CREDIT_AWARD_ZONE);
 }
 
-/**
- * Prefer the open window's close instant. After it passes, count down to the
- * next 5:00 PM America/New_York.
- */
-export function creditAwardDeadline(now: Date, closeAtIso?: string | null): Date {
-  if (closeAtIso) {
-    const parsed = new Date(closeAtIso);
-    if (!Number.isNaN(parsed.getTime()) && parsed.getTime() > now.getTime()) {
-      return parsed;
-    }
-  }
+/** Daily local samples always use the next New York 5 PM, never a stale API deadline. */
+export function creditAwardDeadline(now: Date, _closeAtIso?: string | null): Date {
   return nextNewYorkFivePm(now);
+}
+
+/** Badge completion is an actual written response, distinct from the >90% metric. */
+export function responseCompletesQuestion(action: ReviewSubmitAction, answer?: string | null): boolean {
+  return action !== 'skip' && Boolean(answer?.trim());
 }
 
 export function formatCountdown(ms: number): string {

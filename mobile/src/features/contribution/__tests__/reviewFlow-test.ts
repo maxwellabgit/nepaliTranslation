@@ -7,6 +7,7 @@ import {
   judgmentToSubmit,
   nextNewYorkFivePm,
   reviewCategoryOf,
+  responseCompletesQuestion,
 } from '../reviewFlow';
 
 function item(partial: Partial<ReviewItem> & Pick<ReviewItem, 'source_item_id' | 'direction' | 'script'>): ReviewItem {
@@ -76,6 +77,18 @@ describe('review flow categories', () => {
 });
 
 describe('credit award countdown', () => {
+  it('counts a written neither answer for badge completion, while skipping never completes', () => {
+    expect(responseCompletesQuestion('report', 'my attempted answer')).toBe(true);
+    expect(responseCompletesQuestion('report', '')).toBe(false);
+    expect(responseCompletesQuestion('skip', 'typed but skipped')).toBe(false);
+    expect(responseCompletesQuestion('confirm', 'answer')).toBe(true);
+  });
+  it('ignores an arbitrary 24-hour deadline and resets at exactly 5 PM New York', () => {
+    const before = new Date('2026-10-02T20:59:59Z');
+    expect(creditAwardDeadline(before, '2026-10-03T20:59:59Z').toISOString()).toBe('2026-10-02T21:00:00.000Z');
+    const exact = new Date('2026-10-02T21:00:00Z');
+    expect(formatCountdown(creditAwardDeadline(exact).getTime() - exact.getTime())).toBe('24:00:00');
+  });
   it('uses the open window close when it is still ahead', () => {
     const now = new Date('2026-09-28T15:00:00.000Z');
     const deadline = creditAwardDeadline(now, '2026-09-28T21:00:00.000Z');

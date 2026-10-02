@@ -1,0 +1,5 @@
+# C3 Today's 10 completion and navigation, 2026-10-02
+Every question needs a nonempty submitted answer before a category finishes. Skips remain unanswered. Written neither/reports count as question responses, while the distinct-meaning >90% metric remains confirm/edit-only.
+Finished sets remain editable and retain previous responses; persisted base/extra batch selectors and endcard icons reopen old sets after restart or roster exhaustion. Each category offers subsequent Extra 10 batches through a Want to do an extra 10? endcard; exhausted roster is explicit instead of a dead action. No finished set is disabled for completion.
+Only thanks displays the countdown, recalculated each second to the next 5 PM America/New_York. Calendar-day computation handles spring/fall transitions (23/25-hour local days). This is a local schedule, not scheduled credits or a revived public backend window.
+Fresh review PASS after exhaustion/archive and account-restoration guards. Final beta535 tests PASS; no new screenshots/recordings. Native and full C3 proof remain open. Revision transport evidence is in C5_REVIEW_RESPONSES_2026-10-02.md.

@@ -477,8 +477,7 @@ export const ne: Record<MessageKey, string> = {
   'review.neitherRight': 'कुनै पनि ठीक छैन',
   'review.actionNext': 'अर्को',
   'review.thanksTitle': 'धन्यवाद',
-  'review.thanksBody':
-    'तिम्रा समीक्षा आइपुगे। क्रेडिट न्यूयोर्क समयको बेलुका ५ बजे तय हुन्छ र अर्को साइन इनमा टाइमरमा थपिन्छ।',
+  'review.thanksBody': 'तपाईंका उत्तर सुरक्षित छन्। उत्तर सच्याउन सेट फेरि खोल्नुहोस् वा थप दस प्रश्न गर्नुहोस्।',
   'review.awardTitle': 'क्रेडिट पाइयो',
   'review.awardBody':
     'तिम्रो समीक्षाबाट {credits} क्रेडिट आयो। त्यो {minutes} मिनेट विज्ञापन-रहित समय हो।',
@@ -489,7 +488,7 @@ export const ne: Record<MessageKey, string> = {
   'review.gaugeA11y': 'विज्ञापन-रहित टाइमर {clock}। {interstitial}',
   'review.gaugeOverA11y':
     'विज्ञापन-रहित टाइमर {clock}। टाइमर गेजको माथिल्लो चिह्न नाघ्यो। {interstitial}',
-  'review.countdownLabel': 'क्रेडिट आउन बाँकी',
+  'review.countdownLabel': 'अर्को दैनिक सेट आउन बाँकी',
   'review.continue': 'जारी राख',
   'review.directionEnNe': 'अङ्ग्रेजी → नेपाली',
   'review.directionNeEn': 'नेपाली → अङ्ग्रेजी',
@@ -527,7 +526,7 @@ export const ne: Record<MessageKey, string> = {
   'review.actionEditDisabled': 'सक्षम गर्न सुधारिएको लक्ष्य लेख्नुहोस्',
   'review.actionSkip': 'छोड्नुहोस्',
   'review.actionSubmit': 'पठाऊ',
-  'review.settle': 'पुरस्कार न्यूयोर्क समय साँझ ५ बजे निस्किन्छ।',
+  'review.settle': 'दैनिक सेट न्यूयोर्क समय साँझ ५ बजे फेरिन्छ।',
   'review.prevA11y': 'अघिल्लो नमूना',
   'review.nextA11y': 'पछिल्लो नमूना',
   'review.actionReport': 'रिपोर्ट गर्नुहोस्',
@@ -560,5 +559,8 @@ export const ne: Record<MessageKey, string> = {
   'dailyOpen.adTitle': 'विज्ञापन-रहित जाऊ',
   'dailyOpen.adBody': 'मासिक पासले विज्ञापन हटाउँछ। यो अहिले नमूना हो।',
   'dailyOpen.adClose': 'अहिले होइन',
+  'review.wantExtra10': 'थप १० प्रश्न गर्न चाहनुहुन्छ?',
+  'review.reopenSet': 'सेट {number} फेरि खोल्नुहोस्',
+  'review.noExtraSets': 'सबै उपलब्ध सेट पूरा भए। आफ्ना उत्तर फेरि खोल्न सक्नुहुन्छ।',
   'review.extra10': 'थप १०',
 };

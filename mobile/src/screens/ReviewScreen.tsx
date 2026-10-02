@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -32,6 +32,7 @@ import {
   groupReviewItems,
   comparisonChoices,
   judgmentToSubmit,
+  responseCompletesQuestion,
   type ReviewCategoryId,
   type ReviewJudgment,
 } from '../features/contribution/reviewFlow';
@@ -50,13 +51,15 @@ import {
   markExtraBegun,
   markReviewed,
   markSampleSeen,
+  selectReviewSet,
 } from '../features/contribution/reviewDayStore';
-import type { DayCoins } from '../features/contribution/reviewDayPlan';
+import { captureReviewResponse, readReviewResponses, flushReviewResponses, type ReviewResponse } from '../features/contribution/reviewResponses';
+import { globalDayIndex, hasExtraSet, type ReviewDayState } from '../features/contribution/reviewDayPlan';
+import { REVIEW_DAYS } from '../features/contribution/reviewRoster';
 
 /**
  * Today's 10. Pick a working-from category, type a blind translation, then
- * choose which line is better. The path only moves forward. Rewards stay
- * pending until the 5:00 PM America/New_York close.
+ * choose which line is better. Answers remain editable and extras stay local.
  */
 
 const ANSWER_LIMIT = 200;
@@ -103,13 +106,27 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   const [now, setNow] = useState(() => Date.now());
   const [displayFont, setDisplayFont] = useState(false);
   const [progressReady, setProgressReady] = useState(false);
-  const [coins, setCoins] = useState<DayCoins>({ english: 0, deva: 0, roman: 0 });
+  const [responses, setResponses] = useState<ReviewResponse[]>([]);
+  const [dayState, setDayState] = useState<ReviewDayState | null>(null);
+  const [editingSet, setEditingSet] = useState(false);
+  const [resolvedOwner, setResolvedOwner] = useState<string | null | undefined>(undefined);
+  const ownerRef = useRef<string | null>(null);
+  ownerRef.current = auth.status === 'signed-in' ? auth.userId : null;
+  const refreshGeneration = useRef(0);
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; refreshGeneration.current += 1; }; }, []);
 
   const refresh = useCallback(async () => {
+    if (!mounted.current) return;
     setStatus('loading');
     setError(null);
-    const res = await fetchCurrentReviewWindow();
+    const ownerUserId = auth.status === 'signed-in' ? auth.userId : null;
+    const generation = ++refreshGeneration.current;
+    const isCurrent = () => mounted.current && refreshGeneration.current === generation && ownerRef.current === ownerUserId;
+    const res = await fetchCurrentReviewWindow(ownerUserId);
+    if (!isCurrent()) return;
     if (!res.ok) {
+      setResolvedOwner(ownerUserId);
       setError(res.reason);
       setStatus('error');
       return;
@@ -118,16 +135,20 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     const restored = res.mine ?? [];
     const loadedWindowId = res.window?.window_id ?? null;
     const saved = await readReviewProgress(new Date());
-    const reviewed = new Set(restored.map((row) => row.source_item_id));
+    const history = (await readReviewResponses()).filter((row) => row.userId === null || row.userId === ownerUserId);
+    const day = await loadReviewDay();
+    if (!isCurrent()) return;
+    const reviewed = new Set(restored.filter((row) => responseCompletesQuestion(row.action, row.corrected_text)).map((row) => row.source_item_id));
     if (saved && loadedWindowId && saved.windowId === loadedWindowId) {
-      for (const id of saved.reviewedIds) reviewed.add(id);
+      // Migrate completion from actual answers rather than old skip-counting IDs.
+      for (const row of history) if (row.windowId === loadedWindowId && responseCompletesQuestion(row.action, row.answer)) reviewed.add(row.sourceItemId);
     }
     setWindowId(loadedWindowId);
     setCloseAt(res.window?.ny_close_at ?? null);
     setItems(loaded);
     setReviewedIds(reviewed);
-    const day = await loadReviewDay();
-    setCoins(day.coins);
+    setDayState(day);
+    setResponses(history);
     setProgressReady(true);
     setPhase('intro');
     setCategory(null);
@@ -135,11 +156,14 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     setCorrection('');
     setJudgment(null);
     setStatus('ready');
-  }, []);
+    setResolvedOwner(ownerUserId);
+  }, [auth.status, auth.userId]);
 
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  useEffect(() => { void flushReviewResponses(auth.status === 'signed-in' ? auth.userId : null).catch(() => undefined); }, [auth.status, auth.userId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -163,6 +187,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
 
   useEffect(() => {
     if (phase !== 'thanks') return;
+    setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, [phase]);
@@ -173,54 +198,66 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     [category, grouped],
   );
   const active = activeList[cursor] ?? null;
+  useEffect(() => {
+    if (editingSet && active) setCorrection(responses.filter((r) => r.sourceItemId === active.source_item_id && r.action !== 'skip').at(-1)?.answer ?? '');
+  }, [active, editingSet, responses]);
 
   const startExtra = useCallback(
     async (id: ReviewCategoryId) => {
+      if (!grouped[id].length || !grouped[id].every((item) => reviewedIds.has(item.source_item_id))) return;
       await markExtraBegun(id);
       await refresh();
     },
-    [refresh],
+    [refresh, grouped, reviewedIds],
   );
+
 
   const openCategory = useCallback(
     (id: ReviewCategoryId) => {
       const list = grouped[id];
       const index = firstUnsubmittedIn(list, reviewedIds);
-      if (index < 0) return;
+      if (!list.length) return;
+      setEditingSet(index < 0);
       setCategory(id);
-      setCursor(index);
-      setCorrection('');
+      setCursor(index < 0 ? 0 : index);
+      setCorrection(index < 0 ? responses.filter((r) => r.sourceItemId === list[0].source_item_id).at(-1)?.answer ?? '' : '');
       setJudgment(null);
       setError(null);
       setPhase('compose');
       void markSampleSeen();
     },
-    [grouped, reviewedIds],
+    [grouped, reviewedIds, responses],
   );
 
   const advanceAfter = useCallback(
-    (doneId: string) => {
+    (doneId: string, completed: boolean) => {
       const nextDone = new Set(reviewedIds);
-      nextDone.add(doneId);
+      if (completed) nextDone.add(doneId);
       setReviewedIds(nextDone);
-      const next = activeList.findIndex(
+      const allDone = activeList.every((item) => nextDone.has(item.source_item_id));
+      const next = editingSet && cursor + 1 < activeList.length ? cursor + 1 : activeList.findIndex(
         (item, index) => index > cursor && !nextDone.has(item.source_item_id),
       );
-      setCorrection('');
+      const fallback = activeList.findIndex((item) => !nextDone.has(item.source_item_id));
+      const target = next < 0 ? fallback : next;
+      setCorrection(editingSet && target >= 0 ? responses.filter((r) => r.sourceItemId === activeList[target].source_item_id).at(-1)?.answer ?? '' : '');
       setJudgment(null);
-      setCursor(next < 0 ? cursor : next);
-      setPhase(next < 0 ? 'thanks' : 'compose');
-      void markReviewed(doneId);
-      if (next < 0 && category) {
-        void markCategoryCleared(category).then((day) => setCoins(day.coins));
+      setCursor(target < 0 ? cursor : target);
+      setPhase(next < 0 && allDone ? 'thanks' : 'compose');
+      if (completed) void markReviewed(doneId);
+      if (next < 0 && allDone && category) {
+        void markCategoryCleared(category);
       }
     },
-    [activeList, category, cursor, reviewedIds],
+    [activeList, category, cursor, reviewedIds, editingSet, responses],
   );
 
   const send = useCallback(
     async (action: ReviewSubmitAction, correctedText?: string) => {
       if (!windowId || !active) return;
+      const ownerUserId = auth.status === 'signed-in' ? auth.userId : null;
+      const generation = refreshGeneration.current;
+      const isCurrent = () => mounted.current && generation === refreshGeneration.current && ownerRef.current === ownerUserId;
       setStatus('submitting');
       setError(null);
       const res = await submitReview({
@@ -229,11 +266,18 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         action,
         correctedText,
       });
+      if (!isCurrent()) return;
       if (!res.ok) {
         setStatus('ready');
         setError(res.reason as ErrorReason);
         return;
       }
+      try {
+        const row = await captureReviewResponse({ windowId, item: active, action, answer: correction, correctedText, userId: ownerUserId, consentVersion: auth.consentVersion, ageConfirmed: auth.ageConfirmed, deletionDueAt: auth.deletionDueAt, isCurrent });
+        if (!isCurrent()) return;
+        setResponses((rows) => [...rows, row]);
+      } catch { if (isCurrent()) { setStatus('ready'); setError('unavailable'); } return; }
+      void flushReviewResponses(auth.status === 'signed-in' ? auth.userId : null).catch(() => undefined);
       setStatus('ready');
       if (action === 'confirm' || action === 'edit') {
         const userId = auth.status === 'signed-in' ? auth.userId : null;
@@ -246,18 +290,19 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           }
         });
       }
-      advanceAfter(active.source_item_id);
+      advanceAfter(active.source_item_id, responseCompletesQuestion(action, correction));
     },
-    [active, advanceAfter, auth.status, auth.userId, windowId],
+    [active, advanceAfter, auth.status, auth.userId, auth.consentVersion, auth.ageConfirmed, auth.deletionDueAt, windowId, correction],
   );
 
   const backToSets = useCallback(() => {
+    if (dayState && globalDayIndex(Date.now()) > dayState.heldDay) { void refresh(); return; }
     setPhase('intro');
     setCategory(null);
     setCorrection('');
     setJudgment(null);
     setError(null);
-  }, []);
+  }, [dayState, refresh]);
 
   const dynamic = useMemo(
     () =>
@@ -497,13 +542,14 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   );
 
   const blocking =
+    resolvedOwner !== ownerRef.current ||
     status === 'loading' ||
     error === 'consent_required' ||
-    error === 'unavailable' ||
-    (items.length === 0 && status !== 'idle');
+    error === 'unavailable';
 
   const deadline = creditAwardDeadline(new Date(now), closeAt);
   const countdown = formatCountdown(deadline.getTime() - now);
+  const extraAvailable = category && dayState && hasExtraSet(REVIEW_DAYS, dayState, globalDayIndex(now), category);
 
   return (
     <KeyboardAvoidingView
@@ -544,7 +590,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
         </View>
 
         <ScrollView style={dynamic.scroll} contentContainerStyle={{ paddingBottom: 8 }}>
-          {status === 'loading' ? (
+          {status === 'loading' || resolvedOwner !== ownerRef.current ? (
             <View testID="review-state-loading">
               <ActivityIndicator />
               <Text style={dynamic.stateNote}>{t('review.stateLoading', lang)}</Text>
@@ -565,18 +611,15 @@ export function ReviewScreen({ onClose }: OverlayProps) {
             <Text style={dynamic.errorNote} testID="review-state-unavailable">
               {t('review.stateUnavailable', lang)}
             </Text>
-          ) : items.length === 0 && status !== 'idle' ? (
-            <Text style={dynamic.stateNote} testID="review-state-all-done">
-              {t('review.stateAllDone', lang)}
-            </Text>
           ) : phase === 'intro' ? (
             <View testID="review-intro" style={dynamic.cardList}>
+              {items.length === 0 && status !== 'idle' ? <Text style={dynamic.stateNote} testID="review-state-all-done">{t('review.noExtraSets', lang)}</Text> : null}
               {REVIEW_CATEGORY_ORDER.map((id) => {
                 const list = grouped[id];
                 const done =
                   list.length > 0 &&
                   list.every((item) => reviewedIds.has(item.source_item_id));
-                const disabled = done || list.length === 0;
+                const disabled = list.length === 0 && !(dayState?.categoryHistory?.[id]?.length);
                 const face = REVIEW_CATEGORY_FACE[id];
                 const directionKey =
                   id === 'english' ? 'review.directionEnNe' : 'review.directionNeEn';
@@ -605,22 +648,28 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                         ? t('review.categoryDone', lang)
                         : t('review.categoryCount', lang, { count: list.length })}
                     </Text>
-                    {coins[id] > 0 ? (
+                    {done ? (
                       <Pressable
                         testID={`review-extra-${id}`}
                         accessibilityRole="button"
-                        disabled={coins[id] !== 1}
-                        onPress={() => void startExtra(id)}
+                        onPress={() => { setCategory(id); setPhase('thanks'); setNow(Date.now()); }}
                         style={dynamic.coinSpot}
                       >
                         <FontAwesome5 name="coins" size={18} color="#E8A317" />
-                        {coins[id] === 2 ? (
-                          <FontAwesome5 name="coins" size={18} color="#E8A317" />
-                        ) : (
-                          <Text style={dynamic.coinLabel}>{t('review.extra10', lang)}</Text>
-                        )}
+                        <Text style={dynamic.coinLabel}>{t('review.extra10', lang)}</Text>
                       </Pressable>
                     ) : null}
+                    {(dayState?.categoryHistory?.[id] ?? []).map((index) => {
+                      const finished = (REVIEW_DAYS[index] ?? []).every((meaning) => responses.some((row) => row.sourceItemId === `${meaning.id}:${id}` && responseCompletesQuestion(row.action, row.answer)));
+                      return <View key={index} style={{ flexDirection: 'row', gap: 12 }}>
+                        <Pressable testID={`review-set-${id}-${index}`} accessibilityRole="button" onPress={() => void selectReviewSet(id, index).then(async () => { await refresh(); setCategory(id); setCursor(0); setEditingSet(true); setPhase('compose'); })}>
+                          <Text style={dynamic.categorySub}>{t('review.reopenSet', lang, { number: index + 1 })}</Text>
+                        </Pressable>
+                        {finished ? <Pressable testID={`review-extra-${id}-${index}`} accessibilityRole="button" accessibilityLabel={t('review.extra10', lang)} onPress={() => void selectReviewSet(id, index).then(async () => { await refresh(); setCategory(id); setPhase('thanks'); setNow(Date.now()); })}>
+                          <Text style={dynamic.coinLabel}>{t('review.extra10', lang)}</Text>
+                        </Pressable> : null}
+                      </View>;
+                    })}
                     <View
                       style={[
                         dynamic.arrow,
@@ -645,6 +694,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
               <Text style={dynamic.countdown} testID="review-countdown">
                 {countdown}
               </Text>
+              {category && extraAvailable ? <AppButton testID="review-extra-card" label={t('review.wantExtra10', lang)} onPress={() => void startExtra(category)} /> : <Text style={dynamic.thanksBody}>{t('review.noExtraSets', lang)}</Text>}
             </View>
           ) : active ? (
             <View testID="review-item">
@@ -696,16 +746,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                   <Text style={dynamic.counter} testID="review-char-count">
                     {correction.length}/{ANSWER_LIMIT}
                   </Text>
-                  <View style={dynamic.creditPill} testID="review-credits">
-                    <FontAwesome5
-                      name="coins"
-                      size={14}
-                      color={theme.scheme === 'dark' ? '#F0C14A' : '#6B4A12'}
-                    />
-                    <Text style={dynamic.creditText}>
-                      {t('review.earnUpTo', lang, { count: active.scheduled_credits })}
-                    </Text>
-                  </View>
                 </>
               ) : (
                 <View testID="review-compare">
@@ -808,11 +848,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
             <AppButton
               testID="review-continue"
               label={t('review.continue', lang)}
-              onPress={() => {
-                setPhase('intro');
-                setCategory(null);
-                setError(null);
-              }}
+              onPress={backToSets}
               style={{ alignSelf: 'stretch' }}
             />
           </View>
@@ -829,14 +865,6 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           </Text>
         ) : null}
 
-        <View style={dynamic.footer}>
-          <Text style={dynamic.footerText} testID="review-credits-note">
-            {t('credits.notMoney', lang)}
-          </Text>
-          <Text style={dynamic.footerText} testID="review-settle">
-            {t('review.settle', lang)}
-          </Text>
-        </View>
       </View>
     </KeyboardAvoidingView>
   );

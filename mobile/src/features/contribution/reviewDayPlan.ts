@@ -16,6 +16,9 @@ export type ReviewDayState = {
   consumed: string[];
   coins: DayCoins;
   extra: ReviewCategoryId | null;
+  /** Current visible roster-day per category, retained after extra completion. */
+  categoryDays?: Partial<Record<ReviewCategoryId, number>>;
+  categoryHistory?: Partial<Record<ReviewCategoryId, number[]>>;
 };
 
 const EMPTY_COINS: DayCoins = { english: 0, deva: 0, roman: 0 };
@@ -30,11 +33,12 @@ export function nyDateKey(ms: number): string {
 }
 
 export function globalDayIndex(ms: number, epoch = REVIEW_EPOCH): number {
-  const today = nyDateKey(ms);
-  const [year, month, day] = today.split('-').map(Number);
+  const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: '2-digit', hourCycle: 'h23' }).format(new Date(ms)));
+  // The daily review boundary is 5 PM local, with DST owned by the zone.
+  const [year, month, day] = nyDateKey(ms).split('-').map(Number);
   const [epochYear, epochMonth, epochDay] = epoch.split('-').map(Number);
   const delta =
-    Date.UTC(year, month - 1, day) - Date.UTC(epochYear, epochMonth - 1, epochDay);
+    Date.UTC(year, month - 1, day) - (hour < 17 ? 86_400_000 : 0) - Date.UTC(epochYear, epochMonth - 1, epochDay);
   return Math.max(0, Math.round(delta / 86_400_000));
 }
 
@@ -46,6 +50,7 @@ export function freshReviewDay(globalDay: number): ReviewDayState {
     consumed: [],
     coins: { ...EMPTY_COINS },
     extra: null,
+    categoryDays: {},
   };
 }
 
@@ -62,6 +67,7 @@ export function rollReviewDay(state: ReviewDayState, globalDay: number): ReviewD
     reviewed: [],
     coins: { ...EMPTY_COINS },
     extra: null,
+    categoryDays: {},
   };
 }
 
@@ -97,7 +103,8 @@ export function categoryMeanings(
   category: ReviewCategoryId,
 ): RosterMeaning[] {
   const start = state.seen ? globalDay : state.heldDay;
-  let index = visibleDayIndex(days, start, category, state.consumed);
+  let index = state.categoryDays?.[category] ?? visibleDayIndex(days, start, category, state.consumed);
+  if (state.categoryDays?.[category] != null) return days[index] ?? [];
   if (state.extra === category) {
     index = visibleDayIndex(days, index + 1, category, state.consumed);
   }
@@ -153,9 +160,27 @@ export function noteCategoryCleared(
 export function beginExtra(
   state: ReviewDayState,
   category: ReviewCategoryId,
+  days?: RosterMeaning[][],
+  globalDay = state.heldDay,
 ): ReviewDayState {
-  if (state.coins[category] !== 1) return state;
+  if (state.coins[category] < 1) return state;
+  if (days) {
+    const base = visibleDayIndex(days, state.seen ? globalDay : state.heldDay, category, []);
+    const history = state.categoryHistory?.[category] ?? [base];
+    const start = Math.max(...history, state.categoryDays?.[category] ?? base);
+    const index = visibleDayIndex(days, start + 1, category, state.consumed);
+    if (!days[index]?.length) return state;
+    const consumed = new Set(state.consumed);
+    for (const meaning of days[index]) consumed.add(slotKey(meaning.id, category));
+    return { ...state, extra: category, categoryDays: { ...state.categoryDays, [category]: index }, categoryHistory: { ...state.categoryHistory, [category]: [...new Set([...history, index])] }, consumed: [...consumed] };
+  }
   return { ...state, extra: category };
+}
+
+export function hasExtraSet(days: RosterMeaning[][], state: ReviewDayState, globalDay: number, category: ReviewCategoryId): boolean {
+  const base = visibleDayIndex(days, state.seen ? globalDay : state.heldDay, category, []);
+  const start = Math.max(base, ...(state.categoryHistory?.[category] ?? []), state.categoryDays?.[category] ?? base);
+  return Boolean(days[visibleDayIndex(days, start + 1, category, state.consumed)]?.length);
 }
 
 /** Review popup coins: none when they only looked. The daily open award is separate. */
