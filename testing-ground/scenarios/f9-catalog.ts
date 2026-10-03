@@ -10,7 +10,7 @@ export const F9_SCENARIO_CATALOG = [
   },
   {
     id: 'f9-02-consent-surface',
-    title: 'Contribution consent age + save (gated without sign-in)',
+    title: 'Explicit optional sharing consent, age and private connection',
     status: 'automated' as const,
   },
   {
@@ -30,7 +30,7 @@ export const F9_SCENARIO_CATALOG = [
   },
   {
     id: 'f9-06-paywall-signin-required',
-    title: 'Paywall requires sign-in — guest tap leaves core usable',
+    title: 'Unavailable purchase service leaves core usable',
     status: 'automated' as const,
   },
   {

@@ -29,18 +29,23 @@ test('f9-01 UI language toggle EN → नेपाली', async ({ page }) => {
   await page.getByTestId('settings-close').click();
 });
 
-test('f9-02 consent age confirm + save gated without sign-in', async ({ page }) => {
+test('f9-02 optional sharing requires explicit consent, age and private connection', async ({ page }) => {
   await openHostedApp(page);
   await page.getByTestId('open-settings').click();
-  await expectVisible(page, 'account-section');
+  await expectVisible(page, 'privacy-data-section');
+  await expect(page.getByTestId('settings-screen')).not.toContainText(/\b(account|sign in|sign out|log in|login|register)\b/i);
+  await expect(page.getByTestId('model-improvement-opt-in')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByTestId('share-speech')).toBeDisabled();
   await expectVisible(page, 'age-confirm');
   await expectVisible(page, 'save-consent');
-  await expect(page.getByTestId('account-section')).toContainText(/18/);
-  await expect(page.getByTestId('account-section')).toContainText(/30 days/i);
+  await expect(page.getByTestId('privacy-data-section')).toContainText(/18/);
+  await expect(page.getByTestId('privacy-data-section')).toContainText(/30 days/i);
   const save = page.getByTestId('save-consent');
   await expect(save).toBeDisabled();
   await page.getByTestId('age-confirm').click();
-  // Still disabled without Sign in with Apple session.
+  await page.getByTestId('model-improvement-opt-in').click();
+  await expect(page.getByTestId('sign-in-apple')).toHaveCount(0);
+  // The recorded fixture has no live private data connection.
   await expect(save).toBeDisabled();
   await page.getByTestId('settings-close').click();
 });
@@ -79,15 +84,10 @@ test('f9-05 ads house when flag on + offline', async ({ page }) => {
   await expectVisible(page, 'house-ad-prefer-no-ads');
 });
 
-test('f9-06 paywall requires sign-in — guest tap leaves core usable', async ({
+test('f9-06 unavailable purchase service leaves core usable', async ({
   page,
 }) => {
-  // G3 / audit frozen contract: sign-in is required before purchase or
-  // restore, so a guest cannot open the paywall from Settings. The
-  // subscription row is still visible so the user knows an ad-free option
-  // exists; tapping it while unauthenticated must not crash and must not
-  // block core translation. Live SDK soft-fail after successful sign-in is
-  // covered by R5 sandbox device proof, not by this Windows harness.
+  // This web fixture has no live StoreKit/private service connection.
   await openHostedApp(page, {
     featureFlags: { paywallEnabled: true },
     iapSoftFail: true,
@@ -95,7 +95,13 @@ test('f9-06 paywall requires sign-in — guest tap leaves core usable', async ({
   await page.getByTestId('open-settings').click();
   await expectVisible(page, 'settings-subscription');
   await page.getByTestId('settings-open-paywall').click();
-  // Guest tap resolves without opening the sheet or throwing.
+  // Pricing is viewable without account UI; a failed private connection
+  // blocks purchase and leaves the sheet dismissible and core usable.
+  await expectVisible(page, 'paywall-sheet');
+  await expect(page.getByTestId('paywall-sheet')).not.toContainText(/\b(account|sign in|login)\b/i);
+  await page.getByTestId('paywall-subscribe').click();
+  await expectVisible(page, 'paywall-message');
+  await page.getByTestId('paywall-close').click();
   await expect(page.getByTestId('paywall-sheet')).toHaveCount(0);
   await page.getByTestId('settings-close').click();
   await typeAndSubmit(page, 'Hello');
@@ -107,12 +113,12 @@ test('f9-06 paywall requires sign-in — guest tap leaves core usable', async ({
 test('f9-07 deletion messaging in consent copy', async ({ page }) => {
   await openHostedApp(page);
   await page.getByTestId('open-settings').click();
-  await expectVisible(page, 'account-section');
-  await expect(page.getByTestId('account-section')).toContainText(
+  await expectVisible(page, 'privacy-data-section');
+  await expect(page.getByTestId('privacy-data-section')).toContainText(
     /within 30 days/i,
   );
-  await expect(page.getByTestId('account-section')).toContainText(
-    /Apple subscription/i,
+  await expect(page.getByTestId('privacy-data-section')).toContainText(
+    /reinstalling|new phone/i,
   );
   await expectVisible(page, 'settings-deletion-info');
   await page.getByTestId('settings-close').click();
@@ -154,6 +160,11 @@ test('f9-startup-consent-gate accepts Terms and Privacy on first launch', async 
   // After acknowledgement, the product surface renders.
   await expectVisible(page, 'tab-translate');
   await expect(page.getByTestId('startup-consent-gate')).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('neptranslate.contribution_consent.v1'))).toBeNull();
+  await page.getByTestId('credit-award-collect').click();
+  await page.getByTestId('open-settings').click();
+  await expect(page.getByTestId('model-improvement-opt-in')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByTestId('save-consent')).toBeDisabled();
 });
 
 test('f9-09 iPad viewport primary chrome', async ({ page }, testInfo) => {
