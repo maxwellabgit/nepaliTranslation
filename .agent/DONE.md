@@ -17,22 +17,23 @@ Shared (every lane that changes mobile runtime, configuration, assets or depende
 - [ ] `/independent-reviewer` reported no material findings
 
 ## V1 final contract (C0–C15)
-Current authority: 2026-10-01 INTENT/decisions and the active reconciliation plan. The pre-edit [DONE snapshot](../docs/history/2026-10-01-contract/DONE.md) records earlier criteria; changed requirements are revalidated.
+Current authority: 2026-10-01 INTENT/decisions with the owner's 2026-10-02 authenticated-guest amendment and the active reconciliation plan. The pre-edit [DONE snapshot](../docs/history/2026-10-01-contract/DONE.md) records earlier criteria; changed requirements are revalidated.
 
-- [ ] One coherent gate per commit on cursor/v1-final-contract-reconciliation-5907; no direct push to main.
+- [ ] One coherent gate per commit on cursor/v1-final-contract-reconciliation-5907; owner explicitly authorized fast-forward publication to main on 2026-10-02.
 - [ ] Required behavior is distinguished from source existence, local tests, hosted proof and physical-device proof.
 - [ ] C0 docs-only: living contract/ledger/runbook aligned; pivot inventory records referenced legacy code; snapshots match baseline; links/diff checks and fresh independent review pass. Do not run unrelated full mobile tests for docs-only work.
 - [ ] C1 design: physical iPhone 16 current-build/state screenshots, originals unaltered, one agent per generated proposal, absolute before/after paths, prompt/agent manifest and owner approval. No browser/simulator substitution.
 - [ ] Core offline guest surfaces have no hard dependency on optional services; no secret/raw-content telemetry introduced.
 - [ ] Today's 10 local gamification/Extra 10 and actual response capture; confirm/edit distinct meanings, strict >90% count once; no scheduled review reward, lookahead or always-PASS validator.
 - [ ] Speech and typed thumbs link source/result/rating/revision and optional audio; private standardized records retrievable/exportable. Completion count alone is not contribution capture.
-- [ ] Consent separate from startup Terms/Privacy; current opt-in, sign-in, 18+, session and flag enforced server-side; default-off speech toggle; blocked states and ownerless clips never upload.
+- [ ] Consent separate from startup Terms/Privacy; current specific opt-in, authenticated private guest identity, 18+, valid session and flag enforced server-side; default-off speech toggle; blocked states and ownerless clips never upload.
+- [ ] No account/login/logout/provider controls or account mentions in app chrome; Terms/Privacy alone never authorize sharing. Offline identity failure leaves core translation usable and privacy controls reachable for a known owner. Late consent responses cannot override withdrawal or identity replacement.
 - [ ] Camera photos stay temporary/local; no photo toggle or new photo upload; preserve deletion of historical objects.
 - [ ] Actual audio files <=60 seconds; at least four clips survive offline/restart; bounded queues preserve unsent data; revision/concurrency retries are idempotent.
 - [ ] Welcome ten / later New York dates five credits, ten minutes per credit, no same-day double award, restart-safe flight after Continue, 12-hour stacking; owner 2026-10-02 compact top-right timer with no filling bar.
-- [ ] Rewarded two credits/twenty minutes verified server-side once; localized storefront prices USD 2.99/NPR 199 if supported; signed-in UUID purchase/restore.
+- [ ] Rewarded two credits/twenty minutes verified server-side once; localized storefront prices USD 2.99/NPR 199 if supported; validated current private UUID purchase/restore; failed or mismatched RevenueCat binding blocks StoreKit.
 - [ ] Ten-minute foreground ads at safe points, no daily cap, retained main reset behavior explicitly tested; local grants/subscriptions suppress; banners idle Translate/Learn with stable sixty-second house rotation.
-- [ ] Withdrawal/deletion completes within original thirty-day deadline; durable retries, storage/database/auth sequencing and account isolation.
+- [ ] Withdrawal/deletion completes within original thirty-day deadline; owner-bound offline stop-first intents, durable retries, storage-before-database sequencing and identity isolation. Shared-data withdrawal preserves credits, private identity and local history; historical full-identity deletion remains separate.
 - [ ] Rights/exposure exclusions/gold protections unchanged; raw user content stays private and out of telemetry.
 - [ ] Appropriate mobile/admin/backend/browser gates pass on exact candidate; fresh and upgraded databases; no material independent-review findings.
 - [ ] No invented device, hosted, ads, price, model or revenue proof. Model optimization excluded, recorded certification unchanged and no public-gate waiver inferred.

@@ -18,9 +18,9 @@ use ATT / IDFA.
 | Name / phone / physical address | No | — | — | — | — |
 | Health / sensitive | No | — | — | — | — |
 | Photos / videos | **No** | — | No | — | Camera photos are processed on device for OCR and then deleted. Bola does not upload them. |
-| Audio data | **Yes (optional)** | Yes (account) | No | App functionality (consented contribution) | Mic utterances up to 60 seconds, with transcript and thumbs up/down, upload only after consent and the speech toggle. |
-| Product content (translations / transcripts) | **Yes (optional)** | Yes (account) | No | App functionality (contribution) | First-party Supabase contribution path only — **never** third-party analytics. |
-| User ID | Yes when signed in | Yes | No | App functionality / account | Sign in with Apple → Supabase Auth |
+| Audio data | **Yes (optional)** | Yes (private guest UUID) | No | Model improvement (specific consent) | Mic utterances up to 60 seconds, with transcript and thumbs up/down, upload only after current separate model-improvement consent, 18+, a valid matching private identity, feature flag and default-off speech toggle. |
+| Product content (translations / transcripts) | **Yes (optional)** | Yes (private guest UUID) | No | Model improvement (specific consent) | First-party Supabase contribution path only — **never** third-party analytics. |
+| User ID | Yes for optional services | Yes (private guest UUID) | No | Credits, purchases, consent, contributions and deletion | Supabase authenticated anonymous identity; no visible registration or provider sign-in |
 | Device ID | Possibly via ads SDK | See AdMob | No ATT tracking this release | Advertising (contextual / non-personalized default) | `react-native-google-mobile-ads` when network ads flags on |
 | Purchase history | Yes when subscribed | Yes | No | App functionality / purchases | RevenueCat (`react-native-purchases`) + StoreKit; public API key only in app |
 | Advertising data | Yes when ads enabled | Per AdMob/UMP | No IDFA claim | Advertising | AdMob + UMP; house ads offline |
@@ -30,7 +30,7 @@ use ATT / IDFA.
 - **No ATT / IDFA** — do not declare “tracking” via IDFA; contextual / non-personalized ads are the V1 default.
 - **No third-party analytics of raw translations, transcripts, OCR, audio, or photos.**
 - **Telemetry** must remain off until legal + privacy review and `telemetry_enabled` remote flag.
-- Core Translate / Camera / Learn / History / Settings work without login, ads, paywall, or telemetry.
+- Core Translate / Camera / Learn / History / Settings work offline without optional identity services, ads, paywall, or telemetry. There are no account controls in the app.
 
 ## SDKs present in the iOS product path
 
@@ -40,7 +40,7 @@ use ATT / IDFA.
 | ONNX Runtime + IT2 weights | On-device MT | No network for core translate |
 | `neptranslate-ocr` / ML Kit | On-device OCR | Temporary captures deleted after retake/exit/processed |
 | `expo-speech-recognition` | On-device STT preference | Fail closed when on-device locales missing |
-| Supabase JS | Auth, config, contributions | Anon key only in app; service role never in bundle |
+| Supabase JS | Auth, config, contributions | Public key only in app; authenticated guest JWT authorizes owned optional data; service role never in bundle |
 | `react-native-google-mobile-ads` | Banners / rewarded / interstitial | Flags default off; UMP; no custom interstitial skip |
 | `react-native-purchases` (RevenueCat) | Optional ad-free subscription. Target price USD 2.99/month (US) and NPR 199/month (Nepal), displayed from StoreKit. Not yet confirmed in App Store Connect | Public Apple API key only |
 | First-party telemetry (F8) | Crash/perf/usage schema | Scrubbed; flag default off; soft-fail |
@@ -52,3 +52,5 @@ use ATT / IDFA.
 - [ ] Answers above entered in App Store Connect for the exact freeze build
 - [ ] No ATT prompt added without updating this doc + INTENT
 - [ ] `app-ads.txt` crawlable if AdMob inventory is live
+
+Owner 2026-10-02 amendment: Terms/Privacy acceptance is separate from optional model-improvement consent. Withdrawal and shared-data deletion stop local sharing immediately and queue an owner-bound ≤30-day purge while preserving credits/private identity/local history. Reinstall, device change or terminal credential loss may lose guest balance/data access. Hosted configuration and live Connect form require separate proof; this worksheet does not claim deployment.

@@ -5,9 +5,9 @@ The [previous freeze and amendments](../docs/history/2026-10-01-contract/V1_G0_D
 
 ## Current decisions
 - Platforms: Expo SDK 57, iOS/iPadOS, English ↔ Nepali, on-device core; no Android release or cloud core inference.
-- Navigation: Translate, Camera, Learn only; Privacy/shared-data controls inside Settings; no account or sign-in UI; one Today's 10 route.
+- Navigation: Translate, Camera, Learn only; Account inside Settings; one Today's 10 route.
 - Startup: bilingual Terms + Privacy and language choice; no account/18+ for guest core. Optional sharing is a separate opt-in.
-- Contribution authorization: authenticated private guest session, current specific model-improvement consent, 18+, matching flag; speech additionally requires its default-off sharing toggle. Unconsented/unauthenticated data stays local; ownerless audio is never adopted by a later identity.
+- Contribution authorization: signed-in valid session, current consent, 18+, matching flag; speech additionally requires its default-off sharing toggle. Guests stay local; ownerless audio is never adopted by a later account.
 - Contribution methods: bundled gamified Today's 10 responses and seamless thumbs feedback for spoken/typed translations. Actual responses must be retained; completion counts alone do not satisfy capture.
 - Today's 10: at least 150 distinct bundled meanings; retain category progress and Extra 10 badges, without ad-free rewards. No global review windows, new lookahead imports, automatic cosine/PASS validation, or scheduled review credits.
 - Metric: confirm/edit count distinct meaning IDs; strictly >90%, once per subject/manifest. 333/370 does not fire, 334/370 does. Skip/report/open do not count.
@@ -21,7 +21,7 @@ The [previous freeze and amendments](../docs/history/2026-10-01-contract/V1_G0_D
 - Banners: idle Translate/Learn; house rotation 60 seconds foreground-visible; steady slot; no photo/recording/consent/keyboard overlap.
 - Subscription: USD 2.99/month US and NPR 199/month Nepal if available; StoreKit localized price; Supabase UUID before purchase/restore.
 - Session: rolling 30-day inactivity, short JWT; expiry leaves guest core usable.
-- Withdrawal/deletion: stop uploads immediately; durable retry and linked-data purge ≤30 days; preserve credits/private identity/core on shared-data deletion; historical full identity deletion remains backend-only.
+- Withdrawal/deletion: stop uploads immediately; durable retry and linked-data purge ≤30 days; auth last on account deletion; preserve core/account on withdrawal.
 - Data safety: rights deny-by-default; collected content private; exposure hashes excluded from train/eval; gold unchanged; raw content excluded from telemetry and bundles.
 - UI design: current physical iPhone 16 screenshots with build/state provenance; separate agent per generated proposal; full absolute before/after paths; owner approves proposals before runtime changes.
 - Distribution: test units/no revenue in TestFlight; owner units/readiness/UMP/app-ads.txt for production; owner-controlled live enablement.
@@ -39,6 +39,3 @@ The Translate action fills the dock to the microphone's right and is green. Thes
 Ad skip after confirmed presentation grants one local credit with one coin. Full rewarded completion displays two credits/twenty minutes with two coins; permanent native stacking requires the exact authenticated SSV session receipt, never aggregate expiry or a provisional balance copied into durable grants. Errors/no impression grant nothing. Existing clock reset policy and twelve-hour cap stand.
 The engineering testing ground automatically warms the existing pinned IndicTrans2 bundles using browser-local WASM. It does not claim native performance or model-quality certification. Reset clears its timers to zero once per reset request without repeating on ordinary remount. No PC/cloud inference is introduced into the iOS product path.
 - Owner UI follow-up2026-10-02: focus-only180ms Send; no input count/speaker/companion line; gold formality/script/language/navigation/static surfaces, no formality for NEsource; output22px normal font; NEsource prompt/Send/feedback follows script; Settings global RomanizedNepali UI variant; persistent sharedtimer; identical localHome/History edit with original row settings, no credit, adjacentSave/Cancel and outside dismissal; reliable serialized HistoryClear; sampleBack/draftpreservation; source-owned terminalpunctuation with quote/abbreviation/decimal handling. Full native/hosted proofs remain open.
-
-## Owner amendment — private guest identity (2026-10-02)
-All account/login/logout/linking/recovery UI is retired. New installations use Supabase authenticated anonymous users, not the unauthenticated public key. Installed historical subjects stay private to retain existing ownership. Rewards, purchases and uploads use the validated current UUID; registered identity is never required. Terms/Privacy remain separate from versioned model-improvement consent, 18+ and default-off audio. Withdrawal/Delete shared data stop locally before networking, preserve credits and local history, persist owner-bound requests and purge uploaded contributions within30days. Re-consent waits for completion. Reinstall/new device or terminal credential loss may lose remote guest balance/access; temporary network failure never rotates identity. No old-owner upload adoption. Hosted anonymous configuration/deployment and native proof remain required.

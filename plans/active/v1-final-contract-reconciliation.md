@@ -1,14 +1,15 @@
 # v1-final-contract-reconciliation: Finish Bola's functional V1
 
 ## Goal
-Complete polished startup, native translation UX, real monetization, and lightweight consented Today’s 10/speech/typed-feedback capture through retrievable data. Current owner-approved steps are **1 contract reconciliation** and **2 native screenshot baseline/design proposals**. The owner additionally authorized an internal TestFlight screenshot build on 2026-10-01 so the physical-device references can be supplied. Public production deployment remains gated.
+Owner amendment 2026-10-02: finish the account-free product using authenticated guest identities behind the scenes. Retire login/account/linking/recovery UI. Keep general Terms/Privacy separate from specific model-improvement opt-in; disclose uploaded data and purpose; support immediate offline withdrawal and durable owner-bound shared-data deletion without credit loss. Recovery loss across reinstall/devices is accepted. Prior UI work remains complete; TestFlight stays paused.
+Complete polished startup, native translation UX, real monetization, and lightweight consented Today’s 10/speech/typed-feedback capture through retrievable data. Initial 2026-10-01 authorization covered **1 contract reconciliation** and **2 native screenshot baseline/design proposals**, plus a diagnostic TestFlight build for references. Later explicit requests authorized the documented UI repairs, guest pivot, hosted guest deployment and fast-forward GitHub main publication. New TestFlight delivery is paused; public App Store submission remains gated.
 
 ## Context (paths, commands, constraints)
-- Code baseline: `9aaf493`; required branch: `cursor/v1-final-contract-reconciliation-5907`, fast-forwarded from `4797385`. No push to main.
+- Historical code baseline: `9aaf493`; required branch: `cursor/v1-final-contract-reconciliation-5907`, fast-forwarded from `4797385`. Owner explicitly authorized fast-forward main publication on 2026-10-02; no force push. Current runtime source: `9504fcd`.
 - Authority: [INTENT](../../.governance/INTENT.md), [decisions](../../.governance/V1_G0_DECISIONS.md), [AGENTS](../../AGENTS.md), [DONE](../../.agent/DONE.md).
 - Prior plan/evidence: [immutable snapshot](../../docs/history/2026-10-01-contract/v1-final-contract-reconciliation.md); F/G/R programs are historical.
 - Current evidence: [ten-objective validation](../../docs/TEN_OBJECTIVE_VALIDATION.md). Old CI/device/hosted results do not certify this SHA.
-- Scope: EN↔NE iOS/iPadOS, SDK 57, offline core. No model improvement, gold edits, live flags, legal approval, or production deployment in steps 1–2.
+- Scope: EN↔NE iOS/iPadOS, SDK 57, offline core. Initial steps 1–2 excluded hosted deployment/flag changes. Later authorized guest deployment and narrow collection/retired-review disablement are recorded below. No model improvement, gold edits, invented legal approval or public App Store release.
 - One coherent gate per commit. C0 is committed; C1 screenshot/design preparation remains gated by actual native screenshots. A separate C13 preflight slice fixes existing Camera lint blockers for the explicitly authorized diagnostic binary; it does not close C13 or waive public release gates.
 - Preserve historical migrations, ledger balances, raw evidence and benchmarks. Runtime retirement requires separate verified gates; do not delete a scheduler shared with deletion.
 
@@ -28,10 +29,10 @@ Historical C0/C1 completion is not carried forward as completion of changed requ
 - [ ] **C3** Offline local Today's 10 category/day/Extra 10 progress, no repeated samples; strict >90% delivery once; no global pool/lookahead.
 - [ ] **C4** Persistent installation/date credits, restart-safe flight, 12-hour stacking and gauge; no review grant path.
 - [ ] **C5** Gamified Today’s 10 actual response capture and one authorized admin retrieval/export workflow.
-- [ ] **C6** Approved bilingual startup/policy and separate contribution opt-in; sign-in/18+/flag enforcement without repeated prompts.
-- [ ] **C7** Session inactivity/account isolation and guest core recovery.
+- [ ] **C6** Approved bilingual startup/policy and separate contribution opt-in; authenticated private guest/current-consent/18+/flag enforcement without repeated prompts.
+- [ ] **C7** Session inactivity/private-subject isolation and offline guest core recovery.
 - [ ] **C8** Seamless typed/speech thumbs, linked source/result/audio, revision-safe outbox, actual ≤60-second files and bounded non-lossy queue; no photos.
-- [ ] **C9** Withdrawal/account deletion, durable idempotent retries and hosted ≤30-day deadline.
+- [ ] **C9** Withdrawal/shared-data deletion preserving private identity and credits, owner-bound offline stop-first retries and hosted ≤30-day deadline.
 - [ ] **C10** Owner-unit rewarded SSV, storefront pricing, RevenueCat purchase/restore/suppression.
 - [ ] **C11** Banners/rotation, ten-minute foreground ads at safe points, retained approved clock reset, native serving/consent.
 - [ ] **C12** Remove proven-unused runtime connections and misleading copy; dependencies, telemetry, secrets, source/install-size evidence.
@@ -73,14 +74,18 @@ The old living plan, DONE and release documents still required photo toggles, gl
 - Node documentation validator: archive 8/8, current local links 41/41, required plan sections, no premature screenshot claim, runtime/migration/gold scope unchanged: PASS.
 - First diff check identified EOF whitespace; fixed. Final git -c core.safecrlf=false diff --check: exit 0. Fresh independent reviewer: PASS, no material findings; clarity nits fixed.
 
-## Remaining work
+## Current remaining work — 2026-10-03
+Source9504fcd main/reconciliation branch and both CI gates SUCCESS. Hosted guest configuration, nine prior migrations plus immediate deletion dispatch, new endpoints and retired review/deletion-only worker are deployed. Real synthetic guest capture→privileged database retrieval→scheduled purge completed19seconds after request while preserving UUID/17test credits/original deadline. Source/dispatcher independent reviews PASS. See .agent/GUEST_HOSTED_PROOF_2026-10-03.md. Optional text/speech/photos/public review flags are off after proof pending legal/bilingual/native sign-off. Remaining human/device scopes: exact-copy consent/legal URLs, current iPhone+iPad, real StoreKit/AdMob/SSV, nonempty audio-object purge and authenticated admin-browser export. No new media or TestFlight delivery; paused by owner. Existing certificate remains unresolved and unmodified.
+
+## Earlier remaining-work records (superseded by current progress above)
+Guest pivot work in progress: C7 persistent anonymous identity and terminal-loss isolation; C6 privacy/consent/catalog/startup version and retired Apple UI/dependency; C8 exact-owner uploads/recording-start ownership; C10 verified RevenueCat binding and guest reward paths; C9 JWT-only shared-data deletion, credit-preserving purge and real anonymous Auth/RLS CI proof. Fresh reviewers' offline deadline/re-consent/terminal refresh/purchase-binding findings are work items, not waived. Final locked install, mobile/backend/browser gates and scoped evidence required. Hosted anonymous sign-ins/updated functions+migrations/scheduler and native proof remain distinct.
 Deliver the authorized diagnostic TestFlight build, then native screenshot intake and separate-agent proposals; owner design review; all unproven functional gates above. The evidence record owns actual build/submission status.
 
 ## Blockers (concrete; cannot be solved from this repo)
 - Physical iPhone 16 running the current app, with build/source provenance and affected screen captures. Need a supplied local screenshot folder or device-capture capability.
 - Earlier Apple agreement/upload blocker superseded by successful build-23 upload, processing and internal group assignment. Physical installation/screenshot intake remains pending.
 - iPad/device matrix; Apple processing; legal/bilingual sign-off; owner console/config/live-ads approvals.
-- Hosted deployment and receipt collection for the October migrations/functions remain unverified.
+- Hosted guest Auth/migrations/endpoints and synthetic text retrieval/purge verified2026-10-03; nonempty media-object purge and authenticated admin-browser export remain unverified. See .agent/GUEST_HOSTED_PROOF_2026-10-03.md.
 - Existing model certificate remains unresolved, with no model work authorized in this effort.
 `2026-10-02 C4 scoped refinement`: Expanded existing artwork, centered timer, bounded coin fans. Beta/export, popup-only browser evidence and independent review PASS; no full gate closure.
 `2026-10-02 C13 scoped UX repair`: Preserve drafts, visible localized Translate action, dark result text and safe cancellation. Final beta 478 unit/22 integration, browser and independent review PASS; full C13 remains open.
@@ -96,3 +101,5 @@ Separate scoped commits planned: C13 Translate dock; C3 category navigation/comp
 C13 UI/scenarios source complete: c3870df Back,8af1138 stablebanner,af8763b UI/editor/locale/history/punctuation,a8e0a19 scenariocleanup; finalbeta577/Doctor21/currentbundleDOM/localmodel PASS and22desktopPASS/5explicit skips, fresh reviews PASS. C9 64957e6 repairs legacy photoacceptance test; newbackendCIstillrequired, hostreceiptdeployment notperformed. Owner mainpushauthorization remains explicit from prior request; no forcepush or TestFlightresume. Evidence C13_UI_COMPLETION/C13_SCENARIO_CLEANUP/C9_BACKEND_TEST_ALIGNMENT dated2026-10-02. Public NO-GO remains.
 
 2026-10-02 final CI follow-up: `0007b4a` pushed to authorized main and reconciliation branch. Backend run37091991097 SUCCESS proves fresh/upgraded migrations, SQL lint/pgTAP including receipt contract, Edge/concurrency and admin checks. Agent run37091991136 beta577/browser70PASS11SKIP/model/secret PASS; only contribution/ads coverage ratchets failed. Meaningful additional editor/capture/ad/consent failure tests repaired local full-unit coverage against unchanged baselines; fresh independent review37tests PASS, lint/typecheck PASS. Separate C8 capture, C13 editor, C4 ads test commits preserve coherent scope; C9 CI evidence and C0 final state separate. Final test-commit CI pending. No runtime/bundle/media/live-service/TestFlight changes in this validation follow-up.
+
+2026-10-02/03 authenticated-guest amendment source complete: C9 stop-first owner intent/deletion; C7 persistent private UUID, offline retention, inactivity and terminal-loss isolation; C6 account-free privacy UI/versioned separate opt-in; C8 original-owner capture/upload and pending-delete guards; C10 validated guest rewards/purchases. Source4bbd3e1 on authorized main/branch. Fullmobile604tests/coverageunchanged/Doctor21/export PASS, finalmedia-free desktop22PASS4SKIP; fresh independent reviews PASS after race/offline/binding repairs. FinalbackendCIpending after fixture-only upgrade repair; hosted anonymous configuration/migrations/Edge/cron and native proofs remain open. See .agent/GUEST_IDENTITY_COMPLETION_2026-10-02.md. TestFlight remains paused; no screenshots/recordings/live flags or model/gold changes.

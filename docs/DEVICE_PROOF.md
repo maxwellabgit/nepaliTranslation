@@ -33,7 +33,7 @@ Not proven on Windows: `pod install`, ML Kit native resolve, EAS IPA, TestFlight
 
 ## Exact commands (human)
 
-Both TestFlight profiles use the EAS `preview` environment for **staging** Supabase credentials. From a machine with Expo and Apple Developer access, first build with Google's demo units to see banner/interstitial placements:
+Both TestFlight profiles select the EAS `preview` environment. Verify its actual Supabase project before any future build; an environment label does not establish a separate staging project. Current hosted guest proof used Bola main production. New build/delivery stays paused. When the owner resumes, use a machine with Expo and Apple Developer access and Google's demo units to verify banner/interstitial placements:
 
 ```bash
 cd mobile
@@ -88,7 +88,7 @@ Record OS version + device model next to each box when checked.
 
 ### Native resolve + models
 
-- [ ] CocoaPods resolves ML Kit OCR (Latin + Devanagari), Google Mobile Ads, RevenueCat, ONNX Runtime, Apple Sign-In, speech recognition together
+- [ ] CocoaPods resolves ML Kit OCR (Latin + Devanagari), Google Mobile Ads, RevenueCat, ONNX Runtime and speech recognition together; Apple sign-in package/plugin/entitlement absent
 - [ ] Bundled ONNX / speech model **SHA-256** match release manifest (F1/F9 pins)
 - [ ] Cold/warm latency, peak RAM, install size, Camera memory, thermal, long-session notes recorded (attach notes or link)
 
@@ -106,7 +106,7 @@ Record OS version + device model next to each box when checked.
 - [ ] English and नेपाली UI switch; Learn alphabet bilingual human sign-off
 - [ ] iPad layouts: no clipped primary controls; Camera capture/result portrait OK
 
-### Optional services (when flags enabled in internal testing)
+### Historical optional-services checklist (superseded by the guest amendment below)
 
 - [ ] Sign in with Apple: sign-in / cancel / revoke / delete-account; deletion request shows 30-day deadline
 - [ ] Post-consent **Camera photo** upload when flagged; guest/non-consent uploads nothing; raw speech-media upload **deferred** (not a V1 device-proof item)
@@ -128,3 +128,18 @@ Record OS version + device model next to each box when checked.
 - [ ] Crawlable `app-ads.txt` at developer domain root (source template: [`app-ads.txt`](./app-ads.txt))
 - [ ] App Store Connect privacy answers entered from worksheet (no ATT/IDFA claim)
 - [ ] Telemetry remains flag-off until legal review; no raw content in crash/analytics payloads on device
+
+## Authenticated-guest amendment — 2026-10-03 (unverified on device)
+
+These checks replace earlier login/account expectations in historical matrices; every box remains unchecked until same-code physical-device evidence exists.
+
+- [ ] No account/login/logout/provider/link/recovery UI in either language; core works offline when private identity services are unavailable.
+- [ ] Clean install creates a private guest; restart retains UUID; temporary offline failure never rotates it. Reinstall/device-change loss is disclosed.
+- [ ] Terms/Privacy acceptance leaves model-improvement sharing off. Optional current opt-in + 18+ + remote flag required; raw speech separately defaults off.
+- [ ] Offline withdrawal/Delete shared data stops locally and remains retryable after restart. Late consent and changed-subject results cannot restore sharing; uploaded data purge preserves credits/local history/private identity.
+- [ ] Thirty-day inactivity revokes sharing permission and requires fresh specific consent without disabling translation.
+- [ ] Ownerless/previous-owner audio stays local, actual files ≤60 seconds survive restart, pending deletion blocks capture/upload.
+- [ ] RevenueCat binds the current guest UUID before sandbox purchase/restore; failed or changed binding never charges under another identity.
+- [ ] Google test ads on registered test device yield exact one/two coin UI and server receipt permanence; no live revenue claim.
+
+Source CI/browser checks cannot fill these boxes. No new TestFlight build/delivery until the owner explicitly resumes it.

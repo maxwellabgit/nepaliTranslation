@@ -1,8 +1,13 @@
 status: IN_PROGRESS
 baseline_code_sha: 9aaf4933bb0cdecd45c67a3e36a4af4a819612f1
 branch: cursor/v1-final-contract-reconciliation-5907
-current_gate: C1
-contract_date: 2026-10-01
+current_gate: C14 hosted guest proof recorded; C15/native and human approvals remain
+contract_date: 2026-10-01 plus owner 2026-10-02 guest amendment
+current_source_sha: 9504fcddd6de2b56405913b5afbb65a979eddfaa
+current_ci: main backend37135168483/agent37135168426 SUCCESS; SQL335 fresh/upgraded, Edge63, mobile604/coverage unchanged
+hosted_guest: anonymous Auth enabled, ten missing forward migrations deployed, delete-data/progress endpoints and deletion-only worker/retired review deployed; actual synthetic capture/retrieval/19second purge PASS, UUID and17test credits retained
+collection_flags: text=false/speech=false/photos=false/public_review=false after proof, pending required owner legal/bilingual/native approvals
+testflight_delivery: PAUSED_BY_OWNER. No new build/submission in this continuation.
 step_1: COMPLETE_DOCUMENTATION. Living contract and pivot inventory reconciled; archive/link/scope/diff validation passed; fresh independent reviewer PASS with no material findings.
 step_2: WAITING_NATIVE_SCREENSHOTS. Diagnostic TestFlight 1.7.0 (23) delivered to existing internal group; exact candidate manifest recorded. Await owner physical iPhone 16 originals. Existing browser images are not native proof; no proposal images generated.
 completed_gates: C0 documentation reconciliation. C1-C15 remain unproven; previous completion claims are historical.
@@ -10,20 +15,28 @@ c4_scoped_ui: Owner-directed welcome/timer slice implemented 2026-10-02. One rea
 c4_visual_followup: Original image restored inside popup; coin icon and flight endpoint outside timer; timer widens smoothly as time increases. Final beta/export/recordings and sampled coin-clearance checks PASS. See proof follow-up; no native build or gate closure.
 internal_testflight: DIAGNOSTIC_BUILD_AVAILABLE. 1.7.0 (23), EAS d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8, SHA ef69b2f FINISHED. Submission 649e8b8a-75e6-4299-a5a3-49da350b8e18 FINISHED Oct 2 12:32 PM NY. Authenticated Apple version 1.7.0 build 23 Ready to Submit / 90 days, assigned to existing internal Team (Expo), two invites. Installation/screenshots pending. Not a completed V1 candidate.
 public_v1: NO-GO
-production_actions_this_run: no public deployment or live flag changes. Internal TestFlight screenshot build authorized; see .agent/TESTFLIGHT_SCREENSHOT_BUILD_2026-10-01.md.
-next_action: Owner updates Bola in TestFlight to 1.7.0 (23), supplies physical iPhone 16 screenshot originals with state/device provenance; inspect references, then dispatch one image-generation agent per proposal and return absolute paths for review.
+production_actions_this_run: 2026-10-03 authorized hosted guest deployment and narrow retirement/collection flag disablement; no App Store/live-ad enablement or TestFlight delivery. See .agent/GUEST_HOSTED_PROOF_2026-10-03.md.
+next_action: Owner reviews docs/GUEST_CONSENT_OWNER_REVIEW.md; same-source physical iPhone/iPad, real ads/StoreKit, nonempty media purge and authenticated admin export remain. Resume TestFlight delivery only when explicitly requested.
 evidence: .agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md records current documentation checks/review; docs/V1_PIVOT_INVENTORY.md identifies source gaps. docs/TEN_OBJECTIVE_VALIDATION.md is previous local proof, not current device/hosted certification.
 model_scope: No optimization/training/gold changes. Existing failing certificate is preserved; no release waiver inferred.
 historical_state: docs/history/2026-10-01-contract/V1_FINAL_CONTRACT_STATE.md
-updated_local_date: 2026-10-02 America/New_York
+historical_record_note: Scoped records below retain their original candidate evidence; later current_ci/hosted_guest/next_action above supersede earlier undeployed or pending-hosted statements.
+updated_local_date: 2026-10-03 America/New_York
 c4_expanded_art: Owner-directed larger artwork and centered timer; coin scaling tested; popup-only recordings and fresh review PASS. Full native/C4 gates open.
 c13_typed_ux: Draft retained across direction/submission; visible Translate button and dark results; cancellation regression covered. Final beta/browser/fresh review PASS. Full C13/native gates open.
 c2_camera_followup: Owner-directed reset/header/conservative Latin routing slice; no new visual media; independent source review PASS, final beta pending. Owner explicitly authorizes GitHub main fast-forward and new internal TestFlight build; public V1 still NO-GO.
 c5_response_revisions: Owner-directed immutable answers/revisions through existing private outbox; subject-consent/races/cleanup repaired. Final beta535 tests and independent source review PASS; hosted retrieval/deletion/native remain open.
 c3_review_followup: Strict actual-answer completion, editable archived batches, per-category Extra10/endcards, thanks-only5pmNY countdown. Final beta535/source review PASS; full native C3 open.
-c4_ad_followup: Exact1/2coins and credits, durable/provisional separation, ownerSSV receipt/idempotency/rollover and no-fill cadence source PASS; beta535 PASS. New receipt SQL is undeployed/unexecuted locally, required before permanent native stacking; full C4 open.
+c4_ad_followup: Exact1/2coins and credits, durable/provisional separation, ownerSSV receipt/idempotency/rollover and no-fill cadence source PASS; beta535 PASS. Receipt SQL subsequently deployed2026-10-03 and fresh/upgraded CI passed; real native AdMob/SSV proof remains required for full C4.
 c13_testing_ground_followup: Green dock action, actual localWASM pinnedmodels/autowarmup, stablepanes, one-shot0timeReset. Finalbeta535/export/TGbuild/actualEdgeinference/DOM/resetremount/source review PASS; nativequality/performance unproven.
 c13_ui_completion: Owner's two added UI rounds implemented; finalbeta577tests/export/TGbuild/localEdgegeometry/editor/historyclear/fixedtimer/reset/source independentreviews PASS. Sharedbanner60-120sremountflickerfixed, Back guardsandimmutableeditor/history/punctuationregressions green. See .agent/C13_UI_COMPLETION_2026-10-02.md; native/hosted/fullrelease gates open, TestFlight paused.
 c13_scoped_source_shas: c3870df /8af1138 /af8763b /a8e0a19; beta577+freshbrowser+22scenarios/5explicit skips+source independent reviews PASS. C9_SQL_test_alignment64957e6 requires candidateCI execution; no hosteddeployment.
 c9_candidate_ci: backend-gates37091991097 exact0007b4a SUCCESS onfresh/upgraded schema, receiptpgTAP,Edge/concurrency/admin; nohosteddeployment.
-c15_scoped_test_followup: meaningfulcapture/editor/ad/consentfailure tests; freshindependentreview37testsPASS. LocalfullunitcoverageratchetPASS unchangedbaseline (contribution79.79branch;ads85.25statement/74.34branch/88.10line),lint/typecheckPASS. FinaltestcommitCIpending; public/native/hostedgatesremainopen,TestFlightpaused.
+c15_scoped_test_followup: meaningfulcapture/editor/ad/consentfailure tests; freshindependentreview37testsPASS. LocalfullunitcoverageratchetPASS unchangedbaseline (contribution79.79branch;ads85.25statement/74.34branch/88.10line),lint/typecheckPASS. Exactf3ff2e1 mainagent37092862500/backend37092862452SUCCESS; public/native/hostedgatesremainopen,TestFlightpaused.
+
+guest_pivot_scope: Owner 2026-10-02 explicitly removed all account functionality/chrome and accepted reinstall/device recovery loss. Authenticated private guest identities replace OAuth; startup Terms/Privacy remain separate from optional contribution consent. No native/TestFlight or hosted proof inferred.
+guest_backend_source: C6 efb3098 version/current-consent guard and fixtures; C9 ecfd033 shared-data purge/current-JWT Edge handler; C7 a78d14b real anonymous Auth/RLS CI smoke and local auth configuration. Pushed authorized branch+main; Exact4bbd3e1 backend37095416862SUCCESS fresh/upgraded/data-preservation; not hosted proof.
+guest_pivot_review: Initial independent reviews exposed pending deletion hydration, RevenueCat subject binding, consent race and offline controls. Final scoped reviews PASS no material findings (privacy123/UI92focusedtests); verify:ci604tests/unchangedcoverageratchetsPASS; finalbrowser22PASS4SKIP. Full/native/hostedgateclosure notinferred.
+guest_pivot_next: Hosted anonymous Auth/migrations/endpoints/cron and synthetic text purge subsequently verified2026-10-03 on source9504fcd; both CI gates SUCCESS. Complete same-source native proof, nonempty media purge, authenticated admin export and owner legal/bilingual approval before optional collection enablement. TestFlight paused.
+guest_pivot_evidence: .agent/GUEST_IDENTITY_COMPLETION_2026-10-02.md. Coherent source commits C9 93c34bf; C7 def6189; C6 ecde399/867b077/4bbd3e1; C8 b0524a0; C10 b33bdf5; C13 8f1d230. No native/TestFlight/live service deployment.
+guest_final_ci: Exact source4bbd3e18149fdf3a3e462e57784b41df95ba3b21 main backend37095416862SUCCESS and agent37095416887SUCCESS, including anonymous Auth, SQL/Edge/concurrency/admin, fresh/upgraded/data preservation, mobile coverage and browser scenarios. No hosted/native proof inferred.
