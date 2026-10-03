@@ -4,6 +4,7 @@ import { createProductionAdService } from '../features/ads/AdService';
 import { createProductionPurchaseService } from '../features/subscription/PurchaseService';
 import { flushPendingDrafts } from './contributionSync';
 import { flushPendingMedia } from './mediaSync';
+import { ensurePrivateIdentity } from '../features/auth/guestIdentity';
 import { getSupabase } from './supabase';
 import type { AppServices } from './contracts';
 
@@ -74,8 +75,7 @@ export function createProductionServices(): AppServices {
       getSessionUserId: async () => {
         const sb = getSupabase();
         if (!sb) return null;
-        const { data } = await sb.auth.getSession();
-        return data.session?.user?.id ?? null;
+        return ensurePrivateIdentity(sb);
       },
       lastError: () => lastAuthError,
       setLastError: (message) => {

@@ -60,34 +60,6 @@ jest.mock('expo-clipboard', () => ({
   getStringAsync: jest.fn(async () => ''),
 }));
 
-jest.mock('expo-apple-authentication', () => {
-  const React = require('react');
-  const { Pressable, Text } = require('react-native');
-  return {
-    signInAsync: jest.fn(),
-    refreshAsync: jest.fn(),
-    isAvailableAsync: jest.fn(async () => true),
-    addRevokeListener: jest.fn(() => ({ remove: jest.fn() })),
-    AppleAuthenticationScope: { FULL_NAME: 0, EMAIL: 1 },
-    AppleAuthenticationButtonType: { SIGN_IN: 0, CONTINUE: 1 },
-    AppleAuthenticationButtonStyle: { BLACK: 0, WHITE: 1, WHITE_OUTLINE: 2 },
-    AppleAuthenticationButton: ({ onPress, accessibilityLabel }: {
-      onPress?: () => void;
-      accessibilityLabel?: string;
-    }) =>
-      React.createElement(
-        Pressable,
-        {
-          onPress,
-          accessibilityRole: 'button',
-          accessibilityLabel: accessibilityLabel ?? 'Sign in with Apple',
-          testID: 'apple-auth-button',
-        },
-        React.createElement(Text, null, 'Sign in with Apple'),
-      ),
-  };
-});
-
 jest.mock('expo-secure-store', () => {
   const mem = new Map<string, string>();
   (globalThis as { __nepSecureStore?: Map<string, string> }).__nepSecureStore = mem;

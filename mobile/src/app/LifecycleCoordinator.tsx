@@ -20,7 +20,10 @@ export function LifecycleCoordinator({
 }: {
   hooks?: LifecycleHooks;
 } = {}) {
-  const { status } = useAuth();
+  const auth = useAuth();
+  const { status } = auth;
+  const authRef = useRef(auth);
+  authRef.current = auth;
   const entitlements = useEntitlement();
   const { network, contribution, entitlement } = useServices();
   const wasOffline = useRef(network.isOffline());
@@ -32,10 +35,13 @@ export function LifecycleCoordinator({
       hooksRef.current?.onForeground?.();
       hooksRef.current?.onOutboxFlush?.();
       hooksRef.current?.onEntitlementRefresh?.();
-      void contribution.flushOutbox();
-      void contribution.flushMediaOutbox();
-      void entitlement.refresh();
-      void entitlements.refresh();
+      void (async () => {
+        await authRef.current.ensureGuestIdentity?.();
+        await contribution.flushOutbox();
+        await contribution.flushMediaOutbox();
+        await entitlement.refresh();
+        await entitlements.refresh();
+      })().catch(() => undefined);
     };
 
     const onAppState = (next: AppStateStatus) => {
@@ -52,8 +58,11 @@ export function LifecycleCoordinator({
       if (wasOffline.current && !offline) {
         hooksRef.current?.onOnline?.();
         hooksRef.current?.onOutboxFlush?.();
-        void contribution.flushOutbox();
-        void contribution.flushMediaOutbox();
+        void (async () => {
+          await authRef.current.ensureGuestIdentity?.();
+          await contribution.flushOutbox();
+          await contribution.flushMediaOutbox();
+        })().catch(() => undefined);
       }
       wasOffline.current = offline;
     });

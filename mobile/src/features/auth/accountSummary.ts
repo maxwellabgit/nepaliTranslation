@@ -1,4 +1,5 @@
 import { readPublicEnv } from '../../config/env';
+import { readKnownPrivateIdentity } from './guestIdentity';
 import { getSupabase } from '../../services/supabase';
 
 export type AccountSummaryClient = {
@@ -19,13 +20,15 @@ export type AccountSummaryResult =
   | { ok: false; code: 'unavailable' | 'unauthorized' };
 
 /** Load consent / account summary for Settings and post–sign-in refresh. */
-export async function fetchAccountSummary(): Promise<AccountSummaryResult> {
+export async function fetchAccountSummary(expectedOwner?: string): Promise<AccountSummaryResult> {
   const env = readPublicEnv();
   const supabase = getSupabase();
   if (!env.authConfigured || !supabase) return { ok: false, code: 'unavailable' };
-  const { data } = await supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getSession();
+  const known = await readKnownPrivateIdentity();
   const token = data.session?.access_token;
-  if (!token) return { ok: false, code: 'unauthorized' };
+  if (error || !token || (known && known !== data.session?.user.id) ||
+      (expectedOwner && expectedOwner !== data.session?.user.id)) return { ok: false, code: 'unauthorized' };
   try {
     const res = await fetch(`${env.supabaseUrl}/functions/v1/account-summary`, {
       method: 'GET',

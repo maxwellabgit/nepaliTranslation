@@ -1,47 +1,29 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  type ReactNode,
-} from 'react';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import {
-  authReducer,
-  INITIAL_AUTH,
-  isAppleCancel,
-  keepsLocalHistory,
-  mergeAppleFullName,
-  type AuthState,
-} from './authPolicy';
-import { createAuthNonce } from './authNonce';
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
+import * as Network from 'expo-network';
+import { AppState } from 'react-native';
+import { authReducer, INITIAL_AUTH, type AuthState } from './authPolicy';
 import { mirrorStoredStartupConsent } from './recordStartupConsent';
 import { sessionInactiveNow, touchSessionActivity } from './sessionExpiry';
-import { AppState } from 'react-native';
+import { clearLocalConsent, loadLocalConsent } from '../../storage/contributionConsent';
+import { saveSharingToggles } from '../../storage/sharingToggles';
 import { bindAuthRefresh, getSupabase } from '../../services/supabase';
 import { readPublicEnv } from '../../config/env';
-import { saveAppleUserId, clearAppleIdentity } from './appleIdentity';
 import { fetchAccountSummary } from './accountSummary';
 import { performAccountDeletion } from './deleteAccount';
-import {
-  clearPendingDeletionDue,
-  isServerDeletionComplete,
-  savePendingDeletionDue,
-} from '../../storage/pendingDeletion';
-import { t } from '../../i18n';
+import { ensurePrivateIdentity, readKnownPrivateIdentity } from './guestIdentity';
+import { loadPendingDeletion, markPendingDeletionComplete, isServerDeletionComplete, savePendingDeletionDue } from '../../storage/pendingDeletion';
 
 type AuthContextValue = AuthState & {
   authConfigured: boolean;
-  signInWithApple: () => Promise<void>;
-  signOut: () => Promise<void>;
+  ensureGuestIdentity: () => Promise<boolean>;
+  retryIdentity: () => Promise<boolean>;
+  deleteData: () => Promise<void>;
+  refreshDataSummary: () => Promise<void>;
+  /** Internal compatibility aliases; no account UI. */
   deleteAccount: () => Promise<void>;
   refreshAccountSummary: () => Promise<void>;
   clearAlert: () => void;
 };
-
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -49,255 +31,162 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const authConfigured = readPublicEnv().authConfigured;
   const stateRef = useRef(state);
   stateRef.current = state;
-
-  const refreshAccountSummary = useCallback(async () => {
-    const subject = stateRef.current.userId;
-    if (!subject) return;
-    const result = await fetchAccountSummary();
-    if (!result.ok || stateRef.current.userId !== subject) return;
-    if (isServerDeletionComplete(result.summary.deletionCompletedAt)) {
-      await clearPendingDeletionDue();
-    }
-    dispatch({
-      type: 'account_summary',
-      consentVersion: result.summary.consentVersion,
-      ageConfirmed: result.summary.ageConfirmed,
-      deletionDueAt: result.summary.deletionDueAt,
-      deletionCompletedAt: result.summary.deletionCompletedAt,
-    });
-  }, []);
-
-  useEffect(() => {
-    const supabase = getSupabase();
-    if (!supabase) {
-      dispatch({ type: 'ready_guest' });
-      return;
-    }
-    bindAuthRefresh(supabase);
-    let cancelled = false;
-    void supabase.auth.getSession().then(async ({ data, error }) => {
-      if (cancelled) return;
-      if (error || !data.session?.user) {
-        dispatch({ type: 'ready_guest' });
-        return;
-      }
-      const userId = data.session.user.id;
-      if (await sessionInactiveNow(userId)) {
-        await supabase.auth.signOut();
-        if (!cancelled) dispatch({ type: 'session_revoked' });
-        return;
-      }
-      await touchSessionActivity(userId);
-      if (!cancelled) dispatch({ type: 'ready_session', userId });
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || String(event) === 'USER_DELETED') {
-        dispatch({ type: 'signed_out' });
-        return;
-      }
-      if (event === 'TOKEN_REFRESHED' && !session) {
-        dispatch({ type: 'session_revoked' });
-        return;
-      }
-      if (session?.user) {
-        void (async () => {
-          if (await sessionInactiveNow(session.user.id)) {
-            await supabase.auth.signOut();
-            dispatch({ type: 'session_revoked' });
-            return;
-          }
-          await touchSessionActivity(session.user.id);
-          if (event === 'SIGNED_IN') void mirrorStoredStartupConsent();
-          dispatch({ type: 'ready_session', userId: session.user.id });
-        })();
-      }
-    });
-    const appStateSub = AppState.addEventListener('change', (next) => {
-      if (next !== 'active') return;
-      void (async () => {
-        const { data } = await supabase.auth.getSession();
-        if (!data.session?.user) return;
-        if (await sessionInactiveNow(data.session.user.id)) {
-          await supabase.auth.signOut();
-          dispatch({ type: 'session_revoked' });
-          return;
-        }
-        await touchSessionActivity(data.session.user.id);
-      })();
-    });
-
-    // Apple credential revocation → guest; keep local translation history.
-    const revokeSub = AppleAuthentication.addRevokeListener(() => {
-      void (async () => {
-        void keepsLocalHistory('credential_revoked');
-        const uid = stateRef.current.userId;
-        if (uid) await clearAppleIdentity(uid);
-        await supabase.auth.signOut();
-        dispatch({ type: 'session_revoked' });
-      })();
-    });
-
-    return () => {
-      cancelled = true;
-      sub.subscription.unsubscribe();
-      appStateSub.remove();
-      revokeSub.remove();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (state.status === 'signed-in' && state.userId) {
-      void refreshAccountSummary();
-    }
-  }, [state.status, state.userId, refreshAccountSummary]);
-
-  const signInWithApple = async () => {
-    const supabase = getSupabase();
-    if (!supabase) {
-      dispatch({
-        type: 'sign_in_failed',
-        message: 'Sign-in is not configured. Translation still works.',
-      });
-      return;
-    }
-    dispatch({ type: 'start_sign_in' });
+  const mounted = useRef(true);
+  const deleting = useRef(false);
+  const deleteRequest = useRef(false);
+  const generation = useRef(0);
+  const retryDeletion = useRef<() => Promise<void>>(async () => undefined);
+  const ensureGuestIdentity = useCallback(async () => {
     try {
-      const nonce = await createAuthNonce();
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-        nonce: nonce.hashed,
-      });
-      if (!credential.identityToken) {
-        dispatch({
-          type: 'sign_in_failed',
-          message: 'Apple did not return an identity token.',
-        });
-        return;
-      }
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'apple',
-        token: credential.identityToken,
-        nonce: nonce.raw,
-      });
-      if (error || !data.user) {
-        dispatch({
-          type: 'sign_in_failed',
-          message: 'Could not finish sign-in. You can keep translating.',
-        });
-        return;
-      }
-      if (credential.user) {
-        await saveAppleUserId(data.user.id, credential.user);
-      }
-      const existingName =
-        typeof data.user.user_metadata?.full_name === 'string'
-          ? data.user.user_metadata.full_name
-          : null;
-      const fullName = mergeAppleFullName(
-        existingName,
-        credential.fullName?.givenName,
-        credential.fullName?.familyName,
-      );
-      const email = credential.email;
-      if (
-        (fullName && fullName !== existingName) ||
-        email
-      ) {
-        await supabase.auth.updateUser({
-          data: {
-            ...(fullName ? { full_name: fullName } : {}),
-            ...(email ? { email } : {}),
-          },
-        });
-      }
-      dispatch({ type: 'ready_session', userId: data.user.id });
-    } catch (error) {
-      const err = error as { code?: string; message?: string };
-      if (isAppleCancel(err)) {
-        dispatch({ type: 'apple_cancelled' });
-        return;
-      }
-      dispatch({
-        type: 'sign_in_failed',
-        message: 'Sign-in failed. You can keep translating.',
-      });
-    }
-  };
-
-  const signOut = async () => {
-    const supabase = getSupabase();
-    await supabase?.auth.signOut();
-    dispatch({ type: 'signed_out' });
-  };
-
-  const deleteAccount = async () => {
-    const userId = stateRef.current.userId;
+    const client = getSupabase();
+    if (deleting.current) return false;
+    const version = generation.current;
+    const userId = client ? await ensurePrivateIdentity(client) : null;
+    if (!mounted.current || version !== generation.current || deleting.current) return false;
     if (!userId) {
-      dispatch({
-        type: 'deletion_paused',
-        message: 'Sign in again, then retry account deletion.',
-      });
+      dispatch({ type: 'identity_unavailable' });
+      const known = await readKnownPrivateIdentity();
+      if (mounted.current && version === generation.current && known) dispatch({ type: 'local_identity', userId: known });
+      const pending = known ? await loadPendingDeletion(known) : null;
+      if (mounted.current && version === generation.current && known && pending && !pending.completedAt) {
+        dispatch({ type: 'local_deletion', userId: known, dueAt: pending.dueAt,
+          pending: !pending.completedAt && !pending.dueAt, completedAt: pending.completedAt });
+      }
+      return false;
+    }
+    if (await sessionInactiveNow(userId)) {
+      await clearLocalConsent(userId);
+      await saveSharingToggles(userId, { speech: false, photos: false });
+      if (mounted.current && version === generation.current) dispatch({ type: 'permissions_revoked' });
+    }
+    await touchSessionActivity(userId);
+    if (!mounted.current || version !== generation.current || deleting.current) return false;
+    dispatch({ type: 'ready_session', userId });
+    const local = await loadPendingDeletion(userId);
+    if (mounted.current && version === generation.current && local && !local.completedAt) {
+      dispatch({ type: 'local_deletion', userId, dueAt: local.dueAt,
+        pending: !local.completedAt && !local.dueAt, completedAt: local.completedAt });
+    }
+    void mirrorStoredStartupConsent();
+    return true;
+    } catch {
+      if (mounted.current) dispatch({ type: 'identity_unavailable' });
+      return false;
+    }
+  }, []);
+
+  const refreshDataSummary = useCallback(async () => {
+    try {
+    const subject = stateRef.current.userId;
+    const version = generation.current;
+    if (!subject) return;
+    const result = await fetchAccountSummary(subject);
+    if (!mounted.current || !result.ok || stateRef.current.userId !== subject || version !== generation.current) return;
+    if (isServerDeletionComplete(result.summary.deletionCompletedAt)) {
+      await markPendingDeletionComplete(subject, result.summary.deletionCompletedAt!);
+    }
+    const local = await loadPendingDeletion(subject);
+    if (!mounted.current || stateRef.current.userId !== subject || version !== generation.current) return;
+    const pending = local && !local.completedAt;
+    if (pending) {
+      dispatch({ type: 'local_deletion', userId: subject, dueAt: local.dueAt,
+        pending: !local.dueAt, completedAt: null });
       return;
     }
+    if (!mounted.current || stateRef.current.userId !== subject || version !== generation.current) return;
+    const permission = await loadLocalConsent(subject);
+    if (!mounted.current || stateRef.current.userId !== subject || version !== generation.current) return;
+    dispatch({ type: 'account_summary', consentVersion: permission?.consent_version === result.summary.consentVersion ? result.summary.consentVersion : null,
+      ageConfirmed: Boolean(permission?.age_confirmed && result.summary.ageConfirmed), deletionDueAt: result.summary.deletionDueAt,
+      deletionCompletedAt: result.summary.deletionCompletedAt });
+    } catch { /* Keep local deletion intent and deny stale permission updates. */ }
+  }, []);
+
+  useEffect(() => {
+    mounted.current = true;
+    const client = getSupabase();
+    if (client) bindAuthRefresh(client);
+    const resume = async () => {
+      const ready = await ensureGuestIdentity();
+      if (!ready || !mounted.current) return;
+      const owner = await readKnownPrivateIdentity();
+      const pending = owner ? await loadPendingDeletion(owner) : null;
+      if (!mounted.current) return;
+      if (pending && !pending.dueAt && !pending.completedAt) await retryDeletion.current();
+      else void refreshDataSummary();
+    };
+    void resume().catch(() => undefined);
+    // Events invalidate stale permission summaries; they do not create identities.
+    const subscription = client?.auth.onAuthStateChange((event, session) => {
+      if (!mounted.current || deleting.current) return;
+      if (!session && (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED')) {
+        generation.current += 1;
+        dispatch({ type: 'identity_unavailable' });
+      } else if (event !== 'SIGNED_IN' && session?.user && stateRef.current.userId && session.user.id !== stateRef.current.userId) {
+        generation.current += 1;
+        dispatch({ type: 'identity_unavailable' });
+      }
+    });
+    const foreground = AppState.addEventListener('change', (next) => {
+      if (next === 'active') void resume().catch(() => undefined);
+    });
+    const connection = Network.addNetworkStateListener((next) => {
+      if (next.isConnected === true && next.isInternetReachable !== false) void resume().catch(() => undefined);
+    });
+    return () => {
+      mounted.current = false;
+      generation.current += 1;
+      subscription?.data.subscription.unsubscribe();
+      foreground.remove();
+      connection.remove();
+    };
+  }, [ensureGuestIdentity, refreshDataSummary]);
+  useEffect(() => {
+    if (state.status === 'signed-in' && state.userId) void refreshDataSummary();
+  }, [state.status, state.userId, refreshDataSummary]);
+
+  const deleteData = useCallback(async () => {
+    if (deleteRequest.current) return;
+    deleteRequest.current = true;
+    const userId = stateRef.current.userId ?? await readKnownPrivateIdentity();
+    if (!userId) { deleteRequest.current = false; return; }
+    deleting.current = true;
+    generation.current += 1;
     dispatch({ type: 'start_deletion' });
-    const result = await performAccountDeletion({ userId });
-    if (result.ok) {
-      const supabase = getSupabase();
-      if (result.scheduled && result.deletionDueAt) {
-        await savePendingDeletionDue(result.deletionDueAt);
-        const dueLabel = new Date(result.deletionDueAt).toLocaleDateString('en-US', {
-          dateStyle: 'medium',
-          timeZone: 'America/New_York',
-        });
-        await supabase?.auth.signOut();
-        dispatch({
-          type: 'deletion_scheduled',
-          deletionDueAt: result.deletionDueAt,
-          message: t('auth.deletionScheduledConfirm', 'en', { date: dueLabel }),
-        });
+    try {
+      const result = await performAccountDeletion({ userId });
+      if (!mounted.current) return;
+      if (!result.ok) {
+        dispatch({ type: 'deletion_paused', message: result.message });
         return;
       }
-      await supabase?.auth.signOut();
-      dispatch({ type: 'deletion_complete' });
-      return;
-    }
-    if (result.code === 'cancelled') {
-      dispatch({ type: 'deletion_cancelled' });
-      return;
-    }
-    dispatch({ type: 'deletion_paused', message: result.message });
-  };
+      if (result.scheduled && result.deletionDueAt) {
+        await savePendingDeletionDue(userId, result.deletionDueAt);
+        // Retain JWT/subject for deletion status and retry; never rotate while pending.
+        dispatch({ type: 'deletion_scheduled', deletionDueAt: result.deletionDueAt,
+          message: 'Data deletion requested. The deadline appears below.' });
+      } else {
+        dispatch({ type: 'deletion_paused', message: 'The shared-data deletion deadline could not be confirmed. Retry when connected.' });
+      }
+    } catch {
+      dispatch({ type: 'deletion_paused', message: 'Data deletion could not finish. Retry when connected.' });
+    } finally { deleting.current = false; deleteRequest.current = false; }
+  }, []);
 
-  const value = useMemo<AuthContextValue>(
-    () => ({
-      ...state,
-      authConfigured,
-      signInWithApple,
-      signOut,
-      deleteAccount,
-      refreshAccountSummary,
-      clearAlert: () => dispatch({ type: 'dismiss_alert' }),
-    }),
-    [state, authConfigured, refreshAccountSummary],
-  );
+  retryDeletion.current = deleteData;
 
+  const value = useMemo<AuthContextValue>(() => ({ ...state, authConfigured, ensureGuestIdentity,
+    retryIdentity: ensureGuestIdentity, deleteData, refreshDataSummary,
+    deleteAccount: deleteData, refreshAccountSummary: refreshDataSummary,
+    clearAlert: () => dispatch({ type: 'dismiss_alert' }),
+  }), [state, authConfigured, ensureGuestIdentity, deleteData, refreshDataSummary]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
 export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
-  if (ctx) return ctx;
-  return {
-    ...INITIAL_AUTH,
-    status: 'guest',
-    authConfigured: false,
-    signInWithApple: async () => undefined,
-    signOut: async () => undefined,
-    deleteAccount: async () => undefined,
-    refreshAccountSummary: async () => undefined,
-    clearAlert: () => undefined,
-  };
+  const context = useContext(AuthContext);
+  return context ?? { ...INITIAL_AUTH, status: 'guest', authConfigured: false,
+    ensureGuestIdentity: async () => false, retryIdentity: async () => false,
+    deleteData: async () => undefined, refreshDataSummary: async () => undefined,
+    deleteAccount: async () => undefined, refreshAccountSummary: async () => undefined,
+    clearAlert: () => undefined };
 }

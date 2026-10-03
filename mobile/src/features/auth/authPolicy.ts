@@ -37,10 +37,11 @@ export const INITIAL_AUTH: AuthState = {
 
 export type AuthAction =
   | { type: 'ready_guest' }
+  | { type: 'identity_unavailable' }
+  | { type: 'permissions_revoked' }
+  | { type: 'local_identity'; userId: string }
+  | { type: 'local_deletion'; userId: string; dueAt: string | null; pending: boolean; completedAt: string | null }
   | { type: 'ready_session'; userId: string }
-  | { type: 'start_sign_in' }
-  | { type: 'apple_cancelled' }
-  | { type: 'sign_in_failed'; message: string }
   | { type: 'signed_out' }
   | { type: 'session_revoked' }
   | { type: 'dismiss_alert' }
@@ -59,6 +60,14 @@ export type AuthAction =
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
+    case 'permissions_revoked':
+      return { ...state, consentVersion: null, ageConfirmed: false };
+    case 'local_identity':
+      return { ...(state.userId === action.userId ? state : INITIAL_AUTH), status: 'guest', userId: action.userId, consentVersion: null, ageConfirmed: false };
+    case 'local_deletion':
+      return { ...state, userId: action.userId, consentVersion: null, ageConfirmed: false, deletionDueAt: action.dueAt, deletionRetryPending: action.pending, deletionCompletedAt: action.completedAt };
+    case 'identity_unavailable':
+      return { ...state, status: 'guest', consentVersion: null, ageConfirmed: false, error: null, alert: null };
     case 'ready_guest':
       return {
         ...INITIAL_AUTH,
@@ -71,27 +80,7 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
         userId: action.userId,
         error: null,
         alert: null,
-        deletionRetryPending: false,
-      };
-    case 'start_sign_in':
-      return { ...state, status: 'signing-in', error: null, alert: null };
-    case 'apple_cancelled':
-      return {
-        ...state,
-        status: state.userId ? 'signed-in' : 'guest',
-        error: null,
-        alert: null,
-      };
-    case 'sign_in_failed':
-      return {
-        ...state,
-        status: 'error',
-        userId: null,
-        error: action.message,
-        alert: action.message,
-        consentVersion: null,
-        ageConfirmed: false,
-        deletionRetryPending: false,
+        deletionRetryPending: state.userId === action.userId && state.deletionRetryPending,
       };
     case 'signed_out':
     case 'session_revoked':
@@ -123,6 +112,8 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
       return {
         ...state,
         status: 'deleting',
+        consentVersion: null,
+        ageConfirmed: false,
         error: null,
         alert: null,
         deletionRetryPending: false,
@@ -150,8 +141,10 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
       };
     case 'deletion_scheduled':
       return {
-        ...INITIAL_AUTH,
-        status: 'guest',
+        ...state,
+        status: 'signed-in',
+        consentVersion: null,
+        ageConfirmed: false,
         alert: action.message,
         deletionDueAt: action.deletionDueAt,
       };
@@ -160,29 +153,9 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
-export function isAppleCancel(error: { code?: string; message?: string }): boolean {
-  const code = error.code ?? '';
-  return (
-    code === 'ERR_REQUEST_CANCELED' ||
-    code === 'ERR_CANCELED' ||
-    /cancel/i.test(error.message ?? '')
-  );
-}
-
 /** Revoked or signed-out sessions must not wipe on-device translation history. */
 export function keepsLocalHistory(
   _action: 'signed_out' | 'session_revoked' | 'credential_revoked',
 ): boolean {
   return true;
-}
-
-/** Capture full name only when Apple provides it (first authorization). */
-export function mergeAppleFullName(
-  existing: string | null | undefined,
-  given: string | null | undefined,
-  family: string | null | undefined,
-): string | null {
-  const next = [given, family].filter(Boolean).join(' ').trim();
-  if (next) return next;
-  return existing?.trim() || null;
 }
