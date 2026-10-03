@@ -29,7 +29,7 @@ import { readLegalPublicUrls } from '../../config/legalUrls';
  * bilingual modal takes over.
  *
  * The device-local record is authoritative for reaching product surfaces
- * (so guests can translate). If the user later signs in, we mirror the
+ * (so everyone can translate). When a private guest identity is available, we mirror the
  * acknowledgement to Supabase via `service_record_startup_consent`.
  */
 type Props = {

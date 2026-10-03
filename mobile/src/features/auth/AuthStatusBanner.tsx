@@ -2,16 +2,19 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from './AuthProvider';
 import { useServices } from '../../services/ServiceContext';
 import { colors } from '../../theme';
+import { t, useUiLang } from '../../i18n';
 
 /**
  * Visible, accessible feedback for auth/server failures.
  * Prefers AuthProvider alert; falls back to AuthService.lastError for tests/adapters.
  */
 export function AuthStatusBanner() {
+  const lang = useUiLang();
   const { alert, error, clearAlert } = useAuth();
   const { auth } = useServices();
   const serviceError = auth.lastError();
-  const message = alert ?? error ?? serviceError;
+  const message = alert && !/account|sign[ -]?in|login|oauth/i.test(alert)
+    ? alert : error || serviceError || alert ? t('privacy.optionalServicesUnavailable', lang) : null;
   if (!message) return null;
 
   return (
@@ -30,11 +33,11 @@ export function AuthStatusBanner() {
           auth.setLastError?.(null);
         }}
         accessibilityRole="button"
-        accessibilityLabel="Dismiss sign-in message"
+        accessibilityLabel={t('privacy.dismissMessage', lang)}
         testID="auth-status-dismiss"
         hitSlop={8}
       >
-        <Text style={styles.dismiss}>Dismiss</Text>
+        <Text style={styles.dismiss}>{t('common.dismiss', lang)}</Text>
       </Pressable>
     </View>
   );

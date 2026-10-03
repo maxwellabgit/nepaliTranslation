@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY = 'neptranslate.startup_consent.v1';
 
-export const STARTUP_CONSENT_VERSION = '2026-09-23.startup';
+export const STARTUP_CONSENT_VERSION = '2026-10-02.guest.startup';
 
 export type StartupConsent = {
   version: string;

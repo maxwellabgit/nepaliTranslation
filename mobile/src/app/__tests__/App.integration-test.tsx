@@ -408,7 +408,7 @@ describe('NepTranslateApp production composition', () => {
 
     await fireEvent.press(screen.getByLabelText('Settings'));
     expect(screen.getByTestId('overlay-settings')).toBeTruthy();
-    expect(screen.getByTestId('account-section')).toBeTruthy();
+    expect(screen.getByTestId('privacy-data-section')).toBeTruthy();
     expect(screen.getByTestId('settings-quality')).toBeTruthy();
     expect(screen.getByText(/Translation may be imperfect/i)).toBeTruthy();
     expect(screen.getByTestId('settings-privacy')).toBeTruthy();
@@ -518,9 +518,9 @@ describe('NepTranslateApp production composition', () => {
     await renderApp(services);
     expect(screen.getByTestId('auth-status-banner')).toBeTruthy();
     expect(screen.getByTestId('auth-status-message').props.children).toBe(
-      'Could not reach the account server.',
+      'Optional data services are unavailable. Translation stays on this device.',
     );
-    expect(screen.getByLabelText('Dismiss sign-in message')).toBeTruthy();
+    expect(screen.getByLabelText('Dismiss data service message')).toBeTruthy();
     // Translate still usable.
     expect(screen.getByTestId('translate-input')).toBeTruthy();
   });

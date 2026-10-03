@@ -11,6 +11,8 @@ import {
 import { recordStartupConsent } from '../recordStartupConsent';
 import { StartupConsentGate } from '../StartupConsentGate';
 import { readLegalPublicUrls } from '../../../config/legalUrls';
+import { loadLocalConsent } from '../../../storage/contributionConsent';
+import { loadSharingToggles } from '../../../storage/sharingToggles';
 
 jest.mock('../../../storage/startupConsent', () => ({
   ...jest.requireActual('../../../storage/startupConsent'),
@@ -69,6 +71,8 @@ describe('guest startup consent', () => {
       .toBe(true);
     await act(async () => { fireEvent.press(screen.getByTestId('startup-consent-privacy')); });
     await act(async () => { fireEvent.press(screen.getByTestId('startup-consent-continue')); });
+    await expect(loadLocalConsent()).resolves.toBeNull();
+    await expect(loadSharingToggles(null)).resolves.toMatchObject({ speech: false, photos: false });
     await waitFor(() => expect(saveStartupConsent).toHaveBeenCalledWith({
       terms: true, privacy: true, age18Plus: false,
     }));

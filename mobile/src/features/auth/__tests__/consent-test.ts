@@ -9,18 +9,18 @@ import {
 describe('consent', () => {
   test('contribution consent summary covers required media topics', () => {
     expect(CONTRIBUTION_CONSENT_SUMMARY.length).toBeGreaterThan(40);
-    expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/speech/i);
+    expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/speech|recordings/i);
     expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/photo/i);
     expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/OCR|transcript/i);
     expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/30 days/i);
     expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/withdraw/i);
-    expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/without signing in|without consent/i);
-    expect(CONTRIBUTION_CONSENT_VERSION).toBe('2026-09-21.media');
+    expect(CONTRIBUTION_CONSENT_SUMMARY).toMatch(/stay local/i);
+    expect(CONTRIBUTION_CONSENT_VERSION).toBe('2026-10-02.guest');
   });
 
-  test('requiresSignIn is true only for contribute', () => {
+  test('no surface requires an account login', () => {
     expect(requiresSignIn('conversation')).toBe(false);
-    expect(requiresSignIn('contribute')).toBe(true);
+    expect(requiresSignIn('contribute')).toBe(false);
   });
 
   test('canSubmitContribution gates auth, consent version, and age', () => {
@@ -40,7 +40,7 @@ describe('consent', () => {
         consentVersion: CONTRIBUTION_CONSENT_VERSION,
         ageConfirmed: true,
       }),
-    ).toEqual({ ok: false, reason: 'sign_in' });
+    ).toEqual({ ok: false, reason: 'unavailable' });
 
     expect(
       canSubmitContribution({

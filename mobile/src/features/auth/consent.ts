@@ -4,7 +4,7 @@ import { en } from '../../i18n/en';
  * Draft contribution agreement. Live collection stays off until legal review.
  * Version must change when the English text changes.
  */
-export const CONTRIBUTION_CONSENT_VERSION = '2026-09-21.media';
+export const CONTRIBUTION_CONSENT_VERSION = '2026-10-02.guest';
 
 /**
  * English statement shown in Settings. Nepali uses the same key in the UI catalog.
@@ -25,7 +25,8 @@ export type FeatureId =
 export type MediaKind = 'speech' | 'photo';
 
 export function requiresSignIn(feature: FeatureId): boolean {
-  return feature === 'contribute';
+  void feature;
+  return false;
 }
 
 export function canSubmitContribution(input: {
@@ -33,9 +34,9 @@ export function canSubmitContribution(input: {
   signedIn: boolean;
   consentVersion: string | null;
   ageConfirmed: boolean;
-}): { ok: true } | { ok: false; reason: 'unavailable' | 'sign_in' | 'consent' | 'age' } {
+}): { ok: true } | { ok: false; reason: 'unavailable' | 'consent' | 'age' } {
   if (!input.authConfigured) return { ok: false, reason: 'unavailable' };
-  if (!input.signedIn) return { ok: false, reason: 'sign_in' };
+  if (!input.signedIn) return { ok: false, reason: 'unavailable' };
   if (input.consentVersion !== CONTRIBUTION_CONSENT_VERSION) {
     return { ok: false, reason: 'consent' };
   }
@@ -56,12 +57,11 @@ export function canUploadContributionMedia(input: {
   | { ok: true }
   | {
       ok: false;
-      reason: 'unavailable' | 'sign_in' | 'consent' | 'age' | 'flag_off' | 'guest';
+      reason: 'unavailable' | 'consent' | 'age' | 'flag_off' | 'guest';
     } {
   if (!input.signedIn) return { ok: false, reason: 'guest' };
   const base = canSubmitContribution(input);
   if (!base.ok) {
-    if (base.reason === 'sign_in') return { ok: false, reason: 'guest' };
     return base;
   }
   if (input.kind === 'speech' && !input.speechEnabled) {

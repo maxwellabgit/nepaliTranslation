@@ -1,16 +1,20 @@
 import { recordContributionConsent } from '../recordConsent';
 import { getSupabase } from '../../../services/supabase';
 import { CONTRIBUTION_CONSENT_VERSION } from '../consent';
+import { saveLocalConsent } from '../../../storage/contributionConsent';
 import { readPublicEnv } from '../../../config/env';
 
 jest.mock('../../../config/env', () => ({
   readPublicEnv: jest.fn(),
 }));
 
+jest.mock('../../../storage/contributionConsent', () => ({ saveLocalConsent: jest.fn() }));
+const owner = '11111111-1111-4111-8111-111111111111';
 const mockReadPublicEnv = readPublicEnv as jest.Mock;
 
 describe('recordContributionConsent', () => {
   beforeEach(() => {
+    (saveLocalConsent as jest.Mock).mockImplementation(async (_age, _owner, guard) => !guard || guard() ? { age_confirmed: true } : null);
     mockReadPublicEnv.mockReturnValue({
       supabaseUrl: 'https://example.supabase.co',
       supabaseAnonKey: 'anon-key',
@@ -50,7 +54,7 @@ describe('recordContributionConsent', () => {
     (getSupabase as jest.Mock).mockReturnValue({
       auth: {
         getSession: jest.fn(async () => ({
-          data: { session: { access_token: 'tok-123' } },
+          data: { session: { access_token: 'tok-123', user: { id: owner } } },
         })),
       },
     });
@@ -78,7 +82,7 @@ describe('recordContributionConsent', () => {
     (getSupabase as jest.Mock).mockReturnValue({
       auth: {
         getSession: jest.fn(async () => ({
-          data: { session: { access_token: 'tok' } },
+          data: { session: { access_token: 'tok', user: { id: owner } } },
         })),
       },
     });
@@ -100,4 +104,45 @@ describe('recordContributionConsent', () => {
       code: 'unavailable',
     });
   });
+  test.each(['deletion', 'owner change'])('rejects a deferred success after %s invalidates consent', async () => {
+    (getSupabase as jest.Mock).mockReturnValue({ auth: { getSession: jest.fn(async () => ({
+      data: { session: { access_token: 'tok', user: { id: owner } } },
+    })) } });
+    let resolve!: (value: unknown) => void;
+    (globalThis.fetch as jest.Mock).mockReturnValue(new Promise(done => { resolve = done; }));
+    let valid = true;
+    const pending = recordContributionConsent(owner, () => valid);
+    await Promise.resolve();
+    valid = false;
+    resolve({ ok: true, status: 200 });
+    expect(await pending).toEqual({ ok: false, code: 'unauthorized' });
+  });
+  test('rejects a replaced owner before sending any consent request', async () => {
+    (getSupabase as jest.Mock).mockReturnValue({ auth: { getSession: jest.fn(async () => ({
+      data: { session: { access_token: 'tok', user: { id: 'different-owner' } } },
+    })) } });
+    expect(await recordContributionConsent(owner)).toEqual({ ok: false, code: 'unauthorized' });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+  test('network rejection is fail-soft and never saves consent', async () => {
+    (saveLocalConsent as jest.Mock).mockClear();
+    (getSupabase as jest.Mock).mockReturnValue({ auth: { getSession: jest.fn(async () => ({
+      data: { session: { access_token: 'tok', user: { id: owner } } },
+    })) } });
+    (globalThis.fetch as jest.Mock).mockRejectedValue(new Error('offline'));
+    expect(await recordContributionConsent(owner)).toEqual({ ok: false, code: 'unavailable' });
+    expect(saveLocalConsent).not.toHaveBeenCalled();
+  });
+
+  test('live SDK owner replacement rejects success even if UI guard has not updated', async () => {
+    const getSession = jest.fn()
+      .mockResolvedValueOnce({ data: { session: { access_token: 'tok', user: { id: owner } } } })
+      .mockResolvedValueOnce({ data: { session: { access_token: 'new', user: { id: 'different-owner' } } } });
+    (getSupabase as jest.Mock).mockReturnValue({ auth: { getSession } });
+    (globalThis.fetch as jest.Mock).mockResolvedValue({ ok: true, status: 200 });
+    (saveLocalConsent as jest.Mock).mockClear();
+    expect(await recordContributionConsent(owner, () => true)).toEqual({ ok: false, code: 'unauthorized' });
+    expect(saveLocalConsent).not.toHaveBeenCalled();
+  });
+
 });

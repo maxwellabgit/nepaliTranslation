@@ -92,7 +92,7 @@ describe('recordStartupConsent', () => {
     expect(result).toEqual({ ok: true });
     const body = JSON.parse((globalThis.fetch as jest.Mock).mock.calls[0][1].body);
     expect(body.p_age_confirmed).toBe(false);
-    expect(body.p_version).toBe('2026-09-23.startup');
+    expect(body.p_version).toBe('2026-10-02.guest.startup');
   });
 
   test('POST when all three boxes checked', async () => {

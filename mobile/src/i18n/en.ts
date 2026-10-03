@@ -1,5 +1,13 @@
 /** English UI catalog — product chrome, errors, ads, contribution. */
 export const en = {
+  "privacy.title": "Privacy and data",
+  "privacy.installationWarning": "Credits and access to shared data belong to this installation. Uninstalling, reinstalling or moving to a new phone can lose accumulated credits and access to previously shared data; Bola cannot recover them. Delete shared data here before removing the app if you want it removed.",
+  "privacy.optionalServicesUnavailable": "Optional data services are unavailable. Translation stays on this device.",
+  "privacy.retryConnection": "Try connecting again",
+  "privacy.consentSeparate": "This is optional and separate from accepting Terms and Privacy. You can use Translate, Camera, History and Learn without allowing sharing.",
+  "privacy.modelImprovementOptIn": "I choose to share eligible text and feedback for model improvement",
+  "privacy.audioDisclosure": "Raw audio sharing is off by default. If enabled after consent, eligible recordings of up to 60 seconds and their transcripts can also upload for speech and translation review. Your microphone audio stays local otherwise. Camera photos are never shared.",
+  "privacy.dismissMessage": "Dismiss data service message",
   'common.cancel': 'Cancel',
   'common.clear': 'Clear',
   'common.delete': 'Delete',
@@ -182,8 +190,8 @@ export const en = {
   'settings.termsA11y': 'Open Terms of Service',
   'settings.supportLink': 'Support',
   'settings.supportLinkA11y': 'Open support',
-  'settings.deletionInfo': 'Account & data deletion',
-  'settings.deletionInfoA11y': 'Open account and data deletion information',
+  'settings.deletionInfo': "Shared data deletion",
+  'settings.deletionInfoA11y': "Open shared data deletion information",
   'settings.manageSubscription': 'Manage Apple subscription',
   'settings.manageSubscriptionA11y': 'Open Apple subscription management',
   'settings.legalNotLive':
@@ -212,8 +220,7 @@ export const en = {
   'settings.consentNotSavedTitle': 'Consent not saved',
   'settings.consentNotSavedBody':
     'Contribution consent was not recorded. Translation on this device is unchanged.',
-  'settings.offlineBanner':
-    'Optional account and sync features need a network. Translation and Learn stay available offline.',
+  'settings.offlineBanner': "Optional sharing needs a network. Translation and Learn work offline.",
 
   'learn.earnRewards': "Today's 10",
   'learn.earnRewardsA11y': "Open Today's 10. Review translations.",
@@ -243,9 +250,9 @@ export const en = {
   'learn.noVoiceTitle': 'Nepali voice not installed',
   'learn.noVoiceDetail':
     'You can still learn the alphabet offline. Spoken audio needs a Nepali voice on this iPhone.',
-  'learn.offlineOk': 'Alphabet lessons work fully offline — no login required.',
+  'learn.offlineOk': "Alphabet lessons work fully offline.",
   'learn.title': 'Nepali alphabet',
-  'learn.offlineSubtitle': 'Offline · no account needed',
+  'learn.offlineSubtitle': "Offline lessons",
   'learn.sections': 'Sections',
   'learn.sectionA11y': '{section} section',
   'learn.loading': 'Loading lesson…',
@@ -295,7 +302,7 @@ export const en = {
   'contributions.deleteA11y': 'Delete contribution',
   'contributions.offlineBanner':
     'You are offline. Drafts stay on this device; sync resumes when you are back online.',
-  'contributions.signInPrompt': 'Sign in with Apple to submit contributions.',
+  'contributions.signInPrompt': "Choose optional sharing in Settings to send contributions.",
   'contributions.correctionTitle': 'edit',
   'contributions.correctionPlaceholder': 'Type a better translation',
   'contributions.saveDraft': 'Save draft',
@@ -318,8 +325,7 @@ export const en = {
   'contributions.nothingToSave': 'Nothing to save.',
   'contributions.uploadOff':
     'Saved on this device. Contribution upload is off until review finishes.',
-  'contributions.needSignIn':
-    'Saved on this device. Sign in with Apple to submit, then tap Submit contribution again.',
+  'contributions.needSignIn': "Saved on this device. Optional sharing is not connected yet. Try again in Settings.",
   'contributions.needConsent':
     'Saved on this device. Save contribution consent in Settings, then tap Submit contribution again.',
   'contributions.uploadUnavailable':
@@ -330,8 +336,7 @@ export const en = {
   'contributions.cardTitle': 'Contribute a review',
   'contributions.cardOffDetail':
     'Contribution review is off in this build. Translation still works offline.',
-  'contributions.signInSettings':
-    'Sign in with Apple in Settings to contribute.',
+  'contributions.signInSettings': "Choose optional sharing in Settings.",
   'contributions.consentSettings':
     'Save contribution consent in Settings first.',
   'contributions.ageConfirmSettings':
@@ -370,47 +375,38 @@ export const en = {
   'contributions.loadAnother': 'Load another',
   'contributions.loadA11y': 'Load contribution task',
 
-  'auth.account': 'Account',
-  'auth.notConfigured':
-    'Sign-in is not configured in this build. Translation, history, and settings still work.',
-  'auth.supportUserId': 'Support user ID',
-  'auth.consentDraftMeta':
-    'Draft {version}. Covers text, speech, transcripts, retention, and withdrawal. Legal review required before live collection.',
-  'auth.contributionConsentBody':
-    'By saving consent you agree that Bola may upload and store contribution text you submit, speech recordings you allow, transcripts of those recordings, your edits, model outputs, and related technical metadata for human review and for improving and commercializing language data and models. Bola does not upload Camera photos. Contributed speech may be retained indefinitely until you withdraw consent or delete your account; withdrawal or deletion schedules purge of linked contribution data within 30 days. Processors include our hosting and storage providers needed to run this pipeline. Ordinary guest translation history, clipboard, and non-consented recordings stay on this device only. Core Translate, Camera OCR, History, Settings, and Learn work without signing in or consenting. Do not contribute personal or sensitive content. Deleting the app account does not cancel an Apple subscription.',
-  'auth.signInApple': 'Sign in with Apple',
-  'auth.signInUnavailable':
-    'Sign in with Apple is not available on this device. Translation still works offline.',
-  'auth.signOut': 'Sign out',
-  'auth.copyUserIdA11y': 'Copy support user ID',
+  'auth.account': "Privacy and data",
+  'auth.notConfigured': "Optional sharing is unavailable. Translation stays on this device.",
+  'auth.supportUserId': "Private data reference",
+  'auth.consentDraftMeta': "Sharing version {version}.",
+  'auth.contributionConsentBody': "If you opt in, Bola can upload the original text you type or review, the translation shown, your ratings and corrections, language settings, and consent metadata. Reviewers use these to find mistakes and improve English ↔ Nepali language data and models, including commercial models. Our hosting and storage providers process this data privately. Text and enabled recordings may be retained until you withdraw consent or delete shared data; linked data is removed within 30 days of that request. Ordinary history, clipboard, and unshared recordings stay local. Camera photos are temporary local OCR input and are never uploaded. Avoid personal or sensitive content.",
+  'auth.signInApple': "Connect optional sharing",
+  'auth.signInUnavailable': "Optional sharing is unavailable. Translation still works offline.",
+  'auth.signOut': "Stop optional sharing",
+  'auth.copyUserIdA11y': "Copy private data reference",
   'auth.ageConfirm': 'I confirm I am 18 or older',
-  'auth.shareSpeech': 'Share speech recordings',
+  'auth.shareSpeech': "Also share raw audio recordings and transcripts",
   'auth.sharePhotos': 'Camera photos stay on this phone',
-  'auth.withdrawConsent': 'Withdraw contribution consent',
+  'auth.withdrawConsent': "Stop sharing and withdraw consent",
   'auth.withdrawConsentTitle': 'Withdraw consent?',
-  'auth.withdrawConsentBody':
-    'This stops new uploads and schedules deletion of linked contribution data within 30 days. Translation on this device is unchanged.',
-  'auth.saveConsent': 'Save consent',
-  'auth.consentSaved': 'Consent saved',
-  'auth.deleteAccount': 'Delete account',
-  'auth.deleteAccountTitle': 'Delete account',
-  'auth.deleteAccountBody':
-    'This schedules deletion of your account and contribution data within 30 days. It does not cancel an Apple subscription — manage that in Settings → Apple ID → Subscriptions. Translation on this device is unchanged.',
+  'auth.withdrawConsentBody': "This stops new uploads, clears pending contributions, and schedules removal of linked shared text and audio within 30 days. Local translation, history and credits stay available.",
+  'auth.saveConsent': "Allow model improvement sharing",
+  'auth.consentSaved': "Model improvement sharing allowed",
+  'auth.deleteAccount': "Delete shared data",
+  'auth.deleteAccountTitle': "Delete shared data?",
+  'auth.deleteAccountBody': "This stops sharing, clears pending uploads, and requests deletion of uploaded contribution text and audio within 30 days. Local history, your private device identity and credits are preserved. It does not cancel an App Store subscription.",
   'auth.deletionScheduled':
     'Deletion scheduled. Personal data will be removed by {date}.',
-  'auth.deletionScheduledConfirm':
-    'Account deletion is scheduled. Personal data will be removed by {date}. Translation on this device is unchanged.',
-  'auth.deletionComplete':
-    'Your account data has been deleted. Translation on this device still works.',
+  'auth.deletionScheduledConfirm': "Shared data deletion is scheduled by {date}. Translation and credits remain available.",
+  'auth.deletionComplete': "Shared contribution data has been deleted. Local translation and credits remain available.",
   'auth.deleting': 'Deleting…',
-  'auth.retryDeleteA11y': 'Retry account deletion',
+  'auth.retryDeleteA11y': "Retry shared data deletion",
 
   'ads.houseCopy': 'Prefer no ads? Ad-free is optional. The App Store shows the price.',
   'ads.houseDismiss': 'Not now',
   'ads.rewardedCta': 'Watch one optional ad for 20 ad-free minutes',
-  'ads.signInRequiredTitle': 'Sign in required',
-  'ads.signInRequiredBody':
-    'Sign in to earn ad-free time from an optional ad.',
+  'ads.signInRequiredTitle': "Optional services unavailable",
+  'ads.signInRequiredBody': "A private connection is needed to verify this ad reward. Try again when online.",
   'ads.interstitialReady': 'Ad ready',
   'ads.interstitialUnavailable': 'Ads off',
 
@@ -424,7 +420,7 @@ export const en = {
   'paywall.restoreA11y': 'Restore previous purchases',
   'paywall.manage': 'Manage Subscription',
   'paywall.manageA11y': 'Manage Apple subscription',
-  'paywall.active': 'Ad-free is active on this account.',
+  'paywall.active': "Ad-free is active on this device.",
   'paywall.expired': 'Subscription expired. You can resubscribe anytime.',
   'paywall.billingRetry':
     'Billing needs attention in your Apple ID settings.',
@@ -435,12 +431,10 @@ export const en = {
   'settings.openPaywallA11y': 'Open ad-free subscription options',
 
   'startupConsent.title': 'Before you continue',
-  'startupConsent.intro':
-    'To use Bola on this device, please review and accept the boxes below. Core translation works offline; optional uploads apply only if you sign in.',
+  'startupConsent.intro': "Review Terms and Privacy before using Bola. Optional model improvement sharing is off until you choose it separately in Settings.",
   'startupConsent.terms':
     'I have read and accept the Bola Terms & Conditions.',
-  'startupConsent.privacy':
-    'I have read and accept the Bola Privacy Policy, including that optional speech recordings and their transcripts may be uploaded after I sign in and my account is retained until I withdraw consent or delete my account (30-day purge SLA). Camera photos stay on this device.',
+  'startupConsent.privacy': "I have read and accept the Bola Privacy Policy. Translation, history and Camera photos stay on this device unless I separately allow eligible contribution sharing.",
   'startupConsent.age': 'I am 18 years of age or older.',
   'startupConsent.readTerms': 'Read Terms & Conditions',
   'startupConsent.readPrivacy': 'Read Privacy Policy',
@@ -499,7 +493,7 @@ export const en = {
   'review.rewardBalance': 'Ad-free minutes: {minutes}',
   'review.rewardBalanceCredits': 'Credits earned: {credits}',
   'review.reviewNext': 'Review next',
-  'review.stateSignIn': 'Sign in to earn credits for accepted reviews.',
+  'review.stateSignIn': "Optional sharing is not connected. Answers are kept on this device.",
   'review.stateConsent':
     'Complete contribution consent in Settings before reviewing.',
   'review.stateFlagOff':

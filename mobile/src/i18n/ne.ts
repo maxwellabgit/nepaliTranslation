@@ -4,6 +4,14 @@ import type { MessageKey } from './en';
  * Nepali UI catalog (informal तिमी register where second person appears).
  */
 export const ne: Record<MessageKey, string> = {
+  "privacy.title": "गोपनीयता र डाटा",
+  "privacy.installationWarning": "क्रेडिट र साझा डाटामा पहुँच यस स्थापनासँग जोडिएका छन्। एप हटाउँदा, फेरि स्थापना गर्दा वा नयाँ फोनमा सर्दा जम्मा भएका क्रेडिट र पहिले साझा गरेको डाटामा पहुँच हराउन सक्छ; Bola ले ती फिर्ता ल्याउन सक्दैन। साझा डाटा हटाउन चाहन्छौ भने एप हटाउनु अघि यहाँ मेटाऊ।",
+  "privacy.optionalServicesUnavailable": "ऐच्छिक डाटा सेवा उपलब्ध छैन। अनुवाद यस यन्त्रमै रहन्छ।",
+  "privacy.retryConnection": "फेरि जोड्ने प्रयास गर",
+  "privacy.consentSeparate": "यो ऐच्छिक हो र सर्त तथा गोपनीयता स्वीकार गर्ने कार्यभन्दा छुट्टै हो। साझेदारीको अनुमति नदिई अनुवाद, क्यामेरा, इतिहास र सिकाइ प्रयोग गर्न सकिन्छ।",
+  "privacy.modelImprovementOptIn": "म मोडेल सुधारका लागि योग्य पाठ र प्रतिक्रिया साझा गर्न रोज्छु",
+  "privacy.audioDisclosure": "मूल आवाज साझेदारी सुरुमा बन्द हुन्छ। सहमतिपछि खोलेमा ६० सेकेन्डसम्मका योग्य रेकर्डिङ र तिनका ट्रान्सक्रिप्ट आवाज तथा अनुवाद समीक्षाका लागि पनि अपलोड हुन सक्छन्। नत्र माइक्रोफोनको आवाज स्थानीय रहन्छ। क्यामेरा फोटो साझा हुँदैनन्।",
+  "privacy.dismissMessage": "डाटा सेवाको सन्देश बन्द गर्नुहोस्",
   'common.cancel': 'रद्द',
   'common.clear': 'मेटाउनुहोस्',
   'common.delete': 'मेटाउनुहोस्',
@@ -187,8 +195,8 @@ export const ne: Record<MessageKey, string> = {
   'settings.termsA11y': 'सेवाका सर्तहरू खोल्नुहोस्',
   'settings.supportLink': 'सहयोग',
   'settings.supportLinkA11y': 'सहयोग खोल्नुहोस्',
-  'settings.deletionInfo': 'खाता र डाटा मेटाउने',
-  'settings.deletionInfoA11y': 'खाता र डाटा मेटाउने जानकारी खोल्नुहोस्',
+  'settings.deletionInfo': "साझा डाटा मेटाउने",
+  'settings.deletionInfoA11y': "साझा डाटा मेटाउने जानकारी खोल्नुहोस्",
   'settings.manageSubscription': 'Apple सदस्यता व्यवस्थापन',
   'settings.manageSubscriptionA11y': 'Apple सदस्यता व्यवस्थापन खोल्नुहोस्',
   'settings.legalNotLive':
@@ -217,8 +225,7 @@ export const ne: Record<MessageKey, string> = {
   'settings.consentNotSavedTitle': 'सहमति सुरक्षित भएन',
   'settings.consentNotSavedBody':
     'योगदान सहमति रेकर्ड भएन। यस यन्त्रको अनुवाद उस्तै छ।',
-  'settings.offlineBanner':
-    'खाता र सिंकका लागि नेटवर्क चाहिन्छ। अनुवाद र सिकाइ अफलाइन उपलब्ध छन्।',
+  'settings.offlineBanner': "ऐच्छिक साझेदारीका लागि नेटवर्क चाहिन्छ। अनुवाद र सिकाइ अफलाइन चल्छ।",
 
   'learn.earnRewards': 'आजका १०',
   'learn.earnRewardsA11y': 'आजका १० खोल्नुहोस्। अनुवाद समीक्षा।',
@@ -248,9 +255,9 @@ export const ne: Record<MessageKey, string> = {
   'learn.noVoiceTitle': 'नेपाली आवाज छैन',
   'learn.noVoiceDetail':
     'तिमी अक्षर अफलाइन सिक्न सक्छौ। सुनाइका लागि यस iPhone मा नेपाली आवाज चाहिन्छ।',
-  'learn.offlineOk': 'अक्षर पाठ पूर्ण अफलाइन चल्छ — लगइन चाहिँदैन।',
+  'learn.offlineOk': "अक्षरका पाठ पूर्ण रूपमा अफलाइन चल्छन्।",
   'learn.title': 'नेपाली अक्षर',
-  'learn.offlineSubtitle': 'अफलाइन · खाता चाहिँदैन',
+  'learn.offlineSubtitle': "अफलाइन पाठहरू",
   'learn.sections': 'खण्डहरू',
   'learn.sectionA11y': '{section} खण्ड',
   'learn.loading': 'पाठ लोड हुँदै…',
@@ -300,7 +307,7 @@ export const ne: Record<MessageKey, string> = {
   'contributions.deleteA11y': 'योगदान मेटाउनुहोस्',
   'contributions.offlineBanner':
     'तिमी अफलाइन छौ। मस्यौदा यन्त्रमै रहन्छ; अनलाइन हुँदा सिंक फेरि सुरु हुन्छ।',
-  'contributions.signInPrompt': 'योगदान पठाउन Apple बाट साइन इन गर।',
+  'contributions.signInPrompt': "योगदान पठाउन सेटिङमा ऐच्छिक साझेदारी छान।",
   'contributions.correctionTitle': 'सम्पादन',
   'contributions.correctionPlaceholder': 'राम्रो अनुवाद टाइप गर',
   'contributions.submit': 'योगदान पठाउनुहोस्',
@@ -323,8 +330,7 @@ export const ne: Record<MessageKey, string> = {
   'contributions.nothingToSave': 'बचत गर्ने केही छैन।',
   'contributions.uploadOff':
     'यस यन्त्रमा बचत भयो। समीक्षा सकिएसम्म योगदान अपलोड बन्द छ।',
-  'contributions.needSignIn':
-    'यस यन्त्रमा बचत भयो। पठाउन Apple बाट साइन इन गर, त्यसपछि फेरि Submit थिच।',
+  'contributions.needSignIn': "यस यन्त्रमा बचत भयो। ऐच्छिक साझेदारी अझै जोडिएको छैन। सेटिङमा फेरि प्रयास गर।",
   'contributions.needConsent':
     'यस यन्त्रमा बचत भयो। सेटिङमा योगदान सहमति बचत गर, त्यसपछि फेरि Submit थिच।',
   'contributions.uploadUnavailable':
@@ -335,8 +341,7 @@ export const ne: Record<MessageKey, string> = {
   'contributions.cardTitle': 'समीक्षा योगदान गर',
   'contributions.cardOffDetail':
     'यस बिल्डमा योगदान समीक्षा बन्द छ। अनुवाद अफलाइन अझै चल्छ।',
-  'contributions.signInSettings':
-    'योगदान गर्न सेटिङमा Apple बाट साइन इन गर।',
+  'contributions.signInSettings': "सेटिङमा ऐच्छिक साझेदारी छान।",
   'contributions.consentSettings':
     'पहिले सेटिङमा योगदान सहमति बचत गर।',
   'contributions.ageConfirmSettings':
@@ -375,46 +380,38 @@ export const ne: Record<MessageKey, string> = {
   'contributions.loadAnother': 'अर्को लोड',
   'contributions.loadA11y': 'योगदान कार्य लोड',
 
-  'auth.account': 'खाता',
-  'auth.notConfigured':
-    'यस बिल्डमा साइन इन कन्फिगर छैन। अनुवाद, इतिहास र सेटिङ अझै चल्छन्।',
-  'auth.supportUserId': 'सहायता युजर ID',
-  'auth.consentDraftMeta':
-    'मस्यौदा {version}। पाठ, बोली, ट्रान्सक्रिप्ट, रिटेन्सन र फिर्ता समेट्छ। लाइभ सङ्कलन अघि कानुनी समीक्षा चाहिन्छ।',
-  'auth.contributionConsentBody':
-    'सहमति बचत गर्दा तिमी सहमत हुन्छौ कि Bola ले तिमीले पठाएको योगदान पाठ, अनुमति दिएको बोली रेकर्डिङ, त्यसको ट्रान्सक्रिप्ट, तिम्रा सम्पादन, मोडेलका नतिजा, र सम्बन्धित प्राविधिक मेटाडाटा मानव समीक्षाका लागि तथा भाषा डाटा र मोडेल सुधार्न र व्यावसायीकरण गर्न अपलोड र भण्डारण गर्न सक्छ। Bola ले क्यामेरा फोटो अपलोड गर्दैन। योगदान बोली सहमति फिर्ता नलिएसम्म वा खाता नमेटेसम्म अनिश्चित काल राखिन सक्छ। फिर्ता वा मेटाउँदा जोडिएको योगदान डाटा ३० दिनभित्र हटाउने तालिका बन्छ। प्रोसेसरमा यो काम चलाउन चाहिने हाम्रा होस्टिङ र भण्डारण प्रदायक पर्छन्। सामान्य अतिथि अनुवाद इतिहास, क्लिपबोर्ड, र सहमति नदिएको रेकर्डिङ यस यन्त्रमै रहन्छ। मूल अनुवाद, क्यामेरा OCR, इतिहास, सेटिङ र सिकाइ साइन इन वा सहमति बिना काम गर्छ। व्यक्तिगत वा संवेदनशील सामग्री योगदान नगर। एपको खाता मेटाउँदा Apple सदस्यता रद्द हुँदैन।',
-  'auth.signInApple': 'Apple बाट साइन इन',
-  'auth.signInUnavailable':
-    'यस यन्त्रमा Apple साइन इन उपलब्ध छैन। अनुवाद अफलाइन अझै चल्छ।',
-  'auth.signOut': 'साइन आउट',
-  'auth.copyUserIdA11y': 'सहायता युजर ID कपी',
+  'auth.account': "गोपनीयता र डाटा",
+  'auth.notConfigured': "ऐच्छिक साझेदारी उपलब्ध छैन। अनुवाद यस यन्त्रमै रहन्छ।",
+  'auth.supportUserId': "निजी डाटा सन्दर्भ",
+  'auth.consentDraftMeta': "साझेदारी संस्करण {version}।",
+  'auth.contributionConsentBody': "ऐच्छिक सहमति दिएमा Bola ले तिमीले टाइप गरेको वा समीक्षा गरेको मूल पाठ, देखाइएको अनुवाद, मूल्याङ्कन र सुधार, भाषा सेटिङ र सहमतिको विवरण अपलोड गर्न सक्छ। समीक्षकहरूले गल्ती खोज्न र अङ्ग्रेजी ↔ नेपाली भाषाको डाटा र मोडेल, व्यावसायिक मोडेलसमेत, सुधार्न यी प्रयोग गर्छन्। हाम्रो होस्टिङ र भण्डारण प्रदायकले डाटा निजी रूपमा प्रशोधन गर्छन्। सहमति फिर्ता लिँदा वा साझा डाटा मेटाउन अनुरोध गर्दा जोडिएको डाटा ३० दिनभित्र हटाइन्छ; त्यसअघि पाठ र अनुमति दिएका रेकर्डिङ राख्न सकिन्छ। सामान्य इतिहास, क्लिपबोर्ड र साझा नगरेका रेकर्डिङ स्थानीय रहन्छन्। क्यामेरा फोटो स्थानीय OCR का अस्थायी इनपुट हुन् र अपलोड हुँदैनन्। व्यक्तिगत वा संवेदनशील सामग्री नपठाऊ।",
+  'auth.signInApple': "ऐच्छिक साझेदारी जोड्नुहोस्",
+  'auth.signInUnavailable': "ऐच्छिक साझेदारी उपलब्ध छैन। अनुवाद अफलाइन चल्छ।",
+  'auth.signOut': "ऐच्छिक साझेदारी रोक्नुहोस्",
+  'auth.copyUserIdA11y': "निजी डाटा सन्दर्भ प्रतिलिपि गर्नुहोस्",
   'auth.ageConfirm': 'म १८ वर्ष वा माथि छु भनी पुष्टि गर्छु',
-  'auth.shareSpeech': 'बोली रेकर्डिङ साझा गर्नुहोस्',
+  'auth.shareSpeech': "मूल आवाज रेकर्डिङ र ट्रान्सक्रिप्ट पनि साझा गर",
   'auth.sharePhotos': 'क्यामेराका फोटो यसै फोनमा रहन्छन्',
-  'auth.withdrawConsent': 'योगदान सहमति फिर्ता लिनुहोस्',
+  'auth.withdrawConsent': "साझेदारी रोक र सहमति फिर्ता लेऊ",
   'auth.withdrawConsentTitle': 'सहमति फिर्ता लिने?',
-  'auth.withdrawConsentBody':
-    'यसले नयाँ अपलोड रोक्छ र ३० दिनभित्र जोडिएको योगदान डाटा मेटाउन तालिका बनाउँछ। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
-  'auth.saveConsent': 'सहमति बचत',
-  'auth.consentSaved': 'सहमति बचत भयो',
-  'auth.deleteAccount': 'खाता मेटाउनुहोस्',
-  'auth.deleteAccountTitle': 'खाता मेटाउने?',
-  'auth.deleteAccountBody':
-    'यसले ३० दिनभित्र खाता र योगदान डाटा मेटाउन तालिका बनाउँछ। यसले Apple सदस्यता रद्द गर्दैन — Settings → Apple ID → Subscriptions बाट व्यवस्थापन गर। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
+  'auth.withdrawConsentBody': "यसले नयाँ अपलोड रोक्छ, बाँकी योगदान हटाउँछ र जोडिएको साझा पाठ तथा आवाज ३० दिनभित्र हटाउने अनुरोध गर्छ। स्थानीय अनुवाद, इतिहास र क्रेडिट रहन्छन्।",
+  'auth.saveConsent': "मोडेल सुधारका लागि साझेदारी अनुमति देऊ",
+  'auth.consentSaved': "मोडेल सुधारका लागि साझेदारी अनुमति छ",
+  'auth.deleteAccount': "साझा डाटा मेटाउनुहोस्",
+  'auth.deleteAccountTitle': "साझा डाटा मेटाउने?",
+  'auth.deleteAccountBody': "यसले साझेदारी रोक्छ, बाँकी अपलोड हटाउँछ र अपलोड गरिएको योगदान पाठ तथा आवाज ३० दिनभित्र मेटाउन अनुरोध गर्छ। स्थानीय इतिहास, यन्त्रको निजी पहिचान र क्रेडिट सुरक्षित रहन्छन्। यसले App Store सदस्यता रद्द गर्दैन।",
   'auth.deletionScheduled':
     'मेटाउने तालिका: {date} सम्म व्यक्तिगत डाटा हटाइन्छ।',
-  'auth.deletionScheduledConfirm':
-    'खाता मेटाउने तालिका बनाइयो। {date} सम्म व्यक्तिगत डाटा हटाइन्छ। यस यन्त्रको अनुवाद उस्तै रहन्छ।',
-  'auth.deletionComplete': 'तिम्रो खाता डाटा मेटाइयो। यस यन्त्रको अनुवाद अझै चल्छ।',
+  'auth.deletionScheduledConfirm': "साझा डाटा {date} सम्म मेटाउने अनुरोध भयो। अनुवाद र क्रेडिट उपलब्ध रहन्छन्।",
+  'auth.deletionComplete': "साझा योगदान डाटा मेटाइयो। स्थानीय अनुवाद र क्रेडिट उपलब्ध रहन्छन्।",
   'auth.deleting': 'मेटाउँदै…',
-  'auth.retryDeleteA11y': 'खाता मेटाउन फेरि प्रयास',
+  'auth.retryDeleteA11y': "साझा डाटा मेटाउने फेरि प्रयास",
 
   'ads.houseCopy': 'विज्ञापन नचाहिने? विज्ञापन-मुक्त वैकल्पिक हो। App Store ले मूल्य देखाउँछ।',
   'ads.houseDismiss': 'अहिले होइन',
   'ads.rewardedCta': '२० मिनेट विज्ञापन-मुक्तका लागि वैकल्पिक विज्ञापन हेर',
-  'ads.signInRequiredTitle': 'साइन इन चाहिन्छ',
-  'ads.signInRequiredBody':
-    'वैकल्पिक विज्ञापनबाट विज्ञापन-मुक्त समय कमाउन साइन इन गर।',
+  'ads.signInRequiredTitle': "ऐच्छिक सेवा उपलब्ध छैन",
+  'ads.signInRequiredBody': "यो विज्ञापनको पुरस्कार जाँच्न निजी जडान चाहिन्छ। अनलाइन हुँदा फेरि प्रयास गर।",
   'ads.interstitialReady': 'विज्ञापन तयार',
   'ads.interstitialUnavailable': 'विज्ञापन बन्द',
 
@@ -428,7 +425,7 @@ export const ne: Record<MessageKey, string> = {
   'paywall.restoreA11y': 'अघिल्लो खरिद पुनर्स्थापना',
   'paywall.manage': 'सदस्यता व्यवस्थापन',
   'paywall.manageA11y': 'Apple सदस्यता व्यवस्थापन',
-  'paywall.active': 'यस खातामा विज्ञापन-मुक्त सक्रिय छ।',
+  'paywall.active': "यस यन्त्रमा विज्ञापन-मुक्त सक्रिय छ।",
   'paywall.expired': 'सदस्यता सकियो। जुनसुकै बेला फेरि लिन सकिन्छ।',
   'paywall.billingRetry':
     'तपाईंको Apple ID सेटिङमा बिलिङ ध्यान चाहिन्छ।',
@@ -439,12 +436,10 @@ export const ne: Record<MessageKey, string> = {
   'settings.openPaywallA11y': 'विज्ञापन-मुक्त सदस्यता विकल्प खोल्नुहोस्',
 
   'startupConsent.title': 'सुरु गर्नु अघि',
-  'startupConsent.intro':
-    'यस यन्त्रमा Bola प्रयोग गर्न, तलका बाकसहरू पढेर स्वीकार गर्नुहोस्। मूल अनुवाद अफलाइन नै काम गर्छ; ऐच्छिक अपलोड साइन-इन गरेपछि मात्र लागू हुन्छ।',
+  'startupConsent.intro': "Bola प्रयोग गर्नु अघि सर्त र गोपनीयता पढ। मोडेल सुधारका लागि ऐच्छिक साझेदारी सेटिङमा छुट्टै नछानेसम्म बन्द रहन्छ।",
   'startupConsent.terms':
     'मैले Bola का नियम र सर्तहरू पढेको र स्वीकार गरेको छु।',
-  'startupConsent.privacy':
-    'मैले Bola को गोपनीयता नीति पढेको र स्वीकार गरेको छु — साइन-इन गरेपछि ऐच्छिक आवाज रेकर्डिङ र त्यसको ट्रान्सक्रिप्ट अपलोड हुन सक्छ। क्यामेरा फोटो यस यन्त्रमै रहन्छ। सहमति फिर्ता गरे वा खाता मेटाए जोडिएको योगदान डाटा ३० दिनभित्र हटाइन्छ।',
+  'startupConsent.privacy': "मैले Bola को गोपनीयता नीति पढेको र स्वीकार गरेको छु। योग्य योगदान साझेदारीका लागि छुट्टै अनुमति नदिएसम्म अनुवाद, इतिहास र क्यामेरा फोटो यस यन्त्रमै रहन्छन्।",
   'startupConsent.age': 'म १८ वर्ष वा त्योभन्दा माथिको छु।',
   'startupConsent.readTerms': 'नियम र सर्तहरू पढ्नुहोस्',
   'startupConsent.readPrivacy': 'गोपनीयता नीति पढ्नुहोस्',
@@ -503,7 +498,7 @@ export const ne: Record<MessageKey, string> = {
   'review.rewardBalance': 'विज्ञापन-मुक्त मिनेट: {minutes}',
   'review.rewardBalanceCredits': 'कमाइएको क्रेडिट: {credits}',
   'review.reviewNext': 'अर्को पुनरावलोकन',
-  'review.stateSignIn': 'स्वीकृत पुनरावलोकनका लागि क्रेडिट कमाउन साइन-इन गर्नुहोस्।',
+  'review.stateSignIn': "ऐच्छिक साझेदारी जोडिएको छैन। उत्तरहरू यस यन्त्रमा राखिन्छन्।",
   'review.stateConsent':
     'पुनरावलोकनभन्दा पहिले सेटिङ्समा योगदान सहमति पूरा गर्नुहोस्।',
   'review.stateFlagOff':

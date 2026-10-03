@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Linking,
@@ -11,23 +11,17 @@ import {
 import Constants from 'expo-constants';
 import { BuildProvenanceCard } from '../components/BuildProvenanceCard';
 import { useFeatureFlags } from '../app/FeatureConfigProvider';
-import { AccountSection } from '../features/auth/AccountSection';
-import { withdrawContributionConsent } from '../features/auth/withdrawContributionConsent';
+import { PrivacyDataSection } from '../features/auth/PrivacyDataSection';
 import {
   loadSharingToggles,
   saveSharingToggles,
   type SharingToggles,
 } from '../storage/sharingToggles';
-import {
-  discardOwnerContributionFiles,
-  stopPendingSharingKind,
-} from '../services/mediaEnqueue';
-import { discardUtterancesForOwner } from '../features/contribution/utteranceCapture';
+import { stopPendingSharingKind } from '../services/mediaEnqueue';
 import { recordSharingToggles } from '../features/auth/recordSharingToggles';
 import { useAuth } from '../features/auth/AuthProvider';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { recordContributionConsent } from '../features/auth/recordConsent';
-import { saveLocalConsent } from '../storage/contributionConsent';
 import { flushPendingDrafts } from '../services/contributionSync';
 import { useServices } from '../services/ServiceContext';
 import { getSttSupport, hasNepaliVoice } from '../stt/sttSupport';
@@ -91,6 +85,10 @@ export function SettingsScreen({
     neTts: boolean;
   } | null>(null);
   const auth = useAuth();
+  const currentAuth = useRef(auth);
+  currentAuth.current = auth;
+  const consentAttempt = useRef(0);
+  useEffect(() => () => { consentAttempt.current += 1; }, []);
   const services = useServices();
   const consent = useAdConsent(services.ads);
   const subscription = useSubscriptionOptional();
@@ -102,10 +100,12 @@ export function SettingsScreen({
   });
 
   useEffect(() => {
-    void loadSharingToggles(auth.userId).then(setSharing);
-  }, [auth.userId]);
+    let active = true;
+    void loadSharingToggles(auth.userId).then(value => { if (active) setSharing(value); });
+    return () => { active = false; };
+  }, [auth.userId, auth.consentVersion, auth.deletionDueAt, auth.deletionCompletedAt]);
 
-  const refreshAccountSummary = auth.refreshAccountSummary;
+  const refreshDataSummary = auth.refreshDataSummary;
   const authStatus = auth.status;
 
   const openLegalUrl = (url: string) => {
@@ -160,9 +160,9 @@ export function SettingsScreen({
 
   useEffect(() => {
     if (authStatus === 'signed-in') {
-      void refreshAccountSummary();
+      void refreshDataSummary();
     }
-  }, [authStatus, refreshAccountSummary]);
+  }, [authStatus, refreshDataSummary]);
 
   const dynamic = useMemo(
     () =>
@@ -297,7 +297,7 @@ export function SettingsScreen({
           </View>
         </View>
 
-        <AccountSection
+        <PrivacyDataSection
           authConfigured={auth.authConfigured}
           status={auth.status}
           userId={auth.userId}
@@ -306,24 +306,40 @@ export function SettingsScreen({
           deletionRetryPending={auth.deletionRetryPending}
           deletionDueAt={auth.deletionDueAt}
           deletionCompletedAt={auth.deletionCompletedAt}
-          onSignIn={() => void auth.signInWithApple()}
-          onSignOut={() => void auth.signOut()}
+          onRetryIdentity={() => void auth.retryIdentity()}
           onSaveConsent={() => {
-            void recordContributionConsent().then((result) => {
+            const owner = auth.userId;
+            const attempt = ++consentAttempt.current;
+            const valid = () => Boolean(owner && currentAuth.current.userId === owner &&
+              currentAuth.current.status === 'signed-in' &&
+              !currentAuth.current.deletionRetryPending &&
+              !(currentAuth.current.deletionDueAt && !currentAuth.current.deletionCompletedAt) &&
+              consentAttempt.current === attempt);
+            if (!valid()) return;
+            void auth.ensureGuestIdentity().then(async (ready) => {
+              if (!ready || !valid()) return;
+              const stopped = { speech: false, photos: false };
+              setSharing(stopped);
+              await saveSharingToggles(owner, stopped);
+              if (!valid()) return;
+              const result = await recordContributionConsent(owner!, valid);
+              if (!valid()) return;
               if (!result.ok) {
-                Alert.alert(
-                  t('settings.consentNotSavedTitle', lang),
-                  t('settings.consentNotSavedBody', lang),
-                );
+                Alert.alert(t('settings.consentNotSavedTitle', lang),
+                  t('settings.consentNotSavedBody', lang));
                 return;
               }
-              void saveLocalConsent(true);
               void flushPendingDrafts();
-              void auth.refreshAccountSummary();
+              void auth.refreshDataSummary();
             });
           }}
-          onDeleteAccount={() => {
-            void auth.deleteAccount();
+          onDeleteData={() => {
+            consentAttempt.current += 1;
+            setSharing({ speech: false, photos: false });
+            void auth.deleteData().then(async () => {
+              await auth.refreshDataSummary();
+              setSharing(await loadSharingToggles(auth.userId));
+            });
           }}
           speechSharing={sharing.speech}
           onToggleSpeechSharing={(enabled) => {
@@ -336,19 +352,11 @@ export function SettingsScreen({
             }
           }}
           onWithdrawConsent={() => {
-            void withdrawContributionConsent().then((result) => {
-              if (!result.ok) {
-                Alert.alert(
-                  t('auth.withdrawConsentTitle', lang),
-                  t('settings.consentNotSavedBody', lang),
-                );
-                return;
-              }
-              if (auth.userId) {
-                void discardOwnerContributionFiles(auth.userId);
-                void discardUtterancesForOwner(auth.userId);
-              }
-              void auth.refreshAccountSummary();
+            consentAttempt.current += 1;
+            setSharing({ speech: false, photos: false });
+            void auth.deleteData().then(async () => {
+              await auth.refreshDataSummary();
+              setSharing(await loadSharingToggles(auth.userId));
             });
           }}
         />

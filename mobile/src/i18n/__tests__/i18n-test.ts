@@ -1,6 +1,13 @@
 import { t } from '../index';
 
 describe('i18n catalogs', () => {
+  test('visible catalog copy has no account or login prompts', () => {
+    const { en } = require('../en') as typeof import('../en');
+    const { ne } = require('../ne') as typeof import('../ne');
+    for (const value of [...Object.values(en), ...Object.values(ne)]) {
+      expect(value).not.toMatch(/\baccount\b|sign[ -]?in|\blogin\b|oauth|खाता|साइन.?इन|साइन.?आउट|लग.?इन/i);
+    }
+  });
   test('Romanized Nepali transliterates every UI label and leaves supplied content intact', () => {
     const { en } = require('../en') as typeof import('../en');
     for (const key of Object.keys(en) as (keyof typeof en)[]) {

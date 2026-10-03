@@ -25,7 +25,7 @@ describe('AuthStatusBanner', () => {
     });
     expect(screen.getByTestId('auth-status-banner')).toBeTruthy();
     expect(screen.getByTestId('auth-status-message').props.children).toBe(
-      'Could not reach the account server.',
+      'Optional data services are unavailable. Translation stays on this device.',
     );
     await fireEvent.press(screen.getByTestId('auth-status-dismiss'));
   });

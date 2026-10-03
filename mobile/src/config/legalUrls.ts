@@ -9,7 +9,7 @@ export type LegalPublicUrls = {
   privacyPolicyUrl: string;
   termsOfServiceUrl: string;
   supportUrl: string;
-  /** Account / data deletion help page (optional; Settings still has in-app delete). */
+  /** Shared-data deletion help page (optional; Settings still has in-app delete). */
   deletionInfoUrl: string;
   /** Host that should eventually serve /app-ads.txt (documentation only). */
   appAdsTxtUrl: string;
