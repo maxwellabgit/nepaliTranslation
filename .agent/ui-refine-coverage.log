@@ -1,0 +1,38 @@
+
+> neptranslate@1.7.0 test:coverage:beta
+> node ./scripts/check_beta_coverage.mjs
+
+Current critical coverage:
+{
+  "src/features/auth/": {
+    "statements": 80.12,
+    "branches": 75.61,
+    "lines": 83.03
+  },
+  "src/features/contribution/": {
+    "statements": 88.28,
+    "branches": 79.79,
+    "lines": 92.77
+  },
+  "src/features/entitlements/": {
+    "statements": 89.57,
+    "branches": 87.37,
+    "lines": 91.83
+  },
+  "src/features/ads/": {
+    "statements": 85.25,
+    "branches": 74.34,
+    "lines": 88.1
+  },
+  "src/features/subscription/": {
+    "statements": 80.75,
+    "branches": 72.19,
+    "lines": 85.65
+  },
+  "src/services/contributionSync.ts": {
+    "statements": 88.46,
+    "branches": 81.25,
+    "lines": 94.37
+  }
+}
+Coverage OK (ratchet + H6 floors 80% lines / 70% branches).
