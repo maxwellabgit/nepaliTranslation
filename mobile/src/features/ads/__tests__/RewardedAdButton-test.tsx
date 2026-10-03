@@ -4,6 +4,11 @@ import { RewardedAdButton } from '../RewardedAdButton';
 import { ServiceProvider } from '../../../services/ServiceContext';
 import { createTestServices } from '../../../services/createTestServices';
 import { REWARDED_CTA_LABEL } from '../adConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { grantDailyOpenCoin, readDailyOpen } from '../../contribution/dailyOpen';
+import { subscribeAdCreditAwards } from '../adCreditEvents';
+import { requestRewardedSession } from '../rewardedSession';
+import { loadProvisionalGrant, saveProvisionalGrant, createProvisionalGrant } from '../provisionalGrant';
 
 const authState = {
   status: 'signed-in' as 'signed-in' | 'guest',
@@ -52,6 +57,59 @@ jest.mock('../provisionalGrant', () => ({
 }));
 
 describe('RewardedAdButton', () => {
+  async function pressWithOutcome(outcome: { earned: boolean; impression?: boolean }) {
+    const services = createTestServices({ canRequestAds: true, offline: false });
+    services.ads.adapter.showRewarded = jest.fn(async () => outcome);
+    await render(<ServiceProvider services={services}><RewardedAdButton offline={false} /></ServiceProvider>);
+    await fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
+    return services;
+  }
+
+  test('displayed skip durably adds one credit and emits one coin without a provisional grant', async () => {
+    await AsyncStorage.clear();
+    await grantDailyOpenCoin();
+    const before = (await readDailyOpen())!.untilMs;
+    const award = jest.fn();
+    const unsubscribe = subscribeAdCreditAwards(award);
+    (saveProvisionalGrant as jest.Mock).mockClear();
+    await pressWithOutcome({ earned: false, impression: true });
+    await waitFor(() => expect(award).toHaveBeenCalledTimes(1));
+    expect(award).toHaveBeenCalledWith(expect.objectContaining({ credits: 1, coinCount: 1, automaticFlight: true }));
+    expect((await readDailyOpen())!.untilMs).toBe(before + 600_000);
+    expect(saveProvisionalGrant).not.toHaveBeenCalled();
+    unsubscribe();
+  });
+
+  test('an unresolved previous full reward rejects a second provisional and emits no coins', async () => {
+    (loadProvisionalGrant as jest.Mock).mockResolvedValueOnce(createProvisionalGrant('pending', Date.now()));
+    (saveProvisionalGrant as jest.Mock).mockClear();
+    const award = jest.fn();
+    const unsubscribe = subscribeAdCreditAwards(award);
+    await pressWithOutcome({ earned: true });
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('Reward pending', expect.any(String)));
+    expect(saveProvisionalGrant).not.toHaveBeenCalled();
+    expect(award).not.toHaveBeenCalled();
+    unsubscribe();
+  });
+
+  test('failed session mint never loads an ad or saves a reward', async () => {
+    (saveProvisionalGrant as jest.Mock).mockClear();
+    (requestRewardedSession as jest.Mock).mockResolvedValueOnce({ ok: false, reason: 'unauthorized' });
+    const services = await pressWithOutcome({ earned: true });
+    expect(Alert.alert).toHaveBeenCalledWith('Ad unavailable', 'Could not start a rewarded session.');
+    expect(services.ads.adapter.showRewarded).not.toHaveBeenCalled();
+    expect(saveProvisionalGrant).not.toHaveBeenCalled();
+  });
+
+  test('storage failure reports unavailable and does not publish reward animation', async () => {
+    (saveProvisionalGrant as jest.Mock).mockRejectedValueOnce(new Error('disk full'));
+    const award = jest.fn();
+    const unsubscribe = subscribeAdCreditAwards(award);
+    await pressWithOutcome({ earned: true });
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('Ad unavailable', expect.stringContaining('could not be verified')));
+    expect(award).not.toHaveBeenCalled();
+    unsubscribe();
+  });
   beforeEach(() => {
     authState.status = 'signed-in';
     authState.userId = 'user-1';

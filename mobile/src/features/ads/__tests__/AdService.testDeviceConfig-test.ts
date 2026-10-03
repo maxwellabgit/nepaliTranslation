@@ -74,3 +74,39 @@ it('publishes consent granted through Privacy options after the first render', a
   expect(observed).toEqual([true]);
   expect(ads.getConsentState().privacyOptionsRequired).toBe(true);
 });
+
+it('a later privacy withdrawal updates consent without initializing the SDK again', async () => {
+  const native = require('react-native-google-mobile-ads');
+  native.__test.initialize.mockClear();
+  const ads = createProductionAdService();
+  await ads.prepareConsentAndSdk();
+  native.AdsConsent.showPrivacyOptionsForm.mockResolvedValueOnce({
+    canRequestAds: false, privacyOptionsRequirementStatus: 'REQUIRED',
+  });
+  await ads.showPrivacyOptions();
+  expect(ads.getConsentState()).toEqual({ canRequestAds: false, privacyOptionsRequired: true });
+  expect(native.__test.initialize).toHaveBeenCalledTimes(1);
+});
+
+it('privacy form failure preserves the last consent rather than enabling ads', async () => {
+  const native = require('react-native-google-mobile-ads');
+  native.__test.initialize.mockClear();
+  native.AdsConsent.showPrivacyOptionsForm.mockRejectedValueOnce(new Error('privacy unavailable'));
+  const ads = createProductionAdService();
+  await expect(ads.showPrivacyOptions()).resolves.toBeUndefined();
+  expect(ads.getConsentState()).toEqual({ canRequestAds: false, privacyOptionsRequired: false });
+  expect(native.__test.initialize).not.toHaveBeenCalled();
+});
+
+it('consent collection failure publishes deny-by-default state', async () => {
+  const native = require('react-native-google-mobile-ads');
+  native.__test.initialize.mockClear();
+  const ads = createProductionAdService();
+  await ads.prepareConsentAndSdk();
+  native.AdsConsent.gatherConsent.mockRejectedValueOnce(new Error('consent unavailable'));
+  const observed = jest.fn();
+  ads.subscribeConsent(observed);
+  expect(await ads.prepareConsentAndSdk()).toEqual({ canRequestAds: false, privacyOptionsRequired: false });
+  expect(observed).toHaveBeenCalledWith({ canRequestAds: false, privacyOptionsRequired: false });
+  expect(native.__test.initialize).toHaveBeenCalledTimes(1);
+});
