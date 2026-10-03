@@ -1,0 +1,33 @@
+{
+  "sourceSha": "1ff2a780233516950e52aa82708886c96f94bc81",
+  "version": "20261003180000",
+  "esbuild": "0.25.12",
+  "files": [
+    {
+      "path": "supabase/migrations/20261003180000_admin_contribution_export.sql",
+      "sha256": "fd5ffc0fd7b211b0ff96e429f12bdcc6262690f954481f61cb93dc67c7321578"
+    },
+    {
+      "path": "supabase/functions/admin-api/index.ts",
+      "sha256": "ae098e8d78a419aaf94148390554f2fff83ff3ad96b0ce152a9486ca0e5359d5"
+    },
+    {
+      "path": "supabase/functions/admin-api/router.ts",
+      "sha256": "f043d892c558a069dc1cbb2cd63074fcd9bc0c4a96eb23b40ca8aa20db042fcc"
+    },
+    {
+      "path": "supabase/functions/_shared/http.ts",
+      "sha256": "f7f65ec7ccf2478ba44b38875a1f2d83570467294080896a77366c4b15fe6d22"
+    }
+  ],
+  "sql": {
+    "path": ".agent/guest-hosted-deployment/contribution-export.sql",
+    "sha256": "70c1626bff3a2ca31037ee917aa7b432819fff4b7ae86e7455d438d73ebb42e0"
+  },
+  "endpoint": {
+    "name": "admin-api",
+    "path": ".agent/guest-hosted-deployment/endpoints/admin-api.js",
+    "sha256": "9ca2613bfc0d64642db5e8d3bfbb1b02db0a90cebeb423432da1f579e0dce389"
+  },
+  "hostedStatus": "PREPARED_NOT_DEPLOYED"
+}
