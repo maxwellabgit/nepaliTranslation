@@ -10,6 +10,7 @@ import { DeletionsPage } from "./pages/Deletions";
 import { FlagsPage } from "./pages/Flags";
 import { DatasetPage } from "./pages/Dataset";
 import { LoginPage } from "./pages/Login";
+import { ContributionsPage } from "./pages/Contributions";
 
 export function App() {
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
@@ -70,6 +71,7 @@ export function App() {
       <nav className="nav">
         <span className="brand">NepTranslate Admin</span>
         <NavLink to="/" end>Dashboard</NavLink>
+        <NavLink to="/contributions">Contributions</NavLink>
         <NavLink to="/public-review">Public Review</NavLink>
         <NavLink to="/alerts">Alerts</NavLink>
         <NavLink to="/deletions">Deletions</NavLink>
@@ -85,6 +87,7 @@ export function App() {
       </nav>
       <Routes>
         <Route path="/" element={<DashboardPage api={api} />} />
+        <Route path="/contributions" element={<ContributionsPage api={api} />} />
         <Route path="/review" element={<Navigate to="/public-review" replace />} />
         <Route path="/public-review" element={<PublicReviewPage api={api} />} />
         <Route path="/alerts" element={<AlertsPage api={api} />} />

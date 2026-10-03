@@ -64,4 +64,25 @@ describe("admin API client", () => {
     const first = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
     expect((first[1].headers as Record<string, string>).apikey).toBe(ANON);
   });
+
+  it('retrieves then reauthorizes a paginated export with a user JWT', async () => {
+    const fetchImpl = vi.fn(async (_url: string, _init: RequestInit) => new Response(JSON.stringify({ records: [], next_cursor: null }), { status: 200 }));
+    const client = createAdminClient({ baseUrl: 'https://example.supabase.co', anonKey: ANON,
+      getAccessToken: async () => 'admin-jwt', fetchImpl: fetchImpl as typeof fetch });
+    const cursor = { created_at: '2026-10-03T12:00:00Z', key: 'report:abc' };
+    await client.contributions(cursor); await client.contributions(cursor, true);
+    expect(fetchImpl.mock.calls[0][0]).toContain('/contributions?limit=100');
+    expect(fetchImpl.mock.calls[1][0]).toContain('/contributions/export?limit=100');
+    expect(fetchImpl.mock.calls[1][1].method).toBe('POST');
+    expect((fetchImpl.mock.calls[1][1].headers as Record<string, string>).authorization).toBe('Bearer admin-jwt');
+    expect(new URL(fetchImpl.mock.calls[1][0]).searchParams.get('before_key')).toBe(cursor.key);
+  });
+
+  it('uses the configured public storage origin for a signed local audio preview', async () => {
+    const client = createAdminClient({baseUrl:'http://127.0.0.1:54321', anonKey:ANON,
+      getAccessToken:async()=> 'operator', fetchImpl:vi.fn(async()=>new Response(JSON.stringify({
+        signed_url:'http://kong:8000/storage/v1/object/sign/contribution-speech/test.wav?token=synthetic',
+      }),{status:200})) as typeof fetch});
+    expect((await client.signMedia('synthetic')).signed_url).toBe('http://127.0.0.1:54321/storage/v1/object/sign/contribution-speech/test.wav?token=synthetic');
+  });
 });

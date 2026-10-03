@@ -31,6 +31,13 @@ jobs:
         run: supabase test db
       - name: Edge function unit tests
         run: deno test --allow-env supabase/functions/_shared supabase/functions/tests
+      - name: Install contribution browser proof dependencies
+        run: |
+          npm ci --prefix admin
+          npm ci --prefix testing-ground
+          npm --prefix testing-ground exec -- playwright install --with-deps chromium
+      - name: Real local contribution capture, authorized browser export and nonempty purge
+        run: node scripts/prove_contribution_export.mjs
       - name: Concurrent reward grant
         run: bash supabase/scripts/concurrent_reward.sh
       - name: Reset pre-fix schema for upgrade proof

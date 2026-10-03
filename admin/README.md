@@ -28,7 +28,7 @@ values ('<auth.users.id>', 'ops');
 
 ### Edge Function CORS (`ADMIN_ORIGIN`)
 
-`admin-api` soft-allows `http://localhost:5173` and `http://127.0.0.1:5173` when `ADMIN_ORIGIN` is unset.
+Admin runs on port **5174**. `admin-api` soft-allows localhost/127.0.0.1 on 5174 (and historical5173) when `ADMIN_ORIGIN` is unset.
 
 For a deployed admin host, set the Edge Function secret to the exact SPA origin (comma-separated if multiple):
 
@@ -44,4 +44,6 @@ Without a matching origin, browsers block cross-origin calls even though curl/De
 npm test
 ```
 
-Playwright end-to-end for triage/export/deletion is **not** automated in F7 (blocker: needs live allowlisted session). Source Vitest covers 403 client handling + `apikey` header.
+The Contributions page retrieves original/revised typed and Today's10 answers plus private speech metadata. Cursor pagination includes all records without truncating originals. Download reauthorizes and refetches the current page, audits export and contains no signed audio URLs/service keys. Every record is private-review-only, never a training/public-display grant. Speech previews use audited120second signed links; a previously issued link can remain usable until expiry or object deletion. Withdrawal/open deletion excludes new retrieval/export/preview immediately.
+
+`node scripts/prove_contribution_export.mjs` (from repo root, disposable local Supabase running, admin/testing-ground dependencies and Playwright installed) proves real guest capture, independent answer revisions, nonempty synthetic audio upload, authenticated operator browser JSON download, non-admin denial and storage-first purge. It refuses non-local API hosts and captures no media evidence. Hosted deployment/operator login/native microphone/legal approval remain separate owner proof. No account UI is added to the mobile product; this is an operator console.

@@ -82,17 +82,21 @@ select is(
   'dataset export stages without training'
 );
 
--- Media preview requires a row; insert synthetic and audit
+-- C5 current private speech preview requires specific consent; legacy photos retired.
+update public.profiles set consent_version = (select contribution_consent_version from public.app_config where id = 1),
+  consented_at = now(), age_confirmed_at = now(), speech_sharing = true,
+  consent_withdrawn_at = null, deletion_requested_at = null, deletion_due_at = null
+where user_id = '22222222-2222-4222-8222-222222222222';
 insert into public.contribution_media (
   id, user_id, kind, bucket_id, object_path, content_type, byte_size,
   idempotency_key, consent_version, status
 ) values (
   'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
   '22222222-2222-4222-8222-222222222222',
-  'photo',
-  'contribution-photos',
-  '22222222-2222-4222-8222-222222222222/f7-preview.jpg',
-  'image/jpeg',
+  'speech',
+  'contribution-speech',
+  '22222222-2222-4222-8222-222222222222/f7-preview.wav',
+  'audio/wav',
   1024,
   'f7-admin-media-preview',
   (select contribution_consent_version from public.app_config where id = 1),
@@ -104,7 +108,7 @@ select is(
     '11111111-1111-4111-8111-111111111111',
     'dddddddd-dddd-4ddd-8ddd-dddddddddddd'
   ) ->> 'bucket_id'),
-  'contribution-photos',
+  'contribution-speech',
   'media preview returns bucket'
 );
 

@@ -29,6 +29,20 @@ export type AdminClientOptions = {
   fetchImpl?: typeof fetch;
 };
 
+export type ContributionCursor = { created_at: string; key: string };
+export type ContributionRecord = {
+  id: string; record_type: 'text' | 'speech'; owner_id: string;
+  created_at: string; source?: string; result?: string; correction?: string | null;
+  normalized_source?: string; consent_version: string;
+  metadata: Record<string, unknown>; content_type?: string; byte_size?: number;
+  direction?: string; formality?: string; script?: string;
+  classification: 'private_review_only'; training_eligible: false; public_display_eligible: false;
+};
+export type ContributionPage = {
+  schema_version: number; classification: 'private_review_only'; generated_at: string;
+  records: ContributionRecord[]; next_cursor: ContributionCursor | null;
+};
+
 export function createAdminClient(opts: AdminClientOptions) {
   const fetchImpl = opts.fetchImpl ?? fetch;
   if (!opts.anonKey || opts.anonKey.length < 10) {
@@ -84,6 +98,13 @@ export function createAdminClient(opts: AdminClientOptions) {
   }
 
   return {
+    contributions: (cursor: ContributionCursor | null = null, exporting = false) => {
+      const params = new URLSearchParams({ limit: '100' });
+      if (cursor) { params.set('before', cursor.created_at); params.set('before_key', cursor.key); }
+      return request<ContributionPage>(`/contributions${exporting ? '/export' : ''}?${params}`, {
+        method: exporting ? 'POST' : 'GET',
+      });
+    },
     dashboard: () => request<Record<string, number>>("/dashboard"),
     review: (limit = 50) =>
       request<{ reports: unknown[]; media: unknown[] }>(`/review?limit=${limit}`),
@@ -117,14 +138,20 @@ export function createAdminClient(opts: AdminClientOptions) {
         method: "POST",
         body: JSON.stringify(payload),
       }),
-    signMedia: (media_id: string) =>
-      request<{ signed_url: string; content_type?: string; kind?: string }>(
+    signMedia: async (media_id: string) => {
+      const signed = await request<{ signed_url: string; content_type?: string; kind?: string }>(
         "/media/sign",
         {
           method: "POST",
           body: JSON.stringify({ media_id }),
         },
-      ),
+      );
+      // Local Edge uses Docker's internal Kong origin. Use the configured public
+      // API origin, retaining only the expected signed-storage path and query.
+      const target = new URL(signed.signed_url, opts.baseUrl);
+      if (!target.pathname.startsWith('/storage/v1/object/sign/')) throw new AdminApiError('invalid_payload', 502);
+      return { ...signed, signed_url: new URL(target.pathname + target.search, opts.baseUrl).href };
+    },
     // R3 public review — reads the RLS-safe view directly via PostgREST.
     // Mutating admin actions (mark unsatisfactory / late reject / quarantine
     // resolution) require a service-role admin-api endpoint scheduled for

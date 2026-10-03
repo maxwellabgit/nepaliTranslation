@@ -119,3 +119,52 @@ Deno.test("admin-api invalid user returns 401", async () => {
   );
   assertEquals(res.status, 401);
 });
+
+Deno.test("contribution routes deny non-admin before querying raw data", async () => {
+  for (const [path, method] of [["contributions", "GET"], ["contributions/export", "POST"]]) {
+    const deps = mockDeps({ assertOk: false });
+    let reads = 0;
+    const original = deps.rpc;
+    deps.rpc = (name, body) => { if (name !== "service_assert_admin") reads++; return original(name, body); };
+    const res = await handleAdminRequest(new Request(`http://localhost/admin-api/${path}`, {
+      method, headers: { authorization: "Bearer guest" },
+    }), deps);
+    assertEquals(res.status, 403); assertEquals(reads, 0);
+  }
+});
+
+Deno.test("export derives actor from Auth and marks no-store, ignoring supplied actor", async () => {
+  const deps = mockDeps({ userId: "trusted-admin" });
+  let input: Record<string, unknown> = {};
+  deps.rpc = async (name, body) => {
+    if (name === "service_admin_contributions") input = body;
+    return { ok: true, status: 200, json: { records: [] }, text: "" };
+  };
+  const res = await handleAdminRequest(new Request("http://localhost/admin-api/contributions/export?limit=100", {
+    method: "POST", headers: { authorization: "Bearer admin", 'content-type': 'application/json' },
+    body: JSON.stringify({ p_actor_id: 'forged' }),
+  }), deps);
+  assertEquals(res.status, 200); assertEquals(res.headers.get('cache-control'), 'no-store');
+  assertEquals(input, { p_actor_id: 'trusted-admin', p_limit: 100, p_before: null, p_before_key: null, p_export: true });
+});
+
+Deno.test("contribution pagination rejects malformed, unbounded and half cursors", async () => {
+  for (const query of ['limit=0', 'limit=201', 'limit=1.5', 'before=x&before_key=report:x', 'before_key=orphan', 'before=&before_key=']) {
+    const res = await handleAdminRequest(new Request(`http://localhost/admin-api/contributions?${query}`, {
+      headers: { authorization: 'Bearer admin' },
+    }), mockDeps({}));
+    assertEquals(res.status, 400, query);
+  }
+});
+
+Deno.test('legacy review route uses the same audited consent-filtered RPC', async () => {
+  const deps = mockDeps({}); const calls: string[] = [];
+  deps.rpc = async (name) => { calls.push(name); return { ok: true, status: 200,
+    json: { records: [{ record_type: 'text', id: 'a', source: 'allowed only' }] }, text: '' }; };
+  const res = await handleAdminRequest(new Request('http://localhost/admin-api/review', {
+    headers: { authorization: 'Bearer admin' },
+  }), deps);
+  assertEquals(calls, ['service_assert_admin', 'service_admin_contributions']);
+  assertEquals(res.headers.get('cache-control'), 'no-store');
+  assertEquals((await res.json()).reports[0].source_preview, 'allowed only');
+});

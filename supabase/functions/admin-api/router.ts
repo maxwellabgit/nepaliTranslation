@@ -52,7 +52,7 @@ export function parseAllowedOrigins(allowed?: string): string[] {
   if (allowed && allowed.trim().length > 0) {
     return allowed.split(",").map((s) => s.trim()).filter(Boolean);
   }
-  return ["http://localhost:5173", "http://127.0.0.1:5173"];
+  return ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"];
 }
 
 export function withCors(res: Response, origin: string | null, allowed?: string): Response {
@@ -180,6 +180,27 @@ export async function handleAdminRequest(
   const method = req.method.toUpperCase();
 
   try {
+    if ((method === "GET" && path === "/contributions") ||
+      (method === "POST" && path === "/contributions/export")) {
+      const params = new URL(req.url).searchParams;
+      const limit = Number(params.get("limit") ?? "50");
+      const before = params.get("before");
+      const beforeKey = params.get("before_key");
+      if (!Number.isInteger(limit) || limit < 1 || limit > 200 ||
+        Boolean(before) !== Boolean(beforeKey) ||
+        (before !== null && (!before || !Number.isFinite(Date.parse(before)))) ||
+        (beforeKey !== null && (!beforeKey || beforeKey.length > 80))) {
+        return withCors(errorResponse("invalid_payload", 400, requestId), origin, deps.env.adminOrigin);
+      }
+      const res = await deps.rpc("service_admin_contributions", {
+        p_actor_id: user.id, p_limit: limit, p_before: before,
+        p_before_key: beforeKey, p_export: method === "POST",
+      });
+      if (!res.ok) return withCors(rpcError(res.text, requestId), origin, deps.env.adminOrigin);
+      const response = json(res.json, 200, requestId);
+      response.headers.set("cache-control", "no-store");
+      return withCors(response, origin, deps.env.adminOrigin);
+    }
     if (method === "GET" && path === "/dashboard") {
       const res = await deps.rpc("service_admin_dashboard_summary", {});
       if (!res.ok) return withCors(rpcError(res.text, requestId), origin, deps.env.adminOrigin);
@@ -188,11 +209,21 @@ export async function handleAdminRequest(
 
     if (method === "GET" && path === "/review") {
       const limit = Number(new URL(req.url).searchParams.get("limit") ?? "50");
-      const res = await deps.rpc("service_admin_list_review_queue", {
-        p_limit: Number.isFinite(limit) ? limit : 50,
+      const res = await deps.rpc("service_admin_contributions", {
+        p_actor_id: user.id,
+        p_limit: Number.isInteger(limit) && limit > 0 && limit <= 200 ? limit : 50,
+        p_before: null, p_before_key: null, p_export: false,
       });
       if (!res.ok) return withCors(rpcError(res.text, requestId), origin, deps.env.adminOrigin);
-      return withCors(json(res.json, 200, requestId), origin, deps.env.adminOrigin);
+      const records = (res.json as { records?: Array<Record<string, unknown>> })?.records ?? [];
+      const response = json({
+        reports: records.filter(row => row.record_type === 'text').map(row => ({ ...row,
+          item_type: 'translation_report', source_preview: row.source, model_preview: row.result, correction_preview: row.correction,
+        })),
+        media: records.filter(row => row.record_type === 'speech').map(row => ({ ...row, item_type: 'contribution_media', kind: 'speech' })),
+      }, 200, requestId);
+      response.headers.set('cache-control', 'no-store');
+      return withCors(response, origin, deps.env.adminOrigin);
     }
 
     if (method === "POST" && (path === "/review/approve" || path === "/review/reject")) {
