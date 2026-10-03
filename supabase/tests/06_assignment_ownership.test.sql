@@ -1,6 +1,10 @@
 begin;
 select no_plan();
 
+-- Explicit current test permission; forward upgrades preserve old consent.
+update public.profiles set consent_version = (select contribution_consent_version from public.app_config where id = 1)
+where user_id = '11111111-1111-4111-8111-111111111111';
+
 -- User A leases a task and receives an assignment_id.
 select set_config('request.jwt.claim.sub', '11111111-1111-4111-8111-111111111111', true);
 select set_config(
