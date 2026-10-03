@@ -24,9 +24,9 @@ async function call(path, token, body) {
   return { response, data: await response.json().catch(() => null) };
 }
 function ok(result, label) { assert.equal(result.response.ok, true, `${label}: HTTP ${result.response.status}`); return result.data; }
-async function ready(target) {
+async function ready(target, expectedStatus = 200) {
   for (let i=0; i<80; i++) {
-    try { const r = await fetch(target); if (r.status !== 502 && r.status !== 503) return; } catch {}
+    try { const r = await fetch(target); if (r.status === expectedStatus) return; } catch {}
     await new Promise(resolve => setTimeout(resolve, 500));
   }
   throw Error('local proof service did not start');
@@ -37,7 +37,12 @@ const vite = spawn(process.execPath, ['node_modules/vite/bin/vite.js', '--host',
 });
 let browser;
 try {
-  await ready(url + '/functions/v1/admin-api/dashboard'); await ready('http://127.0.0.1:5174');
+  // Kong can reject unauthenticated admin requests before the Edge worker starts.
+  // A method rejection from each handler proves its actual worker is ready.
+  for (const name of ['submit-translation-report', 'create-media-upload', 'complete-media-upload', 'delete-data', 'process-scheduled-jobs']) {
+    await ready(url + `/functions/v1/${name}`, 405);
+  }
+  await ready('http://127.0.0.1:5174');
   const owner = ok(await call('/auth/v1/signup', null, { data: {} }), 'real guest signup');
   assert.equal(owner.user.is_anonymous, true);
   const uid = owner.user.id; const token = owner.access_token;
