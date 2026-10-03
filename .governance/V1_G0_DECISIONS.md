@@ -19,11 +19,11 @@ The [previous freeze and amendments](../docs/history/2026-10-01-contract/V1_G0_D
 - Rewarded ad: two credits / twenty minutes after one verified server callback; preserve historical grants without clawback.
 - Automatic ads: ten-minute foreground eligibility, no daily cap, allowlisted safe points only; subscription/local ad-free grants suppress. Main-branch reset behavior stands; timer-triggered presentation is not accepted proof of safe-point compliance.
 - Banners: idle Translate/Learn; house rotation 60 seconds foreground-visible; steady slot; no photo/recording/consent/keyboard overlap.
-- Subscription: USD 2.99/month US and NPR 199/month Nepal if available; StoreKit localized price; Supabase UUID before purchase/restore.
+- Subscription: USD 2.99/month US, CAD 2.99/month Canada and USD 1.49/month Nepal; StoreKit localized price; Supabase UUID before purchase/restore.
 - Session: rolling 30-day inactivity, short JWT; expiry leaves guest core usable.
 - Withdrawal/deletion: stop uploads immediately; durable retry and linked-data purge ≤30 days; preserve credits/private identity/core on shared-data deletion; historical full identity deletion remains backend-only.
 - Data safety: rights deny-by-default; collected content private; exposure hashes excluded from train/eval; gold unchanged; raw content excluded from telemetry and bundles.
-- UI design: current physical iPhone 16 screenshots with build/state provenance; separate agent per generated proposal; full absolute before/after paths; owner approves proposals before runtime changes.
+- UI design: current physical iPhone 17 Pro screenshots with build/state provenance; separate agent per generated proposal; full absolute before/after paths; owner approves proposals before runtime changes.
 - Distribution: test units/no revenue in TestFlight; owner units/readiness/UMP/app-ads.txt for production; owner-controlled live enablement.
 - Model work: no training/optimization in this functional finalization; preserve recorded certificate and thresholds. No certification waiver inferred from owner prioritization.
 

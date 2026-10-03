@@ -3,9 +3,9 @@ Contract: 2026-10-01 plus owner2026-10-02 guest amendment. Updated2026-10-03. Ru
 Statuses below describe current proof, not code presence. Historical ledger and its PASS entries are preserved in [the snapshot](../docs/history/2026-10-01-contract/V1_REQUIREMENT_LEDGER.md).
 
 - Contract reconciliation: original C0 PASS; guest amendment/source/hosted evidence reconciled. See GUEST_IDENTITY_COMPLETION_2026-10-02.md and GUEST_HOSTED_PROOF_2026-10-03.md. Full gate closure remains separate.
-- Physical iPhone 16 baseline / proposed images: BLOCKED; native screenshots/build manifest absent; no images generated.
+- Physical iPhone 17 Pro baseline / proposed images: BLOCKED; native screenshots/build manifest absent; no images generated.
 - Owner-directed popup/credit timer/UI: SOURCE + LOCAL/BROWSER/REVIEW PASS for explicitly requested layouts; native screenshot/design proof remains open. Original image preserved, compact no-fill timer and external coin flights implemented.
-- Startup language/general acceptance and separate opt-in: SOURCE/LOCAL/BROWSER/HOSTED GUARDS PASS; exact bilingual/legal copy approval and native UX pending. General terms never authorize sharing.
+- Startup language/general acceptance and separate opt-in: SOURCE/LOCAL/BROWSER/HOSTED GUARDS PASS; owner approved all disclosures. Public matching policy URLs/store privacy and native UX proof remain pending. General terms never authorize sharing.
 - Today's10 progress/all-answers/reopen/revise/Extra10/thanks-only5PMNY and strict>90% metric: SOURCE + LOCAL TESTS PASS; hosted synthetic334/370 receipt verified without review credit; device persistence pending.
 - Actual answer/correction capture: source immutable owner-bound revisions and outbox verified locally; real local-CI guest capture and authenticated admin-browser export of both original/revised responses PASS. Hosted admin rollout/operator and native persistence proof pending.
 - Typed/speech feedback: source standardized owner-bound capture/revisions verified; real hosted synthetic typed upload/retry/retrieval/deletion PASS. Native speech+audio journey pending.
@@ -17,8 +17,8 @@ Statuses below describe current proof, not code presence. Historical ledger and 
 - Credits 10 welcome / 5 daily, 10 minutes each, 12-hour cap: LOCAL TESTS RECORDED; native day/restart/flight/suppression proof pending.
 - Ten-minute safe-point ads: source/tests repaired; native presentation/reset/suppression proof pending.
 - Banners/house rotation: source/stable60second browser behavior verified; native owner-unit serving/geometry/consent proof pending.
-- Rewarded exact two-credit SSV/one-credit displayed skip: source/tests PASS and owner-scoped receipt RPC deployed; hosted guest rewarded session200/balanceGET200. Actual SSV probe503; hosted ADMOB_REWARDED_UNIT_ID secret absent. Owner setup and real native signed receipt/replay proof pending; existing rewarded/ad flags are already true, unchanged.
-- Storefront price/purchase/restore: validated private UUID binding source/tests PASS; localized prices/StoreKit sandbox/device proof pending.
+- Rewarded exact two-credit SSV/one-credit displayed skip: source/tests PASS and owner-scoped receipt RPC deployed; hosted guest rewarded session200/balanceGET200. Rewarded secret saved; real Google console signed verification SUCCESS with no-grant probe path and saved callback URL.68Edge tests/fresh review PASS. Native signed receipt/replay/serving proof pending; existing rewarded/ad flags unchanged.
+- Storefront price/purchase/restore: validated private UUID binding source/tests PASS; Apple product/group created, monthly US USD2.99/Canada CAD2.99/Nepal USD1.49 and three-storefront availability saved. RevenueCat/StoreKit sandbox/device proof pending.
 - Offline core, Camera/speech/clipboard/accessibility/iPad: NATIVE PROOF PENDING.
 - Candidate CI: exact1ff2a78 main backend37143906099/agent37143906092 and both branch gates SUCCESS: SQL353 fresh/upgraded, Edge67, real Auth/concurrency/data preservation/admin7, actual local browser capture/export/nonempty media purge, mobile604/unchanged coverage/browser/export/pins/exclusions/secrets. Native proof is separate.
 - Rights/authorization/telemetry/secret exclusions: candidate CI/source review PASS. Authenticated real local operator browser retrieval/download, immutable review revisions and non-admin denial PASS; hosted admin-api rollout/gateway approval/operator login pending. Export grants no training/public-display rights. No model/gold changes.

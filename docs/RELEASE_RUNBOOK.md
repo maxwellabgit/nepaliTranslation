@@ -4,12 +4,12 @@ Authority: [INTENT](../.governance/INTENT.md), [decisions](../.governance/V1_G0_
 [Previous runbook](history/2026-10-01-contract/RELEASE_RUNBOOK.md) is preserved as history.
 
 ## Current milestone
-Guest source9504fcd is published to authorized main and reconciliation branch, with both CI gates green. Hosted guest Auth, migrations/endpoints and real synthetic capture/retrieval/deletion are verified in [hosted proof](../.agent/GUEST_HOSTED_PROOF_2026-10-03.md). Collection is off pending human legal/bilingual/native approval. The [consent review package](GUEST_CONSENT_OWNER_REVIEW.md) contains exact English/Nepali copy. Earlier diagnostic build23 predates this source; no new build or submission in this continuation.
+Runtime source1ff2a78 plus C10 callback33b6b3d is published to authorized main/reconciliation branch. Hosted guest Auth, migrations/endpoints and synthetic capture/retrieval/deletion are verified in [hosted proof](../.agent/GUEST_HOSTED_PROOF_2026-10-03.md). Owner approved disclosures and C5 rollout; collection stays off pending public policy/native checks and hosted operator export. C10 signed console verification and Apple three-storefront prices are saved; RevenueCat/native receipt/store proof remains. The [consent review package](GUEST_CONSENT_OWNER_REVIEW.md) contains approved exact copy. Earlier diagnostic build23 predates this source; no new build/submission occurred here.
 Internal TestFlight and public V1 remain NO-GO until their evidence gates pass.
 
 ## Before candidate build
 - Reconcile current contract; retire reachable review-reward/photo paths safely with forward migrations, without disrupting deletion or historical balances.
-- Capture the actual installed iPhone 16 views with provenance, generate each proposal via a separate agent, obtain owner review, implement approved designs and capture matched after states.
+- Capture the actual installed iPhone 17 Pro views with provenance, generate each proposal via a separate agent, obtain owner review, implement approved designs and capture matched after states.
 - Complete bilingual startup and separate versioned contribution opt-in; authenticated private guest/current-consent/18+/session/flag checks enforced by the server, guest core intact.
 - Complete local gamified Today's 10 plus actual answer persistence; typed and speech result feedback share standardized durable capture/outbox/retrieval.
 - Prove at least one authorized Today's 10 answer, typed feedback and speech+transcript/result+feedback in admin retrieval/export; retries/revisions do not duplicate or lose data.
@@ -23,7 +23,7 @@ Internal TestFlight and public V1 remain NO-GO until their evidence gates pass.
 ## TestFlight/device gate
 Record exact code SHA, app version/build number, profile, EAS build ID, submission ID, Apple processing result and installed devices.
 Use testflight for demo ads; testflight-ssv uses owner units on registered test devices. No revenue claim.
-Same-code iPhone 16 and iPad pass: clean install/upgrade/restart, airplane mode, denied permissions, bilingual legal text, opt-in/withdrawal, Today’s 10 resume/Extra 10, typed/mic feedback, Camera focus/highlights/sheet/copy/temp cleanup, queue/revision/private-subject isolation, ads/credits, purchases/restore and accessibility.
+Same-code iPhone 17 Pro and iPad pass: clean install/upgrade/restart, airplane mode, denied permissions, bilingual legal text, opt-in/withdrawal, Today’s 10 resume/Extra 10, typed/mic feedback, Camera focus/highlights/sheet/copy/temp cleanup, queue/revision/private-subject isolation, ads/credits, purchases/restore and accessibility.
 Web fixtures and sample videos prove only browser behavior. A screenshots-only pass is not full native functionality proof.
 
 ## Hosted and production gate

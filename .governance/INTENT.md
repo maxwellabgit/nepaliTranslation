@@ -13,7 +13,7 @@ Exactly three primary surfaces: Translate, Camera, Learn. Conversation stays in 
 
 Camera takes a portrait photo, runs on-device OCR, and shows the image above a contiguous translated passage with matched highlights and a non-color cue. Cycle crimson, saffron, blue; reject no-text and distant tiny-text captures promptly. The result sheet lowers/reopens predictably; copying reports actual clipboard success. Temporary files are deleted after retake, exit, or successful processing. Photos are never contribution uploads; no photo-library access for this capture path.
 
-For additional UI improvements, use screenshots of the current installed app on a **physical iPhone 16**, with build/state provenance, before proposing exact changes. One separate image-generation agent produces each screenshot-based proposal. Return original and proposed images with absolute paths for owner review; implement only approved designs. Browser and simulator screenshots may supplement, but cannot satisfy this native baseline. Do not invent new popups to fill a design brief.
+For additional UI improvements, use screenshots of the current installed app on a **physical iPhone 17 Pro**, with build/state provenance, before proposing exact changes. One separate image-generation agent produces each screenshot-based proposal. Return original and proposed images with absolute paths for owner review; implement only approved designs. Browser and simulator screenshots may supplement, but cannot satisfy this native baseline. Do not invent new popups to fill a design brief.
 
 ## Startup, identity, and consent
 First launch requires bilingual Terms + Privacy acceptance and language choice, but no sign-in or 18+ attestation. Core surfaces remain guest-accessible.
@@ -45,7 +45,7 @@ Ads, private identity, subscriptions, admin, and telemetry fail soft. Flags defa
 - Banners: idle Translate and idle Learn only. Bundled house creatives rotate every 60 seconds of eligible foreground display with stable slot geometry; not network revenue.
 - Automatic interstitial: ten minutes of foreground-active eligibility, no daily cap, presentation only at Translate Send, durable Camera capture, or Learn activity completion. Welcome/daily ad-free time and subscription suppress it. Preserve the owner-approved main-branch reset behavior; inspect and test both source reset paths explicitly. A timer tick alone must not bypass safe-point restrictions. SDK owns dismissal.
 - Rewarded video: optional user action, two credits / 20 minutes, exactly once after server-verified callback.
-- Subscription: USD 2.99/month US, NPR 199/month Nepal if StoreKit supports the price point; show the localized StoreKit/RevenueCat price. Successfully bind the current private guest UUID before purchase/restore. Core features are never paywalled.
+- Subscription: USD 2.99/month US, CAD 2.99/month Canada, USD 1.49/month Nepal; show the localized StoreKit/RevenueCat price. Successfully bind the current private guest UUID before purchase/restore. Core features are never paywalled.
 - TestFlight uses Google test units and produces no revenue. Production needs owner IDs, UMP, app readiness, app-ads.txt, approved live flags, and actual serving proof. No ATT/IDFA.
 
 ## Release evidence
