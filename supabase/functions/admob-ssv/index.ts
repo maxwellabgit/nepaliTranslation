@@ -53,6 +53,23 @@ Deno.serve(async (req) => {
     nowMs: Date.now(),
   });
   if (!verified.ok) {
+    // AdMob's console uses fixed placeholder IDs, even for a real ad unit.
+    // Acknowledge only a signed, fresh, explicitly marked console probe.
+    // This branch never consumes a session, records a transaction or grants.
+    const probe = await verifyAdmobSsv({
+      query,
+      keys,
+      allowedAdUnit: "1234567890",
+      expectedUserId: "bola-admob-console-verification",
+      expectedSessionToken: "verification-only-no-reward",
+      expectedRewardAmount: EXPECTED_REWARD_AMOUNT,
+      expectedRewardItem: EXPECTED_REWARD_ITEM,
+      maxAgeMs: 5 * 60 * 1000,
+      nowMs: Date.now(),
+    });
+    if (probe.ok && probe.params.transaction_id === "123456789") {
+      return json({ ok: true, verification_only: true }, 200, requestId);
+    }
     return errorResponse("invalid_payload", 400, requestId);
   }
 
