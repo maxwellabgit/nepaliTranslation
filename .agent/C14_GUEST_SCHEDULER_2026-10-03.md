@@ -1,0 +1,9 @@
+# C14 deletion scheduler retirement repair — 2026-10-03
+
+Hosted inspection found one active every-minute process-scheduled-jobs cron, no review rotation/lookahead/validation jobs, and public_review_enabled=true. Its historical worker still called service_close_ny_reward_window. This is a material independent-review finding: the current contract prohibits new review-earned credits.
+
+The worker now retains method/CRON_SECRET/service authorization, due-request listing and the existing storage-before-database deletion executor, but invokes no reward-close RPC. Shared-data requests retain Auth and credits; historical full-identity requests remain distinct. The compatibility reward_close response reports retired=true/applied=0. Scheduler templates describe deletion cadence. Added the previously missing review_retired HTTP error type so the current retired public-review entrypoint typechecks.
+
+Proof: npx --yes deno test --allow-env supabase/functions/_shared supabase/functions/tests: 63 PASS. New regression exercises unauthorized zero-network and exact guest deletion RPC sequence without reward/Auth deletion. npx --yes deno check for process-scheduled-jobs, delete-data, record-sample-progress and public-review entrypoints: PASS. Fresh independent source review PASS, no material findings; stale alert wording repaired. Existing mobile candidate604/full CI remains distinct.
+
+Hosted worker replacement, retired-public-review disablement and live scheduler receipts remain pending until recorded. No existing balance or historical ledger row is removed. No new TestFlight delivery is authorized.

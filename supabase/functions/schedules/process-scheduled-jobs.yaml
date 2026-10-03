@@ -1,16 +1,10 @@
 # Supabase Scheduled Functions descriptor for process-scheduled-jobs.
 #
 # Boundary (see docs/OPERATIONS.md):
-#   * The endpoint owns the reward close and the deletion purge.
-#       - service_close_ny_reward_window  (historical 5:00 PM America/New_York grant)
-#       - service_list_deletion_due_users -> purge -> auth admin delete
-#         (30-day account deletion SLA)
-#   * A failed reward close does not skip deletion.
-#   * service_rotate_review_window is not scheduled. Public review is retired.
-#   * Idempotent. Rotation only triggers when the current window's
-#     ny_close_at has passed. Reward close is idempotent per receipt.
-#   * Every-minute cadence keeps the 5:00 PM NY rotation on time across
-#     DST transitions without hardcoding UTC offsets in cron.
+#   * The endpoint owns deletion only: storage, database, then Auth
+#     for historical full-identity requests. Shared-data deletion keeps Auth.
+#   * No contribution reward close, review rotation or lookahead runs.
+#   * Idempotent stages and every-minute retry enforce the deletion deadline.
 #
 # Auth: CRON_SECRET bearer (or service role) — see docs/OPERATIONS.md
 # secret matrix. This file is a template; the human must import it into
@@ -23,8 +17,8 @@ schedule: "* * * * *"
 timezone: UTC
 retries: 0
 description: |
-  Hosted scheduler template: reward close, then deletion purge even if
-  that close fails. Review rotation is not part of this job.
+  Hosted scheduler template: retry shared-data and historical identity
+  deletion. No contribution reward or review rotation is part of this job.
 
 request:
   method: POST
@@ -41,4 +35,4 @@ alerts:
     - name: v1-ops-oncall
       threshold: any-failure
     - name: v1-scheduler-miss
-      description: page after 2 consecutive misses of the 5:00 PM NY rotation
+      description: page after 2 consecutive missed minute-by-minute deletion worker runs

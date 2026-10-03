@@ -2,10 +2,9 @@
 
 Templates for the hosted scheduler that drives:
 
-- The 5:00 PM America/New_York contribution-credit close (`service_close_ny_reward_window`).
-- Public-review rotation is retired. `public-review` returns `review_retired`.
-  Deletion still runs when `service_close_ny_reward_window` fails.
-- The 30-day account-deletion purge (`service_list_deletion_due_users` → `service_purge_scheduled_deletion` → auth admin delete).
+- Shared-contribution deletion within 30 days, with storage removed before database rows. Private identity and credits survive.
+- Historical full-identity deletion, including Auth removal only for that request kind.
+- Public-review rotation and contribution-credit close are retired. No reward RPC runs in this worker.
 
 ## Files
 
@@ -18,6 +17,6 @@ Templates for the hosted scheduler that drives:
 1. Import this file into Supabase Scheduled Functions (or the chosen alternative — Cloudflare Cron, Render, GCP Cloud Scheduler, etc.).
 2. Bind `CRON_SECRET` in the Edge Functions secret store; rotate every 90 days.
 3. Paste the resulting dashboard link into `docs/OPERATIONS.md` before external TestFlight.
-4. Verify at least one clean 5:00 PM America/New_York rotation and one deletion purge under staging before flipping any production flag.
+4. Verify an actual deletion purge and confirm no review/reward rotation is scheduled before enabling optional collection.
 
 Nothing in this directory replaces the human verification checklist in `docs/OPERATIONS.md`. An agent must not claim the scheduler is running just because these files exist.

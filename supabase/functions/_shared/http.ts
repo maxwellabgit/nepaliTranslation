@@ -18,7 +18,8 @@ export type ErrorCode =
   | "window_closed"
   | "already_submitted"
   | "sign_in_required"
-  | "rotate_failed";
+  | "rotate_failed"
+  | "review_retired";
 
 export function json(body: unknown, status = 200, requestId?: string): Response {
   const headers: Record<string, string> = {
