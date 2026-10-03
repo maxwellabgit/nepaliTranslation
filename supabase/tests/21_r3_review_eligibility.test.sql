@@ -12,6 +12,13 @@ select set_config(
 );
 set local role authenticated;
 
+-- Upgrade fixtures retain historical consent by design; explicitly renew this
+-- test subject without mutating pre-existing production rows in a migration.
+reset role;
+update public.profiles set consent_version = (select contribution_consent_version from public.app_config where id = 1)
+where user_id = '11111111-1111-4111-8111-111111111111';
+set local role authenticated;
+
 -- User A is seeded with current consent and age from seed.sql, and the
 -- default contribution_text_enabled is true. Startup consent is NOT set by
 -- seed, so the initial check should fail with startup_consent_required.
