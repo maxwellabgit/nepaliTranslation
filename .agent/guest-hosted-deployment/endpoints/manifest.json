@@ -1,0 +1,82 @@
+[
+  {
+    "name": "delete-data",
+    "sourceSha": "9504fcddd6de2b56405913b5afbb65a979eddfaa",
+    "esbuildVersion": "0.25.12",
+    "bundleSha256": "602c589293305834d8ed81a1570929a77f082397bb65319076da6ab00a7b8fe6",
+    "sources": [
+      {
+        "path": "supabase/functions/_shared/http.ts",
+        "sha256": "f7f65ec7ccf2478ba44b38875a1f2d83570467294080896a77366c4b15fe6d22"
+      },
+      {
+        "path": "supabase/functions/_shared/guestDataDeletion.ts",
+        "sha256": "533a6a3ff2dfc2d41f6f6f77026791f980df1d3c4ca5889139d0d812b2626afd"
+      },
+      {
+        "path": "supabase/functions/delete-data/index.ts",
+        "sha256": "99a165869e7aba670e35b70b76ba148525a0dee929acc67ca247ca8c6785b468"
+      }
+    ]
+  },
+  {
+    "name": "record-sample-progress",
+    "sourceSha": "9504fcddd6de2b56405913b5afbb65a979eddfaa",
+    "esbuildVersion": "0.25.12",
+    "bundleSha256": "79071aa323b18389a8c6e61d132bdc587c641013c48a96f4844c54a72df5b0da",
+    "sources": [
+      {
+        "path": "supabase/functions/_shared/http.ts",
+        "sha256": "f7f65ec7ccf2478ba44b38875a1f2d83570467294080896a77366c4b15fe6d22"
+      },
+      {
+        "path": "supabase/functions/record-sample-progress/index.ts",
+        "sha256": "7cd247f40532fc5ff7a2d411549a791ed25fb15bcf4d5ae95405d2f9bc54c0cc"
+      }
+    ]
+  },
+  {
+    "name": "process-scheduled-jobs",
+    "sourceSha": "9504fcddd6de2b56405913b5afbb65a979eddfaa",
+    "esbuildVersion": "0.25.12",
+    "bundleSha256": "a137378ba5bc7c314da4d8fc97fde0bfe9d4146315548254c277fffc5e30b8c0",
+    "sources": [
+      {
+        "path": "supabase/functions/_shared/http.ts",
+        "sha256": "f7f65ec7ccf2478ba44b38875a1f2d83570467294080896a77366c4b15fe6d22"
+      },
+      {
+        "path": "supabase/functions/_shared/storagePurge.ts",
+        "sha256": "7015e932f9588679c2d6dce38b0b226abc0b13df97c8b6de24b549d713c6833e"
+      },
+      {
+        "path": "supabase/functions/_shared/deletionExecutor.ts",
+        "sha256": "8e87a43a67abd5b36ca601d0673e310ea0b475a48516f9f16704448b9eca41c9"
+      },
+      {
+        "path": "supabase/functions/_shared/scheduledDeletion.ts",
+        "sha256": "0f495fc01cf3157608c68382b34f7997be89725528db66de8578bc2e0c9cc084"
+      },
+      {
+        "path": "supabase/functions/process-scheduled-jobs/index.ts",
+        "sha256": "ca1442e1b3569e0bead98e9ba7b1e989ee31af243efda9ba75ddda6fd4464b37"
+      }
+    ]
+  },
+  {
+    "name": "public-review",
+    "sourceSha": "9504fcddd6de2b56405913b5afbb65a979eddfaa",
+    "esbuildVersion": "0.25.12",
+    "bundleSha256": "d0fe4796ccba0e59d0b897d5c601733c265ddb65df9a79913cd0b3833f0058fb",
+    "sources": [
+      {
+        "path": "supabase/functions/_shared/http.ts",
+        "sha256": "f7f65ec7ccf2478ba44b38875a1f2d83570467294080896a77366c4b15fe6d22"
+      },
+      {
+        "path": "supabase/functions/public-review/index.ts",
+        "sha256": "e017a5211a2a5518e75a7f79d48769b19b470829eb5d2491891f88bee44f35e7"
+      }
+    ]
+  }
+]

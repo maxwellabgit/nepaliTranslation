@@ -1,0 +1,51 @@
+{
+  "source_sha": "4bbd3e18149fdf3a3e462e57784b41df95ba3b21",
+  "project_ref": "jcrpxoojxixoieqqfgzo",
+  "migrations": [
+    {
+      "path": "supabase/migrations/20260928180000_credit_minutes_10.sql",
+      "version": "20260928180000",
+      "sha256": "307aeef12c5e34fc13f395394005ca0e2a4d65e7710d1c1003b87097e2b1643a"
+    },
+    {
+      "path": "supabase/migrations/20260929140000_word_credit_tiers.sql",
+      "version": "20260929140000",
+      "sha256": "8640370e40ccfeed1cc3fd59c63d6578b93da7bd858115fa70b0d6831ce64a76"
+    },
+    {
+      "path": "supabase/migrations/20260929140100_review_grant_retry.sql",
+      "version": "20260929140100",
+      "sha256": "5f22ae4711448e84df1a3f4b598fae16b05ffa3f8fe729b58e9ade81a5f8beab"
+    },
+    {
+      "path": "supabase/migrations/20261001150000_retire_photo_review_sample_progress.sql",
+      "version": "20261001150000",
+      "sha256": "903ac09a2baf820d30c089e16816dfb4198e71796aa1f2620d4131bbba1689d7"
+    },
+    {
+      "path": "supabase/migrations/20261001160000_sample_progress_insert_and_speech_feedback.sql",
+      "version": "20261001160000",
+      "sha256": "bbaa22abec87cbd949261e8b4efe47aa8e3dc1230caaa0e41022909e47c641b6"
+    },
+    {
+      "path": "supabase/migrations/20261002230000_rewarded_session_receipt.sql",
+      "version": "20261002230000",
+      "sha256": "062227e9aa00cbcd9cffba20e4a6eb618a1abc19c70e265063c873a740a984dc"
+    },
+    {
+      "path": "supabase/migrations/20261003000000_guest_consent_version.sql",
+      "version": "20261003000000",
+      "sha256": "e6aa98f5880b499d2a2958a2136dd06c4ff8131acde7ee054f43494cbf115481"
+    },
+    {
+      "path": "supabase/migrations/20261003001000_guest_shared_data_deletion.sql",
+      "version": "20261003001000",
+      "sha256": "a004799920f16de24d6d2b1a3028ad3cea4436ed5a94d68858a5d02dae649a3a"
+    },
+    {
+      "path": "supabase/migrations/20261003002000_guest_withdrawal_eligibility.sql",
+      "version": "20261003002000",
+      "sha256": "418585042600d420433101e4d7cfda059681bf1e2910aeffd70bda667ffd3080"
+    }
+  ]
+}

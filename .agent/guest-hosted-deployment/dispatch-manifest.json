@@ -1,0 +1,6 @@
+{
+  "version": "20261003003000",
+  "path": "supabase/migrations/20261003003000_guest_deletion_dispatch.sql",
+  "sourceSha": "9504fcddd6de2b56405913b5afbb65a979eddfaa",
+  "sha256": "8cdab465296d619583bc0a6814068a24e31f45111f45ec71ad8773cbae74994e"
+}
