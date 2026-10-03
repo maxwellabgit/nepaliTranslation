@@ -113,4 +113,62 @@ describe('local correction', () => {
     await act(async () => { resolve(true); });
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+  it('preserves the draft after a storage error and lets the user retry saving', async () => {
+    (updateHistoryTranslation as jest.Mock)
+      .mockRejectedValueOnce(new Error('disk unavailable'))
+      .mockResolvedValueOnce(true);
+    await act(async () => { mount(); });
+    await act(async () => { fireEvent.changeText(screen.getByTestId('correction-input'), '  नमस्कार  '); });
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(screen.getByTestId('correction-input').props.value).toBe('  नमस्कार  ');
+    expect(screen.getByTestId('correction-input').props.editable).toBe(true);
+    expect(screen.getByTestId('correction-save-draft')).not.toBeDisabled();
+    expect(onSaved).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
+    expect(updateHistoryTranslation).toHaveBeenCalledTimes(2);
+    expect(updateHistoryTranslation).toHaveBeenNthCalledWith(2, 'history-1', 'नमस्कार');
+    expect(onSaved).toHaveBeenCalledWith('नमस्कार');
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('blocks duplicate saves and cancellation until a pending missing-row result settles', async () => {
+    let resolve!: (value: boolean) => void;
+    (updateHistoryTranslation as jest.Mock).mockImplementation(() => new Promise((done) => { resolve = done; }));
+    await act(async () => { mount(); });
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('correction-save-draft'));
+      fireEvent.press(screen.getByTestId('correction-cancel'));
+      fireEvent.press(screen.getByTestId('correction-backdrop', { includeHiddenElements: true }));
+    });
+    expect(updateHistoryTranslation).toHaveBeenCalledTimes(1);
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByTestId('correction-cancel')).toBeDisabled();
+    expect(screen.getByTestId('correction-input').props.editable).toBe(false);
+    await act(async () => { resolve(false); });
+    expect(onSaved).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByTestId('correction-save-draft')).not.toBeDisabled();
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-cancel')); });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('supports local saves without an optional callback and cancel never saves', async () => {
+    await act(async () => {
+      render(<ThemeProvider scheme="light"><CorrectionSheet
+        visible source="Hello" translation="नमस्ते" sourceLang="en"
+        surface="history" historyItemId="history-1" onClose={onClose}
+      /></ThemeProvider>);
+    });
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-cancel')); });
+    expect(updateHistoryTranslation).not.toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalledTimes(1);
+    onClose.mockClear();
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
+    expect(updateHistoryTranslation).toHaveBeenCalledWith('history-1', 'नमस्ते');
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
 });
