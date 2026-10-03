@@ -7,6 +7,7 @@ import { FeatureConfigProvider } from '../../../app/FeatureConfigProvider';
 import { PaywallSheet } from '../PaywallSheet';
 import { SubscriptionProvider, useSubscription } from '../SubscriptionProvider';
 import { Pressable, Text } from 'react-native';
+const mockEnsureGuestIdentity = jest.fn(async () => true);
 
 jest.mock('../../auth/AuthProvider', () => ({
   useAuth: () => ({
@@ -14,6 +15,7 @@ jest.mock('../../auth/AuthProvider', () => ({
     // bound to a Supabase UUID before any purchase/restore.
     status: 'signed-in',
     userId: '11111111-1111-4111-8111-111111111111',
+    ensureGuestIdentity: mockEnsureGuestIdentity,
   }),
 }));
 
@@ -26,7 +28,7 @@ function OpenButton() {
   );
 }
 
-function wrap(ui: React.ReactElement, services = createTestServices({ flags: { paywallEnabled: true } })) {
+function wrap(ui: React.ReactElement, services = createTestServices({ sessionUserId: '11111111-1111-4111-8111-111111111111', flags: { paywallEnabled: true } })) {
   return (
     <ServiceProvider services={services}>
       <FeatureConfigProvider>
@@ -37,8 +39,43 @@ function wrap(ui: React.ReactElement, services = createTestServices({ flags: { p
 }
 
 describe('PaywallSheet', () => {
+  beforeEach(() => { mockEnsureGuestIdentity.mockClear(); mockEnsureGuestIdentity.mockResolvedValue(true); });
+  it('identity changing during binding prevents purchase and restore under the stale UUID', async () => {
+    const services = createTestServices({ sessionUserId: 'guest-A', flags: { paywallEnabled: true } });
+    let owner = 'guest-A';
+    services.auth.getSessionUserId = async () => owner;
+    jest.spyOn(services.purchases, 'identify').mockImplementation(async () => {
+      owner = 'guest-B';
+      return true;
+    });
+    const purchase = jest.spyOn(services.purchases, 'purchase');
+    const restore = jest.spyOn(services.purchases, 'restore');
+    await render(wrap(<OpenButton />, services));
+    owner = 'guest-A';
+    await fireEvent.press(screen.getByTestId('open-paywall'));
+    await fireEvent.press(screen.getByTestId('paywall-subscribe'));
+    await waitFor(() => expect(screen.getByTestId('paywall-message')).toBeTruthy());
+    owner = 'guest-A';
+    await fireEvent.press(screen.getByTestId('paywall-restore'));
+    expect(purchase).not.toHaveBeenCalled();
+    expect(restore).not.toHaveBeenCalled();
+  });
+  it('missing private identity fails soft without attempting StoreKit purchase or restore', async () => {
+    mockEnsureGuestIdentity.mockResolvedValue(false);
+    const services = createTestServices({ sessionUserId: null, flags: { paywallEnabled: true } });
+    const purchase = jest.spyOn(services.purchases, 'purchase');
+    const restore = jest.spyOn(services.purchases, 'restore');
+    await render(wrap(<OpenButton />, services));
+    await fireEvent.press(screen.getByTestId('open-paywall'));
+    await fireEvent.press(screen.getByTestId('paywall-subscribe'));
+    await waitFor(() => expect(screen.getByTestId('paywall-message')).toBeTruthy());
+    await fireEvent.press(screen.getByTestId('paywall-restore'));
+    expect(purchase).not.toHaveBeenCalled();
+    expect(restore).not.toHaveBeenCalled();
+    expect(mockEnsureGuestIdentity).toHaveBeenCalledTimes(2);
+  });
   it('renders subscribe restore manage and purchases', async () => {
-    const services = createTestServices({ flags: { paywallEnabled: true } });
+    const services = createTestServices({ sessionUserId: '11111111-1111-4111-8111-111111111111', flags: { paywallEnabled: true } });
     await act(async () => {
       render(wrap(<OpenButton />, services));
     });
@@ -59,7 +96,7 @@ describe('PaywallSheet', () => {
   });
 
   it('shows restore empty message and calls manage', async () => {
-    const services = createTestServices({ flags: { paywallEnabled: true } });
+    const services = createTestServices({ sessionUserId: '11111111-1111-4111-8111-111111111111', flags: { paywallEnabled: true } });
     const manageSpy = jest.spyOn(services.purchases, 'manage');
     await act(async () => {
       render(wrap(<OpenButton />, services));
@@ -88,7 +125,7 @@ describe('PaywallSheet', () => {
   });
 
   it('returns null when paywall disabled', async () => {
-    const services = createTestServices({ flags: { paywallEnabled: false } });
+    const services = createTestServices({ sessionUserId: '11111111-1111-4111-8111-111111111111', flags: { paywallEnabled: false } });
     await act(async () => {
       render(
         wrap(

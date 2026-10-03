@@ -14,11 +14,13 @@ const authState = {
   status: 'signed-in' as 'signed-in' | 'guest',
   userId: 'user-1' as string | null,
 };
+const mockEnsureGuestIdentity = jest.fn(async () => Boolean(authState.userId));
 
 jest.mock('../../auth/AuthProvider', () => ({
   useAuth: () => ({
     status: authState.status,
     userId: authState.userId,
+    ensureGuestIdentity: mockEnsureGuestIdentity,
   }),
 }));
 
@@ -58,7 +60,7 @@ jest.mock('../provisionalGrant', () => ({
 
 describe('RewardedAdButton', () => {
   async function pressWithOutcome(outcome: { earned: boolean; impression?: boolean }) {
-    const services = createTestServices({ canRequestAds: true, offline: false });
+    const services = createTestServices({ sessionUserId: 'user-1', canRequestAds: true, offline: false });
     services.ads.adapter.showRewarded = jest.fn(async () => outcome);
     await render(<ServiceProvider services={services}><RewardedAdButton offline={false} /></ServiceProvider>);
     await fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
@@ -113,14 +115,23 @@ describe('RewardedAdButton', () => {
   beforeEach(() => {
     authState.status = 'signed-in';
     authState.userId = 'user-1';
+    mockEnsureGuestIdentity.mockImplementation(async () => Boolean(authState.userId));
     jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+  });
+
+  test('unavailable private identity never loads ads and asks for connection, not login', async () => {
+    mockEnsureGuestIdentity.mockResolvedValueOnce(false);
+    const services = await pressWithOutcome({ earned: true });
+    expect(mockEnsureGuestIdentity).toHaveBeenCalled();
+    expect(services.ads.adapter.showRewarded).not.toHaveBeenCalled();
+    expect(Alert.alert).toHaveBeenCalledWith('Optional services unavailable', expect.stringContaining('when online'));
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  test('hidden for guests', async () => {
+  test('local guest sees optional rewards CTA without a login entry', async () => {
     authState.status = 'guest';
     authState.userId = null;
     await act(async () => {
@@ -130,14 +141,14 @@ describe('RewardedAdButton', () => {
         </ServiceProvider>,
       );
     });
-    expect(screen.queryByTestId('rewarded-ad-cta')).toBeNull();
+    expect(screen.getByTestId('rewarded-ad-cta')).toBeTruthy();
   });
 
   test('shows CTA for signed-in user with rewarded flag', async () => {
     await act(async () => {
       render(
         <ServiceProvider
-          services={createTestServices({ canRequestAds: true, offline: false })}
+          services={createTestServices({ sessionUserId: 'user-1', canRequestAds: true, offline: false })}
         >
           <RewardedAdButton offline={false} />
         </ServiceProvider>,
@@ -153,7 +164,7 @@ describe('RewardedAdButton', () => {
     await act(async () => {
       render(
         <ServiceProvider
-          services={createTestServices({ canRequestAds: true, offline: false })}
+          services={createTestServices({ sessionUserId: 'user-1', canRequestAds: true, offline: false })}
         >
           <RewardedAdButton offline={false} />
         </ServiceProvider>,
@@ -163,13 +174,14 @@ describe('RewardedAdButton', () => {
       fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
     });
     expect(Alert.alert).toHaveBeenCalledWith(
-      'Sign in required',
+      'Optional services unavailable',
       expect.any(String),
     );
   });
 
   test('runs rewarded flow when pressed', async () => {
-    const services = createTestServices({
+    (saveProvisionalGrant as jest.Mock).mockClear();
+    const services = createTestServices({ sessionUserId: 'user-1',
       canRequestAds: true,
       offline: false,
       flags: { rewardedAdsEnabled: true, networkAdsEnabled: true },
@@ -187,6 +199,10 @@ describe('RewardedAdButton', () => {
     await waitFor(() => {
       expect(services.ads.networkCalls().length).toBeGreaterThan(0);
     });
+    expect(mockEnsureGuestIdentity).toHaveBeenCalled();
+    expect(saveProvisionalGrant).toHaveBeenCalledWith(expect.objectContaining({
+      userId: 'user-1', sessionToken: 'sess-1', verified: false,
+    }));
   });
 
   test('does not provisional-grant when reward was not earned', async () => {
@@ -194,7 +210,7 @@ describe('RewardedAdButton', () => {
       saveProvisionalGrant: jest.Mock;
     };
     saveProvisionalGrant.mockClear();
-    const services = createTestServices({
+    const services = createTestServices({ sessionUserId: 'user-1',
       canRequestAds: true,
       offline: false,
       flags: { rewardedAdsEnabled: true, networkAdsEnabled: true },

@@ -58,6 +58,25 @@ jest.mock('../../../services/supabase', () => ({
 }));
 
 describe('production PurchaseService with mocked SDK', () => {
+  it('failed B identity invalidates A binding before either StoreKit operation', async () => {
+    const service = createProductionPurchaseService();
+    expect(await service.identify('guest-A')).toBe(true);
+    mockLogIn.mockRejectedValueOnce(new Error('RevenueCat identity unavailable'));
+    expect(await service.identify('guest-B')).toBe(false);
+    expect(await service.purchase('guest-B')).toEqual({ ok: false, reason: 'identity_unavailable' });
+    expect(await service.restore('guest-B')).toEqual({ ok: false, reason: 'identity_unavailable' });
+    expect(await service.purchase('guest-A')).toEqual({ ok: false, reason: 'identity_unavailable' });
+    expect(mockPurchasePackage).not.toHaveBeenCalled();
+    expect(mockRestorePurchases).not.toHaveBeenCalled();
+  });
+  it('downstream expected owner prevents using a successfully bound different identity', async () => {
+    const service = createProductionPurchaseService();
+    expect(await service.identify('guest-A')).toBe(true);
+    expect(await service.purchase('guest-B')).toEqual({ ok: false, reason: 'identity_unavailable' });
+    expect(await service.restore('guest-B')).toEqual({ ok: false, reason: 'identity_unavailable' });
+    expect(mockPurchasePackage).not.toHaveBeenCalled();
+    expect(mockRestorePurchases).not.toHaveBeenCalled();
+  });
   beforeEach(async () => {
     await clearCachedSubscription();
     mockConfigure.mockClear();
@@ -106,10 +125,10 @@ describe('production PurchaseService with mocked SDK', () => {
       apiKey: 'appl_test_public_key',
     });
 
-    // G3: purchase before identify must reject with sign_in_required.
+    // G3: purchase before identify must reject with identity_unavailable.
     const beforeSignIn = await svc.purchase();
     expect(beforeSignIn.ok).toBe(false);
-    if (!beforeSignIn.ok) expect(beforeSignIn.reason).toBe('sign_in_required');
+    if (!beforeSignIn.ok) expect(beforeSignIn.reason).toBe('identity_unavailable');
 
     // Bind RevenueCat identity to the Supabase UUID.
     await svc.identify('11111111-1111-4111-8111-111111111111');
@@ -131,12 +150,12 @@ describe('production PurchaseService with mocked SDK', () => {
     await svc.manage();
   });
 
-  it('restore before identify rejects with sign_in_required', async () => {
+  it('restore before identify rejects with identity_unavailable', async () => {
     const svc = createProductionPurchaseService();
     await svc.configure();
     const result = await svc.restore();
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.reason).toBe('sign_in_required');
+    if (!result.ok) expect(result.reason).toBe('identity_unavailable');
   });
 
   it('refresh merges server row and logs in app user', async () => {

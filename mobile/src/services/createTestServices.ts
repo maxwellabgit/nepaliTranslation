@@ -9,6 +9,7 @@ export type TestServicesOptions = {
   flags?: Partial<FeatureFlags>;
   offline?: boolean;
   authConfigured?: boolean;
+  sessionUserId?: string | null;
   authError?: string | null;
   flushResult?: FlushResult;
   mediaFlushResult?: MediaFlushResult;
@@ -63,7 +64,7 @@ export function createTestServices(
   } = {
     auth: {
       isConfigured: () => options.authConfigured ?? false,
-      getSessionUserId: async () => null,
+      getSessionUserId: async () => options.sessionUserId ?? null,
       lastError: () => authError,
       setLastError: (message) => {
         authError = message;

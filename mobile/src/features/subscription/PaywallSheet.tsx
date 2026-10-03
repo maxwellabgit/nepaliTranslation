@@ -159,7 +159,7 @@ export function PaywallSheet({ visible, onClose }: Props) {
                 void sub.restore().then((r) => {
                   setBusy(false);
                   if (!r.ok) {
-                    setMessage(t('paywall.restoreEmpty', lang));
+                    setMessage(t(r.reason === 'nothing_to_restore' ? 'paywall.restoreEmpty' : 'paywall.unavailable', lang));
                     return;
                   }
                   onClose();

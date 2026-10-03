@@ -26,11 +26,11 @@ export type PurchaseService = {
   /**
    * G3: bind RevenueCat identity to a Supabase UUID before purchase/restore.
    * Anonymous RevenueCat identities can create webhook mismatches, so V1
-   * requires sign-in before either flow.
+   * uses its private authenticated installation identity before either flow.
    */
-  identify: (userId: string) => Promise<void>;
-  purchase: () => Promise<PurchaseResult>;
-  restore: () => Promise<PurchaseResult>;
+  identify: (userId: string) => Promise<boolean>;
+  purchase: (expectedUserId?: string) => Promise<PurchaseResult>;
+  restore: (expectedUserId?: string) => Promise<PurchaseResult>;
   manage: () => Promise<void>;
 };
 
@@ -121,18 +121,20 @@ export function createFakePurchaseService(options?: {
     configure: async () => undefined,
     identify: async (userId: string) => {
       identified = userId || null;
+      return Boolean(identified);
     },
     getSnapshot: () => snap,
     hasSubscription: () => hasActiveSubscription(snap, Date.now()),
     refresh: async (userId?: string | null) => {
-      // Mirror production: refresh binds identity to the signed-in UUID so
+      // Mirror production: refresh binds identity to the private authenticated UUID so
       // subsequent purchase()/restore() flows can succeed.
       if (userId) identified = userId;
       return snap;
     },
     getOfferPriceString: async () => (options?.softFail ? null : price),
-    purchase: async () => {
-      if (!identified) return { ok: false, reason: 'sign_in_required' };
+    purchase: async (expectedUserId) => {
+      if (expectedUserId && identified !== expectedUserId) return { ok: false, reason: 'identity_unavailable' };
+      if (!identified) return { ok: false, reason: 'identity_unavailable' };
       if (options?.softFail) return { ok: false, reason: 'unavailable' };
       snap = {
         status: 'active',
@@ -144,8 +146,9 @@ export function createFakePurchaseService(options?: {
       await saveCachedSubscription(snap);
       return { ok: true, snapshot: snap };
     },
-    restore: async () => {
-      if (!identified) return { ok: false, reason: 'sign_in_required' };
+    restore: async (expectedUserId) => {
+      if (expectedUserId && identified !== expectedUserId) return { ok: false, reason: 'identity_unavailable' };
+      if (!identified) return { ok: false, reason: 'identity_unavailable' };
       if (options?.softFail) return { ok: false, reason: 'unavailable' };
       if (snap.status === 'active') return { ok: true, snapshot: snap };
       return { ok: false, reason: 'nothing_to_restore' };
@@ -173,8 +176,8 @@ export function createProductionPurchaseService(): PurchaseService {
       const native = await tryLoadPurchases();
       if (!native) return;
       try {
-        // G3: do NOT configure with an anonymous app-user id. Wait for the
-        // Supabase UUID via identify(). The paywall stays hidden until then.
+        // Bind the private Supabase UUID via identify() before purchase or restore.
+        // SDK setup and localized offering display remain available beforehand.
         await native.configure({ apiKey: key });
         configured = true;
       } catch {
@@ -182,28 +185,31 @@ export function createProductionPurchaseService(): PurchaseService {
       }
     },
     async identify(userId: string) {
-      if (!userId) return;
-      if (identifiedUserId === userId) return;
+      if (userId && identifiedUserId === userId) return true;
+      // Never retain A's binding while attempting (or failing) B's binding.
+      identifiedUserId = null;
+      if (!userId) return false;
       const key = readPublicEnv().revenueCatAppleApiKey ?? '';
-      if (!key) return;
+      if (!key) return false;
       const native = await tryLoadPurchases();
-      if (!native) return;
+      if (!native) return false;
       try {
         if (!configured) {
           await native.configure({ apiKey: key, appUserID: userId });
           configured = true;
-          identifiedUserId = userId;
         } else if (native.logIn) {
           const result = await native.logIn(userId);
-          identifiedUserId = userId;
           const info = result?.customerInfo ?? null;
           if (info) {
             snap = snapshotFromCustomerInfo(info, cachedPrice);
             await saveCachedSubscription(snap);
           }
-        }
+        } else return false;
+        identifiedUserId = userId;
+        return true;
       } catch {
-        /* soft-fail; purchase/restore still reject on missing identity */
+        identifiedUserId = null;
+        return false;
       }
     },
     getSnapshot: () => snap,
@@ -277,14 +283,16 @@ export function createProductionPurchaseService(): PurchaseService {
         return null;
       }
     },
-    async purchase() {
-      if (!identifiedUserId) return { ok: false, reason: 'sign_in_required' };
+    async purchase(expectedUserId) {
+      if (expectedUserId && identifiedUserId !== expectedUserId) return { ok: false, reason: 'identity_unavailable' };
+      if (!identifiedUserId) return { ok: false, reason: 'identity_unavailable' };
       if (!configured) return { ok: false, reason: 'unavailable' };
       const native = await tryLoadPurchases();
       if (!native) return { ok: false, reason: 'unavailable' };
       try {
         if (!lastPackage) await this.getOfferPriceString();
         if (!lastPackage) return { ok: false, reason: 'no_offering' };
+        if (expectedUserId && identifiedUserId !== expectedUserId) return { ok: false, reason: 'identity_unavailable' };
         const result = await native.purchasePackage(lastPackage);
         snap = snapshotFromCustomerInfo(
           result.customerInfo ?? null,
@@ -296,12 +304,14 @@ export function createProductionPurchaseService(): PurchaseService {
         return { ok: false, reason: 'purchase_failed' };
       }
     },
-    async restore() {
-      if (!identifiedUserId) return { ok: false, reason: 'sign_in_required' };
+    async restore(expectedUserId) {
+      if (expectedUserId && identifiedUserId !== expectedUserId) return { ok: false, reason: 'identity_unavailable' };
+      if (!identifiedUserId) return { ok: false, reason: 'identity_unavailable' };
       if (!configured) return { ok: false, reason: 'unavailable' };
       const native = await tryLoadPurchases();
       if (!native) return { ok: false, reason: 'unavailable' };
       try {
+        if (expectedUserId && identifiedUserId !== expectedUserId) return { ok: false, reason: 'identity_unavailable' };
         const info = await native.restorePurchases();
         snap = snapshotFromCustomerInfo(info, cachedPrice);
         await saveCachedSubscription(snap);

@@ -38,7 +38,7 @@ const SubscriptionContext = createContext<SubscriptionState | null>(null);
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const auth = useAuth();
   const flags = useFeatureFlags();
-  const { purchases } = useServices();
+  const { purchases, auth: identityService } = useServices();
   const [snapshot, setSnapshot] = useState<SubscriptionSnapshot>(
     EMPTY_SUBSCRIPTION,
   );
@@ -64,15 +64,23 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   const openPaywall = useCallback(() => {
     if (!flags.paywallEnabled) return;
-    // G3: RevenueCat identity must equal the Supabase UUID before any paywall
-    // or restore action. Guests cannot open the paywall.
-    if (auth.status !== 'signed-in') return;
     setPaywallOpen(true);
-  }, [auth.status, flags.paywallEnabled]);
+  }, [flags.paywallEnabled]);
 
   const closePaywall = useCallback(() => {
     setPaywallOpen(false);
   }, []);
+
+  const bindPrivateIdentity = useCallback(async () => {
+    const ready = auth.ensureGuestIdentity
+      ? await auth.ensureGuestIdentity()
+      : auth.status === 'signed-in' && Boolean(auth.userId);
+    const userId = ready ? await identityService.getSessionUserId() : null;
+    if (!userId || !await purchases.identify(userId)) return null;
+    // Session ownership may change while RevenueCat awaits its network response.
+    if (await identityService.getSessionUserId() !== userId) return null;
+    return userId;
+  }, [auth, identityService, purchases]);
 
   const value = useMemo<SubscriptionState>(() => {
     return {
@@ -83,7 +91,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       paywallEnabled: flags.paywallEnabled,
       refresh,
       purchase: async () => {
-        const result = await purchases.purchase();
+        const owner = await bindPrivateIdentity();
+        if (!owner) return { ok: false, reason: 'identity_unavailable' };
+        const result = await purchases.purchase(owner);
         if (result.ok) {
           setSnapshot(result.snapshot);
           setPriceString(result.snapshot.priceString);
@@ -92,7 +102,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         return { ok: false, reason: result.reason };
       },
       restore: async () => {
-        const result = await purchases.restore();
+        const owner = await bindPrivateIdentity();
+        if (!owner) return { ok: false, reason: 'identity_unavailable' };
+        const result = await purchases.restore(owner);
         if (result.ok) {
           setSnapshot(result.snapshot);
           setPriceString(result.snapshot.priceString);
@@ -106,6 +118,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     };
   }, [
     closePaywall,
+    bindPrivateIdentity,
     flags.paywallEnabled,
     openPaywall,
     priceString,

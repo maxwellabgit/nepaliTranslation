@@ -51,16 +51,17 @@ export function RewardedAdButton({
 
   const onPress = useCallback(async () => {
     if (busyRef.current) return;
-    if (auth.status !== 'signed-in' || !auth.userId) {
-      Alert.alert(
-        t('ads.signInRequiredTitle', lang),
-        t('ads.signInRequiredBody', lang),
-      );
-      return;
-    }
     busyRef.current = true;
     setBusy(true);
     try {
+      const identityReady = auth.ensureGuestIdentity
+        ? await auth.ensureGuestIdentity()
+        : auth.status === 'signed-in' && Boolean(auth.userId);
+      const userId = identityReady ? await services.auth.getSessionUserId() : null;
+      if (!userId) {
+        Alert.alert(t('ads.signInRequiredTitle', lang), t('ads.signInRequiredBody', lang));
+        return;
+      }
       const units = resolveAdUnitConfig();
       const consent = services.ads.getConsentState();
       const plan = planAdPlacement({
@@ -89,7 +90,7 @@ export function RewardedAdButton({
       }
 
       await executeAdPlan(plan, services.ads.adapter, {
-        userId: auth.userId,
+        userId,
         customData: session.session.sessionToken,
       }).then(async (result) => {
         // Provisional only after client EARNED_REWARD — never from show() alone.
@@ -104,7 +105,7 @@ export function RewardedAdButton({
         const next = createProvisionalGrant(session.session.sessionToken, now);
         const presentation = presentCreditClaim({ nowMs: now, earnedUntilMs: beforeUntil,
           credits: 2, minutesApplied: 20, capped: false });
-        next.userId = auth.userId ?? undefined;
+        next.userId = userId;
         next.durableUntilMs = entitlement.durableAdFreeUntilMs ?? null;
         next.untilMs = now + presentation.toRemainingMs;
         const accepted = acceptProvisionalGrant(current, next, now);
@@ -126,18 +127,16 @@ export function RewardedAdButton({
       setBusy(false);
     }
   }, [
-    auth.status,
-    auth.userId,
+    auth,
     entitlement,
     flags.networkAdsEnabled,
     flags.rewardedAdsEnabled,
     subscribed,
     lang,
     offline,
-    services.ads,
+    services,
   ]);
 
-  if (auth.status !== 'signed-in') return null;
   if (!flags.rewardedAdsEnabled) return null;
   if (subscribed) return null;
 

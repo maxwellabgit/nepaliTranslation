@@ -106,7 +106,7 @@ describe('fake PurchaseService', () => {
     // G3: purchase before identify rejects with sign_in_required.
     const guest = await svc.purchase();
     expect(guest.ok).toBe(false);
-    if (!guest.ok) expect(guest.reason).toBe('sign_in_required');
+    if (!guest.ok) expect(guest.reason).toBe('identity_unavailable');
 
     await svc.identify('11111111-1111-4111-8111-111111111111');
     expect(svc.hasSubscription()).toBe(false);
@@ -167,6 +167,6 @@ describe('production PurchaseService soft-fail', () => {
     // G3: no identify -> purchase rejects with sign_in_required.
     const purchase = await svc.purchase();
     expect(purchase.ok).toBe(false);
-    if (!purchase.ok) expect(purchase.reason).toBe('sign_in_required');
+    if (!purchase.ok) expect(purchase.reason).toBe('identity_unavailable');
   });
 });
