@@ -1,0 +1,9 @@
+# C0 paused TestFlight owner handoff
+
+Runtime candidate1ff2a78 passed main/branch agent and backend CI; scoped C5 source/package independent reviews PASS. Actual CI proof includes353SQL fresh/upgraded,67Edge,7admin and real guest capture/operator-browser JSON export/nonempty16044byte audio upload/preview/withdrawal/purge. Runtime mobile/model/gold unchanged.
+
+Current plan/state/ledger/DEVICE_PROOF/TESTFLIGHT_WITH_ADS and docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md reconcile code/local-CI proof, earlier hosted9504fcd proof and still pending C5 hosted/native/store/legal approvals. Historical TestFlight instructions are marked superseded. Actual read-only hosted findings: account-summaryGET200/rewardmint200/SSV503, missing owner rewarded-unit secret, admin-api legacyJWT gatewayON, collection/paywall/telemetryoff and preexisting ad flags true unchanged.
+
+Fresh independent owner_handoff_review initially found stale local-export ledger statements, runtime source label and a paywall test-window circularity. All repaired; final fresh-context reviewer PASS with no material findings or nits. Contribution and paywall test windows require separate specific approval, selected project provenance, production/project-wide acknowledgement where applicable and restore-off; cohort collection approval remains distinct. Physical tests follow installation rather than blocking diagnostic delivery circularly.
+
+Local Markdown link checks and git diff --check PASS. C5 preparer reproduces exact reviewed bundle/SQL/hashes and refuses source drift. No new screenshots, recordings, EAS build, Apple submission or TestFlight delivery. Owner checklist is the next action; public V1/model certificate remain open. No automatic approval rejection occurred in this continuation; specific browser authentication-setting approval remains pending.

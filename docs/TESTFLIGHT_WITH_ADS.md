@@ -1,4 +1,14 @@
-# Internal TestFlight: review prompts and test ads
+# Current TestFlight handoff — 2026-10-03
+
+Use [the current owner checklist](TESTFLIGHT_OWNER_TODOS_2026-10-03.md), [guest consent review](GUEST_CONSENT_OWNER_REVIEW.md) and [requirement ledger](../.agent/V1_REQUIREMENT_LEDGER.md). Build23 was delivered earlier but predates the guest changes. New build/submission/delivery is paused. Current hosted Bola main is production; the EAS preview label does not make it staging.
+
+The app uses private authenticated guests and local Today's10/Extra10 with no review-earned credits. Specific opt-in/18+ is separate from Terms/Privacy; speech defaults off; Camera photos never contribute. The previous review-pool/reward/account instructions below are historical and must not be executed as the current contract.
+
+The current `testflight` profile forces Google demo test units. `testflight-ssv` uses owner units only on registered test devices; configure amount20/item`ad_free_minutes`, owner callback and matching full rewarded unit ID privately. Hosted ADMOB_REWARDED_UNIT_ID is currently absent, SSV503, while existing rewarded/network/automatic-interstitial flags are already true. Those flags were not enabled by this continuation. Collection and paywall remain off. TestFlight test ads produce no revenue, and an animation alone does not prove a permanent reward.
+
+Diagnostic delivery can obtain native proof after explicit owner resume; it does not waive the failing model certificate or public V1 gates. Record same-build iPhone/iPad results in [DEVICE_PROOF](DEVICE_PROOF.md).
+
+## Historical internal TestFlight setup (preserved; superseded)
 
 This branch prepares an internal iPhone/iPad build. Staging migrations, review import, scheduler close, and deletion retry are recorded in `.agent/V1_FINAL_CONTRACT_STATE.md`; there is still no recorded Apple upload, device ad impression, or signed rewarded callback. Keep public V1 closed until the requirement ledger and four-class model certificate pass. Tell internal testers that the pinned base English→Nepali model fails the shipped-path formal and informal chrF floors (0.4740 < 0.55; 0.3976 < 0.50) and produces no informal तिमी on that run. The E1 adapter is not in the app.
 

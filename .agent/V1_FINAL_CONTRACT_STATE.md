@@ -1,10 +1,10 @@
 status: IN_PROGRESS
 baseline_code_sha: 9aaf4933bb0cdecd45c67a3e36a4af4a819612f1
 branch: cursor/v1-final-contract-reconciliation-5907
-current_gate: C14 hosted guest proof recorded; C15/native and human approvals remain
+current_gate: C5 retrieval/export source and real local proof complete; hosted rollout approval and C15/native human gates remain
 contract_date: 2026-10-01 plus owner 2026-10-02 guest amendment
-current_source_sha: 9504fcddd6de2b56405913b5afbb65a979eddfaa
-current_ci: main backend37135168483/agent37135168426 SUCCESS; SQL335 fresh/upgraded, Edge63, mobile604/coverage unchanged
+current_source_sha: 1ff2a780233516950e52aa82708886c96f94bc81
+current_ci: main backend37143906099/agent37143906092 SUCCESS; branch backend37143906079/agent37143906082 SUCCESS; SQL353 fresh/upgraded, Edge67, admin7, actual local browser capture/export/nonempty purge, mobile604/coverage unchanged
 hosted_guest: anonymous Auth enabled, ten missing forward migrations deployed, delete-data/progress endpoints and deletion-only worker/retired review deployed; actual synthetic capture/retrieval/19second purge PASS, UUID and17test credits retained
 collection_flags: text=false/speech=false/photos=false/public_review=false after proof, pending required owner legal/bilingual/native approvals
 testflight_delivery: PAUSED_BY_OWNER. No new build/submission in this continuation.
@@ -16,12 +16,15 @@ c4_visual_followup: Original image restored inside popup; coin icon and flight e
 internal_testflight: DIAGNOSTIC_BUILD_AVAILABLE. 1.7.0 (23), EAS d2b42bb1-3892-4cc4-8fc9-dc0f5b648ab8, SHA ef69b2f FINISHED. Submission 649e8b8a-75e6-4299-a5a3-49da350b8e18 FINISHED Oct 2 12:32 PM NY. Authenticated Apple version 1.7.0 build 23 Ready to Submit / 90 days, assigned to existing internal Team (Expo), two invites. Installation/screenshots pending. Not a completed V1 candidate.
 public_v1: NO-GO
 production_actions_this_run: 2026-10-03 authorized hosted guest deployment and narrow retirement/collection flag disablement; no App Store/live-ad enablement or TestFlight delivery. See .agent/GUEST_HOSTED_PROOF_2026-10-03.md.
-next_action: Owner reviews docs/GUEST_CONSENT_OWNER_REVIEW.md; same-source physical iPhone/iPad, real ads/StoreKit, nonempty media purge and authenticated admin export remain. Resume TestFlight delivery only when explicitly requested.
+next_action: PAUSE for docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md. Owner legal/bilingual/URLs, prepared admin-api rollout and JWT approval, missing ADMOB_REWARDED_UNIT_ID, StoreKit/RevenueCat setup and explicit diagnostic delivery resume. Hosted operator export and native/nonempty hosted media/ad/store proof follow agreed rollout and installation.
 evidence: .agent/C0_DOCUMENTATION_REVIEW_2026-10-01.md records current documentation checks/review; docs/V1_PIVOT_INVENTORY.md identifies source gaps. docs/TEN_OBJECTIVE_VALIDATION.md is previous local proof, not current device/hosted certification.
 model_scope: No optimization/training/gold changes. Existing failing certificate is preserved; no release waiver inferred.
 historical_state: docs/history/2026-10-01-contract/V1_FINAL_CONTRACT_STATE.md
 historical_record_note: Scoped records below retain their original candidate evidence; later current_ci/hosted_guest/next_action above supersede earlier undeployed or pending-hosted statements.
 updated_local_date: 2026-10-03 America/New_York
+c5_export_completion: Actual private original/result/correction/review revisions and linked speech metadata retrieval/export implemented; audited current-consent/admin checks, withdrawal/open-deletion exclusion, private-review-only classification, short-lived speech previews. Fresh independent review PASS; all candidate CI SUCCESS including real local Auth/Storage/browser download and binary purge. Hosted SQL/admin-api package prepared but not deployed; see .agent/C5_CONTRIBUTION_EXPORT_2026-10-03.md.
+live_readiness_2026_10_03: Public config text/speech/photos/public_review=false, telemetry/paywall=false; existing network/rewarded/automatic_interstitial flags=true unchanged. Actual synthetic guest account-summaryGET200, create-rewarded-sessionPOST200; SSV GET503. Dashboard secret names lack ADMOB_REWARDED_UNIT_ID; admin-api legacyJWT gatewayON. No real signed callback/purchase/native/revenue proof inferred.
+model_rerun_2026_10_03: Gold543 freeze and18model pins pass with ignored pinned ONNX weights present; full local evaluation stops on missing Python onnxruntime. No new score or certificate, optimization, gold/reference change or public waiver.
 c4_expanded_art: Owner-directed larger artwork and centered timer; coin scaling tested; popup-only recordings and fresh review PASS. Full native/C4 gates open.
 c13_typed_ux: Draft retained across direction/submission; visible Translate button and dark results; cancellation regression covered. Final beta/browser/fresh review PASS. Full C13/native gates open.
 c2_camera_followup: Owner-directed reset/header/conservative Latin routing slice; no new visual media; independent source review PASS, final beta pending. Owner explicitly authorizes GitHub main fast-forward and new internal TestFlight build; public V1 still NO-GO.

@@ -1,6 +1,6 @@
 # Device proof (physical iPhone + iPad)
 
-**Status: BLOCKED — needs physical iPhone/iPad + Apple developer session**
+**Status: NATIVE PROOF OPEN — new delivery paused by owner.** Current before-delivery and after-install tasks are separated in [the owner handoff](TESTFLIGHT_OWNER_TODOS_2026-10-03.md). Build23 predates guest source. Physical proof requires installation of the exact new diagnostic candidate; it is not assumed complete or made a circular prerequisite for that diagnostic delivery.
 
 Do not invent EAS build results, CocoaPods success, or device metrics from Windows. This document is the human runbook only. Product boundary: [`.governance/INTENT.md`](../.governance/INTENT.md). Contract freeze: [`.governance/V1_G0_DECISIONS.md`](../.governance/V1_G0_DECISIONS.md). Model floors: [`MODEL_CERT.md`](./MODEL_CERT.md). Store sequence: [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md).
 
