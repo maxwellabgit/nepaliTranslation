@@ -524,6 +524,7 @@ export const ne: Record<MessageKey, string> = {
   'review.actionConfirm': 'पुष्टि गर्नुहोस्',
   'review.actionEdit': 'सुधार पेस गर्नुहोस्',
   'review.actionEditDisabled': 'सक्षम गर्न सुधारिएको लक्ष्य लेख्नुहोस्',
+  'review.actionBack': 'फर्कनुहोस्',
   'review.actionSkip': 'छोड्नुहोस्',
   'review.actionSubmit': 'पठाऊ',
   'review.settle': 'दैनिक सेट न्यूयोर्क समय साँझ ५ बजे फेरिन्छ।',

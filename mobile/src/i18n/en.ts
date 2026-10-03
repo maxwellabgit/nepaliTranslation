@@ -518,6 +518,7 @@ export const en = {
   'review.actionConfirm': 'Confirm',
   'review.actionEdit': 'Submit correction',
   'review.actionEditDisabled': 'Enter a corrected target to enable',
+  'review.actionBack': 'Back',
   'review.actionSkip': 'Skip',
   'review.actionSubmit': 'Submit',
   'review.settle': 'Daily sets refresh at 5:00 PM New York.',

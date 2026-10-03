@@ -1,0 +1,3 @@
+# C3 sample Back follow-up — 2026-10-02
+Back below Skip returns the previous question (first question returns categories); comparison Back restores the typed answer. Drafts survive Back/forward without creating submissions. Both sample Back and header Back are blocked during durable save; independent delayed-save race resolved. Category chevron contrast raised within existing geometry. Existing complete/edit/reopen/Extra10/strict metric and immutable revision behavior retained.
+Focused17screen tests plus async-header regression (18 screen cases in isolation) PASS; finalbeta577PASS and independentBack/editor review PASS. See C13_UI_COMPLETION_2026-10-02 for aggregate receipts. Native/fullC3 remain open.

@@ -114,6 +114,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   ownerRef.current = auth.status === 'signed-in' ? auth.userId : null;
   const refreshGeneration = useRef(0);
   const mounted = useRef(true);
+  const drafts = useRef<Record<string, string>>({});
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; refreshGeneration.current += 1; }; }, []);
 
   const refresh = useCallback(async () => {
@@ -125,6 +126,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
     const isCurrent = () => mounted.current && refreshGeneration.current === generation && ownerRef.current === ownerUserId;
     const res = await fetchCurrentReviewWindow(ownerUserId);
     if (!isCurrent()) return;
+    drafts.current = {};
     if (!res.ok) {
       setResolvedOwner(ownerUserId);
       setError(res.reason);
@@ -199,7 +201,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   );
   const active = activeList[cursor] ?? null;
   useEffect(() => {
-    if (editingSet && active) setCorrection(responses.filter((r) => r.sourceItemId === active.source_item_id && r.action !== 'skip').at(-1)?.answer ?? '');
+    if (editingSet && active) setCorrection(drafts.current[active.source_item_id] ?? responses.filter((r) => r.sourceItemId === active.source_item_id && r.action !== 'skip').at(-1)?.answer ?? '');
   }, [active, editingSet, responses]);
 
   const startExtra = useCallback(
@@ -220,7 +222,8 @@ export function ReviewScreen({ onClose }: OverlayProps) {
       setEditingSet(index < 0);
       setCategory(id);
       setCursor(index < 0 ? 0 : index);
-      setCorrection(index < 0 ? responses.filter((r) => r.sourceItemId === list[0].source_item_id).at(-1)?.answer ?? '' : '');
+      const target = list[index < 0 ? 0 : index];
+      setCorrection(drafts.current[target.source_item_id] ?? (index < 0 ? responses.filter((r) => r.sourceItemId === target.source_item_id).at(-1)?.answer ?? '' : ''));
       setJudgment(null);
       setError(null);
       setPhase('compose');
@@ -296,13 +299,28 @@ export function ReviewScreen({ onClose }: OverlayProps) {
   );
 
   const backToSets = useCallback(() => {
+    if (status === 'submitting') return;
     if (dayState && globalDayIndex(Date.now()) > dayState.heldDay) { void refresh(); return; }
     setPhase('intro');
     setCategory(null);
     setCorrection('');
     setJudgment(null);
     setError(null);
-  }, [dayState, refresh]);
+  }, [dayState, refresh, status]);
+
+  const backWithinSet = useCallback(() => {
+    if (status === 'submitting') return;
+    setError(null);
+    setJudgment(null);
+    if (phase === 'compare') { setPhase('compose'); return; }
+    if (cursor === 0) { backToSets(); return; }
+    const previous = activeList[cursor - 1];
+    if (!previous) return;
+    setEditingSet(true);
+    setCursor(cursor - 1);
+    setCorrection(drafts.current[previous.source_item_id] ?? responses.filter((row) => row.sourceItemId === previous.source_item_id && row.action !== 'skip').at(-1)?.answer ?? '');
+    setPhase('compose');
+  }, [activeList, backToSets, cursor, phase, responses, status]);
 
   const dynamic = useMemo(
     () =>
@@ -400,7 +418,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
-          backgroundColor: 'rgba(255,255,255,0.22)',
+          backgroundColor: 'rgba(255,255,255,0.65)',
           borderWidth: 1,
           borderColor: 'rgba(255,255,255,0.72)',
           shadowColor: '#FFFFFF',
@@ -680,7 +698,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                       ]}
                     >
                       <View style={dynamic.arrowSheen} />
-                      <Ionicons name="chevron-forward" size={18} color="#FFFFFF" />
+                      <Ionicons name="chevron-forward" size={22} color="#6B4A12" />
                     </View>
                   </Pressable>
                 );
@@ -738,7 +756,7 @@ export function ReviewScreen({ onClose }: OverlayProps) {
                     multiline
                     maxLength={ANSWER_LIMIT}
                     value={correction}
-                    onChangeText={setCorrection}
+                    onChangeText={(text) => { setCorrection(text); drafts.current[active.source_item_id] = text; }}
                     editable={status !== 'submitting'}
                     placeholder={t('review.typeHere', lang)}
                     placeholderTextColor={theme.colors.textPlaceholder}
@@ -820,6 +838,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
             >
               <Text style={dynamic.skipText}>{t('review.actionSkip', lang)}</Text>
             </Pressable>
+            <Pressable testID="review-action-back" accessibilityRole="button" onPress={backWithinSet} disabled={status === 'submitting'} style={[dynamic.skip, { minHeight: 44, justifyContent: 'center' }]}>
+              <Text style={dynamic.skipText}>{t('review.actionBack', lang)}</Text>
+            </Pressable>
           </View>
         ) : null}
 
@@ -840,6 +861,9 @@ export function ReviewScreen({ onClose }: OverlayProps) {
               disabled={status === 'submitting' || !judgment}
               style={{ alignSelf: 'stretch' }}
             />
+            <Pressable testID="review-action-back" accessibilityRole="button" onPress={backWithinSet} disabled={status === 'submitting'} style={[dynamic.skip, { minHeight: 44, justifyContent: 'center' }]}>
+              <Text style={dynamic.skipText}>{t('review.actionBack', lang)}</Text>
+            </Pressable>
           </View>
         ) : null}
 
