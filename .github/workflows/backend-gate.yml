@@ -25,6 +25,8 @@ jobs:
         run: supabase db reset
       - name: Lint database
         run: supabase db lint --level error
+      - name: Authenticated guest identity and consent
+        run: node scripts/prove_guest_identity.mjs
       - name: pgTAP
         run: supabase test db
       - name: Edge function unit tests
