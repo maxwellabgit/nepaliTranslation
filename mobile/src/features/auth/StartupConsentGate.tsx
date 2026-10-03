@@ -88,6 +88,8 @@ export function StartupConsentGate({ children, initialAcknowledged }: Props) {
     () =>
       StyleSheet.create({
         root: {
+          borderWidth: 1,
+          borderColor: '#C4922A',
           flex: 1,
           backgroundColor: theme.colors.bg,
           paddingTop: statusBarInset(insets.top),

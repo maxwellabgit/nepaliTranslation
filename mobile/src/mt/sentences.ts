@@ -8,7 +8,8 @@
  * Prefer natural ends: . ? ! । … then soft-split long runs without punctuation.
  */
 
-const END = /([.?!…।]+)(?:\s+|$)/u;
+const END = /([.?!…।]+)(["'”’»）)\]]*)(?:\s+|$)/gu;
+const ABBREVIATION = /(?:\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc)|(?:\b[A-Za-z]\.)+[A-Za-z]|\b[A-Z])\.$/u;
 const SOFT_MAX = 140;
 const HARD_MAX = 220;
 
@@ -23,24 +24,19 @@ export function splitSentences(text: string): SentenceSplit {
   if (!raw) return { complete: [], remainder: '' };
 
   const complete: string[] = [];
-  let buf = '';
-  let i = 0;
-  while (i < raw.length) {
-    const slice = raw.slice(i);
-    const m = END.exec(slice);
-    if (m && m.index != null) {
-      buf += slice.slice(0, m.index + m[1].length);
-      const sent = buf.trim();
-      if (sent) complete.push(sent);
-      buf = '';
-      i += m.index + m[0].length;
-      continue;
-    }
-    buf += slice;
-    break;
+  let start = 0;
+  END.lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = END.exec(raw)) !== null) {
+    const punctuationEnd = match.index + match[1].length;
+    if (match[1] === '.' && ABBREVIATION.test(raw.slice(0, punctuationEnd))) continue;
+    const sentenceEnd = punctuationEnd + match[2].length;
+    const sentence = raw.slice(start, sentenceEnd).trim();
+    if (sentence) complete.push(sentence);
+    start = END.lastIndex;
   }
 
-  let remainder = buf.trim();
+  let remainder = raw.slice(start).trim();
   while (remainder.length > HARD_MAX) {
     const window = remainder.slice(0, SOFT_MAX);
     let cut = Math.max(window.lastIndexOf(' '), window.lastIndexOf(','));

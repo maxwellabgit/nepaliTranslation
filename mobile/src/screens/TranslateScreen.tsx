@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Keyboard,
@@ -7,7 +7,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +17,7 @@ import { t, useUiLang, type UiLang } from '../i18n';
 import { MIN_TOUCH } from '../layout/sizeClass';
 import { useTheme } from '../theme';
 import { useRuntime } from '../runtime/RuntimeContext';
-import { updateHistoryTranslation, type HistoryItem } from '../storage/phrasebook';
+import { type HistoryItem } from '../storage/phrasebook';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { CreditsGauge } from '../translate/CreditsGauge';
 import { setAwardSurfaceBusy } from '../translate/awardSurface';
@@ -26,12 +25,14 @@ import { PromoRotator } from '../components/PromoRotator';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
 import { TranslateComposer } from '../translate/TranslateComposer';
 import { useTranslationSession } from '../translate/useTranslationSession';
+import type { SessionTurn } from '../translate/translationSessionReducer';
 
 type Props = {
   seed?: HistoryItem | null;
   neuralReady?: boolean;
   mtWarmStatus?: string | null;
   active?: boolean;
+  hasGlobalHeader?: boolean;
   onOpenHistory: () => void;
   onOpenSettings: () => void;
   onOpenReview?: () => void;
@@ -79,6 +80,7 @@ export function TranslateScreen({
   seed,
   mtWarmStatus = null,
   active = true,
+  hasGlobalHeader = false,
   onOpenHistory,
   onOpenSettings,
   onOpenReview,
@@ -89,13 +91,11 @@ export function TranslateScreen({
   const subscription = useSubscriptionOptional();
   const session = useTranslationSession({ active, seed });
   const { state, uiPhase } = session;
-  const [correctionOpen, setCorrectionOpen] = useState(false);
   const [bannerFilled, setBannerFilled] = useState(false);
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [feedbackDraft, setFeedbackDraft] = useState('');
+  const [feedbackTurn, setFeedbackTurn] = useState<SessionTurn | null>(null);
+  const feedbackOpen = feedbackTurn != null;
   const [boxFocus, setBoxFocus] = useState<'source' | 'result'>('source');
   const [micDocked, setMicDocked] = useState(false);
-  const suppressMicDock = useRef(false);
   const latest = state.turns[state.turns.length - 1];
   const showFailure = mtWarmStatus === MT_WARM_FAILED;
   const status = statusCopy(uiPhase.phase, uiPhase.reasonCode, lang);
@@ -133,12 +133,15 @@ export function TranslateScreen({
           justifyContent: 'center',
           gap: 10,
           paddingHorizontal: 20,
-          paddingVertical: 8,
+          paddingTop: 0,
+          paddingBottom: 8,
         },
         langPill: {
           paddingHorizontal: 16,
           paddingVertical: 8,
           borderRadius: 16,
+          borderWidth: 1,
+          borderColor: '#C4922A',
           backgroundColor: theme.colors.surface,
         },
         langOn: { backgroundColor: '#F3D5D8' },
@@ -230,7 +233,8 @@ export function TranslateScreen({
         resultBox: {
           position: 'relative',
           marginHorizontal: 16,
-          marginTop: 8,
+          marginTop: 4,
+          marginBottom: 8,
           minHeight: 96,
           borderRadius: 16,
           backgroundColor: theme.colors.surface,
@@ -241,7 +245,7 @@ export function TranslateScreen({
         },
         resultText: {
           fontSize: 22,
-          fontWeight: '700',
+          fontWeight: '400',
           color: theme.scheme === 'dark' ? theme.colors.text : '#000000',
         },
         resultHintText: {
@@ -332,28 +336,12 @@ export function TranslateScreen({
     latest?.from === 'en'
       ? companionNepaliScript(latest.translation, state.script)
       : '';
-  const playSource = () => {
-    const typed = state.draft.trim();
-    const text = typed || latest?.source || '';
-    if (!text) return;
-    const from = typed ? state.activeSide : (latest?.from ?? state.activeSide);
-    runtime.speechSynthesis.stop();
-    runtime.speechSynthesis.speak(text, {
-      language: from === 'en' ? 'en-US' : 'ne-NP',
-    });
-  };
   const playResult = () => {
     if (!latest?.translation.trim()) return;
     runtime.speechSynthesis.stop();
     runtime.speechSynthesis.speak(latest.translation, {
       language: latest.from === 'en' ? 'ne-NP' : 'en-US',
     });
-  };
-  const saveFeedback = async () => {
-    const text = feedbackDraft.trim();
-    if (!text || !latest?.id) return;
-    await updateHistoryTranslation(latest.id, text);
-    setFeedbackOpen(false);
   };
 
   return (
@@ -362,7 +350,7 @@ export function TranslateScreen({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       testID="translate-screen"
     >
-      <View style={styles.header}>
+      {!hasGlobalHeader ? <View style={styles.header}>
         <Pressable
           onPress={onOpenHistory}
           accessibilityRole="button"
@@ -383,7 +371,7 @@ export function TranslateScreen({
         >
           <Ionicons name="settings-outline" size={22} color={theme.colors.text} />
         </Pressable>
-      </View>
+      </View> : null}
 
       {resultText ? null : (
         <PromoRotator
@@ -396,7 +384,7 @@ export function TranslateScreen({
               embed
               eligible={active}
               appActive={active}
-              modalVisible={correctionOpen}
+              modalVisible={feedbackOpen}
               onFillChange={setBannerFilled}
             />
           }
@@ -455,17 +443,12 @@ export function TranslateScreen({
         expanded
         focused={boxFocus === 'source'}
         onFocusField={() => {
-          if (suppressMicDock.current) return;
           setBoxFocus('source');
           setMicDocked(true);
         }}
         onBlurField={() => {
           if (uiPhase.phase === 'listening' || state.listening) return;
-          suppressMicDock.current = true;
           setMicDocked(false);
-          setTimeout(() => {
-            suppressMicDock.current = false;
-          }, 150);
         }}
         script={state.script}
         onToggleScript={() => session.setScript(state.script !== 'deva')}
@@ -489,7 +472,6 @@ export function TranslateScreen({
           (state.translating && uiPhase.phase !== 'listening')
         }
         micTestId="speak-hero"
-        onPlaySource={playSource}
       />
       <Pressable
         onPress={() => {
@@ -497,7 +479,7 @@ export function TranslateScreen({
           setMicDocked(false);
           Keyboard.dismiss();
         }}
-        style={[styles.resultBox, feedbackOpen && { paddingBottom: 48 }]}
+        style={styles.resultBox}
         testID="translate-result"
       >
         <View style={styles.resultHead}>
@@ -515,14 +497,13 @@ export function TranslateScreen({
           {latest ? (
             <Pressable
               onPress={() => {
-                setFeedbackDraft(latest.translation);
-                setFeedbackOpen(true);
+                setFeedbackTurn(latest);
               }}
               accessibilityRole="button"
-              accessibilityLabel={t('translate.feedbackA11y', lang)}
+              accessibilityLabel={state.activeSide === 'ne' ? formatNepaliScript(t('translate.feedbackA11y', 'ne'), state.script) : t('translate.feedbackA11y', lang)}
               testID="mark-incorrect"
             >
-              <Text style={styles.feedback}>{t('translate.feedback', lang)}</Text>
+              <Text style={styles.feedback}>{state.activeSide === 'ne' ? formatNepaliScript(t('translate.feedback', 'ne'), state.script) : t('translate.feedback', lang)}</Text>
             </Pressable>
           ) : null}
         </View>
@@ -530,29 +511,6 @@ export function TranslateScreen({
           <Text style={styles.resultSub} testID="translate-result-script">
             {resultSub}
           </Text>
-        ) : null}
-        {feedbackOpen && latest ? (
-          <View testID="correction-sheet">
-            <Text style={styles.feedbackPrompt}>
-              {t('translate.feedbackPrompt', lang)}
-            </Text>
-            <Text style={styles.feedbackNote}>{t('credits.notMoney', lang)}</Text>
-            <TextInput
-              value={feedbackDraft}
-              onChangeText={setFeedbackDraft}
-              multiline
-              style={styles.feedbackInput}
-              testID="correction-input"
-            />
-            <Pressable
-              onPress={() => void saveFeedback()}
-              accessibilityRole="button"
-              testID="correction-save-draft"
-              style={{ marginTop: 8, alignSelf: 'flex-start' }}
-            >
-              <Text style={styles.feedback}>{t('contributions.saveDevice', lang)}</Text>
-            </Pressable>
-          </View>
         ) : null}
         {resultText ? (
           <Pressable
@@ -597,17 +555,18 @@ export function TranslateScreen({
       </View>
 
       <CorrectionSheet
-        visible={correctionOpen}
-        source={latest?.source ?? state.draft}
-        translation={latest?.translation ?? ''}
-        sourceLang={latest?.from ?? state.activeSide}
-        formality={state.formality}
-        script={state.script}
+        visible={feedbackOpen}
+        source={feedbackTurn?.source ?? state.draft}
+        translation={feedbackTurn?.translation ?? ''}
+        sourceLang={feedbackTurn?.from ?? state.activeSide}
+        formality={feedbackTurn?.formality ?? state.formality}
+        script={feedbackTurn?.script ?? state.script}
         surface="live_translate"
-        historyItemId={latest?.id ?? null}
-        translationMethod={latest?.method ?? null}
+        historyItemId={feedbackTurn?.id ?? null}
+        translationMethod={feedbackTurn?.method ?? null}
         modelVersion={null}
-        onClose={() => setCorrectionOpen(false)}
+        onClose={() => setFeedbackTurn(null)}
+        onSaved={(translation) => { if (feedbackTurn) session.dispatch({ type: 'editTurn', id: feedbackTurn.id, translation }); }}
         onNeedAuth={onOpenSettings}
       />
     </KeyboardAvoidingView>

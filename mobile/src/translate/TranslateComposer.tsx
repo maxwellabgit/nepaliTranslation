@@ -41,7 +41,6 @@ type Props = {
   onPressMic?: () => void;
   micDisabled?: boolean;
   micTestId?: string;
-  onPlaySource?: () => void;
   /** Show thumbs after a mic utterance is saved. */
   onUtteranceFeedback?: (feedback: 'up' | 'down') => void;
   /** Shown when the recording could not be stored. Thumbs stay hidden. */
@@ -66,7 +65,6 @@ export function TranslateComposer({
   onPressMic,
   micDisabled = false,
   micTestId = 'speak-hero',
-  onPlaySource,
   onUtteranceFeedback,
   utteranceNotice,
 }: Props) {
@@ -74,6 +72,23 @@ export function TranslateComposer({
   const lang = useUiLang();
   const inputRef = useRef<TextInput>(null);
   const micRef = useRef<View>(null);
+  const sendRef = useRef<View>(null);
+  const [inputFocused, setInputFocused] = useState(false);
+  const sendVisible = inputFocused && focused && micMode === 'typing';
+  const sendMotion = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      sendMotion.setValue(sendVisible ? 1 : 0);
+      return;
+    }
+    const animation = Animated.timing(sendMotion, {
+      toValue: sendVisible ? 1 : 0, duration: 180,
+      easing: Easing.out(Easing.cubic), useNativeDriver: false,
+    });
+    animation.start();
+    return () => animation.stop();
+  }, [sendMotion, sendVisible]);
   const docked = useRef(new Animated.Value(micMode === 'idle' ? 0 : 1)).current;
   const raised = useRef(new Animated.Value(micMode === 'listening' ? 1 : 0)).current;
   const [fieldH, setFieldH] = useState(expanded ? 300 : 160);
@@ -108,8 +123,10 @@ export function TranslateComposer({
       const target = event.target as Node | null;
       const input = inputRef.current as unknown as HTMLElement | null;
       const mic = micRef.current as unknown as HTMLElement | null;
+      const send = sendRef.current as unknown as HTMLElement | null;
       const inside = (node: HTMLElement | null) =>
         Boolean(node && target && (node === target || node.contains?.(target)));
+      if (inside(send)) { event.preventDefault(); return; }
       if (inside(input) || inside(mic)) return;
       onBlurField?.();
       const host =
@@ -140,11 +157,6 @@ export function TranslateComposer({
     }),
     raised.interpolate({ inputRange: [0, 1], outputRange: [0, RAISE] }),
   );
-  const scriptLine =
-    side === 'ne' && value.trim()
-      ? formatNepaliScript(value, script)
-      : '';
-  const showScriptLine = Boolean(scriptLine) && scriptLine !== value.trim();
   const formalityLabel =
     side === 'ne'
       ? formatNepaliScript(formal ? 'औपचारिक' : 'अनौपचारिक', script)
@@ -163,7 +175,7 @@ export function TranslateComposer({
         wrap: {
           gap: 4,
           paddingHorizontal: 16,
-          paddingTop: 4,
+          paddingTop: 0,
           ...(expanded ? { flex: 1 } : { flexGrow: 0, flexShrink: 0 }),
         },
         scriptRow: {
@@ -184,6 +196,7 @@ export function TranslateComposer({
           paddingHorizontal: 10,
           paddingVertical: 6,
           backgroundColor: theme.scheme === 'dark' ? '#3A3018' : '#F8E7C1',
+          borderWidth: 1, borderColor: '#C4922A',
         },
         scriptLabel: {
           fontSize: 13,
@@ -192,7 +205,7 @@ export function TranslateComposer({
         },
         field: {
           ...(expanded ? { flex: 1 } : { flexGrow: 0, flexShrink: 0 }),
-          minHeight: expanded ? 220 : 168,
+          minHeight: expanded ? 224 : 172,
           backgroundColor: theme.colors.surface,
           borderRadius: 16,
           borderWidth: StyleSheet.hairlineWidth,
@@ -236,7 +249,7 @@ export function TranslateComposer({
           alignItems: 'center',
           justifyContent: 'center',
           gap: 6,
-          backgroundColor: '#00875A',
+          backgroundColor: '#3F7E65',
         },
         sendText: { color: theme.colors.onPrimary, fontSize: 14, fontWeight: '700' },
         count: {
@@ -287,20 +300,21 @@ export function TranslateComposer({
         onLayout={(e) => setFieldH(e.nativeEvent.layout.height)}
       >
         <View style={styles.scriptRow}>
-          <View style={styles.formality}>
+          {side === 'en' ? <View style={styles.formality}>
             <Switch
               value={formal}
               onValueChange={onFormality}
               disabled={!onFormality}
               testID="formality-switch"
               accessibilityLabel={formalityLabel}
-              trackColor={{ false: '#C8C2BC', true: theme.colors.crimson }}
-              thumbColor="#FFFFFF"
+              trackColor={{ false: '#F8E7C1', true: '#F8E7C1' }}
+              thumbColor="#C4922A"
+              {...(Platform.OS === 'web' ? { activeThumbColor: '#C4922A' } : {})}
             />
             <Text style={styles.scriptLabel} testID="formality-label">
               {formalityLabel}
             </Text>
-          </View>
+          </View> : <View style={{ flex: 1 }} />}
           {onToggleScript ? (
             <Pressable
               onPress={onToggleScript}
@@ -322,8 +336,8 @@ export function TranslateComposer({
           value={value}
           onChangeText={onChangeText}
           onSubmitEditing={() => { if (!submitDisabled) onSubmit(); }}
-          onFocus={onFocusField}
-          onBlur={onBlurField}
+          onFocus={() => { setInputFocused(true); onFocusField?.(); }}
+          onBlur={() => { setInputFocused(false); onBlurField?.(); }}
           placeholder={
             side === 'en'
               ? t('translate.placeholderEn', lang)
@@ -339,13 +353,7 @@ export function TranslateComposer({
           accessibilityLabel={t('translate.inputA11y', lang)}
           returnKeyType="done"
         />
-        {showScriptLine ? (
-          <Text style={styles.scriptSub} testID="source-script-line">
-            {scriptLine}
-          </Text>
-        ) : null}
         <View style={styles.footer}>
-          <Text style={styles.count}>{value.length}/240</Text>
           {utteranceNotice ? (
             <Text style={styles.count} testID="utterance-save-error">
               {utteranceNotice}
@@ -373,25 +381,21 @@ export function TranslateComposer({
               </Pressable>
             </View>
           ) : null}
-          {onPlaySource ? (
-            <Pressable
-              onPress={onPlaySource}
-              accessibilityRole="button"
-              accessibilityLabel={t('translate.playSourceA11y', lang)}
-              testID="play-source"
-              hitSlop={8}
-              style={styles.options}
-            >
-              <Ionicons name="volume-high-outline" size={20} color={theme.colors.text} />
-            </Pressable>
-          ) : null}
         </View>
+        <Animated.View ref={sendRef} collapsable={false}
+          accessibilityElementsHidden={!sendVisible}
+          aria-hidden={!sendVisible}
+          importantForAccessibility={sendVisible ? 'auto' : 'no-hide-descendants'}
+          style={[styles.send, { opacity: sendMotion, transform: [{ translateY: sendMotion.interpolate({ inputRange: [0, 1], outputRange: [BAR, 0] }) }] }]}
+          testID="translate-send-motion">
         <Pressable onPress={onSubmit} disabled={submitDisabled || !value.trim()}
+          tabIndex={sendVisible ? 0 : -1}
           accessibilityRole="button" accessibilityLabel={t('translate.sendA11y', lang)}
-          testID="translate-send" style={styles.send}>
-          <Text style={styles.sendText}>{t('translate.send', lang)}</Text>
+          testID="translate-send" style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <Text style={styles.sendText}>{side === 'ne' ? formatNepaliScript(t('translate.send', 'ne'), script) : t('translate.send', lang)}</Text>
           <Ionicons name="arrow-forward" size={18} color={theme.colors.onPrimary} />
         </Pressable>
+        </Animated.View>
         {onPressMic ? (
           <>
             <Animated.View style={[styles.bar, { height: barHeight, backgroundColor: micColor }]} />
@@ -433,7 +437,7 @@ export function TranslateComposer({
                   zIndex: 3,
                 }}
               >
-                {t('translate.tapToSpeak', lang)}
+                {side === 'ne' ? formatNepaliScript(t('translate.tapToSpeak', 'ne'), script) : t('translate.tapToSpeak', lang)}
               </Animated.Text>
             ) : null}
           </>

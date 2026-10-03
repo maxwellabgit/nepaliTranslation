@@ -203,7 +203,7 @@ export function CreditsGauge({ onPress, compact = false, previewRemainingMs }: P
           transform: [{ translateX: receiving ? shakeX : 0 }, { scale: 1 }],
         }}
       >
-        <FontAwesome5 name="coins" size={14} color={coinColor} />
+        <FontAwesome5 name="coins" size={18} color={coinColor} />
       </Animated.View>
       <Animated.View style={[styles.wrap, { width: pillWidth }]} testID="credits-gauge-face">
       <View style={styles.row} testID="credits-gauge-total">

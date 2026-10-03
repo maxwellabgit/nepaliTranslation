@@ -284,6 +284,16 @@ export function SettingsScreen({
             >
               <Text style={dynamic.body}>{t('settings.languageNe', lang)}</Text>
             </Pressable>
+            <Pressable
+              style={[dynamic.langChip, lang === 'ne-roman' && dynamic.langChipOn]}
+              onPress={() => setUiLang('ne-roman')}
+              accessibilityRole="button"
+              accessibilityState={{ selected: lang === 'ne-roman' }}
+              accessibilityLabel={t('settings.languageRoman', lang)}
+              testID="settings-lang-ne-roman"
+            >
+              <Text style={dynamic.body}>{t('settings.languageRoman', lang)}</Text>
+            </Pressable>
           </View>
         </View>
 
@@ -525,6 +535,7 @@ const styles = StyleSheet.create({
   },
   langRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
     marginTop: 4,
   },

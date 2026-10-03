@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-
 import { ThemeProvider } from '../../../theme';
 import { updateHistoryTranslation } from '../../../storage/phrasebook';
 import { CorrectionSheet } from '../CorrectionSheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 jest.mock('../../../storage/phrasebook', () => ({
   ...jest.requireActual('../../../storage/phrasebook'),
@@ -23,8 +24,9 @@ function mount(historyItemId: string | null = 'history-1') {
 }
 
 describe('local correction', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await AsyncStorage.clear();
     (updateHistoryTranslation as jest.Mock).mockResolvedValue(true);
   });
 
@@ -36,12 +38,14 @@ describe('local correction', () => {
     await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
     expect(updateHistoryTranslation).toHaveBeenCalledWith('history-1', 'नमस्कार');
     expect(onSaved).toHaveBeenCalledTimes(1);
+    expect(onSaved).toHaveBeenCalledWith('नमस्कार');
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(screen.queryByTestId('correction-submit')).toBeNull();
   });
 
   it('does not save blank corrections, missing history IDs, or missing local rows', async () => {
     await act(async () => { mount(null); });
+    await act(async () => { fireEvent.changeText(screen.getByTestId('correction-input'), ''); });
     await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
     expect(updateHistoryTranslation).not.toHaveBeenCalled();
     await act(async () => { fireEvent.changeText(screen.getByTestId('correction-input'), 'hello'); });
@@ -60,14 +64,16 @@ describe('local correction', () => {
     await waitFor(() => expect(screen.getByTestId('correction-sheet')).toBeTruthy());
   });
 
-  it('lets the user describe register and script of an unlabeled correction', async () => {
+  it('edits existing text without exposing register/script or reward controls', async () => {
     await act(async () => { mount(); });
-    expect(screen.getByTestId('correction-label-pickers')).toBeTruthy();
-    await act(async () => { fireEvent.press(screen.getByTestId('correction-script-roman')); });
-    await act(async () => { fireEvent.press(screen.getByTestId('correction-script-deva')); });
-    await act(async () => { fireEvent.press(screen.getByTestId('correction-formality-formal')); });
-    expect(screen.getByTestId('correction-labels-set')).toBeTruthy();
     expect(screen.queryByTestId('correction-label-pickers')).toBeNull();
+    expect(screen.queryByTestId('correction-labels-set')).toBeNull();
+    expect(screen.getByTestId('correction-input').props.value).toBe('नमस्ते');
+    expect(screen.getByTestId('correction-input').props.style).toEqual(expect.objectContaining({ fontSize: 22, fontWeight: '400' }));
+    expect(screen.queryByText('Saved on this device. Public corrections are in Today\'s 10.')).toBeNull();
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-backdrop', { includeHiddenElements: true })); });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(updateHistoryTranslation).not.toHaveBeenCalled();
   });
 
   it('keeps informal Roman labels when editing a saved translation', async () => {
@@ -84,9 +90,27 @@ describe('local correction', () => {
       );
     });
     expect(screen.queryByTestId('correction-label-pickers')).toBeNull();
-    expect(screen.getByTestId('correction-labels-set').props.children.join(''))
-      .toContain('Informal');
-    expect(screen.getByTestId('correction-labels-set').props.children.join(''))
-      .toContain('Roman');
+    expect(screen.queryByTestId('correction-labels-set')).toBeNull();
+    expect(screen.getByTestId('correction-input').props.value).toBe('timi kaha chhau?');
+  });
+  it('updates only text while preserving real stored language/register/script metadata', async () => {
+    const actual = jest.requireActual('../../../storage/phrasebook');
+    (updateHistoryTranslation as jest.Mock).mockImplementation(actual.updateHistoryTranslation);
+    const original = await actual.addHistory({ id: 'history-1', source: 'Where are you?', translation: 'timi kaha chhau?', sourceLang: 'en', targetLang: 'ne', direction: 'en-ne', formality: 'informal', script: 'roman', translationMethod: 'phrase', modelVersion: 'test-model' });
+    await act(async () => { mount(); });
+    await act(async () => { fireEvent.changeText(screen.getByTestId('correction-input'), 'timi kata chhau?'); });
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
+    expect(await actual.loadHistory()).toEqual([{ ...original, translation: 'timi kata chhau?' }]);
+  });
+  it('keeps text open and prevents outside dismissal while storage is pending', async () => {
+    let resolve!: (value: boolean) => void;
+    (updateHistoryTranslation as jest.Mock).mockImplementation(() => new Promise((done) => { resolve = done; }));
+    await act(async () => { mount(); });
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-save-draft')); });
+    await act(async () => { fireEvent.press(screen.getByTestId('correction-backdrop', { includeHiddenElements: true })); });
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByTestId('correction-save-draft')).toBeDisabled();
+    await act(async () => { resolve(true); });
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

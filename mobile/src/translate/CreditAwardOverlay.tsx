@@ -61,7 +61,7 @@ export function CreditAwardOverlay({ credits, minutes, capped, flying, onCollect
 }
 const styles = StyleSheet.create({
   scrim: { flex: 1, backgroundColor: 'rgba(26,20,16,0.38)', justifyContent: 'center', alignItems: 'center', padding: 16 },
-  card: { width: '100%', maxWidth: 400, borderRadius: 24, backgroundColor: '#FFF8F0', overflow: 'hidden' },
+  card: { borderWidth: 1, borderColor: '#C4922A', width: '100%', maxWidth: 400, borderRadius: 24, backgroundColor: '#FFF8F0', overflow: 'hidden' },
   scroll: { flexGrow: 0 },
   artFrame: { width: '100%', height: 240, overflow: 'hidden' },
   art: { width: '100%', height: 420, position: 'absolute', top: 0 },

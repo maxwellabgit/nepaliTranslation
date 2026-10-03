@@ -40,6 +40,8 @@ export function PaywallSheet({ visible, onClose }: Props) {
           justifyContent: 'flex-end',
         },
         sheet: {
+          borderWidth: 1,
+          borderColor: '#C4922A',
           backgroundColor: theme.colors.surface,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,

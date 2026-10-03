@@ -23,9 +23,9 @@ describe('History local edit', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Edit translation')).toBeTruthy();
+      expect(screen.getByText('edit')).toBeTruthy();
     });
-    fireEvent.press(screen.getByLabelText('Edit this translation on this device'));
+    await act(async () => { fireEvent.press(screen.getByLabelText('Edit this translation on this device')); });
     await waitFor(() => {
       expect(screen.getByTestId('correction-input')).toBeTruthy();
     });

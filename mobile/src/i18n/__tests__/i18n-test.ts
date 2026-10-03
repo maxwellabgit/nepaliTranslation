@@ -1,6 +1,14 @@
 import { t } from '../index';
 
 describe('i18n catalogs', () => {
+  test('Romanized Nepali transliterates every UI label and leaves supplied content intact', () => {
+    const { en } = require('../en') as typeof import('../en');
+    for (const key of Object.keys(en) as (keyof typeof en)[]) {
+      expect(t(key, 'ne-roman')).not.toMatch(/[\u0900-\u097f]/);
+    }
+    expect(t('learn.credits', 'ne-roman', { count: 'पाँच' })).toContain('पाँच');
+    expect(t('settings.title', 'ne-roman')).not.toBe(t('settings.title', 'en'));
+  });
   test('returns English for secondary-surface keys by default', () => {
     expect(t('history.emptyTitle')).toBe('No translations yet');
     expect(t('settings.title', 'en')).toBe('Settings');

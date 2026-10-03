@@ -26,7 +26,7 @@ function FakeAuto({
         accessibilityLabel="Translate input"
       />
       <Pressable
-        testID="open-history"
+        testID="pane-open-history"
         accessibilityRole="button"
         accessibilityLabel="Open history"
         onPress={onOpenHistory}
@@ -130,7 +130,7 @@ describe('AppShell tabs and overlays', () => {
   test('opens History overlay with hard stop and closes without remounting panes', async () => {
     const onHardStop = await renderShell();
     await fireEvent.changeText(screen.getByTestId('auto-input'), 'persist');
-    await fireEvent.press(screen.getByTestId('open-history'));
+    await fireEvent.press(screen.getByTestId('pane-open-history'));
     expect(onHardStop).toHaveBeenCalled();
     expect(screen.getByTestId('overlay-history')).toBeTruthy();
 

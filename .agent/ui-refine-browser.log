@@ -1,0 +1,6 @@
+Translate dock: PASS (green, fills right of microphone at 380px viewport).
+EN→NE local WASM: < अनौपचारिक नमस्ते तपाईँ कसरी हुनुहुन्छ?
+NE→EN local WASM: Hello
+Shared UI: PASS (normal output, output-only speaker, outside editor dismissal, fixed timer position, real History Clear).
+Testing-ground reset: PASS (0:00, no welcome award, earned/foreground counters cleared).
+One-shot Reset: PASS (ordinary remount preserves time earned afterward).

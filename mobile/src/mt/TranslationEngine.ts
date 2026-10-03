@@ -10,6 +10,7 @@ import {
   type NepaliScript,
   type TranslateResult,
 } from './onDeviceTranslate';
+import { matchTerminalPunctuation } from './terminalPunctuation';
 import { splitSentences } from './sentences';
 import { romanToDevanagari } from './romanize';
 import { cleanTranslationText } from './cleanText';
@@ -151,7 +152,7 @@ export class TranslationEngine {
         direction: 'ne-en',
         formality: req.formality,
       });
-      return { text: neuralText.trim(), method: 'neural', direction: 'ne-en' };
+      return { text: matchTerminalPunctuation(raw, neuralText, 'ne-en', req.script), method: 'neural', direction: 'ne-en' };
     }
 
     const neuralText = await sharedIndicTransOnnx.translate({
@@ -161,7 +162,7 @@ export class TranslationEngine {
     });
 
     const out = formatNepaliScript(neuralText, req.script ?? 'deva');
-    return { text: out.trim(), method: 'neural', direction: 'en-ne' };
+    return { text: matchTerminalPunctuation(raw, out, 'en-ne', req.script), method: 'neural', direction: 'en-ne' };
   }
 
   cancelAll(): void {

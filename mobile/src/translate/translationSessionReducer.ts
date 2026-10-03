@@ -8,6 +8,8 @@ export type SessionTurn = {
   from: Side;
   source: string;
   translation: string;
+  formality?: Formality;
+  script?: NepaliScript;
   method?: string;
   direction?: 'en-ne' | 'ne-en';
 };
@@ -31,6 +33,7 @@ export type SessionAction =
   | { type: 'setScript'; script: NepaliScript }
   | { type: 'commitTurn'; turn: SessionTurn; pass?: boolean; keepDraft?: boolean }
   | { type: 'replaceTurn'; id: string; turn: SessionTurn }
+  | { type: 'editTurn'; id: string; translation: string }
   | { type: 'pass' }
   | { type: 'setSide'; side: Side }
   | { type: 'beginPass' }
@@ -58,9 +61,12 @@ export function isRetryableTurn(turn: SessionTurn, all: SessionTurn[]): boolean 
 }
 
 export function initialSession(seed?: {
+  id?: string;
   source?: string;
   translation?: string;
   sourceLang?: Side;
+  formality?: Formality | null;
+  script?: NepaliScript | null;
 } | null): SessionState {
   const side: Side = seed?.sourceLang === 'ne' ? 'ne' : 'en';
   const source = seed?.source?.trim() ?? '';
@@ -69,10 +75,12 @@ export function initialSession(seed?: {
     source && translation
       ? [
           {
-            id: 'seed',
+            id: seed?.id ?? 'seed',
             from: side,
             source,
             translation,
+            formality: seed?.formality ?? undefined,
+            script: seed?.script ?? undefined,
             direction: side === 'en' ? 'en-ne' : 'ne-en',
           },
         ]
@@ -83,8 +91,8 @@ export function initialSession(seed?: {
     draft: source,
     listening: false,
     translating: false,
-    formality: 'formal',
-    script: 'deva',
+    formality: seed?.formality ?? 'formal',
+    script: seed?.script ?? 'deva',
     pendingPass: false,
   };
 }
@@ -126,6 +134,8 @@ export function reduceSession(state: SessionState, action: SessionAction): Sessi
           turn.id === action.id ? action.turn : turn,
         ),
       };
+    case 'editTurn':
+      return { ...state, turns: state.turns.map(turn => turn.id === action.id ? { ...turn, translation: action.translation } : turn) };
     case 'pass': {
       if (!canPassPhone(state.draft, latestFrom(state), state.activeSide)) {
         return { ...state, pendingPass: false };

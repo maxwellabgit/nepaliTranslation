@@ -13,7 +13,7 @@ import { addHistory } from '../storage/phrasebook';
 import { requestInterstitialOpportunity } from '../features/ads/InterstitialController';
 import { MODEL_VERSION } from '../storage/contributionOutbox';
 import { cleanTranslationText } from '../mt/cleanText';
-import { loadPrefs, savePrefs } from '../storage/prefs';
+import { loadPrefs, savePrefs, subscribePrefs } from '../storage/prefs';
 import type { HistoryItem } from '../storage/phrasebook';
 import { useRuntime } from '../runtime/RuntimeContext';
 import {
@@ -46,6 +46,9 @@ export function useTranslationSession({ active, seed }: Options) {
     initialSession(
       item
         ? {
+            id: item.id,
+            formality: item.formality,
+            script: item.script,
             source: item.source,
             translation: item.translation,
             sourceLang: item.sourceLang,
@@ -138,13 +141,17 @@ export function useTranslationSession({ active, seed }: Options) {
     let cancelled = false;
     void loadPrefs().then((prefs) => {
       if (cancelled) return;
-      dispatch({ type: 'setFormality', formality: prefs.formalOn ? 'formal' : 'informal' });
-      dispatch({ type: 'setScript', script: prefs.devaOn ? 'deva' : 'roman' });
+      if (!seed?.formality) dispatch({ type: 'setFormality', formality: prefs.formalOn ? 'formal' : 'informal' });
+      if (!seed?.script) dispatch({ type: 'setScript', script: prefs.devaOn ? 'deva' : 'roman' });
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [seed?.formality, seed?.script]);
+
+  useEffect(() => subscribePrefs(prefs => {
+    dispatch({ type: 'setScript', script: prefs.devaOn ? 'deva' : 'roman' });
+  }), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -171,13 +178,13 @@ export function useTranslationSession({ active, seed }: Options) {
   }, [active, runtime]);
 
   const translateSide = useCallback(
-    async (text: string, from: Side) => {
+    async (text: string, from: Side, settings?: Pick<SessionTurn, 'formality' | 'script'>) => {
       const current = stateRef.current;
       return runtime.translation.translate({
         text,
         preferred: directionFor(from),
-        formality: current.formality,
-        script: current.script,
+        formality: settings?.formality ?? current.formality,
+        script: settings?.script ?? current.script,
         forcePreferred: true,
       });
     },
@@ -195,8 +202,8 @@ export function useTranslationSession({ active, seed }: Options) {
       sourceLang: turn.from,
       targetLang: turn.from === 'en' ? 'ne' : 'en',
       direction,
-      formality: current.formality,
-      script: current.script,
+      formality: turn.formality ?? current.formality,
+      script: turn.script ?? current.script,
       translationMethod:
         turn.method === 'phrase' || turn.method === 'lexicon' || turn.method === 'neural'
           ? turn.method
@@ -235,6 +242,8 @@ export function useTranslationSession({ active, seed }: Options) {
       const turn: SessionTurn = {
         id: runtime.ids.nextId('t'),
         from: current.activeSide,
+        formality: current.formality,
+        script: current.script,
         source: text,
         translation: result.text,
         method: result.method,
@@ -312,7 +321,7 @@ export function useTranslationSession({ active, seed }: Options) {
       dispatchPhase({ type: 'RETRY' });
       try {
         const source = cleanTranslationText(turn.source);
-        const result = await translateSide(source, turn.from);
+        const result = await translateSide(source, turn.from, turn);
         if (!activeRef.current || result.cancelled || requestId !== requestRef.current) {
           dispatch({ type: 'setTranslating', translating: false });
           dispatchPhase({ type: 'CANCEL' });

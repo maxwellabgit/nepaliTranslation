@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
-  Alert,
   Animated,
+  Modal,
   PanResponder,
   Pressable,
   ScrollView,
@@ -99,9 +99,16 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
   const lang = useUiLang();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [correctionItem, setCorrectionItem] = useState<HistoryItem | null>(null);
+  const [clearConfirmation, setClearConfirmation] = useState(false);
+  const [clearBusy, setClearBusy] = useState(false);
+  const [clearError, setClearError] = useState<string | null>(null);
+  const clearing = useRef(false);
+  const loadGeneration = useRef(0);
 
   const reload = useCallback(async () => {
-    setHistory(await loadHistory());
+    const generation = ++loadGeneration.current;
+    const loaded = await loadHistory();
+    if (generation === loadGeneration.current) setHistory(loaded);
   }, []);
 
   useFocusEffect(reload);
@@ -113,6 +120,22 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
 
   const onSendToTraining = (item: HistoryItem) => {
     setCorrectionItem(item);
+  };
+
+  const dismissClear = () => { if (!clearing.current) setClearConfirmation(false); };
+  const confirmClear = async () => {
+    if (clearing.current) return;
+    clearing.current = true;
+    setClearBusy(true);
+    setClearError(null);
+    loadGeneration.current += 1;
+    try {
+      await clearHistory();
+      setHistory([]);
+      setCorrectionItem(null);
+      setClearConfirmation(false);
+    } catch { setClearError(t('history.clearFailed', lang)); }
+    finally { clearing.current = false; setClearBusy(false); }
   };
 
   const dynamic = useMemo(
@@ -174,6 +197,16 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         trainTextOff: {
           color: theme.colors.textPlaceholder,
         },
+        backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'center', padding: theme.spacing.lg },
+        dialog: { backgroundColor: theme.colors.surface, borderRadius: 20, borderWidth: 2, borderColor: '#C4922A', padding: 20, gap: 16 },
+        dialogTitle: { fontSize: 22, fontWeight: '400', color: theme.colors.text },
+        dialogBody: { fontSize: 22, fontWeight: '400', lineHeight: 29, color: theme.colors.text },
+        dialogActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12 },
+        dialogButton: { minHeight: 44, borderRadius: 12, borderWidth: 1, borderColor: '#C4922A', paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center' },
+        dialogButtonText: { fontSize: 16, color: theme.colors.text },
+        clearAction: { backgroundColor: theme.colors.danger },
+        clearActionText: { color: '#FFFFFF' },
+        dialogError: { fontSize: 14, color: theme.colors.errorText },
       }),
     [theme],
   );
@@ -190,26 +223,9 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         </View>
         <Text style={dynamic.title}>{t('history.title', lang)}</Text>
         <Pressable
-          onPress={() => {
-            if (history.length === 0) return;
-            Alert.alert(
-              t('history.clearConfirmTitle', lang),
-              t('history.clearConfirmBody', lang),
-              [
-                { text: t('common.cancel', lang), style: 'cancel' },
-                {
-                  text: t('common.clear', lang),
-                  style: 'destructive',
-                  onPress: () => {
-                    void (async () => {
-                      await clearHistory();
-                      await reload();
-                    })();
-                  },
-                },
-              ],
-            );
-          }}
+          onPress={() => { if (history.length > 0) { setClearError(null); setClearConfirmation(true); } }}
+          disabled={history.length === 0 || clearBusy}
+          testID="history-clear"
           hitSlop={12}
           style={styles.topBtn}
           accessibilityRole="button"
@@ -281,6 +297,24 @@ export function HistoryScreen({ onClose, onSelect }: Props) {
         onClose={() => setCorrectionItem(null)}
         onSaved={() => void reload()}
       />
+      <Modal visible={clearConfirmation} transparent animationType="none" onRequestClose={dismissClear}>
+        <View style={dynamic.backdrop}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={dismissClear} disabled={clearBusy} accessibilityRole="button" accessibilityLabel={t('common.dismiss', lang)} testID="history-clear-backdrop" />
+          <View style={dynamic.dialog} accessibilityViewIsModal testID="history-clear-dialog">
+            <Text style={dynamic.dialogTitle}>{t('history.clearConfirmTitle', lang)}</Text>
+            <Text style={dynamic.dialogBody}>{t('history.clearConfirmBody', lang)}</Text>
+            {clearError ? <Text style={dynamic.dialogError} accessibilityRole="alert">{clearError}</Text> : null}
+            <View style={dynamic.dialogActions}>
+              <Pressable style={dynamic.dialogButton} onPress={dismissClear} disabled={clearBusy} accessibilityRole="button" testID="history-clear-cancel">
+                <Text style={dynamic.dialogButtonText}>{t('common.cancel', lang)}</Text>
+              </Pressable>
+              <Pressable style={[dynamic.dialogButton, dynamic.clearAction]} onPress={() => void confirmClear()} disabled={clearBusy} accessibilityRole="button" testID="history-clear-confirm">
+                <Text style={[dynamic.dialogButtonText, dynamic.clearActionText]}>{t('common.clear', lang)}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

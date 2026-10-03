@@ -124,6 +124,8 @@ export function LearnScreen({ active, onGoHome, onOpenTodaysReview }: Props) {
           color: theme.colors.textSecondary,
         },
         todaysCard: {
+          borderWidth: 1,
+          borderColor: '#C4922A',
           borderRadius: 18,
           overflow: 'hidden',
           aspectRatio: 1024 / 384,

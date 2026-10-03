@@ -38,7 +38,8 @@ export function UiLangProvider({ children }: { children: ReactNode }) {
   const setLang = useCallback((next: UiLang) => {
     setLangState(next);
     void loadPrefs().then((prefs) =>
-      savePrefs({ ...prefs, uiLang: next as UiLangPref }),
+      savePrefs({ ...prefs, uiLang: next as UiLangPref,
+        devaOn: next === 'ne-roman' ? false : next === 'ne' ? true : prefs.devaOn }),
     );
   }, []);
 
@@ -53,7 +54,7 @@ export function UiLangProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * Persisted UI language (English | नेपाली). Works before sign-in.
+ * Persisted UI language (English | नेपाली | Romanized Nepali), before sign-in.
  * Optional override is for tests or one-off previews.
  */
 export function useUiLang(override?: UiLang): UiLang {

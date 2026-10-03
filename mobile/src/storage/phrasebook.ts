@@ -5,21 +5,19 @@ const HISTORY_KEY = 'neptranslate.history.v1';
 /** One launch clears every device's local translation history. Later launches keep new rows. */
 const HISTORY_WIPE_ONCE_KEY = 'neptranslate.history.wipe-once.2026-09-28';
 
-let historyWipeOnce: Promise<void> | null = null;
+let historyMutationChain: Promise<unknown> = Promise.resolve();
+function serializeHistory<T>(task: () => Promise<T>): Promise<T> {
+  const run = historyMutationChain.then(task, task);
+  historyMutationChain = run.catch(() => undefined);
+  return run;
+}
 
 async function clearHistoryOnce(): Promise<void> {
-  if (historyWipeOnce) return historyWipeOnce;
-  historyWipeOnce = (async () => {
-    try {
-      const done = await AsyncStorage.getItem(HISTORY_WIPE_ONCE_KEY);
-      if (done === '1') return;
-      await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify([]));
-      await AsyncStorage.setItem(HISTORY_WIPE_ONCE_KEY, '1');
-    } finally {
-      historyWipeOnce = null;
-    }
-  })();
-  return historyWipeOnce;
+  // Called only inside the same queue as reads and mutations.
+  const done = await AsyncStorage.getItem(HISTORY_WIPE_ONCE_KEY);
+  if (done === '1') return;
+  await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify([]));
+  await AsyncStorage.setItem(HISTORY_WIPE_ONCE_KEY, '1');
 }
 
 export type TranslationDirection = 'en-ne' | 'ne-en';
@@ -109,7 +107,7 @@ export function normalizeHistoryItem(raw: unknown): HistoryItem | null {
   return item;
 }
 
-async function readList(key: string): Promise<HistoryItem[]> {
+async function readList(key: string, strict = false): Promise<HistoryItem[]> {
   try {
     const raw = await AsyncStorage.getItem(key);
     if (!raw) return [];
@@ -118,7 +116,8 @@ async function readList(key: string): Promise<HistoryItem[]> {
     return parsed
       .map((row) => normalizeHistoryItem(row))
       .filter((row): row is HistoryItem => row != null);
-  } catch {
+  } catch (error) {
+    if (strict) throw error;
     return [];
   }
 }
@@ -128,8 +127,12 @@ async function writeList(key: string, items: HistoryItem[]) {
 }
 
 export async function loadHistory(): Promise<HistoryItem[]> {
+  return serializeHistory(async () => { await clearHistoryOnce(); return readList(HISTORY_KEY); });
+}
+
+async function readHistoryForMutation(): Promise<HistoryItem[]> {
   await clearHistoryOnce();
-  return readList(HISTORY_KEY);
+  return readList(HISTORY_KEY, true);
 }
 
 export async function addHistory(
@@ -138,51 +141,57 @@ export async function addHistory(
     createdAt?: number;
   },
 ) {
-  const list = await loadHistory();
-  const next: HistoryItem = {
-    ...item,
-    id: item.id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    createdAt: item.createdAt ?? Date.now(),
-  };
-  const deduped = [
-    next,
-    ...list.filter(
-      (h) =>
-        !(
-          h.source === next.source &&
-          h.translation === next.translation &&
-          h.sourceLang === next.sourceLang
-        ),
-    ),
-  ].slice(0, 100);
-  await writeList(HISTORY_KEY, deduped);
-  return next;
+  return serializeHistory(async () => {
+    const list = await readHistoryForMutation();
+    const next: HistoryItem = {
+      ...item,
+      id: item.id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      createdAt: item.createdAt ?? Date.now(),
+    };
+    const deduped = [
+      next,
+      ...list.filter(
+        (h) =>
+          !(
+            h.source === next.source &&
+            h.translation === next.translation &&
+            h.sourceLang === next.sourceLang
+          ),
+      ),
+    ].slice(0, 100);
+    await writeList(HISTORY_KEY, deduped);
+    return next;
+  });
 }
 
 export async function clearHistory() {
-  await writeList(HISTORY_KEY, []);
+  return serializeHistory(async () => { await clearHistoryOnce(); await writeList(HISTORY_KEY, []); });
 }
 
 export async function updateHistoryTranslation(
   id: string,
   translation: string,
 ): Promise<boolean> {
-  const list = await loadHistory();
-  let found = false;
-  const next = list.map((item) => {
-    if (item.id !== id) return item;
-    found = true;
-    return { ...item, translation };
+  return serializeHistory(async () => {
+    const list = await readHistoryForMutation();
+    let found = false;
+    const next = list.map((item) => {
+      if (item.id !== id) return item;
+      found = true;
+      return { ...item, translation };
   });
   if (!found) return false;
   await writeList(HISTORY_KEY, next);
   return true;
+  });
 }
 
 export async function deleteHistoryItem(id: string) {
-  const list = await loadHistory();
-  await writeList(
-    HISTORY_KEY,
-    list.filter((h) => h.id !== id),
-  );
+  return serializeHistory(async () => {
+    const list = await readHistoryForMutation();
+    await writeList(
+      HISTORY_KEY,
+      list.filter((h) => h.id !== id),
+    );
+  });
 }

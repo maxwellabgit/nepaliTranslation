@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { hardStopAudio } from './hardStopAudio';
 import { t, useUiLang } from '../i18n';
 import { useTheme } from '../theme';
+import { CreditsGauge } from '../translate/CreditsGauge';
 import { contentMaxWidth, useSizeClass } from '../layout/sizeClass';
 import { statusBarInset } from '../layout/statusBarInset';
 import type { HistoryItem } from '../storage/phrasebook';
@@ -21,6 +22,7 @@ export type { AppMode, AppOverlay };
 
 type PaneProps = {
   active: boolean;
+  hasGlobalHeader?: boolean;
   onOpenHistory: () => void;
   onOpenSettings: () => void;
   onOpenReview?: () => void;
@@ -122,6 +124,8 @@ export function AppShell({
           paddingVertical: 10,
           paddingHorizontal: 16,
           borderRadius: 22,
+          borderWidth: 1,
+          borderColor: '#C4922A',
           alignItems: 'center',
           justifyContent: 'center',
           gap: 4,
@@ -163,6 +167,20 @@ export function AppShell({
       accessibilityLabel={`app-shell-${theme.scheme}`}
     >
       <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
+      <View testID="global-app-header" style={{ height: 44, paddingHorizontal: 8, flexDirection: 'row', alignItems: 'center', width: '100%', maxWidth: maxWidth || undefined, alignSelf: 'center' }}>
+        <Pressable testID="open-history" accessibilityRole="button" accessibilityLabel={t('translate.historyA11y', lang)}
+          style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
+          onPress={() => { onHardStop(); dispatch({ type: 'open_overlay', overlay: 'history' }); }}>
+          <Ionicons name="time-outline" size={22} color={theme.colors.text} />
+        </Pressable>
+        <View style={{ flex: 1 }} />
+        <CreditsGauge compact onPress={() => { onHardStop(); dispatch({ type: 'open_overlay', overlay: TODAYS_REVIEW_ROUTE }); }} />
+        <Pressable testID="open-settings" accessibilityRole="button" accessibilityLabel={t('translate.settingsA11y', lang)}
+          style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
+          onPress={() => { onHardStop(); dispatch({ type: 'open_overlay', overlay: 'settings' }); }}>
+          <Ionicons name="settings-outline" size={22} color={theme.colors.text} />
+        </Pressable>
+      </View>
       <View
         style={[
           styles.body,
@@ -185,6 +203,7 @@ export function AppShell({
           <TranslatePane
             key={seedKey}
             active={mode === 'translate'}
+            hasGlobalHeader
             seed={seed}
             neuralReady={neuralReady}
             mtWarmStatus={mtWarmStatus}
@@ -284,7 +303,7 @@ export function AppShell({
 
       {overlay ? (
         <View
-          style={[styles.overlay, { paddingTop: topInset }]}
+          style={[styles.overlay, { top: topInset + 44 }]}
           testID={`overlay-${overlay}`}
         >
           {overlay === 'history' ? (

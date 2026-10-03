@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useEntitlementOptional } from '../features/entitlements/EntitlementProvider';
-import { t, useUiLang } from '../i18n';
+import { t, useUiLang, type UiLang } from '../i18n';
 import { countOutbox, loadOutbox } from '../storage/contributionOutbox';
 import { useTheme } from '../theme';
 
@@ -16,7 +16,7 @@ function adFreePhrase(
   ms: number | null,
   active: boolean,
   nowMs: number,
-  lang: 'en' | 'ne',
+  lang: UiLang,
 ): string {
   if (!active || ms == null) return t('learn.adFreeInactive', lang);
   const mins = Math.max(0, Math.round((ms - nowMs) / 60000));

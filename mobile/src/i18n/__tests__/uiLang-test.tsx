@@ -13,6 +13,9 @@ function Probe() {
       <Pressable testID="set-ne" onPress={() => setLang('ne')}>
         <Text>ne</Text>
       </Pressable>
+      <Pressable testID="set-ne-roman" onPress={() => setLang('ne-roman')}>
+        <Text>ne-roman</Text>
+      </Pressable>
     </>
   );
 }
@@ -25,6 +28,19 @@ describe('persisted UI language', () => {
       conversationConsentSeen: false,
       uiLang: 'en',
     });
+  });
+
+  test('Romanized Nepali changes global chrome and survives restart', async () => {
+    let view: Awaited<ReturnType<typeof render>>;
+    await act(async () => { view = await render(<UiLangProvider><Probe /></UiLangProvider>); });
+    await act(async () => { fireEvent.press(screen.getByTestId('set-ne-roman')); });
+    expect(screen.getByTestId('lang').props.children).toBe('ne-roman');
+    expect(screen.getByTestId('title').props.children).toBe(t('settings.title', 'ne-roman'));
+    expect(screen.getByTestId('title').props.children).not.toMatch(/[\u0900-\u097f]/);
+    await waitFor(async () => expect(await loadPrefs()).toMatchObject({ uiLang: 'ne-roman', devaOn: false }));
+    await act(async () => { await view!.unmount(); });
+    await act(async () => { render(<UiLangProvider><Probe /></UiLangProvider>); });
+    await waitFor(() => expect(screen.getByTestId('lang').props.children).toBe('ne-roman'));
   });
 
   test('defaults to English then switches to Nepali immediately', async () => {
