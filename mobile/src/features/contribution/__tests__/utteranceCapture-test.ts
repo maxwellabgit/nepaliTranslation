@@ -293,4 +293,60 @@ describe('utterance capture', () => {
     expect(rows[0]?.feedback_pending).toBe(true);
     expect(rows[0]?.local_uri).toBe('file:///tmp/rate.m4a.kept');
   });
+  it('rejects invalid input or a failed durable copy without retaining or uploading audio', async () => {
+    const copy = jest.fn(async () => null);
+    const upload = jest.fn();
+    const input = { transcript: 'hello', audioUri: 'file:///tmp/failed.m4a', durationMs: 1000, language: 'en' as const };
+    expect(await saveUtterance({ ...input, transcript: '   ' }, { copy, upload })).toEqual({ ok: false, reason: 'invalid' });
+    expect(await saveUtterance({ ...input, audioUri: '' }, { copy, upload })).toEqual({ ok: false, reason: 'invalid' });
+    expect(copy).not.toHaveBeenCalled();
+    expect(await saveUtterance(input, { copy, upload })).toEqual({ ok: false, reason: 'invalid' });
+    expect(copy).toHaveBeenCalledTimes(1);
+    expect(upload).not.toHaveBeenCalled();
+    expect(await readPendingUtterances()).toEqual([]);
+  });
+
+  it('deletes an unpersisted durable copy after storage fails and allows a later retry', async () => {
+    const input = { id: 'retry', transcript: 'hello', audioUri: 'file:///tmp/retry.m4a', durationMs: 1000, language: 'en' as const };
+    const copy = jest.fn(async () => ({ uri: 'file:///durable/retry.m4a', byteSize: 10 }));
+    const upload = jest.fn();
+    const deleteFile = jest.fn();
+    const originalWrite = (AsyncStorage.setItem as jest.Mock).getMockImplementation();
+    const write = jest.spyOn(AsyncStorage, 'setItem');
+    write.mockRejectedValueOnce(new Error('disk full'));
+    try {
+      expect(await saveUtterance(input, { copy, upload, deleteFile })).toEqual({ ok: false, reason: 'not_saved' });
+      expect(deleteFile).toHaveBeenCalledWith('file:///durable/retry.m4a');
+      expect(await readPendingUtterances()).toEqual([]);
+      expect(upload).not.toHaveBeenCalled();
+      expect((await saveUtterance(input, { copy, upload, deleteFile })).ok).toBe(true);
+      expect(await readPendingUtterances()).toHaveLength(1);
+    } finally { write.mockImplementation(originalWrite!); }
+  });
+
+  it('keeps the original recording for duplicate capture IDs without a second copy or upload', async () => {
+    const input = { id: 'same-capture', transcript: 'original', audioUri: 'file:///tmp/original.m4a', durationMs: 1000, language: 'en' as const };
+    const copy = jest.fn(async () => ({ uri: 'file:///durable/original.m4a', byteSize: 10 }));
+    const upload = jest.fn();
+    const first = await saveUtterance(input, { copy, upload });
+    const repeated = await saveUtterance({ ...input, transcript: 'replacement', userId: 'later-account', eligible: true }, { copy, upload });
+    expect(repeated).toEqual(first);
+    expect(copy).toHaveBeenCalledTimes(1);
+    expect(upload).not.toHaveBeenCalled();
+    expect(await readPendingUtterances()).toEqual([expect.objectContaining({ transcript: 'original', ownerId: null, localOnly: true })]);
+  });
+
+  it('does not upload feedback for a missing or local-only clip, or discard clips for an empty owner', async () => {
+    const upload = jest.fn();
+    expect(await updateUtteranceFeedback('missing', 'down', upload)).toBeNull();
+    await saveUtterance({ id: 'guest', transcript: 'hello', audioUri: 'file:///tmp/guest.m4a', durationMs: 1000, language: 'en' }, { copy: async () => ({ uri: 'file:///durable/guest.m4a', byteSize: 10 }) });
+    expect(await updateUtteranceFeedback('guest', 'up', upload)).toEqual(expect.objectContaining({ feedback: 'up', feedbackRevision: 2, localOnly: true }));
+    expect(await updateUtteranceFeedback('guest', 'up', upload)).toEqual(expect.objectContaining({ feedbackRevision: 2 }));
+    const deleteFile = jest.fn();
+    expect(await discardUtterancesForOwner('', deleteFile)).toEqual([]);
+    expect(await readPendingUtterances()).toHaveLength(1);
+    expect(deleteFile).not.toHaveBeenCalled();
+    expect(upload).not.toHaveBeenCalled();
+  });
+
 });
