@@ -1,3 +1,8 @@
+import { sessionInactiveNow } from '../auth/sessionExpiry';
+import { hasPendingDeletion } from '../../storage/pendingDeletion';
+import { loadLocalConsent } from '../../storage/contributionConsent';
+import { canSubmitContribution } from '../auth/consent';
+import { getRuntimeFeatureFlags } from '../../app/featureFlags';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { readInstallationId } from '../../storage/installationId';
 import { getSupabase } from '../../services/supabase';
@@ -202,10 +207,13 @@ export async function acknowledgeAllotmentDelivery(
 export async function deliverSampleProgress(
   userId: string | null,
 ): Promise<'pending' | 'delivered' | 'skipped'> {
-  if (!userId) return 'pending';
+  if (!userId || (await hasPendingDeletion(userId) || await sessionInactiveNow(userId))) return 'pending';
   const state = await readAllotmentState(userId);
   const pending = state.pendingDelivery;
   if (!pending) return 'skipped';
+  const consent = await loadLocalConsent(userId);
+  if (!getRuntimeFeatureFlags().contributionTextEnabled || !canSubmitContribution({ authConfigured: true, signedIn: true, consentVersion: consent?.consent_version ?? null, ageConfirmed: Boolean(consent?.age_confirmed) }).ok) return 'pending';
+
   if (
     pending.manifestVersion !== SAMPLE_MANIFEST_VERSION ||
     pending.allotted <= 0 ||
@@ -218,6 +226,8 @@ export async function deliverSampleProgress(
   const client = getSupabase();
   if (!client || typeof client.rpc !== 'function') return 'pending';
   try {
+    const session = (await client.auth.getSession()).data.session;
+    if (session?.user?.id !== userId || !session?.access_token || (await hasPendingDeletion(userId) || await sessionInactiveNow(userId))) return 'pending';
     const rpc = client.rpc.bind(client) as unknown as (
       fn: string,
       args: Record<string, unknown>,

@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { savePendingDeletionIntent } from '../../storage/pendingDeletion';
 import {
   canUploadContributionMedia,
   CONTRIBUTION_CONSENT_VERSION,
@@ -49,7 +51,9 @@ jest.mock('expo-file-system', () => {
 });
 
 describe('mediaEnqueue gates', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+    jest.clearAllMocks();
     mockLoadLocalConsent.mockResolvedValue({
       consent_version: CONTRIBUTION_CONSENT_VERSION,
       age_confirmed: true,
@@ -69,6 +73,15 @@ describe('mediaEnqueue gates', () => {
       contributionPhotosEnabled: true,
       contributionSpeechEnabled: true,
     });
+  });
+
+  test('durable owner deletion blocks speech despite stale UI consent and enabled sharing', async () => {
+    setSharingTogglesForTests({ speech: true, photos: false });
+    await savePendingDeletionIntent('owner');
+    const result = await enqueueEligibleSpeechRecording({ sourceUri: 'file:///tmp/speech.m4a',
+      userId: 'owner', signedIn: true, authConfigured: true, metadata: { transcript: 'hello' } });
+    expect(result).toBeNull();
+    expect(mockEnqueueMediaItem).not.toHaveBeenCalled();
   });
 
   test('guests enqueue nothing', async () => {

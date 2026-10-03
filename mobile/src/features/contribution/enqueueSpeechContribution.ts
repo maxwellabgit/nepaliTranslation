@@ -1,3 +1,5 @@
+import { sessionInactiveNow } from '../auth/sessionExpiry';
+import { hasPendingDeletion } from '../../storage/pendingDeletion';
 import { enqueueMediaItem, type MediaOutboxItem } from '../../storage/mediaOutbox';
 import { getRuntimeFeatureFlags } from '../../app/featureFlags';
 import { canUploadContributionMedia } from '../auth/consent';
@@ -20,6 +22,7 @@ import { loadStartupConsent, isStartupConsentCurrent } from '../../storage/start
  */
 export async function enqueueSpeechContribution(input: {
   signedIn: boolean;
+  userId?: string | null;
   authConfigured: boolean;
   localUri: string;
   contentType: string;
@@ -47,7 +50,8 @@ export async function enqueueSpeechContribution(input: {
   if (!isStartupConsentCurrent(startup)) {
     return { ok: false, reason: 'startup_gate' };
   }
-  const consent = await loadLocalConsent();
+  if (!input.userId || (await hasPendingDeletion(input.userId) || await sessionInactiveNow(input.userId))) return { ok: false, reason: 'unavailable' };
+  const consent = await loadLocalConsent(input.userId);
   const flags = getRuntimeFeatureFlags();
   const gate = canUploadContributionMedia({
     authConfigured: input.authConfigured,
@@ -62,6 +66,7 @@ export async function enqueueSpeechContribution(input: {
 
   const item = await enqueueMediaItem({
     kind: 'speech',
+    owner_id: input.userId,
     local_uri: input.localUri,
     content_type: input.contentType,
     byte_size: input.byteSize,

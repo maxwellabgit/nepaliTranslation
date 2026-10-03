@@ -1,3 +1,5 @@
+import { sessionInactiveNow } from '../auth/sessionExpiry';
+import { hasPendingDeletion } from '../../storage/pendingDeletion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   copyToMediaOutboxDir,
@@ -213,7 +215,7 @@ export async function saveUtterance(
       return { ok: false as const, reason: 'not_saved' as const };
     }
     const ownerId = input.userId ?? null;
-    const localOnly = !ownerId || input.eligible === false;
+    const localOnly = !ownerId || input.eligible === false || (await hasPendingDeletion(ownerId) || await sessionInactiveNow(ownerId));
     const item: StoredUtterance = {
       id,
       transcript,
@@ -269,7 +271,7 @@ export async function updateUtteranceFeedback(
     }
     return { ...row };
   });
-  if (!item || !item.ownerId || item.localOnly) return item;
+  if (!item || !item.ownerId || item.localOnly || (await hasPendingDeletion(item.ownerId) || await sessionInactiveNow(item.ownerId))) return item;
   const metadata = metadataFor(item);
   const key = utteranceIdempotencyKey(item.ownerId, item.id);
   const merged = await mergeMediaFeedback(key, metadata);
@@ -349,6 +351,7 @@ export async function tryUploadPendingUtterances(
   account: { signedIn: boolean; authConfigured: boolean; userId: string | null },
   upload: SpeechUpload = enqueueEligibleSpeechRecording,
 ): Promise<number> {
+  if (!account.userId || await hasPendingDeletion(account.userId)) return 0;
   const pendingIds = await mutate(async () =>
     (await reconcileServerAcks(await readAll(), deleteDurableMediaFile))
       .filter(
@@ -365,7 +368,7 @@ export async function tryUploadPendingUtterances(
   for (const id of pendingIds) {
     const item = await mutate(async () => (await readAll()).find((row) => row.id === id) ?? null);
     if (!item || item.handedOff || item.localOnly || item.serverAcked) continue;
-    if (!item.ownerId || item.ownerId !== account.userId) continue;
+    if (!item.ownerId || item.ownerId !== account.userId || (await hasPendingDeletion(item.ownerId) || await sessionInactiveNow(item.ownerId))) continue;
     const queued = await upload({
       sourceUri: item.audioUri,
       signedIn: account.signedIn,

@@ -1,3 +1,4 @@
+import { hasPendingDeletion } from '../../storage/pendingDeletion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { deleteDraft, enqueueDraft, loadOutbox, newIdempotencyKey } from '../../storage/contributionOutbox';
 import { loadLocalConsent } from '../../storage/contributionConsent';
@@ -35,14 +36,14 @@ export async function captureReviewResponse(input: {
 }): Promise<ReviewResponse> {
   return serial(async () => {
     const rows = await readReviewResponses();
-    const consent = await loadLocalConsent();
+    const consent = await loadLocalConsent(input.userId);
     const env = readPublicEnv();
     const client = input.userId ? getSupabase() : null;
     const session = client ? await client.auth.getSession().then(({ data }) => data.session).catch(() => null) : null;
     const validSession = session?.user?.id === input.userId && Boolean(session?.access_token) &&
       (session?.expires_at == null || session.expires_at * 1000 > Date.now());
     const eligible = input.action !== 'skip' && Boolean(input.userId) && getRuntimeFeatureFlags().contributionTextEnabled &&
-      validSession && !input.deletionDueAt &&
+      validSession && !input.deletionDueAt && !await hasPendingDeletion(input.userId!) &&
       canSubmitContribution({ authConfigured: env.authConfigured, signedIn: Boolean(input.userId), consentVersion: input.consentVersion ?? null, ageConfirmed: Boolean(input.ageConfirmed) }).ok &&
       canSubmitContribution({ authConfigured: env.authConfigured, signedIn: Boolean(input.userId), consentVersion: consent?.consent_version ?? null, ageConfirmed: Boolean(consent?.age_confirmed) }).ok &&
       !await sessionInactiveNow(input.userId!);

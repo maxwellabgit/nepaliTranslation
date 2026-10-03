@@ -1,3 +1,4 @@
+import { savePendingDeletionIntent } from '../../../storage/pendingDeletion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { enqueueMediaItem, loadMediaOutbox } from '../../../storage/mediaOutbox';
 import {
@@ -16,6 +17,20 @@ import {
 describe('utterance capture', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
+  });
+
+  it('keeps capture local and denies feedback and retries during durable deletion', async () => {
+    await savePendingDeletionIntent('owner');
+    const upload = jest.fn(async () => null);
+    const result = await saveUtterance({ transcript: 'local speech', audioUri: 'file:///tmp/private.m4a',
+      durationMs: 1000, language: 'en', userId: 'owner', eligible: true },
+      { copy: async uri => ({ uri: `${uri}.kept`, byteSize: 10 }), upload });
+    expect(result.ok).toBe(true);
+    const row = (await readPendingUtterances())[0]!;
+    expect(row.localOnly).toBe(true);
+    await updateUtteranceFeedback(row.id, 'up', upload);
+    await tryUploadPendingUtterances({ signedIn: true, authConfigured: true, userId: 'owner' }, upload);
+    expect(upload).not.toHaveBeenCalled();
   });
 
   it('keeps several recordings on the device when upload cannot run', async () => {

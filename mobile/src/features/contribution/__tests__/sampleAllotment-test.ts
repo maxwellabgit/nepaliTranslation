@@ -9,6 +9,8 @@ import {
   recordCompletedSample,
 } from '../sampleAllotment';
 
+import { saveLocalConsent } from '../../../storage/contributionConsent';
+import { setRuntimeFeatureFlags, DEFAULT_FEATURE_FLAGS } from '../../../app/featureFlags';
 jest.mock('../../../services/supabase', () => ({
   getSupabase: jest.fn(() => null),
 }));
@@ -18,6 +20,8 @@ const mockedGetSupabase = getSupabase as jest.MockedFunction<typeof getSupabase>
 describe('shipped review samples', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
+    await saveLocalConsent(true, 'user-a');
+    setRuntimeFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, contributionTextEnabled: true });
     mockedGetSupabase.mockReturnValue(null);
   });
 
@@ -99,7 +103,7 @@ describe('shipped review samples', () => {
     const rpc = jest.fn(async (): Promise<{ error: { message: string } | null }> => ({
       error: { message: 'rls' },
     }));
-    mockedGetSupabase.mockReturnValue({ rpc } as never);
+    mockedGetSupabase.mockReturnValue({ rpc, auth: { getSession: async () => ({ data: { session: { user: { id: 'user-a' }, access_token: 'tok' } } }) } } as never);
     for (let n = 1; n <= 10; n += 1) {
       await recordCompletedSample({
         sampleId: `m-${n}`,

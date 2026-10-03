@@ -1,3 +1,4 @@
+import { hasPendingDeletion } from '../storage/pendingDeletion';
 import { readPublicEnv } from '../config/env';
 import { getSupabase } from './supabase';
 import { getRuntimeFeatureFlags } from '../app/featureFlags';
@@ -144,7 +145,8 @@ async function doFlush(
   }
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
-  if (!token) return { ok: false, reason: 'unauthorized' };
+  const ownerId = data.session?.user?.id;
+  if (!token || !ownerId) return { ok: false, reason: 'unauthorized' };
 
   const pending = await pendingDrafts();
   let synced = 0;
@@ -155,13 +157,14 @@ async function doFlush(
   for (const draft of pending) {
     if (attempted >= MAX_BATCH) break;
     if (draft.status === 'draft') continue;
-    if (draft.translation_method === 'todays_10') {
-      const consent = await loadLocalConsent();
+    {
+      // Every queued contribution belongs to its original private JWT subject.
+      const consent = await loadLocalConsent(ownerId);
       const latest = (await supabase.auth.getSession()).data.session;
       const userId = latest?.user?.id;
-      if (!userId || userId !== draft.owner_user_id || latest?.access_token !== token || !getRuntimeFeatureFlags().contributionTextEnabled ||
+      if (!userId || userId !== ownerId || userId !== draft.owner_user_id || latest?.access_token !== token || !getRuntimeFeatureFlags().contributionTextEnabled ||
         !canSubmitContribution({ authConfigured: env.authConfigured, signedIn: true, consentVersion: consent?.consent_version ?? null, ageConfirmed: Boolean(consent?.age_confirmed) }).ok ||
-        draft.consent_version !== consent?.consent_version || await sessionInactiveNow(userId)) continue;
+        draft.consent_version !== consent?.consent_version || await hasPendingDeletion(userId) || await sessionInactiveNow(userId)) continue;
     }
     attempted += 1;
     await markSyncing(draft.idempotency_key);

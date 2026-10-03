@@ -76,6 +76,7 @@ export function useTranslationSession({ active, seed }: Options) {
     transcript: string;
     audioUri: string | null;
     ended: boolean;
+    owner: { signedIn: boolean; authConfigured: boolean; userId: string | null; eligible: boolean };
   } | null>(null);
   const listenTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [utteranceOffer, setUtteranceOffer] = useState<{
@@ -105,7 +106,7 @@ export function useTranslationSession({ active, seed }: Options) {
       setUtteranceNotice(null);
       return;
     }
-    const account = authRef.current;
+    const account = cap.owner;
     void saveUtterance({
       id: utteranceId,
       transcript,
@@ -113,13 +114,10 @@ export function useTranslationSession({ active, seed }: Options) {
       feedback: 'unrated',
       durationMs,
       language,
-      signedIn: account.status === 'signed-in',
+      signedIn: account.signedIn,
       authConfigured: account.authConfigured,
-      userId: account.status === 'signed-in' ? account.userId : null,
-      eligible:
-        account.status === 'signed-in' &&
-        account.ageConfirmed &&
-        account.consentVersion === CONTRIBUTION_CONSENT_VERSION,
+      userId: account.userId,
+      eligible: account.eligible,
     }).then((saved) => {
       if (!saved.ok) {
         setUtteranceOffer(null);
@@ -389,6 +387,13 @@ export function useTranslationSession({ active, seed }: Options) {
       transcript: '',
       audioUri: null,
       ended: false,
+      owner: {
+        signedIn: authRef.current.status === 'signed-in',
+        authConfigured: authRef.current.authConfigured,
+        userId: authRef.current.status === 'signed-in' ? authRef.current.userId : null,
+        eligible: authRef.current.status === 'signed-in' && authRef.current.ageConfirmed &&
+          authRef.current.consentVersion === CONTRIBUTION_CONSENT_VERSION,
+      },
     };
     if (listenTimer.current) clearTimeout(listenTimer.current);
     listenTimer.current = setTimeout(() => {

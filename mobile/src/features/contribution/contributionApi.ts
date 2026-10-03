@@ -1,3 +1,5 @@
+import { sessionInactiveNow } from '../auth/sessionExpiry';
+import { hasPendingDeletion } from '../../storage/pendingDeletion';
 import { getRuntimeFeatureFlags } from '../../app/featureFlags';
 import { canSubmitContribution } from '../auth/consent';
 import { readPublicEnv } from '../../config/env';
@@ -43,7 +45,7 @@ export type SubmitContributionResult =
     };
 
 async function authHeaders(): Promise<
-  | { ok: true; token: string; url: string; anon: string }
+  | { ok: true; token: string; url: string; anon: string; ownerId: string }
   | { ok: false; reason: 'unavailable' | 'sign_in' }
 > {
   const env = readPublicEnv();
@@ -51,10 +53,12 @@ async function authHeaders(): Promise<
   if (!env.authConfigured || !supabase) return { ok: false, reason: 'unavailable' };
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
-  if (!token) return { ok: false, reason: 'sign_in' };
+  const ownerId = data.session?.user?.id;
+  if (!token || !ownerId || (await hasPendingDeletion(ownerId) || await sessionInactiveNow(ownerId))) return { ok: false, reason: 'unavailable' };
   return {
     ok: true,
     token,
+    ownerId,
     url: env.supabaseUrl,
     anon: env.supabaseAnonKey,
   };
@@ -91,7 +95,9 @@ export async function fetchNextContribution(input: {
   if (!getRuntimeFeatureFlags().contributionTextEnabled) {
     return { ok: false, reason: 'disabled' };
   }
-  const consent = await loadLocalConsent();
+  const auth = await authHeaders();
+  if (!auth.ok) return { ok: false, reason: auth.reason };
+  const consent = await loadLocalConsent(auth.ownerId);
   const gate = canSubmitContribution({
     authConfigured: input.authConfigured,
     signedIn: input.signedIn,
@@ -99,8 +105,6 @@ export async function fetchNextContribution(input: {
     ageConfirmed: Boolean(consent?.age_confirmed),
   });
   if (!gate.ok) return { ok: false, reason: gate.reason };
-  const auth = await authHeaders();
-  if (!auth.ok) return { ok: false, reason: auth.reason };
   const res = await fetch(`${auth.url}/functions/v1/get-next-contribution`, {
     method: 'POST',
     headers: {
@@ -145,7 +149,9 @@ export async function submitContribution(input: {
   if (!getRuntimeFeatureFlags().contributionTextEnabled) {
     return { ok: false, reason: 'disabled' };
   }
-  const consent = await loadLocalConsent();
+  const auth = await authHeaders();
+  if (!auth.ok) return { ok: false, reason: auth.reason };
+  const consent = await loadLocalConsent(auth.ownerId);
   const gate = canSubmitContribution({
     authConfigured: input.authConfigured,
     signedIn: input.signedIn,
@@ -161,8 +167,6 @@ export async function submitContribution(input: {
   if (input.action === 'edit' && !input.responseText?.trim()) {
     return { ok: false, reason: 'invalid' };
   }
-  const auth = await authHeaders();
-  if (!auth.ok) return { ok: false, reason: auth.reason };
   const res = await fetch(`${auth.url}/functions/v1/submit-contribution`, {
     method: 'POST',
     headers: {

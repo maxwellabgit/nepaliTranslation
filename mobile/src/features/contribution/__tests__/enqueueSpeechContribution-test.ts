@@ -22,6 +22,7 @@ describe('enqueueSpeechContribution (G2 raw speech-media in V1)', () => {
   });
 
   const validInput = {
+    userId: 'speech-owner',
     signedIn: true,
     authConfigured: true,
     localUri: 'file:///documents/audio-1.m4a',
@@ -31,7 +32,7 @@ describe('enqueueSpeechContribution (G2 raw speech-media in V1)', () => {
 
   test('rejects when startup consent gate has not been passed', async () => {
     await clearStartupConsent();
-    await saveLocalConsent(true);
+    await saveLocalConsent(true, 'speech-owner');
     const result = await enqueueSpeechContribution(validInput);
     expect(result).toEqual({ ok: false, reason: 'startup_gate' });
   });
@@ -55,7 +56,7 @@ describe('enqueueSpeechContribution (G2 raw speech-media in V1)', () => {
       privacy: true,
       age18Plus: true,
     });
-    await saveLocalConsent(true);
+    await saveLocalConsent(true, 'speech-owner');
     setRuntimeFeatureFlags({
       ...DEFAULT_FEATURE_FLAGS,
       contributionTextEnabled: true,
@@ -71,7 +72,7 @@ describe('enqueueSpeechContribution (G2 raw speech-media in V1)', () => {
       privacy: true,
       age18Plus: true,
     });
-    await saveLocalConsent(true);
+    await saveLocalConsent(true, 'speech-owner');
     const result = await enqueueSpeechContribution(validInput);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -89,7 +90,7 @@ describe('enqueueSpeechContribution (G2 raw speech-media in V1)', () => {
       privacy: true,
       age18Plus: true,
     });
-    await saveLocalConsent(true);
+    await saveLocalConsent(true, 'speech-owner');
     expect(
       await enqueueSpeechContribution({ ...validInput, localUri: '' }),
     ).toEqual({ ok: false, reason: 'invalid' });

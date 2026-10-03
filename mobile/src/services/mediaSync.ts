@@ -1,3 +1,4 @@
+import { hasPendingDeletion } from '../storage/pendingDeletion';
 import { readPublicEnv } from '../config/env';
 import { CONTRIBUTION_CONSENT_VERSION } from '../features/auth/consent';
 import { sessionInactiveNow } from '../features/auth/sessionExpiry';
@@ -246,7 +247,7 @@ async function doFlush(
   const token = data.session?.access_token;
   const userId = data.session?.user?.id;
   if (!token || !userId) return { ok: false, reason: 'unauthorized' };
-  if (await sessionInactiveNow(userId)) {
+  if (await hasPendingDeletion(userId) || await sessionInactiveNow(userId)) {
     return { ok: false, reason: 'unauthorized' };
   }
 
@@ -267,7 +268,7 @@ async function doFlush(
   }
 
   const sharing = await loadSharingToggles(userId);
-  const consent = await loadLocalConsent();
+  const consent = await loadLocalConsent(userId);
   const generation = await readCancelGeneration(userId);
   const consentCurrent =
     consent?.consent_version === CONTRIBUTION_CONSENT_VERSION &&
@@ -281,7 +282,7 @@ async function doFlush(
 
   for (const item of pending) {
     const live = await supabase.auth.getSession();
-    if (live.data.session?.user?.id !== userId) break;
+    if (live.data.session?.user?.id !== userId || await hasPendingDeletion(userId)) break;
     const toggleOff =
       (item.kind === 'speech' && !sharing.speech) ||
       (item.kind === 'photo' && !sharing.photos);
@@ -313,9 +314,9 @@ async function doFlush(
       async () => {
         const live = await supabase.auth.getSession();
         if (live.data.session?.user?.id !== userId) return false;
-        if (await sessionInactiveNow(userId)) return false;
+        if (await hasPendingDeletion(userId) || await sessionInactiveNow(userId)) return false;
         const liveSharing = await loadSharingToggles(userId);
-        const liveConsent = await loadLocalConsent();
+        const liveConsent = await loadLocalConsent(userId);
         const liveGeneration = await readCancelGeneration(userId);
         const kindAllowed =
           item.kind === 'speech' ? liveSharing.speech : liveSharing.photos;

@@ -27,6 +27,7 @@ const enabledFlags = {
 
 describe('contributionApi', () => {
   beforeEach(async () => {
+    await AsyncStorage.clear();
     setRuntimeFeatureFlags(enabledFlags);
     mockReadPublicEnv.mockReturnValue({
       supabaseUrl: 'https://example.supabase.co',
@@ -37,11 +38,11 @@ describe('contributionApi', () => {
     (getSupabase as jest.Mock).mockReturnValue({
       auth: {
         getSession: jest.fn(async () => ({
-          data: { session: { access_token: 'tok' } },
+          data: { session: { access_token: 'tok', user: { id: 'owner' } } },
         })),
       },
     });
-    await saveLocalConsent(true);
+    await saveLocalConsent(true, 'owner');
   });
 
   test('disabled flag blocks network without requiring sign-in', async () => {
@@ -108,7 +109,7 @@ describe('contributionApi', () => {
     ).toEqual({ ok: false, reason: 'consent' });
   });
 
-  test('fetchNextContribution requires sign-in before network', async () => {
+  test('fetchNextContribution requires private authenticated identity before network', async () => {
     (getSupabase as jest.Mock).mockReturnValue({
       auth: {
         getSession: jest.fn(async () => ({ data: { session: null } })),
@@ -116,16 +117,16 @@ describe('contributionApi', () => {
     });
     expect(
       await fetchNextContribution({ signedIn: true, authConfigured: true }),
-    ).toEqual({ ok: false, reason: 'sign_in' });
+    ).toEqual({ ok: false, reason: 'unavailable' });
   });
 
   test('fetchNextContribution gates on local consent version', async () => {
-    await saveLocalConsent(false);
+    await saveLocalConsent(false, 'owner');
     expect(
       await fetchNextContribution({ signedIn: true, authConfigured: true }),
     ).toEqual({ ok: false, reason: 'age' });
 
-    await saveLocalConsent(true);
+    await saveLocalConsent(true, 'owner');
     const bad = {
       consent_version: 'old',
       age_confirmed: true,

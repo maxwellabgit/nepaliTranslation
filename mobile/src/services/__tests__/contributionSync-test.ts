@@ -4,7 +4,7 @@ import { readPublicEnv } from '../../config/env';
 import { DEFAULT_FEATURE_FLAGS, setRuntimeFeatureFlags } from '../../app/featureFlags';
 import { saveLocalConsent } from '../../storage/contributionConsent';
 import {
-  enqueueDraft,
+  enqueueDraft as rawEnqueueDraft,
   loadOutbox,
   OUTBOX_KEY,
   pendingDrafts,
@@ -15,6 +15,8 @@ import {
   postTranslationReport,
 } from '../contributionSync';
 
+import { CONTRIBUTION_CONSENT_VERSION } from '../../features/auth/consent';
+import { savePendingDeletionIntent } from '../../storage/pendingDeletion';
 jest.mock('../supabase', () => ({
   getSupabase: jest.fn(),
   bindAuthRefresh: jest.fn(),
@@ -23,6 +25,8 @@ jest.mock('../supabase', () => ({
 jest.mock('../../config/env', () => ({
   readPublicEnv: jest.fn(),
 }));
+
+const enqueueDraft = (input: Parameters<typeof rawEnqueueDraft>[0]) => rawEnqueueDraft({ owner_user_id: 'owner', ...input });
 
 const env = {
   supabaseUrl: 'https://example.supabase.co',
@@ -39,14 +43,46 @@ describe('contributionSync H2', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
     __resetFlushMutexForTests();
+    setRuntimeFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, contributionTextEnabled: true });
+    await saveLocalConsent(true, 'owner');
     mockedReadPublicEnv.mockReturnValue(env);
     mockedGetSupabase.mockReturnValue({
       auth: {
         getSession: async () => ({
-          data: { session: { access_token: 'tok' } },
+          data: { session: { access_token: 'tok', user: { id: 'owner' } } },
         }),
       },
     } as never);
+  });
+
+  test('private guest JWT uploads only its consented original rows, never another owner or ownerless data', async () => {
+    for (const owner of [null, 'old-account', 'owner']) await rawEnqueueDraft({
+      local_fingerprint: `private-owner-${owner}`, owner_user_id: owner,
+      surface: 'live_translate', source_text: 'Hello', model_output: 'नमस्ते', correction_text: 'नमस्कार',
+      source_lang: 'en', formality: 'formal', script: 'deva', translation_method: 'neural',
+      consent_version: CONTRIBUTION_CONSENT_VERSION, status: 'queued',
+    });
+    const send = jest.fn<Promise<Response>, Parameters<typeof fetch>>(async () => ({
+      status: 200, json: async () => ({}),
+    } as Response));
+    expect(await flushPendingDrafts(send as unknown as typeof fetch)).toEqual({ ok: true, synced: 1, failed: 0, rejected: 0 });
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(send.mock.calls[0]![1]!.headers).toEqual(expect.objectContaining({ authorization: 'Bearer tok' }));
+    expect((await loadOutbox()).filter(row => row.status === 'queued')).toHaveLength(2);
+  });
+
+  test('durable deletion blocks queued text despite a late consent callback', async () => {
+    const raw = await AsyncStorage.getItem('neptranslate.contribution_consent.v1');
+    await enqueueDraft({ local_fingerprint: 'deleting-owner', surface: 'history',
+      source_text: 'Hello', model_output: 'Hello', correction_text: 'Hi',
+      source_lang: 'en', formality: 'formal', script: 'deva',
+      consent_version: CONTRIBUTION_CONSENT_VERSION, status: 'queued' });
+    await savePendingDeletionIntent('owner');
+    if (raw) await AsyncStorage.setItem('neptranslate.contribution_consent.v1', raw);
+    const send = jest.fn();
+    await flushPendingDrafts(send);
+    expect(send).not.toHaveBeenCalled();
+    expect((await loadOutbox())[0]?.status).toBe('queued');
   });
 
   test('never posts a queued correction without a valid authenticated session', async () => {
@@ -54,22 +90,23 @@ describe('contributionSync H2', () => {
       local_fingerprint: 'fp_unauthorized', surface: 'history',
       source_text: 'Hello', model_output: 'नमस्ते', correction_text: 'नमस्कार',
       source_lang: 'en', formality: 'formal', script: 'deva',
-      consent_version: '2026-09-19.draft', status: 'queued',
+      consent_version: CONTRIBUTION_CONSENT_VERSION, status: 'queued',
     });
     const send = jest.fn();
     mockedGetSupabase.mockReturnValue({ auth: { getSession: async () => ({
       data: { session: null },
     }) } } as never);
-    expect(await flushPendingDrafts(send)).toEqual({ ok: false, reason: 'unauthorized' });
+    expect(await flushPendingDrafts(send as unknown as typeof fetch)).toEqual({ ok: false, reason: 'unauthorized' });
     mockedGetSupabase.mockReturnValue(null);
-    expect(await flushPendingDrafts(send)).toEqual({ ok: false, reason: 'unavailable' });
+    expect(await flushPendingDrafts(send as unknown as typeof fetch)).toEqual({ ok: false, reason: 'unavailable' });
     expect(send).not.toHaveBeenCalled();
     expect((await loadOutbox())[0]?.status).toBe('queued');
   });
 
   test('review revisions upload only for their authorized owner, rechecking consent for each row', async () => {
     setRuntimeFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, contributionTextEnabled: true });
-    const consent = await saveLocalConsent(true);
+    const consent = await saveLocalConsent(true, 'owner');
+    if (!consent) throw new Error('Owner consent fixture rejected');
     let owner = 'other';
     mockedGetSupabase.mockReturnValue({ auth: { getSession: async () => ({ data: { session: { access_token: 'tok', user: { id: owner } } } }) } } as never);
     for (const revision of [1, 2]) await enqueueDraft({
@@ -82,10 +119,10 @@ describe('contributionSync H2', () => {
       setRuntimeFeatureFlags(DEFAULT_FEATURE_FLAGS);
       return { status: 200, json: async () => ({}) } as Response;
     });
-    await flushPendingDrafts(send);
+    await flushPendingDrafts(send as unknown as typeof fetch);
     expect(send).not.toHaveBeenCalled();
     owner = 'owner';
-    await flushPendingDrafts(send);
+    await flushPendingDrafts(send as unknown as typeof fetch);
     expect(send).toHaveBeenCalledTimes(1);
     expect((await loadOutbox()).filter((row) => row.status === 'synced')).toHaveLength(1);
     expect((await loadOutbox()).filter((row) => row.status === 'queued')).toHaveLength(1);
@@ -94,7 +131,8 @@ describe('contributionSync H2', () => {
 
   test('ineligible newer rows cannot starve eligible older review revisions', async () => {
     setRuntimeFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, contributionTextEnabled: true });
-    const consent = await saveLocalConsent(true);
+    const consent = await saveLocalConsent(true, 'owner');
+    if (!consent) throw new Error('Owner consent fixture rejected');
     mockedGetSupabase.mockReturnValue({ auth: { getSession: async () => ({ data: { session: { access_token: 'tok', user: { id: 'owner' } } } }) } } as never);
     for (let index = 0; index < 25; index += 1) await enqueueDraft({
       idempotency_key: `review-starve-${index}`, local_fingerprint: `review-starve-${index}`,
@@ -103,7 +141,7 @@ describe('contributionSync H2', () => {
       consent_version: consent.consent_version, status: 'queued',
     });
     const send = jest.fn<Promise<Response>, Parameters<typeof fetch>>(async () => ({ status: 200, json: async () => ({}) } as Response));
-    await flushPendingDrafts(send);
+    await flushPendingDrafts(send as unknown as typeof fetch);
     expect(send).toHaveBeenCalledTimes(1);
     expect(JSON.parse(send.mock.calls[0]![1]!.body as string).idempotency_key).toBe('review-starve-0');
     setRuntimeFeatureFlags(DEFAULT_FEATURE_FLAGS);
@@ -114,7 +152,7 @@ describe('contributionSync H2', () => {
       local_fingerprint: 'fp_unlabeled', surface: 'history',
       source_text: 'Hello', model_output: 'नमस्ते', correction_text: 'नमस्कार',
       source_lang: 'en', formality: 'formal', script: 'deva',
-      consent_version: '2026-09-19.draft', status: 'queued',
+      consent_version: CONTRIBUTION_CONSENT_VERSION, status: 'queued',
     });
     const send = jest.fn();
     expect(await postTranslationReport({ ...draft, script: null }, 'tok', env, send))
@@ -135,7 +173,7 @@ describe('contributionSync H2', () => {
       source_lang: 'en' as const,
       formality: 'formal' as const,
       script: 'deva' as const,
-      consent_version: '2026-09-19.draft',
+      consent_version: CONTRIBUTION_CONSENT_VERSION,
       status: 'queued' as const,
       id: 'd1',
       created_at: new Date().toISOString(),
@@ -183,7 +221,7 @@ describe('contributionSync H2', () => {
       source_lang: 'en',
       formality: 'informal',
       script: 'roman',
-      consent_version: '2026-09-19.draft',
+      consent_version: CONTRIBUTION_CONSENT_VERSION,
       status: 'queued',
     });
 
@@ -231,7 +269,7 @@ describe('contributionSync H2', () => {
       source_lang: 'en',
       formality: 'formal',
       script: 'deva',
-      consent_version: '2026-09-19.draft',
+      consent_version: CONTRIBUTION_CONSENT_VERSION,
       status: 'syncing',
     });
 
@@ -268,7 +306,7 @@ describe('contributionSync H2', () => {
       source_lang: 'en',
       formality: 'formal',
       script: 'deva',
-      consent_version: '2026-09-19.draft',
+      consent_version: CONTRIBUTION_CONSENT_VERSION,
       status: 'draft',
     });
     expect(await pendingDrafts()).toEqual([]);
@@ -293,7 +331,7 @@ describe('contributionSync H2', () => {
       script: 'roman',
       translation_method: 'neural',
       model_version: 'indictrans2-dist-200M',
-      consent_version: '2026-09-19.draft',
+      consent_version: CONTRIBUTION_CONSENT_VERSION,
       status: 'queued',
     });
 

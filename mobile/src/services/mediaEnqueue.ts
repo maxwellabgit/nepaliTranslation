@@ -1,3 +1,5 @@
+import { sessionInactiveNow } from '../features/auth/sessionExpiry';
+import { hasPendingDeletion } from '../storage/pendingDeletion';
 import { Directory, File, Paths } from 'expo-file-system';
 import {
   canUploadContributionMedia,
@@ -96,8 +98,9 @@ export async function enqueueEligibleMedia(
   input: EnqueueEligibleMediaInput,
 ): Promise<MediaOutboxItem | null> {
   try {
+    if (!input.userId || (await hasPendingDeletion(input.userId) || await sessionInactiveNow(input.userId))) return null;
     const flags = getRuntimeFeatureFlags();
-    const consent = await loadLocalConsent();
+    const consent = await loadLocalConsent(input.userId);
     const gate = canUploadContributionMedia({
       authConfigured: input.authConfigured,
       signedIn: input.signedIn,
@@ -119,6 +122,10 @@ export async function enqueueEligibleMedia(
       : await copyToMediaOutboxDir(input.sourceUri, 'speech', contentType);
     if (!copied) return null;
 
+    if ((await hasPendingDeletion(input.userId) || await sessionInactiveNow(input.userId))) {
+      if (!input.alreadyDurable) deleteDurableMediaFile(copied.uri);
+      return null;
+    }
     const generation = await readCancelGeneration(input.userId);
     const queued = await enqueueMediaItem({
       idempotency_key: input.idempotencyKey ?? newMediaIdempotencyKey(),
@@ -167,6 +174,11 @@ export async function deliverSpeechFeedback(
   const client = getSupabase();
   if (!client || typeof client.rpc !== 'function') return false;
   try {
+    const session = (await client.auth.getSession()).data.session;
+    const owner = session?.user?.id;
+    if (!owner || !session?.access_token || (await hasPendingDeletion(owner) || await sessionInactiveNow(owner))) return false;
+    const consent = await loadLocalConsent(owner);
+    if (consent?.consent_version !== CONTRIBUTION_CONSENT_VERSION || !consent.age_confirmed) return false;
     const rpc = client.rpc.bind(client) as unknown as (
       fn: string,
       args: Record<string, unknown>,
