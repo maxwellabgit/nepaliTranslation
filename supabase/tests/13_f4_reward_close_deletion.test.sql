@@ -44,7 +44,7 @@ select is(
 
 -- Pre-close reject: known_fail sets scheduled_credits to zero (no grant at close)
 update public.profiles
-set consent_version = '2026-09-21.media', age_confirmed_at = now(), consented_at = now()
+set consent_version = (select contribution_consent_version from public.app_config where id = 1), age_confirmed_at = now(), consented_at = now()
 where user_id = '22222222-2222-4222-8222-222222222222';
 
 delete from public.contribution_receipts
@@ -76,7 +76,7 @@ select is(
 
 -- Close batch: pending at close grants once; pre-close reject grants zero
 update public.profiles
-set consent_version = '2026-09-21.media', age_confirmed_at = now(), consented_at = now()
+set consent_version = (select contribution_consent_version from public.app_config where id = 1), age_confirmed_at = now(), consented_at = now()
 where user_id = '11111111-1111-4111-8111-111111111111';
 
 delete from public.contribution_receipts
@@ -182,7 +182,7 @@ select is(
 -- Deletion request blocks uploads
 select public.service_record_consent(
   '22222222-2222-4222-8222-222222222222',
-  '2026-09-21.media',
+  (select contribution_consent_version from public.app_config where id = 1),
   true
 );
 

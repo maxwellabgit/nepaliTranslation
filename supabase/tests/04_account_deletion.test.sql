@@ -3,14 +3,14 @@ select no_plan();
 
 select public.service_record_consent(
   '11111111-1111-4111-8111-111111111111',
-  '2026-09-21.media',
+  (select contribution_consent_version from public.app_config where id = 1),
   true
 );
 
 select is(
   (select consent_version from public.profiles
     where user_id = '11111111-1111-4111-8111-111111111111'),
-  '2026-09-21.media',
+  (select contribution_consent_version from public.app_config where id = 1),
   'server records the consent version'
 );
 

@@ -95,7 +95,7 @@ insert into public.contribution_media (
   'image/jpeg',
   1024,
   'f7-admin-media-preview',
-  '2026-09-21.media',
+  (select contribution_consent_version from public.app_config where id = 1),
   'uploaded'
 ) on conflict do nothing;
 

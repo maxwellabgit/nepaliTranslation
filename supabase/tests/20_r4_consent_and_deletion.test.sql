@@ -114,7 +114,7 @@ insert into public.contribution_media (
   'audio/m4a',
   1024,
   'r4-media-idem-1',
-  '2026-09-21.media',
+  (select contribution_consent_version from public.app_config where id = 1),
   'uploaded'
 )
 on conflict do nothing;

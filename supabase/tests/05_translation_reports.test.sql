@@ -1,6 +1,10 @@
 begin;
 select no_plan();
 
+-- Explicit current consent fixture for fresh and forward-upgraded test schemas.
+update public.profiles set consent_version = (select contribution_consent_version from public.app_config where id = 1)
+where user_id = '11111111-1111-4111-8111-111111111111';
+
 select lives_ok(
   $$select * from public.service_insert_translation_report(
     '11111111-1111-4111-8111-111111111111',
@@ -12,7 +16,7 @@ select lives_ok(
     'deva',
     'live_translate',
     'idem-hello-1',
-    '2026-09-21.media',
+    (select contribution_consent_version from public.app_config where id = 1),
     '{}'::jsonb
   )$$,
   'service role can insert a translation report'
@@ -36,7 +40,7 @@ select is(
     'deva',
     'live_translate',
     'idem-hello-1',
-    '2026-09-21.media',
+    (select contribution_consent_version from public.app_config where id = 1),
     '{}'::jsonb
   )),
   false,
@@ -69,7 +73,7 @@ select throws_ok(
     'deva',
     'live_translate',
     'idem-auth-blocked',
-    '2026-09-21.media',
+    (select contribution_consent_version from public.app_config where id = 1),
     '{}'::jsonb
   )$$,
   '42501'

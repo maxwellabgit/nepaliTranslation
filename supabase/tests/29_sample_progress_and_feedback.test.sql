@@ -96,7 +96,7 @@ insert into public.contribution_media (
   'audio/mp4',
   2048,
   'utt:user-a:1',
-  '2026-09-21.media',
+  (select contribution_consent_version from public.app_config where id = 1),
   'uploaded',
   '{"feedback":"unrated","feedbackRevision":1,"transcript":"hello"}'::jsonb
 );
