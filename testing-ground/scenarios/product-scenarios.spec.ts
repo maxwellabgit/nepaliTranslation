@@ -9,6 +9,7 @@ import {
 } from './helpers/artifacts';
 
 test.describe.configure({ mode: 'serial' });
+test.use({ screenshot: 'off', video: 'off', trace: 'off' });
 
 test.beforeAll(() => {
   ensureArtifactRun();
@@ -34,8 +35,7 @@ test('01 cold launch / empty Speak', async ({ page }) => {
     await openHostedApp(page);
     await expectVisible(page, 'pane-translate');
     await expectVisible(page, 'speak-hero');
-    await expect(page.getByTestId('speak-hero')).toContainText('Speak');
-    await expect(page.getByTestId('speak-hero')).toContainText('बोल्नुहोस्');
+    await expect(page.getByTestId('speak-hero')).toHaveAttribute('aria-label', 'Speak to translate');
     await expectVisible(page, 'translate-input');
     recordScenario({ id, status: 'passed' });
   } catch (err) {
@@ -178,18 +178,19 @@ test('07 camera OCR fixture result (not native ML Kit)', async ({ page }) => {
   }
 });
 
-test('08 pass-the-phone after typed turn', async ({ page }) => {
-  const id = '08-pass-the-phone';
+test('08 source input survives switching language after a typed turn', async ({ page }) => {
+  const id = '08-language-switch-preserves-input';
   try {
     await openHostedApp(page);
     await typeAndSubmit(page, 'Hello');
     await expect(page.getByTestId('translate-output')).toContainText('नमस्ते', {
       timeout: 30_000,
     });
-    await expect(page.getByTestId('speak-dock')).toBeVisible();
-    await expect(page.getByTestId('pass-phone')).toBeVisible();
-    await page.getByTestId('pass-phone').click();
-    await expect(page.getByTestId('pass-phone')).toContainText('पास');
+    await expect(page.getByTestId('speak-hero')).toBeVisible();
+    await page.getByRole('radio', { name: 'Nepali', exact: true }).click();
+    await expect(page.getByTestId('translate-input')).toHaveValue('Hello');
+    await page.getByRole('radio', { name: 'English', exact: true }).click();
+    await expect(page.getByTestId('translate-input')).toHaveValue('Hello');
     recordScenario({ id, status: 'passed' });
   } catch (err) {
     recordScenario({
@@ -226,7 +227,8 @@ test('10 speech permission denied via TG bridge', async ({ page }) => {
     await openHostedApp(page, { speechPermission: 'denied' });
     await page.getByTestId('speak-hero').click();
     await expectVisible(page, 'translate-status');
-    await expect(page.getByTestId('translate-status')).toContainText(/permission/i);
+    await expect(page.getByTestId('translate-status')).toContainText('Microphone blocked.');
+    await expect(page.getByTestId('translate-status-dismiss')).toBeVisible();
     recordScenario({ id, status: 'passed' });
   } catch (err) {
     recordScenario({
@@ -273,11 +275,12 @@ test('primary tab touch targets are at least 44px', async ({ page }, testInfo) =
   }
 
   await typeAndSubmit(page, 'Hello');
-  await expect(page.getByTestId('pass-phone')).toBeVisible({ timeout: 30_000 });
-  const passBox = await page.getByTestId('pass-phone').boundingBox();
-  expect(passBox, 'pass-phone').toBeTruthy();
-  expect(passBox!.height, 'pass-phone height').toBeGreaterThanOrEqual(44);
-  expect(passBox!.width, 'pass-phone width').toBeGreaterThanOrEqual(44);
+  await expect(page.getByTestId('translate-output')).toContainText('नमस्ते');
+  await page.getByTestId('translate-input').focus();
+  const sendBox = await page.getByTestId('translate-send').boundingBox();
+  expect(sendBox, 'translate-send').toBeTruthy();
+  expect(sendBox!.height, 'translate-send height').toBeGreaterThanOrEqual(44);
+  expect(sendBox!.width, 'translate-send width').toBeGreaterThanOrEqual(44);
 
   // Fixture result always exposes retake; live shutter needs camera grant (often absent on web).
   await openHostedApp(page, { ocrFixture: 'inscription' });

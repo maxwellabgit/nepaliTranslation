@@ -27,6 +27,23 @@ export async function openHostedApp(
     ? page.getByTestId('startup-consent-gate')
     : page.getByTestId('app-shell');
   await expect(target).toBeVisible({ timeout: 60_000 });
+  if (!expectStartupGate) {
+    // Exercise the real first-open card before navigating. This is presentation
+    // acknowledgement, independent of the explicitly bypassed legal gate.
+    const alreadyAcknowledgedToday = await page.evaluate(() => {
+      try {
+        const record = JSON.parse(localStorage.getItem('neptranslate.dailyOpen.v2') ?? 'null');
+        const today = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit',
+        }).format(new Date());
+        return record?.nyDate === today && record.adDismissed === true;
+      } catch { return false; }
+    });
+    if (!alreadyAcknowledgedToday) {
+      await page.getByTestId('credit-award-collect').click({ timeout: 30_000 });
+    }
+    await expect(page.getByTestId('credit-award-card')).toHaveCount(0);
+  }
   return boot;
 }
 

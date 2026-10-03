@@ -3,6 +3,7 @@ import { F9_SCENARIO_CATALOG } from './f9-catalog';
 import { openHostedApp, expectVisible, typeAndSubmit } from './helpers/app';
 
 test.describe.configure({ mode: 'serial' });
+test.use({ screenshot: 'off', video: 'off', trace: 'off' });
 
 test('F9 catalog lists extended surfaces', () => {
   expect(F9_SCENARIO_CATALOG.length).toBeGreaterThanOrEqual(9);
@@ -18,6 +19,11 @@ test('f9-01 UI language toggle EN → नेपाली', async ({ page }) => {
   await expect(page.getByTestId('settings-screen')).toContainText('सेटिङ', {
     timeout: 15_000,
   });
+  await page.getByTestId('settings-lang-ne-roman').click();
+  await expect(page.getByTestId('settings-screen')).toContainText('setinga');
+  await expect.poll(() => page.evaluate(() =>
+    JSON.parse(localStorage.getItem('neptranslate.prefs.v1') ?? '{}').uiLang,
+  )).toBe('ne-roman');
   await page.getByTestId('settings-lang-en').click();
   await expect(page.getByTestId('settings-screen')).toContainText('Settings');
   await page.getByTestId('settings-close').click();
@@ -39,13 +45,13 @@ test('f9-02 consent age confirm + save gated without sign-in', async ({ page }) 
   await page.getByTestId('settings-close').click();
 });
 
-test('f9-03 rewards surface on Learn', async ({ page }) => {
+test("f9-03 Today's 10 contribution entry on Learn", async ({ page }) => {
   await openHostedApp(page);
   await page.getByTestId('tab-learn').click();
   await expectVisible(page, 'learn-screen');
-  await expectVisible(page, 'learn-earn-rewards');
-  await expectVisible(page, 'reward-summary');
-  await expect(page.getByTestId('learn-earn-rewards')).toBeVisible();
+  await expectVisible(page, 'learn-todays-10');
+  await page.getByTestId('learn-todays-10').click();
+  await expectVisible(page, 'review-screen');
 });
 
 test('f9-04 ads flag-off → no house/banner on Learn', async ({ page }) => {
@@ -165,5 +171,5 @@ test('f9-09 iPad viewport primary chrome', async ({ page }, testInfo) => {
   await expectVisible(page, 'settings-lang-en');
   await page.getByTestId('settings-close').click();
   await page.getByTestId('tab-learn').click();
-  await expectVisible(page, 'reward-summary');
+  await expectVisible(page, 'learn-todays-10');
 });

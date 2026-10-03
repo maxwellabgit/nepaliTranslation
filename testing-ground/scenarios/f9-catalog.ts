@@ -15,7 +15,7 @@ export const F9_SCENARIO_CATALOG = [
   },
   {
     id: 'f9-03-rewards-surface',
-    title: 'Learn earn-rewards / reward summary surface',
+    title: "Learn Today's 10 contribution entry",
     status: 'automated' as const,
   },
   {

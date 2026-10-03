@@ -1,0 +1,41 @@
+Command (testing-ground cwd): node node_modules/@playwright/test/cli.js test scenarios/f9-surfaces.spec.ts scenarios/mixed-capture.spec.ts scenarios/product-scenarios.spec.ts --project=desktop --config=.nomedia-smoke.config.ts
+Temporary config: extends playwright.config.ts; reporter=list; screenshot=off, video=off, trace=off; desktop project using existing viewport and msedge channel; webServer=undefined (existing localhost:5173 server).
+All three spec files additionally set screenshot/video/trace off. Mixed-capture manual screenshots require TG_CAPTURE_MEDIA=1; unset for this run.
+This checks current browser behavior with explicit recorded translation adapters. It is not bilingual legal review, native mic/camera, iPad or model quality proof.
+Console output:
+
+Running 27 tests using 1 worker
+
+  ok  1 [desktop] › scenarios\f9-surfaces.spec.ts:8:1 › F9 catalog lists extended surfaces (5ms)
+  ok  2 [desktop] › scenarios\f9-surfaces.spec.ts:13:1 › f9-01 UI language toggle EN → नेपाली (651ms)
+  ok  3 [desktop] › scenarios\f9-surfaces.spec.ts:32:1 › f9-02 consent age confirm + save gated without sign-in (469ms)
+  ok  4 [desktop] › scenarios\f9-surfaces.spec.ts:48:1 › f9-03 Today's 10 contribution entry on Learn (456ms)
+  ok  5 [desktop] › scenarios\f9-surfaces.spec.ts:57:1 › f9-04 ads flag-off → no house/banner on Learn (399ms)
+  ok  6 [desktop] › scenarios\f9-surfaces.spec.ts:68:1 › f9-05 ads house when flag on + offline (399ms)
+  ok  7 [desktop] › scenarios\f9-surfaces.spec.ts:82:1 › f9-06 paywall requires sign-in — guest tap leaves core usable (475ms)
+  ok  8 [desktop] › scenarios\f9-surfaces.spec.ts:107:1 › f9-07 deletion messaging in consent copy (470ms)
+  ok  9 [desktop] › scenarios\f9-surfaces.spec.ts:121:1 › f9-08 dark mode via color scheme (396ms)
+  ok 10 [desktop] › scenarios\f9-surfaces.spec.ts:135:1 › f9-startup-consent-gate accepts Terms and Privacy on first launch (413ms)
+  -  11 [desktop] › scenarios\f9-surfaces.spec.ts:159:1 › f9-09 iPad viewport primary chrome
+  -  12 [desktop] › scenarios\mixed-capture.spec.ts:6:1 › mixed-language capture of the local sample photo
+  ok 13 [desktop] › scenarios\product-scenarios.spec.ts:26:1 › catalog lists 12 scenarios (2ms)
+  ok 14 [desktop] › scenarios\product-scenarios.spec.ts:32:1 › 01 cold launch / empty Speak (375ms)
+  ok 15 [desktop] › scenarios\product-scenarios.spec.ts:51:1 › 02 typed EN→NE Hello→नमस्ते (398ms)
+  ok 16 [desktop] › scenarios\product-scenarios.spec.ts:70:1 › 03 tab switch Translate / Camera / Learn (505ms)
+  ok 17 [desktop] › scenarios\product-scenarios.spec.ts:94:1 › 04 history overlay open / close (439ms)
+  ok 18 [desktop] › scenarios\product-scenarios.spec.ts:114:1 › 05 learn alphabet glyph visible (419ms)
+  ok 19 [desktop] › scenarios\product-scenarios.spec.ts:132:1 › 06 camera tab permission or live UI (432ms)
+  ok 20 [desktop] › scenarios\product-scenarios.spec.ts:158:1 › 07 camera OCR fixture result (not native ML Kit) (417ms)
+  ok 21 [desktop] › scenarios\product-scenarios.spec.ts:181:1 › 08 source input survives switching language after a typed turn (442ms)
+  ok 22 [desktop] › scenarios\product-scenarios.spec.ts:205:1 › 09 settings overlay open / close (463ms)
+  ok 23 [desktop] › scenarios\product-scenarios.spec.ts:224:1 › 10 speech permission denied via TG bridge (413ms)
+  -  24 [desktop] › scenarios\product-scenarios.spec.ts:243:1 › 11 live mic STT — blocked on Windows
+  -  25 [desktop] › scenarios\product-scenarios.spec.ts:253:1 › 12 live camera capture OCR — blocked on Windows
+  -  26 [desktop] › scenarios\product-scenarios.spec.ts:264:1 › primary tab touch targets are at least 44px
+[test:scenarios] artifacts → C:\Users\maxwe\.cursor\nepaliTranslation\testing-ground\runs\pw-2026-10-03T03-03-01-272Z
+  ok 27 [desktop] › scenarios\product-scenarios.spec.ts:309:1 › artifact writer produced events.jsonl (3ms)
+(node:42064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+  5 skipped
+  22 passed (10.0s)

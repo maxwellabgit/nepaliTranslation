@@ -40,8 +40,8 @@ export const SCENARIO_CATALOG = [
     status: 'automated',
   },
   {
-    id: '08-pass-the-phone',
-    title: 'Pass-the-phone after a typed turn',
+    id: '08-language-switch-preserves-input',
+    title: 'Source input survives language switches after a typed turn',
     status: 'automated',
   },
   {
