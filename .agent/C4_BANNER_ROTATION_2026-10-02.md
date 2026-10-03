@@ -1,0 +1,4 @@
+# C4 rotating banner follow-up — 2026-10-02
+Shared PromoRotator held its loaded ad in two different child positions. Fill=true moved/remounted AdSlot; cleanup emitted false, moving it back. This loops through the60-120second ad turn. One stable full-size ad wrapper now changes visibility/accessibility; instance survives filled-state updates and unmounts only on the next house turn. Rotation interval and idle eligibility unchanged.
+Lifecycle regression confirms one mount at60seconds, no remount through90seconds, one unmount at120seconds. Both hosted testing ground and native app use this component; only source/browser proof is available, physical-device behavior not claimed. Finalbeta577 and freshindependentreview PASS. Existing displayedskip1coin/fullreward2coins source remains tested; receipt deployment and nativeSSV proof remain open.
+House copy now points to Today's10/badges rather than promising ad-free credits for corrections. No new creditgrantpath.

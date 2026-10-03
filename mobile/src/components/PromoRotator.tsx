@@ -67,16 +67,15 @@ export function PromoRotator({ onAdFree, onEarn, ad, adFilled = false }: Props) 
   if (active === 'ad') {
     return (
       <View style={styles.adWrap} testID="promo-ad-slide">
-        {showNetwork ? (
-          ad
-        ) : (
-          <>
-            <View style={styles.preload} pointerEvents="none">
-              {ad}
-            </View>
-            {house(true, true)}
-          </>
-        )}
+        <View
+          style={[styles.bannerLayer, !showNetwork && styles.preload]}
+          pointerEvents={showNetwork ? 'auto' : 'none'}
+          accessibilityElementsHidden={!showNetwork}
+          importantForAccessibility={showNetwork ? 'auto' : 'no-hide-descendants'}
+        >
+          {ad}
+        </View>
+        {!showNetwork && house(true, true)}
       </View>
     );
   }
@@ -92,6 +91,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginBottom: 8,
     height: SLOT_HEIGHT,
+    borderWidth: 1,
+    borderColor: '#C4922A',
     paddingVertical: 0,
     paddingLeft: 10,
     paddingRight: 10,
@@ -104,6 +105,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginBottom: 8,
     height: SLOT_HEIGHT,
+    borderWidth: 1,
+    borderColor: '#C4922A',
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -112,15 +115,8 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     zIndex: 1,
   },
-  preload: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 1,
-    height: 1,
-    overflow: 'hidden',
-    opacity: 0,
-  },
+  bannerLayer: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
+  preload: { opacity: 0 },
   copy: { flex: 1, minWidth: 0 },
   title: {
     color: '#F7F1EA',
