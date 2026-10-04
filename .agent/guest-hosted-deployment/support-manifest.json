@@ -1,0 +1,9 @@
+{
+  "sourceSha": "6f30ccfcab48c7ce62ff2127c2819de2f0a8cfed",
+  "version": "20261004020000",
+  "esbuild": "0.25.12",
+  "sqlSha256": "16c1994b000cfcc810cc2678136ad501e580622f616c59286258ea5e6b988a5f",
+  "endpointSha256": "a0afe8bcf7ca91186cee9a14cd26d0b0a483644bcca08e300818e519b32ba02b",
+  "status": "DEPLOYED_SOURCE_AND_PERMISSIONS_VERIFIED",
+  "evidence": ".agent/C6_PUBLIC_SUPPORT_HOSTED_2026-10-03.md"
+}

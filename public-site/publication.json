@@ -1,0 +1,96 @@
+{
+  "destination": "maxwellabgit/maxwellabgit.github.io",
+  "commit": "016698b3a8c8a01a72d57462872368df3faf5944",
+  "baseUrl": "https://maxwellabgit.github.io",
+  "status": "HTTPS_CONTENT_VERIFIED",
+  "files": [
+    {
+      "path": ".nojekyll",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app-ads.txt",
+      "sha256": "d0c2bf06a66932bd1c91e4c2a031f14ca452a1cf31070afb605790b280791446"
+    },
+    {
+      "path": "deletion.html",
+      "sha256": "6ddb2f80bbd55c0eaaf82e3fc21af5a918aec95235b4b76389e6c4699cdcf5bd"
+    },
+    {
+      "path": "index.html",
+      "sha256": "e91a16f7a144093367f5c0016c1691779db079eb94f2b3564637e56697be92d3"
+    },
+    {
+      "path": "privacy.html",
+      "sha256": "56d241ba6ec1644c86c43795aec08143da639e6bcf09006f44054bbf95b769fa"
+    },
+    {
+      "path": "robots.txt",
+      "sha256": "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95"
+    },
+    {
+      "path": "style.css",
+      "sha256": "f8cd440fcc553ff06a9c86bae0e8b91b86970b45aa907962b22e7b71a72a557d"
+    },
+    {
+      "path": "support.html",
+      "sha256": "db82015be3f79f269aafc7f4ba558ffe0e5ae03bd12fdd9a639419168fde295d"
+    },
+    {
+      "path": "support.js",
+      "sha256": "79627f3ef8ce63e39a7861bba552aedee85dbb0f742348e41e230cd5137b710f"
+    },
+    {
+      "path": "terms.html",
+      "sha256": "b71f908ebda273b790df1e0c6ea68d38fab96baa1b8e31c3e7e239523373949d"
+    }
+  ],
+  "verifiedAt": "2026-10-04T02:40:29.075Z",
+  "results": [
+    {
+      "path": "app-ads.txt",
+      "status": 200,
+      "sha256": "d0c2bf06a66932bd1c91e4c2a031f14ca452a1cf31070afb605790b280791446"
+    },
+    {
+      "path": "deletion.html",
+      "status": 200,
+      "sha256": "6ddb2f80bbd55c0eaaf82e3fc21af5a918aec95235b4b76389e6c4699cdcf5bd"
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "sha256": "e91a16f7a144093367f5c0016c1691779db079eb94f2b3564637e56697be92d3"
+    },
+    {
+      "path": "privacy.html",
+      "status": 200,
+      "sha256": "56d241ba6ec1644c86c43795aec08143da639e6bcf09006f44054bbf95b769fa"
+    },
+    {
+      "path": "robots.txt",
+      "status": 200,
+      "sha256": "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95"
+    },
+    {
+      "path": "style.css",
+      "status": 200,
+      "sha256": "f8cd440fcc553ff06a9c86bae0e8b91b86970b45aa907962b22e7b71a72a557d"
+    },
+    {
+      "path": "support.html",
+      "status": 200,
+      "sha256": "db82015be3f79f269aafc7f4ba558ffe0e5ae03bd12fdd9a639419168fde295d"
+    },
+    {
+      "path": "support.js",
+      "status": 200,
+      "sha256": "79627f3ef8ce63e39a7861bba552aedee85dbb0f742348e41e230cd5137b710f"
+    },
+    {
+      "path": "terms.html",
+      "status": 200,
+      "sha256": "b71f908ebda273b790df1e0c6ea68d38fab96baa1b8e31c3e7e239523373949d"
+    }
+  ]
+}

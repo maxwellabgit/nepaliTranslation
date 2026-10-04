@@ -9,6 +9,26 @@ on:
   pull_request:
 
 jobs:
+  public-support:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            mobile/package-lock.json
+            testing-ground/package-lock.json
+      - run: npm ci --prefix mobile
+      - run: npm ci --prefix testing-ground
+      - name: Private support identity regressions and deterministic public assets
+        run: |
+          node public-site/support.test.cjs
+          node --check public-site/publish.cjs
+          node public-site/build.cjs
+          git diff --exit-code -- public-site/site
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:
