@@ -1,7 +1,7 @@
 # V1 requirement ledger
 
-Contract: 2026-10-01 plus owner guest, UI, price and device amendments. Updated 2026-10-03.
-Runtime a41b6f9, support source 6f30ccf and public package cabf7d6 are published to main and the reconciliation branch. Diagnostic build 26 uses e0bdc66, built and submitted successfully. Apple availability is unverified. Build 25 is historical. [Owner checklist](../docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md). Full gate closure requires missing native/console/public evidence; source presence alone is not completion. Older records remain in docs/history/.
+Contract: 2026-10-01 plus owner guest, UI, price and device amendments. Updated 2026-10-04.
+Runtime 967b613 includes independently reviewed C13 direction and C10 optional credit rewards repairs; support source 6f30ccf and public package cabf7d6 remain deployed. All source is published to main and the reconciliation branch. Diagnostic build 27 built and submitted successfully; Apple processing and Team (Expo) assignment verified; same-build native functionality pending. Both exact-source CI pipelines passed. Build 26 was observed processed, assigned to Team (Expo), with one install; older builds are historical. [Owner checklist](../docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md). Full gate closure still requires native/console/public evidence.
 
 - C0 contract/state: original documentation checks and review passed; current records reconcile subsequent scoped proofs. No model or gold work.
 - C1 design: physical iPhone 17 Pro originals with build provenance remain missing. No browser/simulator substitution or additional redesign claimed.
@@ -20,9 +20,11 @@ Runtime a41b6f9, support source 6f30ccf and public package cabf7d6 are published
 - C12 runtime cleanup: account/provider UI and misleading legacy paths were retired in scoped source commits; coverage, secret checks, dependency pins and Doctor passed. Full unused-connection inventory, dependency/telemetry reconciliation and source/install-size evidence remain open.
 - C13 core/UX: requested source/browser/local-model/reset/editor/history/punctuation changes and Camera reset/photo-upload retirement passed. Same-source physical iPhone/iPad OCR, temporary-file cleanup, speech, clipboard, offline failure behavior, layout, Dynamic Type and VoiceOver remain open.
 - C14 operations: guest Auth, migrations, worker, nonempty storage and operator flows proved. Backup/restore, alert routing, failure/recovery/rollback drills and ongoing monitoring remain open. Retired public review/review credits/photo collection stay disabled.
-- C15 checks: exact e0bdc660fc2c8fd08426f1349f50626c675aaf0c backend 37173732614 and agent 37173732487 succeeded; runtime diff from reviewed a41b6f9 is empty. Full local verification, fresh delivery review and ad-configuration tests passed.
-- C15 delivery: diagnostic 1.7.0 (26), exact e0bdc66, built and submitted successfully without errors. Apple processing/internal availability and native tests remain unverified. Public release remains NO-GO. See TESTFLIGHT26_DELIVERY_2026-10-03.json.
+- C15 checks: exact 967b613de64aef2f3c125d55d7b47aea1443b126 backend 37235343040 and agent 37235343149 SUCCESS. Full local mobile gate (631 tests), unchanged coverage, translation/pins/Doctor/export and fresh source review PASS. Current evidence-only runtime diff is empty.
+- C15 delivery: diagnostic 1.7.0 (27), exact 967b613, built and submitted successfully without errors. Apple processing and assignment to Team (Expo) are verified; same-build native tests remain pending. Public release remains NO-GO. See TESTFLIGHT27_DELIVERY_2026-10-04.json.
 - Public pages: owner-approved https://maxwellabgit.github.io serves nine verified HTTPS files with exact hashes and correct publisher line. Apple metadata/privacy/developer-website updates require console access. No public App Store submission performed.
 - Model: prior unresolved certificate preserved. No optimization, new score, gold changes or release waiver inferred.
 
 Collection flags text/speech/photos/public review remain off at version 16; paywall/telemetry remain off. The approved synthetic window completed and restored flags off. Approval or proof of one subsystem does not authorize ongoing collection or live advertising.
+
+2026-10-04 scoped repair: current direction is visibly emphasized and Settings exposes an optional ad action for 2 credits. Award copy/accessibility uses credits in all UI languages. Current eligibility/consent/owner guards bracket native rewarded load/show; explicit rewards can stack while automatic ads stay suppressed by active credits. Full local 631 mobile tests and required gates, fresh independent review, and both exact-source CI pipelines PASS. Native functionality and owner-unit SSV remain open.

@@ -1,6 +1,6 @@
 # Bola — TestFlight to production checklist
 
-Updated 2026-10-03. Diagnostic 1.7.0 (26), exact source e0bdc66, built and submitted to Apple successfully. Both exact-candidate CI pipelines and independent delivery review passed; runtime matches reviewed a41b6f9. Apple processing/internal availability and native tests remain unverified. Source/evidence are published to main and the reconciliation branch; public release is not approved.
+Updated 2026-10-04. Diagnostic 1.7.0 (27), exact 967b613, built and submitted successfully. Apple processed it and assigned Team (Expo); internal availability verified. Reviewed fixes: bold current-direction arrow, visible Settings Credits action, recoverable config/consent, safe explicit reward stacking and credit-denominated awards. Full local mobile gates (631 tests), fresh review and both exact-source GitHub pipelines PASS. Previous 26 is processed/Team (Expo) assigned, with 1 install observed; native functionality remains unverified. Public release is not approved.
 
 ## Completed engineering and hosted setup
 
@@ -16,14 +16,15 @@ Updated 2026-10-03. Diagnostic 1.7.0 (26), exact source e0bdc66, built and submi
 - [x] Save and read back matching public URLs, owned iOS ad identifiers and Bola's Supabase project/publishable key in EAS preview and production. Fix the unrelated Android-ID requirement for iOS builds. Normal TestFlight still forces Google demo units.
 - [x] Fix the rewarded callback's matching unit, 20-minute reward and signed Google console-test HTTP 400 response. Google Verify succeeded; console tests grant no credits.
 - [x] Create the Apple monthly subscription with US USD 2.99, Canada CAD 2.99 and Nepal USD 1.49 pricing and three-storefront availability. Agreements, bank and tax status were observed Active.
-- [x] Pass exact-source CI: 375 SQL tests on fresh/upgraded databases, 69 Edge tests, 10 admin tests, 613 mobile tests, 14 public-support tests and required coverage, browser, export, Doctor, model-pin, exclusion and secret checks. Full local C10 checks and independent review also passed.
+- [x] Pass exact-source CI: 375 SQL tests on fresh/upgraded databases, 69 Edge tests, 10 admin tests, 631 mobile tests, 14 public-support tests and required coverage, browser, export, Doctor, model-pin, exclusion and secret checks. Full local C10 checks and independent review also passed.
 
-- [x] Build and submit diagnostic 1.7.0 (26), exact e0bdc66, with Google demo ads and collection/paywall off. EAS build and exact submission finished without errors; Apple availability remains unverified.
+- [x] Build and submit diagnostic 1.7.0 (27), exact 967b613, with Google demo ads and collection/paywall off. Exact EAS build/submission FINISHED without error; Apple processed it and assigned Team (Expo); same-build native verification remains open.
 
 ## Actions requiring your access or device
 
-- [ ] **Sign in to App Store Connect and RevenueCat in the open tabs, then reply which is ready.** I can verify internal build availability, fill approved public URLs and store metadata, and configure RevenueCat's product, offering, ad_free entitlement, public Apple key and webhook. Enter credentials yourself; do not send them in chat.
-- [ ] **Finish AdMob → Payments → Add payments account yourself.** The console reports incomplete payment setup and blocked app review. Financial-account entry and submission require your handoff; do not send financial or tax details in chat.
+- [x] Sign in to App Store Connect and RevenueCat. Apple build 26 processing/group assignment was verified; RevenueCat project 57ff517d was accessible.
+- [ ] Confirm the RevenueCat email, then finish real Apple app/product/offering/ad_free/public-key/webhook configuration; only TestStore was previously configured. I can do configuration using the consoles after the email handoff.
+- [ ] Verify AdMob payment readiness, app review and public listing linkage in the console. Owner reports AdMob setup completed; this does not independently prove live serving. Any remaining financial entry requires owner handoff.
 - [x] Verify browser synthetic support deletion: guest displayed Deleted, fresh reply retrieval and operator refresh showed no request, and an exact-message SQL query returned zero rows. No new privileged deletion was needed.
 - [ ] Install the newest diagnostic build on your **iPhone 17 Pro and an iPad**, and record build, source SHA, device and OS. Earlier builds cannot prove new support behavior. Supply original native captures with provenance before any further visual redesign.
 - [ ] Provide the **32-character hexadecimal AdMob SDK test-device identifier** for your iPhone 17 Pro, rather than its serial number or Apple UDID. I can prepare a separate owner-unit SSV candidate with the device enrolled as a test device. Test ads generate no revenue.
@@ -58,3 +59,5 @@ Updated 2026-10-03. Diagnostic 1.7.0 (26), exact source e0bdc66, built and submi
 - [ ] Monitor crashes, ad fill, reward failures, purchases, upload queues and deletion lag. Answer support, review consented contributions and fix release blockers before expanding the rollout.
 
 Public release remains NO-GO. Hosted capture/retrieval/deletion and public pages are proven; native functionality, StoreKit/AdMob and the external release gates still need evidence. The controlled collection test ended with text/speech/photos/public-review flags off at version 16; paywall and telemetry remain off. Website publication and green CI do not authorize ongoing collection or live ads.
+
+2026-10-04 repair verification: source 967b613 and diagnostic 27 add current-direction emphasis, Settings → Credits → Watch an optional ad for 2 credits, current-state ad checks and earned-balance stacking. Full local 631 mobile tests and exact-source agent/backend pipelines PASS; native examination remains required. Build/submission finished without error; Apple processing and existing Team (Expo) assignment verified; same-build native functionality remains pending.
