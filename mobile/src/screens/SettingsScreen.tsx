@@ -33,9 +33,7 @@ import { useSubscriptionOptional } from '../features/subscription/SubscriptionPr
 import { RewardedAdButton } from '../features/ads/RewardedAdButton';
 import { useAdConsent } from '../features/ads/useAdConsent';
 import { isHttpsUrl, readLegalPublicUrls } from '../config/legalUrls';
-
-const INAPPROPRIATE_AD_HELP =
-  'mailto:support@neptranslate.app?subject=Inappropriate%20ad%20report';
+import { SupportSection } from '../features/support/SupportSection';
 
 type LegalLink = {
   testID: string;
@@ -98,6 +96,7 @@ export function SettingsScreen({
     speech: false,
     photos: false,
   });
+  const [supportCategory, setSupportCategory] = useState<'general' | 'ad' | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -412,6 +411,13 @@ export function SettingsScreen({
           ))}
         </View>
 
+        <View style={dynamic.section}>
+          <Pressable accessibilityRole="button" onPress={() => setSupportCategory('general')} testID="settings-in-app-support">
+            <Text style={dynamic.link}>{t('support.title', lang)}</Text>
+          </Pressable>
+        </View>
+        {supportCategory && <SupportSection key={`${auth.userId ?? 'offline'}:${supportCategory}`} category={supportCategory} />}
+
         <View style={dynamic.section} testID="settings-ads-privacy">
           <Text style={dynamic.sectionLabel}>
             {t('settings.adsPrivacy', lang)}
@@ -430,15 +436,8 @@ export function SettingsScreen({
             </Pressable>
           ) : null}
           <Pressable
-            onPress={() => {
-              void Linking.openURL(INAPPROPRIATE_AD_HELP).catch(() => {
-                Alert.alert(
-                  t('settings.reportAdFallbackTitle', lang),
-                  t('settings.reportAdFallbackBody', lang),
-                );
-              });
-            }}
-            accessibilityRole="link"
+            onPress={() => setSupportCategory('ad')}
+            accessibilityRole="button"
             accessibilityLabel={t('settings.reportAdA11y', lang)}
             testID="settings-report-inappropriate-ad"
           >

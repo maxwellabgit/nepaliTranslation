@@ -11,6 +11,7 @@ import { FlagsPage } from "./pages/Flags";
 import { DatasetPage } from "./pages/Dataset";
 import { LoginPage } from "./pages/Login";
 import { ContributionsPage } from "./pages/Contributions";
+import { SupportPage } from './pages/Support';
 
 export function App() {
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
@@ -72,6 +73,7 @@ export function App() {
         <span className="brand">NepTranslate Admin</span>
         <NavLink to="/" end>Dashboard</NavLink>
         <NavLink to="/contributions">Contributions</NavLink>
+        <NavLink to="/support">Support</NavLink>
         <NavLink to="/public-review">Public Review</NavLink>
         <NavLink to="/alerts">Alerts</NavLink>
         <NavLink to="/deletions">Deletions</NavLink>
@@ -88,6 +90,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<DashboardPage api={api} />} />
         <Route path="/contributions" element={<ContributionsPage api={api} />} />
+        <Route path="/support" element={<SupportPage api={api} />} />
         <Route path="/review" element={<Navigate to="/public-review" replace />} />
         <Route path="/public-review" element={<PublicReviewPage api={api} />} />
         <Route path="/alerts" element={<AlertsPage api={api} />} />

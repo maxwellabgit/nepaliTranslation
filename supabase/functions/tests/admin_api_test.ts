@@ -67,6 +67,15 @@ function mockDeps(opts: {
   };
 }
 
+Deno.test('support reply denies invalid payload before RPC and uses validated actor', async () => {
+  const bad = await handleAdminRequest(new Request('http://localhost/functions/v1/admin-api/support/reply', {
+    method: 'POST', headers: { authorization: 'Bearer signed', 'content-type': 'application/json' }, body: JSON.stringify({ id: 'not-a-uuid', reply: 'help' }),
+  }), mockDeps({}));
+  assertEquals(bad.status, 400);
+  const reads = await handleAdminRequest(new Request('http://localhost/functions/v1/admin-api/support', { headers: { authorization: 'Bearer signed' } }), mockDeps({ rpcJson: { requests: [] } }));
+  assertEquals(reads.status, 200); assertEquals(reads.headers.get('cache-control'), 'no-store');
+});
+
 Deno.test("admin-api missing bearer returns 401", async () => {
   const res = await handleAdminRequest(
     new Request("http://localhost/functions/v1/admin-api/dashboard"),

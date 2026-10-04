@@ -180,6 +180,22 @@ export async function handleAdminRequest(
   const method = req.method.toUpperCase();
 
   try {
+    if ((method === 'GET' && path === '/support') || (method === 'POST' && path === '/support/reply')) {
+      const params = new URL(req.url).searchParams;
+      const before = params.get('before'); const beforeId = params.get('before_id');
+      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (Boolean(before) !== Boolean(beforeId) || (before !== null && !Number.isFinite(Date.parse(before)))
+        || (beforeId !== null && !uuidPattern.test(beforeId))) return withCors(errorResponse('invalid_payload', 400, requestId), origin, deps.env.adminOrigin);
+      const body = method === 'POST' ? await req.json().catch(() => null) as { id?: string; reply?: string } | null : null;
+      if (method === 'POST' && (!body || typeof body.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.id)
+        || typeof body.reply !== 'string' || !body.reply.trim() || body.reply.trim().length > 2000)) {
+        return withCors(errorResponse('invalid_payload', 400, requestId), origin, deps.env.adminOrigin);
+      }
+      const result = await deps.rpc('service_admin_support', { p_actor_id: user.id, p_id: body?.id ?? null, p_reply: body?.reply ?? null, p_before: before, p_before_id: beforeId });
+      if (!result.ok) return withCors(rpcError(result.text, requestId), origin, deps.env.adminOrigin);
+      const response = json(result.json, 200, requestId); response.headers.set('cache-control', 'no-store');
+      return withCors(response, origin, deps.env.adminOrigin);
+    }
     if ((method === "GET" && path === "/contributions") ||
       (method === "POST" && path === "/contributions/export")) {
       const params = new URL(req.url).searchParams;

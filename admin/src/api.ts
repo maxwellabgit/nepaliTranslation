@@ -98,6 +98,8 @@ export function createAdminClient(opts: AdminClientOptions) {
   }
 
   return {
+    support: (cursor: { created_at: string; id: string } | null = null) => request<{ requests: Array<{ id: string; message: string; category: string; app_version: string; reply: string | null; created_at: string }>; next_cursor: { created_at: string; id: string } | null }>(`/support${cursor ? `?before=${encodeURIComponent(cursor.created_at)}&before_id=${encodeURIComponent(cursor.id)}` : ''}`),
+    replySupport: (id: string, reply: string) => request('/support/reply', { method: 'POST', body: JSON.stringify({ id, reply }) }),
     contributions: (cursor: ContributionCursor | null = null, exporting = false) => {
       const params = new URLSearchParams({ limit: '100' });
       if (cursor) { params.set('before', cursor.created_at); params.set('before_key', cursor.key); }

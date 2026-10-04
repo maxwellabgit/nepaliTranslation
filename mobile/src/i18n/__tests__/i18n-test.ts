@@ -42,7 +42,11 @@ describe('i18n catalogs', () => {
     expect(t('settings.qualityBody', 'ne')).toContain('Mark incorrect');
     expect(t('settings.privacyBody', 'ne')).toContain('यन्त्र');
     expect(t('settings.legalNotLive', 'en')).toMatch(/not live yet/i);
-    expect(t('settings.legalNotLive', 'ne')).toContain('लाइभ');
+    expect(t('settings.legalNotLive', 'ne')).toContain('प्रकाशित');
+    for (const lang of ['en','ne'] as const) {
+      expect(t('settings.legalNotLive', lang)).not.toContain('support@');
+      expect(t('settings.legalLinkUnavailableBody', lang)).not.toContain('support@');
+    }
   });
 
   test('interpolates params', () => {

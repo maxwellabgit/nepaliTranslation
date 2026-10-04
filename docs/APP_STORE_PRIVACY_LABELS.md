@@ -14,7 +14,8 @@ use ATT / IDFA.
 | Crash / diagnostics (no raw content) | Optional, flag-gated | No (anonymous) | No | App functionality / analytics | First-party telemetry module (`telemetry_enabled`, default **off**). Scrubber bans text/audio/OCR/photos. |
 | Product interaction (screen / feature codes) | Optional, flag-gated | No | No | Analytics | Same telemetry module |
 | Performance data (durations, reason codes) | Optional, flag-gated | No | No | App functionality | Same telemetry module |
-| Contact info (email) | No in-app collection | — | — | — | Support mailbox is out-of-band (`support@neptranslate.app`) |
+| Contact info (email) | No requested in-app collection | — | — | — | Support asks for an issue message without email, history or audio attachments; user-entered messages may still contain personal content |
+| Other user content (support requests) | Yes, optional | Yes (private guest UUID) | No | App functionality / customer support | Explicit separate support disclosure and Send choice; private Supabase support table, operator replies and user deletion; excluded from model training |
 | Name / phone / physical address | No | — | — | — | — |
 | Health / sensitive | No | — | — | — | — |
 | Photos / videos | **No** | — | No | — | Camera photos are processed on device for OCR and then deleted. Bola does not upload them. |
@@ -42,7 +43,7 @@ use ATT / IDFA.
 | `expo-speech-recognition` | On-device STT preference | Fail closed when on-device locales missing |
 | Supabase JS | Auth, config, contributions | Public key only in app; authenticated guest JWT authorizes owned optional data; service role never in bundle |
 | `react-native-google-mobile-ads` | Banners / rewarded / interstitial | Flags default off; UMP; no custom interstitial skip |
-| `react-native-purchases` (RevenueCat) | Optional ad-free subscription. Target price USD 2.99/month (US) and NPR 199/month (Nepal), displayed from StoreKit. Not yet confirmed in App Store Connect | Public Apple API key only |
+| `react-native-purchases` (RevenueCat) | Optional ad-free subscription. Apple product prices saved: US USD2.99 / Canada CAD2.99 / Nepal USD1.49 monthly, displayed from StoreKit. Native purchase/restore pending | Public Apple API key only |
 | First-party telemetry (F8) | Crash/perf/usage schema | Scrubbed; flag default off; soft-fail |
 
 ## Connect form checklist (human)

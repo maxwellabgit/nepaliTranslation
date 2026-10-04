@@ -4,6 +4,18 @@ import type { MessageKey } from './en';
  * Nepali UI catalog (informal तिमी register where second person appears).
  */
 export const ne: Record<MessageKey, string> = {
+  'support.title': 'सहायता',
+  'support.disclosure': 'तिमीले लेखेको सन्देश, त्यसको प्रकार, एपको संस्करण र यन्त्रको निजी पहिचान मात्र Supabase मार्फत Bola सहायतामा पठाइन्छ। इतिहास, फोटो वा आवाज जोडिँदैनन्। सहायता सन्देश मोडेल सुधारमा प्रयोग हुँदैनन्। यहाँ नमेटाएसम्म ती निजी रहन्छन्। जवाफ यस स्थापनामा उपलब्ध हुन्छ; फेरि स्थापना गर्दा वा फोन बदल्दा पहुँच हराउन सक्छ। व्यक्तिगत वा संवेदनशील जानकारी नपठाऊ।',
+  'support.placeholder': 'समस्या लेख…',
+  'support.sendConsent': 'म सहायताका लागि यो सन्देश पठाउन रोज्छु',
+  'support.send': 'पठाऊ',
+  'support.refresh': 'जवाफ हेर',
+  'support.saved': 'पठाइयो। यहाँ जवाफ हेर्न सक्छौ।',
+  'support.error': 'अनुरोध पूरा भएन। सन्देश यहीँ रहन्छ; जडान भएपछि फेरि प्रयास गर।',
+  'support.awaiting': 'जवाफको प्रतीक्षामा',
+  'support.connect': 'सहायता सन्देश पठाउन जडान गर। अनुवाद अफलाइन पनि चल्छ।',
+  'support.deleteTitle': 'सहायता अनुरोध मेटाउने?',
+  'support.deleteBody': 'यसले Bola सहायताबाट यो सन्देश र जवाफ सधैँका लागि हटाउँछ। फिर्ता ल्याउन सकिँदैन।',
   "privacy.title": "गोपनीयता र डाटा",
   "privacy.installationWarning": "क्रेडिट र साझा डाटामा पहुँच यस स्थापनासँग जोडिएका छन्। एप हटाउँदा, फेरि स्थापना गर्दा वा नयाँ फोनमा सर्दा जम्मा भएका क्रेडिट र पहिले साझा गरेको डाटामा पहुँच हराउन सक्छ; Bola ले ती फिर्ता ल्याउन सक्दैन। साझा डाटा हटाउन चाहन्छौ भने एप हटाउनु अघि यहाँ मेटाऊ।",
   "privacy.optionalServicesUnavailable": "ऐच्छिक डाटा सेवा उपलब्ध छैन। अनुवाद यस यन्त्रमै रहन्छ।",
@@ -182,7 +194,7 @@ export const ne: Record<MessageKey, string> = {
   'settings.reportAdA11y': 'अनुपयुक्त विज्ञापन रिपोर्ट गर्नुहोस्',
   'settings.reportAdFallbackTitle': 'विज्ञापन रिपोर्ट',
   'settings.reportAdFallbackBody':
-    'विषयमा “Inappropriate ad report” लेखेर support@neptranslate.app मा इमेल पठाउनुहोस्।',
+    'सेटिङमा सहायता खोलेर विज्ञापनबारे लेख। अनुवाद वा आवाज जोडिँदैन।',
   'settings.quality': 'अनुवाद गुणस्तर',
   'settings.qualityBody':
     'अनुवाद अपूर्ण हुन सक्छ। नतिजामा Mark incorrect थिचेर राम्रो अनुवाद सुझाउन सकिन्छ।',
@@ -200,10 +212,10 @@ export const ne: Record<MessageKey, string> = {
   'settings.manageSubscription': 'Apple सदस्यता व्यवस्थापन',
   'settings.manageSubscriptionA11y': 'Apple सदस्यता व्यवस्थापन खोल्नुहोस्',
   'settings.legalNotLive':
-    'गोपनीयता नीति, सर्तहरू र सहयोग पृष्ठ अहिले लाइभ छैनन्। प्रकाशित हुनुअघि सहयोग चाहिए support@neptranslate.app मा सम्पर्क गर्नुहोस्।',
+    'सार्वजनिक नीति पृष्ठ अहिले प्रकाशित छैनन्। जडान भएपछि यहाँको सहायताबाट सन्देश पठाऊ।',
   'settings.legalLinkUnavailableTitle': 'अहिले उपलब्ध छैन',
   'settings.legalLinkUnavailableBody':
-    'यो पृष्ठ अहिले प्रकाशित छैन। सहयोगका लागि support@neptranslate.app मा इमेल गर्नुहोस्।',
+    'यो पृष्ठ अहिले प्रकाशित छैन। सहयोगका लागि सेटिङमा सहायता खोल।',
   'settings.about': 'बारेमा',
   'settings.aboutReady':
     'Bola ले यस यन्त्रमै IndicTrans2 चलाएर अंग्रेजी ↔ नेपाली अनुवाद गर्छ। मोडेल स्थापनासँगै आउँछ — अनुवादका लागि नेटवर्क चाहिँदैन। बोली Apple ले चिन्छ र नेटवर्क चाहिन सक्छ।',

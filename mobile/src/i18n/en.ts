@@ -1,5 +1,17 @@
 /** English UI catalog — product chrome, errors, ads, contribution. */
 export const en = {
+  'support.title': 'Support',
+  'support.disclosure': 'Only the message you enter, its category, app version and private device identity are sent to Bola support through Supabase. No history, photos or audio are attached. Support messages are not used for model improvement. They stay private until you delete them here. Replies are available on this installation; access may be lost after reinstalling or changing phones. Avoid personal or sensitive information.',
+  'support.placeholder': 'Describe the issue…',
+  'support.sendConsent': 'I choose to send this message for support',
+  'support.send': 'Send',
+  'support.refresh': 'Check replies',
+  'support.saved': 'Sent. You can check for a reply here.',
+  'support.error': 'Unable to complete the request. Your message stays here; try again when connected.',
+  'support.awaiting': 'Awaiting a reply',
+  'support.connect': 'Connect to send support messages. Translation still works offline.',
+  'support.deleteTitle': 'Delete support request?',
+  'support.deleteBody': 'This permanently removes this message and its reply from Bola support. It cannot be undone.',
   "privacy.title": "Privacy and data",
   "privacy.installationWarning": "Credits and access to shared data belong to this installation. Uninstalling, reinstalling or moving to a new phone can lose accumulated credits and access to previously shared data; Bola cannot recover them. Delete shared data here before removing the app if you want it removed.",
   "privacy.optionalServicesUnavailable": "Optional data services are unavailable. Translation stays on this device.",
@@ -177,7 +189,7 @@ export const en = {
   'settings.reportAdA11y': 'Report an inappropriate ad',
   'settings.reportAdFallbackTitle': 'Report an ad',
   'settings.reportAdFallbackBody':
-    'Email support@neptranslate.app with “Inappropriate ad report” in the subject.',
+    'Open Support in Settings and describe the ad. No translation or audio is attached.',
   'settings.quality': 'Translation quality',
   'settings.qualityBody':
     'Translation may be imperfect. On a result, tap Mark incorrect to suggest a better translation.',
@@ -195,10 +207,10 @@ export const en = {
   'settings.manageSubscription': 'Manage Apple subscription',
   'settings.manageSubscriptionA11y': 'Open Apple subscription management',
   'settings.legalNotLive':
-    'Privacy Policy, Terms, and support pages are not live yet. Contact support@neptranslate.app if you need help before those pages are published.',
+    'Public policy pages are not live yet. Use Support here to send a message when connected.',
   'settings.legalLinkUnavailableTitle': 'Not available yet',
   'settings.legalLinkUnavailableBody':
-    'This page is not published yet. Email support@neptranslate.app for help.',
+    'This page is not published yet. Use Support in Settings for help.',
   'settings.about': 'About',
   'settings.aboutReady':
     'Bola runs IndicTrans2 on this device for free-form translation in both directions (English ↔ Nepali). Models ship in the install — no network needed for translation. Speech uses Apple recognition and may need a network.',
