@@ -7,6 +7,22 @@ jest.mock('expo-clipboard', () => ({
 }));
 
 describe('TranslateScreen Mark incorrect entry', () => {
+  test('language selectors and swap bold the actual direction while retaining the draft', async () => {
+    await render(<TranslateScreen onOpenHistory={jest.fn()} onOpenSettings={jest.fn()} />);
+    expect(screen.getByTestId('direction-en-shaft', { includeHiddenElements: true })).toHaveStyle({ height: 3 });
+    expect(screen.getByTestId('direction-ne-shaft', { includeHiddenElements: true })).toHaveStyle({ height: 1 });
+    await fireEvent.changeText(screen.getByTestId('translate-input'), 'Keep this draft');
+    await fireEvent.press(screen.getByTestId('translate-side-ne'));
+    expect(screen.getByTestId('direction-ne-shaft', { includeHiddenElements: true })).toHaveStyle({ height: 3 });
+    expect(screen.getByTestId('direction-en-shaft', { includeHiddenElements: true })).toHaveStyle({ height: 1 });
+    expect(screen.getByTestId('translate-input').props.value).toBe('Keep this draft');
+    await fireEvent.press(screen.getByTestId('translate-swap'));
+    expect(screen.getByTestId('direction-en-shaft', { includeHiddenElements: true })).toHaveStyle({ height: 3 });
+    expect(screen.getByTestId('translate-side-en').props.accessibilityState.selected).toBe(true);
+    await fireEvent.press(screen.getByTestId('translate-side-en'));
+    expect(screen.getByTestId('direction-en-shaft', { includeHiddenElements: true })).toHaveStyle({ height: 3 });
+  });
+
   test('Mark incorrect opens a local edit and does not offer a public submit', async () => {
     await render(
       <TranslateScreen

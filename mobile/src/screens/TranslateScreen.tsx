@@ -20,6 +20,7 @@ import { useRuntime } from '../runtime/RuntimeContext';
 import { type HistoryItem } from '../storage/phrasebook';
 import { companionNepaliScript, formatNepaliScript } from '../mt/onDeviceTranslate';
 import { CreditsGauge } from '../translate/CreditsGauge';
+import { DirectionArrows } from '../translate/DirectionArrows';
 import { setAwardSurfaceBusy } from '../translate/awardSurface';
 import { PromoRotator } from '../components/PromoRotator';
 import { useSubscriptionOptional } from '../features/subscription/SubscriptionProvider';
@@ -399,6 +400,7 @@ export function TranslateScreen({
           accessibilityRole="radio"
           accessibilityState={{ selected: state.activeSide === 'en' }}
           accessibilityLabel={t('translate.sideEn', lang)}
+          testID="translate-side-en"
         >
           <Text style={[styles.langText, state.activeSide === 'en' && styles.langTextOn]}>
             {t('translate.sideEn', lang)}
@@ -414,8 +416,10 @@ export function TranslateScreen({
           disabled={translateBusy}
           accessibilityRole="button"
           accessibilityLabel={t('translate.swapA11y', lang)}
+          testID="translate-swap"
+          style={styles.iconBtn}
         >
-          <Ionicons name="swap-horizontal" size={20} color="#1A1410" />
+          <DirectionArrows source={state.activeSide} />
         </Pressable>
         <Pressable
           onPress={() => session.dispatch({ type: 'setSide', side: 'ne' })}
@@ -424,6 +428,7 @@ export function TranslateScreen({
           accessibilityRole="radio"
           accessibilityState={{ selected: state.activeSide === 'ne' }}
           accessibilityLabel={t('translate.sideNe', lang)}
+          testID="translate-side-ne"
         >
           <Text style={[styles.langText, state.activeSide === 'ne' && styles.langTextOn]}>
             {t('translate.sideNe', lang)}

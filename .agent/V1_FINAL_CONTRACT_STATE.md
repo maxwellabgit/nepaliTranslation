@@ -1,7 +1,7 @@
 status: IN_PROGRESS
 baseline_code_sha: 9aaf4933bb0cdecd45c67a3e36a4af4a819612f1
 branch: cursor/v1-final-contract-reconciliation-5907
-current_gate: C0 evidence reconciliation; scoped C6/C10/C14 engineering and hosted checks passed. C1-C15 full native/console/public-release evidence remains open.
+current_gate: C13/C10 owner-directed source repairs verified; new diagnostic internal delivery next. Full native/console/public gates remain open.
 contract_date: 2026-10-01 plus owner 2026-10-02 guest amendment
 current_source_sha: Diagnostic candidate e0bdc660fc2c8fd08426f1349f50626c675aaf0c; runtime matches reviewed a41b6f9. Support source 6f30ccf/public package cabf7d6; build 26 replaces build 25 as the current candidate.
 current_ci: Exact candidate e0bdc660fc2c8fd08426f1349f50626c675aaf0c backend 37173732614 and agent 37173732487 SUCCESS. Runtime matches reviewed a41b6f9; later commits only documentation. Required SQL/Edge/admin/mobile/public-support/coverage/browser/export/Doctor/pin/exclusion/secret jobs passed.
@@ -49,3 +49,5 @@ guest_final_ci: Exact source4bbd3e18149fdf3a3e462e57784b41df95ba3b21 main backen
 
 c6_support_completion: Approved source, SQL/admin API and pages deployed; independent reviews passed. Guest ownership/retry/delete/admin-denial API tests and operator-browser reply/retrieval passed. Browser deletion is verified in guest/operator refresh and exact-message SQL; native UX remains open. See C6_PUBLIC_SUPPORT_HOSTED_2026-10-03.md.
 c10_config_completion: iOS-only AdMob build/runtime validation repaired with actual emitted-bundle regression. Public EAS URLs, iOS IDs, project and publishable key readback passed. RevenueCat/device/live modes remain unconfigured. See C10_IOS_PRODUCTION_CONFIG_2026-10-03.md.
+
+c13_direction_repair_2026_10_04: Owner-requested3px/1px directional strokes follow EN/NE source selection and Swap; draft preserved. Full mobile631tests/unchangedcoverage/translation/pins/Doctor/export and fresh independent review PASS. Physical-device visual confirmation remains open.
