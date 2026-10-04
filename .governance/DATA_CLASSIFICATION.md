@@ -34,6 +34,8 @@ A collected row is publicly eligible only when all of these hold:
 
 `unresolved` rights are stored and treated as `admin_only`. Do not label audio or photos anonymous because EXIF or `user_id` was removed. A certification record for an anonymized derivative states processor version, fields transformed or removed, re-identification assessment, reviewer, and timestamp.
 
+Private support messages/replies have an explicit customer-support purpose and never enter contribution, train, eval or public-review exports. They are guest-linked private content, not certified anonymous derivatives; user deletion controls are separate from contribution withdrawal.
+
 Every train and eval exporter must use one fail-closed exclusion boundary. An empty exclusion manifest is not proof. Direct raw-table export is unsupported.
 
 The inventory snapshot below is a **historical audit at `43f9bc6`**. It is not a claim that those rows are publicly eligible. Gate C2 re-inventories every source and records rights. Do not rewrite these counts.

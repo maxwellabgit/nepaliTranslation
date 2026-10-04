@@ -3,8 +3,8 @@
 Status: owner-approved copy **published and HTTPS content verified** at
 https://maxwellabgit.github.io. Private support backend is deployed. Real guest
 API ownership/retry/deletion tests pass; operator-browser reply/retrieval passes.
-Native support UX requires a build newer than25. Browser deletion confirmation
-in the local preview requires the recorded human handoff to finish.
+Native support UX requires a build newer than 25. Browser deletion is now
+verified by guest/operator refresh and an exact-message SQL query returning zero rows.
 
 Build from repository root: `node public-site/build.cjs`.
 Regression tests: `node public-site/support.test.cjs`.

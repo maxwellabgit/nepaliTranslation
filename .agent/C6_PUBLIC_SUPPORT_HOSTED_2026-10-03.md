@@ -28,9 +28,10 @@ findings, then passed14durable synthetic tests plus publisher guard tests.
   first deployment was correct. Persist the explicit-select-all/readback lesson.
 - Actual browser guest sent only synthetic support text. Owner operator retrieved
   it and sent a synthetic reply; guest Check replies showed that exact reply.
-- Browser support deletion confirmation hit an in-app browser control timeout;
-  owner was asked to confirm it. Do not call that browser deletion complete until
-  its subsequent state and database removal are verified.
+- Browser deletion initially encountered a dialog-control timeout. Subsequent
+  verification found guest status Deleted, fresh guest retrieval empty,
+  operator refresh empty and an exact-message SQL query returning zero rows.
+  Browser deletion is complete. No new privileged deletion was executed.
 - Separate approved real-Auth/API probe completed2026-10-04T02:39:27.107Z:
   same-owner/version-change retry returned the same ID; other guest list empty;
   other guest delete did not remove original; guest admin403/forbidden; missing

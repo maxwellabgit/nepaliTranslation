@@ -1,5 +1,5 @@
 # INTENT
-Last updated: 2026-10-01. Current code baseline: `9aaf493`.
+Living contract adopted 2026-10-01; updated 2026-10-03. Historical reconciliation baseline: `9aaf493`. Current runtime and evidence are recorded in the state file.
 
 ## North Star
 **Bola (repository name NepTranslate)** is a polished, offline-first English ↔ Nepali translator for iPhone and iPad. Typed translation, speech, Camera OCR, local history, Settings, and Learn work without an account or optional online services. Core STT, MT, and OCR run on-device; Expo SDK 57 is the release boundary.
@@ -35,6 +35,8 @@ Confirm/edit count distinct meaning IDs; skip/report/open do not count toward th
 Resolved provenance/license/public-display rights are required for bundled public samples. Collected text remains private unless anonymization is certified. Publicly exposed source/target hashes remain excluded from train/eval exports. Never train on or alter gold answers to improve scores; never derive known checks from gold/private holdouts.
 
 Withdrawal and Delete shared data stop local sharing immediately even offline, persist owner-bound intent/deadline and request contributed text/audio deletion within 30 days. Credits, private identity, core, local translation history and subscriptions remain. Preserve accepted raw data deletion, storage-before-database ordering and durable status; a passed deadline is not completion. Block re-consent while deletion is pending; renewed specific consent afterward does not enable speech automatically. Historical full identity deletion remains backend-only. Retry records survive failures; historical photo objects remain covered by deletion duties even though new photo collection is retired. No retention promise changes without owner-approved legal copy.
+
+Support is an optional, separate purpose: only an explicitly sent issue message, category, app version and private guest identity go to private Supabase support storage. No history, photos or audio attach, no email is requested, and support is excluded from model improvement/training. The authorized operator can reply; users read replies and delete their messages/replies on the originating installation or browser. General support does not require the contribution opt-in or age attestation. Reinstall/storage-loss recovery tradeoffs remain disclosed.
 
 Ads, private identity, subscriptions, admin, and telemetry fail soft. Flags default off until subsystem-specific hosted/device proof. New photos remain disabled regardless of flag state. Private buckets and server RLS are required. Secrets never enter mobile/admin bundles; raw content never enters telemetry.
 

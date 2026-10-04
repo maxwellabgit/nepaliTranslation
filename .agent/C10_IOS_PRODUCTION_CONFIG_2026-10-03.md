@@ -17,12 +17,14 @@ Independent tests verify each iOS app/unit still rejects demo/missing values,
 normal TestFlight stays demo, and SSV requires a registered physical test device.
 No Android product or native live-serving proof is claimed.
 
-Validation: final full mobile verify:ci PASS613mobile,4configtests, translation
-checks,18modelpins,21Doctorchecks, unchanged coverage and web export. Fresh
-independent reviewer final PASS after the runtime repair; focused11tests/4config
-tests and five local legal-URL bindings PASS. Remote exact-source CI follows
-the scoped commit; the earlier cabf7d6 C6 backend/agent runs37172010881/37172010893
-are both SUCCESS, including the new public-support job14tests.
+Validation: final full mobile verify:ci passed: 613 mobile tests, four configuration
+tests, translation checks, 18 model pins, 21 Doctor checks, unchanged coverage
+and web export. Fresh independent review passed after the runtime repair;
+11 focused tests, four configuration tests and five legal URL bindings passed.
+Exact a41b6f920b1c2825a2e81ec9e7db1ba067dbbb26 remote backend run
+37172664457 and agent run 37172664478 both completed successfully. The earlier
+cabf7d6 C6 runs 37172010881/37172010893 also succeeded, including 14 public
+support tests.
 
 Actual AdMob console: payment setup incomplete; its notice explicitly says app
 reviews remain blocked until payment information is added. App-store details
@@ -32,4 +34,4 @@ Root app-ads hosting is complete, but store developer-website linkage, crawl
 approval, UMP configuration and actual native impressions/receipts remain open.
 Apple and RevenueCat tabs currently remain at sign-in; no console configuration
 or private credential completion is invented. Existing project-wide service
-flags are unchanged and optional collection/paywall remainoff.
+flags are unchanged and optional collection/paywall remain off.
