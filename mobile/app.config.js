@@ -2,7 +2,7 @@
  * Expo config with env-specific AdMob app IDs.
  * Internal TestFlight uses Google demo IDs by default. A separate SSV test
  * profile uses owner-owned iOS IDs on registered test devices.
- * Production requires real IDs via EXPO_PUBLIC_ADMOB_*.
+ * This release ships iOS/iPadOS only; owned iOS IDs are required for live ads.
  */
 
 /** Google sample IDs for the ordinary internal TestFlight build. */
@@ -25,16 +25,17 @@ function resolveAppIds(production, ssvTest) {
     };
   }
   const iosAppId = process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID || '';
-  const androidAppId = ssvTest
-    ? TEST_ANDROID_APP_ID
-    : process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID || '';
-  if (!iosAppId || !androidAppId) {
+  // The Expo plugin also accepts an Android ID. No Android product ships here;
+  // keep its unused configuration on a safe demo value instead of requiring
+  // an unrelated owned Android app merely to build the iOS release.
+  const androidAppId = TEST_ANDROID_APP_ID;
+  if (!iosAppId) {
     throw new Error(
-      'Owned AdMob app ID(s) required for live or TestFlight SSV ads',
+      'Owned AdMob iOS app ID required for live or TestFlight SSV ads',
     );
   }
-  if (looksLikeTestId(iosAppId) || (!ssvTest && looksLikeTestId(androidAppId))) {
-    throw new Error('Owned AdMob app IDs reject Google demo IDs');
+  if (looksLikeTestId(iosAppId)) {
+    throw new Error('Owned AdMob iOS app ID rejects Google demo IDs');
   }
   return { iosAppId, androidAppId };
 }

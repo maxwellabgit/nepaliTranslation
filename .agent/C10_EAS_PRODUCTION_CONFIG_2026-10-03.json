@@ -1,0 +1,41 @@
+{
+  "status": "PUBLIC_CONFIGURATION_READBACK_VERIFIED",
+  "environments": {
+    "preview": {
+      "revenueCatKeyEntryPresent": false,
+      "supabaseKeyKind": "publishable",
+      "testDeviceEntryPresent": false,
+      "public": {
+        "EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID": "ca-app-pub-4740685179017246/7882267470",
+        "EXPO_PUBLIC_ADMOB_IOS_APP_ID": "ca-app-pub-4740685179017246~9596916235",
+        "EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID": "ca-app-pub-4740685179017246/5830819203",
+        "EXPO_PUBLIC_APP_ADS_TXT_URL": "https://maxwellabgit.github.io/app-ads.txt",
+        "EXPO_PUBLIC_PRIVACY_POLICY_URL": "https://maxwellabgit.github.io/privacy.html",
+        "EXPO_PUBLIC_SUPPORT_URL": "https://maxwellabgit.github.io/support.html",
+        "EXPO_PUBLIC_DELETION_INFO_URL": "https://maxwellabgit.github.io/deletion.html",
+        "EXPO_PUBLIC_TERMS_OF_SERVICE_URL": "https://maxwellabgit.github.io/terms.html",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://jcrpxoojxixoieqqfgzo.supabase.co",
+        "EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID": "ca-app-pub-4740685179017246/8045919001"
+      },
+      "liveModeConfigured": false
+    },
+    "production": {
+      "revenueCatKeyEntryPresent": false,
+      "supabaseKeyKind": "publishable",
+      "testDeviceEntryPresent": false,
+      "public": {
+        "EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID": "ca-app-pub-4740685179017246/7882267470",
+        "EXPO_PUBLIC_ADMOB_IOS_APP_ID": "ca-app-pub-4740685179017246~9596916235",
+        "EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID": "ca-app-pub-4740685179017246/5830819203",
+        "EXPO_PUBLIC_APP_ADS_TXT_URL": "https://maxwellabgit.github.io/app-ads.txt",
+        "EXPO_PUBLIC_PRIVACY_POLICY_URL": "https://maxwellabgit.github.io/privacy.html",
+        "EXPO_PUBLIC_SUPPORT_URL": "https://maxwellabgit.github.io/support.html",
+        "EXPO_PUBLIC_DELETION_INFO_URL": "https://maxwellabgit.github.io/deletion.html",
+        "EXPO_PUBLIC_TERMS_OF_SERVICE_URL": "https://maxwellabgit.github.io/terms.html",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://jcrpxoojxixoieqqfgzo.supabase.co",
+        "EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID": "ca-app-pub-4740685179017246/8045919001"
+      },
+      "liveModeConfigured": false
+    }
+  }
+}

@@ -38,7 +38,8 @@ export function isGoogleTestAdId(id: string): boolean {
 
 /**
  * Resolve and validate AdMob IDs for the current build.
- * Production builds reject test IDs; non-production rejects production IDs
+ * iOS production builds reject test iOS app/unit IDs. The unused Android plugin
+ * placeholder stays a Google demo ID. Non-production rejects production IDs
  * when EXPO_PUBLIC_ADS_ENV is explicitly `test` (default outside production).
  */
 export function resolveAdUnitConfig(
@@ -60,7 +61,7 @@ export function resolveAdUnitConfig(
     androidAppId:
       input?.androidAppId ??
       extra?.androidAppId ??
-      (env === 'production' ? '' : GOOGLE_TEST_APP_ID_ANDROID),
+      GOOGLE_TEST_APP_ID_ANDROID,
     bannerUnitId:
       input?.bannerUnitId ??
       extra?.bannerUnitId ??
@@ -81,18 +82,18 @@ export function resolveAdUnitConfig(
 }
 
 export function validateAdUnitConfig(config: AdUnitConfig): void {
-  const ids = [
+  const iosIds = [
     config.iosAppId,
-    config.androidAppId,
     config.bannerUnitId,
     config.rewardedUnitId,
     config.interstitialUnitId,
   ];
+  const ids = [...iosIds, config.androidAppId];
   if (ids.some((id) => !id || typeof id !== 'string')) {
     throw new Error('AdMob config missing required app or unit ID');
   }
   if (config.env === 'production') {
-    for (const id of ids) {
+    for (const id of iosIds) {
       if (isGoogleTestAdId(id)) {
         throw new Error('Production AdMob config rejects Google test IDs');
       }

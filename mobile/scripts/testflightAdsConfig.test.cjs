@@ -62,3 +62,29 @@ test('SSV TestFlight refuses owner units without registered test devices', () =>
     }
   }
 });
+
+test('live iOS config needs no owned Android app and still rejects demo iOS IDs', () => {
+  const names = ['EXPO_PUBLIC_ADS_ENV','EXPO_PUBLIC_ADMOB_IOS_APP_ID','EXPO_PUBLIC_ADMOB_ANDROID_APP_ID','EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID','EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID','EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID'];
+  const before = Object.fromEntries(names.map(name=>[name,process.env[name]]));
+  try {
+    process.env.EXPO_PUBLIC_ADS_ENV='live';
+    process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID='ca-app-pub-4740685179017246~9596916235';
+    process.env.EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID='ca-app-pub-4740685179017246/5830819203';
+    process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID='ca-app-pub-4740685179017246/7882267470';
+    process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID='ca-app-pub-4740685179017246/8045919001';
+    delete process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID;
+    const app=configure({config:{plugins:[]}});
+    assert.equal(app.extra.ads.env,'live');
+    assert.equal(app.extra.ads.iosAppId,process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID);
+    assert.equal(app.extra.ads.rewardedUnitId,process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID);
+    assert.match(app.extra.ads.androidAppId,/^ca-app-pub-3940256099942544~/);
+    process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID='ca-app-pub-3940256099942544~1458002511';
+    assert.throws(()=>configure({config:{plugins:[]}}),/reject.*demo/i);
+    delete process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID;
+    assert.throws(()=>configure({config:{plugins:[]}}),/iOS app ID required/i);
+  } finally {
+    for(const [name,value] of Object.entries(before)) {
+      if(value===undefined)delete process.env[name];else process.env[name]=value;
+    }
+  }
+});
