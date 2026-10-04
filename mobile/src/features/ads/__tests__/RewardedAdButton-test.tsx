@@ -15,6 +15,8 @@ const authState = {
   userId: 'user-1' as string | null,
 };
 const mockEnsureGuestIdentity = jest.fn(async () => Boolean(authState.userId));
+const mockAdFlags = { networkAdsEnabled: true, rewardedAdsEnabled: true };
+const mockRefreshFlags = jest.fn(async () => undefined);
 
 jest.mock('../../auth/AuthProvider', () => ({
   useAuth: () => ({
@@ -34,8 +36,7 @@ jest.mock('../../entitlements/EntitlementProvider', () => ({
 
 jest.mock('../../../app/FeatureConfigProvider', () => ({
   useFeatureFlags: () => ({
-    networkAdsEnabled: true,
-    rewardedAdsEnabled: true,
+    ...mockAdFlags,
     contributionTextEnabled: false,
     contributionSpeechEnabled: false,
     contributionPhotosEnabled: false,
@@ -43,6 +44,7 @@ jest.mock('../../../app/FeatureConfigProvider', () => ({
     paywallEnabled: false,
     learnEnabled: true,
   }),
+  useRefreshFeatureFlags: () => mockRefreshFlags,
 }));
 
 jest.mock('../rewardedSession', () => ({
@@ -113,6 +115,9 @@ describe('RewardedAdButton', () => {
     unsubscribe();
   });
   beforeEach(() => {
+    mockAdFlags.networkAdsEnabled = true;
+    mockAdFlags.rewardedAdsEnabled = true;
+    mockRefreshFlags.mockClear();
     authState.status = 'signed-in';
     authState.userId = 'user-1';
     mockEnsureGuestIdentity.mockImplementation(async () => Boolean(authState.userId));
@@ -203,6 +208,77 @@ describe('RewardedAdButton', () => {
     expect(saveProvisionalGrant).toHaveBeenCalledWith(expect.objectContaining({
       userId: 'user-1', sessionToken: 'sess-1', verified: false,
     }));
+  });
+
+  test.each(['rewardedAdsEnabled', 'networkAdsEnabled'] as const)('keeps credits action visible but never loads ads when %s is off', async (flag) => {
+    mockAdFlags[flag] = false;
+    const services = await pressWithOutcome({ earned: true });
+    expect(screen.getByText(REWARDED_CTA_LABEL)).toBeTruthy();
+    expect(screen.getByTestId('rewarded-ad-cta')).toBeDisabled();
+    expect(screen.getByText('Optional ads are unavailable right now.')).toBeTruthy();
+    expect(services.ads.adapter.showRewarded).not.toHaveBeenCalled();
+    expect(mockRefreshFlags).toHaveBeenCalledTimes(1);
+  });
+
+  test('offline and subscribed states explain why the visible reward cannot be watched', async () => {
+    const services = createTestServices({ offline: true });
+    await render(<ServiceProvider services={services}><RewardedAdButton /></ServiceProvider>);
+    expect(screen.getByText('Connect to the internet to watch an optional ad.')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
+    expect(services.ads.networkCalls()).toEqual([]);
+    await render(<ServiceProvider services={services}><RewardedAdButton hasSubscription /></ServiceProvider>);
+    expect(screen.getByText('Your ad-free subscription is active.')).toBeTruthy();
+  });
+
+  test('explicit request retries UMP after startup failure, without loading if consent remains blocked', async () => {
+    const services = createTestServices({ sessionUserId: 'user-1', canRequestAds: false, offline: false });
+    services.ads.prepareConsentAndSdk = jest.fn(services.ads.prepareConsentAndSdk);
+    await render(<ServiceProvider services={services}><RewardedAdButton /></ServiceProvider>);
+    await fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
+    expect(services.ads.prepareConsentAndSdk).toHaveBeenCalledTimes(1);
+    expect(services.ads.networkCalls()).toEqual([]);
+  });
+
+  test.each(['ump', 'session', 'load'] as const)('current eligibility is checked after deferred %s before presenting an ad', async (stage) => {
+    let release!: () => void;
+    let entered!: () => void;
+    const pending = new Promise<void>((resolve) => { release = resolve; });
+    const started = new Promise<void>((resolve) => { entered = resolve; });
+    const services = createTestServices({ sessionUserId: 'user-1', offline: false, canRequestAds: stage !== 'ump' });
+    if (stage === 'ump') services.ads.prepareConsentAndSdk = jest.fn(async () => {
+      entered(); await pending;
+      services.setConsent({ canRequestAds: true, privacyOptionsRequired: false });
+      return services.ads.getConsentState();
+    });
+    if (stage === 'session') (requestRewardedSession as jest.Mock).mockImplementationOnce(async () => {
+      entered(); await pending;
+      return { ok: true, session: { sessionToken: 'deferred', expiresAtMs: Date.now() + 60_000 } };
+    });
+    if (stage === 'load') services.ads.adapter.loadRewarded = jest.fn(async () => { entered(); await pending; });
+    services.ads.adapter.showRewarded = jest.fn(async () => ({ earned: true }));
+    const view = (hasSubscription = false) => <ServiceProvider services={services}><RewardedAdButton hasSubscription={hasSubscription} /></ServiceProvider>;
+    const rendered = await render(view());
+    const press = fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
+    await started;
+    if (stage === 'ump') mockAdFlags.rewardedAdsEnabled = false;
+    if (stage === 'session') services.setOffline(true);
+    await rendered.rerender(view(stage === 'load'));
+    await act(async () => { release(); await press; });
+    expect(services.ads.adapter.showRewarded).not.toHaveBeenCalled();
+    if (stage !== 'load') expect(services.ads.networkCalls()).toEqual([]);
+  });
+
+  test('owner replacement during session mint cannot load or reward the new identity', async () => {
+    const services = createTestServices({ sessionUserId: 'user-1', canRequestAds: true, offline: false });
+    let owner = 'user-1';
+    services.auth.getSessionUserId = jest.fn(async () => owner);
+    (requestRewardedSession as jest.Mock).mockImplementationOnce(async () => {
+      owner = 'user-2';
+      return { ok: true, session: { sessionToken: 'old-owner', expiresAtMs: Date.now() + 60_000 } };
+    });
+    await render(<ServiceProvider services={services}><RewardedAdButton /></ServiceProvider>);
+    await fireEvent.press(screen.getByTestId('rewarded-ad-cta'));
+    expect(services.ads.networkCalls()).toEqual([]);
   });
 
   test('does not provisional-grant when reward was not earned', async () => {

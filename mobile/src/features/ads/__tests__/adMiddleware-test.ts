@@ -6,6 +6,17 @@ import {
 import { GOOGLE_TEST_BANNER_UNIT, GOOGLE_TEST_REWARDED_UNIT } from '../adConfig';
 
 describe('adMiddleware', () => {
+  it('permits an explicit rewarded request to stack on active credits while banners stay suppressed', async () => {
+    const input = { networkAdsEnabled: true, rewardedAdsEnabled: true, hasSubscription: false,
+      earnedAdFreeUntilMs: 100_000, trustedNowMs: 1_000, offline: false, canRequestAds: true,
+      bannerUnitId: GOOGLE_TEST_BANNER_UNIT, rewardedUnitId: GOOGLE_TEST_REWARDED_UNIT,
+      surface: 'settings' as const };
+    expect(planAdPlacement({ ...input, explicitRewardedRequest: true }).action).toBe('rewarded');
+    expect(planAdPlacement({ ...input, surface: 'translate_idle' }).action).toBe('none');
+    expect(planAdPlacement({ ...input, explicitRewardedRequest: true, hasSubscription: true }).action).toBe('none');
+    expect(planAdPlacement({ ...input, explicitRewardedRequest: true, offline: true }).action).toBe('none');
+  });
+
   const base = {
     networkAdsEnabled: true,
     hasSubscription: false,

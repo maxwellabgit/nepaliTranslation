@@ -1,10 +1,13 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
+import { AppState } from 'react-native';
 import {
   DEFAULT_FEATURE_FLAGS,
   setRuntimeFeatureFlags,
@@ -16,6 +19,7 @@ const FeatureConfigContext = createContext<FeatureFlags>({
   ...DEFAULT_FEATURE_FLAGS,
   learnEnabled: true,
 });
+const RefreshFeatureConfigContext = createContext<() => Promise<void>>(async () => undefined);
 
 /** Testing-ground only: synchronous flag overrides from window boot config. */
 function readTgFeatureFlags(): Partial<FeatureFlags> {
@@ -37,7 +41,9 @@ function readTgFeatureFlags(): Partial<FeatureFlags> {
  * Contributions/rewards/ads/paywall/telemetry stay off unless the service enables them.
  */
 export function FeatureConfigProvider({ children }: { children: ReactNode }) {
-  const { featureConfig } = useServices();
+  const { featureConfig, network } = useServices();
+  const mounted = useRef(true);
+  const request = useRef(0);
   const [flags, setFlags] = useState<FeatureFlags>(() => {
     const initial = {
       ...DEFAULT_FEATURE_FLAGS,
@@ -48,43 +54,44 @@ export function FeatureConfigProvider({ children }: { children: ReactNode }) {
     return initial;
   });
 
-  useEffect(() => {
-    let cancelled = false;
-    void featureConfig
-      .loadFlags()
-      .then((next) => {
-        if (cancelled) return;
-        const tg = readTgFeatureFlags();
-        const merged = {
-          ...DEFAULT_FEATURE_FLAGS,
-          ...next,
-          ...tg,
-          learnEnabled: true,
-        };
-        setRuntimeFeatureFlags(merged);
-        setFlags(merged);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        const tg = readTgFeatureFlags();
-        const fallback = {
-          ...DEFAULT_FEATURE_FLAGS,
-          ...tg,
-          learnEnabled: true,
-        };
-        setRuntimeFeatureFlags(fallback);
-        setFlags(fallback);
-      });
-    return () => {
-      cancelled = true;
-    };
+  const refresh = useCallback(async () => {
+    const id = ++request.current;
+    let next: Partial<FeatureFlags> = {};
+    try { next = await featureConfig.loadFlags(); } catch { /* fail closed */ }
+    if (!mounted.current || id !== request.current) return;
+    const merged = { ...DEFAULT_FEATURE_FLAGS, ...next, ...readTgFeatureFlags(), learnEnabled: true };
+    setRuntimeFeatureFlags(merged);
+    setFlags(merged);
   }, [featureConfig]);
+
+  useEffect(() => {
+    mounted.current = true;
+    void refresh();
+    const foreground = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void refresh();
+    });
+    const unsubscribe = network.subscribe((offline) => {
+      if (!offline) void refresh();
+    });
+    return () => {
+      mounted.current = false;
+      foreground.remove();
+      unsubscribe();
+    };
+  }, [network, refresh]);
 
   return (
     <FeatureConfigContext.Provider value={flags}>
+      <RefreshFeatureConfigContext.Provider value={refresh}>
       {children}
+      </RefreshFeatureConfigContext.Provider>
     </FeatureConfigContext.Provider>
   );
+}
+
+/** Settings can retry a startup failure without restarting the app. */
+export function useRefreshFeatureFlags(): () => Promise<void> {
+  return useContext(RefreshFeatureConfigContext);
 }
 
 export function useFeatureFlags(): FeatureFlags {

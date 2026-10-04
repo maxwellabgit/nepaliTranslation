@@ -416,7 +416,11 @@ export const en = {
 
   'ads.houseCopy': 'Prefer no ads? Ad-free is optional. The App Store shows the price.',
   'ads.houseDismiss': 'Not now',
-  'ads.rewardedCta': 'Watch one optional ad for 20 ad-free minutes',
+  'ads.rewardedCta': 'Watch an optional ad for 2 credits',
+  'settings.credits': 'Credits',
+  'ads.rewardedUnavailable': 'Optional ads are unavailable right now.',
+  'ads.rewardedOffline': 'Connect to the internet to watch an optional ad.',
+  'ads.rewardedSubscribed': 'Your ad-free subscription is active.',
   'ads.signInRequiredTitle': "Optional services unavailable",
   'ads.signInRequiredBody': "A private connection is needed to verify this ad reward. Try again when online.",
   'ads.interstitialReady': 'Ad ready',
@@ -485,11 +489,11 @@ export const en = {
   'review.thanksBody': 'Your answers are saved. You can reopen a set to change them, or try another ten.',
   'review.awardTitle': 'Credits awarded',
   'review.awardBody':
-    'You earned {credits} credits from your reviews. That is {minutes} minutes of ad-free time.',
+    'You received {credits} credits.',
   'review.awardCapped':
-    'Your timer already holds time, and it stops at 12 hours. Only the minutes that fit were added.',
+    'The timer is capped at 12 hours.',
   'review.awardCollect': 'Add to my timer',
-  'review.awardA11y': 'Credit award. {credits} credits, {minutes} minutes of ad-free time.',
+  'review.awardA11y': 'Continue. {credits} credits awarded.',
   'review.gaugeA11y': 'Ad-free timer {clock}. {interstitial}',
   'review.gaugeOverA11y':
     'Ad-free timer {clock}. The timer is past the top of the gauge. {interstitial}',
@@ -544,9 +548,9 @@ export const en = {
   'creditsAward.title': 'Credits Awarded!',
   'translate.send': 'Translate',
   'translate.sendA11y': 'Translate entered text',
-  'openAward.cappedBody': 'You received {count} credits. {minutes} ad-free minutes were added within the 12-hour limit.',
+  'openAward.cappedBody': 'You received {count} credits. The timer has reached its 12-hour limit.',
   'creditsAward.body':
-    "You earned {count} credits from yesterday's Today's 10.",
+    'You received {count} credits.',
   'creditsAward.added': 'Credits Added',
   'creditsAward.total': 'Total Credits',
   'creditsAward.reward': 'Reward',
@@ -555,9 +559,9 @@ export const en = {
   'creditsAward.view': 'View My Credits',
   'dailyOpen.title': 'Credits for today',
   'dailyOpen.body':
-    'You received {count} credits for today. That is {minutes} minutes.',
+    'You received {count} credits for today.',
   'openAward.welcomeBody':
-    'You received {count} credits to start. That is {minutes} minutes.',
+    'You received {count} credits to start.',
   'openAward.welcomeReward': 'Welcome',
   'openAward.dailyReward': 'Today',
   'dailyOpen.noReview':

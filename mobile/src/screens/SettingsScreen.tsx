@@ -296,6 +296,11 @@ export function SettingsScreen({
           </View>
         </View>
 
+        <View style={dynamic.section} testID="settings-credit-rewards">
+          <Text style={dynamic.sectionLabel}>{t('settings.credits', lang)}</Text>
+          <RewardedAdButton offline={offline} />
+        </View>
+
         <PrivacyDataSection
           authConfigured={auth.authConfigured}
           status={auth.status}
@@ -422,7 +427,6 @@ export function SettingsScreen({
           <Text style={dynamic.sectionLabel}>
             {t('settings.adsPrivacy', lang)}
           </Text>
-          <RewardedAdButton offline={offline} />
           {consent.privacyOptionsRequired ? (
             <Pressable
               onPress={() => void services.ads.showPrivacyOptions()}

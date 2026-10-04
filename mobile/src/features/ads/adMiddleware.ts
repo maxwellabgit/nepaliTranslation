@@ -96,6 +96,7 @@ export async function executeAdPlan(
   plan: AdPlan,
   adapter: AdAdapter,
   rewardedOpts?: RewardedLoadOpts,
+  canPresentRewarded?: () => boolean | Promise<boolean>,
 ): Promise<{ executed: string }> {
   switch (plan.action) {
     case 'none':
@@ -110,7 +111,9 @@ export async function executeAdPlan(
       await adapter.showBanner(plan.unitId);
       return { executed: 'banner' };
     case 'rewarded': {
+      if (canPresentRewarded && !await canPresentRewarded()) return { executed: 'rewarded_unavailable' };
       await adapter.loadRewarded(plan.unitId, rewardedOpts);
+      if (canPresentRewarded && !await canPresentRewarded()) return { executed: 'rewarded_unavailable' };
       const result = await adapter.showRewarded(plan.unitId);
       return {
         executed: result.earned ? 'rewarded' : result.impression ? 'rewarded_skipped' : 'rewarded_not_earned',

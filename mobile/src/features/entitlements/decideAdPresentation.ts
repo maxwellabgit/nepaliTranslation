@@ -78,7 +78,7 @@ function inCooldown(
 
 /**
  * Priority:
- * 1. subscription / earned window → none
+ * 1. subscription → none; earned window suppresses automatic placements only
  * 2. inactive / modal / keyboard / audio / translation / Conversation → none
  * 3. offline → house (24m cooldown) on allowed placements
  * 4. online but UMP blocks requests → house
@@ -97,6 +97,7 @@ export function decideAdPresentation(
     return { show: false, reason: 'subscription' };
   }
   if (
+    !input.explicitRewardedRequest &&
     input.trustedNowMs !== null &&
     input.earnedAdFreeUntilMs !== null &&
     input.earnedAdFreeUntilMs > input.trustedNowMs

@@ -1,12 +1,12 @@
-import { useCallback, useRef, useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 
 import { AppButton } from '../../components/AppPrimitives';
 import { t, useUiLang } from '../../i18n';
 import { useAuth } from '../auth/AuthProvider';
 import { useEntitlement } from '../entitlements/EntitlementProvider';
 import { useSubscriptionOptional } from '../subscription/SubscriptionProvider';
-import { useFeatureFlags } from '../../app/FeatureConfigProvider';
+import { useFeatureFlags, useRefreshFeatureFlags } from '../../app/FeatureConfigProvider';
 import { useServices } from '../../services/ServiceContext';
 import { resolveAdUnitConfig } from './adConfig';
 import { executeAdPlan, planAdPlacement } from './adMiddleware';
@@ -28,7 +28,7 @@ type Props = {
 };
 
 /**
- * Signed-in optional rewarded CTA. Never auto-loads.
+ * Optional rewarded CTA using the private guest identity. Never auto-loads an ad.
  * Client callback → provisional grant; permanent grant only via verified SSV.
  */
 export function RewardedAdButton({
@@ -39,6 +39,7 @@ export function RewardedAdButton({
   const entitlement = useEntitlement();
   const subscription = useSubscriptionOptional();
   const flags = useFeatureFlags();
+  const refreshFlags = useRefreshFeatureFlags();
   const services = useServices();
   const lang = useUiLang();
   const [busy, setBusy] = useState(false);
@@ -48,11 +49,25 @@ export function RewardedAdButton({
   const offline = offlineProp ?? services.network.isOffline();
   const subscribed =
     hasSubscription || Boolean(subscription?.hasSubscription());
+  const unavailable = subscribed ? 'ads.rewardedSubscribed' : offline ? 'ads.rewardedOffline'
+    : !flags.networkAdsEnabled || !flags.rewardedAdsEnabled ? 'ads.rewardedUnavailable' : null;
+  const current = useRef({ flags, subscribed, offline });
+  current.current = { flags, subscribed, offline };
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    void refreshFlags();
+    return () => { mounted.current = false; };
+  }, [refreshFlags]);
 
   const onPress = useCallback(async () => {
-    if (busyRef.current) return;
+    if (busyRef.current || unavailable) return;
     busyRef.current = true;
     setBusy(true);
+    const eligible = () => mounted.current && current.current.flags.networkAdsEnabled &&
+      current.current.flags.rewardedAdsEnabled && !current.current.subscribed &&
+      !current.current.offline && !services.network.isOffline();
     try {
       const identityReady = auth.ensureGuestIdentity
         ? await auth.ensureGuestIdentity()
@@ -62,8 +77,12 @@ export function RewardedAdButton({
         Alert.alert(t('ads.signInRequiredTitle', lang), t('ads.signInRequiredBody', lang));
         return;
       }
+      if (!eligible()) return;
       const units = resolveAdUnitConfig();
-      const consent = services.ads.getConsentState();
+      const consent = services.ads.getConsentState().canRequestAds
+        ? services.ads.getConsentState()
+        : await services.ads.prepareConsentAndSdk();
+      if (!eligible()) return;
       const plan = planAdPlacement({
         surface: 'contribution_result',
         networkAdsEnabled: flags.networkAdsEnabled,
@@ -88,11 +107,17 @@ export function RewardedAdButton({
         Alert.alert('Ad unavailable', 'Could not start a rewarded session.');
         return;
       }
+      const canPresent = async () => {
+        if (!eligible()) return false;
+        const owner = await services.auth.getSessionUserId();
+        return eligible() && services.ads.getConsentState().canRequestAds && owner === userId;
+      };
 
       await executeAdPlan(plan, services.ads.adapter, {
         userId,
         customData: session.session.sessionToken,
-      }).then(async (result) => {
+      }, canPresent).then(async (result) => {
+        if (await services.auth.getSessionUserId() !== userId) return;
         // Provisional only after client EARNED_REWARD — never from show() alone.
         if (result.executed !== 'rewarded') {
           if (result.executed === 'rewarded_skipped') await awardDismissedAd(1, entitlement.durableAdFreeUntilMs ?? null);
@@ -124,7 +149,7 @@ export function RewardedAdButton({
       Alert.alert('Ad unavailable', supportMessageForExpiredProvisional());
     } finally {
       busyRef.current = false;
-      setBusy(false);
+      if (mounted.current) setBusy(false);
     }
   }, [
     auth,
@@ -135,24 +160,26 @@ export function RewardedAdButton({
     lang,
     offline,
     services,
+    unavailable,
   ]);
 
-  if (!flags.rewardedAdsEnabled) return null;
-  if (subscribed) return null;
-
   return (
+    <View>
     <AppButton
       label={cta}
       variant="secondary"
       onPress={() => void onPress()}
-      disabled={busy || offline}
+      disabled={busy || unavailable != null}
       accessibilityLabel={cta}
       testID="rewarded-ad-cta"
       style={styles.btn}
     />
+    {unavailable && <Text testID="rewarded-ad-unavailable" style={styles.notice}>{t(unavailable, lang)}</Text>}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   btn: { marginTop: 8 },
+  notice: { marginTop: 8, fontSize: 14, color: '#3A3328' },
 });
