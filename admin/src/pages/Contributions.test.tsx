@@ -13,6 +13,17 @@ const page = (correction: string): ContributionPage => ({ schema_version: 1, gen
 beforeEach(() => { container = document.createElement('div'); document.body.append(container); root = createRoot(container); });
 afterEach(async () => { await act(async () => root.unmount()); container.remove(); vi.restoreAllMocks(); });
 describe('private contributions page', () => {
+  it('shows a freshly authorized portable JSON export and clears it on close', async () => {
+    const contributions = vi.fn().mockResolvedValueOnce(page('cached')).mockResolvedValueOnce(page('fresh'));
+    await act(async () => root.render(<ContributionsPage api={{ contributions } as unknown as AdminClient} />));
+    await act(async () => Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Show JSON export')!.click());
+    expect(contributions).toHaveBeenLastCalledWith(null, true);
+    const exported = JSON.parse(container.querySelector('textarea')!.value);
+    expect(exported.records[0].correction).toBe('fresh');
+    expect(exported.records[0].training_eligible).toBe(false);
+    await act(async () => Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Close export')!.click());
+    expect(container.querySelector('textarea')).toBeNull();
+  });
   it('downloads a freshly authorized response rather than cached withdrawn records', async () => {
     const contributions = vi.fn().mockResolvedValueOnce(page('cached answer')).mockResolvedValueOnce({ ...page('fresh answer'), records: [] });
     const api = { contributions } as unknown as AdminClient;

@@ -9,10 +9,11 @@ export function ContributionsPage({ api }: { api: AdminClient }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [exportText, setExportText] = useState<string | null>(null);
   const generation = useRef(0);
   useEffect(() => {
     const current = ++generation.current;
-    setBusy(true); setPage(null); setPreview(null); setError(null);
+    setBusy(true); setPage(null); setPreview(null); setExportText(null); setError(null);
     api.contributions(cursor).then(data => {
       if (current === generation.current) setPage(data);
     }).catch(err => {
@@ -21,18 +22,22 @@ export function ContributionsPage({ api }: { api: AdminClient }) {
     return () => { generation.current++; };
   }, [api, cursor]);
 
-  async function download() {
+  async function exportPage(mode: 'download' | 'view') {
     const current = generation.current;
-    setBusy(true); setError(null);
+    setBusy(true); setError(null); setExportText(null);
     try {
       // Refetch under current authorization; never export the cached preview.
       const fresh = await api.contributions(cursor, true);
       if (current !== generation.current) return;
       setPage(fresh);
-      const url = URL.createObjectURL(new Blob([JSON.stringify(fresh, null, 2)], { type: 'application/json' }));
+      const text = JSON.stringify(fresh, null, 2);
+      if (mode === 'view') { setExportText(text); return; }
+      const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
       const link = document.createElement('a');
-      link.href = url; link.download = 'bola-private-contributions-page.json'; link.click();
-      URL.revokeObjectURL(url);
+      link.href = url; link.download = 'bola-private-contributions-page.json';
+      document.body.append(link); link.click(); link.remove();
+      // Allow the browser to start reading the Blob before revoking it.
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) { if (current === generation.current) setError(formatApiError(err)); }
     finally { if (current === generation.current) setBusy(false); }
   }
@@ -50,11 +55,17 @@ export function ContributionsPage({ api }: { api: AdminClient }) {
     <p className="muted">Private feedback, Today’s 10 responses and speech. Originals and revisions stay separate. Withdrawn or pending-deletion data is excluded. Exports are for private review; they do not authorize training or public display.</p>
     {error && <p className="err" role="alert">{error}</p>}
     <div className="row">
-      <button disabled={busy || !page} onClick={() => void download()}>Download this page as JSON</button>
+      <button disabled={busy || !page} onClick={() => void exportPage('download')}>Download this page as JSON</button>
+      <button disabled={busy || !page} onClick={() => void exportPage('view')}>Show JSON export</button>
       <button disabled={busy || cursor === null} className="secondary" onClick={() => setCursor(null)}>Newest records</button>
       <button disabled={busy || !page?.next_cursor} onClick={() => setCursor(page!.next_cursor)}>Older records</button>
     </div>
     {busy && <p role="status">Loading…</p>}
+    {exportText !== null && <section className="panel">
+      <label htmlFor="contribution-export">Private JSON export</label>
+      <textarea id="contribution-export" readOnly value={exportText} rows={12} style={{ width: '100%', boxSizing: 'border-box' }} />
+      <button className="secondary" onClick={() => setExportText(null)}>Close export</button>
+    </section>}
     {page && <p>{page.records.length} records on this page. {page.next_cursor ? 'More records are available.' : 'End of records.'}</p>}
     {page?.records.map(record => <article className="panel" key={`${record.record_type}:${record.id}`}>
       <h3>{String(record.metadata.method ?? record.metadata.translation_method ?? record.record_type)}</h3>
