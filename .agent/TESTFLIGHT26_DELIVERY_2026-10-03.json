@@ -1,0 +1,41 @@
+{
+  "ownerAuthorization": "2026-10-03: Be ready to receive user data, and push to testflight now; continued completion authorized",
+  "classification": "diagnostic internal TestFlight; public V1 NO-GO",
+  "buildId": "e23e806f-a946-40aa-8bf6-c177a61fde5d",
+  "submissionId": "18f7b0a6-54d3-4024-9cd8-6262da269395",
+  "buildStatus": "FINISHED",
+  "submissionStatus": "FINISHED",
+  "appVersion": "1.7.0",
+  "appBuildVersion": "26",
+  "gitCommitHash": "e0bdc660fc2c8fd08426f1349f50626c675aaf0c",
+  "reviewedRuntimeSha": "a41b6f920b1c2825a2e81ec9e7db1ba067dbbb26",
+  "runtimeDiffCheck": "git diff --quiet a41b6f9 e0bdc66 -- mobile admin supabase public-site/build.cjs public-site/support.ts public-site/site: exit 0",
+  "profile": "testflight",
+  "environment": "preview",
+  "sdkVersion": "57.0.0",
+  "ads": "Google demo units; no revenue or owner-unit SSV proof",
+  "backend": "https://jcrpxoojxixoieqqfgzo.supabase.co",
+  "lastVerifiedCollectionFlags": {
+    "version": 16,
+    "text": false,
+    "speech": false,
+    "photos": false,
+    "publicReview": false
+  },
+  "paywallEnabled": false,
+  "telemetryEnabled": false,
+  "exactSourceCI": {
+    "backendRun": "37173732614",
+    "backend": "SUCCESS",
+    "agentRun": "37173732487",
+    "agent": "SUCCESS"
+  },
+  "checks": "375 fresh/upgraded SQL, 69 Edge, 10 admin, 613 mobile, 14 public-support and required coverage/browser/export/Doctor/pins/exclusions/secrets. Full C10 local verification and independent review PASS.",
+  "hostedProof": "Synthetic contribution capture/operator export/audio/backend purge and support submission/operator reply/retrieval/browser+API deletion PASS; raw guest-linked content stays private, not anonymous.",
+  "publicPages": "Owner-approved and HTTPS/hash verified at https://maxwellabgit.github.io",
+  "appleStatus": "EAS exact-build submission FINISHED without error; Apple processing/internal availability unverified because App Store Connect console sign-in is pending",
+  "internalAvailability": "UNVERIFIED",
+  "deviceProof": "Pending owner iPhone 17 Pro and iPad",
+  "observedAt": "2026-10-04T03:30:07.0172113Z",
+  "buildCompletedAt": "2026-10-04T03:25:45.712Z"
+}

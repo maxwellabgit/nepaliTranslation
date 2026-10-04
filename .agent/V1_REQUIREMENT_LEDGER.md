@@ -1,7 +1,7 @@
 # V1 requirement ledger
 
 Contract: 2026-10-01 plus owner guest, UI, price and device amendments. Updated 2026-10-03.
-Runtime a41b6f9, support source 6f30ccf and public package cabf7d6 are published to main and the reconciliation branch. Build 25 uses f670a79 and predates private support. [Owner checklist](../docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md). Full gate closure requires missing native/console/public evidence; source presence alone is not completion. Older records remain in docs/history/.
+Runtime a41b6f9, support source 6f30ccf and public package cabf7d6 are published to main and the reconciliation branch. Diagnostic build 26 uses e0bdc66, built and submitted successfully. Apple availability is unverified. Build 25 is historical. [Owner checklist](../docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md). Full gate closure requires missing native/console/public evidence; source presence alone is not completion. Older records remain in docs/history/.
 
 - C0 contract/state: original documentation checks and review passed; current records reconcile subsequent scoped proofs. No model or gold work.
 - C1 design: physical iPhone 17 Pro originals with build provenance remain missing. No browser/simulator substitution or additional redesign claimed.
@@ -20,8 +20,8 @@ Runtime a41b6f9, support source 6f30ccf and public package cabf7d6 are published
 - C12 runtime cleanup: account/provider UI and misleading legacy paths were retired in scoped source commits; coverage, secret checks, dependency pins and Doctor passed. Full unused-connection inventory, dependency/telemetry reconciliation and source/install-size evidence remain open.
 - C13 core/UX: requested source/browser/local-model/reset/editor/history/punctuation changes and Camera reset/photo-upload retirement passed. Same-source physical iPhone/iPad OCR, temporary-file cleanup, speech, clipboard, offline failure behavior, layout, Dynamic Type and VoiceOver remain open.
 - C14 operations: guest Auth, migrations, worker, nonempty storage and operator flows proved. Backup/restore, alert routing, failure/recovery/rollback drills and ongoing monitoring remain open. Retired public review/review credits/photo collection stay disabled.
-- C15 checks: exact a41b6f920b1c2825a2e81ec9e7db1ba067dbbb26 backend run 37172664457 and agent run 37172664478 succeeded, including fresh/upgraded SQL, Edge, admin, mobile coverage and public-support/browser/export/pin/secret jobs. Full local C10 verification and fresh independent review passed.
-- C15 delivery: build 25 and its submission finished; last Apple state Processing, internal availability unverified. New support/configuration needs a newer diagnostic build. Public release remains NO-GO.
+- C15 checks: exact e0bdc660fc2c8fd08426f1349f50626c675aaf0c backend 37173732614 and agent 37173732487 succeeded; runtime diff from reviewed a41b6f9 is empty. Full local verification, fresh delivery review and ad-configuration tests passed.
+- C15 delivery: diagnostic 1.7.0 (26), exact e0bdc66, built and submitted successfully without errors. Apple processing/internal availability and native tests remain unverified. Public release remains NO-GO. See TESTFLIGHT26_DELIVERY_2026-10-03.json.
 - Public pages: owner-approved https://maxwellabgit.github.io serves nine verified HTTPS files with exact hashes and correct publisher line. Apple metadata/privacy/developer-website updates require console access. No public App Store submission performed.
 - Model: prior unresolved certificate preserved. No optimization, new score, gold changes or release waiver inferred.
 

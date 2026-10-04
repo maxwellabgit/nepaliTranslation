@@ -1,6 +1,6 @@
 # Bola — TestFlight to production checklist
 
-Updated 2026-10-03. Runtime a41b6f9 is published to main and the reconciliation branch, with both exact-source CI pipelines green. Diagnostic build 25 uses f670a79 and predates private support; its submission finished, but the last Apple state was Processing. New delivery and internal availability require separate proof. Public release is not approved.
+Updated 2026-10-03. Diagnostic 1.7.0 (26), exact source e0bdc66, built and submitted to Apple successfully. Both exact-candidate CI pipelines and independent delivery review passed; runtime matches reviewed a41b6f9. Apple processing/internal availability and native tests remain unverified. Source/evidence are published to main and the reconciliation branch; public release is not approved.
 
 ## Completed engineering and hosted setup
 
@@ -17,6 +17,8 @@ Updated 2026-10-03. Runtime a41b6f9 is published to main and the reconciliation 
 - [x] Fix the rewarded callback's matching unit, 20-minute reward and signed Google console-test HTTP 400 response. Google Verify succeeded; console tests grant no credits.
 - [x] Create the Apple monthly subscription with US USD 2.99, Canada CAD 2.99 and Nepal USD 1.49 pricing and three-storefront availability. Agreements, bank and tax status were observed Active.
 - [x] Pass exact-source CI: 375 SQL tests on fresh/upgraded databases, 69 Edge tests, 10 admin tests, 613 mobile tests, 14 public-support tests and required coverage, browser, export, Doctor, model-pin, exclusion and secret checks. Full local C10 checks and independent review also passed.
+
+- [x] Build and submit diagnostic 1.7.0 (26), exact e0bdc66, with Google demo ads and collection/paywall off. EAS build and exact submission finished without errors; Apple availability remains unverified.
 
 ## Actions requiring your access or device
 
