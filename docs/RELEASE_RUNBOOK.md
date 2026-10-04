@@ -1,11 +1,11 @@
 # Release runbook — Bola V1
-Updated 2026-10-03 America/New_York after the owner's account-free amendment. A new TestFlight build and delivery are paused at the owner's explicit request. Apple processing/review is external; availability is not promised.
+Updated 2026-10-03 America/New_York. Owner resumed diagnostic internal TestFlight: build25/exactf670a79 and submission finished, Apple received it and last showed Processing. Apple sign-in expired before final internal availability could be confirmed; availability is not promised. Public release remains gated.
 Authority: [INTENT](../.governance/INTENT.md), [decisions](../.governance/V1_G0_DECISIONS.md), [active C0–C15 plan](../plans/active/v1-final-contract-reconciliation.md), [current ledger](../.agent/V1_REQUIREMENT_LEDGER.md).
 [Previous runbook](history/2026-10-01-contract/RELEASE_RUNBOOK.md) is preserved as history.
 
 ## Current milestone
-Runtime source1ff2a78 plus C10 callback33b6b3d is published to authorized main/reconciliation branch. Hosted guest Auth, migrations/endpoints and synthetic capture/retrieval/deletion are verified in [hosted proof](../.agent/GUEST_HOSTED_PROOF_2026-10-03.md). Owner approved disclosures and C5 rollout; collection stays off pending public policy/native checks and hosted operator export. C10 signed console verification and Apple three-storefront prices are saved; RevenueCat/native receipt/store proof remains. The [consent review package](GUEST_CONSENT_OWNER_REVIEW.md) contains approved exact copy. Earlier diagnostic build23 predates this source; no new build/submission occurred here.
-Internal TestFlight and public V1 remain NO-GO until their evidence gates pass.
+Diagnostic build25 exactf670a79 and Apple submission finished; last Apple status Processing before sign-in expired. Runtime1ff2a78 plus callback33b6b3d is published. Hosted Auth/migrations/synthetic capture/deletion are verified in [hosted proof](../.agent/GUEST_HOSTED_PROOF_2026-10-03.md); C5SQL/API now deployed and dedicated owner operator grant/sign-in/empty retrieval verified. Collection stays off; activation and nonempty hosted capture/export/download bytes remain pending. Disclosures, signed AdMob console verification and Apple three-storefront prices are approved/saved; legal URLs, RevenueCat/native receipts/store proof remain open. [Consent package](GUEST_CONSENT_OWNER_REVIEW.md) contains approved copy. Build23 is historical.
+Diagnostic build25 was uploaded to obtain native evidence. Public V1 remains NO-GO until its evidence gates pass. The current delivery manifest supersedes older pause statements below.
 
 ## Before candidate build
 - Reconcile current contract; retire reachable review-reward/photo paths safely with forward migrations, without disrupting deletion or historical balances.

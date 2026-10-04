@@ -1,0 +1,28 @@
+{
+  "ownerAuthorization": "2026-10-03: Be ready to receive user data, and push to testflight now",
+  "buildId": "1ae3678b-142b-40d2-b046-e97f0ae21e00",
+  "submissionId": "2c6dd451-3b1a-4448-9b93-d61cd7aba013",
+  "buildStatus": "FINISHED",
+  "submissionStatus": "FINISHED",
+  "observedAt": "2026-10-04T00:54:30.716Z",
+  "appVersion": "1.7.0",
+  "appBuildVersion": "25",
+  "gitCommitHash": "f670a79e56d7e5c37a3090df8fc9fdd7d8d92ea6",
+  "profile": "testflight",
+  "environment": "preview",
+  "ads": "Google test units; no ad revenue or owner-unit SSV proof",
+  "backend": "https://jcrpxoojxixoieqqfgzo.supabase.co",
+  "collectionFlagsAtLaunch": {
+    "text": false,
+    "speech": false,
+    "photos": false,
+    "publicReview": false
+  },
+  "paywallEnabled": false,
+  "checks": "verify:beta PASS: lint/typecheck, 574 unit +30 integration, 3 ad config, translate/romanize, 18 model hashes, iOS purpose strings, Expo Doctor21/21",
+  "classification": "diagnostic internal TestFlight; public V1 NO-GO",
+  "deviceProof": "pending owner iPhone17Pro and iPad",
+  "collectionReadiness": "C5 SQL/admin-api deployed; dedicated owner operator explicitly approved/granted, SQL authorization and signed-in hosted Dashboard/Contributions verified (0 eligible records). Gateway ON accepts this session. Collection activation/nonempty capture/export/download-byte proof pending.",
+  "appleStatus": "Processing; 1.7.0(25) received Oct3 8:53PM NY; internal availability not yet proven",
+  "appleFollowup": "Apple session expired before processed internal availability could be verified"
+}

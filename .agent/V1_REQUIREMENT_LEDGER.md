@@ -1,5 +1,5 @@
 # V1 requirement ledger
-Contract: 2026-10-01 plus owner2026-10-02 guest amendment. Updated2026-10-03. Runtime source1ff2a780233516950e52aa82708886c96f94bc81; main and reconciliation branch published. [Paused owner handoff](../docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md).
+Contract: 2026-10-01 plus owner2026-10-02 guest amendment. Updated2026-10-03. Diagnostic build25 exactf670a79; guest runtime1ff2a78, callback33b6b3d; main and reconciliation branch published. [Owner handoff](../docs/TESTFLIGHT_OWNER_TODOS_2026-10-03.md).
 Statuses below describe current proof, not code presence. Historical ledger and its PASS entries are preserved in [the snapshot](../docs/history/2026-10-01-contract/V1_REQUIREMENT_LEDGER.md).
 
 - Contract reconciliation: original C0 PASS; guest amendment/source/hosted evidence reconciled. See GUEST_IDENTITY_COMPLETION_2026-10-02.md and GUEST_HOSTED_PROOF_2026-10-03.md. Full gate closure remains separate.
@@ -7,10 +7,10 @@ Statuses below describe current proof, not code presence. Historical ledger and 
 - Owner-directed popup/credit timer/UI: SOURCE + LOCAL/BROWSER/REVIEW PASS for explicitly requested layouts; native screenshot/design proof remains open. Original image preserved, compact no-fill timer and external coin flights implemented.
 - Startup language/general acceptance and separate opt-in: SOURCE/LOCAL/BROWSER/HOSTED GUARDS PASS; owner approved all disclosures. Public matching policy URLs/store privacy and native UX proof remain pending. General terms never authorize sharing.
 - Today's10 progress/all-answers/reopen/revise/Extra10/thanks-only5PMNY and strict>90% metric: SOURCE + LOCAL TESTS PASS; hosted synthetic334/370 receipt verified without review credit; device persistence pending.
-- Actual answer/correction capture: source immutable owner-bound revisions and outbox verified locally; real local-CI guest capture and authenticated admin-browser export of both original/revised responses PASS. Hosted admin rollout/operator and native persistence proof pending.
+- Actual answer/correction capture: source immutable owner-bound revisions and outbox verified locally; real local-CI guest capture and authenticated admin-browser export of both original/revised responses PASS. Hosted SQL/admin-api deployed; owner sign-in/empty hosted retrieval verified; nonempty export and native persistence proof pending.
 - Typed/speech feedback: source standardized owner-bound capture/revisions verified; real hosted synthetic typed upload/retry/retrieval/deletion PASS. Native speech+audio journey pending.
 - Speech queue/duration/revision/restart: SOURCE + LOCAL TESTS PASS; actual audio file duration/process-kill/nonempty hosted-object purge require separate proof.
-- Admin retrieval/export of Today’s 10 + typed + audio records: SOURCE/LOCAL-CI REAL BROWSER PASS; unified private paginated JSON export, full response metadata and signed audio preview bytes verified. Hosted rollout/gateway approval/operator proof pending.
+- Admin retrieval/export of Today’s 10 + typed + audio records: SOURCE/LOCAL-CI REAL BROWSER PASS; unified private paginated JSON export, full response metadata and signed audio preview bytes verified. Hosted SQL/admin-api deployed/source verified/noauth401; owner sign-in/empty hosted retrieval verified; nonempty export/download-byte proof pending.
 - Photo retirement: source/SQL guards and forward migrations deployed; photo flag off. Camera stays local; full native OCR/temp cleanup proof pending.
 - Private guest identity: source/tests and real hosted anonymous Auth PASS; installed-owner isolation/inactivity/offline/terminal-loss guarded. No account/login/link/recovery UI. Native persistence pending.
 - Withdrawal/shared-data deletion: source/reviews/tests plus actual hosted scheduled text purge PASS in19seconds, original deadline preserved, identity/17test credits retained. Real local CI nonempty16044byte audio and report purge PASS; hosted/native audio purge pending. Historical full-identity deletion separate.
@@ -21,9 +21,9 @@ Statuses below describe current proof, not code presence. Historical ledger and 
 - Storefront price/purchase/restore: validated private UUID binding source/tests PASS; Apple product/group created, monthly US USD2.99/Canada CAD2.99/Nepal USD1.49 and three-storefront availability saved. RevenueCat/StoreKit sandbox/device proof pending.
 - Offline core, Camera/speech/clipboard/accessibility/iPad: NATIVE PROOF PENDING.
 - Candidate CI: exact1ff2a78 main backend37143906099/agent37143906092 and both branch gates SUCCESS: SQL353 fresh/upgraded, Edge67, real Auth/concurrency/data preservation/admin7, actual local browser capture/export/nonempty media purge, mobile604/unchanged coverage/browser/export/pins/exclusions/secrets. Native proof is separate.
-- Rights/authorization/telemetry/secret exclusions: candidate CI/source review PASS. Authenticated real local operator browser retrieval/download, immutable review revisions and non-admin denial PASS; hosted admin-api rollout/gateway approval/operator login pending. Export grants no training/public-display rights. No model/gold changes.
+- Rights/authorization/telemetry/secret exclusions: candidate CI/source review PASS. Authenticated real local operator browser retrieval/download, immutable review revisions and non-admin denial PASS; hosted admin-api deployed, owner sign-in/empty hosted retrieval verified; nonempty export/download-byte proof pending. Export grants no training/public-display rights. No model/gold changes.
 - Model certificate: PREVIOUS FAILURE PRESERVED; local full rerun stopped on missing onnxruntime after gold freeze/pins/weight presence checks. No optimization, new score or waiver in this effort.
 - App Store legal/bilingual metadata/production rollout: OWNER GATES PENDING.
 
-New TestFlight delivery: PAUSED_BY_OWNER. Public V1: NO-GO.
+New TestFlight delivery: owner explicitly resumed 2026-10-03; build25 and submission FINISHED; Apple receipt shows Processing. Internal availability remains unverified. See TESTFLIGHT25_DELIVERY_2026-10-03.json. Public V1: NO-GO.
 Collection text/speech/photos/public-review flags all off pending required legal/bilingual/native approval. Hosted proof is an actual recorded synthetic round trip; no device/model/store proof is inferred from documentation or green CI.
